@@ -43,8 +43,8 @@ class ProgressDashboard {
 
     // Stats de logros
     if (this.achievementSystem) {
-      const unlockedAchievements = this.achievementSystem.unlockedAchievements || [];
-      stats.achievementsUnlocked = unlockedAchievements.length;
+      const unlockedAchievements = this.achievementSystem.unlockedAchievements || {};
+      stats.achievementsUnlocked = Object.keys(unlockedAchievements).length;
       stats.totalAchievements = this.achievementSystem.getTotalAchievementsCount?.() || 0;
       stats.totalPoints = this.achievementSystem.getTotalPoints?.() || 0;
     }
@@ -63,7 +63,8 @@ class ProgressDashboard {
 
   getNotesCount() {
     try {
-      const notes = JSON.parse(localStorage.getItem('user-notes')) || {};
+      // NotesModal usa 'coleccion_notes' como key
+      const notes = JSON.parse(localStorage.getItem('coleccion_notes')) || {};
       return Object.values(notes).flat().length;
     } catch {
       return 0;
@@ -80,6 +81,11 @@ class ProgressDashboard {
   }
 
   getAIChatsCount() {
+    // Usar stats del achievementSystem si está disponible
+    if (this.achievementSystem?.stats?.aiChats) {
+      return this.achievementSystem.stats.aiChats;
+    }
+    // Fallback a localStorage
     try {
       return parseInt(localStorage.getItem('ai-chats-count')) || 0;
     } catch {

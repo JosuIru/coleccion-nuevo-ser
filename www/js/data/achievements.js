@@ -86,6 +86,22 @@ const ACHIEVEMENTS = {
       icon: '📖',
       points: 35,
       condition: (stats) => stats.uniqueBooksOpened >= 3
+    },
+    {
+      id: 'planificador',
+      titulo: 'Planificador',
+      descripcion: 'Crear tu primer plan de acción',
+      icon: '📋',
+      points: 20,
+      condition: (stats) => stats.plansCreated >= 1
+    },
+    {
+      id: 'transformador',
+      titulo: 'Transformador',
+      descripcion: 'Completar un plan de acción',
+      icon: '🦋',
+      points: 50,
+      condition: (stats) => stats.plansCompleted >= 1
     }
   ],
 

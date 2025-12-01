@@ -187,7 +187,19 @@ class ReflexiveModal {
       timestamp: new Date().toISOString()
     };
 
-    localStorage.setItem(key, JSON.stringify(reflexion));
+    // Guardar en estructura unificada
+    try {
+      const allReflexions = JSON.parse(localStorage.getItem('user-reflections') || '{}');
+      allReflexions[key] = reflexion;
+      localStorage.setItem('user-reflections', JSON.stringify(allReflexions));
+    } catch {
+      localStorage.setItem(key, JSON.stringify(reflexion));
+    }
+
+    // Track para logros
+    if (window.achievementSystem) {
+      window.achievementSystem.trackReflexionSaved();
+    }
 
     // Mostrar confirmación
     window.toast?.success('Reflexión guardada');
@@ -197,14 +209,20 @@ class ReflexiveModal {
   }
 
   getSavedReflexionsCount() {
-    let count = 0;
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.startsWith('reflexion-')) {
-        count++;
+    try {
+      const allReflexions = JSON.parse(localStorage.getItem('user-reflections') || '{}');
+      return Object.keys(allReflexions).length;
+    } catch {
+      // Fallback: contar claves individuales (legacy)
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('reflexion-')) {
+          count++;
+        }
       }
+      return count;
     }
-    return count;
   }
 
   setReflexionsDisabled(disabled) {

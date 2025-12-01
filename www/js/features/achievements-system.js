@@ -51,7 +51,9 @@ class AchievementSystem {
       resourcesViewed: false,
       meditationsCompleted: 0,
       koansGenerated: 0,
-      booksOpenedList: []
+      booksOpenedList: [],
+      plansCreated: 0,
+      plansCompleted: 0
     };
   }
 

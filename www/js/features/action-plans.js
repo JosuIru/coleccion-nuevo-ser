@@ -165,9 +165,16 @@ class ActionPlans {
       });
     }
 
-    if (plan.progress === 100) {
+    if (plan.progress === 100 && plan.status !== 'completed') {
       plan.status = 'completed';
       plan.completedAt = new Date().toISOString();
+
+      // Track para logros
+      if (window.achievementSystem) {
+        window.achievementSystem.stats.plansCompleted = (window.achievementSystem.stats.plansCompleted || 0) + 1;
+        window.achievementSystem.saveStats();
+        window.achievementSystem.checkAndUnlock();
+      }
     }
 
     this.savePlans();

@@ -310,6 +310,9 @@ class BookReader {
               <button id="notes-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.notes')}">
                 ${Icons.note()}
               </button>
+              <button id="voice-notes-btn" class="p-2 hover:bg-red-900/50 rounded-lg transition text-red-400" title="Notas de voz">
+                ${Icons.create('mic', 20)}
+              </button>
               <button id="ai-chat-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
@@ -711,6 +714,18 @@ class BookReader {
           window.notesModal.open(this.currentChapter?.id);
         } else {
           window.toast.error('error.notesNotAvailable');
+        }
+      });
+    }
+
+    // Voice notes button
+    const voiceNotesBtn = document.getElementById('voice-notes-btn');
+    if (voiceNotesBtn) {
+      voiceNotesBtn.addEventListener('click', () => {
+        if (window.voiceNotes) {
+          window.voiceNotes.showRecordingModal();
+        } else {
+          window.toast?.error('Notas de voz no disponibles');
         }
       });
     }

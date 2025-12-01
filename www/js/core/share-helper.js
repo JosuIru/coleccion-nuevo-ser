@@ -118,7 +118,7 @@ ${achievement.descripcion}
 ${answer}`;
 
     if (bookTitle) {
-      text += `\n\nInspiraado por: ${bookTitle}`;
+      text += `\n\nInspirado por: ${bookTitle}`;
     }
 
     text += '\n\n#ColecciónNuevoSer #Reflexión';

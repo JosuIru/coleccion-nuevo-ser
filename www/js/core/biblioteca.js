@@ -68,6 +68,10 @@ class Biblioteca {
               ${Icons.language()}
               <span class="hidden sm:inline">${this.i18n.t('btn.language')}</span>
             </button>
+            <button id="progress-dashboard-btn-bib" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 rounded-lg transition flex items-center gap-2 font-bold" title="Mi Progreso">
+              ${Icons.create('bar-chart-2', 20)}
+              <span class="hidden sm:inline">Mi Progreso</span>
+            </button>
           </div>
 
         </div>
@@ -577,6 +581,7 @@ class Biblioteca {
         const aiSettingsBtn = e.target.closest('#ai-settings-btn-bib');
         const donationsBtn = e.target.closest('#donations-btn-bib');
         const languageBtn = e.target.closest('#language-selector-btn-bib');
+        const progressBtn = e.target.closest('#progress-dashboard-btn-bib');
 
         if (androidBtn) {
           e.preventDefault();
@@ -600,6 +605,12 @@ class Biblioteca {
         if (languageBtn) {
           e.preventDefault();
           if (window.languageSelector) window.languageSelector.open();
+          return;
+        }
+
+        if (progressBtn) {
+          e.preventDefault();
+          if (window.progressDashboard) window.progressDashboard.show();
           return;
         }
 

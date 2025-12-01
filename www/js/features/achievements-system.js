@@ -292,6 +292,38 @@ class AchievementSystem {
     return total;
   }
 
+  getTotalAchievementsCount() {
+    return this.getTotalCount();
+  }
+
+  getRecentAchievements() {
+    // Obtener logros desbloqueados con datos completos, ordenados por fecha
+    const unlocked = [];
+
+    for (const [id, data] of Object.entries(this.unlockedAchievements)) {
+      // Buscar el logro en todas las categorías
+      let achievement = null;
+      if (window.ACHIEVEMENTS) {
+        for (const category of Object.values(window.ACHIEVEMENTS)) {
+          achievement = category.find(a => a.id === id);
+          if (achievement) break;
+        }
+      }
+
+      if (achievement) {
+        unlocked.push({
+          ...achievement,
+          unlockedAt: data.unlockedAt
+        });
+      }
+    }
+
+    // Ordenar por fecha (más recientes primero)
+    return unlocked.sort((a, b) =>
+      new Date(b.unlockedAt) - new Date(a.unlockedAt)
+    );
+  }
+
   renderDashboard(bookId = null) {
     const totalPoints = this.getTotalPoints();
     const unlockedCount = this.getUnlockedCount();

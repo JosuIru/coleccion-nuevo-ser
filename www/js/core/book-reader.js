@@ -311,6 +311,9 @@ class BookReader {
               <button id="ai-chat-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
+              <button id="summary-btn" class="p-2 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400" title="Resumen del capítulo">
+                ${Icons.note()}
+              </button>
               <div class="w-px h-5 bg-gray-700 mx-1"></div>
               ${hasTimeline ? `<button id="timeline-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.timeline')}">${Icons.timeline()}</button>` : ''}
               ${hasResources ? `<button id="resources-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.resources')}">${Icons.resources()}</button>` : ''}
@@ -399,6 +402,12 @@ class BookReader {
     // Ejercicio enlazado al Toolkit (Manual de Transición)
     if (this.currentChapter.linkedExercise) {
       html += this.bookEngine.renderLinkedExercise(this.currentChapter.linkedExercise, this.currentChapter.title);
+    }
+
+    // Sugerencias de IA (para profundizar)
+    if (window.aiSuggestions) {
+      const bookId = this.bookEngine.getCurrentBook();
+      html += window.aiSuggestions.render(bookId, this.currentChapter.id);
     }
 
     // Botón de marcar capítulo como leído
@@ -767,6 +776,19 @@ class BookReader {
       achievementsBtn.addEventListener('click', () => {
         if (window.achievementSystem) {
           window.achievementSystem.showDashboardModal();
+        }
+      });
+    }
+
+    // Summary button (Auto-summary with AI)
+    const summaryBtn = document.getElementById('summary-btn');
+    if (summaryBtn) {
+      summaryBtn.addEventListener('click', () => {
+        if (window.autoSummary && this.currentChapter) {
+          const bookId = this.bookEngine.getCurrentBook();
+          window.autoSummary.showSummaryModal(this.currentChapter, bookId);
+        } else {
+          window.toast?.info('Configura la IA para generar resúmenes');
         }
       });
     }

@@ -236,6 +236,9 @@
   <script src="js/features/reflexive-modal.js"></script>
   <script src="js/data/achievements.js"></script>
   <script src="js/features/achievements-system.js"></script>
+  <script src="js/features/auto-summary.js"></script>
+  <script src="js/features/ai-suggestions.js"></script>
+  <script src="js/features/progress-dashboard.js"></script>
 
   <!-- Main App Initialization -->
   <script>
@@ -243,7 +246,7 @@
     // INICIALIZACIÓN DE LA APP
     // ========================================================================
 
-    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem;
+    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard;
 
     async function initApp() {
       try {
@@ -352,6 +355,27 @@
           achievementSystem = new AchievementSystem(bookEngine);
           window.achievementSystem = achievementSystem;
           console.log('✅ Achievement System inicializado');
+        }
+
+        // Auto Summary (Resumen Automático)
+        if (window.AutoSummary && aiAdapter) {
+          autoSummary = new AutoSummary(bookEngine, aiAdapter);
+          window.autoSummary = autoSummary;
+          console.log('✅ Auto Summary inicializado');
+        }
+
+        // AI Suggestions (Sugerencias Contextuales)
+        if (window.AISuggestions) {
+          aiSuggestions = new AISuggestions(bookEngine);
+          window.aiSuggestions = aiSuggestions;
+          console.log('✅ AI Suggestions inicializado');
+        }
+
+        // Progress Dashboard (Panel de Progreso)
+        if (window.ProgressDashboard) {
+          progressDashboard = new ProgressDashboard(bookEngine, achievementSystem);
+          window.progressDashboard = progressDashboard;
+          console.log('✅ Progress Dashboard inicializado');
         }
 
         // AI Settings Modal

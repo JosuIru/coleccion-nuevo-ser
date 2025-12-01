@@ -76,6 +76,10 @@ class Biblioteca {
               <span id="theme-icon-bib">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
               <span class="hidden sm:inline" id="theme-label-bib">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
             </button>
+            <button id="export-btn-bib" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-lg transition flex items-center gap-2 font-bold" title="Exportar / Backup">
+              ${Icons.create('download-cloud', 20)}
+              <span class="hidden sm:inline">Backup</span>
+            </button>
           </div>
 
         </div>
@@ -630,6 +634,16 @@ class Biblioteca {
             if (iconEl) iconEl.textContent = window.themeHelper.getThemeIcon();
             if (labelEl) labelEl.textContent = window.themeHelper.getThemeLabel();
             window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
+          }
+          return;
+        }
+
+        // Export/Backup button
+        const exportBtn = e.target.closest('#export-btn-bib');
+        if (exportBtn) {
+          e.preventDefault();
+          if (window.fileExportHelper) {
+            window.fileExportHelper.showExportModal();
           }
           return;
         }

@@ -510,6 +510,14 @@ class BookReader {
           <!-- Scrollable Menu Items -->
           <div class="flex-1 overflow-y-auto mobile-menu-scroll">
             <div class="p-4 pb-6 space-y-2">
+            <!-- Back to Biblioteca -->
+            <button id="back-to-biblioteca-mobile" class="w-full text-left p-3 hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-400 border border-cyan-500/30 mb-2">
+              ${Icons.library(24)}
+              <span class="font-semibold">${this.i18n.t('nav.library')}</span>
+            </button>
+
+            <div class="border-t border-gray-700 my-3"></div>
+
             <!-- Main Actions -->
             <button id="bookmark-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${isBookmarked ? Icons.bookmarkFilled(24) : Icons.bookmark(24)}
@@ -670,6 +678,16 @@ class BookReader {
     if (mobileMenuBackdrop) {
       mobileMenuBackdrop.addEventListener('click', () => {
         document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    }
+
+    // Back to biblioteca (mobile)
+    const backToLibMobile = document.getElementById('back-to-biblioteca-mobile');
+    if (backToLibMobile) {
+      backToLibMobile.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+        this.hide();
+        window.biblioteca.show();
       });
     }
 

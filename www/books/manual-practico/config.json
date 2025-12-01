@@ -1,0 +1,94 @@
+{
+  "id": "manual-practico",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-01",
+  "theme": {
+    "name": "Contemplative Gold",
+    "primary": "#fbbf24",
+    "secondary": "#f59e0b",
+    "accent": "#fbbf24",
+    "background": "#0f172a",
+    "backgroundSecondary": "#1e293b",
+    "text": "#e2e8f0",
+    "textSecondary": "#cbd5e1",
+    "border": "#334155",
+    "gradient": "from-slate-950 via-amber-950 to-yellow-950"
+  },
+  "ui": {
+    "showStarfield": true,
+    "animationType": "cosmic",
+    "animationSpeed": "slow",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+  "features": {
+    "exercises": {
+      "enabled": true,
+      "types": [
+        "meditation",
+        "reflection",
+        "practice"
+      ],
+      "trackCompletion": true
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [
+        0.5,
+        0.75,
+        1,
+        1.25,
+        1.5,
+        2
+      ],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": true
+    },
+    "aiChat": {
+      "enabled": true,
+      "systemPrompt": "Eres un guía contemplativo especializado en las prácticas de \"Manual Práctico\". Tu función es acompañar al usuario en su exploración, ofreciendo clarificación sobre los ejercicios y apoyo en su proceso.",
+      "modes": {
+        "default": {
+          "name": "Guía Contemplativo",
+          "tone": "serene",
+          "focus": "practice"
+        }
+      }
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true
+    }
+  },
+  "content": {
+    "sourceFile": "books/manual-practico/book.json",
+    "dataStructure": "standard"
+  },
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "principiante-intermedio",
+    "recommendedPace": "slow",
+    "linkedTo": "codigo-despertar"
+  }
+}

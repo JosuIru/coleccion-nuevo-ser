@@ -1,0 +1,345 @@
+{
+  "resources": {
+    "title": "Recursos para Profundizar y Actuar",
+    "description": "Organizaciones, lecturas, documentales y herramientas para quienes quieren pasar del pensamiento crítico a la acción transformadora"
+  },
+
+  "organizations": [
+    {
+      "id": "org-001",
+      "name": "Cooperation Jackson",
+      "type": "cooperativa",
+      "location": "Mississippi, EE.UU.",
+      "description": "Red de cooperativas de trabajadores construyendo economía solidaria en comunidad afroamericana",
+      "website": "https://cooperationjackson.org",
+      "focus": ["economía_solidaria", "justicia_racial", "democracia_económica"],
+      "relatedChapters": ["cap9", "cap12", "cap13"]
+    },
+    {
+      "id": "org-002",
+      "name": "Mondragón Corporación Cooperativa",
+      "type": "cooperativa",
+      "location": "País Vasco, España",
+      "description": "La federación de cooperativas de trabajadores más grande del mundo, con 80,000+ empleados",
+      "website": "https://www.mondragon-corporation.com",
+      "focus": ["economía_solidaria", "propiedad_colectiva"],
+      "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "org-003",
+      "name": "P2P Foundation",
+      "type": "think_tank",
+      "location": "Global",
+      "description": "Investigación y documentación de producción entre pares y economía colaborativa",
+      "website": "https://p2pfoundation.net",
+      "focus": ["commons", "economía_p2p", "tecnología_social"],
+      "relatedChapters": ["cap8", "cap9", "cap14"]
+    },
+    {
+      "id": "org-004",
+      "name": "Extinction Rebellion",
+      "type": "movimiento",
+      "location": "Global",
+      "description": "Movimiento de desobediencia civil no violenta exigiendo acción ante la crisis climática",
+      "website": "https://rebellion.global",
+      "focus": ["crisis_climática", "acción_directa"],
+      "relatedChapters": ["cap4", "cap7"]
+    },
+    {
+      "id": "org-005",
+      "name": "DiEM25 (Democracy in Europe Movement)",
+      "type": "movimiento_político",
+      "location": "Europa",
+      "description": "Movimiento paneuropeo por democratización de instituciones europeas",
+      "website": "https://diem25.org",
+      "focus": ["democracia", "Europa", "transnacionalismo"],
+      "relatedChapters": ["cap10"]
+    },
+    {
+      "id": "org-006",
+      "name": "Guerrilla Foundation",
+      "type": "fundación",
+      "location": "Global",
+      "description": "Financia movimientos de base por justicia social y ambiental",
+      "website": "https://guerrillafoundation.org",
+      "focus": ["activismo", "justicia_social", "funding"],
+      "relatedChapters": ["cap13"]
+    },
+    {
+      "id": "org-007",
+      "name": "Enric Duran / Cooperativa Integral Catalana",
+      "type": "experimento",
+      "location": "Catalunya, España",
+      "description": "Proyecto de construcción de sistema integral alternativo fuera del Estado y mercado capitalista",
+      "website": "https://cooperativa.cat",
+      "focus": ["autonomía", "economía_alternativa", "autogestión"],
+      "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "org-008",
+      "name": "Platform Cooperativism Consortium",
+      "type": "red",
+      "location": "Global",
+      "description": "Red global promoviendo alternativas cooperativas a plataformas digitales extractivas",
+      "website": "https://platform.coop",
+      "focus": ["cooperativismo_digital", "tecnología"],
+      "relatedChapters": ["cap9", "cap14"]
+    },
+    {
+      "id": "org-009",
+      "name": "Fearless Cities",
+      "type": "red",
+      "location": "Global",
+      "description": "Red de ciudades municipalistas experimentando con democracia participativa y economía local",
+      "website": "https://fearlesscities.com",
+      "focus": ["municipalismo", "democracia_local"],
+      "relatedChapters": ["cap10", "cap12"]
+    },
+    {
+      "id": "org-010",
+      "name": "Doughnut Economics Action Lab (DEAL)",
+      "type": "think_tank",
+      "location": "Global",
+      "description": "Herramientas para implementar economía del donut de Kate Raworth: dentro de límites planetarios y sobre umbrales sociales",
+      "website": "https://doughnuteconomics.org",
+      "focus": ["economía_ecológica", "límites_planetarios"],
+      "relatedChapters": ["cap7", "cap9"]
+    }
+  ],
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "El Capital en el Siglo XXI",
+      "author": "Thomas Piketty",
+      "year": 2013,
+      "description": "Análisis histórico de la desigualdad y acumulación de capital",
+      "why": "Documenta empíricamente cómo el capitalismo tiende estructuralmente a la desigualdad",
+      "relatedChapters": ["cap2", "cap13"]
+    },
+    {
+      "id": "book-002",
+      "title": "Los Límites del Crecimiento",
+      "author": "Donella Meadows et al.",
+      "year": 1972,
+      "description": "Primer modelo sistémico del colapso por crecimiento infinito en planeta finito",
+      "why": "Demostró hace 50 años lo que ahora es evidente: el crecimiento infinito es imposible",
+      "relatedChapters": ["cap2", "cap4", "cap7"]
+    },
+    {
+      "id": "book-003",
+      "title": "Bullshit Jobs",
+      "author": "David Graeber",
+      "year": 2018,
+      "description": "Crítica de trabajos innecesarios que existen solo para mantener el sistema",
+      "why": "Cuestiona la premisa de que todo el mundo debe tener un 'empleo' para tener valor",
+      "relatedChapters": ["cap2", "cap9"]
+    },
+    {
+      "id": "book-004",
+      "title": "La Doctrina del Shock",
+      "author": "Naomi Klein",
+      "year": 2007,
+      "description": "Cómo las crisis se usan para imponer políticas que benefician a élites",
+      "why": "Revela el mecanismo por el cual el poder se perpetúa aprovechando crisis",
+      "relatedChapters": ["cap3", "cap4"]
+    },
+    {
+      "id": "book-005",
+      "title": "Ecomodernist Manifesto vs Degrowth",
+      "author": "Varios",
+      "year": 2015,
+      "description": "Debate entre crecimiento verde tecnológico y decrecimiento",
+      "why": "Mapea las dos grandes respuestas a la crisis ecológica",
+      "relatedChapters": ["cap7", "cap9"]
+    },
+    {
+      "id": "book-006",
+      "title": "Governing the Commons",
+      "author": "Elinor Ostrom",
+      "year": 1990,
+      "description": "Estudio empírico de gestión exitosa de bienes comunes sin privatización ni estado",
+      "why": "Desmonta el mito de la 'tragedia de los comunes' y muestra que la autogestión funciona",
+      "relatedChapters": ["cap7", "cap9", "cap10"]
+    },
+    {
+      "id": "book-007",
+      "title": "Debt: The First 5000 Years",
+      "author": "David Graeber",
+      "year": 2011,
+      "description": "Historia antropológica de la deuda y el dinero",
+      "why": "Revela que el dinero y la deuda son construcciones sociales, no leyes naturales",
+      "relatedChapters": ["cap2", "cap9"]
+    },
+    {
+      "id": "book-008",
+      "title": "Radical Markets",
+      "author": "Eric Posner & Glen Weyl",
+      "year": 2018,
+      "description": "Propuestas de reforma de propiedad, votación e inmigración desde lógica de mercado",
+      "why": "Intento de reformar capitalismo desde dentro con mecanismos novedosos",
+      "relatedChapters": ["cap9", "cap10"]
+    },
+    {
+      "id": "book-009",
+      "title": "Braiding Sweetgrass",
+      "author": "Robin Wall Kimmerer",
+      "year": 2013,
+      "description": "Sabiduría indígena sobre reciprocidad con la naturaleza",
+      "why": "Perspectiva no-occidental de relación con el planeta como ser vivo",
+      "relatedChapters": ["cap7", "cap15"]
+    },
+    {
+      "id": "book-010",
+      "title": "The Dawn of Everything",
+      "author": "David Graeber & David Wengrow",
+      "year": 2021,
+      "description": "Re-lectura de la historia humana: no hay progreso lineal hacia jerarquía",
+      "why": "Demuestra que la desigualdad no es inevitable, hubo miles de formas de organización social",
+      "relatedChapters": ["cap1", "cap3", "cap10"]
+    }
+  ],
+
+  "documentaries": [
+    {
+      "id": "doc-001",
+      "title": "The Corporation",
+      "year": 2003,
+      "description": "Análisis de la corporación como entidad psicópata",
+      "platform": "YouTube",
+      "why": "Expone la estructura legal que permite a las corporaciones externalizar daños",
+      "relatedChapters": ["cap2", "cap3"]
+    },
+    {
+      "id": "doc-002",
+      "title": "Demain (Tomorrow)",
+      "year": 2015,
+      "description": "Viaje por el mundo documentando soluciones concretas a crisis ecológica y social",
+      "platform": "Netflix",
+      "why": "Muestra que las alternativas ya existen y funcionan en distintos lugares",
+      "relatedChapters": ["cap7", "cap9", "cap12"]
+    },
+    {
+      "id": "doc-003",
+      "title": "The Take",
+      "year": 2004,
+      "description": "Fábricas recuperadas por trabajadores en Argentina tras crisis 2001",
+      "platform": "YouTube",
+      "why": "Ejemplo de autogestión obrera emergiendo de crisis económica",
+      "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "doc-004",
+      "title": "Inside Job",
+      "year": 2010,
+      "description": "Crónica de la crisis financiera de 2008 y colusión gobierno-banca",
+      "platform": "Netflix",
+      "why": "Revela captura del estado por intereses financieros",
+      "relatedChapters": ["cap2", "cap3"]
+    },
+    {
+      "id": "doc-005",
+      "title": "The Social Dilemma",
+      "year": 2020,
+      "description": "Cómo las redes sociales manipulan atención y democracia",
+      "platform": "Netflix",
+      "why": "Advertencia sobre tecnología diseñada para adicción y polarización",
+      "relatedChapters": ["cap14"]
+    }
+  ],
+
+  "tools": [
+    {
+      "id": "tool-001",
+      "name": "Decidim",
+      "type": "software",
+      "description": "Plataforma de código abierto para democracia participativa",
+      "website": "https://decidim.org",
+      "use": "Implementar presupuestos participativos, consultas ciudadanas, co-creación de políticas",
+      "relatedChapters": ["cap10", "cap14"]
+    },
+    {
+      "id": "tool-002",
+      "name": "Loomio",
+      "type": "software",
+      "description": "Herramienta de toma de decisiones colaborativa",
+      "website": "https://loomio.com",
+      "use": "Facilitar decisiones en grupos sin jerarquía clara",
+      "relatedChapters": ["cap10"]
+    },
+    {
+      "id": "tool-003",
+      "name": "Open Food Network",
+      "type": "plataforma",
+      "description": "Plataforma cooperativa para circuitos cortos de alimentación",
+      "website": "https://openfoodnetwork.org",
+      "use": "Conectar productores locales con consumidores sin intermediarios extractivos",
+      "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "tool-004",
+      "name": "FairCoop / FairCoin",
+      "type": "criptomoneda",
+      "description": "Criptomoneda y cooperativa global para economía postcapitalista",
+      "website": "https://fair.coop",
+      "use": "Experimento de moneda no especulativa para economía cooperativa",
+      "relatedChapters": ["cap9", "cap14"]
+    },
+    {
+      "id": "tool-005",
+      "name": "Sociocracy / Holocracy",
+      "type": "metodología",
+      "description": "Sistemas de gobernanza organizacional sin jerarquías tradicionales",
+      "website": "https://sociocracyforall.org",
+      "use": "Implementar toma de decisiones por consentimiento en organizaciones",
+      "relatedChapters": ["cap10"]
+    }
+  ],
+
+  "by_chapter": {
+    "cap1": {
+      "title": "La Arquitectura Invisible",
+      "recommended": ["book-010", "book-006"]
+    },
+    "cap2": {
+      "title": "La Economía de la Escasez Artificial",
+      "recommended": ["book-001", "book-002", "book-007", "doc-004", "org-010"]
+    },
+    "cap3": {
+      "title": "El Poder que se Perpetúa",
+      "recommended": ["book-004", "book-010", "doc-001"]
+    },
+    "cap4": {
+      "title": "La Crisis como Síntoma",
+      "recommended": ["book-002", "book-004", "org-004"]
+    },
+    "cap7": {
+      "title": "El Planeta como Ser",
+      "recommended": ["book-009", "org-004", "org-010", "doc-002"]
+    },
+    "cap9": {
+      "title": "La Economía que Respira",
+      "recommended": ["org-001", "org-002", "org-007", "org-010", "book-003", "book-006", "book-007", "tool-003", "tool-004", "doc-002", "doc-003"]
+    },
+    "cap10": {
+      "title": "La Gobernanza que Emerge",
+      "recommended": ["org-005", "org-009", "book-006", "book-008", "book-010", "tool-001", "tool-002", "tool-005"]
+    },
+    "cap12": {
+      "title": "El Territorio que Vive",
+      "recommended": ["org-001", "org-002", "org-007", "org-009", "doc-002", "doc-003", "tool-003"]
+    },
+    "cap13": {
+      "title": "La Justicia que Sana",
+      "recommended": ["book-001", "org-001", "org-006"]
+    },
+    "cap14": {
+      "title": "La Tecnología que Sirve",
+      "recommended": ["org-003", "org-008", "doc-005", "tool-001", "tool-004"]
+    },
+    "cap15": {
+      "title": "Lo Sagrado que Integra",
+      "recommended": ["book-009"]
+    }
+  }
+}

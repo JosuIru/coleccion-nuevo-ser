@@ -1,0 +1,333 @@
+/* ============================================================================
+   TEMA: MANUAL DE TRANSICIÓN
+   ============================================================================
+   Tema activista con patrones orgánicos y energía constructiva
+   ============================================================================ */
+
+/* Fondo con patrones orgánicos */
+body.theme-manual-transicion {
+  background: #1a1a1a;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-manual-transicion::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(
+      60deg,
+      transparent,
+      transparent 40px,
+      rgba(16, 185, 129, 0.04) 40px,
+      rgba(16, 185, 129, 0.04) 80px
+    ),
+    repeating-linear-gradient(
+      120deg,
+      transparent,
+      transparent 40px,
+      rgba(249, 115, 22, 0.04) 40px,
+      rgba(249, 115, 22, 0.04) 80px
+    );
+  z-index: -1;
+  pointer-events: none;
+  animation: organicMove 25s linear infinite;
+}
+
+@keyframes organicMove {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(80px, 80px) rotate(1deg);
+  }
+}
+
+/* Gradiente esperanzador para fondos */
+.theme-manual-transicion .biblioteca-container,
+.theme-manual-transicion .book-reader-container {
+  background: linear-gradient(180deg,
+    #1a1a1a 0%,
+    #2d3748 50%,
+    #1a1a1a 100%
+  );
+}
+
+/* Colores específicos del tema */
+.theme-manual-transicion {
+  --color-primary: #10b981;
+  --color-secondary: #f97316;
+  --color-accent: #fbbf24;
+  --color-background: #1a1a1a;
+  --color-background-secondary: #2d3748;
+  --color-text: #f7fafc;
+  --color-text-secondary: #e2e8f0;
+  --color-border: #4a5568;
+}
+
+/* Efectos de crecimiento en tarjetas */
+.theme-manual-transicion .book-card:hover {
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.5);
+  transform: scale(1.03) translateY(-5px);
+}
+
+/* Herramientas con borde orgánico */
+.theme-manual-transicion .toolkit .tool {
+  background: linear-gradient(135deg, #2d3748 0%, #1a1a1a 100%);
+  border: 2px solid #10b981;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+}
+
+/* Acciones con energía constructiva */
+.theme-manual-transicion .action-tracker .action {
+  background: linear-gradient(135deg, #2d3748 0%, #1a1a1a 100%);
+  border-left: 4px solid #f97316;
+  transition: all 0.3s ease;
+}
+
+.theme-manual-transicion .action-tracker .action:hover {
+  transform: translateX(6px);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+  border-left-width: 6px;
+}
+
+/* Efecto crecimiento orgánico en epígrafes */
+.theme-manual-transicion .epigraph {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.12) 0%,
+    rgba(249, 115, 22, 0.12) 100%
+  );
+  border-left: 5px solid #10b981;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-manual-transicion .epigraph::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1));
+  transform: skewX(-12deg);
+}
+
+/* Timeline de transición */
+.theme-manual-transicion .timeline-container {
+  border-left: 3px solid #10b981;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.theme-manual-transicion .timeline-event {
+  position: relative;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #2d3748 0%, #1a1a1a 100%);
+  border: 1px solid #4a5568;
+  border-left: 4px solid #f97316;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s;
+  border-radius: 8px;
+}
+
+.theme-manual-transicion .timeline-event:hover {
+  transform: translateX(8px);
+  border-left-width: 6px;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+}
+
+/* Botones con efecto de sembrar */
+.theme-manual-transicion button:hover {
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+  transform: scale(1.03);
+}
+
+/* Sidebar con fluidez */
+.theme-manual-transicion .sidebar {
+  background: linear-gradient(180deg,
+    rgba(26, 26, 26, 0.95) 0%,
+    rgba(45, 55, 72, 0.95) 100%
+  );
+  border-right: 2px solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Capítulos activos con vida */
+.theme-manual-transicion .chapter-item.bg-cyan-600\/30 {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border: 2px solid #10b981;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.3);
+}
+
+/* Texto con presencia suave */
+.theme-manual-transicion h1,
+.theme-manual-transicion h2 {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.theme-manual-transicion h3 {
+  font-weight: 700;
+  color: #10b981;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+}
+
+/* Enlaces con efecto de raíz */
+.theme-manual-transicion a {
+  color: #10b981;
+  font-weight: 600;
+  position: relative;
+}
+
+.theme-manual-transicion a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f97316;
+  transition: width 0.3s ease;
+}
+
+.theme-manual-transicion a:hover::after {
+  width: 100%;
+}
+
+/* Estadísticas con progreso */
+.theme-manual-transicion .global-stats {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.12) 0%,
+    rgba(249, 115, 22, 0.12) 100%
+  );
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 25px rgba(16, 185, 129, 0.2);
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.theme-manual-transicion .global-stats::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
+  animation: statsGrow 3s infinite;
+}
+
+@keyframes statsGrow {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* Recursos externos con estilo de red */
+.theme-manual-transicion .resources-box {
+  background: linear-gradient(135deg, #2d3748 0%, #1a1a1a 100%);
+  border: 2px solid #10b981;
+  padding: 1.5rem;
+  border-radius: 12px;
+  position: relative;
+}
+
+.theme-manual-transicion .resources-box::before {
+  content: '🌐';
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 2rem;
+  background: #1a1a1a;
+  padding: 0 10px;
+}
+
+/* Referencias cruzadas constructivas */
+.theme-manual-transicion .cross-references {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.1) 0%,
+    rgba(249, 115, 22, 0.1) 100%
+  );
+  border: 2px solid #10b981;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+}
+
+.theme-manual-transicion .cross-references .reference:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #f97316;
+  transform: translateX(8px);
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.3);
+}
+
+/* Animación de entrada orgánica */
+.theme-manual-transicion .fade-in-up {
+  animation: fadeInOrganic 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInOrganic {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Efectos para mobile */
+@media (max-width: 768px) {
+  body.theme-manual-transicion::before {
+    animation-duration: 18s;
+  }
+
+  .theme-manual-transicion h1,
+  .theme-manual-transicion h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Scrollbar con vida */
+.theme-manual-transicion::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #10b981, #f97316);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Progress bars con crecimiento */
+.theme-manual-transicion .h-2 {
+  box-shadow: inset 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Checkbox con energía */
+.theme-manual-transicion input[type="checkbox"]:checked {
+  accent-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Énfasis en Strong */
+.theme-manual-transicion strong {
+  color: #f97316;
+  font-weight: 800;
+  text-shadow: 0 0 4px rgba(249, 115, 22, 0.25);
+}
+
+/* Listas con puntos verdes */
+.theme-manual-transicion ul li::marker {
+  color: #10b981;
+}
+
+/* Citas en bloque */
+.theme-manual-transicion blockquote {
+  border-left: 4px solid #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+}

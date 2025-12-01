@@ -1,0 +1,567 @@
+{
+  "library": {
+    "name": "Colección Nuevo Ser",
+    "tagline": "Exploraciones en la Frontera del Pensamiento Humano-IA",
+    "authors": [
+      "J. Irurtzun",
+      "Claude"
+    ],
+    "version": "2.0.0",
+    "lastUpdate": "2025-11-28",
+    "description": "Una biblioteca evolutiva de co-creaciones humano-IA explorando diferentes dimensiones de la transformación personal y colectiva"
+  },
+  "books": [
+    {
+      "id": "codigo-despertar",
+      "title": "El Código del Despertar",
+      "subtitle": "Un viaje científico-espiritual hacia la conciencia expandida",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2024,
+      "category": "Espiritualidad & Ciencia",
+      "tags": [
+        "conciencia",
+        "meditación",
+        "neurociencia",
+        "filosofía",
+        "despertar"
+      ],
+      "description": "Una exploración profunda de la conciencia desde la neurociencia, la física cuántica y la experiencia contemplativa. Un puente entre ciencia y espiritualidad.",
+      "coverImage": "books/codigo-despertar/assets/cover.jpg",
+      "theme": "codigo-despertar",
+      "status": "published",
+      "version": "1.1.5",
+      "sections": 4,
+      "chapters": 14,
+      "estimatedReadTime": "8-10 horas",
+      "difficulty": "intermedio",
+      "features": {
+        "meditations": true,
+        "audiobook": true,
+        "aiChat": true,
+        "personalNotes": true,
+        "exercises": true,
+        "progressTracking": true,
+        "manualPractico": true,
+        "practicasRadicales": true
+      },
+      "color": "#0ea5e9",
+      "secondaryColor": "#a855f7",
+      "backgroundColor": "#0f172a",
+      "icon": "🌌",
+      "mood": "contemplativo"
+    },
+    {
+      "id": "manifiesto",
+      "title": "Manifiesto de la Conciencia Compartida",
+      "subtitle": "Premisas para un mundo que aún no existe",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Filosofía Política",
+      "tags": [
+        "política",
+        "economía",
+        "sistemas",
+        "transformación social",
+        "activismo"
+      ],
+      "description": "Una crítica profunda de las premisas ocultas que estructuran nuestra civilización, y una propuesta radical para un nuevo contrato social basado en la conciencia compartida.",
+      "epigraph": "Un fantasma recorre el mundo: el fantasma de la separación.",
+      "coverImage": "books/manifiesto/assets/cover.jpg",
+      "theme": "manifiesto",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 4,
+      "chapters": 18,
+      "estimatedReadTime": "10-12 horas",
+      "difficulty": "avanzado",
+      "features": {
+        "criticalReflections": true,
+        "actionSteps": true,
+        "aiChat": true,
+        "aiDebateMode": true,
+        "personalNotes": true,
+        "timeline": true,
+        "externalResources": true,
+        "actionTracker": true,
+        "progressTracking": true
+      },
+      "color": "#dc2626",
+      "secondaryColor": "#f97316",
+      "backgroundColor": "#171717",
+      "icon": "🔥",
+      "mood": "revolucionario"
+    },
+    {
+      "id": "guia-acciones",
+      "title": "Guía de Acciones Transformadoras",
+      "subtitle": "54 prácticas para cambiar tu vida y tu mundo",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Activismo & Transformación Social",
+      "tags": [
+        "acciones",
+        "transformación",
+        "individual",
+        "comunitario",
+        "sistémico",
+        "práctica"
+      ],
+      "description": "Compendio de 54 acciones concretas derivadas del Manifiesto de la Conciencia Compartida. Organizadas en tres niveles (individual, comunitario, sistémico), cada acción incluye guía detallada, variaciones y conexión con los principios del Manifiesto.",
+      "epigraph": "El cambio no es algo que esperas. Es algo que haces.",
+      "coverImage": "books/guia-acciones/assets/cover.svg",
+      "theme": "guia-acciones",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 3,
+      "chapters": 54,
+      "estimatedReadTime": "6-8 horas",
+      "difficulty": "variable",
+      "features": {
+        "actionGuides": true,
+        "aiChat": true,
+        "personalNotes": true,
+        "progressTracking": true,
+        "actionTracker": true
+      },
+      "color": "#8b5cf6",
+      "secondaryColor": "#ec4899",
+      "backgroundColor": "#1e1b4b",
+      "icon": "🎯",
+      "mood": "activista",
+      "linkedTo": "manifiesto"
+    },
+    {
+      "id": "manual-transicion",
+      "title": "Manual de Transición",
+      "subtitle": "De aquí a allá - Herramientas para construir el mundo que imaginamos",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Activismo & Transformación Social",
+      "tags": [
+        "activismo",
+        "herramientas",
+        "transición",
+        "cambio sistémico",
+        "prefiguración",
+        "cooperativismo",
+        "commons"
+      ],
+      "description": "Complemento práctico del Manifiesto de la Conciencia Compartida. Un manual con herramientas concretas para construir alternativas al sistema actual: cooperativas, economía solidaria, gobernanza participativa, tecnología ética, prácticas relacionales.",
+      "epigraph": "No podemos resolver nuestros problemas con el mismo pensamiento que usamos para crearlos. - Einstein",
+      "coverImage": "books/manual-transicion/assets/cover.svg",
+      "theme": "manual-transicion",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 7,
+      "chapters": 22,
+      "estimatedReadTime": "12-15 horas",
+      "difficulty": "intermedio",
+      "features": {
+        "actionTracker": true,
+        "toolkit": true,
+        "externalResources": true,
+        "aiChat": true,
+        "personalNotes": true,
+        "progressTracking": true,
+        "audiobook": true
+      },
+      "color": "#10b981",
+      "secondaryColor": "#f97316",
+      "backgroundColor": "#1a1a1a",
+      "icon": "🌱",
+      "mood": "activista",
+      "linkedTo": "toolkit-transicion"
+    },
+    {
+      "id": "toolkit-transicion",
+      "title": "Toolkit de Transición",
+      "subtitle": "22 ejercicios prácticos para navegar el cambio sistémico",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Prácticas & Ejercicios",
+      "tags": [
+        "ejercicios",
+        "prácticas",
+        "transición",
+        "herramientas",
+        "activismo",
+        "transformación"
+      ],
+      "description": "Cuaderno de ejercicios prácticos que complementa el Manual de Transición. 22 prácticas detalladas desde el análisis de transiciones históricas hasta la construcción de poder prefigurativo, diseño de cooperativas y protección de proyectos de cambio.",
+      "epigraph": "La práctica sin teoría es ciega. La teoría sin práctica es estéril.",
+      "coverImage": "books/toolkit-transicion/assets/cover.svg",
+      "theme": "toolkit-transicion",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 5,
+      "chapters": 22,
+      "estimatedReadTime": "15-25 horas de práctica",
+      "difficulty": "variable",
+      "features": {
+        "exerciseGuides": true,
+        "aiChat": true,
+        "personalNotes": true,
+        "progressTracking": true,
+        "printable": true
+      },
+      "color": "#059669",
+      "secondaryColor": "#10b981",
+      "backgroundColor": "#1a1a1a",
+      "icon": "🧰",
+      "mood": "activista",
+      "linkedTo": "manual-transicion"
+    },
+    {
+      "id": "manual-practico",
+      "title": "Manual Práctico",
+      "subtitle": "Cuaderno de Ejercicios para el Despertar",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Prácticas & Ejercicios",
+      "tags": [
+        "meditación",
+        "ejercicios",
+        "prácticas",
+        "contemplación",
+        "transformación"
+      ],
+      "description": "Cuaderno completo de ejercicios y meditaciones guiadas para acompañar El Código del Despertar. Incluye 50+ prácticas contemplativas, ejercicios de reflexión y meditaciones con audio.",
+      "epigraph": "No leas para saber más. Practica para ser diferente.",
+      "coverImage": "books/codigo-despertar/assets/cover.jpg",
+      "theme": "codigo-despertar",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 6,
+      "chapters": 50,
+      "estimatedReadTime": "10-15 horas de práctica",
+      "difficulty": "principiante-intermedio",
+      "features": {
+        "audioGuided": true,
+        "printable": true,
+        "standalone": true
+      },
+      "color": "#fbbf24",
+      "secondaryColor": "#f59e0b",
+      "backgroundColor": "#0f172a",
+      "icon": "📿",
+      "mood": "contemplativo",
+      "linkedTo": "codigo-despertar"
+    },
+    {
+      "id": "practicas-radicales",
+      "title": "Prácticas Radicales",
+      "subtitle": "Para el Borde del Conocimiento",
+      "authors": [
+        "J. Irurtzun",
+        "Claude"
+      ],
+      "year": 2025,
+      "category": "Prácticas Avanzadas",
+      "tags": [
+        "radical",
+        "incertidumbre",
+        "confrontación",
+        "avanzado",
+        "filosófico"
+      ],
+      "description": "15 prácticas radicales que confrontan en lugar de consolar. No hay respuestas fáciles, solo preguntas profundas. Para quienes buscan atravesar el misterio de la consciencia sin atajos.",
+      "epigraph": "El despertar no es llegar a un lugar seguro. Es aprender a caminar sin suelo firme.",
+      "coverImage": "books/codigo-despertar/assets/cover.jpg",
+      "theme": "practicas-radicales",
+      "status": "published",
+      "version": "1.0.0",
+      "sections": 5,
+      "chapters": 15,
+      "estimatedReadTime": "12-20 horas de práctica profunda",
+      "difficulty": "avanzado",
+      "features": {
+        "audioGuided": false,
+        "printable": true,
+        "standalone": true,
+        "radical": true
+      },
+      "color": "#dc2626",
+      "secondaryColor": "#991b1b",
+      "backgroundColor": "#0a0a0a",
+      "icon": "🔥",
+      "mood": "radical",
+      "linkedTo": "codigo-despertar"
+    }
+  ],
+  "futureBooks": [
+    {
+      "id": "dialogos-maquina",
+      "title": "Diálogos con la Máquina",
+      "category": "Tecnología & Filosofía",
+      "status": "planned",
+      "description": "Conversaciones reales entre humano e IA explorando la naturaleza de la inteligencia, la conciencia artificial y el futuro de la colaboración humano-máquina."
+    },
+    {
+      "id": "guias-practicas",
+      "title": "Serie de Guías Prácticas",
+      "category": "Manuales",
+      "status": "planned",
+      "description": "Manuales concretos y aplicables derivados de los principios de los libros principales."
+    }
+  ],
+  "crossReferences": [
+    {
+      "id": "ref-manifiesto-acciones",
+      "from": {
+        "book": "manifiesto",
+        "section": "all",
+        "chapter": "all"
+      },
+      "to": {
+        "book": "guia-acciones",
+        "section": "all",
+        "chapter": "corresponding"
+      },
+      "type": "practice",
+      "note": "Cada capítulo del Manifiesto tiene 3 acciones correspondientes en la Guía de Acciones (individual, comunitaria, sistémica)",
+      "bidirectional": true
+    },
+    {
+      "id": "ref-manual-toolkit",
+      "from": {
+        "book": "manual-transicion",
+        "section": "all",
+        "chapter": "all"
+      },
+      "to": {
+        "book": "toolkit-transicion",
+        "section": "all",
+        "chapter": "corresponding"
+      },
+      "type": "practice",
+      "note": "Cada capítulo del Manual de Transición tiene un ejercicio detallado correspondiente en el Toolkit de Transición (toolkit-N para capN)",
+      "bidirectional": true
+    },
+    {
+      "id": "ref-001",
+      "from": {
+        "book": "codigo-despertar",
+        "section": "seccion1",
+        "chapter": "cap3"
+      },
+      "to": {
+        "book": "manifiesto",
+        "section": "parte2",
+        "chapter": "cap5"
+      },
+      "type": "complement",
+      "note": "La conciencia colectiva desde una perspectiva política",
+      "bidirectional": true
+    },
+    {
+      "id": "ref-002",
+      "from": {
+        "book": "manifiesto",
+        "section": "parte2",
+        "chapter": "cap8"
+      },
+      "to": {
+        "book": "codigo-despertar",
+        "section": "seccion2",
+        "chapter": "cap7"
+      },
+      "type": "foundation",
+      "note": "Fundamentos científicos de la inteligencia distribuida",
+      "bidirectional": true
+    },
+    {
+      "id": "ref-003",
+      "from": {
+        "book": "codigo-despertar",
+        "section": "seccion3",
+        "chapter": "cap10"
+      },
+      "to": {
+        "book": "manifiesto",
+        "section": "parte3",
+        "chapter": "cap14"
+      },
+      "type": "application",
+      "note": "Aplicación práctica de la tecnología consciente",
+      "bidirectional": false
+    }
+  ],
+  "globalFeatures": {
+    "search": {
+      "enabled": true,
+      "searchAcrossBooks": true,
+      "searchTypes": [
+        "content",
+        "notes",
+        "exercises"
+      ]
+    },
+    "ai": {
+      "multiBook": true,
+      "contextAware": true,
+      "modes": [
+        "default",
+        "critical",
+        "constructive",
+        "historical"
+      ]
+    },
+    "sync": {
+      "enabled": false,
+      "cloudSync": false,
+      "localOnly": true
+    },
+    "analytics": {
+      "trackReading": true,
+      "trackProgress": true,
+      "showStats": true
+    }
+  },
+  "metadata": {
+    "createdAt": "2025-11-28",
+    "lastModified": "2025-11-28",
+    "schemaVersion": "1.0"
+  },
+  "downloads": {
+    "android": {
+      "latest": "ColeccionNuevoSer-v2.0.13-debug.apk",
+      "versions": [
+        {
+          "version": "2.0.13",
+          "file": "ColeccionNuevoSer-v2.0.13-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ MODAL PREMIUM: Al descargar edición premium ahora muestra modal elegante con dos opciones: contribuir 15€ con PayPal o descargar gratis. ★ Incluye descripción de lo que incluye la edición y nota de contribución voluntaria."
+        },
+        {
+          "version": "2.0.12",
+          "file": "ColeccionNuevoSer-v2.0.12-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ CORRECCIÓN: Error i18n.getCurrentLanguage corregido (método correcto: getLanguage). ★ Chat IA modo local funciona correctamente."
+        },
+        {
+          "version": "2.0.11",
+          "file": "ColeccionNuevoSer-v2.0.11-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ CORRECCIÓN: Botón de Edición Premium ahora funciona correctamente en todos los libros. ★ Bug fix: getCurrentBook() devuelve ID directamente, no objeto."
+        },
+        {
+          "version": "2.0.10",
+          "file": "ColeccionNuevoSer-v2.0.10-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ CORRECCIÓN: Eliminados archivos index.html residuales de Manual Práctico y Prácticas Radicales que causaban error JSON al abrir estos libros. ★ Los nuevos libros de prácticas ahora cargan correctamente."
+        },
+        {
+          "version": "2.0.9",
+          "file": "ColeccionNuevoSer-v2.0.9-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ MAPEO CORREGIDO: Los enlaces de ejercicios ahora siguen el apéndice oficial de Prácticas Radicales. ★ Cada capítulo del Código del Despertar enlaza a las prácticas correctas. ★ Incluye enlaces a Preguntas Vivas (question-1 a question-5). ★ Prácticas Radicales completas: 5 espirales, 21 capítulos."
+        },
+        {
+          "version": "2.0.8",
+          "file": "ColeccionNuevoSer-v2.0.8-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ PRÁCTICAS RADICALES COMPLETAS: Ahora incluye las 5 espirales completas (antes solo 4). ★ 21 capítulos: 15 prácticas + 5 Preguntas Vivas + Vivir con las Preguntas. ★ Apéndice: Mapa de prácticas por capítulo del Código del Despertar. ★ Ejercicios como enlaces desde Código del Despertar. ★ Incluye todas las mejoras previas."
+        },
+        {
+          "version": "2.0.7",
+          "file": "ColeccionNuevoSer-v2.0.7-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.7 MB",
+          "changelog": "★ NUEVO: Ejercicios como enlaces - En Código del Despertar, los ejercicios al final de cada capítulo ahora son botones que enlazan directamente a Manual Práctico y Prácticas Radicales. ★ Navegación inteligente entre libros de prácticas. ★ Mapeo de capítulos a prácticas radicales relacionadas. ★ Incluye todas las mejoras previas: sistema unificado, botones responsive, audio Android, edición premium."
+        },
+        {
+          "version": "2.0.6",
+          "file": "ColeccionNuevoSer-v2.0.6-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.6 MB",
+          "changelog": "★ SISTEMA UNIFICADO: Manual Práctico y Prácticas Radicales ahora usan el mismo sistema que el resto de libros (JSON). ★ Misma navegación, reproductor de audio, traducciones y menús para TODOS los libros. ★ Facilita añadir nuevos libros manteniendo consistencia. ★ Incluye todas las mejoras previas: botones responsive, audio Android, edición premium."
+        },
+        {
+          "version": "2.0.5",
+          "file": "ColeccionNuevoSer-v2.0.5-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.5 MB",
+          "changelog": "★ NUEVO: Botón de Edición Premium en cabecera (desktop) y menú móvil para descargar cada libro en formato elegante HTML. ★ Contribución sugerida 15€ (100% opcional). ★ Incluye mejoras de v2.0.4: reproductor reposicionado y reproducción continua."
+        },
+        {
+          "version": "2.0.4",
+          "file": "ColeccionNuevoSer-v2.0.4-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.4 MB",
+          "changelog": "★ CORRECCIÓN: Reproductor de audio reposicionado en móvil (ya no tapa los botones de navegación). ★ NUEVO: Botón \"Continuo\" para reproducir todos los capítulos seguidos automáticamente. ★ Incluye todas las mejoras de v2.0.3: botones responsive, audio Android mejorado."
+        },
+        {
+          "version": "2.0.3",
+          "file": "ColeccionNuevoSer-v2.0.3-debug.apk",
+          "date": "2025-12-01",
+          "size": "4.4 MB",
+          "changelog": "★ CORRECCIÓN MÓVIL: Botones principales ahora responsive (solo iconos en móvil, texto completo en desktop) - no más overflow. ★ CORRECCIÓN ANDROID: Audio mejorado con carga diferida de voces y mejor manejo de errores - mayor fiabilidad en dispositivos Android. ★ Todas las características de v2.0.2: 5 Libros, epígrafes corregidos, donaciones, compartir en redes, licencia CC, libros enlazados correctamente."
+        },
+        {
+          "version": "2.0.2",
+          "file": "ColeccionNuevoSer-v2.0.2-debug.apk",
+          "date": "2025-11-29",
+          "size": "4.4 MB",
+          "changelog": "★ 5 Libros completos: Código del Despertar + Manifiesto + Manual de Transición + Manual Práctico + Prácticas Radicales. ★ CORRECCIÓN: Error getVoices en Android resuelto (no más crashes). ★ CORRECCIÓN: Epígrafes del Manifiesto funcionando correctamente. ★ Sistema de donaciones completo: PayPal, Ko-fi, Bitcoin (2 direcciones) con botón copiar. ★ Botones para compartir en redes sociales (Twitter, Facebook, WhatsApp, Telegram, LinkedIn, Email). ★ Licencia Creative Commons CC BY-NC-SA 4.0 incluida. ★ Ediciones Premium descargables con botón de imprimir/PDF. ★ Libros correctamente enlazados en /books/{id}/index.html. ★ UI completamente responsive. ★ Sistema completo ES/EN."
+        },
+        {
+          "version": "2.0.1",
+          "file": "ColeccionNuevoSer-v2.0.1-debug.apk",
+          "date": "2025-11-29",
+          "size": "74 MB",
+          "changelog": "Colección completa con Manual de Transición + Prácticas Radicales. Correcciones en UI responsive y sincronización completa de contenido."
+        },
+        {
+          "version": "2.0.0",
+          "file": "ColeccionNuevoSer-v2.0.0.apk",
+          "date": "2025-11-28",
+          "size": "39 MB",
+          "changelog": "Colección completa con todos los libros: El Código del Despertar + Manifiesto. Sistema completo de traducciones ES/EN, generador de koans, audio binaural, notas, chat IA"
+        },
+        {
+          "version": "1.1.5",
+          "file": "CodigoDelDespertar-v1.1.5.apk",
+          "date": "2025-11-28",
+          "size": "4.3 MB",
+          "changelog": "Sistema completo de traducciones ES/EN, generador de koans, audio binaural"
+        },
+        {
+          "version": "1.1.4",
+          "file": "CodigoDelDespertar-v1.1.4.apk",
+          "date": "2025-11-27",
+          "size": "4.3 MB"
+        },
+        {
+          "version": "1.1.3",
+          "file": "CodigoDelDespertar-v1.1.3.apk",
+          "date": "2025-11-26",
+          "size": "4.3 MB"
+        }
+      ]
+    }
+  }
+}

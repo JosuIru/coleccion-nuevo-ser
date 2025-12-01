@@ -1,0 +1,949 @@
+{
+  "title": "Toolkit de Transición",
+  "subtitle": "22 ejercicios prácticos para navegar el cambio sistémico",
+  "author": "Complemento del Manual de Transición",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "seccion1",
+      "title": "Fundamentos",
+      "subtitle": "Comprender las transiciones",
+      "chapters": [
+        {
+          "id": "toolkit-1",
+          "title": "Inventario de Transiciones Personales",
+          "manualChapter": "prologo",
+          "manualTitle": "La paradoja de la transición",
+          "difficulty": "Básico",
+          "duration": "45-60 minutos",
+          "materials": "Cuaderno, bolígrafos de colores, espacio tranquilo",
+          "epigraph": {
+            "text": "No puedes cruzar el mar simplemente mirando el agua.",
+            "author": "Rabindranath Tagore"
+          },
+          "content": "## Propósito\n\nEste ejercicio te ayuda a reconocer que ya has atravesado múltiples transiciones en tu vida, desarrollando capacidades que puedes aplicar a los cambios actuales y futuros.\n\n## Preparación\n\nBusca un espacio tranquilo donde puedas reflexionar sin interrupciones. Ten a mano tu cuaderno y varios colores para escribir.\n\n## El Ejercicio\n\n### Fase 1: Cartografía Personal (20 min)\n\nDibuja una línea de tiempo de tu vida dividida en décadas o etapas significativas. Marca en ella:\n\n- **Transiciones elegidas**: cambios que iniciaste tú (mudanzas, cambios de carrera, relaciones)\n- **Transiciones impuestas**: cambios que te llegaron (pérdidas, crisis, cambios sociales)\n- **Transiciones graduales**: transformaciones lentas que solo reconoces en retrospectiva\n\nUsa diferentes colores para cada tipo.\n\n### Fase 2: Análisis de Patrones (15 min)\n\nPara cada transición significativa, responde:\n\n1. ¿Qué perdí en esa transición?\n2. ¿Qué gané que no esperaba?\n3. ¿Qué recursos internos descubrí que tenía?\n4. ¿Quién me ayudó a atravesarla?\n5. ¿Cuánto tiempo pasó entre el fin de lo viejo y el inicio de lo nuevo?\n\n### Fase 3: Extracción de Sabiduría (15 min)\n\nIdentifica los **3 aprendizajes principales** de tus transiciones pasadas. Escríbelos como consejos que te darías a ti mismo antes de una transición.\n\n## Variaciones\n\n**Para grupos**: Compartir líneas de tiempo en parejas, identificando patrones comunes.\n\n**Versión profunda**: Añadir una semana de journaling sobre una transición específica.\n\n**Versión creativa**: Crear un collage visual en lugar de una línea escrita.\n\n## Conexión con el Manual\n\nEste ejercicio complementa el Capítulo 1 \"La paradoja de la transición\", donde exploramos cómo los cambios sistémicos requieren primero reconocer nuestra capacidad personal de transformación.\n\n## Recursos Adicionales\n\n- William Bridges: \"Transitions: Making Sense of Life's Changes\"\n- Programa de Transiciones del Instituto Pachamama\n- Ejercicios de mapeo biográfico de la pedagogía Waldorf",
+          "exercises": [
+            {
+              "id": "mini-1",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Si tienes poco tiempo",
+              "steps": [
+                "Escribe 3 transiciones importantes de tu vida",
+                "Para cada una: ¿qué te enseñó?",
+                "¿Qué patrón ves en cómo las atravesaste?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "prologo",
+            "chapterTitle": "La paradoja de la transición",
+            "description": "Complementa el capítulo \"La paradoja de la transición\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap18",
+            "chapterTitle": "La Invitación",
+            "relation": "La invitación al cambio"
+          }
+        },
+        {
+          "id": "toolkit-2",
+          "title": "Análisis de una Transición Histórica",
+          "manualChapter": "cap1",
+          "manualTitle": "Anatomía de las transiciones históricas",
+          "difficulty": "Intermedio",
+          "duration": "90-120 minutos",
+          "materials": "Acceso a internet o biblioteca, plantilla de análisis, cuaderno",
+          "epigraph": {
+            "text": "La historia no se repite, pero rima.",
+            "author": "Mark Twain"
+          },
+          "content": "## Propósito\n\nAprender a identificar los elementos estructurales de las transiciones históricas para reconocer patrones aplicables al momento actual.\n\n## Preparación\n\nElige una transición histórica que te interese:\n- La Revolución Industrial\n- El fin del apartheid en Sudáfrica\n- La transición española a la democracia\n- El movimiento de derechos civiles en EEUU\n- La caída del Muro de Berlín\n- El surgimiento de internet\n\n## El Ejercicio\n\n### Fase 1: Investigación (45 min)\n\nInvestiga tu transición elegida buscando:\n\n**Contexto previo**:\n- ¿Qué sistema estaba en crisis?\n- ¿Quiénes se beneficiaban del status quo?\n- ¿Qué tensiones se acumulaban?\n\n**Catalizadores**:\n- ¿Qué eventos precipitaron el cambio?\n- ¿Fueron planificados o emergentes?\n\n**Actores**:\n- ¿Quiénes impulsaron el cambio?\n- ¿Quiénes lo resistieron?\n- ¿Quiénes cambiaron de bando?\n\n### Fase 2: Mapeo de Fases (30 min)\n\nIdentifica las fases de la transición:\n\n1. **Fase de incubación**: ideas y movimientos previos\n2. **Fase de crisis**: momento de ruptura\n3. **Fase de contestación**: lucha entre lo viejo y lo nuevo\n4. **Fase de institucionalización**: el nuevo orden se consolida\n5. **Fase de normalización**: lo nuevo se vuelve \"sentido común\"\n\n### Fase 3: Extracción de Lecciones (30 min)\n\nResponde:\n- ¿Qué estrategias funcionaron para los agentes de cambio?\n- ¿Qué errores cometieron?\n- ¿Qué alianzas inesperadas se formaron?\n- ¿Qué papel jugó la cultura vs. la política?\n- ¿Qué paralelos ves con la situación actual?\n\n## Variaciones\n\n**Para grupos**: Cada persona analiza una transición diferente y luego comparan patrones.\n\n**Versión académica**: Añadir lecturas de historiadores especializados.\n\n**Versión audiovisual**: Usar documentales como fuente principal.\n\n## Transiciones Recomendadas para Estudio\n\n| Transición | Duración | Tipo |\n|------------|----------|------|\n| Revolución Industrial | ~100 años | Tecnológica-económica |\n| Abolición esclavitud | ~80 años | Social-moral |\n| Sufragio femenino | ~70 años | Política-social |\n| Fin apartheid | ~45 años | Política-racial |\n| Transición española | ~7 años | Política |\n| Revolución digital | En curso | Tecnológica-social |\n\n## Conexión con el Manual\n\nEste ejercicio profundiza el Capítulo 2 \"Anatomía de las transiciones históricas\", proporcionando un método práctico para estudiar los cambios del pasado.",
+          "exercises": [
+            {
+              "id": "mini-2",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Análisis rápido",
+              "steps": [
+                "Elige una transición que conozcas bien",
+                "¿Cuánto tardó desde las primeras señales hasta el cambio visible?",
+                "¿Qué lección principal extraes para hoy?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap1",
+            "chapterTitle": "Anatomía de las transiciones históricas",
+            "description": "Complementa el capítulo \"Anatomía de las transiciones históricas\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap4",
+            "chapterTitle": "La Crisis como Síntoma",
+            "relation": "Comprender la crisis sistémica"
+          }
+        },
+        {
+          "id": "toolkit-3",
+          "title": "Mapeo de Puntos de Apalancamiento",
+          "manualChapter": "cap2",
+          "manualTitle": "Teoría del cambio sistémico",
+          "difficulty": "Avanzado",
+          "duration": "120 minutos",
+          "materials": "Papel grande, post-its, marcadores, modelo de Donella Meadows",
+          "epigraph": {
+            "text": "Dame una palanca lo suficientemente larga y un punto de apoyo, y moveré el mundo.",
+            "author": "Arquímedes"
+          },
+          "content": "## Propósito\n\nIdentificar los puntos de intervención más efectivos en un sistema, usando el marco de Donella Meadows sobre lugares de apalancamiento.\n\n## Contexto Teórico\n\nDonella Meadows identificó 12 lugares para intervenir en un sistema, ordenados de menor a mayor efectividad:\n\n12. Constantes, parámetros, números\n11. Tamaños de amortiguadores y stocks\n10. Estructura de stocks y flujos materiales\n9. Duración de los retardos\n8. Fuerza de los bucles de retroalimentación negativa\n7. Ganancia de los bucles de retroalimentación positiva\n6. Estructura de los flujos de información\n5. Reglas del sistema\n4. Poder de añadir, cambiar o auto-organizar la estructura\n3. Objetivos del sistema\n2. Paradigma o mentalidad del sistema\n1. Poder de trascender paradigmas\n\n## El Ejercicio\n\n### Fase 1: Definir el Sistema (20 min)\n\nElige un sistema que quieras cambiar:\n- El sistema alimentario de tu ciudad\n- El sistema educativo local\n- La economía de tu sector\n- El sistema de movilidad urbana\n\nDescribe sus componentes principales, flujos y retroalimentaciones.\n\n### Fase 2: Mapeo de Intervenciones Actuales (30 min)\n\nIdentifica intervenciones que ya se están haciendo en ese sistema:\n- ¿En qué nivel de apalancamiento operan?\n- ¿Por qué se enfocan ahí?\n- ¿Qué resultados están obteniendo?\n\nMarca cada intervención en el modelo de 12 niveles.\n\n### Fase 3: Identificar Oportunidades (40 min)\n\nPara cada nivel de apalancamiento, pregunta:\n- ¿Qué intervención sería posible aquí?\n- ¿Quién tendría que hacerla?\n- ¿Qué recursos requeriría?\n- ¿Qué resistencias encontraría?\n\nPrioriza las 3 intervenciones más prometedoras.\n\n### Fase 4: Diseño de Estrategia (30 min)\n\nPara tu intervención prioritaria:\n- ¿Cómo empezarías mañana?\n- ¿Quiénes serían tus primeros aliados?\n- ¿Cómo medirías el impacto?\n- ¿Qué efectos secundarios anticipas?\n\n## Variaciones\n\n**Para grupos**: Mapear colectivamente un sistema local.\n\n**Versión visual**: Crear un diagrama causal del sistema.\n\n**Versión acción**: Comprometerse a una micro-intervención esta semana.\n\n## Los 12 Niveles Explicados\n\n**Nivel 12-10** (Parámetros): Cambiar números, ajustar cantidades. Poco efecto duradero.\n\n**Nivel 9-7** (Retroalimentaciones): Modificar cómo el sistema se auto-regula. Efecto moderado.\n\n**Nivel 6-4** (Estructura): Cambiar reglas, flujos de información, poder. Efecto significativo.\n\n**Nivel 3-1** (Paradigmas): Transformar los objetivos, creencias y marcos mentales. Máximo efecto.\n\n## Conexión con el Manual\n\nEste ejercicio aplica los conceptos del Capítulo 3 \"Teoría del cambio sistémico\" de forma práctica.",
+          "exercises": [
+            {
+              "id": "mini-3",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Identificación rápida",
+              "steps": [
+                "Piensa en un problema que te frustra",
+                "¿Las soluciones que conoces actúan en parámetros o en paradigmas?",
+                "¿Qué intervención a nivel de 'reglas del sistema' sería posible?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap2",
+            "chapterTitle": "Teoría del cambio sistémico",
+            "description": "Complementa el capítulo \"Teoría del cambio sistémico\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap4",
+            "chapterTitle": "La Crisis como Síntoma",
+            "relation": "Teoría del cambio sistémico"
+          }
+        },
+        {
+          "id": "toolkit-4",
+          "title": "Mapeo del Ecosistema de Cambio Local",
+          "manualChapter": "cap3",
+          "manualTitle": "El mapa del ecosistema de cambio",
+          "difficulty": "Intermedio",
+          "duration": "2-3 horas (puede dividirse)",
+          "materials": "Papel grande, post-its de colores, acceso a internet para investigación",
+          "epigraph": {
+            "text": "Ninguno de nosotros es tan inteligente como todos nosotros juntos.",
+            "author": "Ken Blanchard"
+          },
+          "content": "## Propósito\n\nCrear un mapa visual de las organizaciones, iniciativas y personas que están trabajando por el cambio en tu territorio, identificando oportunidades de conexión y colaboración.\n\n## Preparación\n\nDefine tu territorio de análisis:\n- ¿Tu barrio, ciudad, región?\n- ¿Un sector específico (alimentación, energía, educación)?\n- ¿Una temática (justicia climática, economía social)?\n\n## El Ejercicio\n\n### Fase 1: Lluvia de Actores (30 min)\n\nLista todas las iniciativas de cambio que conozcas en tu territorio:\n\n**Por tipo**:\n- ONGs y asociaciones\n- Cooperativas y empresas sociales\n- Colectivos informales\n- Proyectos institucionales\n- Iniciativas ciudadanas\n- Medios alternativos\n- Espacios culturales\n- Redes y plataformas\n\n**Por enfoque**:\n- Acción directa (hacer cosas)\n- Incidencia política (cambiar políticas)\n- Educación y sensibilización\n- Investigación y generación de conocimiento\n- Articulación y facilitación\n\n### Fase 2: Investigación (45 min)\n\nPara cada actor identificado, busca:\n- Sitio web / redes sociales\n- Misión y actividades principales\n- Año de fundación\n- Tamaño aproximado\n- Fuentes de financiación\n- Alianzas conocidas\n\n### Fase 3: Mapeo Visual (45 min)\n\nCrea un mapa visual usando:\n\n**Ejes posibles**:\n- Horizontal: De lo local a lo global\n- Vertical: De lo radical a lo reformista\n- O bien: Por sectores temáticos\n\n**Codificación**:\n- Tamaño del post-it = tamaño de la organización\n- Color = tipo de organización\n- Líneas = conexiones conocidas entre actores\n\n### Fase 4: Análisis de Brechas (30 min)\n\nObserva tu mapa y pregunta:\n- ¿Qué zonas están vacías?\n- ¿Qué conexiones faltan?\n- ¿Dónde hay duplicación de esfuerzos?\n- ¿Quién podría conectar actores dispersos?\n- ¿Dónde te ubicarías tú?\n\n## Variaciones\n\n**Versión colaborativa**: Organizar un taller donde múltiples personas contribuyan al mapeo.\n\n**Versión digital**: Usar herramientas como Kumu.io o Miro para crear mapas interactivos.\n\n**Versión entrevistas**: Complementar con entrevistas a actores clave.\n\n## Plantilla de Ficha por Actor\n\n```\nNombre:\nTipo:\nAño fundación:\nMisión (1 línea):\nActividades principales:\nTamaño:\nTerritorio:\nConexiones conocidas:\nFortalezas:\nURL:\n```\n\n## Conexión con el Manual\n\nEste ejercicio operativiza el Capítulo 4 \"El mapa del ecosistema de cambio\", creando una herramienta práctica para tu territorio.",
+          "exercises": [
+            {
+              "id": "mini-4",
+              "title": "Versión Express",
+              "duration": "20 minutos",
+              "description": "Mapeo rápido",
+              "steps": [
+                "Lista 10 iniciativas de cambio en tu ciudad",
+                "¿Cuántas conoces personalmente?",
+                "¿Cuáles están conectadas entre sí?",
+                "¿Dónde hay un hueco que podrías llenar?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap3",
+            "chapterTitle": "El mapa del ecosistema de cambio",
+            "description": "Complementa el capítulo \"El mapa del ecosistema de cambio\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap8",
+            "chapterTitle": "Inteligencia Distribuida",
+            "relation": "Mapear la inteligencia distribuida"
+          }
+        }
+      ]
+    },
+    {
+      "id": "seccion2",
+      "title": "Nuevas Formas Organizativas",
+      "subtitle": "Estructuras para el cambio",
+      "chapters": [
+        {
+          "id": "toolkit-5",
+          "title": "Auditoría de Impacto de tu Trabajo",
+          "manualChapter": "cap4",
+          "manualTitle": "El fin del modelo empresarial como lo conocemos",
+          "difficulty": "Intermedio",
+          "duration": "60-90 minutos",
+          "materials": "Cuaderno, información sobre tu lugar de trabajo",
+          "epigraph": {
+            "text": "El trabajo que haces mientras procrastinas es probablemente el trabajo que deberías estar haciendo.",
+            "author": "Jessica Hische"
+          },
+          "content": "## Propósito\n\nEvaluar honestamente el impacto social y ambiental de tu trabajo actual, identificando tensiones y oportunidades de transformación.\n\n## Advertencia Compasiva\n\nEste ejercicio puede generar incomodidad si descubres que tu trabajo tiene impactos negativos que no habías considerado. Recuerda: el objetivo no es la culpa sino la claridad. Desde la claridad podemos actuar.\n\n## El Ejercicio\n\n### Fase 1: Descripción Objetiva (15 min)\n\nDescribe tu situación laboral actual:\n- ¿Qué produces o qué servicio prestas?\n- ¿Quién se beneficia directamente?\n- ¿De dónde vienen los recursos que usas?\n- ¿Qué pasa con los residuos o subproductos?\n- ¿Cómo se distribuyen los beneficios económicos?\n\n### Fase 2: Análisis de Cadena de Valor (20 min)\n\nTraza la cadena completa:\n\n**Hacia atrás** (proveedores):\n- ¿De dónde vienen las materias primas?\n- ¿Cómo son las condiciones laborales en la cadena?\n- ¿Qué impacto ambiental tiene la extracción/producción?\n\n**Hacia adelante** (clientes/usuarios):\n- ¿Tu producto/servicio mejora vidas o las empeora?\n- ¿Crea dependencia o autonomía?\n- ¿Qué pasa al final de su vida útil?\n\n### Fase 3: Evaluación de Impactos (25 min)\n\nPuntúa del 1-10 (10 = muy positivo, 1 = muy negativo):\n\n| Dimensión | Puntuación | Notas |\n|-----------|------------|-------|\n| Impacto ambiental | | |\n| Condiciones laborales propias | | |\n| Condiciones en la cadena | | |\n| Utilidad social del producto | | |\n| Distribución de beneficios | | |\n| Gobernanza y participación | | |\n| Contribución fiscal | | |\n| Impacto comunitario local | | |\n\n### Fase 4: Identificación de Palancas (20 min)\n\n¿Dónde tienes margen de maniobra?\n- ¿Puedes influir en decisiones de la empresa?\n- ¿Hay compañeros que comparten inquietudes?\n- ¿Existen alternativas en tu sector?\n- ¿Qué habilidades tienes que serían útiles en otro contexto?\n\n## Opciones de Acción\n\n**Transformar desde dentro**: Iniciar cambios en tu organización actual.\n\n**Migrar**: Buscar trabajo en organizaciones más alineadas.\n\n**Crear**: Iniciar tu propio proyecto con los valores deseados.\n\n**Complementar**: Mantener el trabajo actual mientras construyes alternativas.\n\n## Conexión con el Manual\n\nEste ejercicio profundiza el Capítulo 5 \"El fin del modelo empresarial como lo conocemos\".",
+          "exercises": [
+            {
+              "id": "mini-5",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Reflexión rápida",
+              "steps": [
+                "Si desapareciera tu empresa mañana, ¿el mundo estaría mejor o peor?",
+                "¿Qué parte de tu trabajo te enorgullece?",
+                "¿Qué parte preferirías no tener que hacer?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap4",
+            "chapterTitle": "El fin del modelo empresarial como lo conocemos",
+            "description": "Complementa el capítulo \"El fin del modelo empresarial como lo conocemos\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap2",
+            "chapterTitle": "La Economía de la Escasez Artificial",
+            "relation": "Transformar el modelo económico"
+          }
+        },
+        {
+          "id": "toolkit-6",
+          "title": "Diseño de una Cooperativa",
+          "manualChapter": "cap5",
+          "manualTitle": "Cooperativismo 2.0",
+          "difficulty": "Avanzado",
+          "duration": "3-4 horas (dividido en sesiones)",
+          "materials": "Canvas de modelo de negocio cooperativo, estatutos modelo, calculadora",
+          "epigraph": {
+            "text": "Solo no puedes, con amigos sí.",
+            "author": "Proverbio cooperativista"
+          },
+          "content": "## Propósito\n\nDiseñar el esqueleto completo de una cooperativa, desde la idea inicial hasta el modelo de gobernanza y financiero.\n\n## Tipos de Cooperativas\n\nAntes de empezar, elige el tipo:\n\n- **Cooperativa de trabajo**: Los socios son los trabajadores\n- **Cooperativa de consumidores**: Los socios son los clientes\n- **Cooperativa de servicios**: Profesionales que comparten recursos\n- **Cooperativa mixta o integral**: Combina varios tipos de socios\n- **Cooperativa de plataforma**: Versión digital/tecnológica\n\n## El Ejercicio\n\n### Sesión 1: La Idea (60 min)\n\n**Necesidad a cubrir**:\n- ¿Qué problema resuelve tu cooperativa?\n- ¿Quién tiene ese problema?\n- ¿Por qué una cooperativa es mejor que otras formas?\n\n**Propuesta de valor**:\n- ¿Qué ofreces exactamente?\n- ¿Qué te diferencia de alternativas existentes?\n- ¿Cuál es tu ventaja cooperativa?\n\n**Mercado/comunidad**:\n- ¿Quiénes serían los clientes/usuarios?\n- ¿Cuántos potenciales socios hay?\n- ¿Existe demanda verificable?\n\n### Sesión 2: La Estructura (60 min)\n\n**Socios**:\n- ¿Quiénes pueden ser socios?\n- ¿Cuál es la aportación inicial al capital?\n- ¿Cómo se entra y se sale?\n\n**Gobernanza**:\n- ¿Cómo se toman las decisiones del día a día?\n- ¿Y las decisiones estratégicas?\n- ¿Con qué frecuencia se reúne la asamblea?\n- ¿Habrá consejo rector? ¿Cómo se elige?\n\n**Trabajo**:\n- ¿Todos los trabajadores serán socios?\n- ¿Habrá período de prueba?\n- ¿Cómo se fijan los salarios?\n\n### Sesión 3: Los Números (60 min)\n\n**Inversión inicial**:\n- ¿Qué necesitas para empezar?\n- ¿De dónde saldrá el dinero?\n\n**Modelo de ingresos**:\n- ¿Cómo entra dinero?\n- ¿Cuál es el precio?\n- ¿Cuánto necesitas vender para ser viable?\n\n**Distribución de excedentes**:\n- ¿Qué porcentaje a reservas?\n- ¿Qué porcentaje a retornos?\n- ¿Qué porcentaje a fondo de educación?\n\n### Sesión 4: El Plan (60 min)\n\n**Primeros pasos**:\n- ¿Quiénes serían los socios fundadores?\n- ¿Qué necesitas antes de constituir?\n- ¿Cómo validarás la idea?\n\n**Hitos a 1 año**:\n- Mes 1-3: ...\n- Mes 4-6: ...\n- Mes 7-12: ...\n\n## Recursos\n\n**España**:\n- COCETA: Confederación de cooperativas de trabajo\n- Fiare Banca Ética: Financiación cooperativa\n\n**Internacional**:\n- Alianza Cooperativa Internacional\n- Platform Cooperativism Consortium\n\n## Plantilla de Canvas Cooperativo\n\n```\n+-------------------+-------------------+-------------------+\n| SOCIOS            | PROPUESTA         | COMUNIDAD         |\n| ¿Quiénes?         | ¿Qué ofrecemos?   | ¿A quiénes?       |\n+-------------------+-------------------+-------------------+\n| GOBERNANZA        | ACTIVIDADES       | CANALES           |\n| ¿Cómo decidimos?  | ¿Qué hacemos?     | ¿Cómo llegamos?   |\n+-------------------+-------------------+-------------------+\n| RECURSOS          | ALIANZAS          | IMPACTO           |\n| ¿Qué necesitamos? | ¿Con quiénes?     | ¿Qué cambiamos?   |\n+-------------------+-------------------+-------------------+\n|     COSTES                    |     INGRESOS              |\n+-------------------------------+---------------------------+\n```\n\n## Conexión con el Manual\n\nEste ejercicio desarrolla prácticamente el Capítulo 6 \"Cooperativismo 2.0\".",
+          "exercises": [
+            {
+              "id": "mini-6",
+              "title": "Versión Express",
+              "duration": "20 minutos",
+              "description": "Idea inicial",
+              "steps": [
+                "¿Qué cooperativa te gustaría que existiera?",
+                "¿Quiénes podrían ser los primeros 5 socios?",
+                "¿Qué problema resolvería?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap5",
+            "chapterTitle": "Cooperativismo 2.0",
+            "description": "Complementa el capítulo \"Cooperativismo 2.0\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Construir la economía que respira"
+          }
+        },
+        {
+          "id": "toolkit-7",
+          "title": "Experimento de Auto-organización",
+          "manualChapter": "cap6",
+          "manualTitle": "Organizaciones sin jefes",
+          "difficulty": "Avanzado",
+          "duration": "1 semana de práctica",
+          "materials": "Grupo de 3-8 personas, herramientas de comunicación, guía de roles",
+          "epigraph": {
+            "text": "La mejor manera de predecir el futuro es crearlo.",
+            "author": "Peter Drucker"
+          },
+          "content": "## Propósito\n\nExperimentar en primera persona con modelos de organización horizontal, aprendiendo sus desafíos y posibilidades.\n\n## Requisitos\n\nNecesitas un grupo de 3-8 personas dispuestas a:\n- Dedicar 1 semana al experimento\n- Reunirse 2-3 veces\n- Mantener comunicación asíncrona\n- Reflexionar honestamente sobre la experiencia\n\n## El Experimento\n\n### Día 1: Constitución (90 min presencial)\n\n**Elegir un proyecto común**:\n- Debe ser completable en una semana\n- Debe requerir contribución de todos\n- Ejemplos: organizar un evento, crear un documento colectivo, resolver un problema del barrio\n\n**Establecer principios de funcionamiento**:\n- ¿Cómo se toman decisiones? (consenso, consentimiento, votación)\n- ¿Cómo se comunica? (canal, frecuencia)\n- ¿Cómo se distribuye el trabajo?\n- ¿Qué pasa si alguien no cumple?\n\n**NO asignar roles fijos ni líder**\n\n### Días 2-6: Ejecución\n\nTrabajar en el proyecto siguiendo los principios acordados.\n\n**Observar y anotar**:\n- ¿Quién toma iniciativa?\n- ¿Cómo emergen los roles informales?\n- ¿Qué conflictos surgen?\n- ¿Cómo se resuelven sin autoridad formal?\n- ¿Qué se siente al no poder \"mandar\"?\n\n### Día 7: Retrospectiva (90 min presencial)\n\n**Ronda de experiencias**:\n- ¿Cómo te sentiste durante la semana?\n- ¿Qué fue más difícil para ti?\n- ¿Qué aprendiste sobre ti mismo?\n\n**Análisis colectivo**:\n- ¿Se completó el proyecto? ¿Con qué calidad?\n- ¿Qué funcionó de los acuerdos iniciales?\n- ¿Qué habría que cambiar?\n- ¿Emergieron liderazgos informales? ¿Es malo?\n\n**Extracción de aprendizajes**:\n- ¿Qué condiciones facilitan la auto-organización?\n- ¿Qué la dificulta?\n- ¿Qué llevarías a tu vida/trabajo cotidiano?\n\n## Modelos a Explorar\n\n**Sociocracia**: Decisiones por consentimiento, círculos interconectados.\n\n**Holocracia**: Roles dinámicos, gobernanza distribuida.\n\n**Organización TEAL**: Propósito evolutivo, plenitud, auto-gestión.\n\n## Posibles Proyectos para el Experimento\n\n- Organizar una cena comunitaria\n- Crear un manifiesto grupal\n- Diseñar una propuesta para el barrio\n- Producir un podcast episodio\n- Planificar una acción de sensibilización\n\n## Conexión con el Manual\n\nEste ejercicio operativiza el Capítulo 7 \"Organizaciones sin jefes\".",
+          "exercises": [
+            {
+              "id": "mini-7",
+              "title": "Versión Express",
+              "duration": "30 minutos",
+              "description": "Reflexión individual",
+              "steps": [
+                "Recuerda una situación donde un grupo se auto-organizó espontáneamente",
+                "¿Qué hizo que funcionara?",
+                "¿Qué papel jugaste tú?",
+                "¿Qué aprendiste sobre liderazgo horizontal?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap6",
+            "chapterTitle": "Organizaciones sin jefes",
+            "description": "Complementa el capítulo \"Organizaciones sin jefes\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Implementar gobernanza emergente"
+          }
+        },
+        {
+          "id": "toolkit-8",
+          "title": "Identificar Commons en tu Vida",
+          "manualChapter": "cap7",
+          "manualTitle": "Commons y procomún",
+          "difficulty": "Básico",
+          "duration": "45 minutos",
+          "materials": "Cuaderno, mapa de tu barrio/ciudad",
+          "epigraph": {
+            "text": "El aire que respiramos, el agua que bebemos y el conocimiento que compartimos son bienes comunes.",
+            "author": "David Bollier"
+          },
+          "content": "## Propósito\n\nReconocer los bienes comunes que ya existen en tu vida y explorar oportunidades para crear o fortalecer nuevos commons.\n\n## ¿Qué son los Commons?\n\nLos commons (bienes comunes o procomún) son recursos gestionados colectivamente por una comunidad, según reglas que ella misma establece. No son ni propiedad privada ni propiedad estatal.\n\n**Ejemplos clásicos**:\n- Pastos comunales, bosques comunitarios\n- Software libre, Wikipedia\n- Cooperativas de agua, huertos urbanos\n- Espacios públicos autogestionados\n\n## El Ejercicio\n\n### Fase 1: Inventario de Commons (20 min)\n\nIdentifica los commons que ya usas o de los que dependes:\n\n**Commons naturales**:\n- ¿Hay parques, ríos, playas de acceso libre cerca?\n- ¿Existen huertos comunitarios?\n- ¿Hay gestión colectiva de recursos naturales?\n\n**Commons digitales**:\n- ¿Usas software libre? (Linux, Firefox, LibreOffice...)\n- ¿Consultas Wikipedia?\n- ¿Participas en comunidades online abiertas?\n\n**Commons urbanos**:\n- ¿Hay centros sociales, bibliotecas, espacios comunitarios?\n- ¿Existen bancos de tiempo o redes de intercambio?\n- ¿Hay infraestructuras gestionadas comunitariamente?\n\n**Commons de conocimiento**:\n- ¿Participas en grupos de aprendizaje?\n- ¿Hay tradiciones o saberes colectivos en tu comunidad?\n- ¿Contribuyes a repositorios abiertos?\n\n### Fase 2: Análisis de un Común (15 min)\n\nElige uno de los commons identificados y analiza:\n\n- **El recurso**: ¿Qué es exactamente lo que se comparte?\n- **La comunidad**: ¿Quiénes son los \"comuneros\"?\n- **Las reglas**: ¿Cómo se decide el acceso y el uso?\n- **La gobernanza**: ¿Cómo se toman decisiones sobre el común?\n- **Las amenazas**: ¿Qué podría destruir este común?\n\n### Fase 3: Diseño de un Nuevo Común (10 min)\n\nPiensa en algo que podría convertirse en común:\n\n- ¿Qué recurso infrautilizado existe en tu entorno?\n- ¿Quiénes podrían ser la comunidad?\n- ¿Qué reglas necesitaría?\n- ¿Cómo empezarías?\n\n## Ideas de Commons a Crear\n\n- Biblioteca de cosas (herramientas, electrodomésticos)\n- Banco de semillas local\n- Wiki del barrio\n- Grupo de compra colectiva\n- Espacio de co-trabajo comunitario\n- Red de cuidados mutuos\n\n## Los 8 Principios de Elinor Ostrom\n\nPara que un común funcione:\n\n1. Límites claramente definidos\n2. Reglas adaptadas al contexto local\n3. Participación en la toma de decisiones\n4. Monitoreo efectivo\n5. Sanciones graduales\n6. Mecanismos de resolución de conflictos\n7. Reconocimiento del derecho a organizarse\n8. Anidamiento en sistemas más amplios\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 8 \"Commons y procomún\" a tu realidad cotidiana.",
+          "exercises": [
+            {
+              "id": "mini-8",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Identificación rápida",
+              "steps": [
+                "Nombra 3 commons que uses esta semana",
+                "¿Contribuyes a alguno de ellos?",
+                "¿Qué común te gustaría que existiera?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap7",
+            "chapterTitle": "Commons y procomún",
+            "description": "Complementa el capítulo \"Commons y procomún\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Rescatar los bienes comunes"
+          }
+        },
+        {
+          "id": "toolkit-9",
+          "title": "Explorar una DAO",
+          "manualChapter": "cap8",
+          "manualTitle": "DAOs y nuevas formas de coordinación digital",
+          "difficulty": "Intermedio",
+          "duration": "90 minutos",
+          "materials": "Computadora con internet, wallet de criptomonedas (opcional)",
+          "epigraph": {
+            "text": "El código es ley... pero la comunidad es más importante que el código.",
+            "author": "Vitalik Buterin"
+          },
+          "content": "## Propósito\n\nEntender cómo funcionan las DAOs (Organizaciones Autónomas Descentralizadas) explorando una de forma práctica.\n\n## ¿Qué es una DAO?\n\nUna DAO es una organización cuyas reglas están codificadas en contratos inteligentes en una blockchain. Los miembros toman decisiones votando con tokens, y las decisiones se ejecutan automáticamente.\n\n**Ventajas potenciales**:\n- Transparencia total\n- Sin intermediarios\n- Gobernanza global\n- Resistencia a la censura\n\n**Limitaciones actuales**:\n- Barrera técnica de entrada\n- Problemas de plutocracia (quien más tokens tiene, más poder)\n- Dificultad para decisiones complejas\n- Vulnerabilidades de seguridad\n\n## El Ejercicio\n\n### Fase 1: Exploración (45 min)\n\nElige una DAO para investigar:\n\n**DAOs de impacto social**:\n- Gitcoin: Financiación de bienes públicos\n- Giveth: Donaciones transparentes\n- Climate Collective: Acción climática\n\n**DAOs de gobernanza**:\n- Aragon: Herramientas para crear DAOs\n- MakerDAO: Gobierno de stablecoin\n- ENS DAO: Nombres de dominio descentralizados\n\n**DAOs de inversión/coleccionismo**:\n- Constitution DAO (histórica)\n- PleasrDAO\n- Flamingo DAO\n\nPara tu DAO elegida, investiga:\n- ¿Cuál es su propósito?\n- ¿Cómo se une uno?\n- ¿Cómo funcionan las votaciones?\n- ¿Qué decisiones se han tomado recientemente?\n- ¿Cuántos miembros activos tiene?\n\n### Fase 2: Análisis Crítico (30 min)\n\nEvalúa la DAO según:\n\n**Gobernanza**:\n- ¿Qué porcentaje de tokens necesitas para proponer algo?\n- ¿Cómo se distribuyen los tokens?\n- ¿Hay concentración de poder?\n- ¿Qué participación tienen las votaciones?\n\n**Transparencia**:\n- ¿Puedes ver todas las transacciones?\n- ¿Están los contratos verificados?\n- ¿Hay documentación clara?\n\n**Impacto**:\n- ¿Qué ha logrado esta DAO?\n- ¿Sus logros justifican su complejidad?\n- ¿Podría hacerse lo mismo sin blockchain?\n\n### Fase 3: Reflexión (15 min)\n\nPreguntas para reflexionar:\n\n- ¿Qué problema real resuelven las DAOs que no se pueda resolver de otra forma?\n- ¿Qué comunidades se beneficiarían de organizarse como DAO?\n- ¿Qué barreras impiden su adopción masiva?\n- ¿Podrías crear o participar en una DAO para algo que te importe?\n\n## Herramientas para Explorar DAOs\n\n- **DeepDAO**: Estadísticas de DAOs\n- **Snapshot**: Plataforma de votación\n- **Tally**: Gobernanza on-chain\n- **DAOhaus**: Crear DAOs simples\n\n## Conexión con el Manual\n\nEste ejercicio complementa el Capítulo 9 \"DAOs y nuevas formas de coordinación digital\".",
+          "exercises": [
+            {
+              "id": "mini-9",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Exploración rápida",
+              "steps": [
+                "Visita deepdao.io y explora las DAOs más grandes",
+                "Lee la descripción de 3 DAOs diferentes",
+                "¿Alguna te resulta interesante? ¿Por qué?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap8",
+            "chapterTitle": "DAOs y nuevas formas de coordinación digital",
+            "description": "Complementa el capítulo \"DAOs y nuevas formas de coordinación digital\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap14",
+            "chapterTitle": "La Tecnología que Sirve",
+            "relation": "Usar tecnología que sirve"
+          }
+        }
+      ]
+    },
+    {
+      "id": "seccion3",
+      "title": "Caja de Herramientas",
+      "subtitle": "Instrumentos para la transición",
+      "chapters": [
+        {
+          "id": "toolkit-10",
+          "title": "Auditoría Financiera Ética",
+          "manualChapter": "cap9",
+          "manualTitle": "Herramientas económicas",
+          "difficulty": "Intermedio",
+          "duration": "60-90 minutos",
+          "materials": "Extractos bancarios, lista de gastos, información de inversiones/ahorros",
+          "epigraph": {
+            "text": "Cada vez que gastas dinero, estás votando por el tipo de mundo que quieres.",
+            "author": "Anna Lappé"
+          },
+          "content": "## Propósito\n\nAnalizar a dónde va tu dinero y qué tipo de economía estás financiando con tus decisiones cotidianas.\n\n## El Ejercicio\n\n### Fase 1: Mapeo de Flujos (30 min)\n\nRevisa tus movimientos del último mes y clasifícalos:\n\n**Por categoría**:\n- Vivienda\n- Alimentación\n- Transporte\n- Servicios (energía, telecomunicaciones)\n- Ocio y cultura\n- Ropa y consumo\n- Ahorro/inversión\n- Donaciones\n\n**Por tipo de receptor**:\n- Grandes corporaciones\n- Empresas locales/familiares\n- Cooperativas/economía social\n- Administración pública\n- Organizaciones sin ánimo de lucro\n- Personas directamente (economía entre pares)\n\n### Fase 2: Análisis de Impacto (20 min)\n\nPara cada categoría, pregunta:\n\n- ¿A quién enriquece mi gasto?\n- ¿Crea empleo local o extrae valor?\n- ¿Tiene impacto ambiental negativo?\n- ¿Paga impuestos aquí o en paraísos fiscales?\n- ¿Existen alternativas más éticas?\n\n**Tu banco**:\n- ¿Dónde tienes tus ahorros?\n- ¿Qué hace tu banco con ese dinero?\n- ¿Financia armas, combustibles fósiles, especulación?\n\n### Fase 3: Plan de Transición (30 min)\n\nIdentifica 3-5 cambios viables:\n\n**Cambios fáciles** (esta semana):\n- Cambiar una compra habitual a proveedor local\n- Cancelar una suscripción innecesaria\n- Iniciar trámite de banca ética\n\n**Cambios medios** (este mes):\n- Cambiar de supermercado a tienda local/cooperativa\n- Mover ahorros a banca ética\n- Unirse a un grupo de consumo\n\n**Cambios estructurales** (este año):\n- Cambiar de proveedor de energía a cooperativa\n- Invertir en proyectos de impacto social\n- Reducir un gasto estructural significativo\n\n## Alternativas Económicas\n\n**Banca ética en España**:\n- Triodos Bank\n- Fiare Banca Ética\n- Coop57 (finanzas cooperativas)\n\n**Energía**:\n- Som Energia (cooperativa)\n- Goiener, EnergÉtica...\n\n**Alimentación**:\n- Grupos de consumo\n- Cooperativas de consumidores\n- Mercados locales\n\n**Seguros**:\n- Arç Cooperativa\n- Atlantis (seguros éticos)\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 10 \"Herramientas económicas\".",
+          "exercises": [
+            {
+              "id": "mini-10",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Revisión rápida",
+              "steps": [
+                "¿En qué banco tienes tu dinero?",
+                "¿Sabes qué hace con él?",
+                "¿Cuál es tu mayor gasto mensual en grandes corporaciones?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap9",
+            "chapterTitle": "Herramientas económicas",
+            "description": "Complementa el capítulo \"Herramientas económicas\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Herramientas económicas alternativas"
+          }
+        },
+        {
+          "id": "toolkit-11",
+          "title": "Diseño de Proceso Participativo",
+          "manualChapter": "cap10",
+          "manualTitle": "Herramientas de gobernanza",
+          "difficulty": "Avanzado",
+          "duration": "2-3 horas",
+          "materials": "Plantillas de diseño, información del contexto, herramientas de facilitación",
+          "epigraph": {
+            "text": "La participación no es un evento, es un proceso.",
+            "author": "Archon Fung"
+          },
+          "content": "## Propósito\n\nDiseñar un proceso de participación ciudadana o comunitaria efectivo para una decisión real.\n\n## Antes de Empezar\n\nIdentifica una decisión que requiera participación:\n- Una política municipal\n- Una decisión en tu organización\n- Un proyecto comunitario\n- Un conflicto que necesita resolución colectiva\n\n## El Ejercicio\n\n### Fase 1: Análisis del Contexto (45 min)\n\n**La decisión**:\n- ¿Qué se va a decidir exactamente?\n- ¿Quién tiene la autoridad formal?\n- ¿Cuál es el plazo?\n- ¿Qué recursos hay disponibles?\n\n**Los actores**:\n- ¿Quiénes son los afectados?\n- ¿Quiénes tienen poder de bloqueo?\n- ¿Quiénes tienen información relevante?\n- ¿Quiénes están tradicionalmente excluidos?\n\n**El historial**:\n- ¿Ha habido procesos participativos previos?\n- ¿Qué funcionó y qué no?\n- ¿Qué expectativas hay?\n- ¿Qué desconfianzas existen?\n\n### Fase 2: Diseño del Proceso (60 min)\n\n**Objetivos claros**:\n- ¿Qué tipo de participación? (información, consulta, deliberación, co-decisión)\n- ¿Qué resultado esperas?\n- ¿Cómo se integrará en la decisión final?\n\n**Fases del proceso**:\n\n1. **Información**: ¿Cómo se enterará la gente?\n2. **Formación**: ¿Qué necesitan saber para participar bien?\n3. **Deliberación**: ¿Cómo se discutirán las opciones?\n4. **Decisión**: ¿Cómo se llegará a una conclusión?\n5. **Devolución**: ¿Cómo se comunicará el resultado?\n6. **Seguimiento**: ¿Cómo se implementará y evaluará?\n\n**Métodos a elegir**:\n\n| Método | Para qué | Participantes |\n|--------|----------|---------------|\n| Asamblea abierta | Información, debate | Muchos, baja profundidad |\n| World Café | Explorar temas | 20-200 personas |\n| Deliberación | Profundizar y decidir | 15-50 personas |\n| Jurado ciudadano | Decisiones complejas | 12-25 seleccionados |\n| Votación participativa | Priorizar | Cualquier número |\n| Encuesta deliberativa | Consulta informada | Muestra representativa |\n\n### Fase 3: Plan de Inclusión (30 min)\n\n¿Cómo asegurar que participen:\n- Personas mayores\n- Jóvenes\n- Migrantes\n- Personas con diversidad funcional\n- Personas con poco tiempo\n- Personas sin acceso digital\n\n**Estrategias de inclusión**:\n- Horarios diversos\n- Espacios accesibles\n- Traducción/interpretación\n- Cuidado de niños\n- Transporte\n- Facilitación sensible\n\n### Fase 4: Evaluación (30 min)\n\n¿Cómo medirás el éxito del proceso?\n\n**Indicadores cuantitativos**:\n- Número de participantes\n- Diversidad de participantes\n- Propuestas recogidas\n- Propuestas implementadas\n\n**Indicadores cualitativos**:\n- Satisfacción de participantes\n- Calidad de la deliberación\n- Aprendizaje colectivo\n- Impacto en la decisión final\n\n## Conexión con el Manual\n\nEste ejercicio desarrolla el Capítulo 11 \"Herramientas de gobernanza\".",
+          "exercises": [
+            {
+              "id": "mini-11",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Diseño rápido",
+              "steps": [
+                "Piensa en una decisión que afecte a tu comunidad",
+                "¿Quién debería participar en tomarla?",
+                "¿Cómo les harías llegar la información?",
+                "¿Qué método usarías para que todos opinaran?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap10",
+            "chapterTitle": "Herramientas de gobernanza",
+            "description": "Complementa el capítulo \"Herramientas de gobernanza\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Herramientas de gobernanza"
+          }
+        },
+        {
+          "id": "toolkit-12",
+          "title": "Auditoría de Soberanía Digital",
+          "manualChapter": "cap11",
+          "manualTitle": "Herramientas digitales",
+          "difficulty": "Intermedio",
+          "duration": "60 minutos",
+          "materials": "Lista de apps/servicios que usas, acceso a alternativas",
+          "epigraph": {
+            "text": "Si no estás pagando por el producto, tú eres el producto.",
+            "author": "Dicho popular de internet"
+          },
+          "content": "## Propósito\n\nEvaluar tu dependencia de plataformas digitales extractivas e identificar alternativas soberanas.\n\n## El Ejercicio\n\n### Fase 1: Inventario Digital (20 min)\n\nLista todas las herramientas digitales que usas:\n\n**Comunicación**:\n- Email: ¿Cuál?\n- Mensajería: ¿Cuáles?\n- Videollamadas: ¿Cuál?\n- Redes sociales: ¿Cuáles?\n\n**Productividad**:\n- Suite de oficina: ¿Cuál?\n- Almacenamiento en nube: ¿Cuál?\n- Notas: ¿Cuál?\n- Calendario: ¿Cuál?\n\n**Navegación**:\n- Navegador: ¿Cuál?\n- Buscador: ¿Cuál?\n- Mapas: ¿Cuál?\n\n**Entretenimiento**:\n- Streaming vídeo: ¿Cuáles?\n- Música: ¿Cuál?\n- Lectura: ¿Cuál?\n\n**Finanzas**:\n- Banca online: ¿Cuál?\n- Pagos: ¿Cuáles?\n\n### Fase 2: Análisis de Dependencia (20 min)\n\nPara cada servicio, evalúa:\n\n| Criterio | 1-5 |\n|----------|-----|\n| ¿Puedo exportar mis datos fácilmente? | |\n| ¿Es software libre/código abierto? | |\n| ¿Dónde están mis datos? (jurisdicción) | |\n| ¿El modelo de negocio es ético? | |\n| ¿Hay alternativas viables? | |\n\n**Señales de alarma**:\n- No puedes exportar tus datos\n- El servicio es \"gratis\" pero vende tus datos\n- Servidores en EEUU (Cloud Act, Patriot Act)\n- Historial de filtraciones o malas prácticas\n- Monopolio sin alternativas reales\n\n### Fase 3: Plan de Migración (20 min)\n\nIdentifica 3 servicios a cambiar y sus alternativas:\n\n**Alternativas recomendadas**:\n\n| Servicio extractivo | Alternativa soberana |\n|---------------------|----------------------|\n| Gmail | Protonmail, Tutanota, Disroot |\n| WhatsApp | Signal, Element (Matrix) |\n| Google Drive | Nextcloud, Proton Drive |\n| Google Docs | Cryptpad, OnlyOffice, LibreOffice |\n| Zoom | Jitsi, BigBlueButton |\n| Chrome | Firefox, Brave |\n| Google Search | DuckDuckGo, Ecosia, Startpage |\n| Google Maps | OpenStreetMap, Organic Maps |\n| Spotify | Funkwhale, bandcamp |\n| Twitter/X | Mastodon, Bluesky |\n| Instagram | Pixelfed |\n\n**Prioriza por**:\n1. Servicios donde tienes más datos sensibles\n2. Servicios donde hay alternativas maduras\n3. Servicios que usas más frecuentemente\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 12 \"Herramientas digitales\".",
+          "exercises": [
+            {
+              "id": "mini-12",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Diagnóstico rápido",
+              "steps": [
+                "¿Cuántos servicios de Google usas?",
+                "¿Podrías vivir sin WhatsApp?",
+                "¿Sabes dónde están almacenados tus datos?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap11",
+            "chapterTitle": "Herramientas digitales",
+            "description": "Complementa el capítulo \"Herramientas digitales\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap14",
+            "chapterTitle": "La Tecnología que Sirve",
+            "relation": "Soberanía tecnológica"
+          }
+        },
+        {
+          "id": "toolkit-13",
+          "title": "Práctica de Escucha Profunda",
+          "manualChapter": "cap12",
+          "manualTitle": "Herramientas relacionales",
+          "difficulty": "Básico",
+          "duration": "30-45 minutos por práctica",
+          "materials": "Un compañero/a dispuesto, espacio tranquilo",
+          "epigraph": {
+            "text": "La mayoría de la gente no escucha con la intención de entender; escucha con la intención de responder.",
+            "author": "Stephen Covey"
+          },
+          "content": "## Propósito\n\nDesarrollar la capacidad de escuchar sin juicio, sin preparar respuestas, sin interrumpir - simplemente estar presente para otro ser humano.\n\n## Por qué es Importante\n\nLa escucha profunda es la base de:\n- Relaciones saludables\n- Resolución de conflictos\n- Trabajo en equipo efectivo\n- Liderazgo compasivo\n- Democracia deliberativa\n\n## El Ejercicio\n\n### Preparación\n\nEncuentra un compañero/a para practicar. Puede ser:\n- Un amigo/a de confianza\n- Tu pareja\n- Un colega\n- Alguien de un grupo de práctica\n\nAcuerden 30-45 minutos sin interrupciones.\n\n### La Práctica\n\n**Ronda 1: Tú escuchas (15 min)**\n\nTu compañero habla sobre algo significativo para él/ella.\nPuede ser:\n- Algo que le preocupa\n- Un proyecto que le entusiasma\n- Un conflicto que está viviendo\n- Una pregunta vital\n\n**Tu tarea como escucha**:\n- Mantener contacto visual suave\n- No interrumpir\n- No dar consejos\n- No preparar tu respuesta\n- No relacionar con tu propia experiencia\n- Simplemente estar presente\n\n**Señales no verbales permitidas**:\n- Asentir\n- Sonreír\n- Expresar con el rostro que estás siguiendo\n\n**Preguntas permitidas** (solo para clarificar, no para redirigir):\n- \"¿Puedes decir más sobre eso?\"\n- \"¿Cómo te sentiste cuando...?\"\n- \"¿Qué significa eso para ti?\"\n\n**Ronda 2: Tú hablas (15 min)**\n\nIntercambien roles. Ahora tú hablas y tu compañero escucha.\n\n**Ronda 3: Reflexión compartida (10-15 min)**\n\nCompartan:\n- ¿Cómo se sintió ser escuchado así?\n- ¿Qué fue difícil al escuchar?\n- ¿Qué descubriste sobre tu forma habitual de \"escuchar\"?\n- ¿Qué aplicación tiene esto en tu vida?\n\n## Variaciones\n\n**Escucha en triadas**: Añadir un observador que da feedback.\n\n**Escucha en silencio**: El que escucha no puede hacer ninguna pregunta.\n\n**Escucha con paráfrasis**: Al final, el escucha resume lo que entendió.\n\n## Obstáculos Comunes\n\n- **Querer ayudar**: Resistir el impulso de dar soluciones\n- **Comparar**: \"A mí me pasó algo parecido...\"\n- **Juzgar**: Evaluar si tiene razón o no\n- **Planificar**: Pensar qué vas a decir\n- **Distraerse**: Perder el hilo por pensamientos propios\n\n## Práctica Diaria\n\nIncorpora momentos de escucha profunda:\n- En una conversación con tu pareja\n- Con un compañero de trabajo\n- Con un familiar\n- Incluso en interacciones breves\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 13 \"Herramientas relacionales\".",
+          "exercises": [
+            {
+              "id": "mini-13",
+              "title": "Versión Express",
+              "duration": "5 minutos",
+              "description": "Práctica individual",
+              "steps": [
+                "En tu próxima conversación, proponte no interrumpir",
+                "Cuenta hasta 3 antes de responder",
+                "Observa qué impulsos surgen mientras escuchas"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap12",
+            "chapterTitle": "Herramientas relacionales",
+            "description": "Complementa el capítulo \"Herramientas relacionales\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap6",
+            "chapterTitle": "Unidad en Diversidad",
+            "relation": "Construir unidad en diversidad"
+          }
+        },
+        {
+          "id": "toolkit-14",
+          "title": "Práctica Contemplativa Diaria",
+          "manualChapter": "cap13",
+          "manualTitle": "Herramientas interiores",
+          "difficulty": "Básico a avanzado",
+          "duration": "Programa de 1 semana",
+          "materials": "Espacio tranquilo, temporizador, cuaderno",
+          "epigraph": {
+            "text": "No tenemos que esperar a ver qué otros hacen.",
+            "author": "Mahatma Gandhi"
+          },
+          "content": "## Propósito\n\nEstablecer una práctica contemplativa personal que sostenga tu capacidad de acción transformadora sin agotarte.\n\n## Por qué los Activistas Necesitan Práctica Interior\n\n- Previene el burnout\n- Cultiva la paciencia estratégica\n- Reduce la reactividad\n- Aumenta la empatía (incluso hacia \"el enemigo\")\n- Conecta con motivaciones profundas\n- Permite sostener la incertidumbre\n\n## El Programa de una Semana\n\n### Día 1: Establecer el espacio\n\n**Mañana (10 min)**:\n- Elige un lugar fijo para practicar\n- Define un horario realista\n- Prepara lo que necesites (cojín, manta, vela...)\n- Haz una primera sesión de solo 5 minutos\n\n**Práctica del día**: Simplemente sentarte en silencio durante 5 minutos, observando tu respiración.\n\n### Día 2: Práctica de atención\n\n**Práctica (10 min)**:\n- Siéntate cómodo con la espalda erguida\n- Cierra los ojos o baja la mirada\n- Lleva atención a la respiración\n- Cuando la mente divague (lo hará), vuelve amablemente\n\n**Journaling (5 min)**: ¿Qué notaste? ¿Cuántas veces divagó la mente?\n\n### Día 3: Práctica de cuerpo\n\n**Práctica (15 min)**:\n- Body scan: recorre tu cuerpo de pies a cabeza\n- Nota tensiones, sensaciones, temperaturas\n- No intentes cambiar nada, solo observa\n\n**Journaling**: ¿Dónde guardas tensión? ¿Qué emociones hay ahí?\n\n### Día 4: Práctica de emociones\n\n**Práctica (15 min)**:\n- Siéntate y respira unos minutos\n- Invoca una emoción difícil reciente (frustración, miedo, rabia)\n- Obsérvala sin juzgar: ¿dónde la sientes? ¿qué forma tiene?\n- Ofrécele aceptación: \"Esto también puede estar aquí\"\n\n**Journaling**: ¿Qué pasó cuando no luchaste contra la emoción?\n\n### Día 5: Práctica de compasión\n\n**Práctica (15 min)**:\n- Empieza con bondad hacia ti: \"Que pueda estar bien, que pueda ser feliz\"\n- Extiende a un ser querido\n- Extiende a alguien neutral\n- Intenta extender a alguien difícil\n- Extiende a todos los seres\n\n**Journaling**: ¿Para quién fue más fácil/difícil?\n\n### Día 6: Práctica en movimiento\n\n**Práctica (20 min)**:\n- Caminar lento y consciente\n- O yoga/tai chi/qigong\n- O danza libre con atención plena\n\n**Journaling**: ¿Cómo cambia la práctica cuando el cuerpo se mueve?\n\n### Día 7: Integración\n\n**Práctica (20 min)**:\n- Combina las prácticas que más te resonaron\n- Crea tu propia secuencia\n\n**Reflexión final**:\n- ¿Qué práctica se ajusta mejor a mi vida?\n- ¿Qué horario es sostenible?\n- ¿Cómo me ayuda esto en mi trabajo de transformación?\n\n## Conexión con el Manual\n\nEste ejercicio desarrolla el Capítulo 14 \"Herramientas interiores\".",
+          "exercises": [
+            {
+              "id": "mini-14",
+              "title": "Versión Express",
+              "duration": "3 minutos",
+              "description": "Práctica mínima",
+              "steps": [
+                "Para lo que estés haciendo",
+                "3 respiraciones profundas",
+                "Siente tus pies en el suelo",
+                "Continúa con presencia"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap13",
+            "chapterTitle": "Herramientas interiores",
+            "description": "Complementa el capítulo \"Herramientas interiores\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap5",
+            "chapterTitle": "La Conciencia como Fundamento",
+            "relation": "Desarrollar conciencia"
+          }
+        }
+      ]
+    },
+    {
+      "id": "seccion4",
+      "title": "Escalas de Transición",
+      "subtitle": "De lo personal a lo sistémico",
+      "chapters": [
+        {
+          "id": "toolkit-15",
+          "title": "Mapa de Transición Personal",
+          "manualChapter": "cap14",
+          "manualTitle": "Transición personal",
+          "difficulty": "Intermedio",
+          "duration": "90 minutos",
+          "materials": "Papel grande, colores, fotos/recortes opcionales",
+          "epigraph": {
+            "text": "El único viaje es el interior.",
+            "author": "Rainer Maria Rilke"
+          },
+          "content": "## Propósito\n\nCrear un mapa visual de tu transición personal: dónde estás, dónde quieres ir, y qué caminos podrían llevarte.\n\n## El Ejercicio\n\n### Fase 1: El Territorio Actual (30 min)\n\nEn la mitad izquierda de tu papel, representa tu vida actual:\n\n**Círculos de pertenencia**:\n- ¿A qué comunidades perteneces?\n- ¿Qué roles juegas?\n- ¿Qué identidades has construido?\n\n**Fuentes de sustento**:\n- ¿De qué vives? (trabajo, ahorros, apoyo familiar)\n- ¿Cuánta seguridad/inseguridad sientes?\n- ¿Qué dependencias tienes?\n\n**Fuentes de sentido**:\n- ¿Qué te da propósito?\n- ¿Qué te hace sentir vivo/a?\n- ¿Qué te frustra profundamente?\n\n**Estado interior**:\n- ¿Cómo describirías tu energía vital?\n- ¿Qué emociones predominan?\n- ¿Qué creencias te limitan?\n\n### Fase 2: El Territorio Deseado (30 min)\n\nEn la mitad derecha, representa tu vida imaginada:\n\n**Visión a 5 años**:\n- ¿Cómo sería un día ideal?\n- ¿Dónde vivirías? ¿Con quién?\n- ¿A qué dedicarías tu tiempo?\n- ¿Qué impacto tendrías en el mundo?\n\n**Lo que necesitas soltar**:\n- ¿Qué dejarías atrás?\n- ¿Qué identidades ya no te sirven?\n- ¿Qué miedos tendrías que atravesar?\n\n**Lo que necesitas cultivar**:\n- ¿Qué habilidades necesitas?\n- ¿Qué relaciones necesitas?\n- ¿Qué cualidades internas?\n\n### Fase 3: Los Caminos (20 min)\n\nDibuja posibles rutas entre ambos territorios:\n\n- ¿Cuál es el camino más directo?\n- ¿Cuál es el más seguro?\n- ¿Cuál es el más interesante?\n- ¿Hay atajos? ¿Qué costarían?\n- ¿Dónde están los obstáculos?\n- ¿Quién podría acompañarte?\n\n### Fase 4: Primer Paso (10 min)\n\nIdentifica una acción concreta para esta semana:\n- Algo pequeño pero significativo\n- Que te acerque al territorio deseado\n- Que puedas hacer aunque tengas miedo\n\nEscríbelo como compromiso.\n\n## Variaciones\n\n**Versión collage**: Usar imágenes de revistas.\n\n**Versión narrativa**: Escribir la historia de tu transición.\n\n**Versión diálogo**: Hacer el ejercicio con alguien de confianza.\n\n## Conexión con el Manual\n\nEste ejercicio profundiza el Capítulo 15 \"Transición personal\".",
+          "exercises": [
+            {
+              "id": "mini-15",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Reflexión rápida",
+              "steps": [
+                "¿Qué no puedes seguir haciendo?",
+                "¿Qué necesitas empezar a hacer?",
+                "¿Cuál sería tu primer paso esta semana?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap14",
+            "chapterTitle": "Transición personal",
+            "description": "Complementa el capítulo \"Transición personal\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap5",
+            "chapterTitle": "La Conciencia como Fundamento",
+            "relation": "Transformación personal consciente"
+          }
+        },
+        {
+          "id": "toolkit-16",
+          "title": "Mapeo de Comunidad",
+          "manualChapter": "cap15",
+          "manualTitle": "Transición comunitaria",
+          "difficulty": "Intermedio",
+          "duration": "2 horas",
+          "materials": "Mapa de tu barrio/comunidad, post-its, información local",
+          "epigraph": {
+            "text": "Nunca dudes que un pequeño grupo de ciudadanos comprometidos puede cambiar el mundo. De hecho, es lo único que lo ha logrado.",
+            "author": "Margaret Mead"
+          },
+          "content": "## Propósito\n\nConocer profundamente tu comunidad local: sus recursos, sus necesidades, sus actores clave, y sus oportunidades de transición.\n\n## Definir tu Comunidad\n\nAntes de empezar, define qué entiendes por \"tu comunidad\":\n- ¿Tu edificio/manzana?\n- ¿Tu barrio?\n- ¿Tu municipio?\n- ¿Una comunidad de interés/práctica?\n\n## El Ejercicio\n\n### Fase 1: Mapeo Físico (30 min)\n\nSobre un mapa de tu zona, marca:\n\n**Espacios públicos**:\n- Plazas, parques, espacios de encuentro\n- ¿Cómo se usan? ¿Por quién?\n- ¿Hay espacios infrautilizados?\n\n**Servicios básicos**:\n- Comercio local: ¿qué sobra, qué falta?\n- Servicios públicos: centros de salud, escuelas, bibliotecas\n- Transporte: ¿cómo se mueve la gente?\n\n**Puntos problemáticos**:\n- ¿Dónde hay degradación?\n- ¿Dónde hay conflictos?\n- ¿Qué zonas evita la gente?\n\n### Fase 2: Mapeo Social (30 min)\n\nIdentifica los actores de tu comunidad:\n\n**Formales**:\n- Asociaciones de vecinos\n- Comerciantes organizados\n- Centros culturales\n- Grupos religiosos\n- Partidos/agrupaciones políticas\n\n**Informales**:\n- Líderes naturales (¿quién conoce a todos?)\n- Grupos de amigos/afinidad\n- Redes de cuidados\n- Iniciativas espontáneas\n\n**Puentes**:\n- ¿Quién conecta diferentes grupos?\n- ¿Hay mediadores reconocidos?\n\n### Fase 3: Análisis de Necesidades (30 min)\n\n**Lo que funciona**:\n- ¿De qué está orgullosa la comunidad?\n- ¿Qué tradiciones/costumbres positivas hay?\n- ¿Qué recursos únicos tiene?\n\n**Lo que falta**:\n- ¿Qué necesidades no están cubiertas?\n- ¿Qué conflictos no se abordan?\n- ¿Quién está excluido?\n\n**Lo que amenaza**:\n- ¿Hay procesos de gentrificación?\n- ¿Hay degradación ambiental?\n- ¿Hay pérdida de cohesión social?\n\n### Fase 4: Oportunidades de Acción (30 min)\n\nIdentifica 3 intervenciones posibles:\n\n**A corto plazo** (que puedes iniciar tú):\n- Ej: Organizar una limpieza colectiva, iniciar un chat de vecinos\n\n**A medio plazo** (que requiere aliados):\n- Ej: Crear un huerto comunitario, una biblioteca de cosas\n\n**A largo plazo** (que requiere recursos):\n- Ej: Recuperar un espacio abandonado, crear una cooperativa de barrio\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 16 \"Transición comunitaria\".",
+          "exercises": [
+            {
+              "id": "mini-16",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Conocer tu barrio",
+              "steps": [
+                "Nombra 5 vecinos que conozcas de nombre",
+                "¿Hay algún espacio de encuentro en tu zona?",
+                "¿Qué necesidad no está cubierta en tu barrio?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap15",
+            "chapterTitle": "Transición comunitaria",
+            "description": "Complementa el capítulo \"Transición comunitaria\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap12",
+            "chapterTitle": "El Territorio que Vive",
+            "relation": "Crear territorios vivos"
+          }
+        },
+        {
+          "id": "toolkit-17",
+          "title": "Análisis de Cultura Organizacional",
+          "manualChapter": "cap16",
+          "manualTitle": "Transición organizacional",
+          "difficulty": "Avanzado",
+          "duration": "90 minutos",
+          "materials": "Acceso a información sobre tu organización, plantilla de análisis",
+          "epigraph": {
+            "text": "La cultura se come a la estrategia para desayunar.",
+            "author": "Peter Drucker"
+          },
+          "content": "## Propósito\n\nDiagnosticar la cultura de tu organización para identificar palancas de transformación interna.\n\n## El Ejercicio\n\n### Fase 1: Observación de Artefactos (20 min)\n\nLos artefactos son las manifestaciones visibles de la cultura:\n\n**Espacio físico**:\n- ¿Cómo está organizado el espacio?\n- ¿Hay despachos cerrados o espacios abiertos?\n- ¿Qué dice la decoración?\n\n**Rituales**:\n- ¿Cómo se celebran los éxitos?\n- ¿Cómo se gestionan los fracasos?\n- ¿Qué reuniones hay? ¿Cómo son?\n\n**Comunicación**:\n- ¿Cómo fluye la información?\n- ¿Qué canales se usan?\n- ¿Quién habla y quién calla?\n\n**Símbolos de status**:\n- ¿Qué indica jerarquía?\n- ¿Cómo se viste la gente?\n- ¿Qué se premia y qué se castiga?\n\n### Fase 2: Valores Declarados vs. Practicados (30 min)\n\n**Valores declarados**:\n- ¿Qué dice la misión/visión?\n- ¿Qué valores aparecen en la web/comunicación?\n- ¿Qué dice el liderazgo?\n\n**Valores practicados** (lo que realmente importa):\n- ¿Por qué se promociona a la gente?\n- ¿Qué comportamientos se toleran aunque contradigan los valores?\n- ¿A qué se dedica realmente el tiempo y el dinero?\n\n**Brecha**:\n- ¿Dónde hay coherencia?\n- ¿Dónde hay hipocresía organizacional?\n- ¿Se puede hablar de esta brecha?\n\n### Fase 3: Supuestos Básicos (20 min)\n\nLas creencias profundas, a menudo inconscientes:\n\n**Sobre las personas**:\n- ¿Se confía en la gente o se controla?\n- ¿Se cree en el desarrollo o la gente \"es como es\"?\n\n**Sobre el poder**:\n- ¿Es de suma cero o puede ser compartido?\n- ¿El conflicto es malo o puede ser generativo?\n\n**Sobre el cambio**:\n- ¿Se ve como amenaza u oportunidad?\n- ¿Se puede experimentar o hay que acertar a la primera?\n\n**Sobre el entorno**:\n- ¿La organización se adapta o intenta controlar?\n- ¿Qué relación tiene con su ecosistema?\n\n### Fase 4: Palancas de Cambio (20 min)\n\nIdentifica:\n\n**Aliados internos**: ¿Quién más quiere el cambio?\n\n**Quick wins**: ¿Qué cambios pequeños serían visibles y construirían momentum?\n\n**Puntos de resistencia**: ¿Dónde encontrarás oposición? ¿Por qué?\n\n**Recursos**: ¿Qué tienes a favor? (tu posición, relaciones, información)\n\n## Conexión con el Manual\n\nEste ejercicio profundiza el Capítulo 17 \"Transición organizacional\".",
+          "exercises": [
+            {
+              "id": "mini-17",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Diagnóstico rápido",
+              "steps": [
+                "¿Qué valores declara tu organización?",
+                "¿Qué valores practica realmente?",
+                "¿Hay algo que \"todo el mundo sabe pero nadie dice\"?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap16",
+            "chapterTitle": "Transición organizacional",
+            "description": "Complementa el capítulo \"Transición organizacional\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Transformar organizaciones"
+          }
+        },
+        {
+          "id": "toolkit-18",
+          "title": "Análisis de Poder Político",
+          "manualChapter": "cap17",
+          "manualTitle": "Transición política",
+          "difficulty": "Avanzado",
+          "duration": "2 horas",
+          "materials": "Información sobre actores políticos locales, mapas de poder",
+          "epigraph": {
+            "text": "El precio de la libertad es la vigilancia eterna.",
+            "author": "Thomas Jefferson"
+          },
+          "content": "## Propósito\n\nEntender las dinámicas de poder político en tu territorio para identificar cómo influir en las políticas públicas.\n\n## El Ejercicio\n\n### Fase 1: Mapeo de Actores (45 min)\n\nIdentifica los actores políticos relevantes para un tema que te importe:\n\n**Instituciones formales**:\n- Gobierno local/regional/nacional\n- Partidos políticos\n- Administración pública\n- Parlamento/Concejo\n\n**Poderes fácticos**:\n- Empresas/grupos económicos\n- Medios de comunicación\n- Iglesias/instituciones religiosas\n- Gremios profesionales\n\n**Sociedad civil**:\n- Sindicatos\n- ONGs influyentes\n- Movimientos sociales\n- Colegios profesionales\n- Academia\n\n**Organismos internacionales**:\n- Que tengan presencia o influencia local\n\nPara cada actor, evalúa:\n- **Interés**: ¿Les importa el tema? (alto/medio/bajo)\n- **Poder**: ¿Pueden influir? (alto/medio/bajo)\n- **Posición**: ¿A favor, en contra, neutral?\n\n### Fase 2: Análisis de Relaciones (30 min)\n\nDibuja las relaciones entre actores:\n- ¿Quién financia a quién?\n- ¿Quién debe favores a quién?\n- ¿Qué alianzas históricas hay?\n- ¿Qué conflictos existen?\n- ¿Quién tiene poder de veto?\n\n### Fase 3: Identificar Puntos de Entrada (30 min)\n\n**Ventanas de oportunidad**:\n- ¿Hay elecciones próximas?\n- ¿Hay crisis que creen urgencia?\n- ¿Hay cambios de liderazgo?\n- ¿Hay momentum internacional?\n\n**Aliados potenciales**:\n- ¿Quién tiene interés alineado?\n- ¿Quién podría cambiar de posición?\n- ¿Quién tiene influencia sobre los indecisos?\n\n**Narrativas efectivas**:\n- ¿Qué argumentos resuenan con qué actores?\n- ¿Cómo enmarcar el tema para ganar apoyo?\n\n### Fase 4: Estrategia de Incidencia (15 min)\n\nDefine:\n\n**Objetivo político concreto**:\n- ¿Qué decisión específica quieres?\n- ¿Quién tiene que tomarla?\n\n**Teoría del cambio**:\n- Si hacemos X, entonces Y cambiará su posición\n- Porque Z (el mecanismo)\n\n**Primeros pasos**:\n- ¿Con quién necesitas reunirte?\n- ¿Qué coalición necesitas construir?\n- ¿Qué información necesitas generar?\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 18 \"Transición política\".",
+          "exercises": [
+            {
+              "id": "mini-18",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Mapeo político rápido",
+              "steps": [
+                "Elige un tema que te importe políticamente",
+                "¿Quién tiene el poder de decidir sobre eso?",
+                "¿Cómo podrías llegar a esa persona o influir en ella?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap17",
+            "chapterTitle": "Transición política",
+            "description": "Complementa el capítulo \"Transición política\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap3",
+            "chapterTitle": "El Poder que se Perpetúa",
+            "relation": "Transformar el poder"
+          }
+        }
+      ]
+    },
+    {
+      "id": "seccion5",
+      "title": "Estrategias de Sostenibilidad",
+      "subtitle": "Proteger y expandir el cambio",
+      "chapters": [
+        {
+          "id": "toolkit-19",
+          "title": "Plan de Resiliencia Personal",
+          "manualChapter": "cap18",
+          "manualTitle": "Estrategias de supervivencia digna",
+          "difficulty": "Intermedio",
+          "duration": "60 minutos",
+          "materials": "Cuaderno, información financiera personal, contactos",
+          "epigraph": {
+            "text": "Espera lo mejor, prepárate para lo peor.",
+            "author": "Proverbio"
+          },
+          "content": "## Propósito\n\nDesarrollar un plan que te permita sostener tu activismo y tu bienestar ante crisis personales o sistémicas.\n\n## Por qué es Importante\n\nLos agentes de cambio a menudo descuidan su propia sostenibilidad:\n- Burnout activista\n- Precariedad económica\n- Aislamiento social\n- Fragilidad ante crisis externas\n\nEste ejercicio busca construir resiliencia sin caer en el individualismo survivalist.\n\n## El Ejercicio\n\n### Fase 1: Evaluación de Vulnerabilidades (15 min)\n\n**Económicas**:\n- ¿Tienes ahorros? ¿Para cuántos meses?\n- ¿Depende tu ingreso de una sola fuente?\n- ¿Tienes deudas significativas?\n\n**Relacionales**:\n- ¿Tienes red de apoyo cercana?\n- ¿Con quién podrías contar en crisis?\n- ¿Hay tensiones no resueltas importantes?\n\n**De salud**:\n- ¿Tienes cobertura de salud?\n- ¿Hay condiciones crónicas que gestionar?\n- ¿Cómo está tu salud mental?\n\n**De competencias**:\n- ¿Tienes habilidades diversas?\n- ¿Podrías generar ingresos de otras formas?\n- ¿Sabes hacer cosas prácticas (reparar, cultivar, cuidar)?\n\n### Fase 2: Construcción de Colchones (20 min)\n\n**Colchón financiero**:\n- Meta: 3-6 meses de gastos básicos\n- Plan: ¿Cuánto puedes apartar mensualmente?\n- Alternativas: Grupos de apoyo mutuo, seguros cooperativos\n\n**Colchón relacional**:\n- Identifica 5 personas con las que podrías contar\n- ¿Cuándo fue la última vez que cuidaste esa relación?\n- ¿Hay puentes rotos que reconstruir?\n\n**Colchón de competencias**:\n- ¿Qué habilidad práctica podrías aprender este año?\n- ¿Qué intercambios de conocimiento podrías hacer?\n\n### Fase 3: Plan de Crisis (15 min)\n\nImagen tres escenarios:\n\n**Pérdida de empleo**:\n- ¿Qué harías los primeros 30 días?\n- ¿A quién pedirías ayuda?\n- ¿Qué gastos recortarías primero?\n\n**Crisis de salud**:\n- ¿Quién te cuidaría?\n- ¿Cómo seguirías pagando gastos?\n- ¿Tienes voluntades anticipadas?\n\n**Crisis colectiva (económica, climática...)**:\n- ¿Dónde irías si no pudieras quedarte?\n- ¿Qué comunidad te acogería?\n- ¿Qué podrías aportar en esa situación?\n\n### Fase 4: Cuidado Sostenible (10 min)\n\nCompromisos para prevenir crisis:\n\n- **Cuerpo**: ¿Qué práctica de cuidado físico mantendrás?\n- **Mente**: ¿Cómo cuidarás tu salud mental?\n- **Relaciones**: ¿Cómo nutrirás tu red de apoyo?\n- **Finanzas**: ¿Qué hábito de ahorro/simplificación adoptarás?\n\n## Conexión con el Manual\n\nEste ejercicio profundiza el Capítulo 19 \"Estrategias de supervivencia digna\".",
+          "exercises": [
+            {
+              "id": "mini-19",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Evaluación rápida",
+              "steps": [
+                "¿Para cuántos meses tienes ahorros?",
+                "¿A quién llamarías primero en una crisis?",
+                "¿Qué habilidad práctica tienes que podría ser útil?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap18",
+            "chapterTitle": "Estrategias de supervivencia digna",
+            "description": "Complementa el capítulo \"Estrategias de supervivencia digna\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap17",
+            "chapterTitle": "Las Sombras del Nuevo Mundo",
+            "relation": "Navegar las sombras"
+          }
+        },
+        {
+          "id": "toolkit-20",
+          "title": "Mapeo de Poder Prefigurativo",
+          "manualChapter": "cap19",
+          "manualTitle": "Construir poder sin tomarlo",
+          "difficulty": "Avanzado",
+          "duration": "90 minutos",
+          "materials": "Mapa del ecosistema local, información de iniciativas",
+          "epigraph": {
+            "text": "Construir el mundo nuevo en el cascarón del viejo.",
+            "author": "Industrial Workers of the World"
+          },
+          "content": "## Propósito\n\nIdentificar y fortalecer las estructuras paralelas de poder que ya existen en tu territorio, construyendo alternativas funcionales al sistema actual.\n\n## ¿Qué es el Poder Prefigurativo?\n\nEs el poder que se construye creando las instituciones del futuro en el presente, no esperando a \"tomar el poder\" para cambiar las cosas.\n\nEjemplos:\n- Cooperativas de energía en lugar de esperar políticas energéticas\n- Escuelas libres en lugar de esperar reforma educativa\n- Redes de cuidados en lugar de esperar servicios públicos\n- Medios alternativos en lugar de esperar pluralismo\n\n## El Ejercicio\n\n### Fase 1: Inventario de Alternativas (30 min)\n\nIdentifica las estructuras prefigurativas en tu territorio:\n\n**Economía**:\n- Cooperativas (de trabajo, consumo, vivienda)\n- Monedas locales / bancos de tiempo\n- Grupos de consumo / CSA\n- Redes de trueque\n- Banca ética\n\n**Gobernanza**:\n- Asambleas de barrio\n- Presupuestos participativos\n- Consultas vecinales\n- Comisiones ciudadanas\n\n**Cuidados**:\n- Redes de apoyo mutuo\n- Grupos de crianza compartida\n- Bancos de cuidados\n- Cooperativas de cuidados\n\n**Conocimiento**:\n- Escuelas libres / alternativas\n- Universidades populares\n- Centros de documentación\n- Software libre communities\n\n**Comunicación**:\n- Medios comunitarios\n- Radios libres\n- Plataformas cooperativas\n\n### Fase 2: Evaluación de Fortaleza (30 min)\n\nPara cada iniciativa identificada:\n\n| Criterio | 1-5 |\n|----------|-----|\n| Escala: ¿A cuánta gente llega? | |\n| Sostenibilidad: ¿Cuánto lleva funcionando? | |\n| Replicabilidad: ¿Es fácil de copiar? | |\n| Interconexión: ¿Está conectada con otras? | |\n| Visibilidad: ¿Es conocida? | |\n| Capacidad formativa: ¿Enseña a otros? | |\n\n### Fase 3: Identificar Brechas (15 min)\n\n¿Qué áreas no tienen alternativas?\n¿Qué necesidades básicas dependen 100% del sistema?\n¿Qué iniciativas están frágiles y necesitan apoyo?\n\n### Fase 4: Estrategia de Fortalecimiento (15 min)\n\nPropón:\n\n**Crear**: Una nueva estructura que cubra una brecha\n\n**Conectar**: Dos iniciativas que podrían sinergizar\n\n**Escalar**: Una iniciativa exitosa que debería crecer\n\n**Visibilizar**: Una alternativa que debería ser más conocida\n\n## Conexión con el Manual\n\nEste ejercicio desarrolla el Capítulo 20 \"Construir poder sin tomarlo\".",
+          "exercises": [
+            {
+              "id": "mini-20",
+              "title": "Versión Express",
+              "duration": "15 minutos",
+              "description": "Inventario rápido",
+              "steps": [
+                "¿Qué estructuras alternativas conoces en tu zona?",
+                "¿En cuáles participas?",
+                "¿Cuál crees que tiene más potencial transformador?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap19",
+            "chapterTitle": "Construir poder sin tomarlo",
+            "description": "Complementa el capítulo \"Construir poder sin tomarlo\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap3",
+            "chapterTitle": "El Poder que se Perpetúa",
+            "relation": "Poder prefigurativo"
+          }
+        },
+        {
+          "id": "toolkit-21",
+          "title": "Análisis de Amenazas",
+          "manualChapter": "cap20",
+          "manualTitle": "Proteger lo que se construye",
+          "difficulty": "Avanzado",
+          "duration": "60 minutos",
+          "materials": "Información sobre tu proyecto/organización, casos de estudio",
+          "epigraph": {
+            "text": "Espera lo inesperado.",
+            "author": "Heráclito"
+          },
+          "content": "## Propósito\n\nIdentificar amenazas potenciales a iniciativas de cambio y desarrollar estrategias de protección.\n\n## Por qué es Necesario\n\nLas iniciativas transformadoras a menudo fracasan no por errores propios sino por:\n- Cooptación por poderes establecidos\n- Criminalización y represión\n- Quema de liderazgos\n- Agotamiento de recursos\n- Conflictos internos manipulados\n- Desinformación y desprestigio\n\n## El Ejercicio\n\n### Fase 1: Identificación de Amenazas (20 min)\n\nPara tu proyecto/organización, lista amenazas en cada categoría:\n\n**Amenazas externas directas**:\n- ¿Quién podría oponerse activamente?\n- ¿Qué herramientas legales podrían usar?\n- ¿Hay historial de represión en tu ámbito?\n\n**Amenazas externas indirectas**:\n- ¿Qué cambios de contexto podrían afectarte?\n- ¿Depende tu financiación de fuentes vulnerables?\n- ¿Hay riesgos reputacionales?\n\n**Amenazas internas**:\n- ¿Hay conflictos no resueltos?\n- ¿Hay dependencia de personas clave?\n- ¿Hay procesos de toma de decisiones frágiles?\n- ¿Hay riesgo de burnout generalizado?\n\n### Fase 2: Evaluación de Riesgos (15 min)\n\nPara cada amenaza:\n- **Probabilidad** (1-5)\n- **Impacto** (1-5)\n- **Riesgo** = Probabilidad × Impacto\n\nPrioriza las de mayor riesgo.\n\n### Fase 3: Estrategias de Protección (20 min)\n\nPara cada amenaza prioritaria, desarrolla:\n\n**Prevención**: ¿Cómo reducir la probabilidad?\n\n**Mitigación**: ¿Cómo reducir el impacto si ocurre?\n\n**Respuesta**: ¿Qué hacer si ocurre?\n\n**Recuperación**: ¿Cómo volver a funcionar después?\n\n### Fase 4: Plan de Implementación (5 min)\n\n¿Qué medidas de protección puedes implementar esta semana?\n¿Quién es responsable de cada una?\n¿Cuándo revisarás este análisis?\n\n## Estrategias de Protección Comunes\n\n**Contra cooptación**:\n- Claridad de principios no negociables\n- Procesos de decisión participativos\n- Diversificación de financiación\n- Transparencia radical\n\n**Contra represión**:\n- Documentación de actividades\n- Apoyo legal preparado\n- Conexiones con observadores/medios\n- Protocolos de seguridad\n\n**Contra conflictos internos**:\n- Procesos claros de gestión de conflictos\n- Cultura de feedback\n- Espacios de cuidado\n- Rotación de roles\n\n**Contra dependencia de líderes**:\n- Distribución de conocimiento\n- Liderazgo rotativo\n- Documentación de procesos\n- Formación de nuevos liderazgos\n\n## Conexión con el Manual\n\nEste ejercicio aplica el Capítulo 21 \"Proteger lo que se construye\".",
+          "exercises": [
+            {
+              "id": "mini-21",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Evaluación rápida de riesgos",
+              "steps": [
+                "¿Cuál es la mayor amenaza externa a tu proyecto?",
+                "¿Cuál es la mayor vulnerabilidad interna?",
+                "¿Qué harías si tu principal referente desapareciera mañana?"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "cap20",
+            "chapterTitle": "Proteger lo que se construye",
+            "description": "Complementa el capítulo \"Proteger lo que se construye\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap17",
+            "chapterTitle": "Las Sombras del Nuevo Mundo",
+            "relation": "Proteger ante las sombras"
+          }
+        },
+        {
+          "id": "toolkit-22",
+          "title": "Carta a tu Yo Futuro",
+          "manualChapter": "epilogo",
+          "manualTitle": "La invitación continúa",
+          "difficulty": "Básico",
+          "duration": "30-45 minutos",
+          "materials": "Papel y sobre, lugar tranquilo",
+          "epigraph": {
+            "text": "El mejor momento para plantar un árbol fue hace 20 años. El segundo mejor momento es ahora.",
+            "author": "Proverbio chino"
+          },
+          "content": "## Propósito\n\nConectar con tu yo futuro para clarificar tus compromisos y motivaciones, creando un ancla para los momentos difíciles.\n\n## El Ejercicio\n\n### Preparación\n\nBusca un momento de tranquilidad. Prepara papel y sobre. Puedes encender una vela o poner música suave si te ayuda a entrar en un estado reflexivo.\n\n### La Carta\n\nEscribe una carta a ti mismo/a dentro de 5 años. Incluye:\n\n**1. Contexto presente (5 min)**\n\nDescribe brevemente dónde estás ahora:\n- ¿Qué edad tienes? ¿Dónde vives? ¿Con quién?\n- ¿Qué te preocupa del mundo?\n- ¿Qué esperanzas tienes?\n- ¿Qué has aprendido recientemente que te haya impactado?\n\n**2. Tus compromisos (10 min)**\n\nDeclara los compromisos que tomas hoy:\n- ¿Qué tipo de persona quieres ser?\n- ¿Qué tipo de mundo quieres contribuir a crear?\n- ¿Qué no estás dispuesto/a a tolerar?\n- ¿Qué prácticas quieres mantener?\n\n**3. Tus preguntas (5 min)**\n\nFormula preguntas para tu yo futuro:\n- ¿Mantuviste los compromisos?\n- ¿Qué aprendiste que ahora no sabes?\n- ¿De qué te arrepientes? ¿De qué estás orgulloso/a?\n- ¿Qué consejo me darías ahora?\n\n**4. Gratitud anticipada (5 min)**\n\nAgradece a tu yo futuro:\n- Por lo que habrá enfrentado\n- Por lo que habrá sostenido\n- Por seguir intentándolo\n\n**5. Cierre (5 min)**\n\nCierra la carta con algo significativo para ti:\n- Una cita que te inspire\n- Un recordatorio personal\n- Una imagen o símbolo\n\n### Después\n\n- Sella el sobre\n- Escribe la fecha de apertura (5 años)\n- Guárdalo en un lugar seguro\n- Pon un recordatorio en tu calendario\n\nOpcional: Comparte con alguien de confianza que te la envíe si pierdes el sobre.\n\n## Variaciones\n\n**Carta a 1 año**: Para compromisos más inmediatos.\n\n**Carta desde el futuro**: Escribe como si fueras tu yo futuro escribiendo al presente.\n\n**Carta colectiva**: En grupo, cada uno escribe y se guardan juntas.\n\n**Video-carta**: Graba un video en lugar de escribir.\n\n## Reflexión\n\nEste ejercicio es poderoso porque:\n\n- Te obliga a articular lo que realmente importa\n- Crea un compromiso con testigo (tu yo futuro)\n- Ofrece un ancla para momentos de duda\n- Permite ver tu evolución con el tiempo\n\nMuchos activistas veteranos reportan que cartas así, encontradas años después, les ayudaron a reconectar con sus motivaciones originales.\n\n## Conexión con el Manual\n\nEste ejercicio cierra el Toolkit de Transición, conectando con el Capítulo 22 \"La invitación continúa\".",
+          "exercises": [
+            {
+              "id": "mini-22",
+              "title": "Versión Express",
+              "duration": "10 minutos",
+              "description": "Mensaje breve",
+              "steps": [
+                "En 3 frases, ¿qué quieres recordar dentro de 5 años?",
+                "¿Cuál es tu compromiso central?",
+                "Escríbelo en un post-it y ponlo donde lo veas"
+              ]
+            }
+          ],
+          "parentBook": {
+            "book": "manual-transicion",
+            "bookTitle": "Manual de Transición",
+            "chapterId": "epilogo",
+            "chapterTitle": "La invitación continúa",
+            "description": "Complementa el capítulo \"La invitación continúa\" del Manual de Transición"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap18",
+            "chapterTitle": "La Invitación",
+            "relation": "La invitación continúa"
+          }
+        }
+      ]
+    }
+  ]
+}

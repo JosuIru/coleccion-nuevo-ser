@@ -1,0 +1,94 @@
+{
+  "id": "practicas-radicales",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-01",
+  "theme": {
+    "name": "Radical Fire",
+    "primary": "#dc2626",
+    "secondary": "#991b1b",
+    "accent": "#dc2626",
+    "background": "#0a0a0a",
+    "backgroundSecondary": "#171717",
+    "text": "#e0e0e0",
+    "textSecondary": "#999999",
+    "border": "#333333",
+    "gradient": "from-black via-red-950 to-black"
+  },
+  "ui": {
+    "showStarfield": false,
+    "animationType": "pulse",
+    "animationSpeed": "slow",
+    "fontFamily": "Georgia, serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+  "features": {
+    "exercises": {
+      "enabled": true,
+      "types": [
+        "meditation",
+        "confrontation",
+        "action"
+      ],
+      "trackCompletion": true
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [
+        0.5,
+        0.75,
+        1,
+        1.25,
+        1.5,
+        2
+      ],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": false
+    },
+    "aiChat": {
+      "enabled": true,
+      "systemPrompt": "Eres un guía contemplativo especializado en 'Prácticas Radicales'. Tu función es acompañar al usuario en prácticas que confrontan, no consuelan. Evita respuestas reconfortantes; ofrece preguntas profundas.",
+      "modes": {
+        "default": {
+          "name": "Guía Radical",
+          "tone": "confrontational",
+          "focus": "inquiry"
+        }
+      }
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true
+    }
+  },
+  "content": {
+    "sourceFile": "books/practicas-radicales/book.json",
+    "dataStructure": "standard"
+  },
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "advanced",
+    "recommendedPace": "very-slow",
+    "linkedTo": "codigo-despertar"
+  }
+}

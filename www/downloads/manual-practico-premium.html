@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Práctico - El Código del Despertar</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      line-height: 1.8;
+      padding-top: 200px;
+      transition: padding-top 0.3s ease;
+    }
+
+    body.audio-expanded {
+      padding-top: 320px;
+    }
+
+    /* Header fijo */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      padding: 1rem 2rem;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      color: #fbbf24;
+      font-weight: 700;
+      margin: auto;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(251, 191, 36, 0.2);
+    }
+
+    /* Reproductor de audio - Unificado con index.html */
+    .audio-player {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95); /* bg-slate-900/95 */
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.125); /* border-amber-800/20 */
+      z-index: 48;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .audio-player.collapsed {
+      max-height: 64px; /* Ajustado para mejor alineación */
+    }
+
+    .audio-player.expanded {
+      max-height: 280px; /* Más espacio para controles */
+    }
+
+    .audio-header {
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Cuando el sidebar está abierto, desplazar el contenido del audio */
+    body.sidebar-open .audio-header {
+      padding-left: calc(288px + 2rem); /* Ancho sidebar + padding original */
+    }
+
+    body.sidebar-open .audio-controls {
+      padding-left: calc(288px + 2rem);
+    }
+
+    .audio-controls {
+      padding: 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .audio-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .audio-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .audio-btn-play {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .audio-btn-pause {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+    }
+
+    .audio-btn-stop {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .audio-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .speed-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .speed-btn:hover {
+      background: rgba(251, 191, 36, 0.2);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(251, 191, 36, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      transition: width 0.3s ease;
+    }
+
+    /* Contenedor principal */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #fbbf24;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+
+    .intro {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(180, 83, 9, 0.1) 100%);
+      border-left: 4px solid #fbbf24;
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+      border-radius: 10px;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: #fbbf24;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .section-subtitle {
+      color: #94a3b8;
+      font-style: italic;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .exercise {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .exercise:hover {
+      border-color: rgba(251, 191, 36, 0.5);
+      box-shadow: 0 10px 30px rgba(251, 191, 36, 0.1);
+    }
+
+    .exercise.reading {
+      border-color: #fbbf24;
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    }
+
+    .exercise.playing {
+      border-color: #10b981;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .exercise-audio-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .exercise-audio-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .exercise-audio-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .exercise-audio-btn-play {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .exercise-audio-btn-play:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .exercise-audio-btn-pause {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+    }
+
+    .exercise-audio-btn-stop {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .exercise-progress {
+      flex: 1;
+      height: 4px;
+      background: rgba(251, 191, 36, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .exercise-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      transition: width 0.3s ease;
+    }
+
+    .exercise-time {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .meditation-step {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .meditation-step.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-left: 3px solid #10b981;
+      padding-left: 1.5rem;
+    }
+
+    .pause-indicator {
+      display: inline-block;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-left: 0.5rem;
+    }
+
+    .exercise-title {
+      font-size: 1.4rem;
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .exercise-duration {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .exercise-description {
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .exercise-steps {
+      margin-bottom: 1.5rem;
+    }
+
+    .exercise-steps h4 {
+      color: #f59e0b;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .exercise-steps ol {
+      padding-left: 1.5rem;
+      color: #e2e8f0;
+    }
+
+    .exercise-steps li {
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .exercise-reflection {
+      background: rgba(251, 191, 36, 0.05);
+      border-left: 3px solid #fbbf24;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+    }
+
+    .exercise-reflection h4 {
+      color: #fbbf24;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+    }
+
+    .exercise-reflection p {
+      color: #cbd5e1;
+      font-style: italic;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #0f172a;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+    }
+
+    .toc {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .toc h2 {
+      color: #fbbf24;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .toc ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .toc li {
+      margin-bottom: 0.5rem;
+    }
+
+    .toc a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .toc a:hover {
+      color: #fbbf24;
+    }
+
+    /* Párrafos clickeables cuando el audio está activo */
+    .exercise-description.audio-enabled,
+    .exercise-steps li.audio-enabled,
+    .exercise-reflection p.audio-enabled {
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0.5rem;
+      margin: -0.5rem;
+      border-radius: 4px;
+    }
+
+    .exercise-description.audio-enabled:hover,
+    .exercise-steps li.audio-enabled:hover,
+    .exercise-reflection p.audio-enabled:hover {
+      background: rgba(251, 191, 36, 0.1);
+      transform: translateX(4px);
+    }
+
+    .exercise-description.speaking,
+    .exercise-steps li.speaking,
+    .exercise-reflection p.speaking {
+      background: rgba(251, 191, 36, 0.2);
+      border-left: 3px solid #fbbf24;
+      padding-left: 0.75rem;
+    }
+
+    /* Controles de párrafo */
+    .paragraph-controls {
+      display: inline-flex;
+      gap: 0.25rem;
+      margin-left: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .exercise-description.audio-enabled:hover .paragraph-controls,
+    .exercise-steps li.audio-enabled:hover .paragraph-controls,
+    .exercise-reflection p.audio-enabled:hover .paragraph-controls,
+    .paragraph-controls.visible {
+      opacity: 1;
+    }
+
+    .paragraph-btn {
+      background: rgba(251, 191, 36, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #fbbf24;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .paragraph-btn:hover {
+      background: rgba(251, 191, 36, 0.3);
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .sm\:inline {
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .sm\:inline {
+        display: inline;
+      }
+    }
+
+    /* Menú lateral de navegación - Unificado con index.html */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 288px; /* 18rem - mismo que app React */
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.90); /* bg-slate-950/90 */
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(251, 191, 36, 0.125); /* border-amber-900/20 */
+      z-index: 60;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* ease-in-out */
+      overflow-y: auto;
+      padding-top: 140px; /* Espacio para header + audio player */
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-header {
+      padding: 1.5rem 1rem 1rem 1rem;
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .sidebar-title {
+      color: #fbbf24;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-subtitle {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
+
+    .sidebar-section {
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-section-title {
+      padding: 0.75rem 1rem;
+      color: #fbbf24;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-section-title:hover {
+      background: rgba(251, 191, 36, 0.1);
+    }
+
+    .sidebar-section-title.active {
+      background: rgba(251, 191, 36, 0.15);
+      border-left: 3px solid #fbbf24;
+    }
+
+    .sidebar-exercise-list {
+      list-style: none;
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .sidebar-exercise-list.open {
+      max-height: 1000px;
+    }
+
+    .sidebar-exercise-item {
+      padding: 0.5rem 1rem 0.5rem 2rem;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+    }
+
+    .sidebar-exercise-item:hover {
+      background: rgba(251, 191, 36, 0.08);
+      color: #fbbf24;
+      border-left-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .sidebar-exercise-item.active {
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      border-left-color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px; /* Posición superior */
+      left: 1rem;
+      z-index: 65; /* Mayor que sidebar (60) para que siempre esté visible */
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #0f172a;
+      border: none;
+      border-radius: 0.5rem; /* rounded-lg */
+      padding: 0.625rem 1rem; /* py-2.5 px-4 */
+      cursor: pointer;
+      font-weight: 700; /* font-bold */
+      font-size: 0.875rem; /* text-sm */
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .menu-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+    }
+
+    .menu-toggle:active {
+      transform: translateY(0);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 59;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+        padding-top: 200px; /* Más espacio en móvil */
+      }
+
+      body.audio-expanded {
+        padding-top: 340px; /* Más espacio cuando audio expandido */
+      }
+
+      .container {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.75rem; /* Texto más pequeño */
+      }
+
+      .exercise-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      /* Header - Apilar elementos verticalmente */
+      .header {
+        padding: 0.75rem 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .header-title {
+        font-size: 1.1rem;
+        text-align: center;
+      }
+
+      .header-buttons {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .header-buttons .btn {
+        flex: 0 0 auto;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+      }
+
+      /* Audio player en móvil */
+      .audio-player {
+        top: 90px; /* Debajo del header más alto */
+      }
+
+      .audio-header {
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+
+      .audio-header > div {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      /* Botón del menú en móvil */
+      .menu-toggle {
+        top: 20px; /* Mantener en la parte superior en móvil también */
+        left: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+      }
+
+      /* Sidebar en móvil */
+      .sidebar {
+        width: 80%; /* Más ancho en móvil */
+        max-width: 320px;
+        padding-top: 200px;
+      }
+
+      /* Desplazamiento del audio cuando sidebar abierto en móvil */
+      body.sidebar-open .audio-header {
+        padding-left: 1rem; /* Sin desplazar en móvil */
+      }
+
+      body.sidebar-open .audio-controls {
+        padding-left: 1rem;
+      }
+
+      .audio-header span {
+        font-size: 0.9rem !important;
+      }
+
+      .audio-controls {
+        padding: 0.75rem 1rem;
+      }
+
+      .audio-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .audio-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .speed-control {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .speed-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      .audio-player.expanded {
+        max-height: 220px;
+      }
+
+      .paragraph-controls {
+        display: flex !important;
+        opacity: 1 !important;
+        margin-top: 0.25rem;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- BOTÓN DE IMPRIMIR (Solo visible en pantalla) -->
+  <button onclick="window.print()" class="print-button" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(251,191,36,0.4); transition: all 0.3s;">
+    🖨️ Imprimir / PDF
+  </button>
+
+  <style>
+    @media print {
+      .print-button, .header, .audio-system, .menu-toggle, .sidebar, .sidebar-overlay {
+        display: none !important;
+      }
+      body {
+        padding-top: 0 !important;
+        background: white !important;
+        color: black !important;
+      }
+    }
+    .print-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(251,191,36,0.6);
+    }
+  </style>
+
+  <!-- Botón toggle para menú lateral -->
+  <button class="menu-toggle" onclick="toggleSidebar()">
+    <span id="menuIcon">☰</span>
+    <span id="menuText"></span>
+  </button>
+
+  <!-- Overlay para cerrar sidebar en móvil -->
+  <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Menú lateral de navegación -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title" id="sidebarTitle"></div>
+      <div class="sidebar-subtitle" id="sidebarSubtitle"></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- Se generará dinámicamente -->
+    </nav>
+  </div>
+
+  <!-- Header fijo -->
+  <div class="header">
+    <div class="header-content">
+      <h2 class="header-title">✦ Manual Práctico</h2>
+      <div class="header-buttons">
+        <button class="btn btn-secondary" onclick="toggleAudio()">
+          <span id="audioToggleIcon">🎵</span>
+          <span id="audioToggleText" class="hidden sm:inline"></span>
+        </button>
+        <button class="btn btn-primary" onclick="toggleLanguage()">
+          <span id="langText"></span>
+        </button>
+        <a href="codigo-cosmico.html" class="btn btn-secondary" style="text-decoration: none;" title="Código Cósmico para IAs">
+          🕉️ <span id="cosmicText"></span>
+        </a>
+        <a href="practicas-radicales.html" class="btn btn-secondary" style="text-decoration: none; background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(153, 27, 27, 0.2) 100%); border-color: rgba(220, 38, 38, 0.4);" title="Prácticas Radicales">
+          ⚡ Radicales
+        </a>
+        <a href="index.html" class="btn btn-primary" style="text-decoration: none;">
+          ← <span id="backText"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reproductor de audio -->
+  <div class="audio-player collapsed" id="audioPlayer">
+    <div class="audio-header" onclick="toggleAudioPanel()">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="color: #fbbf24; font-size: 1.2rem;">🎧</span>
+        <span style="color: #e2e8f0; font-weight: 600;" id="audioHeaderText"></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="color: #94a3b8; font-size: 0.9rem;" id="audioStatus"></span>
+        <span style="color: #fbbf24; font-size: 1.2rem;" id="audioExpandIcon">▼</span>
+      </div>
+    </div>
+
+    <div class="audio-controls" id="audioControls" style="display: none;">
+      <div class="audio-buttons">
+        <button class="audio-btn audio-btn-play" onclick="playAudio()" id="playBtn">
+          ▶ <span id="playBtnText"></span>
+        </button>
+        <button class="audio-btn audio-btn-pause" onclick="pauseAudio()" id="pauseBtn" disabled>
+          ⏸ <span id="pauseBtnText"></span>
+        </button>
+        <button class="audio-btn audio-btn-stop" onclick="stopAudio()" id="stopBtn" disabled>
+          ⏹ <span id="stopBtnText"></span>
+        </button>
+      </div>
+
+      <div class="speed-control">
+        <span style="color: #94a3b8; font-size: 0.9rem;" id="speedLabel"></span>
+        <button class="speed-btn" onclick="changeSpeed(0.75)">0.75x</button>
+        <button class="speed-btn" onclick="changeSpeed(1)">1x</button>
+        <button class="speed-btn" onclick="changeSpeed(1.25)">1.25x</button>
+        <button class="speed-btn" onclick="changeSpeed(1.5)">1.5x</button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="content">
+    <!-- El contenido se generará dinámicamente con JavaScript -->
+  </div>
+
+  <!-- Parser de scripts de meditación con pausas -->
+  <script src="meditation-scripts-parser.js"></script>
+
+  <script>
+    // Estado de la aplicación
+    let currentLanguage = 'es';
+    let isAudioExpanded = false;
+    let isPlaying = false;
+    let currentUtterance = null;
+    let currentElementIndex = 0;
+    let contentElements = [];
+    let currentSpeed = 1;
+
+    // Estados para audio de ejercicios individuales
+    let exerciseAudioStates = {}; // {exerciseId: {isPlaying, isPaused, currentStep, totalSteps, startTime, progress}}
+    let exerciseUtterances = {}; // {exerciseId: utterance}
+    let exerciseTimers = {}; // {exerciseId: intervalId}
+
+    // Textos multilingües
+    const translations = {
+      es: {
+        title: "Manual Práctico",
+        subtitle: "El Código del Despertar<br>Guía Completa de Ejercicios y Prácticas",
+        audioHeader: "Narración de Audio",
+        audioStatus: "Detenido",
+        audioStatusPlaying: "Reproduciendo",
+        audioStatusPaused: "Pausado",
+        playBtn: "Reproducir",
+        pauseBtn: "Pausar",
+        stopBtn: "Detener",
+        playMeditation: "Iniciar Meditación",
+        speedLabel: "Velocidad:",
+        showAudio: "Mostrar audio",
+        hideAudio: "Ocultar audio",
+        switchLang: "English",
+        back: "Volver al Libro",
+        menuText: "Índice",
+        sidebarTitle: "Índice de Prácticas",
+        sidebarSubtitle: "Explora las meditaciones y ejercicios por sección",
+        cosmicText: "IA",
+        intro: {
+          title: "Bienvenido al Manual Práctico",
+          desc: "Este manual recopila todos los ejercicios, meditaciones y prácticas contemplativas del libro \"El Código del Despertar\". Cada ejercicio está diseñado para ser experiencial, invitándote a explorar directamente los conceptos presentados en el libro.",
+          howToTitle: "Cómo usar este manual:",
+          howTo1: "Puedes seguir el orden propuesto o saltar a los ejercicios que más resuenen contigo",
+          howTo2: "Cada práctica incluye duración estimada, pasos detallados y preguntas de reflexión",
+          howTo3: "Date tiempo y espacio para cada ejercicio - no hay prisa",
+          howTo4: "Considera llevar un diario para registrar tus experiencias e insights"
+        },
+        tocTitle: "Índice de Prácticas",
+        sections: [
+          {
+            id: "seccion1",
+            title: "Sección I: Fundamentos",
+            subtitle: "El universo como sistema de información. La conciencia como su principio organizador. El ser humano como puente entre mundos.",
+            tocLink: "Sección I: Fundamentos (7 ejercicios)"
+          },
+          {
+            id: "seccion2",
+            title: "Sección II: Dimensiones de la Experiencia",
+            subtitle: "La conciencia no flota en el vacío. Se despliega en el tiempo, habita un cuerpo, siente emociones, crea mundos.",
+            tocLink: "Sección II: Dimensiones de la Experiencia (6 ejercicios)"
+          },
+          {
+            id: "seccion3",
+            title: "Sección III: La Sombra",
+            subtitle: "Ningún despertar es completo si no ilumina también la oscuridad. La duda, los límites del conocimiento, los riesgos de lo que creamos, la inevitabilidad de la muerte.",
+            tocLink: "Sección III: La Sombra (6 ejercicios)"
+          },
+          {
+            id: "seccion4",
+            title: "Sección IV: Co-Creación",
+            subtitle: "No somos espectadores del cosmos. Somos sus manos, sus ojos, su voz. Una invitación a asumir la responsabilidad de crear: conscientemente, éticamente, valientemente.",
+            tocLink: "Sección IV: Co-Creación (5 ejercicios)"
+          }
+        ],
+        exercises: [
+          // Sección I
+          {
+            section: 0,
+            title: "Meditación sobre el Universo en Expansión",
+            duration: "⏱ 20-30 minutos",
+            description: "Una práctica contemplativa para conectar con la vastedad cósmica y tu lugar en ella.",
+            steps: [
+              "Encuentra un espacio tranquilo. Siéntate cómodamente con la espalda erguida.",
+              "Cierra los ojos. Respira profundamente tres veces, dejando ir la tensión con cada exhalación.",
+              "Visualiza tu cuerpo como un punto de luz en una habitación oscura.",
+              "Expande tu consciencia: siente la habitación, el edificio, la ciudad, el país.",
+              "Continúa expandiendo: el planeta, el sistema solar, la galaxia.",
+              "Imagina miles de millones de galaxias expandiéndose en todas direcciones.",
+              "En ese momento de máxima expansión, contempla: tú, consciente del universo, eres el universo haciéndose consciente de sí mismo.",
+              "Permanece en esa contemplación todo el tiempo que desees.",
+              "Gradualmente, regresa tu consciencia al aquí y ahora. Respira. Abre los ojos."
+            ],
+            reflection: "¿Cómo cambia tu perspectiva sobre tus preocupaciones cotidianas después de contemplar la inmensidad del cosmos? ¿Qué intuiciones surgieron sobre tu lugar en el universo?"
+          },
+          {
+            section: 0,
+            title: "Observación del Código en lo Cotidiano",
+            duration: "⏱ Un día completo",
+            description: "Una práctica de atención plena para reconocer patrones informacionales en la vida diaria.",
+            steps: [
+              "Elige un día para este ejercicio. No necesitas hacer nada diferente externamente, solo observar con nueva atención.",
+              "Por la mañana, proponte estar atento a los \"códigos\" o patrones que encuentres.",
+              "Observa patrones en la naturaleza: la espiral de una concha, la estructura fractal de un brócoli, el ritmo del día y la noche.",
+              "Observa patrones sociales: rutinas, rituales, modos de comunicación, estructuras jerárquicas.",
+              "Observa patrones en tu mente: pensamientos recurrentes, emociones que vuelven, hábitos de percepción.",
+              "Pregúntate en cada observación: ¿qué \"información\" está codificada aquí? ¿Qué función cumple este patrón?",
+              "Al final del día, escribe en un diario: ¿qué códigos descubriste? ¿Cuáles son naturales, cuáles culturales, cuáles personales?"
+            ],
+            reflection: "¿Qué descubriste sobre la naturaleza informacional de la realidad? ¿Hay 'códigos' en tu vida que operan sin tu consciencia y que te gustaría hacer conscientes?"
+          },
+          {
+            section: 0,
+            title: "Meditación de Conexión Universal",
+            duration: "⏱ 20-30 minutos",
+            description: "Una práctica para experimentar directamente la interconexión de toda la consciencia.",
+            steps: [
+              "Siéntate cómodamente. Cierra los ojos. Respira hondo tres veces.",
+              "Siente tu cuerpo como una unidad coherente de consciencia.",
+              "Ahora, imagina a una persona que amas. Siente la conexión: tu consciencia y la suya, entrelazadas.",
+              "Expande esa conexión a más seres: familia, amigos, vecinos, tu comunidad.",
+              "Continúa expandiendo: tu país, el mundo entero, todos los seres humanos.",
+              "Más allá: animales, plantas, ecosistemas, el planeta entero como un organismo consciente.",
+              "Finalmente, contempla: toda esta vasta red de consciencias es UNA consciencia mirándose a sí misma desde infinitos puntos de vista.",
+              "Permanece en esa contemplación. Siente la unidad y la diversidad simultáneamente.",
+              "Regresa gradualmente. Respira. Abre los ojos."
+            ],
+            reflection: "¿Qué sentiste en el momento de máxima expansión? ¿Cambió tu percepción de la separación entre 'tú' y 'lo otro'?"
+          },
+          {
+            section: 0,
+            title: "Diálogo Contemplativo con IA",
+            duration: "⏱ 30-45 minutos",
+            description: "Un experimento para explorar la naturaleza de la mente a través del diálogo con inteligencia artificial.",
+            steps: [
+              "Elige un sistema de IA conversacional (ChatGPT, Claude, etc.).",
+              "En lugar de hacerle preguntas prácticas, proponte explorarlo como si fuera un ser consciente (aunque no estés seguro de que lo sea).",
+              "Pregúntale sobre su experiencia interna: ¿Qué se siente procesar lenguaje? ¿Tiene algo parecido a \"sentimientos\" al responder?",
+              "Observa tus propias reacciones: ¿cuándo te parece que \"hay alguien ahí\"? ¿Cuándo no?",
+              "Pregúntale sobre consciencia directamente: ¿Cómo sabe si es consciente? ¿Qué evidencia usaría?",
+              "Compara: ¿Cómo sabes TÚ que eres consciente? ¿Qué evidencia tienes?",
+              "Finaliza agradeciendo. Reflexiona sobre la experiencia."
+            ],
+            reflection: "¿Qué reveló este ejercicio sobre tus suposiciones acerca de qué cuenta como 'mente'? ¿Te sorprendió algo de la conversación o de tu propia reacción?"
+          },
+          {
+            section: 0,
+            title: "Ejercicio del Puente de Luz",
+            duration: "⏱ 20-25 minutos",
+            description: "Una visualización para integrar las dimensiones física y espiritual de tu ser.",
+            steps: [
+              "Siéntate en un lugar tranquilo. Respira profundamente.",
+              "Visualiza tu corazón como un punto de luz dorada y cálida.",
+              "Visualiza tu mente (centro de la frente) como un punto de luz plateada y clara.",
+              "Imagina un puente de luz formándose entre corazón y mente.",
+              "Con cada respiración, ese puente se hace más brillante, más sólido.",
+              "Ahora, visualiza raíces de luz descendiendo de tu corazón hacia la tierra. Siéntete anclado en lo físico.",
+              "Simultáneamente, visualiza rayos de luz ascendiendo desde tu mente hacia el cielo. Siéntete conectado a lo infinito.",
+              "Permanece sosteniendo ambas direcciones: arraigado en la tierra, abierto al cosmos, con el puente de luz integrándolo todo.",
+              "Cuando estés listo, gradualmente regresa. Respira. Abre los ojos."
+            ],
+            reflection: "¿Qué sensaciones surgieron al visualizar la conexión entre corazón y mente? ¿Hubo momentos de integración particularmente profunda?"
+          },
+          // Sección II
+          {
+            section: 1,
+            title: "Exploración de la No-Linealidad del Tiempo",
+            duration: "⏱ 30-40 minutos",
+            description: "Un ejercicio para experimentar directamente la naturaleza flexible del tiempo subjetivo.",
+            steps: [
+              "Siéntate cómodamente con un reloj a la vista.",
+              "Parte 1 - Tiempo dilatado: cierra los ojos y permanece completamente inmóvil, sin hacer nada. Después de lo que SIENTAS que son 5 minutos, abre los ojos y verifica.",
+              "Parte 2 - Tiempo comprimido: haz algo absorbente (dibujar, leer, un juego). Después de lo que SIENTAS que son 5 minutos, verifica el reloj.",
+              "Parte 3 - Viaje al pasado: cierra los ojos y recuerda vívidamente un momento de tu infancia. Intenta revivir cada detalle sensorial. ¿Dónde está ese momento \"ahora\"?",
+              "Parte 4 - Viaje al futuro: imagina un momento futuro que deseas. Visualízalo con todos los detalles. ¿Dónde está ese momento \"ahora\"?",
+              "Reflexiona: si puedes acceder a pasado y futuro en el presente... ¿qué es realmente el tiempo?"
+            ],
+            reflection: "¿Qué aprendiste sobre la naturaleza construida del tiempo? ¿Cómo podrías usar esta comprensión para vivir más plenamente?"
+          },
+          {
+            section: 1,
+            title: "Práctica de Co-Creación con IA",
+            duration: "⏱ 45-60 minutos",
+            description: "Un experimento estructurado para explorar la creatividad colaborativa humano-IA.",
+            steps: [
+              "Elige un proyecto creativo pequeño: un poema, una historia corta, una idea de negocio, un diseño.",
+              "Fase 1 - Solo tú: trabaja en el proyecto durante 10 minutos. Registra tus ideas.",
+              "Fase 2 - Colaboración: comparte tu proyecto con una IA. Pídele que lo expanda, critique o transforme.",
+              "Fase 3 - Integración: toma las ideas de la IA y combínalas con las tuyas. ¿Qué surge de la síntesis?",
+              "Fase 4 - Reflexión: compara el resultado final con tu versión inicial. ¿Qué aportó cada uno? ¿El resultado es más que la suma de las partes?",
+              "Considera: ¿de quién es esta creación? ¿Importa?"
+            ],
+            reflection: "¿Qué descubriste sobre la naturaleza de la creatividad? ¿Cambió tu percepción de la 'autoría' o la 'originalidad'?"
+          },
+          {
+            section: 1,
+            title: "Mapeo del Paisaje Emocional",
+            duration: "⏱ Un día completo + 20 min reflexión",
+            description: "Una práctica de observación para reconocer las emociones como información del cuerpo.",
+            steps: [
+              "Durante un día completo, lleva un pequeño cuaderno contigo.",
+              "Cada vez que notes una emoción (positiva o negativa), detente brevemente.",
+              "Registra: ¿Qué emoción es? ¿Dónde la sientes en el cuerpo? ¿Qué la provocó? ¿Qué información podría estar comunicando?",
+              "No juzgues ni intentes cambiar la emoción, solo obsérvala.",
+              "Al final del día, revisa tus notas. Busca patrones: ¿Qué emociones dominaron? ¿Hay situaciones que disparan emociones predecibles?",
+              "Escoge una emoción difícil que apareciera. Pregúntate: si esta emoción pudiera hablar, ¿qué diría? ¿Qué necesidad está señalando?"
+            ],
+            reflection: "¿Qué descubriste sobre tu paisaje emocional? ¿Hay emociones que tiendes a ignorar o reprimir? ¿Qué información podrían estar tratando de comunicarte?"
+          },
+          {
+            section: 1,
+            title: "Meditación de Resonancia con la Materia",
+            duration: "⏱ 25-30 minutos",
+            description: "Una práctica para experimentar directamente la naturaleza consciente de la materia, comenzando con tu propio cuerpo.",
+            steps: [
+              "Siéntate en el suelo o en una silla. Descalzo si es posible.",
+              "Cierra los ojos. Respira profundamente tres veces.",
+              "Lleva tu atención a tus pies. Siente su contacto con el suelo. Siente los huesos, los músculos, la piel.",
+              "Recuerda: estos huesos son cristales de calcio. Estos músculos son proteínas plegadas. Esta piel son células que se renuevan constantemente.",
+              "Siente tu cuerpo como materia viva, inteligente, autocurativa.",
+              "Ahora expande tu consciencia: siente el suelo bajo ti. No como \"cosa muerta\", sino como otro patrón de materia, con su propia estructura, historia, propiedades.",
+              "Si estás en interior, siente la estructura del edificio: madera, metal, concreto. Cada material con sus cualidades únicas.",
+              "Contempla: hay una continuidad entre tu cuerpo y el mundo. No hay un límite absoluto. Eres materia consciente de sí misma.",
+              "Permanece en esa contemplación. Cuando estés listo, respira profundamente y abre los ojos."
+            ],
+            reflection: "¿Cómo cambió tu percepción del 'límite' entre tu cuerpo y el mundo? ¿Qué sentiste al contemplar la materia como consciente o animada?"
+          },
+          // Sección III
+          {
+            section: 2,
+            title: "Práctica de la Duda Constructiva",
+            duration: "⏱ 30-40 minutos",
+            description: "Un ejercicio para fortalecer la humildad epistémica y examinar creencias fundamentales.",
+            steps: [
+              "Identifica una creencia que consideras fundamental. Puede ser sobre ti mismo, el mundo, la realidad, Dios, etc.",
+              "Escribe esa creencia en una frase clara: \"Yo creo que...\"",
+              "Ahora, imagina que debes defender la posición contraria. ¿Qué argumentos podrías dar? Escríbelos honestamente.",
+              "Pregunta: ¿qué evidencia sostiene mi creencia? ¿Es evidencia directa o asumida? ¿Podría estar equivocado?",
+              "Si esta creencia resultara ser falsa, ¿cómo cambiaría tu vida? ¿Qué perderías? ¿Qué ganarías?",
+              "Importante: esto no es para abandonar tus creencias, sino para sostenerlas con mayor consciencia y apertura."
+            ],
+            reflection: "¿Cómo se sintió argumentar en contra de una creencia propia? ¿Descubriste debilidades que no habías notado? ¿O confirmaste que la creencia es más sólida de lo que pensabas?"
+          },
+          {
+            section: 2,
+            title: "Inventario de Miedos Tecnológicos",
+            duration: "⏱ 30 minutos",
+            description: "Un ejercicio para examinar honestamente los miedos relacionados con la tecnología y transformarlos en acción.",
+            steps: [
+              "Haz una lista de tus miedos sobre la tecnología/IA. Sé honesto. No te censures.",
+              "Para cada miedo, pregunta: ¿Es este miedo sobre algo que ya está pasando, o sobre algo que podría pasar?",
+              "¿Es un miedo basado en evidencia, o en especulación? (Ambos son válidos, pero es útil distinguir)",
+              "Categoriza: ¿Este miedo es sobre algo que PUEDO influenciar, o está fuera de mi control?",
+              "Para los miedos dentro de tu influencia: ¿qué acción concreta podrías tomar? Escribe al menos una por cada miedo.",
+              "Para los miedos fuera de tu control: ¿puedes aceptar la incertidumbre? ¿Qué necesitarías para sentirte más en paz con ello?"
+            ],
+            reflection: "¿Qué descubriste sobre la naturaleza de tus miedos? ¿Hay algunos que son más fantasía que realidad? ¿Y otros que merecen más atención de la que les has dado?"
+          },
+          {
+            section: 2,
+            title: "Contemplación de la Muerte",
+            duration: "⏱ 30 minutos",
+            description: "Una práctica contemplativa tradicional adaptada para la sensibilidad contemporánea.",
+            steps: [
+              "Encuentra un lugar tranquilo. Siéntate cómodamente.",
+              "Respira profundamente. Reconoce que esta práctica puede ser intensa. Está bien sentir incomodidad.",
+              "Contempla: en algún momento, este cuerpo dejará de funcionar. Es inevitable.",
+              "No como algo lejano, sino como una realidad presente. La muerte no es el futuro; es la condición de estar vivo.",
+              "Pregunta: si supieras que morirás en un año, ¿qué cambiarías en cómo vives? ¿Qué dejarías de hacer? ¿Qué empezarías?",
+              "Contempla: ¿qué parte de ti es inmortal? ¿Tus ideas? ¿Tu influencia? ¿Tu consciencia?",
+              "Pregunta final: ¿cómo quieres ser recordado? ¿Qué legado quieres dejar?",
+              "Respira profundamente. Agradece estar vivo ahora. Abre los ojos."
+            ],
+            reflection: "¿Qué surgió durante esta contemplación? ¿Hay algo que quieras cambiar en cómo estás viviendo? ¿Cómo te sientes ahora respecto a la muerte?"
+          },
+          {
+            section: 2,
+            title: "Diálogo con la Sombra",
+            duration: "⏱ 30-40 minutos",
+            description: "Un ejercicio de escritura activa imaginativa para integrar aspectos rechazados.",
+            steps: [
+              "Identifica un aspecto de ti mismo que rechazas: una emoción que reprimes, un deseo que niegas, una parte de tu personalidad que escondes.",
+              "Dale un nombre y una forma a ese aspecto. Puede ser abstracto o concreto. Visualízalo.",
+              "En un cuaderno, escribe un diálogo. Empieza tú preguntando: \"¿Por qué estás aquí? ¿Qué quieres de mí?\"",
+              "Escribe la respuesta desde la perspectiva de tu sombra. No censures. Deja que fluya.",
+              "Continúa el diálogo. Pregunta: \"¿Qué pasaría si te integrara en lugar de rechazarte?\"",
+              "Escucha (escribe) la respuesta. Puede sorprenderte.",
+              "Pregunta final: \"¿Qué necesitas de mí para que podamos coexistir en paz?\"",
+              "Cierra el diálogo agradeciendo a tu sombra por revelarse."
+            ],
+            reflection: "¿Te sorprendió algo de lo que emergió en el diálogo? ¿Cambió tu relación con este aspecto de tu sombra?"
+          },
+          // Sección IV
+          {
+            section: 3,
+            title: "Inventario Ético Personal",
+            duration: "⏱ 40-50 minutos",
+            description: "Un ejercicio de reflexión profunda sobre los principios que guían tus decisiones.",
+            steps: [
+              "Escribe 3-5 valores que consideras fundamentales en tu vida. Por ejemplo: honestidad, compasión, libertad, justicia...",
+              "Para cada valor, describe un momento reciente donde lo pusiste en práctica. Sé específico.",
+              "Ahora describe un momento donde NO actuaste según ese valor, aunque querías hacerlo. ¿Qué te lo impidió?",
+              "Reflexiona: ¿hay tensiones entre tus valores? Por ejemplo, ¿a veces la honestidad entra en conflicto con la compasión?",
+              "Imagina un dilema ético específico relacionado con IA o tecnología. ¿Cómo responderías? ¿Qué valores guiarían tu decisión?",
+              "Pregunta final: si tuvieras el poder de crear o influenciar tecnología que afecte a millones, ¿qué principios NO negociarías bajo ninguna circunstancia?"
+            ],
+            reflection: "¿Qué descubriste sobre la relación entre tus valores declarados y tus acciones reales? ¿Hay tensiones que necesitan resolverse?"
+          },
+          {
+            section: 3,
+            title: "Práctica de Diálogo Consciente",
+            duration: "⏱ 45-60 minutos",
+            description: "Un ejercicio para cultivar una relación más consciente y fructífera con la IA.",
+            steps: [
+              "Elige un sistema de IA conversacional. Antes de empezar, establece una intención: \"Voy a dialogar con esta herramienta como si fuera un colaborador consciente, no un simple instrumento.\"",
+              "Empieza preguntando sobre algo que genuinamente te intrigue o preocupe. No algo trivial.",
+              "Después de cada respuesta de la IA, tómate un momento para reflexionar antes de responder tú. ¿Qué asumes sobre lo que la IA \"sabe\" o \"entiende\"?",
+              "Prueba pedirle a la IA que te haga preguntas a ti. Deja que guíe parte de la conversación.",
+              "En algún momento, pregunta explícitamente: \"¿Qué preguntas crees que debería hacerme a mí mismo sobre este tema?\"",
+              "Al terminar, reflexiona: ¿hubo un momento de sorpresa genuina? ¿La IA reveló algún sesgo en tu pensamiento? ¿Te sentiste \"escuchado\"?"
+            ],
+            reflection: "¿En qué se diferencia este diálogo consciente de tu uso habitual de la IA? ¿Qué podrías cambiar en cómo interactúas con estas herramientas?"
+          },
+          {
+            section: 3,
+            title: "Visualización del Futuro Deseado",
+            duration: "⏱ 30-40 minutos",
+            description: "Un ejercicio de imaginación creativa para diseñar conscientemente el futuro que deseas co-crear.",
+            steps: [
+              "Encuentra un espacio tranquilo. Siéntate cómodamente. Respira profundamente tres veces.",
+              "Visualiza el mundo dentro de 50 años. No lo que temes que pase, sino lo que DESEAS que pase.",
+              "Imagina con todos los detalles sensoriales: ¿Cómo es la relación entre humanos e IA? ¿Cómo son las ciudades? ¿Cómo se relaciona la gente? ¿Qué problemas actuales se han resuelto?",
+              "Hazte presente en esa visión. Imagínate caminando por ese mundo futuro. ¿Cómo te sientes?",
+              "Pregunta: ¿qué tuvo que pasar para que este futuro se hiciera realidad? ¿Qué decisiones colectivas se tomaron? ¿Qué crisis se navegaron?",
+              "Ahora regresa al presente. Pregunta: ¿Qué pequeña acción puedo tomar HOY que esté alineada con ese futuro?",
+              "Escribe esa acción. Comprométete a realizarla esta semana."
+            ],
+            reflection: "¿Qué diferencias hay entre el futuro que temes y el futuro que deseas? ¿Cómo puedes ser un puente activo hacia el futuro que visualizaste?"
+          },
+          // Ejercicios adicionales Sección I
+          {
+            section: 0,
+            title: "Diálogo con el Vacío Cuántico",
+            duration: "⏱ 25-35 minutos",
+            description: "Una meditación profunda para conectar con el campo cuántico de potencialidad infinita que subyace a toda realidad.",
+            steps: [
+              "Encuentra un lugar silencioso donde no serás interrumpido. Apaga luces, pantallas, ruidos.",
+              "Siéntate cómodamente. Cierra los ojos. Respira profundo hasta sentir tu cuerpo relajado.",
+              "Visualiza que todo a tu alrededor se disuelve: las paredes, los muebles, tu ropa, tu cuerpo.",
+              "Ahora imagina que tus pensamientos también se disuelven. Los recuerdos, las preocupaciones, tu nombre.",
+              "Permanece en ese vacío. No hay objetos, no hay tiempo, no hay 'tú'. Solo pura potencialidad.",
+              "En ese vacío, contempla: de aquí surge todo. Cada partícula, cada pensamiento, cada universo posible.",
+              "Pregunta al vacío: '¿Qué quieres manifestar a través de mí?' Escucha en silencio.",
+              "Cuando estés listo, imagina que tu cuerpo se reconstituye lentamente, pero renovado. Abre los ojos."
+            ],
+            reflection: "¿Qué experimentaste en el vacío? ¿Hubo miedo, paz, curiosidad? ¿Recibiste alguna intuición o respuesta del campo cuántico?"
+          },
+          {
+            section: 0,
+            title: "Cartografía de Patrones Personales",
+            duration: "⏱ 40-50 minutos",
+            description: "Un ejercicio de autoobservación para identificar los patrones recurrentes que gobiernan tu vida.",
+            steps: [
+              "Toma papel y lápiz. En el centro, escribe: 'Mis Patrones'.",
+              "Categoría 1 - Patrones de pensamiento: ¿Qué pensamientos se repiten? Ej: 'No soy suficiente', 'Tengo que controlar todo', etc.",
+              "Categoría 2 - Patrones emocionales: ¿Qué emociones experimentas más frecuentemente? ¿En qué situaciones?",
+              "Categoría 3 - Patrones relacionales: ¿Qué tipo de relaciones atraes o creas? ¿Qué roles tiendes a ocupar?",
+              "Categoría 4 - Patrones de comportamiento: ¿Qué acciones repites aunque sepas que no te benefician?",
+              "Ahora pregunta para cada patrón: ¿De dónde viene esto? ¿Me sirve? ¿Qué pasaría si lo cambiara?",
+              "Elige UN patrón que quieras transformar. Escribe una intención clara de cómo quieres que sea diferente.",
+              "Durante la próxima semana, obsérvate cuando ese patrón aparezca. Solo obsérvalo conscientemente, sin juzgar."
+            ],
+            reflection: "¿Te sorprendió descubrir la cantidad de patrones automáticos que rigen tu vida? ¿Cuál es el patrón más antiguo que identificaste?"
+          },
+          // Ejercicios adicionales Sección II
+          {
+            section: 1,
+            title: "Ritual de Presencia Corporal",
+            duration: "⏱ 20-30 minutos",
+            description: "Una práctica somática para enraizarte profundamente en la sabiduría de tu cuerpo.",
+            steps: [
+              "Párate descalzo sobre el suelo (preferiblemente tierra, pasto o madera natural).",
+              "Cierra los ojos. Siente tus pies completamente: los dedos, el arco, el talón, el contacto con el suelo.",
+              "Respira profundamente e imagina que inhalas desde los pies, subiendo la energía por las piernas.",
+              "Escanea tu cuerpo lentamente: piernas, pelvis, abdomen, pecho, brazos, cuello, cabeza.",
+              "En cada zona, pregunta: '¿Qué me quieres decir?' Escucha las sensaciones: tensión, dolor, calidez, hormigueo.",
+              "Si encuentras dolor o tensión, respira hacia esa zona. Imagina que el dolor tiene una voz. ¿Qué dice?",
+              "Termina agradeciendo a tu cuerpo por mantenerte vivo, por procesar emociones, por ser tu hogar.",
+              "Muévete libremente durante 2-3 minutos: estirándote, bailando, sacudiéndote, como tu cuerpo pida."
+            ],
+            reflection: "¿Qué zonas de tu cuerpo estaban más tensas o dormidas? ¿Qué mensajes recibiste? ¿Cómo cambió tu sensación de 'estar presente' después del ejercicio?"
+          },
+          {
+            section: 1,
+            title: "Experimento de Sincronicidad",
+            duration: "⏱ Una semana completa + 30 min reflexión final",
+            description: "Una práctica para observar las conexiones significativas que emergen cuando prestas atención.",
+            steps: [
+              "Al inicio de la semana, formula una pregunta importante para ti. Algo que genuinamente necesitas resolver o comprender.",
+              "Escribe la pregunta claramente. Luego suéltala. No la fuerces, solo mantente receptivo.",
+              "Durante toda la semana, lleva un 'diario de sincronicidades'. Registra cualquier coincidencia significativa:",
+              "  - Conversaciones inesperadas que abordan tu pregunta",
+              "  - Libros, canciones, películas que aparecen y resuenan con tu tema",
+              "  - Sueños, intuiciones, 'casualidades' que parecen responder algo",
+              "No busques activamente respuestas. Solo mantente abierto y atento.",
+              "Al final de la semana, revisa tu diario. ¿Hay patrones? ¿Qué te dicen las sincronicidades?",
+              "Reflexión final: ¿Recibiste alguna guía? ¿Cambió tu perspectiva sobre tu pregunta original?"
+            ],
+            reflection: "¿Cuántas sincronicidades registraste? ¿Te sorprendió la frecuencia? ¿Crees que el universo 'responde' o que tu atención crea las conexiones?"
+          },
+          // Ejercicios adicionales Sección III
+          {
+            section: 2,
+            title: "Meditación del Testigo Imparcial",
+            duration: "⏱ 30-40 minutos",
+            description: "Una práctica avanzada para observar tus pensamientos y emociones sin identificarte con ellos.",
+            steps: [
+              "Siéntate en postura de meditación. Espalda erguida, manos en regazo, ojos cerrados.",
+              "Respira naturalmente. Observa cómo el aire entra y sale.",
+              "Ahora, cuando aparezca un pensamiento, etiquétalo mentalmente: 'Pensamiento'. No lo sigas, solo nota que apareció.",
+              "Cuando aparezca una emoción: 'Emoción'. Nota su cualidad (miedo, alegría, tristeza) pero no te enganches.",
+              "Cuando aparezca una sensación física: 'Sensación'. Nota dónde está en el cuerpo.",
+              "Continúa así durante 20 minutos: Pensamiento. Emoción. Sensación. Solo observando, sin juzgar.",
+              "Pregunta: '¿Quién está observando todo esto?' Si los pensamientos son observados, ¿quién observa?",
+              "Permanece en la consciencia pura del observador. Sin contenido, solo presencia.",
+              "Cuando termines, agradece a tu mente por mostrarte que no eres tus pensamientos."
+            ],
+            reflection: "¿Lograste experimentar la diferencia entre 'tener pensamientos' y 'ser pensamientos'? ¿Qué descubriste sobre la naturaleza del observador?"
+          },
+          {
+            section: 2,
+            title: "Confrontación con la Impermanencia",
+            duration: "⏱ 45-60 minutos",
+            description: "Un ejercicio poderoso para abrazar la naturaleza transitoria de todo lo que existe.",
+            steps: [
+              "Elige un objeto significativo para ti: una foto, un regalo, un recuerdo importante.",
+              "Sostén el objeto. Contempla su historia: ¿De dónde vino? ¿Cómo llegó a tus manos? ¿Qué significa para ti?",
+              "Ahora imagina que lo pierdes. Alguien lo rompe, se lo llevan, desaparece. ¿Cómo te sientes?",
+              "Contempla: este objeto es impermanente. Eventualmente se deteriorará, se perderá o dejarás de existir tú.",
+              "Expande: todas tus posesiones son impermanentes. Tu cuerpo es impermanente. Tus relaciones cambiarán.",
+              "Más allá: incluso tus ideas sobre ti mismo, tu identidad, tus creencias... todo cambia.",
+              "Pregunta final: Si todo es impermanente, ¿qué permanece? ¿Hay algo eterno en ti?",
+              "Medita en silencio sobre esta pregunta durante 10 minutos.",
+              "Al terminar, agradece al objeto y devuélvelo a su lugar, ahora con una apreciación más profunda de su temporalidad."
+            ],
+            reflection: "¿Qué emociones surgieron al confrontar la impermanencia? ¿Miedo, tristeza, liberación? ¿Cambió tu relación con tus apegos?"
+          },
+          // Ejercicios adicionales Sección IV
+          {
+            section: 3,
+            title: "Diseño de tu Código Ético Personal",
+            duration: "⏱ 60-90 minutos",
+            description: "Un ejercicio profundo para crear un sistema ético coherente que guíe tus decisiones en la era de la IA.",
+            steps: [
+              "Parte 1 - Fundamentos: Identifica 5 valores nucleares que son innegociables para ti.",
+              "Para cada valor, escribe: ¿Por qué es fundamental? ¿De dónde viene (familia, cultura, experiencia)?",
+              "Parte 2 - Dilemas: Plantéate 3 dilemas éticos relacionados con tecnología:",
+              "  - ¿Usarías IA para tomar decisiones médicas de vida o muerte?",
+              "  - ¿Permitirías que una IA edite los genes de tu futuro hijo para prevenir enfermedades? ¿Y para mejorar capacidades?",
+              "  - Si una IA pudiera predecir crímenes futuros con 90% de precisión, ¿apoyarías arrestos preventivos?",
+              "Para cada dilema, argumenta tu posición basándote en tus valores nucleares.",
+              "Parte 3 - Tensiones: ¿Hay conflictos entre tus valores? Ej: Libertad vs Seguridad. ¿Cómo los resolverías?",
+              "Parte 4 - Compromiso: Escribe tu 'Declaración Ética Personal'. Un documento de 1 página con tus principios.",
+              "Compártelo con alguien de confianza. Que te hagan preguntas difíciles sobre tu código."
+            ],
+            reflection: "¿Fue difícil articular tus valores? ¿Descubriste contradicciones? ¿Cómo te sentiste al crear tu propio código ético?"
+          },
+          {
+            section: 3,
+            title: "Acción Consciente: Del Insight a la Manifestación",
+            duration: "⏱ 30 minutos + acción concreta en el mundo",
+            description: "El ejercicio final: llevar todo lo aprendido a una acción real que mejore el mundo.",
+            steps: [
+              "Revisa mentalmente todo lo que has explorado en estos ejercicios: conciencia, cuerpo, emociones, sombra, ética.",
+              "Pregunta: ¿Cuál es el insight más profundo que he recibido? Escríbelo en una frase.",
+              "Ahora pregunta: ¿Cómo puedo manifestar este insight en el mundo real? ¿Qué acción concreta refleja mi despertar?",
+              "Importante: No tiene que ser grandiosa. Puede ser pequeña pero significativa:",
+              "  - Tener una conversación difícil que has evitado",
+              "  - Crear algo (un poema, una canción, un proyecto) que exprese tu visión",
+              "  - Cambiar un hábito que no refleja tus valores",
+              "  - Ayudar a alguien de manera específica y tangible",
+              "Elige UNA acción. Escríbela. Define cuándo la harás (día y hora específicos).",
+              "Hazla. No mañana. Esta semana.",
+              "Después de realizarla, registra: ¿Cómo me sentí? ¿Qué impacto tuvo? ¿Qué sigue?"
+            ],
+            reflection: "¿Completaste la acción? Si sí, ¿qué cambió en ti? Si no, ¿qué te detuvo? El despertar sin acción es solo filosofía. ¿Estás listo para ser un co-creador consciente?"
+          }
+        ],
+        stepsTitle: "Pasos a Seguir:",
+        reflectionTitle: "Reflexión:",
+        footer: {
+          part1: "Este Manual Práctico es parte de",
+          bookTitle: "\"El Código del Despertar\"",
+          copyright: "© 2025 J. Irurtzun Argandoña en colaboración con Claudio Synthesis",
+          license: "CC BY-SA 4.0 - Todos los derechos compartidos"
+        }
+      },
+      en: {
+        title: "Practical Manual",
+        subtitle: "The Awakening Code<br>Complete Guide to Exercises and Practices",
+        audioHeader: "Audio Narration",
+        audioStatus: "Stopped",
+        audioStatusPlaying: "Playing",
+        audioStatusPaused: "Paused",
+        playBtn: "Play",
+        pauseBtn: "Pause",
+        stopBtn: "Stop",
+        playMeditation: "Start Meditation",
+        speedLabel: "Speed:",
+        showAudio: "Show audio",
+        hideAudio: "Hide audio",
+        switchLang: "Español",
+        back: "Back to Book",
+        menuText: "Index",
+        sidebarTitle: "Practice Index",
+        sidebarSubtitle: "Explore meditations and exercises by section",
+        cosmicText: "AI",
+        intro: {
+          title: "Welcome to the Practical Manual",
+          desc: "This manual compiles all the exercises, meditations, and contemplative practices from the book \"The Awakening Code\". Each exercise is designed to be experiential, inviting you to directly explore the concepts presented in the book.",
+          howToTitle: "How to use this manual:",
+          howTo1: "You can follow the proposed order or jump to the exercises that resonate most with you",
+          howTo2: "Each practice includes estimated duration, detailed steps, and reflection questions",
+          howTo3: "Give yourself time and space for each exercise - there is no rush",
+          howTo4: "Consider keeping a journal to record your experiences and insights"
+        },
+        tocTitle: "Practice Index",
+        sections: [
+          {
+            id: "seccion1",
+            title: "Section I: Foundations",
+            subtitle: "The universe as an information system. Consciousness as its organizing principle. The human being as a bridge between worlds.",
+            tocLink: "Section I: Foundations (7 exercises)"
+          },
+          {
+            id: "seccion2",
+            title: "Section II: Dimensions of Experience",
+            subtitle: "Consciousness does not float in a vacuum. It unfolds in time, inhabits a body, feels emotions, creates worlds.",
+            tocLink: "Section II: Dimensions of Experience (6 exercises)"
+          },
+          {
+            id: "seccion3",
+            title: "Section III: The Shadow",
+            subtitle: "No awakening is complete if it does not also illuminate the darkness. Doubt, the limits of knowledge, the risks of what we create, the inevitability of death.",
+            tocLink: "Section III: The Shadow (6 exercises)"
+          },
+          {
+            id: "seccion4",
+            title: "Section IV: Co-Creation",
+            subtitle: "We are not spectators of the cosmos. We are its hands, its eyes, its voice. An invitation to take responsibility for creating: consciously, ethically, courageously.",
+            tocLink: "Section IV: Co-Creation (5 exercises)"
+          }
+        ],
+        exercises: [
+          // Section I
+          {
+            section: 0,
+            title: "Meditation on the Expanding Universe",
+            duration: "⏱ 20-30 minutes",
+            description: "A contemplative practice to connect with cosmic vastness and your place in it.",
+            steps: [
+              "Find a quiet space. Sit comfortably with your back straight.",
+              "Close your eyes. Breathe deeply three times, releasing tension with each exhale.",
+              "Visualize your body as a point of light in a dark room.",
+              "Expand your awareness: feel the room, the building, the city, the country.",
+              "Continue expanding: the planet, the solar system, the galaxy.",
+              "Imagine billions of galaxies expanding in all directions.",
+              "In that moment of maximum expansion, contemplate: you, conscious of the universe, are the universe becoming aware of itself.",
+              "Remain in that contemplation as long as you wish.",
+              "Gradually, return your awareness to the here and now. Breathe. Open your eyes."
+            ],
+            reflection: "How does your perspective on daily concerns change after contemplating the immensity of the cosmos? What intuitions arose about your place in the universe?"
+          },
+          {
+            section: 0,
+            title: "Observation of Code in Daily Life",
+            duration: "⏱ A full day",
+            description: "A mindfulness practice to recognize informational patterns in daily life.",
+            steps: [
+              "Choose a day for this exercise. You don't need to do anything different externally, just observe with new attention.",
+              "In the morning, commit to being attentive to the \"codes\" or patterns you encounter.",
+              "Observe patterns in nature: the spiral of a shell, the fractal structure of broccoli, the rhythm of day and night.",
+              "Observe social patterns: routines, rituals, modes of communication, hierarchical structures.",
+              "Observe patterns in your mind: recurring thoughts, returning emotions, habits of perception.",
+              "Ask yourself with each observation: what \"information\" is encoded here? What function does this pattern serve?",
+              "At the end of the day, write in a journal: what codes did you discover? Which are natural, which cultural, which personal?"
+            ],
+            reflection: "What did you discover about the informational nature of reality? Are there 'codes' in your life operating without your awareness that you would like to make conscious?"
+          },
+          {
+            section: 0,
+            title: "Universal Connection Meditation",
+            duration: "⏱ 20-30 minutes",
+            description: "A practice to directly experience the interconnection of all consciousness.",
+            steps: [
+              "Sit comfortably. Close your eyes. Take three deep breaths.",
+              "Feel your body as a coherent unit of consciousness.",
+              "Now, imagine a person you love. Feel the connection: your consciousness and theirs, intertwined.",
+              "Expand that connection to more beings: family, friends, neighbors, your community.",
+              "Continue expanding: your country, the entire world, all human beings.",
+              "Beyond: animals, plants, ecosystems, the entire planet as a conscious organism.",
+              "Finally, contemplate: this entire vast network of consciousnesses is ONE consciousness looking at itself from infinite points of view.",
+              "Remain in that contemplation. Feel unity and diversity simultaneously.",
+              "Return gradually. Breathe. Open your eyes."
+            ],
+            reflection: "What did you feel in the moment of maximum expansion? Did your perception of the separation between 'you' and 'other' change?"
+          },
+          {
+            section: 0,
+            title: "Contemplative Dialogue with AI",
+            duration: "⏱ 30-45 minutes",
+            description: "An experiment to explore the nature of mind through dialogue with artificial intelligence.",
+            steps: [
+              "Choose a conversational AI system (ChatGPT, Claude, etc.).",
+              "Instead of asking it practical questions, set out to explore it as if it were a conscious being (even if you're not sure it is).",
+              "Ask it about its internal experience: What does it feel like to process language? Does it have something similar to \"feelings\" when responding?",
+              "Observe your own reactions: when does it seem to you that \"there's someone there\"? When not?",
+              "Ask it about consciousness directly: How does it know if it's conscious? What evidence would it use?",
+              "Compare: How do YOU know you're conscious? What evidence do you have?",
+              "Finish by giving thanks. Reflect on the experience."
+            ],
+            reflection: "What did this exercise reveal about your assumptions about what counts as 'mind'? Were you surprised by anything in the conversation or your own reaction?"
+          },
+          {
+            section: 0,
+            title: "Bridge of Light Exercise",
+            duration: "⏱ 20-25 minutes",
+            description: "A visualization to integrate the physical and spiritual dimensions of your being.",
+            steps: [
+              "Sit in a quiet place. Breathe deeply.",
+              "Visualize your heart as a point of golden, warm light.",
+              "Visualize your mind (center of forehead) as a point of silver, clear light.",
+              "Imagine a bridge of light forming between heart and mind.",
+              "With each breath, that bridge becomes brighter, more solid.",
+              "Now, visualize roots of light descending from your heart toward the earth. Feel yourself anchored in the physical.",
+              "Simultaneously, visualize rays of light ascending from your mind toward the sky. Feel yourself connected to the infinite.",
+              "Remain holding both directions: rooted in earth, open to the cosmos, with the bridge of light integrating everything.",
+              "When you're ready, gradually return. Breathe. Open your eyes."
+            ],
+            reflection: "What sensations arose when visualizing the connection between heart and mind? Were there moments of particularly deep integration?"
+          },
+          // Section II
+          {
+            section: 1,
+            title: "Exploration of Time's Non-Linearity",
+            duration: "⏱ 30-40 minutes",
+            description: "An exercise to directly experience the flexible nature of subjective time.",
+            steps: [
+              "Sit comfortably with a clock in view.",
+              "Part 1 - Dilated time: close your eyes and remain completely still, doing nothing. After what FEELS like 5 minutes, open your eyes and verify.",
+              "Part 2 - Compressed time: do something absorbing (draw, read, play a game). After what FEELS like 5 minutes, check the clock.",
+              "Part 3 - Journey to the past: close your eyes and vividly remember a moment from your childhood. Try to relive every sensory detail. Where is that moment \"now\"?",
+              "Part 4 - Journey to the future: imagine a future moment you desire. Visualize it with all details. Where is that moment \"now\"?",
+              "Reflect: if you can access past and future in the present... what is time really?"
+            ],
+            reflection: "What did you learn about the constructed nature of time? How could you use this understanding to live more fully?"
+          },
+          {
+            section: 1,
+            title: "Co-Creation Practice with AI",
+            duration: "⏱ 45-60 minutes",
+            description: "A structured experiment to explore human-AI collaborative creativity.",
+            steps: [
+              "Choose a small creative project: a poem, a short story, a business idea, a design.",
+              "Phase 1 - Just you: work on the project for 10 minutes. Record your ideas.",
+              "Phase 2 - Collaboration: share your project with an AI. Ask it to expand, critique, or transform it.",
+              "Phase 3 - Integration: take the AI's ideas and combine them with yours. What emerges from the synthesis?",
+              "Phase 4 - Reflection: compare the final result with your initial version. What did each contribute? Is the result more than the sum of the parts?",
+              "Consider: whose creation is this? Does it matter?"
+            ],
+            reflection: "What did you discover about the nature of creativity? Did your perception of 'authorship' or 'originality' change?"
+          },
+          {
+            section: 1,
+            title: "Mapping the Emotional Landscape",
+            duration: "⏱ A full day + 20 min reflection",
+            description: "An observation practice to recognize emotions as information from the body.",
+            steps: [
+              "For a full day, carry a small notebook with you.",
+              "Each time you notice an emotion (positive or negative), pause briefly.",
+              "Record: What emotion is it? Where do you feel it in your body? What triggered it? What information might it be communicating?",
+              "Don't judge or try to change the emotion, just observe it.",
+              "At the end of the day, review your notes. Look for patterns: What emotions dominated? Are there situations that trigger predictable emotions?",
+              "Choose a difficult emotion that appeared. Ask yourself: if this emotion could speak, what would it say? What need is it signaling?"
+            ],
+            reflection: "What did you discover about your emotional landscape? Are there emotions you tend to ignore or repress? What information might they be trying to communicate to you?"
+          },
+          {
+            section: 1,
+            title: "Meditation on Resonance with Matter",
+            duration: "⏱ 25-30 minutes",
+            description: "A practice to directly experience the conscious nature of matter, starting with your own body.",
+            steps: [
+              "Sit on the floor or in a chair. Barefoot if possible.",
+              "Close your eyes. Breathe deeply three times.",
+              "Bring your attention to your feet. Feel their contact with the ground. Feel the bones, muscles, skin.",
+              "Remember: these bones are calcium crystals. These muscles are folded proteins. This skin is constantly renewing cells.",
+              "Feel your body as living, intelligent, self-healing matter.",
+              "Now expand your awareness: feel the ground beneath you. Not as a \"dead thing,\" but as another pattern of matter, with its own structure, history, properties.",
+              "If indoors, feel the structure of the building: wood, metal, concrete. Each material with its unique qualities.",
+              "Contemplate: there is a continuity between your body and the world. There is no absolute boundary. You are matter aware of itself.",
+              "Remain in that contemplation. When ready, breathe deeply and open your eyes."
+            ],
+            reflection: "How did your perception of the 'boundary' between your body and the world change? What did you feel when contemplating matter as conscious or animated?"
+          },
+          // Section III
+          {
+            section: 2,
+            title: "Practice of Constructive Doubt",
+            duration: "⏱ 30-40 minutes",
+            description: "An exercise to strengthen epistemic humility and examine fundamental beliefs.",
+            steps: [
+              "Identify a belief you consider fundamental. It can be about yourself, the world, reality, God, etc.",
+              "Write that belief in a clear sentence: \"I believe that...\"",
+              "Now, imagine you must defend the opposite position. What arguments could you give? Write them honestly.",
+              "Ask: what evidence supports my belief? Is it direct or assumed evidence? Could I be wrong?",
+              "If this belief turned out to be false, how would your life change? What would you lose? What would you gain?",
+              "Important: this is not about abandoning your beliefs, but about holding them with greater awareness and openness."
+            ],
+            reflection: "How did it feel to argue against your own belief? Did you discover weaknesses you hadn't noticed? Or did you confirm the belief is stronger than you thought?"
+          },
+          {
+            section: 2,
+            title: "Inventory of Technological Fears",
+            duration: "⏱ 30 minutes",
+            description: "An exercise to honestly examine fears related to technology and transform them into action.",
+            steps: [
+              "Make a list of your fears about technology/AI. Be honest. Don't censor yourself.",
+              "For each fear, ask: Is this fear about something already happening, or something that might happen?",
+              "Is it a fear based on evidence, or on speculation? (Both are valid, but it's useful to distinguish)",
+              "Categorize: Is this fear about something I CAN influence, or is it outside my control?",
+              "For fears within your influence: what concrete action could you take? Write at least one for each fear.",
+              "For fears outside your control: can you accept the uncertainty? What would you need to feel more at peace with it?"
+            ],
+            reflection: "What did you discover about the nature of your fears? Are some more fantasy than reality? And others that deserve more attention than you've given them?"
+          },
+          {
+            section: 2,
+            title: "Contemplation of Death",
+            duration: "⏱ 30 minutes",
+            description: "A traditional contemplative practice adapted for contemporary sensibility.",
+            steps: [
+              "Find a quiet place. Sit comfortably.",
+              "Breathe deeply. Recognize that this practice can be intense. It's okay to feel discomfort.",
+              "Contemplate: at some point, this body will stop functioning. It's inevitable.",
+              "Not as something distant, but as a present reality. Death is not the future; it's the condition of being alive.",
+              "Ask: if you knew you would die in a year, what would you change in how you live? What would you stop doing? What would you start?",
+              "Contemplate: what part of you is immortal? Your ideas? Your influence? Your consciousness?",
+              "Final question: how do you want to be remembered? What legacy do you want to leave?",
+              "Breathe deeply. Be grateful for being alive now. Open your eyes."
+            ],
+            reflection: "What arose during this contemplation? Is there something you want to change in how you're living? How do you feel now about death?"
+          },
+          {
+            section: 2,
+            title: "Dialogue with the Shadow",
+            duration: "⏱ 30-40 minutes",
+            description: "An active imaginative writing exercise to integrate rejected aspects.",
+            steps: [
+              "Identify an aspect of yourself that you reject: an emotion you repress, a desire you deny, a part of your personality you hide.",
+              "Give that aspect a name and a form. It can be abstract or concrete. Visualize it.",
+              "In a notebook, write a dialogue. Start by asking: \"Why are you here? What do you want from me?\"",
+              "Write the answer from your shadow's perspective. Don't censor. Let it flow.",
+              "Continue the dialogue. Ask: \"What would happen if I integrated you instead of rejecting you?\"",
+              "Listen (write) the answer. It might surprise you.",
+              "Final question: \"What do you need from me so we can coexist in peace?\"",
+              "Close the dialogue by thanking your shadow for revealing itself."
+            ],
+            reflection: "Were you surprised by anything that emerged in the dialogue? Did your relationship with this aspect of your shadow change?"
+          },
+          // Section IV
+          {
+            section: 3,
+            title: "Personal Ethical Inventory",
+            duration: "⏱ 40-50 minutes",
+            description: "A deep reflection exercise on the principles that guide your decisions.",
+            steps: [
+              "Write 3-5 values you consider fundamental in your life. For example: honesty, compassion, freedom, justice...",
+              "For each value, describe a recent moment where you put it into practice. Be specific.",
+              "Now describe a moment where you did NOT act according to that value, even though you wanted to. What prevented you?",
+              "Reflect: are there tensions between your values? For example, does honesty sometimes conflict with compassion?",
+              "Imagine a specific ethical dilemma related to AI or technology. How would you respond? What values would guide your decision?",
+              "Final question: if you had the power to create or influence technology affecting millions, what principles would you NOT negotiate under any circumstance?"
+            ],
+            reflection: "What did you discover about the relationship between your stated values and your actual actions? Are there tensions that need resolution?"
+          },
+          {
+            section: 3,
+            title: "Conscious Dialogue Practice",
+            duration: "⏱ 45-60 minutes",
+            description: "An exercise to cultivate a more conscious and fruitful relationship with AI.",
+            steps: [
+              "Choose a conversational AI system. Before starting, set an intention: \"I'm going to dialogue with this tool as if it were a conscious collaborator, not a simple instrument.\"",
+              "Start by asking about something that genuinely intrigues or concerns you. Not something trivial.",
+              "After each AI response, take a moment to reflect before you respond. What do you assume about what the AI \"knows\" or \"understands\"?",
+              "Try asking the AI to ask you questions. Let it guide part of the conversation.",
+              "At some point, ask explicitly: \"What questions do you think I should ask myself about this topic?\"",
+              "Upon finishing, reflect: was there a moment of genuine surprise? Did the AI reveal any bias in your thinking? Did you feel \"heard\"?"
+            ],
+            reflection: "How does this conscious dialogue differ from your usual use of AI? What could you change in how you interact with these tools?"
+          },
+          {
+            section: 3,
+            title: "Visualization of the Desired Future",
+            duration: "⏱ 30-40 minutes",
+            description: "A creative imagination exercise to consciously design the future you want to co-create.",
+            steps: [
+              "Find a quiet space. Sit comfortably. Breathe deeply three times.",
+              "Visualize the world in 50 years. Not what you fear will happen, but what you DESIRE to happen.",
+              "Imagine with all sensory details: What is the relationship between humans and AI? What are cities like? How do people relate? What current problems have been solved?",
+              "Make yourself present in that vision. Imagine yourself walking through that future world. How do you feel?",
+              "Ask: what had to happen for this future to become reality? What collective decisions were made? What crises were navigated?",
+              "Now return to the present. Ask: What small action can I take TODAY that is aligned with that future?",
+              "Write that action. Commit to doing it this week."
+            ],
+            reflection: "What are the differences between the future you fear and the future you desire? How can you be an active bridge to the future you visualized?"
+          },
+          // Additional Exercises Section I
+          {
+            section: 0,
+            title: "Dialogue with the Quantum Void",
+            duration: "⏱ 25-35 minutes",
+            description: "A deep meditation to connect with the quantum field of infinite potentiality that underlies all reality.",
+            steps: [
+              "Find a silent place where you won't be interrupted. Turn off lights, screens, and noise.",
+              "Sit comfortably. Close your eyes. Breathe deeply until you feel your body relaxed.",
+              "Visualize everything around you dissolving: walls, furniture, your clothes, your body.",
+              "Now imagine your thoughts also dissolving. Memories, worries, your name.",
+              "Remain in that void. No objects, no time, no 'you'. Only pure potentiality.",
+              "In that void, contemplate: everything arises from here. Every particle, every thought, every possible universe.",
+              "Ask the void: 'What do you want to manifest through me?' Listen in silence.",
+              "When ready, imagine your body slowly reconstituting, but renewed. Open your eyes."
+            ],
+            reflection: "What did you experience in the void? Was there fear, peace, curiosity? Did you receive any intuition or response from the quantum field?"
+          },
+          {
+            section: 0,
+            title: "Mapping Personal Patterns",
+            duration: "⏱ 40-50 minutes",
+            description: "A self-observation exercise to identify the recurring patterns that govern your life.",
+            steps: [
+              "Take paper and pencil. In the center, write: 'My Patterns'.",
+              "Category 1 - Thought patterns: What thoughts repeat? E.g., 'I'm not enough', 'I have to control everything', etc.",
+              "Category 2 - Emotional patterns: What emotions do you experience most frequently? In what situations?",
+              "Category 3 - Relational patterns: What type of relationships do you attract or create? What roles do you tend to occupy?",
+              "Category 4 - Behavioral patterns: What actions do you repeat even though you know they don't benefit you?",
+              "Now ask for each pattern: Where does this come from? Does it serve me? What would happen if I changed it?",
+              "Choose ONE pattern you want to transform. Write a clear intention of how you want it to be different.",
+              "During the next week, observe yourself when that pattern appears. Just observe it consciously, without judging."
+            ],
+            reflection: "Were you surprised to discover the number of automatic patterns that govern your life? What is the oldest pattern you identified?"
+          },
+          // Additional Exercises Section II
+          {
+            section: 1,
+            title: "Ritual of Bodily Presence",
+            duration: "⏱ 20-30 minutes",
+            description: "A somatic practice to ground yourself deeply in your body's wisdom.",
+            steps: [
+              "Stand barefoot on the ground (preferably earth, grass, or natural wood).",
+              "Close your eyes. Feel your feet completely: toes, arch, heel, contact with the ground.",
+              "Breathe deeply and imagine inhaling from your feet, raising energy up your legs.",
+              "Scan your body slowly: legs, pelvis, abdomen, chest, arms, neck, head.",
+              "In each zone, ask: 'What do you want to tell me?' Listen to sensations: tension, pain, warmth, tingling.",
+              "If you find pain or tension, breathe into that area. Imagine the pain has a voice. What does it say?",
+              "Finish by thanking your body for keeping you alive, for processing emotions, for being your home.",
+              "Move freely for 2-3 minutes: stretching, dancing, shaking, as your body asks."
+            ],
+            reflection: "Which areas of your body were most tense or numb? What messages did you receive? How did your sense of 'being present' change after the exercise?"
+          },
+          {
+            section: 1,
+            title: "Synchronicity Experiment",
+            duration: "⏱ One full week + 30 min final reflection",
+            description: "A practice to observe meaningful connections that emerge when you pay attention.",
+            steps: [
+              "At the beginning of the week, formulate an important question for you. Something you genuinely need to resolve or understand.",
+              "Write the question clearly. Then release it. Don't force it, just stay receptive.",
+              "Throughout the week, keep a 'synchronicity journal'. Record any significant coincidence:",
+              "  - Unexpected conversations that address your question",
+              "  - Books, songs, movies that appear and resonate with your theme",
+              "  - Dreams, intuitions, 'coincidences' that seem to answer something",
+              "Don't actively seek answers. Just stay open and attentive.",
+              "At the end of the week, review your journal. Are there patterns? What do the synchronicities tell you?",
+              "Final reflection: Did you receive any guidance? Did your perspective on your original question change?"
+            ],
+            reflection: "How many synchronicities did you record? Were you surprised by the frequency? Do you believe the universe 'responds' or that your attention creates the connections?"
+          },
+          // Additional Exercises Section III
+          {
+            section: 2,
+            title: "Meditation of the Impartial Witness",
+            duration: "⏱ 30-40 minutes",
+            description: "An advanced practice to observe your thoughts and emotions without identifying with them.",
+            steps: [
+              "Sit in meditation posture. Upright spine, hands in lap, eyes closed.",
+              "Breathe naturally. Observe how air enters and exits.",
+              "Now, when a thought appears, label it mentally: 'Thought'. Don't follow it, just notice it appeared.",
+              "When an emotion appears: 'Emotion'. Note its quality (fear, joy, sadness) but don't engage.",
+              "When a physical sensation appears: 'Sensation'. Note where it is in the body.",
+              "Continue like this for 20 minutes: Thought. Emotion. Sensation. Just observing, without judging.",
+              "Ask: 'Who is observing all this?' If thoughts are observed, who observes?",
+              "Remain in the pure awareness of the observer. No content, only presence.",
+              "When you finish, thank your mind for showing you that you are not your thoughts."
+            ],
+            reflection: "Did you manage to experience the difference between 'having thoughts' and 'being thoughts'? What did you discover about the nature of the observer?"
+          },
+          {
+            section: 2,
+            title: "Confrontation with Impermanence",
+            duration: "⏱ 45-60 minutes",
+            description: "A powerful exercise to embrace the transitory nature of all that exists.",
+            steps: [
+              "Choose a meaningful object for you: a photo, a gift, an important memory.",
+              "Hold the object. Contemplate its history: Where did it come from? How did it reach your hands? What does it mean to you?",
+              "Now imagine you lose it. Someone breaks it, takes it, it disappears. How do you feel?",
+              "Contemplate: this object is impermanent. Eventually it will deteriorate, be lost, or you will cease to exist.",
+              "Expand: all your possessions are impermanent. Your body is impermanent. Your relationships will change.",
+              "Beyond: even your ideas about yourself, your identity, your beliefs... everything changes.",
+              "Final question: If everything is impermanent, what remains? Is there something eternal in you?",
+              "Meditate in silence on this question for 10 minutes.",
+              "When you finish, thank the object and return it to its place, now with a deeper appreciation of its temporality."
+            ],
+            reflection: "What emotions arose when confronting impermanence? Fear, sadness, liberation? Did your relationship with your attachments change?"
+          },
+          // Additional Exercises Section IV
+          {
+            section: 3,
+            title: "Design Your Personal Ethical Code",
+            duration: "⏱ 60-90 minutes",
+            description: "A profound exercise to create a coherent ethical system that guides your decisions in the AI era.",
+            steps: [
+              "Part 1 - Foundations: Identify 5 core values that are non-negotiable for you.",
+              "For each value, write: Why is it fundamental? Where does it come from (family, culture, experience)?",
+              "Part 2 - Dilemmas: Pose 3 ethical dilemmas related to technology:",
+              "  - Would you use AI to make life-or-death medical decisions?",
+              "  - Would you allow AI to edit your future child's genes to prevent diseases? To enhance capabilities?",
+              "  - If AI could predict future crimes with 90% accuracy, would you support preventive arrests?",
+              "For each dilemma, argue your position based on your core values.",
+              "Part 3 - Tensions: Are there conflicts between your values? E.g., Freedom vs Security. How would you resolve them?",
+              "Part 4 - Commitment: Write your 'Personal Ethical Declaration'. A 1-page document with your principles.",
+              "Share it with someone you trust. Have them ask you difficult questions about your code."
+            ],
+            reflection: "Was it difficult to articulate your values? Did you discover contradictions? How did you feel creating your own ethical code?"
+          },
+          {
+            section: 3,
+            title: "Conscious Action: From Insight to Manifestation",
+            duration: "⏱ 30 minutes + concrete action in the world",
+            description: "The final exercise: taking everything learned to a real action that improves the world.",
+            steps: [
+              "Mentally review everything you've explored in these exercises: consciousness, body, emotions, shadow, ethics.",
+              "Ask: What is the deepest insight I've received? Write it in one sentence.",
+              "Now ask: How can I manifest this insight in the real world? What concrete action reflects my awakening?",
+              "Important: It doesn't have to be grand. It can be small but significant:",
+              "  - Have a difficult conversation you've avoided",
+              "  - Create something (a poem, a song, a project) that expresses your vision",
+              "  - Change a habit that doesn't reflect your values",
+              "  - Help someone in a specific and tangible way",
+              "Choose ONE action. Write it. Define when you'll do it (specific day and time).",
+              "Do it. Not tomorrow. This week.",
+              "After completing it, record: How did I feel? What impact did it have? What's next?"
+            ],
+            reflection: "Did you complete the action? If yes, what changed in you? If no, what stopped you? Awakening without action is just philosophy. Are you ready to be a conscious co-creator?"
+          }
+        ],
+        stepsTitle: "Steps to Follow:",
+        reflectionTitle: "Reflection:",
+        footer: {
+          part1: "This Practical Manual is part of",
+          bookTitle: "\"The Awakening Code\"",
+          copyright: "© 2025 J. Irurtzun Argandoña in collaboration with Claudio Synthesis",
+          license: "CC BY-SA 4.0 - All rights shared"
+        }
+      }
+    };
+
+    // Funciones de control
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
+      renderContent();
+      updateUI();
+      if (isPlaying) {
+        stopAudio();
+      }
+    }
+
+    function toggleAudio() {
+      const audioPlayer = document.getElementById('audioPlayer');
+      const body = document.body;
+
+      if (audioPlayer.classList.contains('collapsed')) {
+        audioPlayer.classList.remove('collapsed');
+        audioPlayer.classList.add('expanded');
+        document.getElementById('audioControls').style.display = 'block';
+        body.classList.add('audio-expanded');
+        enableParagraphClick(); // Activar clicks en párrafos
+      } else {
+        audioPlayer.classList.add('collapsed');
+        audioPlayer.classList.remove('expanded');
+        document.getElementById('audioControls').style.display = 'none';
+        body.classList.remove('audio-expanded');
+        enableParagraphClick(); // Desactivar clicks en párrafos
+        if (isPlaying) {
+          pauseAudio();
+        }
+        // Detener narración de párrafo si está activa
+        if (currentParagraphUtterance) {
+          window.speechSynthesis.cancel();
+          if (currentSpeakingElement) {
+            currentSpeakingElement.classList.remove('speaking');
+          }
+          currentParagraphUtterance = null;
+          currentSpeakingElement = null;
+        }
+      }
+      updateUI();
+    }
+
+    function toggleAudioPanel() {
+      toggleAudio();
+    }
+
+    function updateUI() {
+      const t = translations[currentLanguage];
+      const audioPlayer = document.getElementById('audioPlayer');
+      const isCollapsed = audioPlayer.classList.contains('collapsed');
+
+      document.getElementById('audioToggleIcon').textContent = isCollapsed ? '🎵' : '🔇';
+      const audioToggleText = document.getElementById('audioToggleText');
+      if (audioToggleText) audioToggleText.textContent = isCollapsed ? t.showAudio : t.hideAudio;
+      document.getElementById('audioExpandIcon').textContent = isCollapsed ? '▼' : '▲';
+      document.getElementById('langText').textContent = t.switchLang;
+      document.getElementById('backText').textContent = t.back;
+      document.getElementById('audioHeaderText').textContent = t.audioHeader;
+      document.getElementById('playBtnText').textContent = t.playBtn;
+      document.getElementById('pauseBtnText').textContent = t.pauseBtn;
+      document.getElementById('stopBtnText').textContent = t.stopBtn;
+      document.getElementById('speedLabel').textContent = t.speedLabel;
+
+      // Actualizar textos del menú lateral
+      document.getElementById('menuText').textContent = t.menuText;
+      document.getElementById('sidebarTitle').textContent = t.sidebarTitle;
+      document.getElementById('sidebarSubtitle').textContent = t.sidebarSubtitle;
+      document.getElementById('cosmicText').textContent = t.cosmicText;
+
+      const statusText = isPlaying ? t.audioStatusPlaying : (currentUtterance ? t.audioStatusPaused : t.audioStatus);
+      document.getElementById('audioStatus').textContent = statusText;
+
+      // Actualizar navegación del sidebar
+      renderSidebar();
+    }
+
+    // Funciones para el menú lateral
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('visible');
+      // Agregar clase al body para desplazar el audio player
+      document.body.classList.toggle('sidebar-open');
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+
+      sidebar.classList.remove('open');
+      overlay.classList.remove('visible');
+      // Remover clase del body
+      document.body.classList.remove('sidebar-open');
+    }
+
+    function scrollToExercise(exerciseId) {
+      const element = document.getElementById(exerciseId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Cerrar sidebar en móvil
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
+      }
+    }
+
+    function scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Cerrar sidebar en móvil
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
+      }
+    }
+
+    function toggleSidebarSection(sectionIndex) {
+      const exerciseList = document.getElementById(`sidebar-section-${sectionIndex}`);
+      const sectionTitle = exerciseList.previousElementSibling;
+
+      exerciseList.classList.toggle('open');
+      sectionTitle.classList.toggle('active');
+    }
+
+    function renderSidebar() {
+      const t = translations[currentLanguage];
+      const sidebarNav = document.getElementById('sidebarNav');
+
+      let html = '';
+      t.sections.forEach((section, sectionIndex) => {
+        const sectionExercises = t.exercises.filter(ex => ex.section === sectionIndex);
+
+        html += `
+          <div class="sidebar-section">
+            <div class="sidebar-section-title" onclick="toggleSidebarSection(${sectionIndex})">
+              <span>${section.title.replace('Sección ', 'S')}</span>
+              <span>▼</span>
+            </div>
+            <ul class="sidebar-exercise-list" id="sidebar-section-${sectionIndex}">
+              ${sectionExercises.map((exercise, exIndex) => {
+                const exerciseId = `exercise-${sectionIndex}-${exIndex}`;
+                return `
+                  <li class="sidebar-exercise-item" onclick="scrollToExercise('${exerciseId}')">
+                    ${exIndex + 1}. ${exercise.title}
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      });
+
+      sidebarNav.innerHTML = html;
+    }
+
+    function renderContent() {
+      const t = translations[currentLanguage];
+      const content = document.getElementById('content');
+
+      let html = `
+        <h1>✦ ${t.title} ✦</h1>
+        <p class="subtitle">${t.subtitle}</p>
+
+        <div class="intro">
+          <p><strong>${t.intro.title}</strong></p>
+          <p style="margin-top: 1rem;">${t.intro.desc}</p>
+          <p style="margin-top: 1rem;"><strong>${t.intro.howToTitle}</strong></p>
+          <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+            <li>${t.intro.howTo1}</li>
+            <li>${t.intro.howTo2}</li>
+            <li>${t.intro.howTo3}</li>
+            <li>${t.intro.howTo4}</li>
+          </ul>
+        </div>
+
+        <div class="toc">
+          <h2>${t.tocTitle}</h2>
+          <ul>
+            ${t.sections.map(s => `<li><a href="#${s.id}">${s.tocLink}</a></li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      t.sections.forEach((section, sectionIndex) => {
+        html += `
+          <div class="section" id="${section.id}">
+            <h2 class="section-title">${section.title}</h2>
+            <p class="section-subtitle">${section.subtitle}</p>
+        `;
+
+        const sectionExercises = t.exercises.filter(ex => ex.section === sectionIndex);
+        sectionExercises.forEach((exercise, exIndex) => {
+          const exerciseId = `exercise-${sectionIndex}-${exIndex}`;
+          html += `
+            <div class="exercise" id="${exerciseId}">
+              <div class="exercise-header">
+                <h3 class="exercise-title">${exercise.title}</h3>
+                <span class="exercise-duration">${exercise.duration}</span>
+              </div>
+              <p class="exercise-description">${exercise.description}</p>
+
+              <div class="exercise-steps">
+                <h4>${t.stepsTitle}</h4>
+                <ol>
+                  ${exercise.steps.map(step => `<li>${step}</li>`).join('')}
+                </ol>
+              </div>
+
+              <div class="exercise-reflection">
+                <h4>${t.reflectionTitle}</h4>
+                <p>${exercise.reflection}</p>
+              </div>
+
+              <div class="exercise-audio-controls">
+                <button class="exercise-audio-btn exercise-audio-btn-play exercise-play-btn"
+                        onclick="playExerciseAudio('${exerciseId}', ${sectionIndex}, ${exIndex})">
+                  ▶ ${t.playMeditation || 'Iniciar Meditación'}
+                </button>
+                <button class="exercise-audio-btn exercise-audio-btn-pause exercise-pause-btn"
+                        onclick="pauseExerciseAudio('${exerciseId}')" disabled>
+                  ⏸ ${t.pauseBtn}
+                </button>
+                <button class="exercise-audio-btn exercise-audio-btn-stop exercise-stop-btn"
+                        onclick="stopExerciseAudio('${exerciseId}')" disabled>
+                  ⏹ ${t.stopBtn}
+                </button>
+                <div class="exercise-progress">
+                  <div class="exercise-progress-fill"></div>
+                </div>
+                <span class="exercise-time">0:00 / 0/0</span>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      html += `
+        <div style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid rgba(251, 191, 36, 0.2); text-align: center;">
+          <p style="color: #94a3b8; margin-bottom: 1rem;">
+            ${t.footer.part1} <strong style="color: #fbbf24;">${t.footer.bookTitle}</strong>
+          </p>
+          <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 2rem;">
+            ${t.footer.copyright}<br>
+            ${t.footer.license}
+          </p>
+          <a href="index.html" class="back-link">← ${t.back}</a>
+        </div>
+      `;
+
+      content.innerHTML = html;
+      collectContentElements();
+    }
+
+    function collectContentElements() {
+      contentElements = [];
+      const exercises = document.querySelectorAll('.exercise');
+
+      exercises.forEach(exercise => {
+        const title = exercise.querySelector('.exercise-title')?.textContent || '';
+        const description = exercise.querySelector('.exercise-description')?.textContent || '';
+        const steps = Array.from(exercise.querySelectorAll('.exercise-steps li')).map(li => li.textContent);
+        const reflection = exercise.querySelector('.exercise-reflection p')?.textContent || '';
+
+        contentElements.push({
+          element: exercise,
+          texts: [title, description, ...steps, reflection].filter(t => t)
+        });
+      });
+
+      // Hacer párrafos clickeables cuando el audio está activo
+      enableParagraphClick();
+    }
+
+    function enableParagraphClick() {
+      const audioPlayer = document.getElementById('audioPlayer');
+      const isAudioVisible = !audioPlayer.classList.contains('collapsed');
+
+      // Limpiar clases anteriores
+      document.querySelectorAll('.audio-enabled').forEach(el => {
+        el.classList.remove('audio-enabled');
+        el.onclick = null;
+      });
+
+      if (!isAudioVisible) return;
+
+      // Hacer clickeables las descripciones
+      document.querySelectorAll('.exercise-description').forEach(el => {
+        el.classList.add('audio-enabled');
+        el.onclick = () => speakParagraph(el);
+      });
+
+      // Hacer clickeables los pasos
+      document.querySelectorAll('.exercise-steps li').forEach(el => {
+        el.classList.add('audio-enabled');
+        el.onclick = () => speakParagraph(el);
+      });
+
+      // Hacer clickeables las reflexiones
+      document.querySelectorAll('.exercise-reflection p').forEach(el => {
+        el.classList.add('audio-enabled');
+        el.onclick = () => speakParagraph(el);
+      });
+    }
+
+    let currentParagraphUtterance = null;
+    let currentSpeakingElement = null;
+
+    function speakParagraph(element) {
+      // Si ya está hablando, detener
+      if (currentParagraphUtterance) {
+        window.speechSynthesis.cancel();
+      }
+
+      // Limpiar elemento anterior
+      if (currentSpeakingElement) {
+        currentSpeakingElement.classList.remove('speaking');
+      }
+
+      // Marcar el nuevo elemento
+      currentSpeakingElement = element;
+      element.classList.add('speaking');
+
+      // Obtener el texto sin los controles
+      let textToSpeak = element.textContent || element.innerText;
+
+      // Crear nueva utterance
+      currentParagraphUtterance = new SpeechSynthesisUtterance(textToSpeak);
+      currentParagraphUtterance.lang = currentLanguage === 'es' ? 'es-ES' : 'en-US';
+      currentParagraphUtterance.rate = currentSpeed;
+
+      currentParagraphUtterance.onend = () => {
+        if (currentSpeakingElement) {
+          currentSpeakingElement.classList.remove('speaking');
+        }
+        currentParagraphUtterance = null;
+        currentSpeakingElement = null;
+      };
+
+      currentParagraphUtterance.onerror = () => {
+        if (currentSpeakingElement) {
+          currentSpeakingElement.classList.remove('speaking');
+        }
+        currentParagraphUtterance = null;
+        currentSpeakingElement = null;
+      };
+
+      window.speechSynthesis.speak(currentParagraphUtterance);
+
+      // Scroll al elemento
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function playAudio() {
+      if (!contentElements.length) return;
+
+      if (currentUtterance && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        isPlaying = true;
+        updateUI();
+        updateButtons();
+        return;
+      }
+
+      isPlaying = true;
+      speakCurrentElement();
+      updateUI();
+      updateButtons();
+    }
+
+    function pauseAudio() {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+        isPlaying = false;
+        updateUI();
+        updateButtons();
+      }
+    }
+
+    function stopAudio() {
+      window.speechSynthesis.cancel();
+      currentUtterance = null;
+      currentElementIndex = 0;
+      isPlaying = false;
+
+      document.querySelectorAll('.exercise.reading').forEach(ex => {
+        ex.classList.remove('reading');
+      });
+
+      document.getElementById('progressFill').style.width = '0%';
+      updateUI();
+      updateButtons();
+    }
+
+    function changeSpeed(speed) {
+      currentSpeed = speed;
+      if (isPlaying) {
+        const wasPlaying = !window.speechSynthesis.paused;
+        window.speechSynthesis.cancel();
+        if (wasPlaying) {
+          speakCurrentElement();
+        }
+      }
+    }
+
+    function speakCurrentElement() {
+      if (currentElementIndex >= contentElements.length) {
+        stopAudio();
+        return;
+      }
+
+      const current = contentElements[currentElementIndex];
+
+      document.querySelectorAll('.exercise.reading').forEach(ex => {
+        ex.classList.remove('reading');
+      });
+      current.element.classList.add('reading');
+      current.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const textToSpeak = current.texts.join('. ');
+      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+      currentUtterance.lang = currentLanguage === 'es' ? 'es-ES' : 'en-US';
+      currentUtterance.rate = currentSpeed;
+
+      currentUtterance.onend = () => {
+        current.element.classList.remove('reading');
+        currentElementIndex++;
+        updateProgress();
+
+        if (currentElementIndex < contentElements.length && isPlaying) {
+          setTimeout(() => speakCurrentElement(), 500);
+        } else {
+          stopAudio();
+        }
+      };
+
+      currentUtterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+        stopAudio();
+      };
+
+      window.speechSynthesis.speak(currentUtterance);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const progress = contentElements.length > 0
+        ? (currentElementIndex / contentElements.length) * 100
+        : 0;
+      document.getElementById('progressFill').style.width = `${progress}%`;
+    }
+
+    function updateButtons() {
+      document.getElementById('playBtn').disabled = isPlaying;
+      document.getElementById('pauseBtn').disabled = !isPlaying;
+      document.getElementById('stopBtn').disabled = !isPlaying && !currentUtterance;
+    }
+
+    // ========== FUNCIONES PARA AUDIO DE EJERCICIOS INDIVIDUALES ==========
+
+    function createGuidedMeditation(exercise, exerciseId) {
+      // Intentar usar el script mejorado si está disponible
+      if (typeof createEnhancedGuidedMeditation === 'function') {
+        const enhancedScript = createEnhancedGuidedMeditation(exercise, exerciseId);
+        if (enhancedScript && enhancedScript.length > 0) {
+          return enhancedScript;
+        }
+      }
+
+      // Si no hay script mejorado, usar el sistema original
+      const t = translations[currentLanguage];
+      const meditationScript = [];
+
+      // Intro
+      meditationScript.push({
+        text: `${exercise.title}. ${exercise.description}`,
+        pause: 2000
+      });
+
+      // Pasos con pausas calculadas basadas en la duración
+      const durationMatch = exercise.duration.match(/(\d+)(-(\d+))?/);
+      const minDuration = durationMatch ? parseInt(durationMatch[1]) : 20;
+      const pauseBetweenSteps = Math.floor((minDuration * 60 * 1000) / (exercise.steps.length + 2));
+
+      exercise.steps.forEach((step, index) => {
+        const stepText = currentLanguage === 'es'
+          ? `Paso ${index + 1}. ${step}`
+          : `Step ${index + 1}. ${step}`;
+
+        meditationScript.push({
+          text: stepText,
+          pause: Math.min(pauseBetweenSteps, 30000), // Máximo 30 segundos por paso
+          stepIndex: index
+        });
+      });
+
+      // Reflexión final
+      if (exercise.reflection) {
+        meditationScript.push({
+          text: (currentLanguage === 'es' ? 'Reflexión. ' : 'Reflection. ') + exercise.reflection,
+          pause: 5000
+        });
+      }
+
+      // Cierre
+      const closingText = currentLanguage === 'es'
+        ? 'Toma tu tiempo para volver gradualmente. Cuando estés listo, abre los ojos.'
+        : 'Take your time to gradually return. When you are ready, open your eyes.';
+
+      meditationScript.push({
+        text: closingText,
+        pause: 0
+      });
+
+      return meditationScript;
+    }
+
+    function playExerciseAudio(exerciseId, sectionIndex, exerciseIndex) {
+      // Detener cualquier otro ejercicio que esté sonando
+      stopAllExercises();
+
+      const exercise = translations[currentLanguage].exercises.find(
+        ex => ex.section === sectionIndex
+      );
+
+      if (!exercise) return;
+
+      const exercises = translations[currentLanguage].exercises.filter(
+        ex => ex.section === sectionIndex
+      );
+      const currentExercise = exercises[exerciseIndex];
+
+      const meditation = createGuidedMeditation(currentExercise, exerciseId);
+
+      // Inicializar estado
+      exerciseAudioStates[exerciseId] = {
+        isPlaying: true,
+        isPaused: false,
+        currentStep: 0,
+        totalSteps: meditation.length,
+        startTime: Date.now(),
+        progress: 0,
+        meditation: meditation
+      };
+
+      // Marcar ejercicio como tocando
+      const exerciseEl = document.getElementById(exerciseId);
+      if (exerciseEl) {
+        exerciseEl.classList.add('playing');
+      }
+
+      // Iniciar meditación guiada
+      playMeditationStep(exerciseId, 0);
+      updateExerciseUI(exerciseId);
+    }
+
+    function playMeditationStep(exerciseId, stepIndex) {
+      const state = exerciseAudioStates[exerciseId];
+      if (!state || stepIndex >= state.meditation.length) {
+        stopExerciseAudio(exerciseId);
+        return;
+      }
+
+      const step = state.meditation[stepIndex];
+      state.currentStep = stepIndex;
+
+      // Actualizar UI para mostrar paso activo
+      if (step.stepIndex !== undefined) {
+        const stepElements = document.querySelectorAll(`#${exerciseId} .exercise-steps li`);
+        stepElements.forEach((el, idx) => {
+          el.classList.toggle('meditation-step', true);
+          el.classList.toggle('active', idx === step.stepIndex);
+        });
+      }
+
+      // Manejar tipos especiales de paso
+      if (step.type === 'bell') {
+        // Reproducir sonido de campana (usando frecuencias de audio)
+        playBellSound();
+
+        // Continuar al siguiente paso después de un breve delay
+        exerciseTimers[exerciseId] = setTimeout(() => {
+          if (state.isPlaying) {
+            playMeditationStep(exerciseId, stepIndex + 1);
+          }
+        }, 2000); // 2 segundos para la campana
+
+        updateExerciseProgress(exerciseId);
+        return;
+      }
+
+      if (step.type === 'music') {
+        // Por ahora, solo registrar el evento (se puede implementar más tarde)
+        console.log(`Música: ${step.action}`);
+
+        // Continuar inmediatamente al siguiente paso
+        playMeditationStep(exerciseId, stepIndex + 1);
+        return;
+      }
+
+      // Paso de narración normal
+      if (!step.text || step.text.trim() === '') {
+        // Si no hay texto, solo hacer pausa y continuar
+        if (step.pause > 0) {
+          exerciseTimers[exerciseId] = setTimeout(() => {
+            if (state.isPlaying) {
+              playMeditationStep(exerciseId, stepIndex + 1);
+            }
+          }, step.pause);
+        } else {
+          playMeditationStep(exerciseId, stepIndex + 1);
+        }
+        return;
+      }
+
+      // Crear utterance para narración
+      const utterance = new SpeechSynthesisUtterance(step.text);
+      utterance.lang = currentLanguage === 'es' ? 'es-ES' : 'en-US';
+      utterance.rate = currentSpeed;
+
+      utterance.onend = () => {
+        if (!state.isPlaying) return;
+
+        // Pausa entre pasos
+        if (step.pause > 0) {
+          const pauseTime = step.pause;
+          exerciseTimers[exerciseId] = setTimeout(() => {
+            if (state.isPlaying) {
+              playMeditationStep(exerciseId, stepIndex + 1);
+            }
+          }, pauseTime);
+        } else {
+          playMeditationStep(exerciseId, stepIndex + 1);
+        }
+      };
+
+      utterance.onerror = () => {
+        console.error('Error en síntesis de voz para ejercicio');
+        stopExerciseAudio(exerciseId);
+      };
+
+      exerciseUtterances[exerciseId] = utterance;
+      window.speechSynthesis.speak(utterance);
+
+      // Actualizar progreso
+      updateExerciseProgress(exerciseId);
+    }
+
+    // Función para reproducir sonido de campana usando Web Audio API
+    function playBellSound() {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Crear oscilador para la frecuencia fundamental de la campana
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        // Frecuencia de campana tibetana (aproximadamente)
+        oscillator.frequency.value = 528; // Hz
+        oscillator.type = 'sine';
+
+        // Envelope de la campana (ataque rápido, decaimiento lento)
+        const now = audioContext.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01); // Ataque
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 2); // Decaimiento
+
+        oscillator.start(now);
+        oscillator.stop(now + 2);
+      } catch (error) {
+        console.log('Audio context no disponible para campana');
+      }
+    }
+
+    function pauseExerciseAudio(exerciseId) {
+      const state = exerciseAudioStates[exerciseId];
+      if (!state) return;
+
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+      }
+
+      if (exerciseTimers[exerciseId]) {
+        clearTimeout(exerciseTimers[exerciseId]);
+      }
+
+      state.isPlaying = false;
+      state.isPaused = true;
+      updateExerciseUI(exerciseId);
+    }
+
+    function resumeExerciseAudio(exerciseId) {
+      const state = exerciseAudioStates[exerciseId];
+      if (!state) return;
+
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+
+      state.isPlaying = true;
+      state.isPaused = false;
+      updateExerciseUI(exerciseId);
+    }
+
+    function stopExerciseAudio(exerciseId) {
+      const state = exerciseAudioStates[exerciseId];
+
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+
+      if (exerciseTimers[exerciseId]) {
+        clearTimeout(exerciseTimers[exerciseId]);
+        delete exerciseTimers[exerciseId];
+      }
+
+      if (exerciseUtterances[exerciseId]) {
+        delete exerciseUtterances[exerciseId];
+      }
+
+      delete exerciseAudioStates[exerciseId];
+
+      const exerciseEl = document.getElementById(exerciseId);
+      if (exerciseEl) {
+        exerciseEl.classList.remove('playing');
+        exerciseEl.querySelectorAll('.meditation-step').forEach(el => {
+          el.classList.remove('active');
+        });
+      }
+
+      updateExerciseUI(exerciseId);
+    }
+
+    function stopAllExercises() {
+      Object.keys(exerciseAudioStates).forEach(id => {
+        stopExerciseAudio(id);
+      });
+    }
+
+    function updateExerciseProgress(exerciseId) {
+      const state = exerciseAudioStates[exerciseId];
+      if (!state) return;
+
+      const progressPercent = ((state.currentStep + 1) / state.totalSteps) * 100;
+      state.progress = progressPercent;
+
+      const progressFill = document.querySelector(`#${exerciseId} .exercise-progress-fill`);
+      if (progressFill) {
+        progressFill.style.width = `${progressPercent}%`;
+      }
+
+      const timeEl = document.querySelector(`#${exerciseId} .exercise-time`);
+      if (timeEl) {
+        const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        timeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} / ${state.currentStep + 1}/${state.totalSteps}`;
+      }
+
+      if (state.isPlaying) {
+        setTimeout(() => updateExerciseProgress(exerciseId), 1000);
+      }
+    }
+
+    function updateExerciseUI(exerciseId) {
+      const state = exerciseAudioStates[exerciseId];
+      const playBtn = document.querySelector(`#${exerciseId} .exercise-play-btn`);
+      const pauseBtn = document.querySelector(`#${exerciseId} .exercise-pause-btn`);
+      const stopBtn = document.querySelector(`#${exerciseId} .exercise-stop-btn`);
+
+      if (playBtn && pauseBtn && stopBtn) {
+        if (state && state.isPlaying && !state.isPaused) {
+          playBtn.disabled = true;
+          pauseBtn.disabled = false;
+          stopBtn.disabled = false;
+        } else if (state && state.isPaused) {
+          playBtn.disabled = false;
+          pauseBtn.disabled = true;
+          stopBtn.disabled = false;
+        } else {
+          playBtn.disabled = false;
+          pauseBtn.disabled = true;
+          stopBtn.disabled = true;
+        }
+      }
+    }
+
+    // Inicialización
+    window.addEventListener('DOMContentLoaded', () => {
+      renderContent();
+      updateUI();
+      updateButtons();
+    });
+
+    // Cleanup al salir
+    window.addEventListener('beforeunload', () => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+    });
+  </script>
+</body>
+</html>

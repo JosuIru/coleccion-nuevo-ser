@@ -1,0 +1,420 @@
+/* ============================================================================
+   COLECCIÓN NUEVO SER - Estilos Base
+   ============================================================================ */
+
+/* Variables CSS Dinámicas (se sobrescriben con JS según el tema del libro) */
+:root {
+  --color-primary: #0ea5e9;
+  --color-secondary: #a855f7;
+  --color-accent: #fbbf24;
+  --color-background: #0f172a;
+  --color-background-secondary: #1e293b;
+  --color-text: #e2e8f0;
+  --color-text-secondary: #cbd5e1;
+  --color-border: #334155;
+}
+
+/* Reset y Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+/* Utilidades de visualización */
+/* Removed .hidden rule to let Tailwind handle it properly with responsive classes */
+
+/* Gradientes de texto */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Transiciones suaves */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Sombras */
+.shadow-glow {
+  box-shadow: 0 0 20px var(--color-primary);
+}
+
+/* Botones base */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Inputs base */
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Enlaces */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
+
+/* Prosa (contenido de capítulos) */
+.prose {
+  max-width: 65ch;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: var(--color-text);
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h1 { font-size: 2.5rem; }
+.prose h2 { font-size: 2rem; }
+.prose h3 { font-size: 1.5rem; }
+.prose h4 { font-size: 1.25rem; }
+
+.prose p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.prose strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.prose em {
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+.prose ul, .prose ol {
+  margin-left: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Epígrafes */
+.epigraph {
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-background-secondary);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: 8px;
+}
+
+/* Preguntas de cierre */
+.closing-question {
+  border: 2px solid var(--color-accent);
+  background: var(--color-background-secondary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+/* Ejercicios */
+.exercises .exercise {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.exercises .exercise .steps {
+  background: var(--color-background);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.exercises .exercise .reflection {
+  background: var(--color-background);
+  border-left: 4px solid var(--color-accent);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+/* Reflexiones críticas */
+.critical-reflections .reflection {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.critical-reflections textarea {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.75rem;
+  border-radius: 8px;
+  resize: vertical;
+}
+
+/* Audioreader highlight */
+.audioreader-highlight {
+  background: linear-gradient(90deg, var(--color-primary), transparent) !important;
+  border-left: 4px solid var(--color-primary) !important;
+  padding-left: 1rem !important;
+  transition: all 0.3s ease !important;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Acciones sugeridas */
+.suggested-actions .action {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+}
+
+.suggested-actions .action input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+/* Referencias cruzadas */
+.cross-references {
+  background: var(--color-background-secondary);
+  border: 2px solid var(--color-primary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.cross-references .reference {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cross-references .reference:hover {
+  border-color: var(--color-primary);
+  transform: translateX(5px);
+}
+
+/* Tarjetas de libros */
+.book-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.book-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.book-card:hover::before {
+  opacity: 0.1;
+}
+
+/* Sidebar */
+.sidebar {
+  transition: width 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Loading overlay */
+#loading-overlay {
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .prose h1 { font-size: 2rem; }
+  .prose h2 { font-size: 1.75rem; }
+  .prose h3 { font-size: 1.25rem; }
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 10;
+    background: var(--color-background);
+  }
+}
+
+/* Modo oscuro forzado (siempre) */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+}
+
+/* Animación de entrada para elementos */
+.fade-in-up {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Grid responsivo para libros */
+.books-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .books-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Estados de accesibilidad */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* Mejoras de rendimiento */
+.chapter-content {
+  will-change: scroll-position;
+  contain: layout;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .sidebar, .header, .footer-nav, button {
+    display: none !important;
+  }
+
+  .chapter-content {
+    overflow: visible !important;
+  }
+}

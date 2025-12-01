@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Colección Nuevo Ser - Exploraciones en la Frontera del Pensamiento Humano-IA">
+  <meta name="author" content="J. Irurtzun & Claude">
+  <meta name="theme-color" content="#0f172a">
+
+  <title>Colección Nuevo Ser</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/themes/codigo-despertar.css">
+  <link rel="stylesheet" href="css/themes/manifiesto.css">
+
+  <!-- Splash Screen Inline Styles -->
+  <style>
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #splash-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .splash-content {
+      text-align: center;
+      animation: fadeInSplash 1s ease-out;
+    }
+
+    @keyframes fadeInSplash {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .splash-logo {
+      font-size: 6rem;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .splash-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #0ea5e9, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .splash-subtitle {
+      font-size: 1.2rem;
+      color: #cbd5e1;
+      margin-bottom: 2rem;
+    }
+
+    .splash-loading {
+      width: 200px;
+      height: 4px;
+      background: #1e293b;
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .splash-loading-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #0ea5e9, #a855f7);
+      animation: loading 1.5s ease-in-out infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0%; margin-left: 0%; }
+      50% { width: 70%; margin-left: 15%; }
+      100% { width: 0%; margin-left: 100%; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <div class="splash-logo">📚</div>
+      <h1 class="splash-title">Colección Nuevo Ser</h1>
+      <p class="splash-subtitle">Exploraciones Humano-IA</p>
+      <div class="splash-loading">
+        <div class="splash-loading-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div id="app">
+    <!-- Biblioteca (Home) View -->
+    <div id="biblioteca-view"></div>
+
+    <!-- Book Reader View -->
+    <div id="book-reader-view" class="hidden"></div>
+  </div>
+
+  <!-- Core JS -->
+  <script src="js/core/book-engine.js"></script>
+  <script src="js/core/biblioteca.js"></script>
+  <script src="js/core/book-reader.js"></script>
+
+  <!-- AI System -->
+  <script src="js/ai/ai-config.js"></script>
+  <script src="js/ai/ai-adapter.js"></script>
+
+  <!-- Features -->
+  <script src="js/features/ai-chat-modal.js"></script>
+  <script src="js/features/notes-modal.js"></script>
+  <script src="js/features/timeline-viewer.js"></script>
+  <script src="js/features/resources-viewer.js"></script>
+  <script src="js/features/audioreader.js"></script>
+
+  <!-- Main App Initialization -->
+  <script>
+    // ========================================================================
+    // INICIALIZACIÓN DE LA APP
+    // ========================================================================
+
+    let bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, notesModal, timelineViewer, resourcesViewer, audioReader;
+
+    async function initApp() {
+      try {
+        console.log('🚀 Iniciando Colección Nuevo Ser...');
+
+        // Crear instancias
+        bookEngine = new BookEngine();
+        await bookEngine.init();
+
+        biblioteca = new Biblioteca(bookEngine);
+        bookReader = new BookReader(bookEngine);
+
+        // Sistema de IA
+        if (window.AIConfig && window.AIAdapter) {
+          aiConfig = new AIConfig();
+          aiAdapter = new AIAdapter(aiConfig);
+          aiChatModal = new AIChatModal(bookEngine, aiAdapter);
+
+          window.aiConfig = aiConfig;
+          window.aiAdapter = aiAdapter;
+          window.aiChatModal = aiChatModal;
+          console.log('✅ Sistema de IA inicializado');
+        }
+
+        // Sistema de Notas
+        if (window.NotesModal) {
+          notesModal = new NotesModal(bookEngine);
+          window.notesModal = notesModal;
+          console.log('✅ Sistema de Notas inicializado');
+        }
+
+        // Timeline Viewer
+        if (window.TimelineViewer) {
+          timelineViewer = new TimelineViewer(bookEngine);
+          window.timelineViewer = timelineViewer;
+          console.log('✅ Timeline Viewer inicializado');
+        }
+
+        // Resources Viewer
+        if (window.ResourcesViewer) {
+          resourcesViewer = new ResourcesViewer(bookEngine);
+          window.resourcesViewer = resourcesViewer;
+          console.log('✅ Resources Viewer inicializado');
+        }
+
+        // Audio Reader
+        if (window.AudioReader) {
+          audioReader = new AudioReader(bookEngine);
+          window.audioReader = audioReader;
+          console.log('✅ Audio Reader inicializado');
+        }
+
+        // Hacer globales para acceso fácil
+        window.bookEngine = bookEngine;
+        window.biblioteca = biblioteca;
+        window.bookReader = bookReader;
+
+        console.log('✅ App inicializada correctamente');
+
+        // Ocultar splash screen
+        setTimeout(() => {
+          const splash = document.getElementById('splash-screen');
+          if (splash) {
+            splash.classList.add('fade-out');
+            setTimeout(() => splash.remove(), 500);
+          }
+        }, 1500);
+
+      } catch (error) {
+        console.error('❌ Error al inicializar la app:', error);
+
+        // Mostrar error al usuario
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.innerHTML = `
+            <div class="splash-content">
+              <div class="text-6xl mb-4">⚠️</div>
+              <h2 class="text-3xl font-bold text-red-400 mb-4">Error al cargar</h2>
+              <p class="text-lg text-gray-300 mb-6">${error.message}</p>
+              <button onclick="location.reload()"
+                      class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white font-bold transition">
+                Reintentar
+              </button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    // Iniciar app cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+
+    // ========================================================================
+    // GLOBAL ERROR HANDLER
+    // ========================================================================
+
+    window.addEventListener('error', (event) => {
+      console.error('Global error:', event.error);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection:', event.reason);
+    });
+
+    // ========================================================================
+    // PWA SERVICE WORKER (Opcional - para uso offline)
+    // ========================================================================
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Descomentado si se quiere PWA
+        // navigator.serviceWorker.register('/sw.js')
+        //   .then(reg => console.log('✅ Service Worker registrado'))
+        //   .catch(err => console.log('❌ Service Worker error:', err));
+      });
+    }
+
+    // ========================================================================
+    // UTILIDADES GLOBALES
+    // ========================================================================
+
+    // Detectar si es Capacitor (Android/iOS)
+    window.isCapacitor = () => {
+      return !!(window.Capacitor && window.Capacitor.isNative);
+    };
+
+    // Detectar plataforma
+    window.getPlatform = () => {
+      if (window.isCapacitor()) {
+        return window.Capacitor.getPlatform();
+      }
+      return 'web';
+    };
+
+    // Log inicial
+    console.log(`
+      ┌─────────────────────────────────────┐
+      │  📚 Colección Nuevo Ser            │
+      │  Exploraciones Humano-IA            │
+      │  v2.0.0                             │
+      │                                     │
+      │  Platform: ${window.getPlatform()}  │
+      │  Ready! 🚀                          │
+      └─────────────────────────────────────┘
+    `);
+  </script>
+
+</body>
+</html>

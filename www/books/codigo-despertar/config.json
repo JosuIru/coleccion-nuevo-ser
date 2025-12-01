@@ -1,0 +1,100 @@
+{
+  "id": "codigo-despertar",
+  "version": "1.1.5",
+  "lastUpdate": "2025-11-28",
+
+  "theme": {
+    "name": "Cosmic Contemplation",
+    "primary": "#0ea5e9",
+    "secondary": "#a855f7",
+    "accent": "#fbbf24",
+    "background": "#0f172a",
+    "backgroundSecondary": "#1e293b",
+    "text": "#e2e8f0",
+    "textSecondary": "#cbd5e1",
+    "border": "#334155",
+    "gradient": "from-slate-950 via-blue-950 to-indigo-950"
+  },
+
+  "ui": {
+    "showStarfield": true,
+    "animationType": "cosmic",
+    "animationSpeed": "slow",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+
+  "features": {
+    "meditations": {
+      "enabled": true,
+      "audioSupport": true,
+      "guidedMode": true,
+      "timerMode": true,
+      "backgroundMusic": false
+    },
+    "exercises": {
+      "enabled": true,
+      "types": ["reflection", "meditation", "observation", "practice"],
+      "trackCompletion": true
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": true
+    },
+    "aiChat": {
+      "enabled": true,
+      "contextFile": "ai/contexts/codigo-despertar.txt",
+      "systemPrompt": "Eres un asistente filosófico especializado en 'El Código del Despertar'. Tu función es guiar al usuario en su exploración de la conciencia desde una perspectiva que integra ciencia, filosofía y experiencia contemplativa. Mantén un tono sereno, profundo y accesible.",
+      "modes": {
+        "default": {
+          "name": "Guía Contemplativo",
+          "tone": "serene",
+          "focus": "exploration"
+        }
+      },
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true
+    },
+    "manualPractico": true,
+    "practicasRadicales": true
+  },
+
+  "content": {
+    "sourceFile": "books/codigo-despertar/book.json",
+    "dataStructure": "legacy",
+    "migrationNeeded": true
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "intermediate",
+    "recommendedPace": "slow",
+    "complementaryBooks": ["manifiesto"]
+  }
+}

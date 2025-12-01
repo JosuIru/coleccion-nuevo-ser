@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Colección Nuevo Ser</string>
+    <string name="title_activity_main">Colección Nuevo Ser</string>
+    <string name="package_name">com.nuevosser.coleccion</string>
+    <string name="custom_url_scheme">com.nuevosser.coleccion</string>
+</resources>

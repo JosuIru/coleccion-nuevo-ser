@@ -1,0 +1,193 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# EL CÓDIGO DEL DESPERTAR - Configuración Apache para Producción
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ────────────────────────────────────────────────────────────────────────────────
+# COMPRESIÓN GZIP
+# ────────────────────────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  # Comprimir HTML, CSS, JavaScript, Text, XML y fuentes
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/atom_xml
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# CACHE CONTROL - Optimización de rendimiento
+# ────────────────────────────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 week"
+
+  # HTML (sin cache - siempre actualizado)
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # Datos JSON (sin cache)
+  ExpiresByType application/json "access plus 0 seconds"
+
+  # CSS y JavaScript (1 mes)
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+
+  # Imágenes (1 año)
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+
+  # Fuentes (1 año)
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+
+  # Archivos de aplicación
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType application/vnd.android.package-archive "access plus 1 week"
+</IfModule>
+
+# Headers adicionales para cache
+<IfModule mod_headers.c>
+  # HTML sin cache
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+
+  # CSS y JS con cache
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+
+  # Imágenes con cache largo
+  <FilesMatch "\.(jpg|jpeg|png|gif|svg|ico|webp)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# TIPOS MIME CORRECTOS
+# ────────────────────────────────────────────────────────────────────────────────
+<IfModule mod_mime.c>
+  # JavaScript
+  AddType application/javascript js
+  AddType text/javascript js
+
+  # JSON
+  AddType application/json json
+
+  # Fuentes
+  AddType font/ttf ttf
+  AddType font/otf otf
+  AddType font/woff woff
+  AddType font/woff2 woff2
+
+  # Manifest y Service Worker
+  AddType application/manifest+json webmanifest
+  AddType application/x-web-app-manifest+json webapp
+  AddType text/cache-manifest appcache
+
+  # APK Android
+  AddType application/vnd.android.package-archive apk
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# SEGURIDAD
+# ────────────────────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Prevenir clickjacking
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # XSS Protection
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Content Type Options
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Referrer Policy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permissions Policy
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# REWRITE RULES - URLs limpias
+# ────────────────────────────────────────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Redirigir www a no-www (opcional, descomentar si lo necesitas)
+  # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+  # Forzar HTTPS (opcional, descomentar si tienes SSL)
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Servir index.html para rutas que no existen (SPA support)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/downloads/
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# PROTECCIÓN DE ARCHIVOS
+# ────────────────────────────────────────────────────────────────────────────────
+# Denegar acceso a archivos sensibles
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Permitir descarga de APK
+<FilesMatch "\.apk$">
+  Header set Content-Disposition "attachment"
+  Header set Content-Type "application/vnd.android.package-archive"
+</FilesMatch>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# CONFIGURACIÓN UTF-8
+# ────────────────────────────────────────────────────────────────────────────────
+AddDefaultCharset utf-8
+<IfModule mod_mime.c>
+  AddCharset utf-8 .html .css .js .xml .json .rss .atom
+</IfModule>
+
+# ────────────────────────────────────────────────────────────────────────────────
+# OPTIMIZACIONES ADICIONALES
+# ────────────────────────────────────────────────────────────────────────────────
+# Deshabilitar ETags (mejor usar Cache-Control)
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None
+
+# Permitir solicitudes de otros dominios para fuentes
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>

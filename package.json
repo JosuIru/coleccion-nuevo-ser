@@ -1,0 +1,31 @@
+{
+  "name": "coleccion-nuevo-ser",
+  "version": "2.0.0",
+  "description": "Colección Nuevo Ser - Exploraciones en la Frontera del Pensamiento Humano-IA",
+  "main": "www/index.html",
+  "scripts": {
+    "serve": "cd www && python3 -m http.server 8000",
+    "cap:init": "npx cap init",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "build:android": "npx cap sync && cd android && ./gradlew assembleDebug",
+    "build:android:release": "npx cap sync && cd android && ./gradlew assembleRelease"
+  },
+  "keywords": [
+    "books",
+    "interactive",
+    "philosophy",
+    "consciousness",
+    "ai"
+  ],
+  "author": "J. Irurtzun & Claude",
+  "license": "MIT",
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}

@@ -72,6 +72,10 @@ class Biblioteca {
               ${Icons.create('bar-chart-2', 20)}
               <span class="hidden sm:inline">Mi Progreso</span>
             </button>
+            <button id="theme-toggle-btn-bib" class="px-3 sm:px-4 py-2 bg-gradient-to-r from-slate-600 to-gray-600 hover:from-slate-700 hover:to-gray-700 rounded-lg transition flex items-center gap-2 font-bold" title="Cambiar tema">
+              <span id="theme-icon-bib">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
+              <span class="hidden sm:inline" id="theme-label-bib">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
+            </button>
           </div>
 
         </div>
@@ -611,6 +615,22 @@ class Biblioteca {
         if (progressBtn) {
           e.preventDefault();
           if (window.progressDashboard) window.progressDashboard.show();
+          return;
+        }
+
+        // Theme toggle button
+        const themeBtn = e.target.closest('#theme-toggle-btn-bib');
+        if (themeBtn) {
+          e.preventDefault();
+          if (window.themeHelper) {
+            const newTheme = window.themeHelper.toggle();
+            // Actualizar icono y label
+            const iconEl = document.getElementById('theme-icon-bib');
+            const labelEl = document.getElementById('theme-label-bib');
+            if (iconEl) iconEl.textContent = window.themeHelper.getThemeIcon();
+            if (labelEl) labelEl.textContent = window.themeHelper.getThemeLabel();
+            window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
+          }
           return;
         }
 

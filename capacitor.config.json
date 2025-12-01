@@ -12,6 +12,30 @@
       "keystorePassword": "",
       "keystoreAlias": "",
       "keystoreAliasPassword": ""
+    },
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "StatusBar": {
+      "backgroundColor": "#0f172a",
+      "style": "LIGHT",
+      "overlaysWebView": false
+    },
+    "Share": {
+      "dialogTitle": "Compartir"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_notification",
+      "iconColor": "#0ea5e9",
+      "sound": "default"
+    },
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#0f172a",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
     }
   }
 }

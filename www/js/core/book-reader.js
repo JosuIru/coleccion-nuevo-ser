@@ -296,6 +296,8 @@ class BookReader {
                   <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
                   <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
                   <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
+                  <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
+                  <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400">${Icons.create('share-2', 18)} <span>Compartir</span></button>
                 </div>
               </div>
             </div>
@@ -330,6 +332,8 @@ class BookReader {
               <button id="donations-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.support')}">${Icons.donate()}</button>
               <button id="premium-edition-btn" class="p-2 hover:bg-amber-900/50 rounded-lg transition text-amber-400" title="${this.i18n.t('premium.title')}">${Icons.book()}</button>
               <button id="language-selector-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('lang.title')}">${Icons.language()}</button>
+              <button id="theme-toggle-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="Cambiar tema"><span id="theme-icon">${window.themeHelper?.getThemeIcon() || '🌙'}</span></button>
+              <button id="share-chapter-btn" class="p-2 hover:bg-blue-900/50 rounded-lg transition text-blue-400" title="Compartir capítulo">${Icons.create('share-2', 20)}</button>
             </div>
           </div>
         </div>
@@ -591,6 +595,16 @@ class BookReader {
               ${Icons.language(24)}
               <span>${this.i18n.t('lang.title')}</span>
             </button>
+
+            <button id="theme-toggle-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <span class="text-2xl" id="theme-icon-mobile">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
+              <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
+            </button>
+
+            <button id="share-chapter-btn-mobile" class="w-full text-left p-3 hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-400 border border-blue-500/30">
+              ${Icons.create('share-2', 24)}
+              <span>Compartir capítulo</span>
+            </button>
             </div>
           </div>
         </div>
@@ -843,6 +857,26 @@ class BookReader {
       });
     }
 
+    // Theme toggle button
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        if (window.themeHelper) {
+          window.themeHelper.toggle();
+          this.updateThemeIcons();
+          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
+        }
+      });
+    }
+
+    // Share chapter button
+    const shareChapterBtn = document.getElementById('share-chapter-btn');
+    if (shareChapterBtn) {
+      shareChapterBtn.addEventListener('click', () => {
+        this.shareCurrentChapter();
+      });
+    }
+
     // Manual Práctico button - Navegar al libro en el sistema unificado
     const manualPracticoBtn = document.getElementById('manual-practico-btn');
     if (manualPracticoBtn) {
@@ -1055,6 +1089,28 @@ class BookReader {
       });
     }
 
+    // Theme toggle button mobile
+    const themeToggleBtnMobile = document.getElementById('theme-toggle-btn-mobile');
+    if (themeToggleBtnMobile) {
+      themeToggleBtnMobile.addEventListener('click', () => {
+        closeMobileMenuHelper();
+        if (window.themeHelper) {
+          window.themeHelper.toggle();
+          this.updateThemeIcons();
+          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
+        }
+      });
+    }
+
+    // Share chapter button mobile
+    const shareChapterBtnMobile = document.getElementById('share-chapter-btn-mobile');
+    if (shareChapterBtnMobile) {
+      shareChapterBtnMobile.addEventListener('click', () => {
+        closeMobileMenuHelper();
+        this.shareCurrentChapter();
+      });
+    }
+
     // ========================================================================
     // TABLET DROPDOWN MENU (md breakpoint)
     // ========================================================================
@@ -1201,6 +1257,28 @@ class BookReader {
         if (window.languageSelector) {
           window.languageSelector.open();
         }
+      });
+    }
+
+    // Theme toggle button dropdown
+    const themeToggleBtnDropdown = document.getElementById('theme-toggle-btn-dropdown');
+    if (themeToggleBtnDropdown) {
+      themeToggleBtnDropdown.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.themeHelper) {
+          window.themeHelper.toggle();
+          this.updateThemeIcons();
+          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
+        }
+      });
+    }
+
+    // Share chapter button dropdown
+    const shareChapterBtnDropdown = document.getElementById('share-chapter-btn-dropdown');
+    if (shareChapterBtnDropdown) {
+      shareChapterBtnDropdown.addEventListener('click', () => {
+        closeDropdownHelper();
+        this.shareCurrentChapter();
       });
     }
 
@@ -1795,6 +1873,69 @@ class BookReader {
       const file = downloadFreeBtn.getAttribute('data-premium-file');
       window.open(file, '_blank');
       modal.remove();
+    });
+  }
+
+  // ==========================================================================
+  // SHARE HELPERS
+  // ==========================================================================
+
+  shareCurrentChapter() {
+    if (!window.shareHelper || !this.currentChapter) return;
+
+    const bookData = this.bookEngine?.getCurrentBookData();
+    const bookTitle = bookData?.title || 'Colección Nuevo Ser';
+    const chapterTitle = this.currentChapter.title || '';
+    const progress = this.bookEngine?.getProgress(this.bookEngine.getCurrentBook());
+
+    // Get epigraph or first paragraph as quote
+    let quote = '';
+    if (this.currentChapter.epigraph?.text) {
+      quote = this.currentChapter.epigraph.text;
+    } else if (this.currentChapter.closingQuestion) {
+      quote = this.currentChapter.closingQuestion;
+    }
+
+    if (quote) {
+      window.shareHelper.shareQuote({
+        quote: quote.substring(0, 280), // Limit to tweet-like length
+        author: this.currentChapter.epigraph?.author || '',
+        bookTitle: bookTitle,
+        chapterTitle: chapterTitle
+      });
+    } else {
+      // Share progress instead
+      window.shareHelper.shareProgress({
+        bookTitle: bookTitle,
+        progress: progress?.percentage || 0,
+        chaptersRead: progress?.read || 0,
+        totalChapters: progress?.total || 0
+      });
+    }
+  }
+
+  // ==========================================================================
+  // THEME HELPERS
+  // ==========================================================================
+
+  updateThemeIcons() {
+    if (!window.themeHelper) return;
+
+    const icon = window.themeHelper.getThemeIcon();
+    const label = window.themeHelper.getThemeLabel();
+
+    // Update all theme icons and labels
+    const iconElements = ['theme-icon', 'theme-icon-mobile', 'theme-icon-dropdown', 'theme-icon-bib'];
+    const labelElements = ['theme-label-mobile', 'theme-label-dropdown', 'theme-label-bib'];
+
+    iconElements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = icon;
+    });
+
+    labelElements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = label;
     });
   }
 }

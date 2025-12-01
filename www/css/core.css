@@ -360,12 +360,149 @@ a:hover {
   }
 }
 
-/* Modo oscuro forzado (siempre) */
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-  }
+/* ==========================================================================
+   TEMA CLARO - Estilos específicos
+   ========================================================================== */
+
+.theme-light {
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-light ::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+.theme-light ::-webkit-scrollbar-thumb {
+  background: #64748b;
+}
+
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Ajustes específicos para modo claro */
+.theme-light .prose strong {
+  color: #0369a1;
+}
+
+.theme-light .prose em {
+  color: #b45309;
+}
+
+.theme-light .epigraph {
+  background: #f1f5f9;
+  border-left-color: #d97706;
+}
+
+.theme-light .closing-question {
+  background: #fef3c7;
+  border-color: #d97706;
+}
+
+.theme-light .exercises .exercise {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.theme-light .exercises .exercise .steps,
+.theme-light .exercises .exercise .reflection {
+  background: #ffffff;
+}
+
+.theme-light .cross-references {
+  background: #f0f9ff;
+  border-color: #0284c7;
+}
+
+.theme-light .cross-references .reference {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.theme-light .cross-references .reference:hover {
+  border-color: #0284c7;
+}
+
+/* Tarjetas de libros en modo claro */
+.theme-light .book-card {
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar en modo claro */
+.theme-light .sidebar {
+  background: #f8fafc;
+  border-right-color: #e2e8f0;
+}
+
+/* Modales en modo claro */
+.theme-light [class*="bg-gray-900"],
+.theme-light [class*="bg-slate-900"] {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+.theme-light [class*="bg-gray-800"] {
+  background-color: #f1f5f9 !important;
+}
+
+.theme-light [class*="border-gray-700"],
+.theme-light [class*="border-gray-600"] {
+  border-color: #e2e8f0 !important;
+}
+
+.theme-light [class*="text-gray-400"],
+.theme-light [class*="text-gray-500"] {
+  color: #64748b !important;
+}
+
+.theme-light [class*="text-gray-300"],
+.theme-light [class*="text-white"] {
+  color: #1e293b !important;
+}
+
+/* Inputs en modo claro */
+.theme-light input,
+.theme-light textarea,
+.theme-light select {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.theme-light input::placeholder,
+.theme-light textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Botones en modo claro */
+.theme-light button[class*="bg-gray"] {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+.theme-light button[class*="bg-gray"]:hover {
+  background-color: #cbd5e1 !important;
+}
+
+/* Splash screen en modo claro */
+.theme-light #splash-screen {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
+}
+
+.theme-light .splash-title {
+  background: linear-gradient(135deg, #0284c7, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.theme-light .splash-subtitle {
+  color: #64748b;
+}
+
+/* Transición suave entre temas */
+body, .sidebar, .book-card, input, textarea, select, button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Animación de entrada para elementos */

@@ -1,6 +1,6 @@
 {
   "name": "coleccion-nuevo-ser",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Colección Nuevo Ser - Exploraciones en la Frontera del Pensamiento Humano-IA",
   "main": "www/index.html",
   "scripts": {
@@ -10,7 +10,8 @@
     "cap:sync": "npx cap sync",
     "cap:open:android": "npx cap open android",
     "build:android": "npx cap sync && cd android && ./gradlew assembleDebug",
-    "build:android:release": "npx cap sync && cd android && ./gradlew assembleRelease"
+    "build:android:release": "npx cap sync && cd android && ./gradlew assembleRelease",
+    "install:plugins": "npm install @capacitor/status-bar @capacitor/share @capacitor/local-notifications @capacitor/splash-screen"
   },
   "keywords": [
     "books",
@@ -26,6 +27,10 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
-    "@capacitor/core": "^6.0.0"
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0"
   }
 }

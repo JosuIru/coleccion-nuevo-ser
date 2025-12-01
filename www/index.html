@@ -239,6 +239,9 @@
   <script src="js/features/auto-summary.js"></script>
   <script src="js/features/ai-suggestions.js"></script>
   <script src="js/features/progress-dashboard.js"></script>
+  <script src="js/features/smart-notes.js"></script>
+  <script src="js/features/concept-maps.js"></script>
+  <script src="js/features/action-plans.js"></script>
 
   <!-- Main App Initialization -->
   <script>
@@ -246,7 +249,7 @@
     // INICIALIZACIÓN DE LA APP
     // ========================================================================
 
-    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard;
+    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans;
 
     async function initApp() {
       try {
@@ -376,6 +379,28 @@
           progressDashboard = new ProgressDashboard(bookEngine, achievementSystem);
           window.progressDashboard = progressDashboard;
           console.log('✅ Progress Dashboard inicializado');
+        }
+
+        // Smart Notes (Notas Inteligentes)
+        if (window.SmartNotes && notesModal) {
+          smartNotes = new SmartNotes(bookEngine, notesModal);
+          window.smartNotes = smartNotes;
+          smartNotes.enhanceNotesModal();
+          console.log('✅ Smart Notes inicializado');
+        }
+
+        // Concept Maps (Mapas Conceptuales)
+        if (window.ConceptMaps) {
+          conceptMaps = new ConceptMaps(bookEngine);
+          window.conceptMaps = conceptMaps;
+          console.log('✅ Concept Maps inicializado');
+        }
+
+        // Action Plans (Planes de Acción)
+        if (window.ActionPlans) {
+          actionPlans = new ActionPlans(bookEngine);
+          window.actionPlans = actionPlans;
+          console.log('✅ Action Plans inicializado');
         }
 
         // AI Settings Modal

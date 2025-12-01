@@ -323,6 +323,8 @@ class BookReader {
               ${hasKoan ? `<button id="koan-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.koan')}">${Icons.koan()}</button>` : ''}
               <div class="w-px h-5 bg-gray-700 mx-1"></div>
               <button id="achievements-btn" class="p-2 hover:bg-amber-900/50 rounded-lg transition text-amber-400" title="Mis Logros">${Icons.trophy()}</button>
+              <button id="concept-map-btn" class="p-2 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400" title="Mapa Conceptual">${Icons.create('git-branch', 20)}</button>
+              <button id="action-plans-btn" class="p-2 hover:bg-green-900/50 rounded-lg transition text-green-400" title="Planes de Acción">${Icons.create('clipboard-list', 20)}</button>
               <button id="android-download-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.download')}">${Icons.download()}</button>
               <button id="ai-settings-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.aiSettings')}">${Icons.settings()}</button>
               <button id="donations-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.support')}">${Icons.donate()}</button>
@@ -789,6 +791,26 @@ class BookReader {
           window.autoSummary.showSummaryModal(this.currentChapter, bookId);
         } else {
           window.toast?.info('Configura la IA para generar resúmenes');
+        }
+      });
+    }
+
+    // Concept Map button
+    const conceptMapBtn = document.getElementById('concept-map-btn');
+    if (conceptMapBtn) {
+      conceptMapBtn.addEventListener('click', () => {
+        if (window.conceptMaps) {
+          window.conceptMaps.show();
+        }
+      });
+    }
+
+    // Action Plans button
+    const actionPlansBtn = document.getElementById('action-plans-btn');
+    if (actionPlansBtn) {
+      actionPlansBtn.addEventListener('click', () => {
+        if (window.actionPlans) {
+          window.actionPlans.show();
         }
       });
     }

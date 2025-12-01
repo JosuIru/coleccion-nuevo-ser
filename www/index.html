@@ -231,13 +231,19 @@
   <script src="js/features/binaural-audio.js"></script>
   <script src="js/features/binaural-modal.js"></script>
 
+  <!-- Didactic Features (Phase 1) -->
+  <script src="js/data/reflexive-questions.js"></script>
+  <script src="js/features/reflexive-modal.js"></script>
+  <script src="js/data/achievements.js"></script>
+  <script src="js/features/achievements-system.js"></script>
+
   <!-- Main App Initialization -->
   <script>
     // ========================================================================
     // INICIALIZACIÓN DE LA APP
     // ========================================================================
 
-    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal;
+    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem;
 
     async function initApp() {
       try {
@@ -332,6 +338,20 @@
           binauralModal = new BinauralModal(binauralAudio);
           window.binauralModal = binauralModal;
           console.log('✅ Binaural Modal inicializado');
+        }
+
+        // Reflexive Modal (Preguntas Reflexivas)
+        if (window.ReflexiveModal) {
+          reflexiveModal = new ReflexiveModal(bookEngine);
+          window.reflexiveModal = reflexiveModal;
+          console.log('✅ Reflexive Modal inicializado');
+        }
+
+        // Achievement System (Sistema de Logros)
+        if (window.AchievementSystem) {
+          achievementSystem = new AchievementSystem(bookEngine);
+          window.achievementSystem = achievementSystem;
+          console.log('✅ Achievement System inicializado');
         }
 
         // AI Settings Modal

@@ -477,6 +477,11 @@ class AIChatModal {
         timestamp: new Date().toISOString()
       });
 
+      // Track para logros
+      if (window.achievementSystem) {
+        window.achievementSystem.trackAIChat();
+      }
+
     } catch (error) {
       console.error('Error getting AI response:', error);
 

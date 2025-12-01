@@ -1101,6 +1101,8 @@ class BookEngine {
   markChapterAsRead(chapterId) {
     if (!this.currentBook) return;
 
+    const wasAlreadyRead = this.readProgress[this.currentBook]?.chaptersRead?.includes(chapterId);
+
     if (!this.readProgress[this.currentBook]) {
       this.readProgress[this.currentBook] = {
         chaptersRead: [],
@@ -1114,6 +1116,22 @@ class BookEngine {
     }
 
     this.saveUserData();
+
+    // Triggers para features didácticas (solo si el capítulo no estaba leído antes)
+    if (!wasAlreadyRead) {
+      // Mostrar pregunta reflexiva
+      if (window.reflexiveModal && window.ReflexiveModal?.shouldShowForChapter(this.currentBook, chapterId)) {
+        window.ReflexiveModal.markAsShown(this.currentBook, chapterId);
+        setTimeout(() => {
+          window.reflexiveModal.show(this.currentBook, chapterId);
+        }, 500); // Pequeño delay para mejor UX
+      }
+
+      // Verificar logros
+      if (window.achievementSystem) {
+        window.achievementSystem.checkAndUnlock(this.currentBook);
+      }
+    }
   }
 
   unmarkChapterAsRead(chapterId) {
@@ -1182,6 +1200,21 @@ class BookEngine {
       booksStarted: Object.keys(this.readProgress).length,
       totalBooks: books.length
     };
+  }
+
+  /**
+   * Obtener progreso del libro en formato objeto {chapterId: true/false}
+   * Usado por el sistema de logros
+   */
+  getBookProgress(bookId) {
+    const progress = this.readProgress[bookId];
+    if (!progress || !progress.chaptersRead) return {};
+
+    const result = {};
+    progress.chaptersRead.forEach(chapterId => {
+      result[chapterId] = true;
+    });
+    return result;
   }
 
   // ==========================================================================

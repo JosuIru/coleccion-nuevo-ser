@@ -151,6 +151,11 @@ class AudioReader {
     this.speakParagraph(this.currentParagraphIndex);
     this.updateUI();
 
+    // Track para logros
+    if (window.achievementSystem) {
+      window.achievementSystem.trackAudioUsed();
+    }
+
     return true;
   }
 

@@ -319,6 +319,7 @@ class BookReader {
               <button id="audioreader-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.audio')}">${Icons.audio()}</button>
               ${hasKoan ? `<button id="koan-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.koan')}">${Icons.koan()}</button>` : ''}
               <div class="w-px h-5 bg-gray-700 mx-1"></div>
+              <button id="achievements-btn" class="p-2 hover:bg-amber-900/50 rounded-lg transition text-amber-400" title="Mis Logros">${Icons.trophy()}</button>
               <button id="android-download-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.download')}">${Icons.download()}</button>
               <button id="ai-settings-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.aiSettings')}">${Icons.settings()}</button>
               <button id="donations-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.support')}">${Icons.donate()}</button>
@@ -756,6 +757,16 @@ class BookReader {
       aiSettingsBtn.addEventListener('click', () => {
         if (window.aiSettingsModal) {
           window.aiSettingsModal.open();
+        }
+      });
+    }
+
+    // Achievements button
+    const achievementsBtn = document.getElementById('achievements-btn');
+    if (achievementsBtn) {
+      achievementsBtn.addEventListener('click', () => {
+        if (window.achievementSystem) {
+          window.achievementSystem.showDashboardModal();
         }
       });
     }

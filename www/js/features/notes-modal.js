@@ -50,6 +50,12 @@ class NotesModal {
 
     this.notes[key].push(note);
     this.saveNotes();
+
+    // Track para logros
+    if (window.achievementSystem) {
+      window.achievementSystem.trackNoteCreated();
+    }
+
     return note;
   }
 

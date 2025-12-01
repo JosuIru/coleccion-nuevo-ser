@@ -47,6 +47,11 @@ class ResourcesViewer {
     this.isOpen = true;
     this.render();
     this.attachEventListeners();
+
+    // Track para logros
+    if (window.achievementSystem) {
+      window.achievementSystem.trackResourcesViewed();
+    }
   }
 
   close() {

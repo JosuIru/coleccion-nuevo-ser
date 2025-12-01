@@ -47,6 +47,11 @@ const Icons = {
   library: (size = 20) => Icons.create('library', size),
   book: (size = 20) => Icons.create('book', size),
 
+  // Gamificación
+  trophy: (size = 20) => Icons.create('trophy', size),
+  award: (size = 20) => Icons.create('award', size),
+  star: (size = 20) => Icons.create('star', size),
+
   // Estados
   check: (size = 20) => Icons.create('check', size),
   checkCircle: (size = 20) => Icons.create('check-circle', size),

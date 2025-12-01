@@ -670,6 +670,11 @@ class Biblioteca {
       this.hide();
       window.bookReader.show(chapter);
 
+      // Track para logros
+      if (window.achievementSystem) {
+        window.achievementSystem.trackBookOpened(bookId);
+      }
+
     } catch (error) {
       console.error('Error opening book:', error);
       window.toast.error(`${this.i18n.t('error.openBook')}: ${error.message}`, 5000, false);

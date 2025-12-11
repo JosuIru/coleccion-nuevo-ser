@@ -1,30 +1,67 @@
-# Dependencies
-node_modules/
-
 # Build outputs
-*.apk
-*.aab
 android/app/build/
 android/.gradle/
-android/build/
+node_modules/
+
+# APKs - IMPORTANTE: Nunca en www/downloads/
+www/downloads/*.apk
+www/downloads/*.aab
+*.apk
+*.aab
+
+# Releases folder - mantener solo últimas versiones
+apks-historico/
+releases/*.apk
+
+# Backups
+*.backup
+*.backup-*
+*~
+_www/
+
+# Logs
+*.log
+/tmp/*.log
+
+# Temporary files
+*.tmp
+*.swp
+.~*
+
+# Documentation temporal (mantener solo README.md y CHANGELOG.md activos)
+SOLUCION-*.md
+INFORME-*.md
+AUDITORIA-*.md
+ANALISIS-*.md
+ERRORES-*.md
+FIXES-*.md
+INSTRUCCIONES-*.md
+DEPLOYMENT-*.md
+TESTING-*.md
+RELEASE-*.md
+VERIFICAR-*.md
+FIX-*.sql
+SUPABASE-*.sql
 
 # IDE
-.idea/
-*.iml
 .vscode/
+.idea/
+*.code-workspace
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Logs
-*.log
-npm-debug.log*
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Temp files
-*.tmp
-*.bak
-*.backup
-
-# Zip files (optional - uncomment if you want to exclude)
-# *.zip
+# Certificates (nunca versionar)
+*.keystore
+*.jks
+*.p12
+google-services.json
+.env
+.env.local

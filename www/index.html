@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Colección Nuevo Ser - Exploraciones en la Frontera del Pensamiento Humano-IA">
+  <meta name="description" content="Colección Nuevo Ser - Una colección interactiva co-creada entre humano e IA para explorar la conciencia, la meditación, el activismo y la transformación social.">
   <meta name="author" content="J. Irurtzun & Claude">
   <meta name="theme-color" content="#0f172a">
 
@@ -35,11 +35,17 @@
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/core.css?v=2.8.6.4-a11y">
   <link rel="stylesheet" href="css/themes/codigo-despertar.css">
+  <link rel="stylesheet" href="css/themes/filosofia-nuevo-ser.css">
   <link rel="stylesheet" href="css/themes/manifiesto.css">
   <link rel="stylesheet" href="css/themes/manual-transicion.css">
+  <link rel="stylesheet" href="css/themes/tierra-que-despierta.css">
+  <link rel="stylesheet" href="css/brujula-recursos.css">
 
   <!-- Splash Screen Inline Styles -->
   <style>
@@ -204,34 +210,61 @@
     <div id="book-reader-view" class="hidden"></div>
   </div>
 
+  <!-- Capacitor TTS Plugin (must load before audioreader) -->
+  <script src="js/vendor/capacitor-tts.js"></script>
+
   <!-- Core JS -->
   <script src="js/core/logger.js"></script>
-  <script src="js/core/icons.js"></script>
-  <script src="js/core/theme-helper.js"></script>
+  <script src="js/core/icons.js?v=2.8.6.1"></script>
+  <script src="js/core/theme-helper.js?v=2.8.6.5-light-mode"></script>
   <script src="js/core/share-helper.js"></script>
   <script src="js/core/notifications-helper.js"></script>
+  <script src="js/core/fcm-helper.js"></script>
   <script src="js/core/biometric-helper.js"></script>
   <script src="js/core/file-export-helper.js"></script>
   <script src="js/core/widget-data-helper.js"></script>
+  <script src="js/core/shortcuts-handler.js"></script>
+  <script src="js/core/dynamic-colors-helper.js"></script>
+  <script src="js/core/supabase-config.js"></script>
+  <script src="js/core/custom-captcha.js"></script>
+  <script src="js/core/supabase-auth-helper.js"></script>
+  <script src="js/core/supabase-sync-helper.js?v=2.8.6.3-debug"></script>
+  <script src="js/core/supabase-notifications-helper.js"></script>
   <script src="js/core/i18n.js"></script>
   <script src="js/core/toast.js"></script>
-  <script src="js/core/book-engine.js"></script>
-  <script src="js/core/biblioteca.js"></script>
-  <script src="js/core/book-reader.js"></script>
+  <script src="js/core/tts-providers.js"></script>
+  <script src="js/core/book-engine.js?v=2.8.6.1"></script>
+  <script src="js/core/biblioteca.js?v=2.9.28"></script>
+  <script src="js/core/book-reader.js?v=2.9.28"></script>
 
   <!-- AI System -->
-  <script src="js/ai/ai-config.js"></script>
-  <script src="js/ai/ai-adapter.js"></script>
+  <script src="js/ai/ai-config.js?v=2.8.6.3-debug"></script>
+  <script src="js/ai/ai-adapter.js?v=2.8.6"></script>
 
   <!-- Features -->
   <script src="js/features/language-selector.js"></script>
   <script src="js/features/ai-chat-modal.js"></script>
+  <script src="js/features/text-selection-helper.js"></script>
   <script src="js/features/ai-settings-modal.js"></script>
-  <script src="js/features/donations-modal.js"></script>
+  <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
+  <script src="js/features/settings-modal.js?v=2.8.6.4-a11y"></script>
   <script src="js/features/notes-modal.js"></script>
   <script src="js/features/timeline-viewer.js"></script>
   <script src="js/features/resources-viewer.js"></script>
-  <script src="js/features/audioreader.js"></script>
+  <!-- TTS Polyfill (carga de voces mejorada para Chrome/Brave Linux) -->
+  <script src="js/core/tts-polyfill.js?v=3.1.1"></script>
+  <!-- TTS Platform Helper (detecta y ofrece soluciones para Linux + Chrome) -->
+  <script src="js/core/tts-platform-helper.js?v=3.1.2"></script>
+  <script src="js/features/audioreader.js?v=2.9.26"></script>
+  <!-- Sistema de audio mejorado -->
+  <script src="js/features/audio-mixer.js?v=3.0.0"></script>
+  <script src="js/features/audio-processor.js?v=3.0.0"></script>
+  <script src="js/features/audio-visualizer.js?v=3.0.0"></script>
+  <script src="js/features/word-by-word-sync.js?v=3.0.0"></script>
+  <script src="js/features/soundscape-cache.js?v=3.0.0"></script>
+  <script src="js/features/enhanced-audioreader.js?v=3.0.0"></script>
+  <script src="js/features/audio-control-modal.js?v=3.0.0"></script>
+  <script src="js/features/audio-enhancements.js?v=3.1.0"></script>
   <script src="js/features/koan-generator.js"></script>
   <script src="js/features/koan-modal.js"></script>
   <script src="js/features/binaural-audio.js"></script>
@@ -239,16 +272,39 @@
 
   <!-- Didactic Features (Phase 1) -->
   <script src="js/data/reflexive-questions.js"></script>
-  <script src="js/features/reflexive-modal.js"></script>
+  <script src="js/features/reflexive-modal.js?v=2.8.6.4-a11y"></script>
   <script src="js/data/achievements.js"></script>
-  <script src="js/features/achievements-system.js"></script>
-  <script src="js/features/auto-summary.js"></script>
+  <script src="js/features/achievements-system.js?v=2.8.6.4-a11y"></script>
+  <script src="js/features/auto-summary.js?v=2.8.6.4-a11y"></script>
   <script src="js/features/ai-suggestions.js"></script>
   <script src="js/features/progress-dashboard.js"></script>
   <script src="js/features/smart-notes.js"></script>
+
+  <!-- Interactive Learning Features (v2.8.7) -->
+  <script src="js/features/resource-ai-helper.js?v=2.8.7"></script>
+  <script src="js/features/interactive-quiz.js?v=2.8.7"></script>
+  <script src="js/features/learning-paths.js?v=2.8.7"></script>
   <script src="js/features/concept-maps.js"></script>
   <script src="js/features/action-plans.js"></script>
-  <script src="js/features/voice-notes.js"></script>
+  <script src="js/features/voice-notes.js?v=2.8.6.4-a11y"></script>
+
+  <!-- Practical Utility Features -->
+  <script src="js/features/search-modal.js"></script>
+  <script src="js/features/practice-library.js?v=2.9.31"></script>
+  <script src="js/features/practice-recommender.js?v=2.9.31"></script>
+  <script src="js/features/thematic-index-modal.js"></script>
+  <script src="js/features/chapter-resources-modal.js"></script>
+
+  <!-- Brújula de Recursos - Intelligent Resource Navigation -->
+  <script src="js/features/brujula-recursos.js"></script>
+  <script src="js/features/brujula-recursos-ui.js"></script>
+
+  <!-- Exploration Hub - Unified Search, Themes & Resources -->
+  <script src="js/features/exploration-hub.js"></script>
+
+  <!-- Help & Onboarding System -->
+  <script src="js/features/help-center-modal.js"></script>
+  <script src="js/features/onboarding-tutorial.js"></script>
 
   <!-- Main App Initialization -->
   <script>
@@ -256,11 +312,21 @@
     // INICIALIZACIÓN DE LA APP
     // ========================================================================
 
-    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans;
+    // DEBUG: Capturar errores globales
+    window.addEventListener('error', function(event) {
+      console.error('❌ ERROR GLOBAL:', (event.error && event.error.message) || event.message);
+      console.error('   Archivo:', event.filename);
+      console.error('   Línea:', event.lineno);
+      console.error('   Columna:', event.colno);
+      console.error('   Stack:', event.error && event.error.stack);
+    });
+
+    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans, chapterResourcesModal;
 
     async function initApp() {
       try {
         console.log('🚀 Iniciando Colección Nuevo Ser...');
+        console.log('📱 User Agent:', navigator.userAgent);
 
         // Initialize i18n first
         if (window.I18n) {
@@ -276,6 +342,22 @@
           console.log('✅ Language Selector inicializado');
         }
 
+        // Initialize Supabase Auth & Sync
+        if (window.supabaseAuthHelper) {
+          await window.supabaseAuthHelper.init();
+          console.log('✅ Supabase Auth inicializado');
+        }
+
+        if (window.supabaseSyncHelper) {
+          await window.supabaseSyncHelper.init();
+          console.log('✅ Supabase Sync inicializado');
+        }
+
+        if (window.supabaseNotificationsHelper) {
+          await window.supabaseNotificationsHelper.init();
+          console.log('✅ Supabase Notifications inicializado');
+        }
+
         // Crear instancias
         bookEngine = new BookEngine();
         await bookEngine.init();
@@ -284,6 +366,11 @@
         await biblioteca.init();
 
         bookReader = new BookReader(bookEngine);
+
+        // Exponer globalmente para uso desde otros módulos (ej: SearchModal)
+        window.biblioteca = biblioteca;
+        window.bookReader = bookReader;
+        window.openBook = (bookId, chapterId) => biblioteca.openBook(bookId, chapterId);
 
         // Sistema de IA
         if (window.AIConfig && window.AIAdapter) {
@@ -295,6 +382,13 @@
           window.aiAdapter = aiAdapter;
           window.aiChatModal = aiChatModal;
           console.log('✅ Sistema de IA inicializado');
+
+          // Text Selection Helper (requiere aiChatModal)
+          if (window.TextSelectionHelper) {
+            const textSelectionHelper = new TextSelectionHelper(aiChatModal);
+            window.textSelectionHelper = textSelectionHelper;
+            console.log('✅ Text Selection Helper inicializado');
+          }
         }
 
         // Sistema de Notas
@@ -318,11 +412,48 @@
           console.log('✅ Resources Viewer inicializado');
         }
 
-        // Audio Reader
-        if (window.AudioReader) {
+        // Brújula de Recursos
+        if (window.BrujulaRecursos) {
+          window.brujulaRecursos = await BrujulaRecursos.create();
+          console.log('✅ Brújula de Recursos inicializada');
+        }
+
+        // Chapter Resources Modal
+        if (window.ChapterResourcesModal) {
+          try {
+            chapterResourcesModal = new ChapterResourcesModal(bookEngine);
+            window.chapterResourcesModal = chapterResourcesModal;
+            console.log('✅ Chapter Resources Modal inicializado');
+          } catch (error) {
+            console.error('❌ Error inicializando Chapter Resources Modal:', error);
+          }
+        } else {
+          console.warn('⚠️ ChapterResourcesModal class not found');
+        }
+
+        // Audio Reader (Enhanced)
+        if (window.EnhancedAudioReader && window.AudioReader) {
+          audioReader = new EnhancedAudioReader(bookEngine);
+          window.audioReader = audioReader;
+          console.log('✅ Enhanced Audio Reader inicializado');
+
+          // Audio Control Modal
+          if (window.AudioControlModal) {
+            window.audioControlModal = new AudioControlModal(audioReader);
+            console.log('✅ Audio Control Modal inicializado');
+          }
+
+          // Audio Enhancements (Word Sync, Stats, Effects, Voice Commands)
+          if (window.AudioEnhancements) {
+            window.audioEnhancements = new AudioEnhancements(audioReader);
+            window.audioEnhancements.initialize();
+            console.log('✅ Audio Enhancements inicializado');
+          }
+        } else if (window.AudioReader) {
+          // Fallback al AudioReader normal si falla Enhanced
           audioReader = new AudioReader(bookEngine);
           window.audioReader = audioReader;
-          console.log('✅ Audio Reader inicializado');
+          console.log('✅ Audio Reader inicializado (fallback)');
         }
 
         // Koan Generator
@@ -408,6 +539,22 @@
           actionPlans = new ActionPlans(bookEngine);
           window.actionPlans = actionPlans;
           console.log('✅ Action Plans inicializado');
+        }
+
+        // Practice Library & Recommender System
+        if (window.PracticeLibrary && window.PracticeRecommender && window.PracticeOfTheDayWidget) {
+          // Initialize practice library (ya inicializado globalmente, solo verificar)
+          if (!window.practiceLibrary) {
+            window.practiceLibrary = new PracticeLibrary();
+          }
+
+          // Initialize recommender system
+          window.practiceRecommender = new PracticeRecommender(window.practiceLibrary, bookEngine);
+
+          // Initialize widget
+          window.practiceWidget = new PracticeOfTheDayWidget(window.practiceRecommender);
+
+          console.log('✅ Practice Recommender System inicializado');
         }
 
         // AI Settings Modal
@@ -512,6 +659,42 @@
       document.addEventListener('DOMContentLoaded', initApp);
     } else {
       initApp();
+    }
+
+    // ========================================================================
+    // ANDROID BACK BUTTON HANDLER
+    // ========================================================================
+
+    // Manejar el botón físico "Back" de Android
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+      window.Capacitor.Plugins.App.addListener('backButton', async () => {
+        console.log('📱 Android back button pressed');
+
+        // Si estamos en BookReader, volver a Biblioteca
+        if (window.bookReader && window.bookReader.currentChapter) {
+          console.log('📱 BookReader activo → Volviendo a biblioteca');
+          if (window.biblioteca) {
+            window.biblioteca.show();
+          }
+          return;
+        }
+
+        // Si hay modales abiertos, cerrar el último
+        const modals = document.querySelectorAll('[id$="-modal"]:not(.hidden)');
+        if (modals.length > 0) {
+          console.log('📱 Modal abierto → Cerrando modal');
+          const lastModal = modals[modals.length - 1];
+          const closeBtn = lastModal.querySelector('[id^="close-"]');
+          if (closeBtn) {
+            closeBtn.click();
+            return;
+          }
+        }
+
+        // Si estamos en la biblioteca (raíz), cerrar la app
+        console.log('📱 En biblioteca → Cerrando app');
+        window.Capacitor.Plugins.App?.exitApp();
+      });
     }
 
     // ========================================================================

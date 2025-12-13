@@ -56,13 +56,44 @@ const BIBLIOTECA_CONFIG = {
 
   HERRAMIENTAS_ECOSISTEMA: [
     {
+      id: 'coleccion-nuevo-ser',
+      name: 'Colección del Nuevo Ser',
+      description: 'Biblioteca interactiva: 7 libros sobre conciencia, filosofía y transformación social',
+      icon: '📚',
+      url: './',
+      color: '#EC4899',
+      tags: ['lectura', 'aprendizaje', 'biblioteca', 'exploración'],
+      isInternal: false
+    },
+    {
+      id: 'frankenstein-lab',
+      name: 'Frankenstein Lab',
+      description: 'Juego educativo: crea seres conscientes combinando conocimientos de los libros',
+      icon: '⚡',
+      url: './test-frankenstein.html',
+      color: '#8B5CF6',
+      tags: ['juego', 'aprendizaje', 'quiz', 'gamificación'],
+      isInternal: false
+    },
+    {
+      id: 'cosmos-navigation',
+      name: 'Cosmos',
+      description: 'Navegación cósmica 3D: explora los libros como sistemas planetarios interconectados',
+      icon: '🌌',
+      url: './codigo-cosmico.html',
+      color: '#6366F1',
+      tags: ['visualización', '3D', 'exploración', 'inmersivo'],
+      isInternal: false
+    },
+    {
       id: 'truk',
       name: 'Truk',
       description: 'Red social de economía colaborativa local',
       icon: '🤝',
       url: 'https://truk-production.up.railway.app/',
       color: '#3B82F6',
-      tags: ['economía', 'colaborativa', 'comunidad', 'local']
+      tags: ['economía', 'colaborativa', 'comunidad', 'local'],
+      isInternal: false
     }
   ]
 };
@@ -279,19 +310,19 @@ class Biblioteca {
     // Esperar a que el sistema esté listo
     if (!window.practiceLibrary || !window.practiceRecommender) {
       if (retryCount >= MAX_RETRIES) {
-        console.log('⏭️  Practice system not available - skipping widget');
+        // console.log('⏭️  Practice system not available - skipping widget');
         return;
       }
 
       if (retryCount === 0) {
-        console.log('⏳ Waiting for practice system to initialize...');
+        // console.log('⏳ Waiting for practice system to initialize...');
       }
 
       setTimeout(() => this.renderPracticeWidget(retryCount + 1), 500);
       return;
     }
 
-    console.log('✅ Practice system ready - rendering widget');
+    // console.log('✅ Practice system ready - rendering widget');
 
     const container = document.getElementById('practice-widget-container');
     if (!container) return;
@@ -479,7 +510,7 @@ class Biblioteca {
 
           <!-- Tags -->
           <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-            ${libro.tags.slice(0, 3).map(etiqueta =>
+            ${(libro.tags || []).slice(0, 3).map(etiqueta =>
               `<span class="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200">#${etiqueta}</span>`
             ).join('')}
           </div>
@@ -559,23 +590,131 @@ class Biblioteca {
     `;
 
     herramientas.forEach(herramienta => {
+      const isInternal = herramienta.isInternal || false;
+      const badgeText = isInternal ? '🎮 Juego' : '🌐 Web App';
+
+      // Asignar color tema por herramienta
+      let colorTheme = 'emerald';
+      if (herramienta.id === 'frankenstein-lab') colorTheme = 'purple';
+      else if (herramienta.id === 'cosmos-navigation') colorTheme = 'indigo';
+      else if (herramienta.id === 'coleccion-nuevo-ser') colorTheme = 'pink';
+      else if (herramienta.id === 'truk') colorTheme = 'blue';
+      // Mapeo de colores para cada herramienta
+      const colorMap = {
+        'purple': {
+          gradientFrom: 'from-purple-500/20 to-violet-500/20',
+          borderColor: 'border-purple-500/30',
+          hoverBorderColor: 'hover:border-purple-500/50',
+          hoverShadow: 'hover:shadow-purple-500/20',
+          hoverTextColor: 'group-hover:text-purple-600 dark:group-hover:text-purple-300',
+          badgeBg: 'bg-purple-100 dark:bg-purple-500/20',
+          badgeText: 'text-purple-700 dark:text-purple-300',
+          badgeBorder: 'border-purple-300 dark:border-purple-500/30',
+          tagBg: 'bg-purple-100 dark:bg-purple-900/30',
+          tagText: 'text-purple-700 dark:text-purple-400',
+          tagBorder: 'border-purple-300 dark:border-purple-700/30',
+          btnGradient: 'from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500',
+          btnShadow: 'group-hover:shadow-purple-500/25'
+        },
+        'pink': {
+          gradientFrom: 'from-pink-500/20 to-rose-500/20',
+          borderColor: 'border-pink-500/30',
+          hoverBorderColor: 'hover:border-pink-500/50',
+          hoverShadow: 'hover:shadow-pink-500/20',
+          hoverTextColor: 'group-hover:text-pink-600 dark:group-hover:text-pink-300',
+          badgeBg: 'bg-pink-100 dark:bg-pink-500/20',
+          badgeText: 'text-pink-700 dark:text-pink-300',
+          badgeBorder: 'border-pink-300 dark:border-pink-500/30',
+          tagBg: 'bg-pink-100 dark:bg-pink-900/30',
+          tagText: 'text-pink-700 dark:text-pink-400',
+          tagBorder: 'border-pink-300 dark:border-pink-700/30',
+          btnGradient: 'from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500',
+          btnShadow: 'group-hover:shadow-pink-500/25'
+        },
+        'indigo': {
+          gradientFrom: 'from-indigo-500/20 to-blue-500/20',
+          borderColor: 'border-indigo-500/30',
+          hoverBorderColor: 'hover:border-indigo-500/50',
+          hoverShadow: 'hover:shadow-indigo-500/20',
+          hoverTextColor: 'group-hover:text-indigo-600 dark:group-hover:text-indigo-300',
+          badgeBg: 'bg-indigo-100 dark:bg-indigo-500/20',
+          badgeText: 'text-indigo-700 dark:text-indigo-300',
+          badgeBorder: 'border-indigo-300 dark:border-indigo-500/30',
+          tagBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+          tagText: 'text-indigo-700 dark:text-indigo-400',
+          tagBorder: 'border-indigo-300 dark:border-indigo-700/30',
+          btnGradient: 'from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500',
+          btnShadow: 'group-hover:shadow-indigo-500/25'
+        },
+        'blue': {
+          gradientFrom: 'from-blue-500/20 to-cyan-500/20',
+          borderColor: 'border-blue-500/30',
+          hoverBorderColor: 'hover:border-blue-500/50',
+          hoverShadow: 'hover:shadow-blue-500/20',
+          hoverTextColor: 'group-hover:text-blue-600 dark:group-hover:text-blue-300',
+          badgeBg: 'bg-blue-100 dark:bg-blue-500/20',
+          badgeText: 'text-blue-700 dark:text-blue-300',
+          badgeBorder: 'border-blue-300 dark:border-blue-500/30',
+          tagBg: 'bg-blue-100 dark:bg-blue-900/30',
+          tagText: 'text-blue-700 dark:text-blue-400',
+          tagBorder: 'border-blue-300 dark:border-blue-700/30',
+          btnGradient: 'from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500',
+          btnShadow: 'group-hover:shadow-blue-500/25'
+        },
+        'emerald': {
+          gradientFrom: 'from-emerald-500/20 to-teal-500/20',
+          borderColor: 'border-emerald-500/30',
+          hoverBorderColor: 'hover:border-emerald-500/50',
+          hoverShadow: 'hover:shadow-emerald-500/20',
+          hoverTextColor: 'group-hover:text-emerald-600 dark:group-hover:text-emerald-300',
+          badgeBg: 'bg-emerald-100 dark:bg-emerald-500/20',
+          badgeText: 'text-emerald-700 dark:text-emerald-300',
+          badgeBorder: 'border-emerald-300 dark:border-emerald-500/30',
+          tagBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+          tagText: 'text-emerald-700 dark:text-emerald-400',
+          tagBorder: 'border-emerald-300 dark:border-emerald-700/30',
+          btnGradient: 'from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500',
+          btnShadow: 'group-hover:shadow-emerald-500/25'
+        }
+      };
+
+      const colors = colorMap[colorTheme];
+      const gradientFrom = colors.gradientFrom;
+      const borderColor = colors.borderColor;
+      const hoverBorderColor = colors.hoverBorderColor;
+      const hoverShadow = colors.hoverShadow;
+      const hoverTextColor = colors.hoverTextColor;
+      const badgeBg = colors.badgeBg;
+      const badgeText2 = colors.badgeText;
+      const badgeBorder = colors.badgeBorder;
+      const tagBg = colors.tagBg;
+      const tagText = colors.tagText;
+      const tagBorder = colors.tagBorder;
+      const btnGradient = colors.btnGradient;
+      const btnShadow = colors.btnShadow;
+
+      const wrapperTag = isInternal ? 'div' : 'a';
+      const wrapperAttrs = isInternal
+        ? `data-tool-handler="${herramienta.handler}" data-tool-id="${herramienta.id}"`
+        : `href="${herramienta.url}" target="_blank" rel="noopener noreferrer"`;
+
       html += `
-        <a href="${herramienta.url}" target="_blank" rel="noopener noreferrer"
-           class="tool-card group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/20 cursor-pointer block bg-white dark:bg-gray-800/60 backdrop-blur border border-gray-300 dark:border-gray-700/50 hover:border-emerald-500/50">
+        <${wrapperTag} ${wrapperAttrs}
+           class="tool-card group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl ${hoverShadow} cursor-pointer block bg-white dark:bg-gray-800/60 backdrop-blur border border-gray-300 dark:border-gray-700/50 ${hoverBorderColor}">
 
           <div class="relative p-4 sm:p-6">
             <!-- Header con icono y badge -->
             <div class="flex items-start justify-between mb-4">
-              <div class="p-3 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30">
+              <div class="p-3 rounded-xl bg-gradient-to-br ${gradientFrom} border ${borderColor}">
                 <span class="text-4xl">${herramienta.icon}</span>
               </div>
-              <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30">
-                🌐 Web App
+              <span class="px-3 py-1 text-xs font-semibold rounded-full ${badgeBg} ${badgeText2} border ${badgeBorder}">
+                ${badgeText}
               </span>
             </div>
 
             <!-- Name -->
-            <h4 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition">
+            <h4 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white ${hoverTextColor} transition">
               ${herramienta.name}
             </h4>
 
@@ -587,16 +726,16 @@ class Biblioteca {
             <!-- Tags -->
             <div class="flex flex-wrap gap-2 mb-4">
               ${herramienta.tags.map(tag =>
-                `<span class="px-2 py-1 text-xs rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/30">#${tag}</span>`
+                `<span class="px-2 py-1 text-xs rounded-full ${tagBg} ${tagText} border ${tagBorder}">#${tag}</span>`
               ).join('')}
             </div>
 
             <!-- Action Button -->
-            <div class="w-full py-3 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 text-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg group-hover:shadow-emerald-500/25">
-              🚀 Abrir Aplicación
+            <div class="w-full py-3 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 text-center bg-gradient-to-r ${btnGradient} text-white shadow-lg ${btnShadow}">
+              ${isInternal ? '🎮 Jugar Ahora' : '🚀 Abrir Aplicación'}
             </div>
           </div>
-        </a>
+        </${wrapperTag}>
       `;
     });
 
@@ -684,6 +823,9 @@ class Biblioteca {
   getFilteredBooks() {
     let librosFiltrados = this.bookEngine.getAllBooks();
 
+    // Filtrar solo libros publicados
+    librosFiltrados = librosFiltrados.filter(libro => libro.status === 'published');
+
     if (this.filterCategory && this.filterCategory !== 'all') {
       librosFiltrados = librosFiltrados.filter(libro => libro.category === this.filterCategory);
     }
@@ -692,9 +834,9 @@ class Biblioteca {
       const consultaBusqueda = this.searchQuery.toLowerCase();
       librosFiltrados = librosFiltrados.filter(libro =>
         libro.title.toLowerCase().includes(consultaBusqueda) ||
-        libro.subtitle.toLowerCase().includes(consultaBusqueda) ||
-        libro.description.toLowerCase().includes(consultaBusqueda) ||
-        libro.tags.some(etiqueta => etiqueta.toLowerCase().includes(consultaBusqueda))
+        (libro.subtitle && libro.subtitle.toLowerCase().includes(consultaBusqueda)) ||
+        (libro.description && libro.description.toLowerCase().includes(consultaBusqueda)) ||
+        (libro.tags && libro.tags.some(etiqueta => etiqueta.toLowerCase().includes(consultaBusqueda)))
       );
     }
 
@@ -711,7 +853,7 @@ class Biblioteca {
       const modalConfiguracion = new window.SettingsModal();
       modalConfiguracion.show();
     } else {
-      console.warn('SettingsModal no está disponible');
+      // console.warn('SettingsModal no está disponible');
     }
   }
 
@@ -763,6 +905,183 @@ class Biblioteca {
     } else {
       console.error('ExplorationHub no está disponible');
     }
+  }
+
+  async handleCosmosNavigationButton(evento) {
+    evento.preventDefault();
+
+    // Si ya está cargado, mostrarlo directamente
+    if (window.cosmosNavigation) {
+      window.cosmosNavigation.show();
+      // console.log('🌌 Abriendo Cosmos del Conocimiento');
+      return;
+    }
+
+    // Si no está cargado, cargarlo primero con lazy-loader
+    if (window.lazyLoader) {
+      if (window.toast) {
+        window.toast.show('📦 Cargando Cosmos del Conocimiento...', 'info', 3000);
+      }
+
+      try {
+        await window.lazyLoader.load('cosmos-3d');
+
+        // Ahora que está cargado, mostrarlo
+        if (window.cosmosNavigation) {
+          window.cosmosNavigation.show();
+          if (window.toast) {
+            window.toast.show('✅ Cosmos cargado', 'success', 2000);
+          }
+        } else {
+          console.error('CosmosNavigation no se inicializó correctamente después de la carga');
+          if (window.toast) {
+            window.toast.show('❌ Error inicializando Cosmos', 'error', 3000);
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando cosmos-3d:', error);
+        if (window.toast) {
+          window.toast.show('❌ Error cargando Cosmos del Conocimiento', 'error', 3000);
+        }
+      }
+    } else {
+      console.error('LazyLoader no está disponible');
+      if (window.toast) {
+        window.toast.show('❌ Sistema de carga no disponible', 'error', 3000);
+      }
+    }
+  }
+
+  // Método eliminado - organism-3d ha sido removido del sistema
+
+  async handleFrankensteinLabCard(evento) {
+    evento.preventDefault();
+
+    // Si ya está cargado, mostrarlo directamente
+    if (window.frankensteinLabUI) {
+      const container = document.getElementById('organism-container');
+      if (container) {
+        // Limpiar el container y volver a crear la UI
+        container.innerHTML = '';
+        container.classList.remove('hidden');
+        document.getElementById('biblioteca-view')?.classList.add('hidden');
+
+        // Resetear ambos flags para que vuelva a mostrar pantalla de inicio
+        window.frankensteinLabUI.isInitialized = false;
+        window.frankensteinLabUI.labStarted = false;
+        await window.frankensteinLabUI.init();
+      }
+      return;
+    }
+
+    // Si no está cargado, cargarlo primero (solo frankenstein-lab, SIN organism-3d)
+    if (window.lazyLoader) {
+      if (window.toast) {
+        window.toast.show('📦 Cargando Laboratorio Frankenstein...', 'info', 3000);
+      }
+
+      try {
+        // Solo cargar frankenstein-lab, NO organism-3d
+        await window.lazyLoader.load('frankenstein-lab');
+
+        // Crear un contenedor básico si no existe
+        let container = document.getElementById('organism-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'organism-container';
+          container.className = 'organism-container';
+          document.body.appendChild(container);
+        }
+
+        // Mostrar el container y ocultar la biblioteca
+        container.classList.remove('hidden');
+        document.getElementById('biblioteca-view')?.classList.add('hidden');
+
+        // Inicializar Frankenstein Lab UI directamente
+        if (window.FrankensteinLabUI && window.bookEngine) {
+          // Crear objeto mínimo para compatibilidad (sin organism-3d completo)
+          const labInstance = {
+            bookEngine: window.bookEngine,
+            hide: () => {
+              container.classList.add('hidden');
+              document.getElementById('biblioteca-view')?.classList.remove('hidden');
+            },
+            // Método para obtener capítulos de un libro
+            getBookChapters: (book) => {
+              const chapters = [];
+              if (window.bookEngine?.catalog) {
+                const fullBook = window.bookEngine.catalog.books.find(b => b.id === book.id);
+                if (fullBook) {
+                  if (fullBook.sections && Array.isArray(fullBook.sections)) {
+                    fullBook.sections.forEach(section => {
+                      if (section.chapters && Array.isArray(section.chapters)) {
+                        chapters.push(...section.chapters);
+                      }
+                    });
+                  }
+                  if (chapters.length === 0 && fullBook.chapters && Array.isArray(fullBook.chapters)) {
+                    chapters.push(...fullBook.chapters);
+                  }
+                  if (chapters.length > 0) return chapters;
+                }
+              }
+              // Fallback: capítulos genéricos
+              for (let i = 0; i < 6; i++) {
+                chapters.push({
+                  id: `cap${i + 1}`,
+                  title: `Capítulo ${i + 1}`,
+                  tags: ['conocimiento', 'transformación']
+                });
+              }
+              return chapters;
+            },
+            // Método para cargar metadata de capítulos
+            loadChapterMetadata: async (bookId) => {
+              try {
+                const response = await fetch(`books/${bookId}/assets/chapter-metadata.json`);
+                if (response.ok) {
+                  return await response.json();
+                }
+              } catch (error) {
+                // Silent fail
+              }
+              return {};
+            }
+          };
+
+          window.frankensteinLabUI = new FrankensteinLabUI(labInstance);
+          await window.frankensteinLabUI.init();
+
+          if (window.toast) {
+            window.toast.show('✅ Laboratorio cargado', 'success', 2000);
+          }
+        } else {
+          console.error('FrankensteinLabUI o BookEngine no disponibles');
+          if (window.toast) {
+            window.toast.show('❌ Error inicializando Laboratorio', 'error', 3000);
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando Frankenstein Lab:', error);
+        if (window.toast) {
+          window.toast.show('❌ Error cargando Laboratorio Frankenstein', 'error', 3000);
+        }
+      }
+    } else {
+      console.error('LazyLoader no está disponible');
+      if (window.toast) {
+        window.toast.show('❌ Sistema de carga no disponible', 'error', 3000);
+      }
+    }
+  }
+
+  // Alias para compatibilidad con la tarjeta de herramientas
+  handleFrankensteinLabClick(evento) {
+    return this.handleFrankensteinLabCard(evento);
+  }
+
+  handleCosmosNavigationClick(evento) {
+    return this.handleCosmosNavigationButton(evento);
   }
 
   toggleMenuDropdown(evento) {
@@ -921,6 +1240,21 @@ class Biblioteca {
           this.closeMenuDropdown();
           return;
         }
+      }
+
+      // Handle internal tool card clicks
+      const tarjetaHerramienta = evento.target.closest('[data-tool-handler]');
+      if (tarjetaHerramienta) {
+        const nombreHandler = tarjetaHerramienta.getAttribute('data-tool-handler');
+        const idHerramienta = tarjetaHerramienta.getAttribute('data-tool-id');
+
+        if (nombreHandler && this[nombreHandler]) {
+          logger.log(`🛠️ Opening tool: ${idHerramienta}`);
+          this[nombreHandler](evento);
+        } else {
+          console.error(`Handler ${nombreHandler} not found for tool ${idHerramienta}`);
+        }
+        return;
       }
 
       const botonAbrir = evento.target.closest('[data-action="open-book"]');

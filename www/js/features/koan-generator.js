@@ -294,6 +294,13 @@ class KoanGenerator {
   saveHistory() {
     try {
       localStorage.setItem('koan_history', JSON.stringify(this.koanHistory));
+
+      // Sincronizar a la nube si está autenticado
+      if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
+        window.supabaseSyncHelper.migrateKoanHistory().catch(err => {
+          console.error('Error sincronizando historial de koans:', err);
+        });
+      }
     } catch (e) {
       console.error('Error guardando historial de koans:', e);
     }

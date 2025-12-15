@@ -63,6 +63,7 @@
     },
     "resources": {
       "enabled": true,
+      "file": "books/manifiesto/assets/resources.json",
       "types": ["organizaciones", "movimientos", "lecturas", "documentales"],
       "openInBrowser": true
     },
@@ -122,6 +123,13 @@
       "speeds": [0.75, 1.0, 1.25, 1.5, 2.0],
       "highlightCurrentParagraph": true,
       "autoAdvanceChapter": true
+    },
+    "quizzes": {
+      "enabled": true,
+      "file": "books/manifiesto/assets/quizzes.json",
+      "showAfterChapter": true,
+      "trackProgress": true,
+      "retakeAllowed": true
     }
   },
 

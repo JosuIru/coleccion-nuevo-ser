@@ -12,6 +12,14 @@ class BookReader {
   }
 
   // ==========================================================================
+  // UTILIDADES
+  // ==========================================================================
+
+  isCapacitor() {
+    return typeof window.Capacitor !== 'undefined';
+  }
+
+  // ==========================================================================
   // RENDERIZADO PRINCIPAL
   // ==========================================================================
 
@@ -23,6 +31,19 @@ class BookReader {
     const container = document.getElementById('book-reader-view');
     if (container) {
       container.classList.remove('hidden');
+    }
+
+    // Aplicar tamaño de fuente guardado
+    this.applyFontSize();
+  }
+
+  applyFontSize() {
+    const savedFontSize = localStorage.getItem('font-size');
+    if (savedFontSize) {
+      const chapterContent = document.querySelector('.chapter-content');
+      if (chapterContent) {
+        chapterContent.style.fontSize = savedFontSize + 'px';
+      }
     }
   }
 
@@ -38,17 +59,17 @@ class BookReader {
     if (!container) return;
 
     let html = `
-      <div class="book-reader-container flex h-screen">
+      <div class="book-reader-container flex h-screen overflow-x-hidden">
         <!-- Sidebar -->
         ${this.renderSidebar()}
 
         <!-- Main Content -->
-        <div class="main-content flex-1 flex flex-col">
+        <div class="main-content flex-1 flex flex-col overflow-x-hidden">
           <!-- Header -->
           ${this.renderHeader()}
 
           <!-- Chapter Content -->
-          <div class="chapter-content flex-1 overflow-y-auto p-8">
+          <div class="chapter-content flex-1 overflow-y-auto overflow-x-hidden p-8">
             ${this.renderChapterContent()}
           </div>
 
@@ -60,6 +81,9 @@ class BookReader {
 
     // Add mobile menu
     html += this.renderMobileMenu();
+
+    // Add floating ExplorationHub button
+    html += this.renderExplorationHubButton();
 
     container.innerHTML = html;
 
@@ -205,8 +229,9 @@ class BookReader {
       }"
            data-chapter-id="${chapter.id}">
         <div class="flex items-center gap-2">
-          <button class="chapter-read-toggle p-1 rounded hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
+          <button class="chapter-read-toggle p-3 rounded hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
                   data-chapter-id="${chapter.id}"
+                  aria-label="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}"
                   title="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}">
             ${isRead ? Icons.checkCircle(18) : Icons.circle(18)}
           </button>
@@ -244,106 +269,271 @@ class BookReader {
         <div class="flex items-center justify-between gap-2">
           <!-- Left: Toggle Sidebar + Back -->
           <div class="flex items-center gap-1 flex-shrink-0">
-            <button id="toggle-sidebar" class="p-2 hover:bg-gray-800 rounded-lg transition">
+            <button id="toggle-sidebar"
+                    class="p-3 hover:bg-gray-800 rounded-lg transition"
+                    aria-label="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}"
+                    title="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}">
               ${this.sidebarOpen ? Icons.chevronLeft() : Icons.chevronRight()}
             </button>
-            <button id="back-to-biblioteca" class="p-2 hover:bg-gray-800 rounded-lg transition flex items-center gap-1">
+            <button id="back-to-biblioteca"
+                    class="p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-1"
+                    aria-label="Volver a la biblioteca"
+                    title="Volver a la biblioteca">
               ${Icons.library()} <span class="hidden lg:inline text-sm">${this.i18n.t('nav.library')}</span>
             </button>
           </div>
 
-          <!-- Center: Chapter Title (only on large screens) -->
-          <div class="hidden lg:block text-center flex-1 min-w-0 px-2">
-            <h3 class="text-base font-bold truncate">${this.currentChapter?.title || ''}</h3>
-          </div>
-
-          <!-- Right: Actions -->
+          <!-- Right: Actions (más espacio sin el título en medio) -->
           <div class="flex items-center gap-1 flex-shrink-0">
-            <!-- Mobile Menu Button (visible on small screens) -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('menu.open')}" aria-label="${this.i18n.t('menu.open')}">
-              ${Icons.menu()}
-            </button>
-
-            <!-- Tablet view (md): Main actions + More dropdown -->
-            <div class="hidden md:flex lg:hidden items-center gap-1">
-              <button id="bookmark-btn-tablet" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.bookmark')}">
-                ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
-              </button>
-              <button id="ai-chat-btn-tablet" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.chat')}">
+            <!-- Mobile/Android view: Main actions + More dropdown -->
+            <!-- En Capacitor siempre usar vista móvil, en web solo < md (768px) -->
+            <div class="${this.isCapacitor() ? 'flex lg:hidden' : 'flex md:hidden'} items-center gap-1">
+              <button id="ai-chat-btn-mobile"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.chat')}"
+                      title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
-              <button id="audioreader-btn-tablet" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.audio')}">
+              <button id="bookmark-btn-mobile"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
+                ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
+              </button>
+              <button id="audioreader-btn-mobile"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.audio')}"
+                      title="${this.i18n.t('reader.audio')}">
                 ${Icons.audio()}
+              </button>
+              <!-- Botón Apoyar mobile -->
+              <button id="support-btn-mobile"
+                      class="p-3 hover:bg-pink-900/50 rounded-lg transition text-pink-400 support-heartbeat"
+                      aria-label="${this.i18n.t('btn.support')}"
+                      title="${this.i18n.t('btn.support')}">
+                <span class="support-heart">❤️</span>
+              </button>
+              <!-- More actions button -->
+              <button id="mobile-menu-btn"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('menu.more') || 'Más opciones'}"
+                      title="${this.i18n.t('menu.more') || 'Más'}">
+                ${Icons.moreVertical ? Icons.moreVertical() : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>`}
+              </button>
+            </div>
+
+            <!-- Tablet view (md a lg): Main actions + More dropdown -->
+            <!-- Solo en web, no en Capacitor -->
+            <div class="${this.isCapacitor() ? 'hidden' : 'hidden md:flex lg:hidden'} items-center gap-1">
+              <button id="bookmark-btn-tablet"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
+                ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
+              </button>
+              <button id="ai-chat-btn-tablet"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.chat')}"
+                      title="${this.i18n.t('reader.chat')}">
+                ${Icons.chat()}
+              </button>
+              <button id="audioreader-btn-tablet"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.audio')}"
+                      title="${this.i18n.t('reader.audio')}">
+                ${Icons.audio()}
+              </button>
+              <!-- Botón Apoyar tablet - siempre visible -->
+              <button id="support-btn-tablet"
+                      class="p-3 hover:bg-pink-900/50 rounded-lg transition text-pink-400 support-heartbeat"
+                      aria-label="${this.i18n.t('btn.support')}"
+                      title="${this.i18n.t('btn.support')}">
+                <span class="support-heart">❤️</span>
               </button>
               <div class="w-px h-5 bg-gray-700 mx-1"></div>
               <!-- More actions dropdown for tablet -->
               <div class="relative">
-                <button id="more-actions-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('menu.more') || 'Más'}">
+                <button id="more-actions-btn"
+                        class="p-3 hover:bg-gray-800 rounded-lg transition"
+                        aria-label="${this.i18n.t('menu.more') || 'Más opciones'}"
+                        title="${this.i18n.t('menu.more') || 'Más'}">
                   ${Icons.moreVertical ? Icons.moreVertical() : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>`}
                 </button>
                 <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
-                  <button id="notes-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Configuración</div>
+                  <button id="open-settings-modal-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400 font-semibold" aria-label="Configuración General">
+                    ${Icons.settings(18)} <span>Configuración General</span>
+                  </button>
+                  <button id="open-help-center-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
+                    ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
+                  </button>
+                  <div class="border-t border-gray-700 my-1"></div>
+                  <button id="notes-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.notes')}">
                     ${Icons.note(18)} <span>${this.i18n.t('reader.notes')}</span>
                   </button>
-                  ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.timeline(18)} <span>${this.i18n.t('reader.timeline')}</span></button>` : ''}
-                  ${hasResources ? `<button id="resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.resources(18)} <span>${this.i18n.t('reader.resources')}</span></button>` : ''}
-                  ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
-                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
-                  ${hasKoan ? `<button id="koan-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+                  <button id="chapter-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-blue-400" aria-label="Recursos del Capítulo">
+                    ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
+                  </button>
+                  ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
+                  ${hasResources ? `<button id="book-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
+                  ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+                  ${hasKoan ? `<button id="koan-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
                   <div class="border-t border-gray-700 my-1"></div>
-                  <button id="android-download-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span></button>
-                  <button id="ai-settings-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.settings(18)} <span>${this.i18n.t('btn.aiSettings')}</span></button>
-                  <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
-                  <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
-                  <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
-                  <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
-                  <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400">${Icons.create('share-2', 18)} <span>Compartir</span></button>
+                  ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span></button>`}
+                  <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.support')}">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
+                  <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400" aria-label="${this.i18n.t('premium.title')}">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
+                  <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
+                  <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
+                  <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400" aria-label="Compartir capítulo">${Icons.create('share-2', 18)} <span>Compartir</span></button>
                 </div>
               </div>
             </div>
 
-            <!-- Desktop view (lg+): All actions visible -->
+            <!-- Desktop view (lg+): Organized in groups -->
             <div class="hidden lg:flex items-center gap-1">
-              <button id="bookmark-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.bookmark')}">
+              <!-- Grupo 1: Acciones principales (siempre visibles) -->
+              <button id="bookmark-btn"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
                 ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
               </button>
-              <button id="notes-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.notes')}">
+              <button id="notes-btn"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.notes')}"
+                      title="${this.i18n.t('reader.notes')}">
                 ${Icons.note()}
               </button>
-              <button id="voice-notes-btn" class="p-2 hover:bg-red-900/50 rounded-lg transition text-red-400" title="Notas de voz">
-                ${Icons.create('mic', 20)}
-              </button>
-              <button id="ai-chat-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.chat')}">
+              <button id="ai-chat-btn"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.chat')}"
+                      title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
-              <button id="summary-btn" class="p-2 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400" title="Resumen del capítulo">
-                ${Icons.note()}
+              <button id="audioreader-btn"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      aria-label="${this.i18n.t('reader.audio')}"
+                      title="${this.i18n.t('reader.audio')}">
+                ${Icons.audio()}
               </button>
+
+              <!-- Botón Apoyar - siempre visible con animación de latido -->
+              <button id="support-btn"
+                      class="p-3 hover:bg-pink-900/50 rounded-lg transition text-pink-400 support-heartbeat"
+                      aria-label="${this.i18n.t('btn.support')}"
+                      title="${this.i18n.t('btn.support')}">
+                <span class="support-heart">❤️</span>
+              </button>
+
               <div class="w-px h-5 bg-gray-700 mx-1"></div>
-              ${hasTimeline ? `<button id="timeline-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.timeline')}">${Icons.timeline()}</button>` : ''}
-              ${hasResources ? `<button id="resources-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.resources')}">${Icons.resources()}</button>` : ''}
-              ${hasManualPractico ? `<button id="manual-practico-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.manualPractico')}">${Icons.manual()}</button>` : ''}
-              ${hasPracticasRadicales ? `<button id="practicas-radicales-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical()}</button>` : ''}
-              <button id="audioreader-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.audio')}">${Icons.audio()}</button>
-              ${hasKoan ? `<button id="koan-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('reader.koan')}">${Icons.koan()}</button>` : ''}
-              <div class="w-px h-5 bg-gray-700 mx-1"></div>
-              <button id="achievements-btn" class="p-2 hover:bg-amber-900/50 rounded-lg transition text-amber-400" title="Mis Logros">${Icons.trophy()}</button>
-              <button id="concept-map-btn" class="p-2 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400" title="Mapa Conceptual">${Icons.create('git-branch', 20)}</button>
-              <button id="action-plans-btn" class="p-2 hover:bg-green-900/50 rounded-lg transition text-green-400" title="Planes de Acción">${Icons.create('clipboard-list', 20)}</button>
-              <button id="android-download-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.download')}">${Icons.download()}</button>
-              <button id="ai-settings-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.aiSettings')}">${Icons.settings()}</button>
-              <button id="donations-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('btn.support')}">${Icons.donate()}</button>
-              <button id="premium-edition-btn" class="p-2 hover:bg-amber-900/50 rounded-lg transition text-amber-400" title="${this.i18n.t('premium.title')}">${Icons.book()}</button>
-              <button id="language-selector-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="${this.i18n.t('lang.title')}">${Icons.language()}</button>
-              <button id="theme-toggle-btn" class="p-2 hover:bg-gray-800 rounded-lg transition" title="Cambiar tema"><span id="theme-icon">${window.themeHelper?.getThemeIcon() || '🌙'}</span></button>
-              <button id="share-chapter-btn" class="p-2 hover:bg-blue-900/50 rounded-lg transition text-blue-400" title="Compartir capítulo">${Icons.create('share-2', 20)}</button>
+
+              <!-- Grupo 2: Herramientas (dropdown) -->
+              <div class="relative">
+                <button id="tools-dropdown-btn"
+                        class="p-3 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400 flex items-center gap-1"
+                        aria-label="Herramientas"
+                        title="Herramientas">
+                  ${Icons.create('wrench', 18)}
+                  <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="tools-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Herramientas</div>
+                  <button id="chapter-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-blue-400" aria-label="Recursos del Capítulo">
+                    ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
+                  </button>
+                  <button id="summary-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Resumen del capítulo">
+                    ${Icons.create('file-text', 18)} <span>Resumen del capítulo</span>
+                  </button>
+                  <button id="voice-notes-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-red-400" aria-label="Notas de voz">
+                    ${Icons.create('mic', 18)} <span>Notas de voz</span>
+                  </button>
+                  <button id="concept-map-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-cyan-400" aria-label="Mapa Conceptual">
+                    ${Icons.create('git-branch', 18)} <span>Mapa Conceptual</span>
+                  </button>
+                  <button id="action-plans-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-green-400" aria-label="Planes de Acción">
+                    ${Icons.create('clipboard-list', 18)} <span>Planes de Acción</span>
+                  </button>
+                  <button id="achievements-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-amber-400" aria-label="Mis Logros">
+                    ${Icons.trophy(18)} <span>Mis Logros</span>
+                  </button>
+                  <div class="border-t border-gray-700 my-1"></div>
+                  <button id="content-adapter-btn" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Adaptar Contenido">
+                    ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Grupo 3: Contenido del libro (dropdown, solo si hay features) -->
+              ${(hasTimeline || hasResources || hasManualPractico || hasPracticasRadicales || hasKoan) ? `
+              <div class="relative">
+                <button id="book-features-dropdown-btn"
+                        class="p-3 hover:bg-purple-900/50 rounded-lg transition text-purple-400 flex items-center gap-1"
+                        aria-label="Contenido del libro"
+                        title="Contenido">
+                  ${Icons.resources(18)}
+                  <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="book-features-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Contenido del libro</div>
+                  <button id="quiz-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Quiz de Autoevaluación" title="Quiz de Autoevaluación">
+                    <span class="text-lg">🎯</span> <span>Quiz de Autoevaluación</span>
+                  </button>
+                  ${hasTimeline ? `<button id="timeline-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
+                  ${hasResources ? `<button id="book-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
+                  ${hasManualPractico ? `<button id="manual-practico-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+                  ${hasKoan ? `<button id="koan-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+                </div>
+              </div>
+              ` : ''}
+
+              <!-- Grupo 4: Configuración y más (dropdown) -->
+              <div class="relative">
+                <button id="settings-dropdown-btn"
+                        class="p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-1"
+                        aria-label="Configuración"
+                        title="Configuración">
+                  ${Icons.settings(18)}
+                  <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="settings-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Configuración</div>
+                  <button id="open-settings-modal-btn" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400 font-semibold" aria-label="Configuración General">
+                    ${Icons.settings(18)} <span>Configuración General</span>
+                  </button>
+                  <button id="open-help-center-btn" class="w-full text-left px-4 py-2 hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
+                    ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
+                  </button>
+                  <div class="border-t border-gray-700 my-1"></div>
+                  <button id="language-selector-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">
+                    ${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span>
+                  </button>
+                  <button id="theme-toggle-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}">
+                    <span id="theme-icon">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
+                  </button>
+                  <div class="border-t border-gray-700 my-1"></div>
+                  <button id="premium-edition-btn" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400" aria-label="${this.i18n.t('premium.title')}">
+                    ${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span>
+                  </button>
+                  ${this.isCapacitor() ? '' : `
+                  <button id="android-download-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">
+                    ${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span>
+                  </button>
+                  `}
+                  <div class="border-t border-gray-700 my-1"></div>
+                  <button id="share-chapter-btn" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400" aria-label="Compartir capítulo">
+                    ${Icons.create('share-2', 18)} <span>Compartir capítulo</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Segunda fila: Título del capítulo (móvil y tablet) -->
-        <div class="lg:hidden mt-2 text-center">
-          <h3 class="text-sm font-bold text-gray-200 truncate px-2">${this.currentChapter?.title || ''}</h3>
+        <!-- Segunda fila: Título del capítulo (siempre visible) -->
+        <div class="mt-2 text-center border-t border-gray-300 dark:border-gray-700/50 pt-2">
+          <h3 class="text-sm lg:text-base font-bold text-gray-900 dark:text-gray-100 truncate px-2" style="color: inherit;">${this.currentChapter?.title || ''}</h3>
         </div>
       </div>
     `;
@@ -352,7 +542,7 @@ class BookReader {
   renderChapterContent() {
     if (!this.currentChapter) return '<p>No hay capítulo seleccionado</p>';
 
-    let html = '<div class="chapter max-w-4xl mx-auto">';
+    let html = '<div class="chapter max-w-4xl mx-auto overflow-x-hidden">';
 
     // Título del capítulo
     html += `<h1 class="text-4xl font-bold mb-6">${this.currentChapter.title}</h1>`;
@@ -373,7 +563,7 @@ class BookReader {
     }
 
     // Contenido principal
-    html += `<div class="content prose prose-invert max-w-none">`;
+    html += `<div class="content prose prose-invert max-w-none overflow-x-hidden break-words">`;
     html += this.bookEngine.renderContent(this.currentChapter.content);
     html += `</div>`;
 
@@ -422,9 +612,65 @@ class BookReader {
     // Botón de marcar capítulo como leído
     html += this.renderMarkAsReadButton();
 
+    // Action cards al final del capítulo
+    html += this.renderActionCards();
+
     html += '</div>';
 
     return html;
+  }
+
+  renderActionCards() {
+    const bookId = this.bookEngine.getCurrentBook();
+    const chapterId = this.currentChapter && this.currentChapter.id;
+    if (!bookId || !chapterId) return '';
+
+    // Verificar qué features están disponibles
+    const bookConfig = this.bookEngine.getCurrentBookConfig();
+    const hasQuiz = window.InteractiveQuiz && this.currentChapter && this.currentChapter.quiz;
+    const hasResources = bookConfig && bookConfig.features && bookConfig.features.resources && bookConfig.features.resources.enabled;
+    const hasReflection = this.currentChapter && this.currentChapter.closingQuestion;
+
+    // Si no hay ninguna acción disponible, no mostrar nada
+    if (!hasQuiz && !hasResources && !hasReflection) {
+      return '';
+    }
+
+    return `
+      <div class="action-cards-section mt-12 pt-8 border-t border-gray-700/50">
+        <h3 class="text-xl font-semibold mb-6 text-center">
+          ${this.i18n.t('actions.nextSteps') || 'Próximas Acciones'}
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${hasQuiz ? `
+            <div class="action-card bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-400/50 transition-all cursor-pointer" data-action="quiz">
+              <div class="text-4xl mb-3">🎯</div>
+              <h4 class="font-semibold text-lg mb-2">${this.i18n.t('actions.takeQuiz') || 'Quiz Interactivo'}</h4>
+              <p class="text-sm text-gray-400 mb-4">${this.i18n.t('actions.quizDescription') || 'Pon a prueba tu comprensión'}</p>
+              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.start') || 'Comenzar'}</button>
+            </div>
+          ` : ''}
+
+          ${hasResources ? `
+            <div class="action-card bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/30 rounded-xl p-6 hover:border-amber-400/50 transition-all cursor-pointer" data-action="resources">
+              <div class="text-4xl mb-3">📚</div>
+              <h4 class="font-semibold text-lg mb-2">Recursos y Ejercicios</h4>
+              <p class="text-sm text-gray-400 mb-4">Ejercicios prácticos, libros, organizaciones y herramientas</p>
+              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.explore') || 'Explorar'}</button>
+            </div>
+          ` : ''}
+
+          ${hasReflection ? `
+            <div class="action-card bg-gradient-to-br from-purple-900/20 to-purple-800/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/50 transition-all cursor-pointer" data-action="reflection">
+              <div class="text-4xl mb-3">💭</div>
+              <h4 class="font-semibold text-lg mb-2">${this.i18n.t('actions.personalReflection') || 'Reflexión Personal'}</h4>
+              <p class="text-sm text-gray-400 mb-4">${this.i18n.t('actions.reflectionDescription') || '¿Cómo aplicarías esto?'}</p>
+              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.reflect') || 'Reflexionar'}</button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
   }
 
   renderMarkAsReadButton() {
@@ -455,22 +701,28 @@ class BookReader {
     const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
 
     return `
-      <div class="footer-nav border-t border-gray-700 p-4 flex justify-between">
+      <div class="footer-nav border-t border-gray-700 p-3 sm:p-4 flex justify-between gap-2 sm:gap-3">
         <!-- Previous -->
         ${prevChapter ? `
           <button id="prev-chapter"
-                  class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition flex items-center gap-2"
-                  data-chapter-id="${prevChapter.id}">
-            ${Icons.chevronLeft(18)} ${prevChapter.title}
+                  class="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition flex items-center gap-2 text-sm sm:text-base min-w-0 flex-1 sm:flex-initial max-w-[45%] sm:max-w-none"
+                  data-chapter-id="${prevChapter.id}"
+                  title="${prevChapter.title}">
+            ${Icons.chevronLeft(18)}
+            <span class="hidden sm:inline truncate">${prevChapter.title}</span>
+            <span class="sm:hidden truncate">Anterior</span>
           </button>
         ` : '<div></div>'}
 
         <!-- Next -->
         ${nextChapter ? `
           <button id="next-chapter"
-                  class="px-6 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition flex items-center gap-2"
-                  data-chapter-id="${nextChapter.id}">
-            ${nextChapter.title} ${Icons.chevronRight(18)}
+                  class="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition flex items-center gap-2 text-sm sm:text-base min-w-0 flex-1 sm:flex-initial max-w-[45%] sm:max-w-none"
+                  data-chapter-id="${nextChapter.id}"
+                  title="${nextChapter.title}">
+            <span class="hidden sm:inline truncate">${nextChapter.title}</span>
+            <span class="sm:hidden truncate">Siguiente</span>
+            ${Icons.chevronRight(18)}
           </button>
         ` : '<div></div>'}
       </div>
@@ -518,20 +770,15 @@ class BookReader {
 
             <div class="border-t border-gray-700 my-3"></div>
 
-            <!-- Main Actions -->
-            <button id="bookmark-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${isBookmarked ? Icons.bookmarkFilled(24) : Icons.bookmark(24)}
-              <span>${this.i18n.t('reader.bookmark')}</span>
-            </button>
-
+            <!-- Notas (no está en header móvil, solo aquí) -->
             <button id="notes-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.note(24)}
               <span>${this.i18n.t('reader.notes')}</span>
             </button>
 
-            <button id="ai-chat-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.chat(24)}
-              <span>${this.i18n.t('reader.chat')}</span>
+            <button id="chapter-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-blue-400">
+              ${Icons.create('link', 24)}
+              <span>Recursos del Capítulo</span>
             </button>
 
             <div class="border-t border-gray-700 my-3"></div>
@@ -540,14 +787,14 @@ class BookReader {
             ${hasTimeline ? `
               <button id="timeline-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.timeline(24)}
-                <span>${this.i18n.t('reader.timeline')}</span>
+                <span>Timeline Histórico</span>
               </button>
             ` : ''}
 
             ${hasResources ? `
-              <button id="resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <button id="book-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.resources(24)}
-                <span>${this.i18n.t('reader.resources')}</span>
+                <span>Recursos del Libro</span>
               </button>
             ` : ''}
 
@@ -565,11 +812,6 @@ class BookReader {
               </button>
             ` : ''}
 
-            <button id="audioreader-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.audio(24)}
-              <span>${this.i18n.t('reader.audio')}</span>
-            </button>
-
             ${hasKoan ? `
             <button id="koan-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.koan(24)}
@@ -579,15 +821,12 @@ class BookReader {
 
             <div class="border-t border-gray-700 my-3"></div>
 
+            ${this.isCapacitor() ? '' : `
             <button id="android-download-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.download(24)}
               <span>${this.i18n.t('btn.download')}</span>
             </button>
-
-            <button id="ai-settings-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.settings(24)}
-              <span>${this.i18n.t('btn.aiSettings')}</span>
-            </button>
+            `}
 
             <button id="donations-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.donate(24)}
@@ -612,6 +851,18 @@ class BookReader {
               <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
             </button>
 
+            <div class="border-t border-gray-700 my-3"></div>
+
+            <button id="open-settings-modal-btn-mobile" class="w-full text-left p-3 hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-400 border border-blue-500/30 font-semibold">
+              ${Icons.settings(24)}
+              <span>Configuración</span>
+            </button>
+
+            <button id="open-help-center-btn-mobile" class="w-full text-left p-3 hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-400 border border-cyan-500/30 font-semibold">
+              ${Icons.helpCircle(24)}
+              <span>Centro de Ayuda</span>
+            </button>
+
             <button id="share-chapter-btn-mobile" class="w-full text-left p-3 hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-400 border border-blue-500/30">
               ${Icons.create('share-2', 24)}
               <span>Compartir capítulo</span>
@@ -620,6 +871,25 @@ class BookReader {
           </div>
         </div>
       </div>
+    `;
+  }
+
+  renderExplorationHubButton() {
+    return `
+      <!-- Floating ExplorationHub Button -->
+      <button
+        id="exploration-hub-floating-btn"
+        class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full shadow-2xl
+               bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600
+               hover:from-purple-700 hover:via-pink-700 hover:to-blue-700
+               transition-all duration-300 transform hover:scale-110
+               flex items-center justify-center text-white
+               border-2 border-white/20
+               md:bottom-8 md:right-8"
+        aria-label="Abrir Centro de Exploración"
+        title="Buscar, explorar temas y recursos">
+        ${Icons.compass(28)}
+      </button>
     `;
   }
 
@@ -652,6 +922,8 @@ class BookReader {
     const backBtn = document.getElementById('back-to-biblioteca');
     if (backBtn) {
       backBtn.addEventListener('click', () => {
+        // Remover tema específico del libro
+        window.themeHelper?.removeBookTheme();
         this.hide();
         window.biblioteca.show();
       });
@@ -686,13 +958,22 @@ class BookReader {
     if (backToLibMobile) {
       backToLibMobile.addEventListener('click', () => {
         document.getElementById('mobile-menu').classList.add('hidden');
+        // Remover tema específico del libro
+        window.themeHelper?.removeBookTheme();
         this.hide();
         window.biblioteca.show();
       });
     }
 
+    // Helper function to close mobile menu dropdown
+    const closeMobileMenuDropdown = () => {
+      const menu = document.getElementById('mobile-menu');
+      if (menu) menu.classList.add('hidden');
+    };
+
     // Bookmark button (desktop lg+ and tablet md)
     const bookmarkHandler = () => {
+      closeMobileMenuDropdown();
       const isBookmarked = this.bookEngine.isBookmarked(this.currentChapter.id);
       if (isBookmarked) {
         this.bookEngine.removeBookmark(this.currentChapter.id);
@@ -705,12 +986,15 @@ class BookReader {
 
     const bookmarkBtn = document.getElementById('bookmark-btn');
     const bookmarkBtnTablet = document.getElementById('bookmark-btn-tablet');
+    const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
 
     if (bookmarkBtn) bookmarkBtn.addEventListener('click', bookmarkHandler);
     if (bookmarkBtnTablet) bookmarkBtnTablet.addEventListener('click', bookmarkHandler);
+    if (bookmarkBtnMobile) bookmarkBtnMobile.addEventListener('click', bookmarkHandler);
 
-    // AI Chat button (desktop lg+ and tablet md)
+    // AI Chat button (desktop lg+, tablet md, and mobile)
     const aiChatHandler = () => {
+      closeMobileMenuDropdown();
       if (window.aiChatModal) {
         window.aiChatModal.open();
       } else {
@@ -720,9 +1004,24 @@ class BookReader {
 
     const aiChatBtn = document.getElementById('ai-chat-btn');
     const aiChatBtnTablet = document.getElementById('ai-chat-btn-tablet');
+    const aiChatBtnMobile = document.getElementById('ai-chat-btn-mobile');
 
     if (aiChatBtn) aiChatBtn.addEventListener('click', aiChatHandler);
     if (aiChatBtnTablet) aiChatBtnTablet.addEventListener('click', aiChatHandler);
+    if (aiChatBtnMobile) aiChatBtnMobile.addEventListener('click', aiChatHandler);
+
+    // ExplorationHub floating button
+    const explorationHubBtn = document.getElementById('exploration-hub-floating-btn');
+    if (explorationHubBtn) {
+      explorationHubBtn.addEventListener('click', () => {
+        if (window.ExplorationHub && window.bookEngine) {
+          const hub = new window.ExplorationHub(window.bookEngine);
+          hub.open('search'); // Abrir con tab de búsqueda por defecto
+        } else {
+          console.error('ExplorationHub no está disponible');
+        }
+      });
+    }
 
     // Notes button
     const notesBtn = document.getElementById('notes-btn');
@@ -761,6 +1060,31 @@ class BookReader {
       });
     }
 
+    // Quiz button
+    const quizBtn = document.getElementById('quiz-btn');
+    if (quizBtn) {
+      quizBtn.addEventListener('click', async () => {
+        const bookId = this.bookEngine.getCurrentBook();
+        const chapterId = this.currentChapter?.id;
+
+        if (!chapterId) {
+          window.toast?.info('Selecciona un capítulo primero');
+          return;
+        }
+
+        if (window.interactiveQuiz) {
+          const quiz = await window.interactiveQuiz.loadQuiz(bookId, chapterId);
+          if (quiz) {
+            window.interactiveQuiz.open(bookId, chapterId);
+          } else {
+            window.toast?.info('No hay quiz disponible para este capítulo');
+          }
+        } else {
+          console.error('InteractiveQuiz no está disponible');
+        }
+      });
+    }
+
     // Timeline button
     const timelineBtn = document.getElementById('timeline-btn');
     if (timelineBtn) {
@@ -773,20 +1097,11 @@ class BookReader {
       });
     }
 
-    // Resources button
-    const resourcesBtn = document.getElementById('resources-btn');
-    if (resourcesBtn) {
-      resourcesBtn.addEventListener('click', () => {
-        if (window.resourcesViewer) {
-          window.resourcesViewer.open();
-        } else {
-          window.toast.error('error.resourcesNotAvailable');
-        }
-      });
-    }
+    // Resources button - eliminado, ahora se maneja con ChapterResourcesModal más abajo
 
     // Audioreader button (desktop lg+ and tablet md)
     const audioreaderHandler = () => {
+      closeMobileMenuDropdown();
       if (window.audioReader) {
         window.audioReader.toggle();
       } else {
@@ -796,9 +1111,22 @@ class BookReader {
 
     const audioreaderBtn = document.getElementById('audioreader-btn');
     const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
+    const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
 
     if (audioreaderBtn) audioreaderBtn.addEventListener('click', audioreaderHandler);
     if (audioreaderBtnTablet) audioreaderBtnTablet.addEventListener('click', audioreaderHandler);
+    if (audioreaderBtnMobile) audioreaderBtnMobile.addEventListener('click', audioreaderHandler);
+
+    // Support button (desktop, tablet, and mobile)
+    const supportBtnTablet = document.getElementById('support-btn-tablet');
+    const supportBtnMobile = document.getElementById('support-btn-mobile');
+    const supportHandler = () => {
+      if (window.donationsModal) {
+        window.donationsModal.open();
+      }
+    };
+    if (supportBtnTablet) supportBtnTablet.addEventListener('click', supportHandler);
+    if (supportBtnMobile) supportBtnMobile.addEventListener('click', supportHandler);
 
     // Android Download button
     const androidBtn = document.getElementById('android-download-btn');
@@ -809,22 +1137,34 @@ class BookReader {
       });
     }
 
-    // AI Settings button
-    const aiSettingsBtn = document.getElementById('ai-settings-btn');
-    if (aiSettingsBtn) {
-      aiSettingsBtn.addEventListener('click', () => {
-        if (window.aiSettingsModal) {
-          window.aiSettingsModal.open();
-        }
-      });
-    }
-
     // Achievements button
     const achievementsBtn = document.getElementById('achievements-btn');
     if (achievementsBtn) {
       achievementsBtn.addEventListener('click', () => {
         if (window.achievementSystem) {
           window.achievementSystem.showDashboardModal();
+        }
+      });
+    }
+
+    // Content Adapter button
+    const contentAdapterBtn = document.getElementById('content-adapter-btn');
+    if (contentAdapterBtn) {
+      contentAdapterBtn.addEventListener('click', () => {
+        if (window.contentAdapter) {
+          window.contentAdapter.toggleSelector();
+        } else {
+          window.toast?.info('Cargando adaptador de contenido...');
+          // Intentar cargar el módulo dinámicamente
+          if (window.lazyLoader) {
+            window.lazyLoader.load('contentAdapter').then(() => {
+              if (window.contentAdapter) {
+                window.contentAdapter.toggleSelector();
+              }
+            }).catch(() => {
+              window.toast?.error('Error al cargar el adaptador de contenido');
+            });
+          }
         }
       });
     }
@@ -862,10 +1202,43 @@ class BookReader {
       });
     }
 
+    // Chapter Resources button (Recursos del Capítulo)
+    const chapterResourcesBtn = document.getElementById('chapter-resources-btn');
+    if (chapterResourcesBtn) {
+      chapterResourcesBtn.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.chapterResourcesModal) {
+          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
+          window.chapterResourcesModal.open(chapterId);
+        }
+      });
+    }
+
+    // Book Resources button (Recursos del Libro - resourcesViewer)
+    const bookResourcesBtn = document.getElementById('book-resources-btn');
+    if (bookResourcesBtn) {
+      bookResourcesBtn.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.resourcesViewer) {
+          window.resourcesViewer.open();
+        }
+      });
+    }
+
     // Donations button
     const donationsBtn = document.getElementById('donations-btn');
     if (donationsBtn) {
       donationsBtn.addEventListener('click', () => {
+        if (window.donationsModal) {
+          window.donationsModal.open();
+        }
+      });
+    }
+
+    // Support button (visible heart button) - with heartbeat animation
+    const supportBtn = document.getElementById('support-btn');
+    if (supportBtn) {
+      supportBtn.addEventListener('click', () => {
         if (window.donationsModal) {
           window.donationsModal.open();
         }
@@ -877,6 +1250,89 @@ class BookReader {
     if (premiumBtn) {
       premiumBtn.addEventListener('click', () => {
         this.showPremiumDownloadModal();
+      });
+    }
+
+    // Open settings modal button (desktop dropdown)
+    const openSettingsModalBtn = document.getElementById('open-settings-modal-btn');
+    if (openSettingsModalBtn) {
+      openSettingsModalBtn.addEventListener('click', () => {
+        if (window.SettingsModal) {
+          const settingsModal = new window.SettingsModal();
+          settingsModal.show();
+        }
+      });
+    }
+
+    // Open settings modal button (mobile menu)
+    const openSettingsModalBtnMobile = document.getElementById('open-settings-modal-btn-mobile');
+    if (openSettingsModalBtnMobile) {
+      openSettingsModalBtnMobile.addEventListener('click', () => {
+        // Cerrar menú móvil primero
+        document.getElementById('mobile-menu')?.classList.add('hidden');
+
+        // Abrir modal de configuración
+        if (window.SettingsModal) {
+          const settingsModal = new window.SettingsModal();
+          settingsModal.show();
+        }
+      });
+    }
+
+    // Open settings modal button (tablet dropdown)
+    const openSettingsModalBtnTablet = document.getElementById('open-settings-modal-btn-tablet');
+    if (openSettingsModalBtnTablet) {
+      openSettingsModalBtnTablet.addEventListener('click', () => {
+        // Cerrar dropdown primero
+        document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+
+        // Abrir modal de configuración
+        if (window.SettingsModal) {
+          const settingsModal = new window.SettingsModal();
+          settingsModal.show();
+        }
+      });
+    }
+
+    // Open help center button (desktop dropdown)
+    const openHelpCenterBtn = document.getElementById('open-help-center-btn');
+    if (openHelpCenterBtn) {
+      openHelpCenterBtn.addEventListener('click', () => {
+        // Cerrar dropdown primero
+        document.getElementById('settings-dropdown')?.classList.add('hidden');
+
+        // Abrir centro de ayuda
+        if (window.helpCenterModal) {
+          window.helpCenterModal.open();
+        }
+      });
+    }
+
+    // Open help center button (tablet dropdown)
+    const openHelpCenterBtnTablet = document.getElementById('open-help-center-btn-tablet');
+    if (openHelpCenterBtnTablet) {
+      openHelpCenterBtnTablet.addEventListener('click', () => {
+        // Cerrar dropdown primero
+        document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+
+        // Abrir centro de ayuda
+        if (window.helpCenterModal) {
+          window.helpCenterModal.open();
+        }
+      });
+    }
+
+    // Open help center button (mobile menu)
+    const openHelpCenterBtnMobile = document.getElementById('open-help-center-btn-mobile');
+    if (openHelpCenterBtnMobile) {
+      openHelpCenterBtnMobile.addEventListener('click', () => {
+        // Cerrar menú móvil primero
+        document.getElementById('mobile-menu')?.classList.add('hidden');
+
+        // Abrir centro de ayuda
+        if (window.helpCenterModal) {
+          window.helpCenterModal.open();
+        }
       });
     }
 
@@ -915,7 +1371,7 @@ class BookReader {
     if (manualPracticoBtn) {
       manualPracticoBtn.addEventListener('click', async () => {
         await this.bookEngine.loadBook('manual-practico');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         const firstChapter = this.bookEngine.getFirstChapter();
         if (firstChapter) {
           this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
@@ -930,7 +1386,7 @@ class BookReader {
     if (practicasRadicalesBtn) {
       practicasRadicalesBtn.addEventListener('click', async () => {
         await this.bookEngine.loadBook('practicas-radicales');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         const firstChapter = this.bookEngine.getFirstChapter();
         if (firstChapter) {
           this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
@@ -941,35 +1397,15 @@ class BookReader {
     }
 
     // ========================================================================
-    // MOBILE MENU BUTTON LISTENERS (duplicated from desktop)
+    // MOBILE MENU BUTTON LISTENERS
     // ========================================================================
-
-    const closeMobileMenuHelper = () => {
-      const menu = document.getElementById('mobile-menu');
-      if (menu) menu.classList.add('hidden');
-    };
-
-    // Bookmark button mobile
-    const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
-    if (bookmarkBtnMobile) {
-      bookmarkBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
-        const isBookmarked = this.bookEngine.isBookmarked(this.currentChapter.id);
-        if (isBookmarked) {
-          this.bookEngine.removeBookmark(this.currentChapter.id);
-        } else {
-          this.bookEngine.addBookmark(this.currentChapter.id);
-        }
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    // Note: closeMobileMenuDropdown() helper is defined earlier in this function
 
     // Notes button mobile
     const notesBtnMobile = document.getElementById('notes-btn-mobile');
     if (notesBtnMobile) {
       notesBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.notesModal) {
           window.notesModal.open(this.currentChapter?.id);
         } else {
@@ -978,24 +1414,13 @@ class BookReader {
       });
     }
 
-    // AI Chat button mobile
-    const aiChatBtnMobile = document.getElementById('ai-chat-btn-mobile');
-    if (aiChatBtnMobile) {
-      aiChatBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
-        if (window.aiChatModal) {
-          window.aiChatModal.open();
-        } else {
-          window.toast.error('error.chatNotAvailable');
-        }
-      });
-    }
+    // AI Chat button mobile - already has handler from line 840, no need to duplicate
 
     // Timeline button mobile
     const timelineBtnMobile = document.getElementById('timeline-btn-mobile');
     if (timelineBtnMobile) {
       timelineBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.timelineViewer) {
           window.timelineViewer.open();
         } else {
@@ -1004,15 +1429,33 @@ class BookReader {
       });
     }
 
-    // Resources button mobile
-    const resourcesBtnMobile = document.getElementById('resources-btn-mobile');
-    if (resourcesBtnMobile) {
-      resourcesBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+    // Chapter Resources button mobile
+    const chapterResourcesBtnMobile = document.getElementById('chapter-resources-btn-mobile');
+    if (chapterResourcesBtnMobile) {
+      chapterResourcesBtnMobile.addEventListener('click', () => {
+        closeMobileMenuDropdown();
+        if (window.chapterResourcesModal) {
+          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
+          window.chapterResourcesModal.open(chapterId);
+        } else {
+          if (window.toast) {
+            window.toast.error('error.resourcesNotAvailable');
+          }
+        }
+      });
+    }
+
+    // Book Resources button mobile (resourcesViewer)
+    const bookResourcesBtnMobile = document.getElementById('book-resources-btn-mobile');
+    if (bookResourcesBtnMobile) {
+      bookResourcesBtnMobile.addEventListener('click', () => {
+        closeMobileMenuDropdown();
         if (window.resourcesViewer) {
           window.resourcesViewer.open();
         } else {
-          window.toast.error('error.resourcesNotAvailable');
+          if (window.toast) {
+            window.toast.error('error.resourcesNotAvailable');
+          }
         }
       });
     }
@@ -1021,9 +1464,9 @@ class BookReader {
     const manualPracticoBtnMobile = document.getElementById('manual-practico-btn-mobile');
     if (manualPracticoBtnMobile) {
       manualPracticoBtnMobile.addEventListener('click', async () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         await this.bookEngine.loadBook('manual-practico');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
         this.render();
         this.attachEventListeners();
@@ -1034,33 +1477,22 @@ class BookReader {
     const practicasRadicalesBtnMobile = document.getElementById('practicas-radicales-btn-mobile');
     if (practicasRadicalesBtnMobile) {
       practicasRadicalesBtnMobile.addEventListener('click', async () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         await this.bookEngine.loadBook('practicas-radicales');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
         this.render();
         this.attachEventListeners();
       });
     }
 
-    // Audioreader button mobile
-    const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
-    if (audioreaderBtnMobile) {
-      audioreaderBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
-        if (window.audioReader) {
-          window.audioReader.toggle();
-        } else {
-          window.toast.error('error.audioreaderNotAvailable');
-        }
-      });
-    }
+    // Audioreader button mobile - already has handler from line 926, no need to duplicate
 
     // Koan button mobile
     const koanBtnMobile = document.getElementById('koan-btn-mobile');
     if (koanBtnMobile) {
       koanBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.koanModal) {
           window.koanModal.setCurrentChapter(this.currentChapter?.id);
           window.koanModal.open(this.currentChapter?.id);
@@ -1074,20 +1506,9 @@ class BookReader {
     const androidBtnMobile = document.getElementById('android-download-btn-mobile');
     if (androidBtnMobile) {
       androidBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         const apkUrl = this.bookEngine.getLatestAPK();
         window.open(apkUrl, '_blank');
-      });
-    }
-
-    // AI Settings button mobile
-    const aiSettingsBtnMobile = document.getElementById('ai-settings-btn-mobile');
-    if (aiSettingsBtnMobile) {
-      aiSettingsBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
-        if (window.aiSettingsModal) {
-          window.aiSettingsModal.open();
-        }
       });
     }
 
@@ -1095,7 +1516,7 @@ class BookReader {
     const donationsBtnMobile = document.getElementById('donations-btn-mobile');
     if (donationsBtnMobile) {
       donationsBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.donationsModal) {
           window.donationsModal.open();
         }
@@ -1106,7 +1527,7 @@ class BookReader {
     const premiumBtnMobile = document.getElementById('premium-edition-btn-mobile');
     if (premiumBtnMobile) {
       premiumBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         this.showPremiumDownloadModal();
       });
     }
@@ -1115,7 +1536,7 @@ class BookReader {
     const languageSelectorBtnMobile = document.getElementById('language-selector-btn-mobile');
     if (languageSelectorBtnMobile) {
       languageSelectorBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.languageSelector) {
           window.languageSelector.open();
         }
@@ -1126,7 +1547,7 @@ class BookReader {
     const themeToggleBtnMobile = document.getElementById('theme-toggle-btn-mobile');
     if (themeToggleBtnMobile) {
       themeToggleBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         if (window.themeHelper) {
           window.themeHelper.toggle();
           this.updateThemeIcons();
@@ -1139,7 +1560,7 @@ class BookReader {
     const shareChapterBtnMobile = document.getElementById('share-chapter-btn-mobile');
     if (shareChapterBtnMobile) {
       shareChapterBtnMobile.addEventListener('click', () => {
-        closeMobileMenuHelper();
+        closeMobileMenuDropdown();
         this.shareCurrentChapter();
       });
     }
@@ -1170,6 +1591,61 @@ class BookReader {
       if (moreActionsDropdown) moreActionsDropdown.classList.add('hidden');
     };
 
+    // ========================================================================
+    // DESKTOP DROPDOWN MENUS (lg+ breakpoint)
+    // ========================================================================
+
+    // Helper para crear dropdown toggle
+    const setupDropdown = (btnId, dropdownId) => {
+      const btn = document.getElementById(btnId);
+      const dropdown = document.getElementById(dropdownId);
+      if (btn && dropdown) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Cerrar otros dropdowns
+          ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+            if (id !== dropdownId) {
+              document.getElementById(id)?.classList.add('hidden');
+            }
+          });
+          dropdown.classList.toggle('hidden');
+        });
+      }
+    };
+
+    // Setup desktop dropdowns
+    setupDropdown('tools-dropdown-btn', 'tools-dropdown');
+    setupDropdown('book-features-dropdown-btn', 'book-features-dropdown');
+    setupDropdown('settings-dropdown-btn', 'settings-dropdown');
+
+    // Cerrar dropdowns al hacer click fuera
+    document.addEventListener('click', (e) => {
+      const dropdowns = ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'];
+      const btns = ['tools-dropdown-btn', 'book-features-dropdown-btn', 'settings-dropdown-btn'];
+
+      let clickedInside = false;
+      btns.forEach((btnId, i) => {
+        const btn = document.getElementById(btnId);
+        const dropdown = document.getElementById(dropdowns[i]);
+        if ((btn && btn.contains(e.target)) || (dropdown && dropdown.contains(e.target))) {
+          clickedInside = true;
+        }
+      });
+
+      if (!clickedInside) {
+        dropdowns.forEach(id => {
+          document.getElementById(id)?.classList.add('hidden');
+        });
+      }
+    });
+
+    // Helper para cerrar todos los dropdowns desktop
+    const closeDesktopDropdowns = () => {
+      ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+      });
+    };
+
     // Notes button dropdown
     const notesBtnDropdown = document.getElementById('notes-btn-dropdown');
     if (notesBtnDropdown) {
@@ -1192,10 +1668,22 @@ class BookReader {
       });
     }
 
-    // Resources button dropdown
-    const resourcesBtnDropdown = document.getElementById('resources-btn-dropdown');
-    if (resourcesBtnDropdown) {
-      resourcesBtnDropdown.addEventListener('click', () => {
+    // Chapter Resources button dropdown
+    const chapterResourcesBtnDropdown = document.getElementById('chapter-resources-btn-dropdown');
+    if (chapterResourcesBtnDropdown) {
+      chapterResourcesBtnDropdown.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.chapterResourcesModal) {
+          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
+          window.chapterResourcesModal.open(chapterId);
+        }
+      });
+    }
+
+    // Book Resources button dropdown (resourcesViewer)
+    const bookResourcesBtnDropdown = document.getElementById('book-resources-btn-dropdown');
+    if (bookResourcesBtnDropdown) {
+      bookResourcesBtnDropdown.addEventListener('click', () => {
         closeDropdownHelper();
         if (window.resourcesViewer) {
           window.resourcesViewer.open();
@@ -1209,7 +1697,7 @@ class BookReader {
       manualPracticoBtnDropdown.addEventListener('click', async () => {
         closeDropdownHelper();
         await this.bookEngine.loadBook('manual-practico');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
         this.render();
         this.attachEventListeners();
@@ -1222,7 +1710,7 @@ class BookReader {
       practicasRadicalesBtnDropdown.addEventListener('click', async () => {
         closeDropdownHelper();
         await this.bookEngine.loadBook('practicas-radicales');
-        this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
         this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
         this.render();
         this.attachEventListeners();
@@ -1248,17 +1736,6 @@ class BookReader {
         closeDropdownHelper();
         const apkUrl = this.bookEngine.getLatestAPK();
         window.open(apkUrl, '_blank');
-      });
-    }
-
-    // AI Settings button dropdown
-    const aiSettingsBtnDropdown = document.getElementById('ai-settings-btn-dropdown');
-    if (aiSettingsBtnDropdown) {
-      aiSettingsBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.aiSettingsModal) {
-          window.aiSettingsModal.open();
-        }
       });
     }
 
@@ -1387,6 +1864,34 @@ class BookReader {
       });
     }
 
+    // Action cards event listeners
+    const actionCards = document.querySelectorAll('.action-card');
+    actionCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const action = card.getAttribute('data-action');
+        const button = e.target.closest('button');
+
+        // Si se hace click en el botón o en cualquier parte de la card
+        if (action === 'quiz') {
+          if (window.InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {
+            const quiz = new window.InteractiveQuiz(this.currentChapter.quiz, this.currentChapter.id);
+            quiz.start();
+          }
+        } else if (action === 'resources') {
+          if (window.chapterResourcesModal) {
+            const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
+            window.chapterResourcesModal.open(chapterId);
+          }
+        } else if (action === 'reflection') {
+          // Hacer scroll hasta la pregunta de cierre
+          const closingQuestion = document.querySelector('.closing-question');
+          if (closingQuestion) {
+            closingQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
     // Previous/Next buttons
     const prevBtn = document.getElementById('prev-chapter');
     if (prevBtn) {
@@ -1436,7 +1941,7 @@ class BookReader {
         try {
           // Cargar el libro de destino
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Buscar el capítulo que corresponde al ejercicio
           let targetChapterId = null;
@@ -1489,7 +1994,7 @@ class BookReader {
         try {
           // Cargar el libro de destino
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al capítulo específico o al primero si no se especifica
           if (targetChapterId) {
@@ -1526,7 +2031,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al prólogo o primer capítulo
           const firstChapter = this.bookEngine.getFirstChapter();
@@ -1554,7 +2059,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al capítulo de la acción específica
           if (targetChapterId) {
@@ -1591,7 +2096,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al capítulo del ejercicio específico
           if (targetChapterId) {
@@ -1623,7 +2128,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al primer capítulo
           const firstChapter = this.bookEngine.getFirstChapter();
@@ -1653,7 +2158,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           if (targetChapterId) {
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
@@ -1687,7 +2192,7 @@ class BookReader {
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
 
           // Navegar al capítulo del libro principal
           if (targetChapterId) {
@@ -1710,6 +2215,13 @@ class BookReader {
         }
       });
     });
+
+    // ========================================================================
+    // AI SUGGESTIONS - Attach click handlers for chapter suggestions
+    // ========================================================================
+    if (window.aiSuggestions) {
+      window.aiSuggestions.attachToChapterContent();
+    }
   }
 
   // ==========================================================================
@@ -1959,7 +2471,7 @@ class BookReader {
 
     // Update all theme icons and labels
     const iconElements = ['theme-icon', 'theme-icon-mobile', 'theme-icon-dropdown', 'theme-icon-bib'];
-    const labelElements = ['theme-label-mobile', 'theme-label-dropdown', 'theme-label-bib'];
+    const labelElements = ['theme-label', 'theme-label-mobile', 'theme-label-dropdown', 'theme-label-bib'];
 
     iconElements.forEach(id => {
       const el = document.getElementById(id);
@@ -1971,6 +2483,89 @@ class BookReader {
       if (el) el.textContent = label;
     });
   }
+
+  // ==========================================================================
+  // METADATA-DRIVEN NAVIGATION
+  // ==========================================================================
+
+  /**
+   * Navigate to a specific exercise in Manual Práctico
+   * Called from chapter-resources-modal.js exercise cards
+   */
+  async navigateToExercise(bookId, exerciseId) {
+    try {
+      // Close chapter resources modal if open
+      if (window.chapterResourcesModal) {
+        window.chapterResourcesModal.close();
+      }
+
+      // Load the target book
+      await this.bookEngine.loadBook(bookId);
+      window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+
+      // Navigate to the exercise chapter
+      this.currentChapter = this.bookEngine.navigateToChapter(exerciseId);
+
+      if (!this.currentChapter) {
+        // Fallback to first chapter if not found
+        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+        window.toast.warning('Ejercicio no encontrado, mostrando primer capítulo');
+      }
+
+      this.render();
+      this.attachEventListeners();
+
+      // Scroll to top
+      const contentArea = document.querySelector('.chapter-content');
+      if (contentArea) contentArea.scrollTop = 0;
+
+      window.toast.success('Navegando al ejercicio...');
+
+    } catch (error) {
+      console.error('Error navigating to exercise:', error);
+      window.toast.error('Error al navegar al ejercicio');
+    }
+  }
+
+  /**
+   * Navigate to a specific practice in Prácticas Radicales
+   * Called from chapter-resources-modal.js practice cards
+   */
+  async navigateToPractice(bookId, practiceId) {
+    try {
+      // Close chapter resources modal if open
+      if (window.chapterResourcesModal) {
+        window.chapterResourcesModal.close();
+      }
+
+      // Load the target book
+      await this.bookEngine.loadBook(bookId);
+      window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+
+      // Navigate to the practice chapter
+      this.currentChapter = this.bookEngine.navigateToChapter(practiceId);
+
+      if (!this.currentChapter) {
+        // Fallback to first chapter if not found
+        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+        window.toast.warning('Práctica no encontrada, mostrando primer capítulo');
+      }
+
+      this.render();
+      this.attachEventListeners();
+
+      // Scroll to top
+      const contentArea = document.querySelector('.chapter-content');
+      if (contentArea) contentArea.scrollTop = 0;
+
+      window.toast.success('Navegando a la práctica...');
+
+    } catch (error) {
+      console.error('Error navigating to practice:', error);
+      window.toast.error('Error al navegar a la práctica');
+    }
+  }
+
 }
 
 // Exportar para uso global

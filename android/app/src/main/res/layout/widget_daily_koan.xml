@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_koan_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:background="@drawable/widget_koan_background"
+    android:elevation="4dp">
+
+    <!-- Header con título y botón refresh -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="☯️ Koan del Día"
+            android:textSize="13sp"
+            android:textColor="#A78BFA"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/widget_koan_refresh_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_popup_sync"
+            android:tint="#A78BFA"
+            android:contentDescription="Actualizar koan" />
+
+    </LinearLayout>
+
+    <!-- Texto del koan con mejor tipografía -->
+    <TextView
+        android:id="@+id/widget_koan_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="La mente que pregunta ya conoce la respuesta."
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="italic"
+        android:lineSpacingMultiplier="1.4"
+        android:gravity="center"
+        android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3" />
+
+    <!-- Footer con fecha y decoración -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Decoración zen -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🧘"
+            android:textSize="14sp"
+            android:alpha="0.6" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/widget_koan_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="11sp"
+            android:textColor="#94A3B8"
+            android:alpha="0.8" />
+
+    </LinearLayout>
+
+</LinearLayout>

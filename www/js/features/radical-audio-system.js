@@ -17,7 +17,7 @@ function playRadicalAudio(practiceId) {
 
   // Verificar si hay script disponible
   if (typeof createRadicalMeditation !== 'function') {
-    console.warn('radical-meditation-parser.js no cargado');
+    // console.warn('radical-meditation-parser.js no cargado');
     return;
   }
 

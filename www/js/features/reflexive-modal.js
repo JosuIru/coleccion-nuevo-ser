@@ -19,7 +19,7 @@ class ReflexiveModal {
     const question = window.getRandomQuestion?.(bookId, chapterId);
 
     if (!question) {
-      console.log('No hay preguntas reflexivas para este capítulo');
+      // console.log('No hay preguntas reflexivas para este capítulo');
       return;
     }
 
@@ -55,7 +55,10 @@ class ReflexiveModal {
               <span class="text-3xl">✨</span>
               <h2 class="text-xl font-bold text-purple-200">Momento de Reflexión</h2>
             </div>
-            <button id="close-reflexive-modal" class="text-purple-300 hover:text-white p-2 hover:bg-purple-700/50 rounded-lg transition">
+            <button id="close-reflexive-modal"
+                    class="text-purple-300 hover:text-white p-3 hover:bg-purple-700/50 rounded-lg transition"
+                    aria-label="Cerrar momento de reflexión"
+                    title="Cerrar">
               ${Icons.close(20)}
             </button>
           </div>
@@ -199,6 +202,13 @@ class ReflexiveModal {
     // Track para logros
     if (window.achievementSystem) {
       window.achievementSystem.trackReflexionSaved();
+    }
+
+    // Sincronizar a la nube si está autenticado
+    if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
+      window.supabaseSyncHelper.migrateReflections().catch(err => {
+        console.error('Error sincronizando reflexión:', err);
+      });
     }
 
     // Mostrar confirmación

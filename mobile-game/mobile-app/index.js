@@ -6,16 +6,18 @@
  * providers and configurations.
  *
  * Flow:
- * 1. Registers app with AppRegistry
- * 2. Loads Zustand game store
- * 3. Initializes Firebase/notifications
- * 4. Renders RootNavigator (which handles Tutorial vs Main App routing)
+ * 1. Uses MemoryStorage (pure JS, no native dependencies)
+ * 2. Registers app with AppRegistry
+ * 3. Loads RootNavigator (handles Tutorial vs Main App routing)
+ * 4. Wraps in GestureHandlerRootView for gesture support
+ * 5. Ready for full navigation and game functionality
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 import { AppRegistry } from 'react-native';
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Main navigation root
 import RootNavigator from './src/navigation/RootNavigator';
@@ -25,14 +27,13 @@ import { name as appName } from './app.json';
 
 /**
  * App wrapper component
- * Handles initialization and provider setup
+ * Initializes gesture handler context and main navigation
  */
 function AppEntry() {
   return (
-    <>
-      {/* Main navigation entry point */}
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <RootNavigator />
-    </>
+    </GestureHandlerRootView>
   );
 }
 

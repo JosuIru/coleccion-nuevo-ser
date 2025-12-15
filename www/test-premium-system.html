@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium System Test Suite</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-list {
+            list-style: none;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .test-status {
+            font-size: 1.2rem;
+        }
+
+        .status-pending::after { content: '⏳'; }
+        .status-running::after { content: '🔄'; }
+        .status-passed::after { content: '✅'; }
+        .status-failed::after { content: '❌'; }
+        .status-warning::after { content: '⚠️'; }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        .log-output {
+            background: #000;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-output .log-line {
+            margin: 4px 0;
+        }
+
+        .log-output .log-info { color: #60a5fa; }
+        .log-output .log-success { color: #34d399; }
+        .log-output .log-error { color: #f87171; }
+        .log-output .log-warning { color: #fbbf24; }
+
+        .summary {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+
+        .summary.success { background: rgba(16, 185, 129, 0.2); border: 2px solid var(--success); }
+        .summary.warning { background: rgba(245, 158, 11, 0.2); border: 2px solid var(--warning); }
+        .summary.error { background: rgba(239, 68, 68, 0.2); border: 2px solid var(--error); }
+
+        .user-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info strong {
+            color: var(--accent);
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-group button {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 <span>Premium System</span> Test Suite</h1>
+
+        <!-- User Info -->
+        <div id="user-info" class="user-info" style="display: none;">
+            <strong>Usuario:</strong> <span id="user-email">-</span><br>
+            <strong>Tier:</strong> <span id="user-tier">-</span><br>
+            <strong>Creditos:</strong> <span id="user-credits">-</span>
+        </div>
+
+        <div class="grid">
+            <!-- Auth Tests -->
+            <div class="card">
+                <h2>🔐 Authentication</h2>
+
+                <div id="auth-form">
+                    <input type="email" id="test-email" placeholder="Email" value="">
+                    <input type="password" id="test-password" placeholder="Password" value="">
+                    <div class="btn-group">
+                        <button onclick="testSignUp()" id="btn-signup">Sign Up</button>
+                        <button onclick="testSignIn()" id="btn-signin" class="btn-secondary">Sign In</button>
+                    </div>
+                    <button onclick="testSignOut()" id="btn-signout" class="btn-secondary" style="display: none;">
+                        Sign Out
+                    </button>
+                </div>
+
+                <ul class="test-list" id="auth-tests">
+                    <li class="test-item">
+                        <span>Supabase Client</span>
+                        <span class="test-status status-pending" id="test-supabase"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Auth Helper</span>
+                        <span class="test-status status-pending" id="test-auth-helper"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Sign In Flow</span>
+                        <span class="test-status status-pending" id="test-signin-flow"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Profile Load</span>
+                        <span class="test-status status-pending" id="test-profile"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Credits Tests -->
+            <div class="card">
+                <h2>💰 Credits System</h2>
+                <ul class="test-list" id="credits-tests">
+                    <li class="test-item">
+                        <span>AI Premium Module</span>
+                        <span class="test-status status-pending" id="test-ai-premium"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Check Credits</span>
+                        <span class="test-status status-pending" id="test-check-credits"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Has Feature (ai_chat)</span>
+                        <span class="test-status status-pending" id="test-has-feature"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>Days Until Reset</span>
+                        <span class="test-status status-pending" id="test-days-reset"></span>
+                    </li>
+                </ul>
+                <button onclick="runCreditsTests()">Run Credits Tests</button>
+            </div>
+
+            <!-- IA Features Tests -->
+            <div class="card">
+                <h2>🤖 IA Features</h2>
+                <ul class="test-list" id="ia-tests">
+                    <li class="test-item">
+                        <span>AI Book Features</span>
+                        <span class="test-status status-pending" id="test-book-features"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>AI Game Master</span>
+                        <span class="test-status status-pending" id="test-game-master"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>IA Integration</span>
+                        <span class="test-status status-pending" id="test-integration"></span>
+                    </li>
+                </ul>
+                <button onclick="runIATests()">Run IA Tests</button>
+            </div>
+
+            <!-- Edge Functions Tests -->
+            <div class="card">
+                <h2>⚡ Edge Functions</h2>
+                <ul class="test-list" id="edge-tests">
+                    <li class="test-item">
+                        <span>create-checkout-session</span>
+                        <span class="test-status status-pending" id="test-checkout"></span>
+                    </li>
+                    <li class="test-item">
+                        <span>send-email</span>
+                        <span class="test-status status-pending" id="test-email"></span>
+                    </li>
+                </ul>
+                <button onclick="runEdgeFunctionTests()">Test Edge Functions</button>
+            </div>
+        </div>
+
+        <!-- Full Test Suite -->
+        <div class="card" style="margin-top: 20px;">
+            <h2>🚀 Full Test Suite</h2>
+            <button onclick="runAllTests()" id="btn-run-all">Run All Tests</button>
+            <button onclick="runValidation()" class="btn-secondary">Run Validator</button>
+            <button onclick="runHealthCheck()" class="btn-secondary">Health Check</button>
+        </div>
+
+        <!-- Summary -->
+        <div id="test-summary" class="summary" style="display: none;"></div>
+
+        <!-- Log Output -->
+        <div class="log-output" id="log-output">
+            <div class="log-line log-info">Test suite ready. Click buttons to run tests.</div>
+        </div>
+    </div>
+
+    <!-- Load Supabase from CDN first -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Capture library before other scripts can overwrite it -->
+    <script>
+        window._supabaseLib = window.supabase;
+    </script>
+
+    <!-- Core Scripts -->
+    <script src="js/core/supabase-config.js"></script>
+    <script src="js/core/lazy-loader.js"></script>
+    <script src="js/core/premium-validator.js"></script>
+    <script src="js/core/system-health.js"></script>
+
+    <script>
+        // Initialize Supabase
+        let supabase;
+        let supabaseLib = window._supabaseLib; // Use captured reference
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            log('Initializing test suite...', 'info');
+
+            if (!supabaseLib || typeof supabaseLib.createClient !== 'function') {
+                updateTestStatus('test-supabase', 'failed');
+                log('Supabase library not loaded from CDN', 'error');
+                return;
+            }
+
+            if (!window.supabaseConfig) {
+                updateTestStatus('test-supabase', 'failed');
+                log('supabaseConfig not found', 'error');
+                return;
+            }
+
+            // Create client
+            try {
+                supabase = supabaseLib.createClient(
+                    supabaseConfig.url,
+                    supabaseConfig.anonKey,
+                    {
+                        auth: supabaseConfig.auth || {},
+                        global: {
+                            headers: { 'x-client-info': 'test-suite' }
+                        }
+                    }
+                );
+                // Expose client for other modules
+                window.supabase = supabase;
+                updateTestStatus('test-supabase', 'passed');
+                log('Supabase client initialized', 'success');
+            } catch (err) {
+                updateTestStatus('test-supabase', 'failed');
+                log('Supabase init error: ' + err.message, 'error');
+                return;
+            }
+
+            // Load and initialize auth helper (Premium version)
+            try {
+                await loadScript('js/core/auth-helper.js');
+
+                // Wait for AuthHelper to initialize
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                if (window.authHelper) {
+                    // Inject our supabase client if not set
+                    if (!window.authHelper.supabase) {
+                        window.authHelper.supabase = supabase;
+                    }
+
+                    // Check current user
+                    const user = window.authHelper.getUser();
+                    if (user) {
+                        showUserInfo(user);
+                        updateTestStatus('test-signin-flow', 'passed');
+                    }
+
+                    updateTestStatus('test-auth-helper', 'passed');
+                    log('Auth helper (Premium) initialized', 'success');
+                } else if (window.AuthHelper) {
+                    // AuthHelper class exists but instance not created
+                    window.authHelper = new AuthHelper();
+                    window.authHelper.supabase = supabase;
+                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    updateTestStatus('test-auth-helper', 'passed');
+                    log('Auth helper created manually', 'success');
+                }
+            } catch (err) {
+                updateTestStatus('test-auth-helper', 'warning');
+                log('Auth helper load warning: ' + err.message, 'warning');
+            }
+
+            // Try to load AI modules
+            await loadAIModules();
+        });
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const existing = document.querySelector(`script[src="${src}"]`);
+                if (existing) { resolve(); return; }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.body.appendChild(script);
+            });
+        }
+
+        async function loadAIModules() {
+            if (window.lazyLoader) {
+                try {
+                    log('Loading AI features module...', 'info');
+                    await window.lazyLoader.load('ai-features');
+                    await new Promise(r => setTimeout(r, 500)); // Wait for init
+                    log('AI features loaded', 'success');
+                } catch (err) {
+                    log('AI features load error: ' + err.message, 'warning');
+                }
+            }
+        }
+
+        // Test functions
+        async function testSignUp() {
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+
+            if (!email || !password) {
+                log('Please enter email and password', 'error');
+                return;
+            }
+
+            log('Testing sign up...', 'info');
+            try {
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                if (error) throw error;
+                log('Sign up successful! Check email for verification.', 'success');
+                updateTestStatus('test-signin-flow', 'passed');
+            } catch (err) {
+                log('Sign up error: ' + err.message, 'error');
+                updateTestStatus('test-signin-flow', 'failed');
+            }
+        }
+
+        async function testSignIn() {
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+
+            if (!email || !password) {
+                log('Please enter email and password', 'error');
+                return;
+            }
+
+            log('Testing sign in...', 'info');
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                log('Sign in successful!', 'success');
+                updateTestStatus('test-signin-flow', 'passed');
+                showUserInfo(data.user);
+
+                // Load profile
+                await testProfile();
+            } catch (err) {
+                log('Sign in error: ' + err.message, 'error');
+                updateTestStatus('test-signin-flow', 'failed');
+            }
+        }
+
+        async function testSignOut() {
+            log('Signing out...', 'info');
+            try {
+                await supabase.auth.signOut();
+                log('Signed out successfully', 'success');
+                hideUserInfo();
+            } catch (err) {
+                log('Sign out error: ' + err.message, 'error');
+            }
+        }
+
+        async function testProfile() {
+            log('Loading profile...', 'info');
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error('No user');
+
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+
+                log(`Profile loaded: tier=${profile.subscription_tier}, credits=${profile.ai_credits_remaining}`, 'success');
+                updateTestStatus('test-profile', 'passed');
+
+                document.getElementById('user-tier').textContent = profile.subscription_tier || 'free';
+                document.getElementById('user-credits').textContent = profile.ai_credits_remaining || 0;
+            } catch (err) {
+                log('Profile error: ' + err.message, 'error');
+                updateTestStatus('test-profile', 'failed');
+            }
+        }
+
+        async function runCreditsTests() {
+            log('Running credits tests...', 'info');
+
+            // Check if user is authenticated first
+            const isAuthenticated = window.authHelper?.getUser() || window.authHelper?.user;
+
+            // Test AI Premium module
+            if (window.aiPremium) {
+                updateTestStatus('test-ai-premium', 'passed');
+                log('aiPremium module loaded', 'success');
+
+                if (!isAuthenticated) {
+                    log('User not authenticated - credits tests require login', 'warning');
+                    updateTestStatus('test-check-credits', 'warning');
+                    updateTestStatus('test-has-feature', 'warning');
+                    updateTestStatus('test-days-reset', 'warning');
+
+                    // Still verify methods exist
+                    const methodsExist = typeof window.aiPremium.getCreditsRemaining === 'function' &&
+                                        typeof window.aiPremium.hasFeature === 'function' &&
+                                        typeof window.aiPremium.getDaysUntilReset === 'function';
+
+                    if (methodsExist) {
+                        log('aiPremium methods available (login to test functionality)', 'info');
+                    }
+                    return;
+                }
+
+                // Test methods with authenticated user
+                try {
+                    const remaining = window.aiPremium.getCreditsRemaining();
+                    log(`Credits remaining: ${remaining}`, 'success');
+                    updateTestStatus('test-check-credits', 'passed');
+                } catch (err) {
+                    log('getCreditsRemaining error: ' + err.message, 'error');
+                    updateTestStatus('test-check-credits', 'failed');
+                }
+
+                try {
+                    const hasChat = window.aiPremium.hasFeature('ai_chat');
+                    log(`Has ai_chat feature: ${hasChat}`, 'success');
+                    updateTestStatus('test-has-feature', 'passed');
+                } catch (err) {
+                    log('hasFeature error: ' + err.message, 'error');
+                    updateTestStatus('test-has-feature', 'failed');
+                }
+
+                try {
+                    const days = window.aiPremium.getDaysUntilReset();
+                    log(`Days until reset: ${days}`, 'success');
+                    updateTestStatus('test-days-reset', 'passed');
+                } catch (err) {
+                    log('getDaysUntilReset error: ' + err.message, 'error');
+                    updateTestStatus('test-days-reset', 'failed');
+                }
+            } else {
+                updateTestStatus('test-ai-premium', 'failed');
+                log('aiPremium module not loaded', 'error');
+            }
+        }
+
+        async function runIATests() {
+            log('Running IA tests...', 'info');
+
+            // AI Book Features
+            if (window.aiBookFeatures) {
+                updateTestStatus('test-book-features', 'passed');
+                log('aiBookFeatures loaded', 'success');
+            } else {
+                updateTestStatus('test-book-features', 'failed');
+                log('aiBookFeatures not loaded', 'error');
+            }
+
+            // AI Game Master
+            if (window.aiGameMaster) {
+                updateTestStatus('test-game-master', 'passed');
+                log('aiGameMaster loaded', 'success');
+            } else {
+                updateTestStatus('test-game-master', 'failed');
+                log('aiGameMaster not loaded', 'error');
+            }
+
+            // IA Integration
+            if (window.iaIntegration) {
+                updateTestStatus('test-integration', 'passed');
+                log('iaIntegration loaded', 'success');
+            } else {
+                updateTestStatus('test-integration', 'failed');
+                log('iaIntegration not loaded', 'error');
+            }
+        }
+
+        async function runEdgeFunctionTests() {
+            log('Testing edge functions...', 'info');
+
+            // Check if functions module is available
+            if (!supabase || !supabase.functions) {
+                log('Supabase functions module not available', 'warning');
+                updateTestStatus('test-checkout', 'warning');
+                updateTestStatus('test-email', 'warning');
+                return;
+            }
+
+            const functions = ['create-checkout-session', 'send-email'];
+
+            for (const fn of functions) {
+                const testId = fn === 'create-checkout-session' ? 'test-checkout' : 'test-email';
+
+                try {
+                    const { data, error } = await supabase.functions.invoke(fn, {
+                        body: { healthCheck: true }
+                    });
+
+                    if (error) {
+                        // Error response still means function exists and responds
+                        updateTestStatus(testId, 'warning');
+                        log(`${fn}: available (returned error: ${error.message || 'auth required'})`, 'warning');
+                    } else {
+                        updateTestStatus(testId, 'passed');
+                        log(`${fn}: responding correctly`, 'success');
+                    }
+                } catch (err) {
+                    const errorMsg = err.message || String(err);
+                    if (errorMsg.includes('404') || errorMsg.includes('not found')) {
+                        updateTestStatus(testId, 'failed');
+                        log(`${fn}: not deployed (404)`, 'error');
+                    } else if (errorMsg.includes('FunctionsHttpError') || errorMsg.includes('FunctionsRelayError')) {
+                        // These errors mean the function exists but returned an error
+                        updateTestStatus(testId, 'warning');
+                        log(`${fn}: deployed but needs configuration`, 'warning');
+                    } else {
+                        updateTestStatus(testId, 'warning');
+                        log(`${fn}: ${errorMsg}`, 'warning');
+                    }
+                }
+            }
+        }
+
+        async function runAllTests() {
+            document.getElementById('btn-run-all').disabled = true;
+            log('='.repeat(50), 'info');
+            log('RUNNING FULL TEST SUITE', 'info');
+            log('='.repeat(50), 'info');
+
+            await runCreditsTests();
+            await runIATests();
+            await runEdgeFunctionTests();
+
+            // Show summary
+            const passed = document.querySelectorAll('.status-passed').length;
+            const failed = document.querySelectorAll('.status-failed').length;
+            const warnings = document.querySelectorAll('.status-warning').length;
+
+            const summaryEl = document.getElementById('test-summary');
+            summaryEl.style.display = 'block';
+
+            if (failed === 0) {
+                summaryEl.className = 'summary success';
+                summaryEl.innerHTML = `✅ All tests passed! (${passed} passed, ${warnings} warnings)`;
+            } else {
+                summaryEl.className = 'summary error';
+                summaryEl.innerHTML = `❌ ${failed} tests failed (${passed} passed, ${warnings} warnings)`;
+            }
+
+            document.getElementById('btn-run-all').disabled = false;
+        }
+
+        async function runValidation() {
+            if (window.premiumValidator) {
+                await window.premiumValidator.runAllValidations();
+            } else {
+                log('Premium validator not loaded', 'error');
+            }
+        }
+
+        async function runHealthCheck() {
+            if (window.systemHealth) {
+                await window.systemHealth.checkHealth();
+                window.systemHealth.createDashboard();
+            } else {
+                log('System health not loaded', 'error');
+            }
+        }
+
+        // Helpers
+        function updateTestStatus(id, status) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = `test-status status-${status}`;
+            }
+        }
+
+        function showUserInfo(user) {
+            document.getElementById('user-info').style.display = 'block';
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('btn-signout').style.display = 'block';
+            document.getElementById('btn-signup').style.display = 'none';
+            document.getElementById('btn-signin').style.display = 'none';
+        }
+
+        function hideUserInfo() {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('btn-signout').style.display = 'none';
+            document.getElementById('btn-signup').style.display = 'inline-block';
+            document.getElementById('btn-signin').style.display = 'inline-block';
+        }
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log-output');
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(line);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+    </script>
+</body>
+</html>

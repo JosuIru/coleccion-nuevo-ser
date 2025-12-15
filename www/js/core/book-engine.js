@@ -30,7 +30,7 @@ class BookEngine {
 
   async loadCatalog() {
     try {
-      const response = await fetch('books/catalog.json');
+      const response = await fetch('books/catalog.json?v=2.9.31');
       this.catalog = await response.json();
       return this.catalog;
     } catch (error) {
@@ -389,11 +389,27 @@ class BookEngine {
 
     // Detectar subtítulos genéricos con patrón "Palabra(s): " al inicio
     html = html.replace(/\n\n((?:El|La|Los|Las|Un|Una) [^.\n:]{5,50}:)\n/g,
-      '\n\n<h4 class="text-lg font-semibold mt-6 mb-3 text-gray-200">$1</h4>\n');
+      '\n\n<h4 class="text-lg font-semibold mt-6 mb-3 text-gray-900 dark:text-gray-200">$1</h4>\n');
 
     // Notas de Claude o del autor entre corchetes
     html = html.replace(/\[Nota de Claude:([^\]]+)\]/g,
       '<aside class="my-6 p-4 bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg italic text-gray-300"><span class="font-semibold text-blue-300">Nota de Claude:</span>$1</aside>');
+
+    // Prácticas inline (⬥ PRÁCTICA: título con contenido en blockquote)
+    // Detectar patrón: **⬥ PRÁCTICA: Título**\n> contenido
+    html = html.replace(/\*\*⬥ PRÁCTICA:\s*([^\*\n]+)\*\*\s*\n\n?>\s*([^]+?)(?=\n\n(?!>)|$)/g, (match, title, content) => {
+      // Procesar el contenido del blockquote (quitar > al inicio de cada línea)
+      const cleanContent = content.replace(/^>\s*/gm, '').trim();
+      return `<div class="inline-practice my-6 p-5 rounded-lg border-l-4">
+        <h5 class="inline-practice-title text-lg font-bold mb-3 flex items-center gap-2">
+          <span class="practice-icon">⬥</span>
+          <span>PRÁCTICA: ${title}</span>
+        </h5>
+        <div class="inline-practice-content text-sm leading-relaxed opacity-90">
+          ${cleanContent.split('\n\n').map(p => `<p class="mb-3">${p}</p>`).join('')}
+        </div>
+      </div>`;
+    });
 
     // Negritas (**texto**)
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
@@ -1115,7 +1131,13 @@ class BookEngine {
       this.readProgress[this.currentBook].chaptersRead.push(chapterId);
     }
 
+    // Actualizar timestamp
+    this.readProgress[this.currentBook].lastReadAt = new Date().toISOString();
+
     this.saveUserData();
+
+    // Sincronizar a la nube si está autenticado
+    this.syncProgressToCloud();
 
     // Triggers para features didácticas (solo si el capítulo no estaba leído antes)
     if (!wasAlreadyRead) {
@@ -1131,6 +1153,52 @@ class BookEngine {
       if (window.achievementSystem) {
         window.achievementSystem.checkAndUnlock(this.currentBook);
       }
+    }
+  }
+
+  /**
+   * Sincronizar progreso de lectura a la nube (sin bloquear UI)
+   */
+  async syncProgressToCloud() {
+    if (!window.supabaseSyncHelper || !window.supabaseAuthHelper?.isAuthenticated()) {
+      return; // No hacer nada si no está autenticado
+    }
+
+    try {
+      await window.supabaseSyncHelper.migrateReadingProgress();
+    } catch (error) {
+      console.error('Error sincronizando progreso:', error);
+      // No mostrar error al usuario, es sync en background
+    }
+  }
+
+  /**
+   * Sincronizar notas a la nube (sin bloquear UI)
+   */
+  async syncNotesToCloud() {
+    if (!window.supabaseSyncHelper || !window.supabaseAuthHelper?.isAuthenticated()) {
+      return;
+    }
+
+    try {
+      await window.supabaseSyncHelper.migrateNotes();
+    } catch (error) {
+      console.error('Error sincronizando notas:', error);
+    }
+  }
+
+  /**
+   * Sincronizar bookmarks a la nube (sin bloquear UI)
+   */
+  async syncBookmarksToCloud() {
+    if (!window.supabaseSyncHelper || !window.supabaseAuthHelper?.isAuthenticated()) {
+      return;
+    }
+
+    try {
+      await window.supabaseSyncHelper.migrateBookmarks();
+    } catch (error) {
+      console.error('Error sincronizando bookmarks:', error);
     }
   }
 
@@ -1236,6 +1304,9 @@ class BookEngine {
     });
 
     this.saveUserData();
+
+    // Sincronizar notas a la nube
+    this.syncNotesToCloud();
   }
 
   getNotes(chapterId) {
@@ -1261,6 +1332,9 @@ class BookEngine {
     if (!exists) {
       this.bookmarks.push(bookmark);
       this.saveUserData();
+
+      // Sincronizar bookmarks a la nube
+      this.syncBookmarksToCloud();
     }
   }
 
@@ -1272,6 +1346,9 @@ class BookEngine {
     );
 
     this.saveUserData();
+
+    // Sincronizar bookmarks a la nube
+    this.syncBookmarksToCloud();
   }
 
   isBookmarked(chapterId) {

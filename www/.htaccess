@@ -149,7 +149,8 @@
   # Servir index.html para rutas que no existen (SPA support)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_URI} !^/downloads/
+  RewriteCond %{REQUEST_URI} !downloads/
+  RewriteCond %{REQUEST_URI} !\.(apk|zip|pdf)$
   RewriteRule . /index.html [L]
 </IfModule>
 

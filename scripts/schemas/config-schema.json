@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nuevosser.com/schemas/config.json",
+  "title": "Book Configuration Schema",
+  "description": "Schema para validar la estructura de config.json",
+  "type": "object",
+  "required": ["id", "version", "lastUpdate", "theme", "ui", "features", "content", "metadata"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "ID del libro en formato kebab-case"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Versión semántica (X.Y.Z)"
+    },
+    "lastUpdate": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "Fecha de última actualización (YYYY-MM-DD)"
+    },
+    "theme": {
+      "$ref": "#/definitions/theme"
+    },
+    "ui": {
+      "$ref": "#/definitions/ui"
+    },
+    "features": {
+      "$ref": "#/definitions/features"
+    },
+    "content": {
+      "$ref": "#/definitions/content"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    }
+  },
+  "definitions": {
+    "theme": {
+      "type": "object",
+      "required": ["name", "primary", "secondary", "background", "text"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Nombre del tema"
+        },
+        "primary": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color primario (hex)"
+        },
+        "secondary": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color secundario (hex)"
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de acento (hex)"
+        },
+        "background": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de fondo (hex)"
+        },
+        "backgroundSecondary": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de fondo secundario (hex)"
+        },
+        "text": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de texto (hex)"
+        },
+        "textSecondary": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de texto secundario (hex)"
+        },
+        "border": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Color de bordes (hex)"
+        },
+        "gradient": {
+          "type": "string",
+          "description": "Clases Tailwind para gradiente"
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "required": ["animationType", "fontFamily", "fontSize", "spacing"],
+      "properties": {
+        "showStarfield": {
+          "type": "boolean",
+          "description": "Mostrar campo de estrellas"
+        },
+        "animationType": {
+          "type": "string",
+          "enum": ["cosmic", "revolutionary", "organic", "minimal"],
+          "description": "Tipo de animación de fondo"
+        },
+        "animationSpeed": {
+          "type": "string",
+          "enum": ["slow", "medium", "fast"],
+          "description": "Velocidad de animación"
+        },
+        "fontFamily": {
+          "type": "string",
+          "description": "Familia de fuentes"
+        },
+        "fontSize": {
+          "type": "object",
+          "required": ["base", "heading", "title"],
+          "properties": {
+            "base": {
+              "type": "number",
+              "minimum": 12,
+              "maximum": 24,
+              "description": "Tamaño base en px"
+            },
+            "heading": {
+              "type": "number",
+              "minimum": 18,
+              "maximum": 36,
+              "description": "Tamaño de headings en px"
+            },
+            "title": {
+              "type": "number",
+              "minimum": 24,
+              "maximum": 48,
+              "description": "Tamaño de títulos en px"
+            }
+          }
+        },
+        "spacing": {
+          "type": "object",
+          "properties": {
+            "section": {
+              "type": "number",
+              "description": "Espaciado entre secciones en px"
+            },
+            "paragraph": {
+              "type": "number",
+              "description": "Espaciado entre párrafos en px"
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "audiobook": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "voice": { "type": "string" },
+            "speedControl": { "type": "boolean" },
+            "speeds": {
+              "type": "array",
+              "items": { "type": "number" }
+            },
+            "highlightCurrentParagraph": { "type": "boolean" },
+            "autoAdvanceChapter": { "type": "boolean" }
+          }
+        },
+        "aiChat": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "systemPrompt": { "type": "string" },
+            "modes": { "type": "object" },
+            "maxHistoryMessages": { "type": "number" }
+          }
+        },
+        "personalNotes": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "markdown": { "type": "boolean" },
+            "exportable": { "type": "boolean" }
+          }
+        },
+        "bookmarks": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "allowMultiple": { "type": "boolean" }
+          }
+        },
+        "progressTracking": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "trackTime": { "type": "boolean" },
+            "trackChapters": { "type": "boolean" },
+            "trackExercises": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": ["sourceFile", "dataStructure"],
+      "properties": {
+        "sourceFile": {
+          "type": "string",
+          "description": "Ruta relativa al archivo book.json"
+        },
+        "dataStructure": {
+          "type": "string",
+          "enum": ["standard", "legacy", "new"],
+          "description": "Versión de la estructura de datos"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["locale", "readingLevel", "recommendedPace"],
+      "properties": {
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2}-[A-Z]{2}$",
+          "description": "Código de idioma (ej: es-ES)"
+        },
+        "readingLevel": {
+          "type": "string",
+          "enum": ["beginner", "intermediate", "advanced"],
+          "description": "Nivel de lectura"
+        },
+        "recommendedPace": {
+          "type": "string",
+          "enum": ["slow", "reflective", "normal", "fast"],
+          "description": "Ritmo de lectura recomendado"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tags del libro"
+        },
+        "complementaryBooks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "IDs de libros complementarios"
+        }
+      }
+    }
+  }
+}

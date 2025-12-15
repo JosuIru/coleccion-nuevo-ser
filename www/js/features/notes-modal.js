@@ -198,7 +198,8 @@ class NotesModal {
             ${Icons.download(16)} ${this.i18n.t('btn.export')}
           </button>
           <button id="close-notes-btn"
-                  class="w-10 h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center">
+                  class="w-10 h-10 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-700 hover:bg-gray-200 transition flex items-center justify-center text-gray-900 dark:text-white"
+                  aria-label="Cerrar notas">
             ${Icons.close(24)}
           </button>
         </div>

@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nuevosser.com/schemas/book.json",
+  "title": "Book Content Schema",
+  "description": "Schema para validar la estructura de book.json",
+  "type": "object",
+  "required": ["title", "subtitle", "author", "sections"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Título del libro"
+    },
+    "subtitle": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Subtítulo del libro"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Autor principal"
+    },
+    "coAuthor": {
+      "type": "string",
+      "description": "Co-autor (opcional)"
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Secciones del libro",
+      "items": {
+        "$ref": "#/definitions/section"
+      }
+    }
+  },
+  "definitions": {
+    "section": {
+      "type": "object",
+      "required": ["id", "title", "chapters"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "ID único en formato kebab-case"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Título de la sección"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtítulo de la sección (opcional)"
+        },
+        "chapters": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Capítulos de la sección",
+          "items": {
+            "$ref": "#/definitions/chapter"
+          }
+        }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "required": ["id", "title", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "ID único del capítulo"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Título del capítulo"
+        },
+        "epigraph": {
+          "$ref": "#/definitions/epigraph",
+          "description": "Epígrafe del capítulo (opcional)"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Contenido en formato Markdown"
+        },
+        "closingQuestion": {
+          "type": "string",
+          "description": "Pregunta de cierre (opcional)"
+        },
+        "exercises": {
+          "type": "array",
+          "description": "Ejercicios del capítulo (opcional)",
+          "items": {
+            "$ref": "#/definitions/exercise"
+          }
+        }
+      }
+    },
+    "epigraph": {
+      "type": "object",
+      "required": ["text", "author"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Texto del epígrafe"
+        },
+        "author": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Autor del epígrafe"
+        }
+      }
+    },
+    "exercise": {
+      "type": "object",
+      "required": ["id", "title", "duration", "description", "steps"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "ID único del ejercicio"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Título del ejercicio"
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duración estimada (ej: '20-30 minutos')"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Descripción breve del ejercicio"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Pasos del ejercicio",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reflection": {
+          "type": "string",
+          "description": "Pregunta de reflexión (opcional)"
+        }
+      }
+    }
+  }
+}

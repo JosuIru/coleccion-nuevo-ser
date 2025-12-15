@@ -6,13 +6,16 @@
  * @version 1.0.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
+import memoryStorage from '../utils/MemoryStorage';
+const AsyncStorage = memoryStorage;
 
 // Screens
 import {
@@ -29,6 +32,7 @@ import {
 import { COLORS } from '../config/constants';
 import useGameStore from '../stores/gameStore';
 import logger from '../utils/logger';
+import deepLinkService from '../services/DeepLinkService';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -310,6 +314,7 @@ export default function RootNavigator() {
   const [initialRoute, setInitialRoute] = useState(null);
   const [loading, setLoading] = useState(true);
   const { loadFromStorage } = useGameStore();
+  const navigationRef = useRef(null);
 
   useEffect(() => {
     initializeApp();
@@ -320,8 +325,17 @@ export default function RootNavigator() {
       // Cargar estado del juego desde storage
       const gameStateLoaded = await loadFromStorage();
 
-      // Verificar si es la primera vez
-      const tutorialCompleted = await AsyncStorage.getItem('tutorial_completed');
+      // Verificar si es la primera vez (con fallback si AsyncStorage no existe)
+      let tutorialCompleted = null;
+      try {
+        if (AsyncStorage && AsyncStorage.getItem) {
+          tutorialCompleted = await AsyncStorage.getItem('tutorial_completed');
+        }
+      } catch (storageError) {
+        logger.warn('RootNavigator', 'AsyncStorage not available, skipping');
+        // Si AsyncStorage no funciona, mostrar app principal directamente
+        tutorialCompleted = 'true';
+      }
 
       // Determinar ruta inicial
       if (!tutorialCompleted) {
@@ -333,6 +347,11 @@ export default function RootNavigator() {
         setInitialRoute('Main');
         logger.info('RootNavigator', '📱 Loading main app');
       }
+
+      // Inicializar deep link service
+      if (navigationRef.current) {
+        await deepLinkService.initialize(navigationRef);
+      }
     } catch (error) {
       logger.error('RootNavigator', 'Error initializing app', error);
       // En caso de error, mostrar app principal
@@ -340,6 +359,11 @@ export default function RootNavigator() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNavigationReady = () => {
+    // Procesar deep links pendientes cuando la navegación esté lista
+    deepLinkService.processPendingDeepLink();
   };
 
   // Loading screen mientras se inicializa
@@ -359,7 +383,10 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={handleNavigationReady}
+    >
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
         initialRouteName={initialRoute}

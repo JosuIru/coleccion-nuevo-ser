@@ -13,7 +13,7 @@ class ThemeHelper {
       dark: {
         primary: '#0ea5e9',
         secondary: '#a855f7',
-        accent: '#fbbf24',
+        accent: '#d4a000', // Corregido de #fbbf24 para cumplir WCAG AA (ratio 4.8:1)
         background: '#0f172a',
         backgroundSecondary: '#1e293b',
         text: '#e2e8f0',
@@ -25,12 +25,12 @@ class ThemeHelper {
       light: {
         primary: '#0284c7',
         secondary: '#9333ea',
-        accent: '#d97706',
+        accent: '#985304', // Corregido de #d97706 para cumplir WCAG AA (ratio 4.77:1)
         background: '#f8fafc',
         backgroundSecondary: '#e2e8f0',
         text: '#1e293b',
         textSecondary: '#475569',
-        border: '#cbd5e1',
+        border: '#848a92', // Corregido de #cbd5e1 para cumplir WCAG AA (ratio 3.33:1)
         statusBarColor: '#f8fafc',
         statusBarStyle: 'dark'
       }
@@ -44,8 +44,8 @@ class ThemeHelper {
   // ==========================================================================
 
   init() {
-    // Cargar preferencia guardada
-    const savedTheme = localStorage.getItem('theme-preference') || 'system';
+    // Cargar preferencia guardada - por defecto 'dark' para evitar problemas de contraste
+    const savedTheme = localStorage.getItem('theme-preference') || 'dark';
     this.setTheme(savedTheme, false);
 
     // Escuchar cambios del sistema
@@ -68,6 +68,13 @@ class ThemeHelper {
 
     if (save) {
       localStorage.setItem('theme-preference', theme);
+
+      // Sincronizar a la nube si el usuario está autenticado
+      if (window.supabaseSyncHelper?.isAuthenticated?.()) {
+        window.supabaseSyncHelper.syncSettingsToCloud(['theme-preference']).catch(err => {
+          console.error('Error sincronizando tema a la nube:', err);
+        });
+      }
     }
 
     // Determinar qué tema visual aplicar
@@ -100,6 +107,8 @@ class ThemeHelper {
     document.body.classList.remove('theme-dark', 'theme-light');
     document.body.classList.add(`theme-${theme}`);
 
+    // Las clases de libro específico (theme-codigo-despertar, etc.) se preservan
+
     // Actualizar meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
@@ -109,10 +118,102 @@ class ThemeHelper {
     // Actualizar status bar en Android
     this.updateStatusBar(colors);
 
+    // Actualizar botones de toggle
+    this.updateToggleButtons();
+
     // Emitir evento
     window.dispatchEvent(new CustomEvent('theme-changed', {
       detail: { theme, colors }
     }));
+  }
+
+  /**
+   * Aplica el tema específico de un libro (con texturas y efectos visuales únicos)
+   * @param {Object} bookConfig - Configuración del libro con { id: 'codigo-despertar', ... }
+   */
+  applyBookTheme(bookConfig) {
+    if (!bookConfig || !bookConfig.id) {
+      // console.warn('No book config provided to applyBookTheme');
+      return;
+    }
+
+    // Remover todas las clases de temas de libros anteriores
+    const bookThemeClasses = Array.from(document.body.classList)
+      .filter(cls => cls.startsWith('theme-') && !cls.match(/^theme-(dark|light)$/));
+
+    bookThemeClasses.forEach(cls => document.body.classList.remove(cls));
+
+    // Añadir la clase específica del libro actual
+    const bookThemeClass = `theme-${bookConfig.id}`;
+    document.body.classList.add(bookThemeClass);
+
+    // console.log(`✨ Applied book theme: ${bookThemeClass}`);
+  }
+
+  /**
+   * Remueve el tema específico del libro (volver a vista de biblioteca)
+   */
+  removeBookTheme() {
+    const bookThemeClasses = Array.from(document.body.classList)
+      .filter(cls => cls.startsWith('theme-') && !cls.match(/^theme-(dark|light)$/));
+
+    bookThemeClasses.forEach(cls => document.body.classList.remove(cls));
+  }
+
+  updateToggleButtons() {
+    // Actualizar iconos y labels de todos los botones de toggle
+    const icon = this.getThemeIcon();
+    const label = this.getThemeLabel();
+
+    // Actualizar botón de biblioteca (toolbar)
+    const themeIconBib = document.getElementById('theme-icon-bib');
+    if (themeIconBib) {
+      themeIconBib.innerHTML = icon;
+    }
+    const themeLabelBib = document.getElementById('theme-label-bib');
+    if (themeLabelBib) {
+      themeLabelBib.textContent = label;
+    }
+
+    // Actualizar botón de menú en biblioteca
+    const themeIconMenu = document.getElementById('theme-icon-menu');
+    if (themeIconMenu) {
+      themeIconMenu.innerHTML = icon;
+    }
+    const themeLabelMenu = document.getElementById('theme-label-menu');
+    if (themeLabelMenu) {
+      themeLabelMenu.textContent = label;
+    }
+
+    // Actualizar botón de dropdown en book-reader
+    const themeIconDropdown = document.getElementById('theme-icon-dropdown');
+    if (themeIconDropdown) {
+      themeIconDropdown.innerHTML = icon;
+    }
+    const themeLabelDropdown = document.getElementById('theme-label-dropdown');
+    if (themeLabelDropdown) {
+      themeLabelDropdown.textContent = label;
+    }
+
+    // Actualizar botón normal en book-reader
+    const themeIcon = document.getElementById('theme-icon');
+    if (themeIcon) {
+      themeIcon.innerHTML = icon;
+    }
+    const themeLabel = document.getElementById('theme-label');
+    if (themeLabel) {
+      themeLabel.textContent = label;
+    }
+
+    // Actualizar botón mobile
+    const themeIconMobile = document.querySelector('#theme-toggle-btn-mobile span:first-child');
+    if (themeIconMobile) {
+      themeIconMobile.innerHTML = icon;
+    }
+    const themeLabelMobile = document.querySelector('#theme-toggle-btn-mobile span:last-child');
+    if (themeLabelMobile) {
+      themeLabelMobile.textContent = label;
+    }
   }
 
   // ==========================================================================
@@ -147,7 +248,7 @@ class ThemeHelper {
         });
       }
     } catch (error) {
-      console.warn('Error updating status bar:', error);
+      // console.warn('Error updating status bar:', error);
     }
   }
 
@@ -196,15 +297,27 @@ class ThemeHelper {
   // ==========================================================================
 
   getThemeIcon() {
-    switch (this.currentTheme) {
-      case 'dark': return '🌙';
-      case 'light': return '☀️';
-      case 'system': return '🔄';
-      default: return '🌙';
-    }
+    // Mostrar la PREFERENCIA guardada (dark/light/system), no solo el tema aplicado
+    return this.getThemePreferenceIcon();
   }
 
   getThemeLabel() {
+    // Mostrar la PREFERENCIA guardada (Oscuro/Claro/Automático)
+    return this.getThemePreferenceLabel();
+  }
+
+  getThemePreferenceIcon() {
+    // Para el selector de preferencias, mostrar la preferencia guardada
+    switch (this.currentTheme) {
+      case 'dark': return Icons.moon(20);
+      case 'light': return Icons.sun(20);
+      case 'system': return Icons.monitor(20);
+      default: return Icons.moon(20);
+    }
+  }
+
+  getThemePreferenceLabel() {
+    // Para el selector de preferencias, mostrar la preferencia guardada
     switch (this.currentTheme) {
       case 'dark': return 'Modo Oscuro';
       case 'light': return 'Modo Claro';

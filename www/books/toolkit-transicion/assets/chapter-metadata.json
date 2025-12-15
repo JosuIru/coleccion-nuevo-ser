@@ -1,0 +1,65 @@
+{
+  "introduccion": {
+    "type": "teoría",
+    "difficulty": "básico",
+    "readingTime": 8,
+    "tags": ["herramientas", "toolkit", "introducción"],
+    "practicalUses": []
+  },
+  "herramienta1": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 15,
+    "tags": ["huerto-comunitario", "agricultura-urbana", "alimentos"],
+    "practicalUses": ["huerto", "cultivo"]
+  },
+  "herramienta2": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 18,
+    "tags": ["moneda-local", "economía-alternativa", "intercambio"],
+    "practicalUses": ["economía-local", "moneda"]
+  },
+  "herramienta3": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 12,
+    "tags": ["repair-café", "reparación", "reducir-residuos"],
+    "practicalUses": ["reparar", "comunidad"]
+  },
+  "herramienta4": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["cooperativa-energética", "renovables", "energía-comunitaria"],
+    "practicalUses": ["energía", "cooperativa"]
+  },
+  "herramienta5": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["banco-tiempo", "intercambio-habilidades", "reciprocidad"],
+    "practicalUses": ["intercambio", "comunidad"]
+  },
+  "herramienta6": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 18,
+    "tags": ["biblioteca-herramientas", "sharing-economy", "recursos-compartidos"],
+    "practicalUses": ["compartir", "recursos"]
+  },
+  "herramienta7": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 15,
+    "tags": ["círculos-estudio", "aprendizaje-colectivo", "educación"],
+    "practicalUses": ["aprender", "grupo"]
+  },
+  "conclusion": {
+    "type": "teoría",
+    "difficulty": "básico",
+    "readingTime": 8,
+    "tags": ["síntesis", "siguientes-pasos"],
+    "practicalUses": []
+  }
+}

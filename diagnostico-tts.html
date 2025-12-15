@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnóstico TTS - Colección Nuevo Ser</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #e2e8f0;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      color: #06b6d4;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+    h2 {
+      color: #a5b4fc;
+      margin: 1.5rem 0 1rem;
+      font-size: 1.5rem;
+    }
+    .status {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+      font-weight: 600;
+    }
+    .status.success {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #22c55e;
+      color: #86efac;
+    }
+    .status.warning {
+      background: rgba(251, 191, 36, 0.2);
+      border: 2px solid #fbbf24;
+      color: #fde047;
+    }
+    .status.error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid #ef4444;
+      color: #fca5a5;
+    }
+    .voice-card {
+      background: rgba(51, 65, 85, 0.5);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 0.5rem 0;
+      border-left: 4px solid #06b6d4;
+    }
+    .voice-card.spanish {
+      border-left-color: #22c55e;
+    }
+    .voice-name {
+      font-weight: 600;
+      color: #06b6d4;
+      margin-bottom: 0.25rem;
+    }
+    .voice-lang {
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+    button {
+      background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0.5rem 0.5rem 0.5rem 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    code {
+      background: rgba(15, 23, 42, 0.8);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      color: #fbbf24;
+    }
+    .info-box {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid #6366f1;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔊 Diagnóstico del Sistema TTS</h1>
+    <p style="color: #94a3b8; margin-bottom: 2rem;">
+      Esta herramienta te ayudará a diagnosticar y solucionar problemas con las voces de texto a voz (TTS).
+    </p>
+
+    <!-- Estado del Navegador -->
+    <h2>🌐 Compatibilidad del Navegador</h2>
+    <div id="browser-status"></div>
+
+    <!-- Voces Disponibles -->
+    <h2>🎤 Voces Instaladas</h2>
+    <div id="voices-status"></div>
+    <div id="voices-list"></div>
+
+    <!-- Test de Audio -->
+    <h2>🔊 Test de Audio</h2>
+    <div id="test-section">
+      <p style="color: #94a3b8; margin-bottom: 1rem;">
+        Selecciona una voz y haz clic en "Probar Voz" para escuchar un test.
+      </p>
+      <select id="voice-select" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid #475569; margin-bottom: 1rem;">
+        <option value="">Cargando voces...</option>
+      </select>
+      <div>
+        <button onclick="testVoice()">🔊 Probar Voz</button>
+        <button onclick="testSpanish()">🇪🇸 Probar Voz Española</button>
+        <button onclick="stopSpeech()">⏹️ Detener</button>
+      </div>
+    </div>
+
+    <!-- Instrucciones -->
+    <h2>📋 Instrucciones para Instalar Voces</h2>
+    <div id="instructions"></div>
+
+    <!-- Comandos de Consola -->
+    <h2>💻 Comandos Útiles para la Consola</h2>
+    <div class="info-box">
+      <p style="margin-bottom: 0.5rem;"><strong>Verificar voces:</strong></p>
+      <code>speechSynthesis.getVoices()</code>
+
+      <p style="margin: 1rem 0 0.5rem;"><strong>Forzar recarga en la app:</strong></p>
+      <code>window.audioReader.baseReader.loadVoices()</code>
+
+      <p style="margin: 1rem 0 0.5rem;"><strong>Listar voces en tabla:</strong></p>
+      <code>window.audioReader.baseReader.listVoices()</code>
+    </div>
+  </div>
+
+  <script>
+    let voices = [];
+    let selectedVoice = null;
+
+    // Detectar navegador
+    function detectBrowser() {
+      const ua = navigator.userAgent;
+      if (ua.includes('Firefox')) return 'Firefox';
+      if (ua.includes('Edg')) return 'Edge';
+      if (ua.includes('Chrome')) return 'Chrome';
+      if (ua.includes('Safari')) return 'Safari';
+      return 'Desconocido';
+    }
+
+    // Verificar compatibilidad
+    function checkBrowserSupport() {
+      const browserEl = document.getElementById('browser-status');
+      const browser = detectBrowser();
+
+      if (!window.speechSynthesis) {
+        browserEl.innerHTML = `
+          <div class="status error">
+            ❌ Tu navegador NO soporta Web Speech API
+          </div>
+          <p style="color: #94a3b8; margin-top: 1rem;">
+            Usa Chrome, Edge, Firefox o Safari para habilitar la funcionalidad de texto a voz.
+          </p>
+        `;
+        return false;
+      }
+
+      browserEl.innerHTML = `
+        <div class="status success">
+          ✅ Navegador compatible: <strong>${browser}</strong>
+        </div>
+        <p style="color: #94a3b8; margin-top: 0.5rem;">
+          Web Speech API: <strong>Disponible</strong>
+        </p>
+      `;
+      return true;
+    }
+
+    // Cargar voces
+    function loadVoices() {
+      voices = speechSynthesis.getVoices();
+
+      if (voices.length === 0) {
+        document.getElementById('voices-status').innerHTML = `
+          <div class="status warning">
+            <span class="loading">⏳</span> Esperando que las voces se carguen...
+          </div>
+        `;
+
+        // Reintentar después de 1 segundo
+        setTimeout(loadVoices, 1000);
+        return;
+      }
+
+      displayVoicesStatus();
+      displayVoicesList();
+      populateVoiceSelect();
+    }
+
+    // Mostrar estado de voces
+    function displayVoicesStatus() {
+      const statusEl = document.getElementById('voices-status');
+      const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
+
+      if (spanishVoices.length === 0) {
+        statusEl.innerHTML = `
+          <div class="status warning">
+            ⚠️ Se encontraron ${voices.length} voces, pero NINGUNA en español
+          </div>
+          <p style="color: #fde047; margin-top: 0.5rem;">
+            El AudioReader funcionará pero usando otra voz disponible.
+            Se recomienda instalar voces en español para mejor experiencia.
+          </p>
+        `;
+      } else {
+        statusEl.innerHTML = `
+          <div class="status success">
+            ✅ Se encontraron ${voices.length} voces (${spanishVoices.length} en español)
+          </div>
+        `;
+      }
+    }
+
+    // Mostrar lista de voces
+    function displayVoicesList() {
+      const listEl = document.getElementById('voices-list');
+      const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
+      const otherVoices = voices.filter(v => !v.lang.startsWith('es'));
+
+      let html = '';
+
+      if (spanishVoices.length > 0) {
+        html += '<h3 style="color: #22c55e; margin: 1rem 0 0.5rem;">🇪🇸 Voces en Español</h3>';
+        spanishVoices.forEach(voice => {
+          html += `
+            <div class="voice-card spanish">
+              <div class="voice-name">${voice.name}</div>
+              <div class="voice-lang">
+                Idioma: ${voice.lang} |
+                ${voice.localService ? 'Local' : 'Remota'} |
+                ${voice.default ? '⭐ Por defecto' : ''}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      if (otherVoices.length > 0) {
+        html += '<h3 style="color: #94a3b8; margin: 1.5rem 0 0.5rem;">🌍 Otras Voces</h3>';
+        otherVoices.slice(0, 5).forEach(voice => {
+          html += `
+            <div class="voice-card">
+              <div class="voice-name">${voice.name}</div>
+              <div class="voice-lang">Idioma: ${voice.lang}</div>
+            </div>
+          `;
+        });
+        if (otherVoices.length > 5) {
+          html += `<p style="color: #64748b; margin-top: 0.5rem;">... y ${otherVoices.length - 5} más</p>`;
+        }
+      }
+
+      listEl.innerHTML = html;
+    }
+
+    // Poblar selector de voces
+    function populateVoiceSelect() {
+      const select = document.getElementById('voice-select');
+      select.innerHTML = '';
+
+      if (voices.length === 0) {
+        select.innerHTML = '<option value="">No hay voces disponibles</option>';
+        return;
+      }
+
+      voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voice.name} (${voice.lang})${voice.default ? ' ⭐' : ''}`;
+        if (voice.lang.startsWith('es')) {
+          option.textContent = '🇪🇸 ' + option.textContent;
+        }
+        select.appendChild(option);
+      });
+
+      // Seleccionar primera voz española por defecto
+      const spanishIndex = voices.findIndex(v => v.lang.startsWith('es'));
+      if (spanishIndex !== -1) {
+        select.value = spanishIndex;
+      }
+    }
+
+    // Test de voz
+    function testVoice() {
+      const select = document.getElementById('voice-select');
+      const voiceIndex = select.value;
+
+      if (!voiceIndex) {
+        alert('Selecciona una voz primero');
+        return;
+      }
+
+      const voice = voices[voiceIndex];
+      const utterance = new SpeechSynthesisUtterance(
+        'Hola, esto es una prueba del sistema de texto a voz. Si puedes escuchar este mensaje, el sistema funciona correctamente.'
+      );
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+
+      speechSynthesis.cancel(); // Cancelar cualquier narración previa
+      speechSynthesis.speak(utterance);
+    }
+
+    // Test de voz española
+    function testSpanish() {
+      const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+
+      if (!spanishVoice) {
+        alert('No hay voces en español instaladas. Por favor, instala voces siguiendo las instrucciones abajo.');
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(
+        'Hola, soy una voz en español. El sistema de audio está funcionando correctamente.'
+      );
+      utterance.voice = spanishVoice;
+      utterance.lang = spanishVoice.lang;
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }
+
+    // Detener narración
+    function stopSpeech() {
+      speechSynthesis.cancel();
+    }
+
+    // Mostrar instrucciones
+    function showInstructions() {
+      const browser = detectBrowser();
+      const instructionsEl = document.getElementById('instructions');
+
+      let html = '<div class="info-box">';
+
+      if (browser === 'Chrome' || browser === 'Edge') {
+        html += `
+          <h3 style="color: #06b6d4; margin-bottom: 0.5rem;">Para ${browser}:</h3>
+          <ol style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>Las voces se cargan del sistema operativo</li>
+            <li>Ve a la configuración de voces de tu OS (ver abajo)</li>
+            <li>Reinicia el navegador después de instalar voces</li>
+          </ol>
+        `;
+      } else if (browser === 'Firefox') {
+        html += `
+          <h3 style="color: #06b6d4; margin-bottom: 0.5rem;">Para Firefox:</h3>
+          <ol style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>Usa las voces del sistema operativo</li>
+            <li>Instala voces en tu OS (ver abajo)</li>
+            <li>Reinicia Firefox para detectar nuevas voces</li>
+          </ol>
+        `;
+      } else if (browser === 'Safari') {
+        html += `
+          <h3 style="color: #06b6d4; margin-bottom: 0.5rem;">Para Safari:</h3>
+          <ol style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>Safari usa voces Siri integradas</li>
+            <li>Ve a: Preferencias del Sistema → Accesibilidad → Contenido Hablado</li>
+            <li>Descarga "Mónica" o "Jorge" para español</li>
+          </ol>
+        `;
+      }
+
+      // Instrucciones por OS
+      html += `
+        <h3 style="color: #06b6d4; margin: 1.5rem 0 0.5rem;">Por Sistema Operativo:</h3>
+
+        <h4 style="color: #a5b4fc; margin: 1rem 0 0.5rem;">🪟 Windows 10/11</h4>
+        <ol style="margin-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
+          <li>Configuración → Hora e idioma → Voz</li>
+          <li>Click en "Administrar voces"</li>
+          <li>Busca y descarga "Español (España)" o "Español (México)"</li>
+          <li>Reinicia el navegador</li>
+        </ol>
+
+        <h4 style="color: #a5b4fc; margin: 1rem 0 0.5rem;">🐧 Linux (Ubuntu/Debian)</h4>
+        <code style="display: block; margin: 0.5rem 0; padding: 1rem;">
+sudo apt-get install espeak espeak-ng<br>
+sudo apt-get install mbrola mbrola-es1 mbrola-es2
+        </code>
+
+        <h4 style="color: #a5b4fc; margin: 1rem 0 0.5rem;">🍎 macOS</h4>
+        <ol style="margin-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
+          <li>Preferencias del Sistema → Accesibilidad → Contenido Hablado</li>
+          <li>Click en "Voz del sistema" → "Administrar voces..."</li>
+          <li>Descarga "Mónica" (es-ES) o "Jorge" (es-ES)</li>
+          <li>Reinicia el navegador</li>
+        </ol>
+
+        <h4 style="color: #a5b4fc; margin: 1rem 0 0.5rem;">🤖 Android</h4>
+        <ol style="margin-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
+          <li>Configuración → Sistema → Idioma → Síntesis de voz</li>
+          <li>Instala "Google Text-to-Speech"</li>
+          <li>Descarga voces de español si no están instaladas</li>
+        </ol>
+      `;
+
+      html += '</div>';
+      instructionsEl.innerHTML = html;
+    }
+
+    // Inicializar
+    window.addEventListener('load', () => {
+      checkBrowserSupport();
+      showInstructions();
+
+      // Cargar voces
+      if (speechSynthesis.getVoices().length > 0) {
+        loadVoices();
+      } else {
+        speechSynthesis.addEventListener('voiceschanged', loadVoices);
+        // Reintentar después de 500ms
+        setTimeout(loadVoices, 500);
+      }
+    });
+  </script>
+</body>
+</html>

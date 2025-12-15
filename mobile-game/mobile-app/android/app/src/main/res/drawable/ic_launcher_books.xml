@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background gradient -->
+    <path
+        android:fillColor="#1e293b"
+        android:pathData="M0,0h108v108h-108z"/>
+
+    <!-- Circular background -->
+    <path
+        android:fillColor="#312e81"
+        android:pathData="M54,54m-45,0a45,45 0,1 1,90 0a45,45 0,1 1,-90 0"/>
+
+    <!-- Book 1 (back) - Purple -->
+    <path
+        android:fillColor="#8b5cf6"
+        android:pathData="M35,45 L50,42 L50,72 L35,75 Z"/>
+    <path
+        android:fillColor="#6d28d9"
+        android:pathData="M50,42 L52,42.5 L52,72.5 L50,72 Z"/>
+
+    <!-- Book 2 (middle) - Amber -->
+    <path
+        android:fillColor="#fbbf24"
+        android:pathData="M45,40 L60,38 L60,68 L45,70 Z"/>
+    <path
+        android:fillColor="#f59e0b"
+        android:pathData="M60,38 L62,38.5 L62,68.5 L60,68 Z"/>
+
+    <!-- Book 3 (front) - Orange/Gold -->
+    <path
+        android:fillColor="#fb923c"
+        android:pathData="M55,42 L70,40 L70,70 L55,72 Z"/>
+    <path
+        android:fillColor="#ea580c"
+        android:pathData="M70,40 L72,40.5 L72,70.5 L70,70 Z"/>
+
+    <!-- Sparkle/Wisdom symbol (top right) -->
+    <path
+        android:fillColor="#fde047"
+        android:pathData="M68,28 L69,30 L71,31 L69,32 L68,34 L67,32 L65,31 L67,30 Z"/>
+
+    <!-- Small sparkle -->
+    <path
+        android:fillColor="#fde047"
+        android:pathData="M38,32 L38.5,33 L39.5,33.5 L38.5,34 L38,35 L37.5,34 L36.5,33.5 L37.5,33 Z"/>
+
+    <!-- Glow effect around books -->
+    <path
+        android:fillColor="#fbbf2440"
+        android:pathData="M54,54m-35,0a35,35 0,1 1,70 0a35,35 0,1 1,-70 0"/>
+</vector>

@@ -29,7 +29,7 @@ class ProgressDashboard {
     };
 
     // Obtener stats de cada libro
-    const books = this.bookEngine?.getBooks() || [];
+    const books = this.bookEngine?.getAllBooks() || [];
     stats.totalBooks = books.length;
 
     books.forEach(book => {
@@ -53,11 +53,12 @@ class ProgressDashboard {
   }
 
   getBookStats(bookId) {
-    const progress = this.bookEngine?.getBookProgress(bookId) || { read: 0, total: 0 };
+    // Usar getProgress() que devuelve { percentage, chaptersRead, totalChapters }
+    const progress = this.bookEngine?.getProgress(bookId) || { percentage: 0, chaptersRead: 0, totalChapters: 0 };
     return {
-      chaptersRead: progress.read,
-      totalChapters: progress.total,
-      percentage: progress.total > 0 ? Math.round((progress.read / progress.total) * 100) : 0
+      chaptersRead: progress.chaptersRead || 0,
+      totalChapters: progress.totalChapters || 0,
+      percentage: progress.percentage || 0
     };
   }
 
@@ -110,7 +111,7 @@ class ProgressDashboard {
     if (existing) existing.remove();
 
     const stats = this.getOverallStats();
-    const books = this.bookEngine?.getBooks() || [];
+    const books = this.bookEngine?.getAllBooks() || [];
 
     const modal = document.createElement('div');
     modal.id = 'progress-dashboard-modal';
@@ -136,17 +137,17 @@ class ProgressDashboard {
         <!-- Content -->
         <div class="flex-1 overflow-y-auto p-6 space-y-6">
 
-          <!-- Stats Overview -->
+          <!-- Stats Overview - Clickable cards -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            ${this.renderStatCard('📚', 'Capítulos Leídos', `${stats.totalChaptersRead}/${stats.totalChapters}`, 'cyan')}
-            ${this.renderStatCard('🏆', 'Logros', `${stats.achievementsUnlocked}/${stats.totalAchievements}`, 'yellow')}
-            ${this.renderStatCard('⭐', 'Puntos', stats.totalPoints.toString(), 'purple')}
-            ${this.renderStatCard('📝', 'Notas', stats.notesCreated.toString(), 'green')}
+            ${this.renderStatCard('📚', 'Capítulos Leídos', `${stats.totalChaptersRead}/${stats.totalChapters}`, 'cyan', 'stat-chapters-btn')}
+            ${this.renderStatCard('🏆', 'Logros', `${stats.achievementsUnlocked}/${stats.totalAchievements}`, 'yellow', 'stat-achievements-btn')}
+            ${this.renderStatCard('⭐', 'Puntos', stats.totalPoints.toString(), 'purple', 'stat-points-btn')}
+            ${this.renderStatCard('📝', 'Notas', stats.notesCreated.toString(), 'green', 'stat-notes-btn')}
           </div>
 
           <!-- Progress Ring -->
-          <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
-            <h3 class="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+          <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-300 dark:border-gray-700/50">
+            <h3 class="text-lg font-bold text-cyan-700 dark:text-cyan-300 mb-4 flex items-center gap-2">
               <span>🎯</span> Progreso General
             </h3>
             <div class="flex flex-col md:flex-row items-center gap-6">
@@ -161,8 +162,8 @@ class ProgressDashboard {
           </div>
 
           <!-- Per-Book Progress -->
-          <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
-            <h3 class="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+          <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-300 dark:border-gray-700/50">
+            <h3 class="text-lg font-bold text-cyan-700 dark:text-cyan-300 mb-4 flex items-center gap-2">
               <span>📖</span> Progreso por Libro
             </h3>
             <div class="space-y-3">
@@ -195,16 +196,19 @@ class ProgressDashboard {
   // COMPONENTES DE RENDER
   // ==========================================================================
 
-  renderStatCard(icon, label, value, color) {
+  renderStatCard(icon, label, value, color, actionId = null) {
     const colorClasses = {
-      cyan: 'from-cyan-900/30 to-cyan-800/20 border-cyan-500/30',
-      yellow: 'from-yellow-900/30 to-yellow-800/20 border-yellow-500/30',
-      purple: 'from-purple-900/30 to-purple-800/20 border-purple-500/30',
-      green: 'from-green-900/30 to-green-800/20 border-green-500/30'
+      cyan: 'from-cyan-900/30 to-cyan-800/20 border-cyan-500/30 hover:border-cyan-400/50',
+      yellow: 'from-yellow-900/30 to-yellow-800/20 border-yellow-500/30 hover:border-yellow-400/50',
+      purple: 'from-purple-900/30 to-purple-800/20 border-purple-500/30 hover:border-purple-400/50',
+      green: 'from-green-900/30 to-green-800/20 border-green-500/30 hover:border-green-400/50'
     };
 
+    const clickableClass = actionId ? 'cursor-pointer hover:scale-105 transition-transform' : '';
+    const idAttr = actionId ? `id="${actionId}"` : '';
+
     return `
-      <div class="bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 border text-center">
+      <div ${idAttr} class="bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 border text-center ${clickableClass}">
         <div class="text-3xl mb-2">${icon}</div>
         <div class="text-2xl font-bold text-white">${value}</div>
         <div class="text-xs text-gray-400 mt-1">${label}</div>
@@ -264,28 +268,107 @@ class ProgressDashboard {
   renderBookProgress(book) {
     const stats = this.getBookStats(book.id);
     const isComplete = stats.percentage === 100;
+    const readChapters = this.getReadChaptersList(book.id);
+    const hasReadChapters = readChapters.length > 0;
 
     return `
-      <div class="flex items-center gap-4 p-3 bg-gray-900/50 rounded-lg border border-gray-700/50">
-        <div class="text-2xl">${book.emoji || '📖'}</div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <span class="font-semibold text-gray-200 truncate">${book.shortTitle || book.title}</span>
-            ${isComplete ? '<span class="text-green-400 text-sm">✓</span>' : ''}
-          </div>
-          <div class="flex items-center gap-2 mt-1">
-            <div class="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-500 ${isComplete ? 'bg-green-500' : 'bg-cyan-500'}"
-                   style="width: ${stats.percentage}%"></div>
+      <div class="book-progress-item bg-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-700/50 overflow-hidden">
+        <div class="flex items-center gap-4 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800/50 transition"
+             onclick="this.parentElement.querySelector('.chapters-list')?.classList.toggle('hidden')">
+          <div class="text-2xl">${book.emoji || '📖'}</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-gray-900 dark:text-gray-200 truncate">${book.shortTitle || book.title}</span>
+              ${isComplete ? '<span class="text-green-400 text-sm">✓</span>' : ''}
             </div>
-            <span class="text-xs text-gray-400 w-12 text-right">${stats.percentage}%</span>
+            <div class="flex items-center gap-2 mt-1">
+              <div class="flex-1 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-500 ${isComplete ? 'bg-green-500' : 'bg-cyan-500'}"
+                     style="width: ${stats.percentage}%"></div>
+              </div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 w-12 text-right">${stats.percentage}%</span>
+            </div>
+          </div>
+          <div class="text-xs text-gray-600 dark:text-gray-500 flex items-center gap-2">
+            ${stats.chaptersRead}/${stats.totalChapters}
+            ${hasReadChapters ? '<span class="text-cyan-400">▼</span>' : ''}
           </div>
         </div>
-        <div class="text-xs text-gray-500">
-          ${stats.chaptersRead}/${stats.totalChapters}
-        </div>
+        ${hasReadChapters ? `
+          <div class="chapters-list hidden border-t border-gray-300 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/30 p-3">
+            <p class="text-xs text-cyan-400 mb-2 font-semibold">Capítulos leídos:</p>
+            <div class="space-y-1 max-h-40 overflow-y-auto">
+              ${readChapters.map(ch => `
+                <div class="flex items-center gap-2 text-xs text-gray-300 py-1 px-2 bg-gray-900/50 rounded">
+                  <span class="text-green-400">✓</span>
+                  <span class="truncate">${ch.title}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
+  }
+
+  getReadChaptersList(bookId) {
+    const progress = this.bookEngine?.readProgress?.[bookId];
+    if (!progress || !progress.chaptersRead || progress.chaptersRead.length === 0) {
+      return [];
+    }
+
+    // Obtener los títulos de los capítulos
+    const chapters = [];
+    const currentBook = this.bookEngine?.getCurrentBook();
+
+    // Si es el libro actual, podemos obtener los capítulos directamente
+    if (currentBook === bookId) {
+      const allChapters = this.bookEngine?.getAllChapters() || [];
+      progress.chaptersRead.forEach(chapterId => {
+        const chapter = allChapters.find(ch => ch.id === chapterId);
+        if (chapter) {
+          chapters.push({ id: chapterId, title: chapter.title });
+        } else {
+          chapters.push({ id: chapterId, title: chapterId });
+        }
+      });
+    } else {
+      // Para otros libros, solo mostrar los IDs formateados
+      progress.chaptersRead.forEach(chapterId => {
+        const formattedTitle = this.formatChapterId(chapterId);
+        chapters.push({ id: chapterId, title: formattedTitle });
+      });
+    }
+
+    return chapters;
+  }
+
+  formatChapterId(chapterId) {
+    // Convertir IDs como "cap1", "prologo", "seccion1" en títulos legibles
+    const mappings = {
+      'prologo': 'Prólogo',
+      'epilogo': 'Epílogo',
+      'introduccion': 'Introducción',
+      'conclusion': 'Conclusión'
+    };
+
+    if (mappings[chapterId]) {
+      return mappings[chapterId];
+    }
+
+    // Capítulos numerados
+    const capMatch = chapterId.match(/cap(\d+)/);
+    if (capMatch) {
+      return `Capítulo ${capMatch[1]}`;
+    }
+
+    // Secciones
+    const secMatch = chapterId.match(/seccion(\d+)/);
+    if (secMatch) {
+      return `Sección ${secMatch[1]}`;
+    }
+
+    return chapterId;
   }
 
   renderRecentAchievements() {
@@ -295,8 +378,8 @@ class ProgressDashboard {
     if (recent.length === 0) return '';
 
     return `
-      <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
-        <h3 class="text-lg font-bold text-yellow-300 mb-4 flex items-center gap-2">
+      <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-300 dark:border-gray-700/50">
+        <h3 class="text-lg font-bold text-yellow-700 dark:text-yellow-300 mb-4 flex items-center gap-2">
           <span>🏆</span> Logros Recientes
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -367,7 +450,45 @@ class ProgressDashboard {
     document.getElementById('view-all-achievements')?.addEventListener('click', () => {
       this.close();
       if (this.achievementSystem) {
-        this.achievementSystem.showDashboardModal();
+        this.achievementSystem.showDashboardModal({ fromProgressDashboard: true });
+      }
+    });
+
+    // Stat cards - clickable actions
+    // Chapters card - scroll to books section
+    document.getElementById('stat-chapters-btn')?.addEventListener('click', () => {
+      const booksSection = modal.querySelector('.book-progress-item')?.parentElement;
+      if (booksSection) {
+        booksSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Expand first book with chapters
+        const firstExpandable = modal.querySelector('.book-progress-item .chapters-list');
+        if (firstExpandable) {
+          firstExpandable.classList.remove('hidden');
+        }
+      }
+    });
+
+    // Achievements card - open achievements modal
+    document.getElementById('stat-achievements-btn')?.addEventListener('click', () => {
+      this.close();
+      if (this.achievementSystem) {
+        this.achievementSystem.showDashboardModal({ fromProgressDashboard: true });
+      }
+    });
+
+    // Points card - also open achievements (points are shown there)
+    document.getElementById('stat-points-btn')?.addEventListener('click', () => {
+      this.close();
+      if (this.achievementSystem) {
+        this.achievementSystem.showDashboardModal({ fromProgressDashboard: true });
+      }
+    });
+
+    // Notes card - open notes modal
+    document.getElementById('stat-notes-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.notesModal) {
+        window.notesModal.open();
       }
     });
   }

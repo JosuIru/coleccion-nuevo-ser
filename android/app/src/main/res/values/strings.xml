@@ -4,4 +4,22 @@
     <string name="title_activity_main">Colección Nuevo Ser</string>
     <string name="package_name">com.nuevosser.coleccion</string>
     <string name="custom_url_scheme">com.nuevosser.coleccion</string>
+
+    <!-- Android Shortcuts Labels -->
+    <string name="shortcut_continue_reading">Continuar</string>
+    <string name="shortcut_continue_reading_long">Continuar leyendo</string>
+    <string name="shortcut_daily_koan">Koan del día</string>
+    <string name="shortcut_daily_koan_long">Reflexión diaria</string>
+    <string name="shortcut_progress">Mi progreso</string>
+    <string name="shortcut_progress_long">Ver mi progreso de lectura</string>
+    <string name="shortcut_library">Biblioteca</string>
+    <string name="shortcut_library_long">Explorar biblioteca</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_label">Lectura Rápida</string>
+    <string name="tile_description">Abrir Colección Nuevo Ser</string>
+
+    <!-- Widgets -->
+    <string name="widget_reading_progress_description">Progreso de lectura actual</string>
+    <string name="widget_daily_koan_description">Koan del día para reflexionar</string>
 </resources>

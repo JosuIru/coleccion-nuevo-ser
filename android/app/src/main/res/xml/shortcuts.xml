@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Shortcut 1: Continuar Leyendo -->
+    <shortcut
+        android:shortcutId="continue_reading"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_book"
+        android:shortcutShortLabel="@string/shortcut_continue_reading"
+        android:shortcutLongLabel="@string/shortcut_continue_reading_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nuevosser.coleccion"
+            android:targetClass="com.nuevosser.coleccion.MainActivity"
+            android:data="nuevosser://continue-reading" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Shortcut 2: Koan del Día -->
+    <shortcut
+        android:shortcutId="daily_koan"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_koan"
+        android:shortcutShortLabel="@string/shortcut_daily_koan"
+        android:shortcutLongLabel="@string/shortcut_daily_koan_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nuevosser.coleccion"
+            android:targetClass="com.nuevosser.coleccion.MainActivity"
+            android:data="nuevosser://daily-koan" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Shortcut 3: Mi Progreso -->
+    <shortcut
+        android:shortcutId="my_progress"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_progress"
+        android:shortcutShortLabel="@string/shortcut_progress"
+        android:shortcutLongLabel="@string/shortcut_progress_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nuevosser.coleccion"
+            android:targetClass="com.nuevosser.coleccion.MainActivity"
+            android:data="nuevosser://progress" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Shortcut 4: Biblioteca -->
+    <shortcut
+        android:shortcutId="library"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_library"
+        android:shortcutShortLabel="@string/shortcut_library"
+        android:shortcutLongLabel="@string/shortcut_library_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nuevosser.coleccion"
+            android:targetClass="com.nuevosser.coleccion.MainActivity"
+            android:data="nuevosser://library" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

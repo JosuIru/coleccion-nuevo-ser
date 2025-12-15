@@ -25,8 +25,14 @@ class AIAdapter {
   // MÉTODO PRINCIPAL - Llamada unificada a IA
   // ═══════════════════════════════════════════════════════════════════════════
 
-  async ask(prompt, systemContext = '', conversationHistory = []) {
+  async ask(prompt, systemContext = '', conversationHistory = [], feature = 'chat') {
     const provider = this.config.getCurrentProvider();
+
+    // Verificar si el usuario tiene suscripción premium y usar el proxy del admin
+    const premiumResult = await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature);
+    if (premiumResult.used) {
+      return premiumResult.response;
+    }
 
     try {
       let response;
@@ -50,6 +56,11 @@ class AIAdapter {
 
         case this.config.providers.MISTRAL:
           response = await this.askMistral(prompt, systemContext, conversationHistory);
+          tokensUsed = this.estimateTokens(prompt + response);
+          break;
+
+        case this.config.providers.QWEN:
+          response = await this.askQwen(prompt, systemContext, conversationHistory);
           tokensUsed = this.estimateTokens(prompt + response);
           break;
 
@@ -105,6 +116,158 @@ class AIAdapter {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // PROXY PREMIUM - Usa la API key del administrador para usuarios suscritos
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Intenta usar el proxy premium si el usuario tiene suscripción activa
+   * @returns {Object} { used: boolean, response: string|null }
+   */
+  async tryPremiumProxy(prompt, systemContext, conversationHistory, feature = 'chat') {
+    try {
+      // Verificar si el usuario está autenticado y tiene suscripción
+      const authHelper = window.authHelper;
+      if (!authHelper || !authHelper.isAuthenticated()) {
+        return { used: false, response: null };
+      }
+
+      // Obtener información de suscripción
+      const subscription = await this.getUserSubscription();
+      if (!subscription || subscription.plan === 'free') {
+        // Usuario free - puede usar si tiene créditos gratuitos restantes
+        const hasCredits = await this.checkFreeCredits();
+        if (!hasCredits) {
+          return { used: false, response: null };
+        }
+      }
+
+      // Obtener token de acceso del usuario
+      const userToken = await authHelper.getAccessToken();
+      if (!userToken) {
+        return { used: false, response: null };
+      }
+
+      // Construir mensajes para la API
+      const messages = [
+        ...conversationHistory.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        })),
+        { role: 'user', content: prompt }
+      ];
+
+      // URL del proxy premium
+      const PREMIUM_PROXY_URL = 'https://gailu.net/api/premium-ai-proxy.php';
+
+      const response = await fetch(PREMIUM_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Token': userToken
+        },
+        body: JSON.stringify({
+          messages: messages,
+          systemPrompt: systemContext,
+          feature: feature // 'chat', 'tutor', 'adapter', 'game_master'
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Si es error de créditos o suscripción, no usar premium
+        if (data.upgrade || data.creditsRemaining === 0) {
+          console.log('Premium proxy: sin créditos o requiere upgrade');
+          // Mostrar mensaje al usuario
+          if (window.toast && data.error) {
+            window.toast.info(data.error, 5000);
+          }
+          return { used: false, response: null };
+        }
+        throw new Error(data.error || 'Error en proxy premium');
+      }
+
+      // Éxito - mostrar créditos restantes si es relevante
+      if (data.creditsRemaining !== undefined && data.creditsRemaining < 50) {
+        console.log(`Premium: ${data.creditsRemaining} créditos restantes`);
+      }
+
+      return {
+        used: true,
+        response: data.text,
+        creditsUsed: data.creditsUsed,
+        creditsRemaining: data.creditsRemaining,
+        plan: data.plan
+      };
+
+    } catch (error) {
+      console.warn('Premium proxy no disponible, usando fallback:', error.message);
+      return { used: false, response: null };
+    }
+  }
+
+  /**
+   * Obtener información de suscripción del usuario
+   */
+  async getUserSubscription() {
+    try {
+      const supabase = window.supabaseClient;
+      if (!supabase) return null;
+
+      const user = window.authHelper?.getCurrentUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select('plan, status, current_period_end')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .single();
+
+      if (error || !data) return { plan: 'free' };
+
+      // Verificar si no ha expirado
+      if (data.current_period_end && new Date(data.current_period_end) < new Date()) {
+        return { plan: 'free' };
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error obteniendo suscripción:', error);
+      return { plan: 'free' };
+    }
+  }
+
+  /**
+   * Verificar si el usuario free tiene créditos gratuitos
+   */
+  async checkFreeCredits() {
+    try {
+      const supabase = window.supabaseClient;
+      if (!supabase) return true; // Si no hay Supabase, permitir (modo offline)
+
+      const user = window.authHelper?.getCurrentUser();
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from('ai_usage')
+        .select('credits_used, monthly_limit')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error || !data) {
+        // Si no existe registro, tiene todos los créditos gratuitos
+        return true;
+      }
+
+      return (data.monthly_limit - data.credits_used) > 0;
+    } catch (error) {
+      console.error('Error verificando créditos:', error);
+      return true; // En caso de error, permitir
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // CLAUDE API
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -146,7 +309,7 @@ class AIAdapter {
 
       // Informar al usuario si está usando la API key de respaldo
       if (data.using_fallback_key) {
-        console.warn('⚠️ Usando API key compartida del servidor (limitada)');
+        // console.warn('⚠️ Usando API key compartida del servidor (limitada)');
       }
 
       return data.text;
@@ -409,6 +572,80 @@ class AIAdapter {
       }
       if (error.message.includes('Unauthorized') || error.message.includes('401')) {
         throw new Error('API Key de Mistral inválida. Revisa tu configuración.');
+      }
+
+      throw error;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // QWEN (ALIBABA DASHSCOPE) - 1 MILLÓN DE TOKENS GRATIS AL MES
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  async askQwen(prompt, systemContext, conversationHistory) {
+    const apiKey = this.config.getQwenApiKey();
+
+    if (!apiKey) {
+      throw new Error(
+        'Qwen API key not configured.\n\n' +
+        'Para usar Qwen necesitas una API key de DashScope (Alibaba Cloud).\n' +
+        '¡1 MILLÓN de tokens GRATIS al mes!\n\n' +
+        'Obtén una en:\n' +
+        'https://bailian.console.alibabacloud.com/?apiKey=1#/api-key'
+      );
+    }
+
+    const messages = [
+      { role: 'system', content: systemContext || 'Eres un asistente útil y amable que responde en español.' },
+      ...conversationHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      { role: 'user', content: prompt }
+    ];
+
+    // Usar modelo seleccionado o por defecto qwen-turbo (más económico)
+    const model = this.config.getSelectedModel() || 'qwen-turbo';
+
+    try {
+      const response = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          temperature: this.config.config.preferences.temperature || 0.7,
+          max_tokens: this.config.config.preferences.maxTokens || 1024
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || `Error en Qwen API: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.choices && data.choices[0]?.message?.content) {
+        return data.choices[0].message.content;
+      }
+
+      throw new Error('Respuesta inesperada de Qwen');
+
+    } catch (error) {
+      console.error('Error calling Qwen:', error);
+
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error('No se pudo conectar a Qwen. Verifica tu conexión.');
+      }
+      if (error.message.includes('InvalidApiKey') || error.message.includes('401')) {
+        throw new Error('API Key de Qwen inválida. Revisa tu configuración.');
+      }
+      if (error.message.includes('Arrearage') || error.message.includes('quota')) {
+        throw new Error('Cuota agotada en Qwen. Espera al próximo mes o usa otro proveedor.');
       }
 
       throw error;

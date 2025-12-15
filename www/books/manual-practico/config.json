@@ -1,23 +1,25 @@
 {
   "id": "manual-practico",
   "version": "1.0.0",
-  "lastUpdate": "2025-12-01",
+  "lastUpdate": "2025-12-04",
+
   "theme": {
-    "name": "Contemplative Gold",
-    "primary": "#fbbf24",
-    "secondary": "#f59e0b",
+    "name": "Practical Ground",
+    "primary": "#8b5cf6",
+    "secondary": "#7c3aed",
     "accent": "#fbbf24",
-    "background": "#0f172a",
-    "backgroundSecondary": "#1e293b",
-    "text": "#e2e8f0",
-    "textSecondary": "#cbd5e1",
-    "border": "#334155",
-    "gradient": "from-slate-950 via-amber-950 to-yellow-950"
+    "background": "#1f2937",
+    "backgroundSecondary": "#111827",
+    "text": "#f3f4f6",
+    "textSecondary": "#d1d5db",
+    "border": "#4f46e5",
+    "gradient": "from-purple-700 to-indigo-800"
   },
+
   "ui": {
     "showStarfield": true,
-    "animationType": "cosmic",
-    "animationSpeed": "slow",
+    "animationType": "organic",
+    "animationSpeed": "medium",
     "fontFamily": "Inter, system-ui, sans-serif",
     "fontSize": {
       "base": 16,
@@ -29,41 +31,21 @@
       "paragraph": 16
     }
   },
+
   "features": {
-    "exercises": {
-      "enabled": true,
-      "types": [
-        "meditation",
-        "reflection",
-        "practice"
-      ],
-      "trackCompletion": true
-    },
     "audiobook": {
       "enabled": true,
       "voice": "es-ES",
       "speedControl": true,
-      "speeds": [
-        0.5,
-        0.75,
-        1,
-        1.25,
-        1.5,
-        2
-      ],
+      "speeds": [0.75, 1.0, 1.25, 1.5],
       "highlightCurrentParagraph": true,
-      "autoAdvanceChapter": true
+      "autoAdvanceChapter": false
     },
     "aiChat": {
       "enabled": true,
-      "systemPrompt": "Eres un guía contemplativo especializado en las prácticas de \"Manual Práctico\". Tu función es acompañar al usuario en su exploración, ofreciendo clarificación sobre los ejercicios y apoyo en su proceso.",
-      "modes": {
-        "default": {
-          "name": "Guía Contemplativo",
-          "tone": "serene",
-          "focus": "practice"
-        }
-      }
+      "systemPrompt": "Eres un asistente especializado en prácticas transformadoras. Ayuda al usuario a comprender y aplicar los ejercicios del Manual Práctico.",
+      "modes": {},
+      "maxHistoryMessages": 10
     },
     "personalNotes": {
       "enabled": true,
@@ -79,16 +61,23 @@
       "trackTime": true,
       "trackChapters": true,
       "trackExercises": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/manual-practico/assets/resources.json"
     }
   },
+
   "content": {
     "sourceFile": "books/manual-practico/book.json",
     "dataStructure": "standard"
   },
+
   "metadata": {
     "locale": "es-ES",
-    "readingLevel": "principiante-intermedio",
-    "recommendedPace": "slow",
-    "linkedTo": "codigo-despertar"
+    "readingLevel": "intermediate",
+    "recommendedPace": "normal",
+    "tags": ["prácticas", "ejercicios", "transformación"],
+    "complementaryBooks": ["codigo-despertar"]
   }
 }

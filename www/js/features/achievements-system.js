@@ -384,7 +384,7 @@ class AchievementSystem {
               <div class="achievement-card relative p-4 rounded-xl border-2 transition-all ${
                 isUnlocked
                   ? 'bg-amber-900/20 border-amber-500/50 scale-100'
-                  : 'bg-gray-800/50 border-gray-700/50 opacity-60 grayscale'
+                  : 'bg-gray-200 dark:bg-gray-800/50 border-gray-300 dark:border-gray-700/50 opacity-60 grayscale'
               }">
                 <div class="text-center">
                   <span class="text-3xl mb-2 block">${achievement.icon}</span>
@@ -417,7 +417,8 @@ class AchievementSystem {
   // MODAL DE LOGROS
   // ==========================================================================
 
-  showDashboardModal() {
+  showDashboardModal(options = {}) {
+    const { fromProgressDashboard = false } = options;
     const bookId = this.bookEngine?.getCurrentBook();
 
     // Eliminar modal existente
@@ -434,10 +435,18 @@ class AchievementSystem {
         <!-- Header -->
         <div class="bg-gradient-to-r from-amber-900/50 to-yellow-900/50 px-6 py-4 border-b border-amber-500/30 flex items-center justify-between rounded-t-2xl">
           <div class="flex items-center gap-3">
+            ${fromProgressDashboard ? `
+              <button id="back-to-progress" class="text-amber-300 hover:text-white p-2 hover:bg-amber-800/50 rounded-lg transition mr-2" title="Volver a Progreso">
+                ${Icons.back(20)}
+              </button>
+            ` : ''}
             <span class="text-3xl">🏆</span>
             <h2 class="text-xl font-bold text-amber-200">Mis Logros</h2>
           </div>
-          <button id="close-achievements-modal" class="text-amber-300 hover:text-white p-2 hover:bg-amber-800/50 rounded-lg transition">
+          <button id="close-achievements-modal"
+                  class="text-amber-300 hover:text-white p-3 hover:bg-amber-800/50 rounded-lg transition"
+                  aria-label="Cerrar logros"
+                  title="Cerrar">
             ${Icons.close(20)}
           </button>
         </div>
@@ -446,6 +455,16 @@ class AchievementSystem {
         <div class="flex-1 overflow-y-auto p-6">
           ${this.renderDashboard(bookId)}
         </div>
+
+        ${fromProgressDashboard ? `
+        <!-- Footer with back button -->
+        <div class="px-6 py-4 border-t border-amber-500/30 flex justify-between items-center">
+          <button id="back-to-progress-footer" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold transition text-sm flex items-center gap-2">
+            ${Icons.back(16)} Volver a Mi Progreso
+          </button>
+          <p class="text-xs text-gray-500">Sigue explorando para desbloquear más</p>
+        </div>
+        ` : ''}
       </div>
     `;
 
@@ -463,6 +482,20 @@ class AchievementSystem {
         setTimeout(() => modal.remove(), 200);
       }
     });
+
+    // Back to progress dashboard buttons
+    const backToProgress = () => {
+      modal.style.animation = 'fadeOut 0.2s ease-out';
+      setTimeout(() => {
+        modal.remove();
+        if (window.progressDashboard) {
+          window.progressDashboard.show();
+        }
+      }, 200);
+    };
+
+    document.getElementById('back-to-progress')?.addEventListener('click', backToProgress);
+    document.getElementById('back-to-progress-footer')?.addEventListener('click', backToProgress);
 
     // Share achievement buttons
     modal.querySelectorAll('.share-achievement-btn').forEach(btn => {

@@ -59,8 +59,8 @@ $fullPrompt = $systemContext
     ? "{$systemContext}\n\nUsuario: {$prompt}\nAsistente:"
     : "Usuario: {$prompt}\nAsistente:";
 
-// URL de la API de HuggingFace
-$apiUrl = "https://api-inference.huggingface.co/models/{$model}";
+// URL de la API de HuggingFace (nueva URL requerida desde 2025)
+$apiUrl = "https://router.huggingface.co/hf-inference/models/{$model}";
 
 // Preparar la petición
 $requestBody = json_encode([

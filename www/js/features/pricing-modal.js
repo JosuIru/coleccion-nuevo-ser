@@ -1,0 +1,323 @@
+/**
+ * PRICING MODAL - UI de Planes y Pagos
+ * Modal para seleccionar plan de suscripción y procesar pagos
+ *
+ * @version 1.0.0
+ */
+
+class PricingModal {
+  constructor() {
+    this.stripe = null;
+    this.authHelper = window.authHelper;
+    this.supabase = null;
+
+    this.plans = {
+      free: {
+        name: 'Gratuito',
+        price: '0€',
+        period: '/mes',
+        icon: '🆓',
+        features: [
+          'Acceso a todos los libros',
+          'Progreso sincronizado',
+          'Quizzes básicos',
+          '10 consultas IA/mes',
+          'Comunidad',
+        ],
+        notIncluded: [
+          'Chat IA ilimitado',
+          'Tutor IA personalizado',
+          'Game Master IA',
+          'Analytics avanzados',
+          'Exportar a PDF',
+        ],
+        button: 'Plan Actual',
+        buttonAction: 'current',
+      },
+      premium: {
+        name: 'Premium',
+        price: '9,99€',
+        period: '/mes',
+        icon: '⭐',
+        badge: 'Recomendado',
+        features: [
+          'Todo lo de Gratuito',
+          'Chat IA ilimitado sobre libros',
+          'Tutor IA personalizado',
+          'Generación de quizzes personalizados',
+          'Sincronización en la nube',
+          'Exportar a PDF',
+          '500 consultas IA/mes',
+          'Sin anuncios',
+        ],
+        notIncluded: [
+          'Game Master IA',
+          'NPCs conversacionales',
+          'Temas personalizados',
+          'Soporte prioritario',
+        ],
+        button: 'Comenzar Premium',
+        buttonAction: 'premium',
+        priceId: 'price_premium_monthly', // Obtener de Stripe
+        stripePriceId: null, // Se obtiene de env
+      },
+      pro: {
+        name: 'Pro',
+        price: '19,99€',
+        period: '/mes',
+        icon: '👑',
+        features: [
+          'Todo lo de Premium',
+          'Game Master IA para juegos',
+          'NPCs conversacionales ilimitados',
+          'Generación de misiones dinámicas',
+          'Narrativa adaptativa',
+          'Analytics avanzados',
+          'Temas personalizados',
+          '2000 consultas IA/mes',
+          'Soporte prioritario',
+          'API access',
+        ],
+        notIncluded: [],
+        button: 'Comenzar Pro',
+        buttonAction: 'pro',
+        priceId: 'price_pro_monthly',
+        stripePriceId: null,
+      },
+    };
+
+    this.init();
+  }
+
+  /**
+   * Inicializar
+   */
+  async init() {
+    // Esperar a Supabase
+    if (typeof window.supabase !== 'undefined') {
+      this.supabase = window.supabase;
+    } else {
+      setTimeout(() => this.init(), 500);
+      return;
+    }
+
+    // Cargar Stripe.js
+    await this.loadStripe();
+
+    console.log('✅ PricingModal inicializado');
+  }
+
+  /**
+   * Cargar Stripe.js dinámicamente
+   */
+  loadStripe() {
+    return new Promise((resolve) => {
+      if (window.Stripe) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.onload = () => {
+        // Usar la clave pública de Stripe
+        const publishableKey = this.getStripePublishableKey();
+        if (publishableKey) {
+          window.stripe = Stripe(publishableKey);
+        }
+        resolve();
+      };
+      script.onerror = () => {
+        console.error('❌ Error cargando Stripe.js');
+        resolve();
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  /**
+   * Obtener clave pública de Stripe
+   */
+  getStripePublishableKey() {
+    // Esta clave debe estar en las variables de entorno del frontend
+    return window.STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_KEY_HERE';
+  }
+
+  /**
+   * Mostrar modal de pricing
+   */
+  showPricingModal() {
+    const modal = document.createElement('div');
+    modal.className = 'pricing-modal-overlay fade-in';
+    modal.innerHTML = `
+      <div class="pricing-modal-container scale-in">
+        <button class="pricing-modal-close" onclick="window.pricingModal.closeModal()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M18 6L6 18M6 6l12 12" stroke-width="2"/>
+          </svg>
+        </button>
+
+        <div class="pricing-header">
+          <h2>Elige tu Plan</h2>
+          <p>Acceso a IA avanzada para mejorar tu aprendizaje</p>
+        </div>
+
+        <div class="pricing-grid">
+          ${this.getPricingCardsHTML()}
+        </div>
+
+        <div class="pricing-footer">
+          <p>💳 Pago seguro con Stripe</p>
+          <p>Cancela en cualquier momento. Sin compromisos a largo plazo.</p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    // Click fuera para cerrar
+    modal.addEventListener('click', (e) => {
+      if (e.target.classList.contains('pricing-modal-overlay')) {
+        this.closeModal();
+      }
+    });
+  }
+
+  /**
+   * Obtener HTML de tarjetas de pricing
+   */
+  getPricingCardsHTML() {
+    const currentTier = this.authHelper.getSubscriptionTier();
+
+    return Object.entries(this.plans)
+      .map(([key, plan]) => {
+        const isCurrentPlan = currentTier === key;
+
+        return `
+          <div class="pricing-card ${key} ${plan.badge ? 'featured' : ''}">
+            ${plan.badge ? `<div class="pricing-badge">${plan.badge}</div>` : ''}
+
+            <div class="pricing-icon">${plan.icon}</div>
+            <h3 class="pricing-name">${plan.name}</h3>
+
+            <div class="pricing-price">
+              ${plan.price}
+              <span class="pricing-period">${plan.period}</span>
+            </div>
+
+            <ul class="pricing-features">
+              ${plan.features.map((f) => `
+                <li class="feature-included">
+                  <span class="feature-icon">✓</span>
+                  <span class="feature-text">${f}</span>
+                </li>
+              `).join('')}
+
+              ${plan.notIncluded.map((f) => `
+                <li class="feature-excluded">
+                  <span class="feature-icon">✗</span>
+                  <span class="feature-text">${f}</span>
+                </li>
+              `).join('')}
+            </ul>
+
+            <div class="pricing-actions">
+              ${isCurrentPlan
+                ? `<button class="btn-pricing current" disabled>Plan Actual</button>`
+                : key === 'free'
+                ? `<button class="btn-pricing secondary" onclick="window.pricingModal.selectFree()">Elegir Gratuito</button>`
+                : `<button class="btn-pricing primary" onclick="window.pricingModal.handleCheckout('${key}')">
+                    ${plan.button}
+                  </button>`
+              }
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  /**
+   * Manejar selección de plan gratuito
+   */
+  selectFree() {
+    this.closeModal();
+    alert(
+      'Ya tienes acceso al plan gratuito. Crea una cuenta o inicia sesión para comenzar.'
+    );
+  }
+
+  /**
+   * Manejar checkout (proceso de pago)
+   */
+  async handleCheckout(tier) {
+    // Verificar autenticación
+    if (!this.authHelper.isAuthenticated()) {
+      alert('Debes iniciar sesión para comprar un plan.');
+      this.closeModal();
+      window.authModal.showLoginModal();
+      return;
+    }
+
+    const user = this.authHelper.getUser();
+    const button = event.target;
+
+    button.disabled = true;
+    button.textContent = 'Procesando...';
+
+    try {
+      // Llamar a Edge Function para crear sesión
+      const { data, error } = await this.supabase.functions.invoke(
+        'create-checkout-session',
+        {
+          body: {
+            tier,
+            userId: user.id,
+          },
+        }
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.sessionId) {
+        throw new Error('No se obtuvo session ID');
+      }
+
+      // Redirigir a Stripe Checkout
+      const stripe = window.Stripe(this.getStripePublishableKey());
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (result.error) {
+        throw result.error;
+      }
+    } catch (error) {
+      console.error('❌ Error en checkout:', error);
+      alert('Error al procesar el pago: ' + error.message);
+
+      button.disabled = false;
+      button.textContent = `Comenzar ${tier.charAt(0).toUpperCase() + tier.slice(1)}`;
+    }
+  }
+
+  /**
+   * Cerrar modal
+   */
+  closeModal() {
+    const overlay = document.querySelector('.pricing-modal-overlay');
+    if (overlay) {
+      overlay.remove();
+      document.body.style.overflow = '';
+    }
+  }
+}
+
+// Crear instancia global
+window.pricingModal = new PricingModal();
+
+console.log('✅ PricingModal loaded. Use window.pricingModal.showPricingModal() to open.');

@@ -1,0 +1,973 @@
+{
+  "resources": {
+    "title": "Recursos para el Despertar Filosófico",
+    "description": "Libros, artículos, podcasts y herramientas para profundizar en la filosofía crítica, la ontología de la reconexión y el pensamiento que cuestiona las premisas invisibles"
+  },
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "Being No One: The Self-Model Theory of Subjectivity",
+      "author": "Thomas Metzinger",
+      "year": 2003,
+      "language": "Inglés",
+      "description": "Teoría neurofenomenológica radical: no hay yo, solo el modelo fenomenal del yo generado por el cerebro",
+      "why": "Versión científica del anatta budista. Desmantela la premisa del yo sustancial desde neurociencia",
+      "relatedChapters": ["cap9", "cap14", "cap18"],
+      "available": "https://mitpress.mit.edu/9780262633086/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-002",
+      "title": "The Master and His Emissary",
+      "author": "Iain McGilchrist",
+      "year": 2009,
+      "language": "Inglés (disponible en español: 'El maestro y su emisario')",
+      "description": "Hemisferios cerebrales y civilización: dominio del hemisferio izquierdo y crisis de la modernidad",
+      "why": "Neurocognición de la separación. Por qué pensamos como pensamos",
+      "relatedChapters": ["cap1", "cap6", "cap19"],
+      "available": "https://www.yalebooks.yale.edu/book/9780300245929/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-003",
+      "title": "The Structure of Scientific Revolutions",
+      "author": "Thomas Kuhn",
+      "year": 1962,
+      "language": "Inglés (disponible en español: 'La estructura de las revoluciones científicas')",
+      "description": "Paradigmas científicos y cambio paradigmático. No hay progreso lineal, hay revoluciones",
+      "why": "Fundamento del concepto de paradigma. Cómo cambian las premisas fundamentales",
+      "relatedChapters": ["cap1", "cap2", "cap3"],
+      "available": "https://press.uchicago.edu/ucp/books/book/chicago/S/bo13179781.html",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-004",
+      "title": "Order Out of Chaos",
+      "author": "Ilya Prigogine & Isabelle Stengers",
+      "year": 1984,
+      "language": "Inglés (disponible en español: 'La nueva alianza')",
+      "description": "Termodinámica de sistemas alejados del equilibrio. El tiempo como construcción, no descubrimiento",
+      "why": "Ciencia de la complejidad vs. mecanicismo. El universo crea novedad, no solo se degrada",
+      "relatedChapters": ["cap2", "cap7", "cap12"],
+      "available": "https://www.bantam.com/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-005",
+      "title": "The Tao of Physics",
+      "author": "Fritjof Capra",
+      "year": 1975,
+      "language": "Inglés (disponible en español: 'El tao de la física')",
+      "description": "Paralelismos entre física cuántica y misticismo oriental. No-separabilidad cuántica como metáfora ontológica",
+      "why": "Puente entre ciencia y espiritualidad. La física cuestiona la separación radical",
+      "relatedChapters": ["cap7", "cap20", "cap21"],
+      "available": "https://www.shambhala.com/the-tao-of-physics-2510.html",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-006",
+      "title": "Gödel, Escher, Bach: An Eternal Golden Braid",
+      "author": "Douglas Hofstadter",
+      "year": 1979,
+      "language": "Inglés (disponible en español: 'Gödel, Escher, Bach: un eterno y grácil bucle')",
+      "description": "Exploración de bucles extraños, autorreferencia y emergencia de significado desde sistemas formales",
+      "why": "Pensamiento sobre el pensamiento. Cómo emergen niveles nuevos de realidad",
+      "relatedChapters": ["cap5", "cap10", "cap11"],
+      "available": "https://www.basicbooks.com/titles/douglas-r-hofstadter/godel-escher-bach/9780465026562/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-007",
+      "title": "Sacred Economics: Money, Gift, and Society in the Age of Transition",
+      "author": "Charles Eisenstein",
+      "year": 2011,
+      "language": "Inglés (disponible en español: 'Economía sagrada')",
+      "description": "Crítica de la economía de la escasez y propuesta de economía del don",
+      "why": "Desmantela la premisa de escasez. Economía como relación, no como transacción",
+      "relatedChapters": ["cap3", "cap6", "cap22"],
+      "available": "https://charleseisenstein.org/books/sacred-economics/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-008",
+      "title": "Debt: The First 5,000 Years",
+      "author": "David Graeber",
+      "year": 2011,
+      "language": "Inglés (disponible en español: 'En deuda: Una historia alternativa de la economía')",
+      "description": "Historia antropológica de la deuda. Mito del trueque y realidad del crédito comunitario",
+      "why": "Genealogía de la premisa económica. El sistema actual no es natural, es construido",
+      "relatedChapters": ["cap2", "cap3", "cap22"],
+      "available": "https://www.mhpbooks.com/books/debt/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-009",
+      "title": "The Myth of the Machine",
+      "author": "Lewis Mumford",
+      "year": 1967,
+      "language": "Inglés",
+      "description": "Crítica de la tecnología como fin en sí misma. La 'megamáquina' que subsume lo humano",
+      "why": "Genealogía de la premisa del progreso tecnológico. Tecnología como sistema de poder",
+      "relatedChapters": ["cap1", "cap2", "cap19"],
+      "available": "https://www.harcourt.com/",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-010",
+      "title": "The Web of Life",
+      "author": "Fritjof Capra",
+      "year": 1996,
+      "language": "Inglés (disponible en español: 'La trama de la vida')",
+      "description": "Síntesis de teoría de sistemas, cibernética y ecología. Pensamiento relacional vs. mecanicista",
+      "why": "Marco científico de la interconexión. La vida como red, no como máquina",
+      "relatedChapters": ["cap7", "cap8", "cap12"],
+      "available": "https://www.penguinrandomhouse.com/books/325503/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-011",
+      "title": "Process and Reality",
+      "author": "Alfred North Whitehead",
+      "year": 1929,
+      "language": "Inglés (disponible en español: 'Proceso y realidad')",
+      "description": "Filosofía del proceso: el devenir es más fundamental que el ser. Ontología relacional radical",
+      "why": "Alternativa a la ontología sustancialista. Realidad como proceso, no como cosa",
+      "relatedChapters": ["cap7", "cap12", "cap20"],
+      "available": "https://www.simonandschuster.com/books/Process-and-Reality/Alfred-North-Whitehead/",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-012",
+      "title": "The Society of Mind",
+      "author": "Marvin Minsky",
+      "year": 1985,
+      "language": "Inglés (disponible en español: 'La sociedad de la mente')",
+      "description": "La mente como sociedad de agentes simples. No hay yo central, hay proceso distribuido",
+      "why": "Modelo de consciencia emergente. Desmantela el yo desde IA",
+      "relatedChapters": ["cap9", "cap14"],
+      "available": "https://www.simonandschuster.com/books/The-Society-of-Mind/Marvin-Minsky/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-013",
+      "title": "Being and Time",
+      "author": "Martin Heidegger",
+      "year": 1927,
+      "language": "Alemán (disponible en español: 'Ser y tiempo')",
+      "description": "Ontología fundamental. Dasein (ser-ahí) como existencia arrojada en el mundo",
+      "why": "Crítica de la ontología cartesiana. Existencia antes que esencia",
+      "relatedChapters": ["cap5", "cap8", "cap14"],
+      "available": "https://sunypress.edu/Books/B/Being-and-Time",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-014",
+      "title": "The Spell of the Sensuous",
+      "author": "David Abram",
+      "year": 1996,
+      "language": "Inglés (disponible en español: 'La magia de los sentidos')",
+      "description": "Fenomenología de la percepción aplicada a la relación con la naturaleza. Lenguaje abstracto y separación",
+      "why": "Filosofía encarnada de la reconexión. Percepción como participación",
+      "relatedChapters": ["cap1", "cap7", "cap20"],
+      "available": "https://www.penguinrandomhouse.com/books/319/the-spell-of-the-sensuous-by-david-abram/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-015",
+      "title": "Reasons and Persons",
+      "author": "Derek Parfit",
+      "year": 1984,
+      "language": "Inglés",
+      "description": "Identidad personal como ilusión. Lo que importa no es identidad sino continuidad psicológica",
+      "why": "Filosofía analítica desmantelando el yo sustancial. Ética sin yo",
+      "relatedChapters": ["cap9", "cap14", "cap18"],
+      "available": "https://global.oup.com/academic/product/reasons-and-persons-9780198249085",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-016",
+      "title": "Small is Beautiful: Economics as if People Mattered",
+      "author": "E.F. Schumacher",
+      "year": 1973,
+      "language": "Inglés (disponible en español: 'Lo pequeño es hermoso')",
+      "description": "Crítica del gigantismo económico. Economía budista y tecnología intermedia",
+      "why": "Alternativa a la premisa del crecimiento. Suficiencia como virtud",
+      "relatedChapters": ["cap3", "cap6", "cap22"],
+      "available": "https://www.harpercollins.com/products/small-is-beautiful-e-f-schumacher",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-017",
+      "title": "The Ego Tunnel",
+      "author": "Thomas Metzinger",
+      "year": 2009,
+      "language": "Inglés (disponible en español: 'El túnel del yo')",
+      "description": "Versión popular de Being No One. El yo como ilusión funcional necesaria",
+      "why": "Introducción accesible a la teoría del modelo fenomenal del yo",
+      "relatedChapters": ["cap9", "cap14"],
+      "available": "https://www.basicbooks.com/titles/thomas-metzinger/the-ego-tunnel/9780465020690/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-018",
+      "title": "Entangled Life: How Fungi Make Our Worlds",
+      "author": "Merlin Sheldrake",
+      "year": 2020,
+      "language": "Inglés (disponible en español: 'La red oculta de la vida')",
+      "description": "Hongos como modelo de vida interconectada. Redes micorrízicas y simbiosis",
+      "why": "Biología de la interconexión. La vida como red cooperativa",
+      "relatedChapters": ["cap7", "cap8", "cap12"],
+      "available": "https://www.penguinrandomhouse.com/books/610191/entangled-life-by-merlin-sheldrake/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-019",
+      "title": "The Denial of Death",
+      "author": "Ernest Becker",
+      "year": 1973,
+      "language": "Inglés (disponible en español: 'La negación de la muerte')",
+      "description": "Terror a la mortalidad como motor de la cultura y proyectos heroicos",
+      "why": "Psicología profunda de por qué necesitamos premisas consoladoras",
+      "relatedChapters": ["cap9", "cap13", "cap18"],
+      "available": "https://www.simonandschuster.com/books/The-Denial-of-Death/Ernest-Becker/",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-020",
+      "title": "Propaganda",
+      "author": "Edward Bernays",
+      "year": 1928,
+      "language": "Inglés (disponible en español: 'Propaganda')",
+      "description": "Manual de ingeniería del consentimiento. Cómo las élites manipulan opinión pública",
+      "why": "Genealogía de cómo se instalan premisas invisibles. Manufactura del consenso",
+      "relatedChapters": ["cap1", "cap2", "cap4"],
+      "available": "https://www.ig-publishing.com/titles/propaganda",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-021",
+      "title": "Manufacturing Consent: The Political Economy of the Mass Media",
+      "author": "Edward S. Herman & Noam Chomsky",
+      "year": 1988,
+      "language": "Inglés (disponible en español: 'Los guardianes de la libertad')",
+      "description": "Modelo de propaganda en democracias. Cinco filtros que controlan qué se dice y qué se calla",
+      "why": "Arquitectura institucional de cómo se mantienen premisas hegemónicas",
+      "relatedChapters": ["cap1", "cap4", "cap24"],
+      "available": "https://www.penguinrandomhouse.com/books/45280/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-022",
+      "title": "Infinite Jest",
+      "author": "David Foster Wallace",
+      "year": 1996,
+      "language": "Inglés",
+      "description": "Novela sobre adicción, entretenimiento y búsqueda de sentido en cultura capitalista tardía",
+      "why": "Ficción que diagnostica crisis existencial de la modernidad. Arte como filosofía",
+      "relatedChapters": ["cap4", "cap13", "cap21"],
+      "available": "https://www.hachettebookgroup.com/titles/david-foster-wallace/infinite-jest/9780316066525/",
+      "type": "complementario"
+    },
+    {
+      "id": "book-023",
+      "title": "Waking Up: A Guide to Spirituality Without Religion",
+      "author": "Sam Harris",
+      "year": 2014,
+      "language": "Inglés (disponible en español: 'Despertar')",
+      "description": "Neurociencia, meditación y la ilusión del yo desde perspectiva secular",
+      "why": "Puente entre investigación contemplativa y ciencia. Experiencia directa del no-yo",
+      "relatedChapters": ["cap9", "cap14", "cap21"],
+      "available": "https://www.simonandschuster.com/books/Waking-Up/Sam-Harris/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-024",
+      "title": "The Embodied Mind: Cognitive Science and Human Experience",
+      "author": "Francisco Varela, Evan Thompson & Eleanor Rosch",
+      "year": 1991,
+      "language": "Inglés",
+      "description": "Cognición enactiva: la mente emerge de la interacción cuerpo-mundo, no del cerebro aislado",
+      "why": "Alternativa científica al dualismo cartesiano. Cognición como acción encarnada",
+      "relatedChapters": ["cap5", "cap7", "cap11", "cap20"],
+      "available": "https://mitpress.mit.edu/9780262529365/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-025",
+      "title": "The Collapse of Complex Societies",
+      "author": "Joseph Tainter",
+      "year": 1988,
+      "language": "Inglés",
+      "description": "Arqueología del colapso. Rendimientos decrecientes de la complejidad social",
+      "why": "Por qué las sociedades colapsan cuando mantienen premisas insostenibles",
+      "relatedChapters": ["cap3", "cap4", "cap23"],
+      "available": "https://www.cambridge.org/core/books/collapse-of-complex-societies/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-026",
+      "title": "The Technological Society",
+      "author": "Jacques Ellul",
+      "year": 1954,
+      "language": "Francés (disponible en español: 'La edad de la técnica')",
+      "description": "Crítica de la técnica como sistema autónomo que subsume valores humanos",
+      "why": "Genealogía de la premisa del progreso técnico como inevitable",
+      "relatedChapters": ["cap1", "cap4", "cap19"],
+      "available": "https://www.penguinrandomhouse.com/books/",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-027",
+      "title": "The More Beautiful World Our Hearts Know Is Possible",
+      "author": "Charles Eisenstein",
+      "year": 2013,
+      "language": "Inglés (disponible en español: 'El mundo más hermoso que nuestros corazones saben que es posible')",
+      "description": "Narrativa de separación vs. narrativa de interser. Activismo desde nuevas premisas",
+      "why": "Visión positiva de alternativas. Del cinismo a la acción coherente",
+      "relatedChapters": ["cap17", "cap21", "cap22", "cap24"],
+      "available": "https://charleseisenstein.org/books/the-more-beautiful-world-our-hearts-know-is-possible/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-028",
+      "title": "The Book: On the Taboo Against Knowing Who You Are",
+      "author": "Alan Watts",
+      "year": 1966,
+      "language": "Inglés (disponible en español: 'El libro del tabú')",
+      "description": "Divulgación accesible de vedanta y budismo zen. El yo separado como ilusión cultural",
+      "why": "Introducción occidental a la ontología de no-separación",
+      "relatedChapters": ["cap7", "cap9", "cap18", "cap20"],
+      "available": "https://www.penguinrandomhouse.com/books/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-029",
+      "title": "Steps to an Ecology of Mind",
+      "author": "Gregory Bateson",
+      "year": 1972,
+      "language": "Inglés (disponible en español: 'Pasos hacia una ecología de la mente')",
+      "description": "Cibernética, antropología y epistemología sistémica. Mente como patrón que conecta",
+      "why": "Fundamento de pensamiento sistémico. Relación vs. sustancia",
+      "relatedChapters": ["cap7", "cap10", "cap12", "cap20"],
+      "available": "https://press.uchicago.edu/ucp/books/book/chicago/S/bo3620295.html",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-030",
+      "title": "The Origins of Totalitarianism",
+      "author": "Hannah Arendt",
+      "year": 1951,
+      "language": "Inglés (disponible en español: 'Los orígenes del totalitarismo')",
+      "description": "Análisis de cómo las masas atomizadas buscan certezas totales en ideologías",
+      "why": "Por qué la soledad y separación generan vulnerabilidad a premisas totalizantes",
+      "relatedChapters": ["cap4", "cap13", "cap23"],
+      "available": "https://www.penguinrandomhouse.com/books/",
+      "type": "avanzado"
+    }
+  ],
+
+  "articles": [
+    {
+      "id": "article-001",
+      "title": "What Is It Like to Be a Bat?",
+      "author": "Thomas Nagel",
+      "year": 1974,
+      "journal": "Philosophical Review",
+      "description": "Argumento de que la experiencia subjetiva no es reducible a hechos físicos",
+      "why": "Artículo seminal sobre el problema difícil de la consciencia y los límites del materialismo",
+      "relatedChapters": ["cap5", "cap11"],
+      "available": "https://www.sas.upenn.edu/~cavitch/pdf-library/Nagel_Bat.pdf",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-002",
+      "title": "The Tragedy of the Commons",
+      "author": "Garrett Hardin",
+      "year": 1968,
+      "journal": "Science",
+      "description": "Artículo influyente sobre la degradación de recursos comunes. Usado para justificar privatización",
+      "why": "Ejemplo de premisa que se volvió invisible: los comunes 'siempre' fallan (falso empíricamente)",
+      "relatedChapters": ["cap3", "cap6"],
+      "available": "https://doi.org/10.1126/science.162.3859.1243",
+      "type": "crítico"
+    },
+    {
+      "id": "article-003",
+      "title": "Governing the Commons",
+      "author": "Elinor Ostrom",
+      "year": 1990,
+      "journal": "Cambridge University Press",
+      "description": "Refutación empírica de Hardin: los comunes funcionan con gobernanza apropiada (Premio Nobel)",
+      "why": "Desmantela premisa de que solo propiedad privada o estatal funcionan",
+      "relatedChapters": ["cap3", "cap22"],
+      "available": "https://www.cambridge.org/core/books/governing-the-commons/",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-004",
+      "title": "Planetary Boundaries",
+      "author": "Johan Rockström et al.",
+      "year": 2009,
+      "journal": "Nature",
+      "description": "Definición de los 9 límites planetarios que no deberíamos traspasar",
+      "why": "Evidencia científica contra la premisa del crecimiento infinito",
+      "relatedChapters": ["cap3", "cap6"],
+      "available": "https://doi.org/10.1038/461472a",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-005",
+      "title": "Hierarchy Theory: The Challenge of Complex Systems",
+      "author": "Howard T. Pattee",
+      "year": 1973,
+      "journal": "George Braziller",
+      "description": "Teoría de niveles de organización y emergencia de complejidad",
+      "why": "Marco para entender cómo emergen propiedades nuevas sin reduccionismo",
+      "relatedChapters": ["cap10", "cap12"],
+      "available": "https://philpapers.org/rec/PATHTT",
+      "type": "avanzado"
+    },
+    {
+      "id": "article-006",
+      "title": "Attention and the Phenomenal Character of Perception",
+      "author": "Ned Block",
+      "year": 1995,
+      "journal": "Behavioral and Brain Sciences",
+      "description": "Distinción entre consciencia de acceso y consciencia fenomenológica",
+      "why": "Complejiza la pregunta '¿qué es consciencia?' Hay múltiples tipos",
+      "relatedChapters": ["cap5", "cap11"],
+      "available": "https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/",
+      "type": "avanzado"
+    },
+    {
+      "id": "article-007",
+      "title": "The Extended Mind",
+      "author": "Andy Clark & David Chalmers",
+      "year": 1998,
+      "journal": "Analysis",
+      "description": "La cognición se extiende más allá del cerebro hacia herramientas y entorno",
+      "why": "Desmantela premisa del yo como contenido dentro del cráneo",
+      "relatedChapters": ["cap7", "cap11", "cap19"],
+      "available": "https://doi.org/10.1093/analys/58.1.7",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-008",
+      "title": "The Politics of the Anthropocene",
+      "author": "Clive Hamilton",
+      "year": 2015,
+      "journal": "Geoforum",
+      "description": "Implicaciones políticas de vivir en época geológica definida por humanos",
+      "why": "El Antropoceno como crisis de premisas: separación humano-naturaleza ya no funciona",
+      "relatedChapters": ["cap3", "cap4", "cap23"],
+      "available": "https://doi.org/10.1016/j.geoforum.2014.11.021",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-009",
+      "title": "Buddhist Economics",
+      "author": "E.F. Schumacher",
+      "year": 1966,
+      "journal": "Resurgence",
+      "description": "Economía centrada en bienestar y suficiencia, no en maximización",
+      "why": "Alternativa budista a premisas económicas occidentales",
+      "relatedChapters": ["cap3", "cap6", "cap22"],
+      "available": "https://centerforneweconomics.org/publications/buddhist-economics/",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-010",
+      "title": "Ecology and Revolutionary Thought",
+      "author": "Murray Bookchin",
+      "year": 1965,
+      "journal": "Anarchy",
+      "description": "Ecología social: jerarquía humano-humano genera dominación humano-naturaleza",
+      "why": "Conecta premisas de separación, jerarquía y dominación ecológica",
+      "relatedChapters": ["cap4", "cap23", "cap24"],
+      "available": "https://theanarchistlibrary.org/library/murray-bookchin-ecology-and-revolutionary-thought",
+      "type": "avanzado"
+    }
+  ],
+
+  "documentaries": [
+    {
+      "id": "doc-001",
+      "title": "The Century of the Self",
+      "director": "Adam Curtis",
+      "year": 2002,
+      "duration": "240 min (4 episodios)",
+      "description": "Historia de cómo las teorías freudianas se usaron para manipular masas a través de consumismo",
+      "why": "Genealogía visual de cómo se instaló la premisa del individuo consumidor",
+      "relatedChapters": ["cap1", "cap2", "cap4"],
+      "available": "https://www.youtube.com/watch?v=DnPmg0R1M04",
+      "language": "Inglés (subtítulos disponibles)"
+    },
+    {
+      "id": "doc-002",
+      "title": "HyperNormalisation",
+      "director": "Adam Curtis",
+      "year": 2016,
+      "duration": "166 min",
+      "description": "Cómo aceptamos una realidad falsa simplificada porque la complejidad es demasiado abrumadora",
+      "why": "Diagnóstico de por qué mantenemos premisas obsoletas: la alternativa da vértigo",
+      "relatedChapters": ["cap4", "cap13", "cap23"],
+      "available": "https://www.bbc.co.uk/iplayer/episode/p04b183c/",
+      "language": "Inglés (subtítulos disponibles)"
+    },
+    {
+      "id": "doc-003",
+      "title": "Manufactured Landscapes",
+      "director": "Jennifer Baichwal",
+      "year": 2006,
+      "duration": "86 min",
+      "description": "Fotografía de Edward Burtynsky sobre la transformación industrial masiva del planeta",
+      "why": "Visualización del impacto de premisas extractivistas. Arte como denuncia",
+      "relatedChapters": ["cap3", "cap4"],
+      "available": "https://www.zeitgeistfilms.com/film/manufacturedlandscapes",
+      "language": "Inglés"
+    },
+    {
+      "id": "doc-004",
+      "title": "My Octopus Teacher",
+      "director": "Pippa Ehrlich & James Reed",
+      "year": 2020,
+      "duration": "85 min",
+      "description": "Relación entre humano y pulpo que desdibuja fronteras de inteligencia y empatía",
+      "why": "Experiencia de reconexión con naturaleza no-humana. Desmantela antropocentrismo",
+      "relatedChapters": ["cap7", "cap8", "cap20"],
+      "available": "https://www.netflix.com/title/81045007",
+      "language": "Inglés (subtítulos múltiples)"
+    },
+    {
+      "id": "doc-005",
+      "title": "Fantastic Fungi",
+      "director": "Louie Schwartzberg",
+      "year": 2019,
+      "duration": "81 min",
+      "description": "Redes micorrízicas, consciencia fúngica e interconexión subterránea",
+      "why": "Biología de la interconexión filmada bellamente. Alternativa visual al individualismo",
+      "relatedChapters": ["cap7", "cap8", "cap12"],
+      "available": "https://www.netflix.com/title/81183477",
+      "language": "Inglés (subtítulos múltiples)"
+    },
+    {
+      "id": "doc-006",
+      "title": "I Am",
+      "director": "Tom Shadyac",
+      "year": 2010,
+      "duration": "76 min",
+      "description": "Director de Hollywood busca respuestas sobre qué está mal con el mundo y qué podemos hacer",
+      "why": "Accesible introducción a premisas de separación, cooperación vs. competencia",
+      "relatedChapters": ["cap3", "cap6", "cap21"],
+      "available": "https://www.youtube.com/watch?v=T7sH8-AYbS4",
+      "language": "Inglés (subtítulos múltiples)"
+    },
+    {
+      "id": "doc-007",
+      "title": "The Social Dilemma",
+      "director": "Jeff Orlowski",
+      "year": 2020,
+      "duration": "94 min",
+      "description": "Tecnólogos de Silicon Valley explican cómo redes sociales manipulan atención y premisas",
+      "why": "Cómo la tecnología actual instala premisas sin que seamos conscientes",
+      "relatedChapters": ["cap1", "cap4", "cap19"],
+      "available": "https://www.netflix.com/title/81254224",
+      "language": "Inglés (subtítulos múltiples)"
+    },
+    {
+      "id": "doc-008",
+      "title": "Samadhi: Maya, the Illusion of the Self",
+      "director": "Daniel Schmidt",
+      "year": 2018,
+      "duration": "Part 1: 62 min, Part 2: 71 min",
+      "description": "Exploración contemplativa de la ilusión del yo separado desde tradiciones místicas",
+      "why": "Visualización poética de ontología de no-separación",
+      "relatedChapters": ["cap9", "cap14", "cap18", "cap21"],
+      "available": "https://www.youtube.com/watch?v=Bw9zSMsKcwk",
+      "language": "Inglés (subtítulos múltiples)"
+    }
+  ],
+
+  "podcasts": [
+    {
+      "id": "podcast-001",
+      "name": "Philosophize This!",
+      "host": "Stephen West",
+      "description": "Historia de la filosofía occidental desde los presocráticos hasta hoy, de forma accesible",
+      "why": "Contexto histórico de las premisas filosóficas. Cómo surgieron las ideas dominantes",
+      "website": "https://www.philosophizethis.org/",
+      "relatedChapters": ["cap1", "cap2", "cap5"],
+      "language": "Inglés",
+      "episodes_recommended": ["Ep. 135-138: Foucault", "Ep. 151-154: Deleuze"]
+    },
+    {
+      "id": "podcast-002",
+      "name": "Mindscape",
+      "host": "Sean Carroll",
+      "description": "Física, filosofía y complejidad con físico de Caltech",
+      "why": "Puente entre física fundamental y filosofía. Emergencia, tiempo, consciencia",
+      "website": "https://www.preposterousuniverse.com/podcast/",
+      "relatedChapters": ["cap5", "cap7", "cap10"],
+      "language": "Inglés",
+      "episodes_recommended": ["#1: Consciousness, Emergence, Physics", "#86: Complexity and Emergence"]
+    },
+    {
+      "id": "podcast-003",
+      "name": "Making Sense",
+      "host": "Sam Harris",
+      "description": "Filosofía, neurociencia, meditación y civilización con expertos de primer nivel",
+      "why": "Conversaciones profundas sobre consciencia, yo e investigación contemplativa",
+      "website": "https://samharris.org/podcasts",
+      "relatedChapters": ["cap9", "cap11", "cap14"],
+      "language": "Inglés",
+      "episodes_recommended": ["#113: Free Will Revisited", "#233: The Illusory Self"]
+    },
+    {
+      "id": "podcast-004",
+      "name": "The Emerald",
+      "host": "Josh Schrei",
+      "description": "Mitología, ecología y las historias que sostienen el mundo",
+      "why": "Exploración de narrativas y premisas culturales profundas",
+      "website": "https://www.theemeraldpodcast.com/",
+      "relatedChapters": ["cap1", "cap2", "cap15"],
+      "language": "Inglés",
+      "episodes_recommended": ["The Worlds We Live In", "The Myth of Progress"]
+    },
+    {
+      "id": "podcast-005",
+      "name": "Upstream",
+      "host": "Della Duncan",
+      "description": "Conversaciones sobre economía, ecología y transformación sistémica",
+      "why": "Explora premisas económicas y alternativas post-capitalistas",
+      "website": "https://www.upstreampodcast.org/",
+      "relatedChapters": ["cap3", "cap22", "cap23"],
+      "language": "Inglés",
+      "episodes_recommended": ["The Commons", "Degrowth", "Sacred Economics"]
+    },
+    {
+      "id": "podcast-006",
+      "name": "Waking Up Conversations",
+      "host": "Sam Harris",
+      "description": "Series sobre consciencia, meditación y filosofía de la mente",
+      "why": "Profundiza en la práctica contemplativa del no-yo",
+      "website": "https://www.wakingup.com/",
+      "relatedChapters": ["cap9", "cap14", "cap21"],
+      "language": "Inglés",
+      "episodes_recommended": ["Conversations con Anil Seth", "Conversations con Thomas Metzinger"]
+    },
+    {
+      "id": "podcast-007",
+      "name": "Rebel Wisdom",
+      "host": "David Fuller",
+      "description": "Sensemaking en tiempos complejos. Colapso de narrativas y construcción de nuevas",
+      "why": "Navega la crisis de premisas en tiempo real. Metacrisis contemporánea",
+      "website": "https://rebelwisdom.co.uk/",
+      "relatedChapters": ["cap4", "cap13", "cap23", "cap24"],
+      "language": "Inglés",
+      "episodes_recommended": ["The Metacrisis", "Paradigm Shift"]
+    },
+    {
+      "id": "podcast-008",
+      "name": "Things That Matter",
+      "host": "Joshua Fields Millburn & Ryan Nicodemus",
+      "description": "Minimalismo, suficiencia y vida con menos",
+      "why": "Práctica cotidiana de cuestionar la premisa del consumo",
+      "website": "https://www.theminimalists.com/podcast/",
+      "relatedChapters": ["cap17", "cap22"],
+      "language": "Inglés",
+      "episodes_recommended": ["Ep. 301: Enough", "Ep. 345: Consumerism"]
+    }
+  ],
+
+  "related_books_in_collection": [
+    {
+      "book_id": "codigo-despertar",
+      "title": "El Código del Despertar",
+      "relationship": "Explora la consciencia desde neurociencia y contemplación. Complementario a la ontología filosófica",
+      "why_read": "Práctica meditativa para experimentar las premisas, no solo pensarlas",
+      "relatedChapters": ["cap5", "cap9", "cap14", "cap21"]
+    },
+    {
+      "book_id": "tierra-que-despierta",
+      "title": "La Tierra que Despierta",
+      "relationship": "Ecología profunda como aplicación de ontología de la reconexión a la naturaleza",
+      "why_read": "Pone en práctica la crítica de la separación humano-naturaleza",
+      "relatedChapters": ["cap7", "cap8", "cap20"]
+    },
+    {
+      "book_id": "manifiesto",
+      "title": "Manifiesto para un Mundo en Transición",
+      "relationship": "Visión política de transformación desde nuevas premisas",
+      "why_read": "Traduce crítica filosófica en propuesta política concreta",
+      "relatedChapters": ["cap22", "cap23", "cap24"]
+    },
+    {
+      "book_id": "manual-transicion",
+      "title": "Manual Práctico de Transición",
+      "relationship": "Herramientas prácticas para vivir desde premisas alternativas",
+      "why_read": "Del pensamiento crítico a la acción coherente",
+      "relatedChapters": ["cap17", "cap19", "cap22"]
+    },
+    {
+      "book_id": "practicas-radicales",
+      "title": "Prácticas Radicales de Transformación",
+      "relationship": "Ejercicios para deconstruir y reconstruir premisas personales",
+      "why_read": "Trabajo experiencial con las premisas invisibles",
+      "relatedChapters": ["cap13", "cap15", "cap16", "cap19"]
+    }
+  ],
+
+  "organizations": [
+    {
+      "id": "org-001",
+      "name": "Center for Process Studies",
+      "type": "Centro de investigación",
+      "description": "Estudio de filosofía del proceso de Whitehead y aplicaciones contemporáneas",
+      "website": "https://www.ctr4process.org/",
+      "focus": ["filosofía del proceso", "ontología relacional", "teología del proceso"],
+      "relatedChapters": ["cap7", "cap12", "cap20"]
+    },
+    {
+      "id": "org-002",
+      "name": "Santa Fe Institute",
+      "type": "Instituto de investigación",
+      "description": "Ciencia de sistemas complejos y emergencia",
+      "website": "https://www.santafe.edu/",
+      "focus": ["complejidad", "emergencia", "sistemas adaptativos"],
+      "relatedChapters": ["cap10", "cap12"]
+    },
+    {
+      "id": "org-003",
+      "name": "P2P Foundation",
+      "type": "Fundación",
+      "description": "Investigación sobre producción entre pares, comunes y economías colaborativas",
+      "website": "https://p2pfoundation.net/",
+      "focus": ["comunes", "P2P", "economía colaborativa"],
+      "relatedChapters": ["cap22", "cap23"]
+    },
+    {
+      "id": "org-004",
+      "name": "Eudaimonia Institute",
+      "type": "Think tank",
+      "description": "Crítica del capitalismo y propuestas de futuros alternativos",
+      "website": "https://eand.co/",
+      "focus": ["crítica sistémica", "colapso", "futuros post-capitalistas"],
+      "relatedChapters": ["cap3", "cap4", "cap23"]
+    },
+    {
+      "id": "org-005",
+      "name": "Post Growth Institute",
+      "type": "Think tank",
+      "description": "Investigación y divulgación sobre economías post-crecimiento",
+      "website": "https://postgrowth.org/",
+      "focus": ["decrecimiento", "economías estacionarias", "suficiencia"],
+      "relatedChapters": ["cap3", "cap22", "cap24"]
+    },
+    {
+      "id": "org-006",
+      "name": "The Consilience Project",
+      "type": "Instituto de investigación",
+      "description": "Sensemaking global. Análisis de crisis civilizatoria y transformación sistémica",
+      "website": "https://consilienceproject.org/",
+      "focus": ["metacrisis", "sistemas complejos", "gobernanza"],
+      "relatedChapters": ["cap4", "cap23", "cap24"]
+    }
+  ],
+
+  "tools": [
+    {
+      "id": "tool-001",
+      "name": "Stanford Encyclopedia of Philosophy",
+      "type": "Recurso online",
+      "description": "Enciclopedia académica peer-reviewed sobre todos los temas filosóficos",
+      "website": "https://plato.stanford.edu/",
+      "use": "Profundizar en filosofía de la mente, ontología, epistemología",
+      "relatedChapters": ["cap5", "cap7", "cap9", "cap11"]
+    },
+    {
+      "id": "tool-002",
+      "name": "PhilPapers",
+      "type": "Base de datos",
+      "description": "Base de datos de artículos filosóficos académicos",
+      "website": "https://philpapers.org/",
+      "use": "Investigación académica en filosofía contemporánea",
+      "relatedChapters": ["cap5", "cap7", "cap11"]
+    },
+    {
+      "id": "tool-003",
+      "name": "Notion / Obsidian",
+      "type": "Herramienta de pensamiento",
+      "description": "Sistemas de notas interconectadas para mapear conceptos filosóficos",
+      "website": "https://www.notion.so / https://obsidian.md/",
+      "use": "Crear mapa conceptual de premisas y alternativas",
+      "relatedChapters": ["cap1", "cap16"]
+    },
+    {
+      "id": "tool-004",
+      "name": "Claude / ChatGPT",
+      "type": "IA conversacional",
+      "description": "Diálogo socrático con IA para examinar premisas",
+      "website": "https://claude.ai / https://chatgpt.com",
+      "use": "Usar el modo 'Guía Socrático' de este libro para cuestionar supuestos",
+      "relatedChapters": ["cap16", "cap19"]
+    },
+    {
+      "id": "tool-005",
+      "name": "Kumu.io",
+      "type": "Visualización de sistemas",
+      "description": "Herramienta para mapear relaciones sistémicas y cascadas de consecuencias",
+      "website": "https://kumu.io/",
+      "use": "Visualizar cómo premisas generan arquitecturas institucionales",
+      "relatedChapters": ["cap4", "cap16", "cap23"]
+    },
+    {
+      "id": "tool-006",
+      "name": "Insight Timer",
+      "type": "App de meditación",
+      "description": "Miles de meditaciones guiadas, incluyendo investigación del yo",
+      "website": "https://insighttimer.com/",
+      "use": "Prácticas contemplativas de no-yo y no-separación",
+      "relatedChapters": ["cap9", "cap14", "cap21"]
+    }
+  ],
+
+  "practices": [
+    {
+      "id": "practice-001",
+      "name": "Diario de Premisas Invisibles",
+      "type": "Escritura contemplativa",
+      "description": "Registrar diariamente decisiones y examinar qué premisas operaron",
+      "duration": "15-20 min/día, 30 días",
+      "difficulty": "Principiante",
+      "benefits": "Hace visible el agua en que nadamos. Desarrolla metacognición",
+      "relatedChapters": ["cap16"],
+      "guide": "Ver Capítulo 16 con prompts diarios"
+    },
+    {
+      "id": "practice-002",
+      "name": "Diálogo Socrático en Pareja",
+      "type": "Práctica dialógica",
+      "description": "Uno pregunta, otro responde, hasta llegar a premisas fundamentales no cuestionadas",
+      "duration": "45-60 minutos",
+      "difficulty": "Intermedio",
+      "benefits": "Revela premisas mediante cuestionamiento sistemático",
+      "relatedChapters": ["cap16"],
+      "guide": "Ver Capítulo 16 con protocolo de preguntas"
+    },
+    {
+      "id": "practice-003",
+      "name": "Ejercicio del Alienígena",
+      "type": "Imaginación filosófica",
+      "description": "Imagina ser antropólogo alienígena observando la cultura humana. ¿Qué premisas notarías?",
+      "duration": "30 minutos",
+      "difficulty": "Principiante",
+      "benefits": "Distancia crítica de las propias premisas culturales",
+      "relatedChapters": ["cap1", "cap15"],
+      "guide": "Ver Capítulo 15"
+    },
+    {
+      "id": "practice-004",
+      "name": "Mapeo de Consecuencias",
+      "type": "Análisis sistémico",
+      "description": "Tomar una premisa (ej: escasez) y mapear todas sus consecuencias en cascada",
+      "duration": "60-90 minutos",
+      "difficulty": "Intermedio",
+      "benefits": "Ve la coherencia interna del paradigma y puntos de apalancamiento para cambio",
+      "relatedChapters": ["cap3", "cap4", "cap16"],
+      "guide": "Plantilla en Capítulo 16"
+    },
+    {
+      "id": "practice-005",
+      "name": "Ritual de Desprogramación",
+      "type": "Práctica experiencial",
+      "description": "Ritual semanal de soltar una creencia limitante y experimentar con alternativa",
+      "duration": "1-2 horas/semana",
+      "difficulty": "Avanzado",
+      "benefits": "Transformación experiencial, no solo intelectual, de premisas",
+      "relatedChapters": ["cap15", "cap17"],
+      "guide": "Ver Capítulo 17 con estructura de ritual"
+    },
+    {
+      "id": "practice-006",
+      "name": "Meditación de Deconstrucción del Yo",
+      "type": "Práctica contemplativa",
+      "description": "Indagación sistemática: '¿Quién está experimentando esto?' hasta ver la ausencia de yo fijo",
+      "duration": "20-45 minutos",
+      "difficulty": "Intermedio",
+      "benefits": "Experiencia directa del no-yo. Libera de identificación rígida",
+      "relatedChapters": ["cap9", "cap14", "cap18", "cap21"],
+      "guide": "Ver ejercicios interactivos en capítulos mencionados"
+    },
+    {
+      "id": "practice-007",
+      "name": "Experimento de Vida Alternativa",
+      "type": "Experimento existencial",
+      "description": "Vivir una semana desde premisas alternativas (abundancia, interser) y documentar cambios",
+      "duration": "1 semana completa",
+      "difficulty": "Avanzado",
+      "benefits": "Prueba empírica de que premisas diferentes generan realidades diferentes",
+      "relatedChapters": ["cap17", "cap19", "cap22"],
+      "guide": "Protocolo completo en Capítulo 19"
+    },
+    {
+      "id": "practice-008",
+      "name": "Círculo de Premisas",
+      "type": "Práctica grupal",
+      "description": "Grupo de 4-8 personas se reúne regularmente para examinar premisas colectivas",
+      "duration": "2-3 horas cada 2 semanas",
+      "difficulty": "Intermedio",
+      "benefits": "Apoyo comunitario para transformación. Ver premisas desde múltiples perspectivas",
+      "relatedChapters": ["cap16", "cap17", "cap24"],
+      "guide": "Estructura y facilitación en materiales complementarios"
+    }
+  ],
+
+  "downloadable_guides": [
+    {
+      "id": "guide-001",
+      "title": "Guía de 30 Días: Detectar Premisas Invisibles",
+      "description": "Programa estructurado con prompts diarios para identificar premisas operantes",
+      "format": "PDF",
+      "pages": 15,
+      "relatedChapters": ["cap16"],
+      "download": "Disponible en www/books/filosofia-nuevo-ser/assets/guia-30-dias-premisas.pdf"
+    },
+    {
+      "id": "guide-002",
+      "title": "Protocolo de Diálogo Socrático",
+      "description": "Guía paso a paso para facilitar cuestionamiento socrático en pareja o grupo",
+      "format": "PDF",
+      "pages": 8,
+      "relatedChapters": ["cap16"],
+      "download": "Disponible en www/books/filosofia-nuevo-ser/assets/dialogo-socratico.pdf"
+    },
+    {
+      "id": "guide-003",
+      "title": "Mapa de las Cinco Premisas y sus Alternativas",
+      "description": "Diagrama visual de las cinco premisas dominantes y ontologías alternativas",
+      "format": "PDF",
+      "pages": 2,
+      "relatedChapters": ["cap3", "cap20"],
+      "download": "Disponible en www/books/filosofia-nuevo-ser/assets/mapa-premisas.pdf"
+    },
+    {
+      "id": "guide-004",
+      "title": "Plantilla: Análisis de Consecuencias Sistémicas",
+      "description": "Herramienta para mapear cómo una premisa genera efectos en cascada",
+      "format": "PDF",
+      "pages": 4,
+      "relatedChapters": ["cap4", "cap16"],
+      "download": "Disponible en www/books/filosofia-nuevo-ser/assets/plantilla-consecuencias.pdf"
+    },
+    {
+      "id": "guide-005",
+      "title": "Guía de Facilitación: Círculos de Premisas",
+      "description": "Manual completo para facilitar grupos de exploración de premisas",
+      "format": "PDF",
+      "pages": 20,
+      "relatedChapters": ["cap16", "cap17", "cap24"],
+      "download": "Disponible en www/books/filosofia-nuevo-ser/assets/circulos-premisas.pdf"
+    }
+  ]
+}

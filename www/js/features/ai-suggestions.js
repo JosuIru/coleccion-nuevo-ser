@@ -327,9 +327,15 @@ class AISuggestions {
 
   attachToChapterContent() {
     // Añadir listeners a los botones de sugerencia en el contenido
-    document.querySelectorAll('.ai-suggestion-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    const buttons = document.querySelectorAll('.ai-suggestion-btn');
+    // console.log('🔧 AI Suggestions: Adjuntando listeners a', buttons.length, 'botones');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const text = btn.dataset.suggestionText;
+        // console.log('📝 Sugerencia clickeada:', text);
         if (text) {
           this.openChatWithSuggestion(text);
         }

@@ -1,24 +1,26 @@
 {
   "id": "practicas-radicales",
-  "version": "1.0.0",
-  "lastUpdate": "2025-12-01",
+  "version": "1.1.0",
+  "lastUpdate": "2025-12-04",
+
   "theme": {
-    "name": "Radical Fire",
+    "name": "Radical Edge",
     "primary": "#dc2626",
     "secondary": "#991b1b",
-    "accent": "#dc2626",
+    "accent": "#fbbf24",
     "background": "#0a0a0a",
-    "backgroundSecondary": "#171717",
-    "text": "#e0e0e0",
-    "textSecondary": "#999999",
-    "border": "#333333",
-    "gradient": "from-black via-red-950 to-black"
+    "backgroundSecondary": "#1f1f1f",
+    "text": "#f5f5f5",
+    "textSecondary": "#e5e5e5",
+    "border": "#7f1d1d",
+    "gradient": "from-red-700 to-red-900"
   },
+
   "ui": {
-    "showStarfield": false,
-    "animationType": "pulse",
-    "animationSpeed": "slow",
-    "fontFamily": "Georgia, serif",
+    "showStarfield": true,
+    "animationType": "revolutionary",
+    "animationSpeed": "fast",
+    "fontFamily": "Inter, system-ui, sans-serif",
     "fontSize": {
       "base": 16,
       "heading": 24,
@@ -29,41 +31,21 @@
       "paragraph": 16
     }
   },
+
   "features": {
-    "exercises": {
-      "enabled": true,
-      "types": [
-        "meditation",
-        "confrontation",
-        "action"
-      ],
-      "trackCompletion": true
-    },
     "audiobook": {
       "enabled": true,
       "voice": "es-ES",
       "speedControl": true,
-      "speeds": [
-        0.5,
-        0.75,
-        1,
-        1.25,
-        1.5,
-        2
-      ],
+      "speeds": [0.75, 1.0, 1.25, 1.5],
       "highlightCurrentParagraph": true,
       "autoAdvanceChapter": false
     },
     "aiChat": {
       "enabled": true,
-      "systemPrompt": "Eres un guía contemplativo especializado en 'Prácticas Radicales'. Tu función es acompañar al usuario en prácticas que confrontan, no consuelan. Evita respuestas reconfortantes; ofrece preguntas profundas.",
-      "modes": {
-        "default": {
-          "name": "Guía Radical",
-          "tone": "confrontational",
-          "focus": "inquiry"
-        }
-      }
+      "systemPrompt": "Eres un asistente especializado en prácticas radicales y exploración de los límites del conocimiento. Ayuda al usuario a comprender conceptos avanzados y desafiantes.",
+      "modes": {},
+      "maxHistoryMessages": 10
     },
     "personalNotes": {
       "enabled": true,
@@ -79,16 +61,23 @@
       "trackTime": true,
       "trackChapters": true,
       "trackExercises": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/practicas-radicales/assets/resources.json"
     }
   },
+
   "content": {
     "sourceFile": "books/practicas-radicales/book.json",
     "dataStructure": "standard"
   },
+
   "metadata": {
     "locale": "es-ES",
     "readingLevel": "advanced",
-    "recommendedPace": "very-slow",
-    "linkedTo": "codigo-despertar"
+    "recommendedPace": "reflective",
+    "tags": ["prácticas avanzadas", "conocimiento extremo", "exploración"],
+    "complementaryBooks": ["codigo-despertar", "filosofia-nuevo-ser"]
   }
 }

@@ -27,6 +27,13 @@ class ActionPlans {
 
   savePlans() {
     localStorage.setItem('action-plans', JSON.stringify(this.plans));
+
+    // Sincronizar a la nube si está autenticado
+    if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
+      window.supabaseSyncHelper.migrateActionPlans().catch(err => {
+        console.error('Error sincronizando planes de acción:', err);
+      });
+    }
   }
 
   // ==========================================================================
@@ -132,7 +139,7 @@ class ActionPlans {
       createdAt: new Date().toISOString(),
       duration: template.duration,
       bookId: this.bookEngine?.getCurrentBook(),
-      chapterId: window.bookReader?.currentChapter?.id
+      chapterId: (window.bookReader && window.bookReader.currentChapter) ? window.bookReader.currentChapter.id : null
     };
 
     if (!this.plans[plan.id]) {

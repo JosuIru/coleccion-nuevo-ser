@@ -1,0 +1,101 @@
+{
+  "name": "AwakeningProtocol",
+  "displayName": "Awakening Protocol",
+  "description": "Transform the world by playing. Real crises, conscious beings, GPS exploration.",
+  "version": "1.0.1",
+  "versionCode": 2,
+  "orientation": "portrait",
+  "icon": "./src/assets/icon.png",
+  "userInterfaceStyle": "dark",
+  "splash": {
+    "image": "./src/assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#0A0E1F"
+  },
+  "updates": {
+    "fallbackToCacheTimeout": 0
+  },
+  "assetBundlePatterns": [
+    "**/*"
+  ],
+  "android": {
+    "package": "com.awakeningprotocol",
+    "versionCode": 2,
+    "adaptiveIcon": {
+      "foregroundImage": "./src/assets/adaptive-icon-foreground.png",
+      "backgroundImage": "./src/assets/adaptive-icon-background.png",
+      "backgroundColor": "#0A0E1F"
+    },
+    "permissions": [
+      "ACCESS_COARSE_LOCATION",
+      "ACCESS_FINE_LOCATION",
+      "INTERNET",
+      "ACCESS_NETWORK_STATE",
+      "WRITE_EXTERNAL_STORAGE",
+      "READ_EXTERNAL_STORAGE"
+    ],
+    "config": {
+      "googleMaps": {
+        "apiKey": "YOUR_GOOGLE_MAPS_API_KEY_HERE"
+      }
+    },
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.awakeningprotocol.mobile",
+    "useNextNotificationsApi": true
+  },
+  "ios": {
+    "bundleIdentifier": "com.awakeningprotocol.mobile",
+    "buildNumber": "1",
+    "supportsTablet": true,
+    "infoPlist": {
+      "NSLocationWhenInUseUsageDescription": "Awakening Protocol needs your location to show nearby consciousness fractals and crises.",
+      "NSLocationAlwaysUsageDescription": "Awakening Protocol needs your location to notify you of nearby consciousness fractals and crises.",
+      "NSCameraUsageDescription": "Awakening Protocol needs camera access for AR features (optional).",
+      "UIBackgroundModes": [
+        "location"
+      ]
+    },
+    "appStoreUrl": "https://apps.apple.com/app/awakening-protocol/idXXXXXXXXXX"
+  },
+  "web": {
+    "favicon": "./src/assets/favicon.png",
+    "name": "Awakening Protocol",
+    "shortName": "Awakening",
+    "description": "Transform the world by playing",
+    "themeColor": "#00D4FF",
+    "backgroundColor": "#0A0E1F"
+  },
+  "plugins": [
+    [
+      "react-native-maps",
+      {
+        "googleMapsApiKey": "YOUR_GOOGLE_MAPS_API_KEY_HERE"
+      }
+    ]
+  ],
+  "scheme": "awakeningprotocol",
+  "sdkVersion": "49.0.0",
+  "platforms": [
+    "android",
+    "ios"
+  ],
+  "privacy": "public",
+  "jsEngine": "hermes",
+  "locales": {
+    "es": "./src/locales/es.json",
+    "en": "./src/locales/en.json"
+  },
+  "notification": {
+    "icon": "./src/assets/notification-icon.png",
+    "color": "#00D4FF",
+    "androidMode": "default",
+    "androidCollapsedTitle": "#{unread_notifications} new notifications"
+  },
+  "extra": {
+    "apiUrl": "https://api.awakeningprotocol.com",
+    "appVersion": "1.0.1",
+    "buildNumber": 2,
+    "eas": {
+      "projectId": "awakening-protocol-project-id"
+    }
+  }
+}

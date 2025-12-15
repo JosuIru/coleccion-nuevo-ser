@@ -272,7 +272,10 @@ class VoiceNotes {
             <span class="text-3xl">🎙️</span>
             <h2 class="text-xl font-bold text-red-200">Nota de Voz</h2>
           </div>
-          <button id="close-voice-modal" class="text-red-300 hover:text-white p-2 hover:bg-red-800/50 rounded-lg transition">
+          <button id="close-voice-modal"
+                  class="text-red-300 hover:text-white p-3 hover:bg-red-800/50 rounded-lg transition"
+                  aria-label="Cerrar nota de voz"
+                  title="Cerrar">
             ${window.Icons?.close(20) || '✕'}
           </button>
         </div>
@@ -427,6 +430,10 @@ class VoiceNotes {
 
         // Set up audio preview
         const audioPreview = modal.querySelector('#audio-preview');
+        // 🧹 Limpiar URL anterior si existe
+        if (audioPreview.src && audioPreview.src.startsWith('blob:')) {
+          URL.revokeObjectURL(audioPreview.src);
+        }
         audioPreview.src = URL.createObjectURL(result.blob);
       }
     });
@@ -441,6 +448,13 @@ class VoiceNotes {
 
     // Discard
     modal.querySelector('#discard-btn')?.addEventListener('click', () => {
+      // 🧹 Limpiar URL del preview
+      const audioPreview = modal.querySelector('#audio-preview');
+      if (audioPreview && audioPreview.src && audioPreview.src.startsWith('blob:')) {
+        URL.revokeObjectURL(audioPreview.src);
+        audioPreview.src = '';
+      }
+
       pendingBlob = null;
       previewArea.classList.add('hidden');
       recordingArea.classList.remove('hidden');
@@ -464,7 +478,19 @@ class VoiceNotes {
         const noteId = btn.dataset.noteId;
         const blob = await this.getVoiceNoteBlob(noteId);
         if (blob) {
-          const audio = new Audio(URL.createObjectURL(blob));
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+
+          // 🧹 Limpiar URL cuando termine de reproducir
+          audio.addEventListener('ended', () => {
+            URL.revokeObjectURL(audioUrl);
+          });
+
+          // 🧹 También limpiar si hay error
+          audio.addEventListener('error', () => {
+            URL.revokeObjectURL(audioUrl);
+          });
+
           audio.play();
         }
       });

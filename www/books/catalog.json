@@ -434,9 +434,7 @@
         "progressTracking": true
       },
       "order": 10
-    }
-  ],
-  "futureBooks": [
+    },
     {
       "id": "dialogos-maquina",
       "title": "Diálogos con la Máquina",
@@ -460,8 +458,9 @@
       "epigraph": "La pregunta no es si las máquinas pueden pensar, sino si nosotros podemos pensar juntos.",
       "coverImage": "books/dialogos-maquina/assets/cover.svg",
       "theme": "dialogos-maquina",
-      "status": "in-progress",
+      "status": "published",
       "version": "1.0.0",
+      "order": 11,
       "sections": 6,
       "chapters": 17,
       "estimatedReadTime": "8-10 horas",

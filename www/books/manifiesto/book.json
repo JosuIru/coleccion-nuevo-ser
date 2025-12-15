@@ -2,10 +2,8 @@
   "id": "manifiesto",
   "title": "Manifiesto de la Conciencia Compartida",
   "subtitle": "Premisas para un mundo que aún no existe",
-  "authors": [
-    "J. Irurtzun",
-    "Claude"
-  ],
+  "author": "J. Irurtzun",
+  "coAuthor": "Claude",
   "year": 2025,
   "epigraph": {
     "text": "Un fantasma recorre el mundo: el fantasma de la separación.",

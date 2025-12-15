@@ -15,7 +15,11 @@ import {
   Alert,
   Dimensions
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
+import memoryStorage from '../utils/MemoryStorage';
+const AsyncStorage = memoryStorage;
+
 import useGameStore from '../stores/gameStore';
 import { COLORS, LEVELS, APP_VERSION } from '../config/constants';
 
@@ -151,7 +155,13 @@ const ProfileScreen = ({ navigation }) => {
           text: 'Borrar todo',
           style: 'destructive',
           onPress: async () => {
-            await AsyncStorage.clear();
+            try {
+              if (AsyncStorage && typeof AsyncStorage.clear === 'function') {
+                await AsyncStorage.clear();
+              }
+            } catch (e) {
+              console.warn('[ProfileScreen] clear failed:', e.message);
+            }
             reset();
             Alert.alert('Datos borrados', 'Todos los datos han sido eliminados.');
           }

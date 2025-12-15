@@ -38,14 +38,43 @@
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Three.js for 3D Navigation - LAZY LOADED -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script> -->
+
   <!-- Custom Styles -->
+  <!-- Design Tokens -->
+  <link rel="stylesheet" href="css/design-tokens.css">
+
+  <!-- Core Styles -->
   <link rel="stylesheet" href="css/core.css?v=2.8.6.4-a11y">
+
+  <!-- Theme Styles -->
   <link rel="stylesheet" href="css/themes/codigo-despertar.css">
+  <link rel="stylesheet" href="css/themes/dialogos-maquina.css">
   <link rel="stylesheet" href="css/themes/filosofia-nuevo-ser.css">
+  <link rel="stylesheet" href="css/themes/guia-acciones.css">
   <link rel="stylesheet" href="css/themes/manifiesto.css">
   <link rel="stylesheet" href="css/themes/manual-transicion.css">
+  <link rel="stylesheet" href="css/themes/practicas-radicales.css">
   <link rel="stylesheet" href="css/themes/tierra-que-despierta.css">
+  <link rel="stylesheet" href="css/themes/toolkit-transicion.css">
+  <link rel="stylesheet" href="css/themes/ahora-instituciones.css">
+
+  <!-- Frankenstein Lab - Modular CSS - LAZY LOADED -->
+  <!-- <link rel="stylesheet" href="css/frankenstein-base.css?v=2.9.52">
+  <link rel="stylesheet" href="css/frankenstein-animations.css?v=2.9.52">
+  <link rel="stylesheet" href="css/frankenstein-components.css?v=2.9.52">
+  <link rel="stylesheet" href="css/frankenstein-vitruvian.css?v=2.9.52">
+  <link rel="stylesheet" href="css/frankenstein-quiz.css?v=2.9.52">
+  <link rel="stylesheet" href="css/frankenstein-lab.css?v=2.9.52"> -->
+
+  <!-- Microsocieties CSS -->
+  <link rel="stylesheet" href="css/features/microsocieties.css">
+
   <link rel="stylesheet" href="css/brujula-recursos.css">
+
+  <!-- Fuentes Victorianas adicionales -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <!-- Splash Screen Inline Styles -->
   <style>
@@ -215,7 +244,10 @@
 
   <!-- Core JS -->
   <script src="js/core/logger.js"></script>
-  <script src="js/core/icons.js?v=2.8.6.1"></script>
+
+  <!-- Lazy Loader - Dynamic Module Loading System -->
+  <script src="js/core/lazy-loader.js?v=1.0.0"></script>
+  <script src="js/core/icons.js?v=2.9.34"></script>
   <script src="js/core/theme-helper.js?v=2.8.6.5-light-mode"></script>
   <script src="js/core/share-helper.js"></script>
   <script src="js/core/notifications-helper.js"></script>
@@ -224,7 +256,7 @@
   <script src="js/core/file-export-helper.js"></script>
   <script src="js/core/widget-data-helper.js"></script>
   <script src="js/core/shortcuts-handler.js"></script>
-  <script src="js/core/dynamic-colors-helper.js"></script>
+  <script src="js/core/dynamic-colors-helper.js?v=2.9.30"></script>
   <script src="js/core/supabase-config.js"></script>
   <script src="js/core/custom-captcha.js"></script>
   <script src="js/core/supabase-auth-helper.js"></script>
@@ -234,7 +266,7 @@
   <script src="js/core/toast.js"></script>
   <script src="js/core/tts-providers.js"></script>
   <script src="js/core/book-engine.js?v=2.8.6.1"></script>
-  <script src="js/core/biblioteca.js?v=2.9.28"></script>
+  <script src="js/core/biblioteca.js?v=2.9.38"></script>
   <script src="js/core/book-reader.js?v=2.9.28"></script>
 
   <!-- AI System -->
@@ -247,24 +279,24 @@
   <script src="js/features/text-selection-helper.js"></script>
   <script src="js/features/ai-settings-modal.js"></script>
   <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
-  <script src="js/features/settings-modal.js?v=2.8.6.4-a11y"></script>
+  <script src="js/features/settings-modal.js?v=2.9.30"></script>
   <script src="js/features/notes-modal.js"></script>
   <script src="js/features/timeline-viewer.js"></script>
   <script src="js/features/resources-viewer.js"></script>
   <!-- TTS Polyfill (carga de voces mejorada para Chrome/Brave Linux) -->
-  <script src="js/core/tts-polyfill.js?v=3.1.1"></script>
+  <script src="js/core/tts-polyfill.js?v=2.9.30"></script>
   <!-- TTS Platform Helper (detecta y ofrece soluciones para Linux + Chrome) -->
   <script src="js/core/tts-platform-helper.js?v=3.1.2"></script>
-  <script src="js/features/audioreader.js?v=2.9.26"></script>
-  <!-- Sistema de audio mejorado -->
-  <script src="js/features/audio-mixer.js?v=3.0.0"></script>
+  <script src="js/features/audioreader.js?v=2.9.30"></script>
+  <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
+  <!-- <script src="js/features/audio-mixer.js?v=3.0.0"></script>
   <script src="js/features/audio-processor.js?v=3.0.0"></script>
   <script src="js/features/audio-visualizer.js?v=3.0.0"></script>
   <script src="js/features/word-by-word-sync.js?v=3.0.0"></script>
   <script src="js/features/soundscape-cache.js?v=3.0.0"></script>
   <script src="js/features/enhanced-audioreader.js?v=3.0.0"></script>
   <script src="js/features/audio-control-modal.js?v=3.0.0"></script>
-  <script src="js/features/audio-enhancements.js?v=3.1.0"></script>
+  <script src="js/features/audio-enhancements.js?v=3.1.0"></script> -->
   <script src="js/features/koan-generator.js"></script>
   <script src="js/features/koan-modal.js"></script>
   <script src="js/features/binaural-audio.js"></script>
@@ -280,12 +312,12 @@
   <script src="js/features/progress-dashboard.js"></script>
   <script src="js/features/smart-notes.js"></script>
 
-  <!-- Interactive Learning Features (v2.8.7) -->
-  <script src="js/features/resource-ai-helper.js?v=2.8.7"></script>
+  <!-- Interactive Learning Features (v2.8.7) - LAZY LOADED -->
+  <!-- <script src="js/features/resource-ai-helper.js?v=2.8.7"></script>
   <script src="js/features/interactive-quiz.js?v=2.8.7"></script>
   <script src="js/features/learning-paths.js?v=2.8.7"></script>
   <script src="js/features/concept-maps.js"></script>
-  <script src="js/features/action-plans.js"></script>
+  <script src="js/features/action-plans.js"></script> -->
   <script src="js/features/voice-notes.js?v=2.8.6.4-a11y"></script>
 
   <!-- Practical Utility Features -->
@@ -293,7 +325,7 @@
   <script src="js/features/practice-library.js?v=2.9.31"></script>
   <script src="js/features/practice-recommender.js?v=2.9.31"></script>
   <script src="js/features/thematic-index-modal.js"></script>
-  <script src="js/features/chapter-resources-modal.js"></script>
+  <script src="js/features/chapter-resources-modal.js?v=2.9.30"></script>
 
   <!-- Brújula de Recursos - Intelligent Resource Navigation -->
   <script src="js/features/brujula-recursos.js"></script>
@@ -302,9 +334,59 @@
   <!-- Exploration Hub - Unified Search, Themes & Resources -->
   <script src="js/features/exploration-hub.js"></script>
 
+  <!-- Cosmos Navigation - 3D Immersive Navigation - LAZY LOADED -->
+  <!-- <script src="js/features/cosmos-navigation.js?v=3.1.1"></script> -->
+
+  <!-- Biomedical Systems - LAZY LOADED with Organism Knowledge -->
+  <!-- <script src="js/core/biomedical-geometries.js?v=2.0.1"></script>
+  <script src="js/core/biomedical-shaders.js?v=2.0.0"></script>
+  <script src="js/core/procedural-textures.js?v=2.0.0"></script>
+  <script src="js/core/dna-helix-system.js?v=2.0.0"></script>
+  <script src="js/core/neural-connections.js?v=2.0.0"></script>
+  <script src="js/core/energy-flow-particles.js?v=2.0.0"></script> -->
+
+  <!-- Frankenstein Lab - LAZY LOADED -->
+  <!-- <script src="js/features/frankenstein-quiz.js?v=1.0.1"></script>
+  <script src="js/features/frankenstein-missions.js?v=2.9.43"></script>
+  <script src="js/features/frankenstein-ui.js?v=2.9.50"></script>
+  <script src="js/features/frankenstein-audio.js?v=1.0.0"></script>
+  <script src="js/features/frankenstein-challenges.js?v=1.0.0"></script>
+  <script src="js/features/frankenstein-tooltips.js?v=1.0.0"></script>
+  <script src="js/features/vitruvian-being.js?v=1.0.0"></script>
+  <script src="js/features/frankenstein-microsocieties.js?v=1.0.0"></script> -->
+
+  <!-- Microsocieties Game System - LAZY LOADED -->
+  <!-- FASE 1: MVP Mejorado -->
+  <!-- <script src="js/features/microsocieties-missions.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-progression.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-save-system.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-avatars.js?v=2.0.1"></script>
+  <script src="js/features/microsocieties-events.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-tutorial.js?v=1.0.0"></script> -->
+
+  <!-- FASE 2: Polish y Contenido -->
+  <!-- <script src="js/features/microsocieties-animations.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-events-modal.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-audio.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-story-mode.js?v=1.0.0"></script> -->
+
+  <!-- FASE 3: Expandiendo Posibilidades -->
+  <!-- <script src="js/features/microsocieties-sandbox.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-interventions.js?v=1.0.0"></script>
+  <script src="js/features/microsocieties-leaderboards.js?v=1.0.0"></script> -->
+
+  <!-- Organism Knowledge 3D - LAZY LOADED -->
+  <!-- <script src="js/features/organism-knowledge.js?v=2.0.3"></script> -->
+
   <!-- Help & Onboarding System -->
   <script src="js/features/help-center-modal.js"></script>
   <script src="js/features/onboarding-tutorial.js"></script>
+
+  <!-- Version & Update System -->
+  <script src="js/core/version-manager.js"></script>
+  <script src="js/core/update-helper.js"></script>
+  <script src="js/core/app-initialization.js"></script>
+  <script src="js/features/update-modal.js"></script>
 
   <!-- Main App Initialization -->
   <script>
@@ -321,41 +403,41 @@
       console.error('   Stack:', event.error && event.error.stack);
     });
 
-    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans, chapterResourcesModal;
+    let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans, chapterResourcesModal, frankensteinAudio, challengesSystem, frankensteinTooltips, powerIndicator, energyParticles;
 
     async function initApp() {
       try {
-        console.log('🚀 Iniciando Colección Nuevo Ser...');
-        console.log('📱 User Agent:', navigator.userAgent);
+
+
 
         // Initialize i18n first
         if (window.I18n) {
           i18n = new I18n();
           window.i18n = i18n;
-          console.log('✅ i18n inicializado');
+
         }
 
         // Initialize language selector
         if (window.LanguageSelector && i18n) {
           languageSelector = new LanguageSelector(i18n);
           window.languageSelector = languageSelector;
-          console.log('✅ Language Selector inicializado');
+
         }
 
         // Initialize Supabase Auth & Sync
         if (window.supabaseAuthHelper) {
           await window.supabaseAuthHelper.init();
-          console.log('✅ Supabase Auth inicializado');
+
         }
 
         if (window.supabaseSyncHelper) {
           await window.supabaseSyncHelper.init();
-          console.log('✅ Supabase Sync inicializado');
+
         }
 
         if (window.supabaseNotificationsHelper) {
           await window.supabaseNotificationsHelper.init();
-          console.log('✅ Supabase Notifications inicializado');
+
         }
 
         // Crear instancias
@@ -381,13 +463,13 @@
           window.aiConfig = aiConfig;
           window.aiAdapter = aiAdapter;
           window.aiChatModal = aiChatModal;
-          console.log('✅ Sistema de IA inicializado');
+
 
           // Text Selection Helper (requiere aiChatModal)
           if (window.TextSelectionHelper) {
             const textSelectionHelper = new TextSelectionHelper(aiChatModal);
             window.textSelectionHelper = textSelectionHelper;
-            console.log('✅ Text Selection Helper inicializado');
+
           }
         }
 
@@ -395,27 +477,27 @@
         if (window.NotesModal) {
           notesModal = new NotesModal(bookEngine);
           window.notesModal = notesModal;
-          console.log('✅ Sistema de Notas inicializado');
+
         }
 
         // Timeline Viewer
         if (window.TimelineViewer) {
           timelineViewer = new TimelineViewer(bookEngine);
           window.timelineViewer = timelineViewer;
-          console.log('✅ Timeline Viewer inicializado');
+
         }
 
         // Resources Viewer
         if (window.ResourcesViewer) {
           resourcesViewer = new ResourcesViewer(bookEngine);
           window.resourcesViewer = resourcesViewer;
-          console.log('✅ Resources Viewer inicializado');
+
         }
 
         // Brújula de Recursos
         if (window.BrujulaRecursos) {
           window.brujulaRecursos = await BrujulaRecursos.create();
-          console.log('✅ Brújula de Recursos inicializada');
+
         }
 
         // Chapter Resources Modal
@@ -423,100 +505,100 @@
           try {
             chapterResourcesModal = new ChapterResourcesModal(bookEngine);
             window.chapterResourcesModal = chapterResourcesModal;
-            console.log('✅ Chapter Resources Modal inicializado');
+
           } catch (error) {
             console.error('❌ Error inicializando Chapter Resources Modal:', error);
           }
         } else {
-          console.warn('⚠️ ChapterResourcesModal class not found');
+
         }
 
         // Audio Reader (Enhanced)
         if (window.EnhancedAudioReader && window.AudioReader) {
           audioReader = new EnhancedAudioReader(bookEngine);
           window.audioReader = audioReader;
-          console.log('✅ Enhanced Audio Reader inicializado');
+
 
           // Audio Control Modal
           if (window.AudioControlModal) {
             window.audioControlModal = new AudioControlModal(audioReader);
-            console.log('✅ Audio Control Modal inicializado');
+
           }
 
           // Audio Enhancements (Word Sync, Stats, Effects, Voice Commands)
           if (window.AudioEnhancements) {
             window.audioEnhancements = new AudioEnhancements(audioReader);
             window.audioEnhancements.initialize();
-            console.log('✅ Audio Enhancements inicializado');
+
           }
         } else if (window.AudioReader) {
           // Fallback al AudioReader normal si falla Enhanced
           audioReader = new AudioReader(bookEngine);
           window.audioReader = audioReader;
-          console.log('✅ Audio Reader inicializado (fallback)');
+
         }
 
         // Koan Generator
         if (window.KoanGenerator) {
           koanGenerator = new KoanGenerator();
           window.koanGenerator = koanGenerator;
-          console.log('✅ Koan Generator inicializado');
+
         }
 
         // Koan Modal
         if (window.KoanModal && koanGenerator) {
           koanModal = new KoanModal(koanGenerator);
           window.koanModal = koanModal;
-          console.log('✅ Koan Modal inicializado');
+
         }
 
         // Binaural Audio
         if (window.BinauralAudioGenerator) {
           binauralAudio = new BinauralAudioGenerator();
           window.binauralAudio = binauralAudio;
-          console.log('✅ Binaural Audio inicializado');
+
         }
 
         // Binaural Modal
         if (window.BinauralModal && binauralAudio) {
           binauralModal = new BinauralModal(binauralAudio);
           window.binauralModal = binauralModal;
-          console.log('✅ Binaural Modal inicializado');
+
         }
 
         // Reflexive Modal (Preguntas Reflexivas)
         if (window.ReflexiveModal) {
           reflexiveModal = new ReflexiveModal(bookEngine);
           window.reflexiveModal = reflexiveModal;
-          console.log('✅ Reflexive Modal inicializado');
+
         }
 
         // Achievement System (Sistema de Logros)
         if (window.AchievementSystem) {
           achievementSystem = new AchievementSystem(bookEngine);
           window.achievementSystem = achievementSystem;
-          console.log('✅ Achievement System inicializado');
+
         }
 
         // Auto Summary (Resumen Automático)
         if (window.AutoSummary && aiAdapter) {
           autoSummary = new AutoSummary(bookEngine, aiAdapter);
           window.autoSummary = autoSummary;
-          console.log('✅ Auto Summary inicializado');
+
         }
 
         // AI Suggestions (Sugerencias Contextuales)
         if (window.AISuggestions) {
           aiSuggestions = new AISuggestions(bookEngine);
           window.aiSuggestions = aiSuggestions;
-          console.log('✅ AI Suggestions inicializado');
+
         }
 
         // Progress Dashboard (Panel de Progreso)
         if (window.ProgressDashboard) {
           progressDashboard = new ProgressDashboard(bookEngine, achievementSystem);
           window.progressDashboard = progressDashboard;
-          console.log('✅ Progress Dashboard inicializado');
+
         }
 
         // Smart Notes (Notas Inteligentes)
@@ -524,21 +606,21 @@
           smartNotes = new SmartNotes(bookEngine, notesModal);
           window.smartNotes = smartNotes;
           smartNotes.enhanceNotesModal();
-          console.log('✅ Smart Notes inicializado');
+
         }
 
         // Concept Maps (Mapas Conceptuales)
         if (window.ConceptMaps) {
           conceptMaps = new ConceptMaps(bookEngine);
           window.conceptMaps = conceptMaps;
-          console.log('✅ Concept Maps inicializado');
+
         }
 
         // Action Plans (Planes de Acción)
         if (window.ActionPlans) {
           actionPlans = new ActionPlans(bookEngine);
           window.actionPlans = actionPlans;
-          console.log('✅ Action Plans inicializado');
+
         }
 
         // Practice Library & Recommender System
@@ -554,23 +636,72 @@
           // Initialize widget
           window.practiceWidget = new PracticeOfTheDayWidget(window.practiceRecommender);
 
-          console.log('✅ Practice Recommender System inicializado');
+
         }
 
         // AI Settings Modal
         if (window.AISettingsModal && window.aiConfig) {
           aiSettingsModal = new AISettingsModal(window.aiConfig);
           window.aiSettingsModal = aiSettingsModal;
-          console.log('✅ AI Settings Modal inicializado');
+
         } else {
-          console.warn('⚠️ AISettingsModal no pudo inicializarse - aiConfig:', !!window.aiConfig, 'AISettingsModal:', !!window.AISettingsModal);
+
         }
 
         // Donations Modal
         if (window.DonationsModal) {
           donationsModal = new DonationsModal();
           window.donationsModal = donationsModal;
-          console.log('✅ Donations Modal inicializado');
+
+        }
+
+        // Cosmos Navigation - 3D Immersive Navigation
+        if (window.CosmosNavigation) {
+          window.cosmosNavigation = new CosmosNavigation(bookEngine);
+
+        }
+
+        // Organism Knowledge - ELIMINADO
+        // if (window.OrganismKnowledge) {
+        //   window.organismKnowledge = new OrganismKnowledge(bookEngine);
+        // }
+
+        // Frankenstein Audio System
+        if (window.FrankensteinAudioSystem) {
+          frankensteinAudio = new FrankensteinAudioSystem();
+          await frankensteinAudio.init();
+          window.frankensteinAudio = frankensteinAudio;
+
+        }
+
+        // Frankenstein Challenges System
+        if (window.FrankensteinChallengesSystem) {
+          challengesSystem = new FrankensteinChallengesSystem();
+          window.challengesSystem = challengesSystem;
+
+        }
+
+        // Frankenstein Tooltips System
+        if (window.FrankensteinTooltips) {
+          frankensteinTooltips = new FrankensteinTooltips();
+          frankensteinTooltips.init();
+          window.frankensteinTooltips = frankensteinTooltips;
+
+        }
+
+        // Power Indicator
+        if (window.PowerIndicator) {
+          powerIndicator = new PowerIndicator();
+          powerIndicator.init();
+          window.powerIndicator = powerIndicator;
+
+        }
+
+        // Energy Particles
+        if (window.EnergyParticles) {
+          energyParticles = new EnergyParticles();
+          window.energyParticles = energyParticles;
+
         }
 
         // Hacer globales para acceso fácil
@@ -578,7 +709,7 @@
         window.biblioteca = biblioteca;
         window.bookReader = bookReader;
 
-        console.log('✅ App inicializada correctamente');
+
 
         // ========================================================================
         // RESTAURAR NAVEGACIÓN DESDE URL HASH
@@ -589,14 +720,14 @@
           const hashState = bookEngine.parseUrlHash();
 
           if (hashState && hashState.bookId) {
-            console.log(`📍 Restaurando navegación: ${hashState.bookId}/${hashState.chapterId || 'inicio'}`);
+
             try {
               await biblioteca.openBook(hashState.bookId);
               if (hashState.chapterId) {
                 bookReader.navigateToChapter(hashState.chapterId);
               }
             } catch (error) {
-              console.warn('⚠️ No se pudo restaurar la navegación:', error);
+
               bookEngine.clearUrlHash();
             }
           }
@@ -668,11 +799,11 @@
     // Manejar el botón físico "Back" de Android
     if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
       window.Capacitor.Plugins.App.addListener('backButton', async () => {
-        console.log('📱 Android back button pressed');
+
 
         // Si estamos en BookReader, volver a Biblioteca
         if (window.bookReader && window.bookReader.currentChapter) {
-          console.log('📱 BookReader activo → Volviendo a biblioteca');
+
           if (window.biblioteca) {
             window.biblioteca.show();
           }
@@ -682,7 +813,7 @@
         // Si hay modales abiertos, cerrar el último
         const modals = document.querySelectorAll('[id$="-modal"]:not(.hidden)');
         if (modals.length > 0) {
-          console.log('📱 Modal abierto → Cerrando modal');
+
           const lastModal = modals[modals.length - 1];
           const closeBtn = lastModal.querySelector('[id^="close-"]');
           if (closeBtn) {
@@ -692,7 +823,7 @@
         }
 
         // Si estamos en la biblioteca (raíz), cerrar la app
-        console.log('📱 En biblioteca → Cerrando app');
+
         window.Capacitor.Plugins.App?.exitApp();
       });
     }
@@ -739,17 +870,1609 @@
       return 'web';
     };
 
-    // Log inicial
-    console.log(`
-      ┌─────────────────────────────────────┐
-      │  📚 Colección Nuevo Ser            │
-      │  Exploraciones Humano-IA            │
-      │  v2.0.0                             │
-      │                                     │
-      │  Platform: ${window.getPlatform()}  │
-      │  Ready! 🚀                          │
-      └─────────────────────────────────────┘
-    `);
+    // App initialized
+  </script>
+
+  <!-- Modal de Retos/Juego Frankenstein -->
+  <div id="challenges-modal" class="challenges-modal" style="display: none;">
+    <div class="challenges-container">
+      <div class="challenges-header">
+        <h2 class="challenges-title">Pruebas del Ser</h2>
+        <p class="challenges-subtitle" id="challenges-being-name"></p>
+
+        <!-- Control de audio -->
+        <div class="audio-control">
+          <button id="challenges-audio-toggle" class="audio-toggle" title="Toggle audio ambiental">
+            🔇
+          </button>
+        </div>
+      </div>
+
+      <div class="challenges-progress">
+        <span id="challenges-progress-text">Reto 1/5</span>
+        <div class="progress-bar-container">
+          <div id="challenges-progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <span id="challenges-score-text">0 pts</span>
+      </div>
+
+      <div id="challenges-content">
+        <!-- El contenido se genera dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Microsociedades Autónomas -->
+  <div id="microsocieties-modal" class="microsocieties-modal" style="display: none;">
+    <div class="microsocieties-container">
+      <!-- Header -->
+      <div class="microsocieties-header">
+        <div>
+          <h1 class="microsocieties-title">🌍 Microsociedad Evolutiva</h1>
+          <p class="microsocieties-subtitle" id="society-name">Sin nombre</p>
+        </div>
+
+        <!-- FASE 3: Accesos rápidos -->
+        <div class="header-controls">
+          <!-- Indicador de Puntos Divinos -->
+          <div id="divine-points-indicator" class="divine-points-badge" onclick="toggleInterventionsPanel()" title="Intervenciones Divinas">
+            <span class="divine-points-icon">👁️</span>
+            <span class="divine-points-text">
+              <span id="divine-points-value">3</span>/<span id="divine-points-max">5</span>
+            </span>
+          </div>
+
+          <!-- Botones de FASE 3 -->
+          <button onclick="openSandboxConfig()" class="icon-button" title="Configuración Sandbox">
+            🎨
+          </button>
+
+          <button onclick="openLeaderboards()" class="icon-button primary" title="Rankings y Compartir">
+            🏆
+          </button>
+
+          <button id="close-microsocieties" class="microsocieties-close">×</button>
+        </div>
+      </div>
+
+      <!-- Controles de Simulación -->
+      <div class="microsocieties-controls">
+        <button id="btn-play-pause" class="control-button">▶️ Iniciar</button>
+
+        <div class="speed-selector">
+          <label>Velocidad:</label>
+          <button class="speed-option active" data-speed="1">1x</button>
+          <button class="speed-option" data-speed="2">2x</button>
+          <button class="speed-option" data-speed="5">5x</button>
+          <button class="speed-option" data-speed="10">10x</button>
+        </div>
+
+        <div class="turn-counter">
+          Turno: <span id="turn-number">0</span>
+        </div>
+
+        <!-- Botones de Guardado/Carga -->
+        <button id="btn-save-society" class="btn-save" onclick="saveSocietySlot()">💾 Guardar</button>
+        <button id="btn-load-society" class="btn-load" onclick="loadSocietySlot()">📂 Cargar</button>
+      </div>
+
+      <!-- Panel de Progresión y Misiones -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <!-- Progresión del Jugador -->
+        <div style="flex: 1; background: rgba(139, 115, 85, 0.2); border: 2px solid #8b7355; border-radius: 8px; padding: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="color: #d4af37; font-weight: bold;">📊 Nivel <span id="player-level">1</span></span>
+            <span style="color: #f4e9d8; font-size: 0.9rem;"><span id="player-xp">0</span>/<span id="player-xp-next">100</span> XP</span>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; height: 8px; overflow: hidden;">
+            <div id="player-xp-bar" style="background: linear-gradient(90deg, #d4af37, #b87333); height: 100%; width: 0%; transition: width 0.3s;"></div>
+          </div>
+        </div>
+
+        <!-- Misión Activa -->
+        <div style="flex: 2; background: rgba(139, 115, 85, 0.2); border: 2px solid #8b7355; border-radius: 8px; padding: 1rem;">
+          <div style="color: #d4af37; font-weight: bold; margin-bottom: 0.5rem;">🎯 Misión Activa</div>
+          <div id="active-mission-display" style="color: #f4e9d8; font-size: 0.9rem;">
+            Ninguna misión activa
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Principal -->
+      <div class="microsocieties-dashboard">
+        <!-- Panel Izquierdo: Métricas y Gráfico -->
+        <div class="metrics-panel">
+          <div class="metrics-grid">
+            <!-- Salud -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">🌱 Salud</span>
+                <span class="metric-value" id="metric-health-value">100</span>
+              </div>
+              <div class="metric-bar">
+                <div class="metric-bar-fill" id="metric-health-bar" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <!-- Conocimiento -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">💡 Conocimiento</span>
+                <span class="metric-value" id="metric-knowledge-value">50</span>
+              </div>
+              <div class="metric-bar">
+                <div class="metric-bar-fill" id="metric-knowledge-bar" style="width: 50%"></div>
+              </div>
+            </div>
+
+            <!-- Acción -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">⚡ Acción</span>
+                <span class="metric-value" id="metric-action-value">50</span>
+              </div>
+              <div class="metric-bar">
+                <div class="metric-bar-fill" id="metric-action-bar" style="width: 50%"></div>
+              </div>
+            </div>
+
+            <!-- Cohesión -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">🤝 Cohesión</span>
+                <span class="metric-value" id="metric-cohesion-value">75</span>
+              </div>
+              <div class="metric-bar">
+                <div class="metric-bar-fill" id="metric-cohesion-bar" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Evolución -->
+          <div class="evolution-graph">
+            <div class="graph-title">Evolución de Métricas (Últimos 30 Turnos)</div>
+            <div class="graph-canvas" id="evolution-graph-canvas">
+              <!-- Barras generadas dinámicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Derecho: Seres y Log -->
+        <div class="side-panel">
+          <!-- Lista de Seres -->
+          <div class="beings-list-panel">
+            <div class="panel-title">Seres Activos (<span id="beings-count">0</span>)</div>
+            <div class="beings-list" id="beings-list">
+              <!-- Seres generados dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Log de Eventos -->
+          <div class="events-log-panel">
+            <div class="panel-title">Eventos Recientes</div>
+            <div class="events-log" id="events-log">
+              <!-- Eventos generados dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 3: Modales Secundarios -->
+
+  <!-- Panel de Intervenciones Divinas (Colapsable) -->
+  <div id="interventions-panel" style="
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 400px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    background: rgba(10, 10, 15, 0.98);
+    border: 3px solid #c77dff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(199, 125, 255, 0.4);
+    z-index: 10001;
+    padding: 1.5rem;
+  ">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="color: #c77dff; margin: 0;">👁️ Intervenciones Divinas</h3>
+      <button onclick="toggleInterventionsPanel()" style="
+        background: none;
+        border: none;
+        color: #f4e9d8;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+      ">×</button>
+    </div>
+
+    <!-- Divine Points Display -->
+    <div style="
+      text-align: center;
+      margin-bottom: 1.5rem;
+      background: rgba(199, 125, 255, 0.2);
+      border: 2px solid #c77dff;
+      border-radius: 20px;
+      padding: 0.75rem;
+    ">
+      <div style="color: #c77dff; font-size: 0.9rem; margin-bottom: 0.25rem;">Puntos Divinos</div>
+      <div style="color: #f4e9d8; font-size: 2rem; font-weight: 700;">
+        <span id="interventions-points-value">3</span> / <span id="interventions-points-max">5</span>
+      </div>
+      <div style="color: #f4e9d8; font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">
+        +1 cada 20 turnos
+      </div>
+    </div>
+
+    <!-- Interventions List (Generated) -->
+    <div id="interventions-list" style="display: flex; flex-direction: column; gap: 1rem;">
+      <!-- Generated dynamically -->
+    </div>
+  </div>
+
+  <!-- Modal de Configuración Sandbox -->
+  <div id="sandbox-modal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10002;
+    overflow-y: auto;
+    padding: 2rem;
+  ">
+    <div style="
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(10, 10, 15, 0.98);
+      border: 3px solid #8b7355;
+      border-radius: 12px;
+      padding: 2rem;
+    ">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="color: #d4af37; margin: 0;">🎨 Configuración Sandbox</h2>
+        <button onclick="closeSandboxConfig()" style="
+          background: none;
+          border: none;
+          color: #f4e9d8;
+          font-size: 2rem;
+          cursor: pointer;
+          padding: 0;
+          line-height: 1;
+        ">×</button>
+      </div>
+
+      <!-- Sandbox Config Content (Generated) -->
+      <div id="sandbox-config-content">
+        <!-- Generated dynamically -->
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+        <button onclick="applySandboxConfig()" style="
+          flex: 1;
+          padding: 0.75rem;
+          background: linear-gradient(135deg, #d4af37 0%, #b87333 100%);
+          color: #0a0a0f;
+          border: none;
+          border-radius: 6px;
+          font-weight: 700;
+          font-size: 1.1rem;
+          cursor: pointer;
+        ">Aplicar Configuración</button>
+        <button onclick="closeSandboxConfig()" style="
+          padding: 0.75rem 1.5rem;
+          background: rgba(139, 115, 85, 0.3);
+          color: #f4e9d8;
+          border: 2px solid #8b7355;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+        ">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Leaderboards y Compartir -->
+  <div id="leaderboards-modal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10002;
+    overflow-y: auto;
+    padding: 2rem;
+  ">
+    <div style="
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(10, 10, 15, 0.98);
+      border: 3px solid #d4af37;
+      border-radius: 12px;
+      padding: 2rem;
+    ">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="color: #d4af37; margin: 0;">🏆 Rankings y Compartir</h2>
+        <button onclick="closeLeaderboards()" style="
+          background: none;
+          border: none;
+          color: #f4e9d8;
+          font-size: 2rem;
+          cursor: pointer;
+          padding: 0;
+          line-height: 1;
+        ">×</button>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid #8b7355;">
+        <button id="tab-leaderboards" onclick="switchLeaderboardTab('leaderboards')" style="
+          padding: 0.75rem 1.5rem;
+          background: linear-gradient(135deg, #d4af37 0%, #b87333 100%);
+          color: #0a0a0f;
+          border: none;
+          border-radius: 6px 6px 0 0;
+          font-weight: 700;
+          cursor: pointer;
+        ">🏆 Rankings</button>
+        <button id="tab-share" onclick="switchLeaderboardTab('share')" style="
+          padding: 0.75rem 1.5rem;
+          background: rgba(139, 115, 85, 0.3);
+          color: #f4e9d8;
+          border: none;
+          border-radius: 6px 6px 0 0;
+          font-weight: 600;
+          cursor: pointer;
+        ">🔗 Compartir</button>
+      </div>
+
+      <!-- Content Container -->
+      <div id="leaderboards-content">
+        <!-- Generated dynamically based on active tab -->
+      </div>
+
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button onclick="closeLeaderboards()" style="
+          padding: 0.75rem 2rem;
+          background: rgba(139, 115, 85, 0.3);
+          color: #f4e9d8;
+          border: 2px solid #8b7355;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+        ">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script de integración de Audio y Challenges -->
+  <script>
+    // Inicializar botón de audio del modal de retos
+    document.addEventListener('DOMContentLoaded', () => {
+      const audioToggle = document.getElementById('challenges-audio-toggle');
+
+      if (audioToggle && window.frankensteinAudio) {
+        // Sincronizar estado inicial
+        const isEnabled = window.frankensteinAudio.enabled;
+        audioToggle.textContent = isEnabled ? '🔊' : '🔇';
+        audioToggle.classList.toggle('active', isEnabled);
+
+        // Toggle al hacer click
+        audioToggle.addEventListener('click', () => {
+          const enabled = window.frankensteinAudio.toggle();
+          audioToggle.textContent = enabled ? '🔊' : '🔇';
+          audioToggle.classList.toggle('active', enabled);
+
+          if (enabled) {
+            window.frankensteinAudio.playEffect('electricity');
+          }
+        });
+      }
+    });
+
+    // Función global para iniciar el juego de retos
+    window.startChallengesGame = function(being, mission) {
+      if (!window.challengesSystem || !window.frankensteinAudio) {
+        console.error('Sistemas no inicializados');
+        return;
+      }
+
+      const challenges = window.challengesSystem.startChallenges(being, mission);
+
+      // Abrir modal
+      const modal = document.getElementById('challenges-modal');
+      const content = document.getElementById('challenges-content');
+      const beingName = document.getElementById('challenges-being-name');
+
+      modal.classList.add('active');
+      beingName.textContent = `${being.name} - ${mission.name}`;
+
+      // Renderizar primer reto
+      renderChallenge(challenges[0], 0);
+      updateProgress(0, challenges.length, 0);
+
+      // Efecto de sonido al abrir
+      if (window.frankensteinAudio.enabled) {
+        window.frankensteinAudio.playThunder();
+      }
+    };
+
+    // Renderizar un reto
+    function renderChallenge(challenge, index) {
+      const content = document.getElementById('challenges-content');
+
+      content.innerHTML = `
+        <div class="challenge-card">
+          <div class="challenge-number">${challenge.number}</div>
+          <p class="challenge-scenario">${challenge.scenario}</p>
+
+          <div class="challenge-options">
+            ${challenge.options.map((opt, i) => `
+              <div class="challenge-option" data-option="${i}">
+                <div class="option-text">${opt.text}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div id="challenge-feedback" style="display: none;"></div>
+
+          <div class="challenge-actions" style="display: none;">
+            <button class="challenge-btn" id="next-challenge-btn">
+              Siguiente Reto →
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Event listeners en opciones
+      const options = content.querySelectorAll('.challenge-option');
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          // Deseleccionar otras
+          options.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+
+          // Evaluar respuesta
+          const optionIndex = parseInt(opt.dataset.option);
+          evaluateAnswer(index, optionIndex);
+        });
+      });
+    }
+
+    // Evaluar respuesta
+    function evaluateAnswer(challengeIndex, selectedOption) {
+      const result = window.challengesSystem.evaluateAnswer(challengeIndex, selectedOption);
+
+      if (!result) return;
+
+      // Mostrar feedback
+      const feedbackDiv = document.getElementById('challenge-feedback');
+      const actionsDiv = document.querySelector('.challenge-actions');
+      const options = document.querySelectorAll('.challenge-option');
+
+      // Marcar opción seleccionada
+      options[selectedOption].classList.add(result.success ? 'correct' : 'incorrect');
+
+      // Deshabilitar todas las opciones
+      options.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+        opt.style.opacity = '0.7';
+      });
+
+      // Mostrar feedback
+      feedbackDiv.innerHTML = `
+        <div class="challenge-feedback">
+          <h4>${result.success ? '✓ ¡Excelente!' : '✗ Podría mejorar'}</h4>
+          <p><strong>Puntuación:</strong> ${result.score} pts</p>
+          ${result.feedback.map(f => `
+            <div class="feedback-item">
+              <span class="feedback-icon">${f.success ? '✓' : '✗'}</span>
+              <span>${f.message}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      feedbackDiv.style.display = 'block';
+      actionsDiv.style.display = 'flex';
+
+      // Actualizar progreso
+      updateProgress(result.completed, result.total, result.totalScore);
+
+      // Efecto de sonido
+      if (window.frankensteinAudio.enabled) {
+        if (result.success) {
+          window.frankensteinAudio.playElectricity();
+        } else {
+          window.frankensteinAudio.playBubblePop();
+        }
+      }
+
+      // Botón siguiente
+      const nextBtn = document.getElementById('next-challenge-btn');
+      nextBtn.addEventListener('click', () => {
+        const nextChallenge = window.challengesSystem.getNextChallenge();
+
+        if (nextChallenge) {
+          renderChallenge(nextChallenge, result.completed);
+        } else {
+          showResults();
+        }
+      });
+    }
+
+    // Actualizar barra de progreso
+    function updateProgress(completed, total, score) {
+      document.getElementById('challenges-progress-text').textContent = `Reto ${completed + 1}/${total}`;
+      document.getElementById('challenges-progress-bar').style.width = `${(completed / total) * 100}%`;
+      document.getElementById('challenges-score-text').textContent = `${score} pts`;
+    }
+
+    // Mostrar resultados finales
+    function showResults() {
+      const results = window.challengesSystem.getFinalResults();
+      const content = document.getElementById('challenges-content');
+
+      content.innerHTML = `
+        <div class="results-screen">
+          <h2 class="results-rank">${results.rank}</h2>
+          <p class="results-score">${results.score} / ${results.maxScore} puntos</p>
+          <p style="color: var(--franken-brass); font-size: 1.2rem;">${results.successRate}% de éxito</p>
+
+          <div class="results-stats">
+            <div class="stat-card">
+              <div class="stat-label">Retos completados</div>
+              <div class="stat-value">${results.challengesCompleted}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Ser creado</div>
+              <div class="stat-value" style="font-size: 1.2rem;">${results.being}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Misión</div>
+              <div class="stat-value" style="font-size: 1.2rem;">${results.mission}</div>
+            </div>
+          </div>
+
+          <div class="challenge-actions">
+            <button class="challenge-btn" onclick="document.getElementById('challenges-modal').classList.remove('active')">
+              Cerrar
+            </button>
+            <button class="challenge-btn secondary" onclick="location.reload()">
+              Crear Nuevo Ser
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Efecto de sonido de finalización
+      if (window.frankensteinAudio.enabled) {
+        setTimeout(() => window.frankensteinAudio.playThunder(), 500);
+      }
+    }
+  </script>
+
+  <!-- Script de integración de Microsociedades -->
+  <script>
+    let microSocietiesManager = null;
+    let currentSocietyUI = null;
+
+    // Variables para sistemas FASE 1
+    let missionSystem = null;
+    let progressionSystem = null;
+    let saveSystem = null;
+    let avatarSystem = null;
+    let eventsSystem = null;
+    let tutorialSystem = null;
+
+    // Variables para sistemas FASE 2
+    let animationSystem = null;
+    let eventsModal = null;
+    let microSocietiesAudio = null;
+    let storyMode = null;
+
+    // Variables para sistemas FASE 3
+    let sandboxMode = null;
+    let divinInterventions = null;
+    let leaderboardsSystem = null;
+
+    // Inicializar manager al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sistema de Microsociedades base
+      if (window.MicroSocietiesManager) {
+        microSocietiesManager = new MicroSocietiesManager();
+        window.microSocietiesManager = microSocietiesManager;
+
+      }
+
+      // FASE 1: Sistemas Mejorados
+      if (window.MissionSystem) {
+        missionSystem = new MissionSystem();
+        window.missionSystem = missionSystem;
+
+      }
+
+      if (window.ProgressionSystem) {
+        progressionSystem = new ProgressionSystem();
+        window.progressionSystem = progressionSystem;
+
+      }
+
+      if (window.SaveSystem) {
+        saveSystem = new SaveSystem();
+        window.saveSystem = saveSystem;
+
+      }
+
+      // Usar AvatarSystemV2 si está disponible, sino usar el original
+      if (window.AvatarSystemV2) {
+        avatarSystem = new AvatarSystemV2();
+        window.avatarSystem = avatarSystem;
+
+      } else if (window.AvatarSystem) {
+        avatarSystem = new AvatarSystem();
+        window.avatarSystem = avatarSystem;
+
+      }
+
+      if (window.EventsSystem) {
+        eventsSystem = new EventsSystem();
+        window.eventsSystem = eventsSystem;
+
+      }
+
+      if (window.TutorialSystem) {
+        tutorialSystem = new TutorialSystem();
+        window.tutorialSystem = tutorialSystem;
+
+
+        // NOTA: El tutorial NO se auto-inicia aquí para no interferir con la navegación principal
+        // Solo se inicia cuando el usuario abre el modal de microsociedades
+      }
+
+      // FASE 2: Sistemas de Polish
+      if (window.AnimationSystem) {
+        animationSystem = new AnimationSystem();
+        window.animationSystem = animationSystem;
+        // Se inicializa cuando se abre el modal
+
+      }
+
+      if (window.EventsModal) {
+        eventsModal = new EventsModal();
+        window.eventsModal = eventsModal;
+        eventsModal.init();
+      }
+
+      if (window.MicroSocietiesAudio) {
+        microSocietiesAudio = new MicroSocietiesAudio();
+        window.microSocietiesAudio = microSocietiesAudio;
+        // Inicializar con interacción del usuario
+        document.body.addEventListener('click', () => {
+          if (!microSocietiesAudio.initialized) {
+            microSocietiesAudio.init();
+          }
+        }, { once: true });
+      }
+
+      if (window.StoryMode) {
+        storyMode = new StoryMode();
+        window.storyMode = storyMode;
+
+      }
+
+      // FASE 3: Sistemas Avanzados
+      if (window.SandboxMode) {
+        sandboxMode = new SandboxMode();
+        window.sandboxMode = sandboxMode;
+
+      }
+
+      if (window.DivinInterventions) {
+        divinInterventions = new DivinInterventions();
+        window.divinInterventions = divinInterventions;
+
+      }
+
+      if (window.LeaderboardsSystem) {
+        leaderboardsSystem = new LeaderboardsSystem();
+        window.leaderboardsSystem = leaderboardsSystem;
+
+      }
+
+      // Event listener para cerrar modal
+      const closeBtn = document.getElementById('close-microsocieties');
+      closeBtn.addEventListener('click', closeMicroSocietiesModal);
+
+      // Event listener para play/pause
+      const playPauseBtn = document.getElementById('btn-play-pause');
+      playPauseBtn.addEventListener('click', togglePlayPause);
+
+      // Event listeners para botones de velocidad
+      const speedButtons = document.querySelectorAll('.speed-option');
+      speedButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const speed = parseInt(e.target.dataset.speed);
+          setSimulationSpeed(speed);
+
+          // Actualizar UI
+          speedButtons.forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+        });
+      });
+    });
+
+    /**
+     * Abrir modal de microsociedades
+     */
+    function openMicroSocietiesModal(society) {
+      const modal = document.getElementById('microsocieties-modal');
+      modal.classList.add('active');
+
+      currentSocietyUI = society;
+
+      // Actualizar título
+      document.getElementById('society-name').textContent = society.name;
+
+      // Renderizar estado inicial
+      renderSocietyState();
+
+      // Iniciar loop de actualización
+      startUIUpdateLoop();
+
+      // Iniciar autosave (FASE 1)
+      if (window.saveSystem) {
+        saveSystem.startAutosave(society);
+
+      }
+
+      // FASE 2: Inicializar animaciones
+      if (window.animationSystem && !animationSystem.initialized) {
+        animationSystem.init('microsocieties-modal');
+      }
+
+      // FASE 2: Iniciar música de fondo
+      if (window.microSocietiesAudio && microSocietiesAudio.initialized) {
+        microSocietiesAudio.playMusic('contemplative', true, 2);
+      }
+
+      // Mostrar tutorial si es la primera vez (FASE 1)
+      if (window.tutorialSystem && !tutorialSystem.completed) {
+        setTimeout(() => {
+          tutorialSystem.start();
+        }, 1500);
+      }
+    }
+
+    /**
+     * Cerrar modal
+     */
+    function closeMicroSocietiesModal() {
+      const modal = document.getElementById('microsocieties-modal');
+      modal.classList.remove('active');
+
+      // Pausar la sociedad actual
+      if (currentSocietyUI && currentSocietyUI.running) {
+        currentSocietyUI.pause();
+      }
+
+      // Detener loop de actualización
+      if (window.uiUpdateIntervalId) {
+        clearInterval(window.uiUpdateIntervalId);
+        window.uiUpdateIntervalId = null;
+      }
+
+      // Detener autosave (FASE 1)
+      if (window.saveSystem) {
+        saveSystem.stopAutosave();
+      }
+
+      // FASE 2: Detener animaciones
+      if (window.animationSystem && animationSystem.initialized) {
+        animationSystem.stop();
+      }
+
+      // FASE 2: Detener música
+      if (window.microSocietiesAudio) {
+        microSocietiesAudio.stopMusic(1.5);
+      }
+
+      currentSocietyUI = null;
+    }
+
+    // ============================================
+    // FASE 3: Handlers para Sistemas Avanzados
+    // ============================================
+
+    /**
+     * Toggle panel de intervenciones divinas
+     */
+    function toggleInterventionsPanel() {
+      const panel = document.getElementById('interventions-panel');
+      const isVisible = panel.style.display !== 'none';
+
+      if (isVisible) {
+        panel.style.display = 'none';
+      } else {
+        panel.style.display = 'block';
+        updateInterventionsUI();
+
+        if (window.microSocietiesAudio) {
+          microSocietiesAudio.playClick();
+        }
+      }
+    }
+
+    /**
+     * Actualizar UI de intervenciones
+     */
+    function updateInterventionsUI() {
+      if (!window.divinInterventions || !currentSocietyUI) return;
+
+      const currentTurn = currentSocietyUI.turn;
+
+      // Actualizar indicadores de puntos
+      document.getElementById('divine-points-value').textContent = divinInterventions.divinePoints;
+      document.getElementById('interventions-points-value').textContent = divinInterventions.divinePoints;
+      document.getElementById('divine-points-max').textContent = divinInterventions.maxDivinePoints;
+      document.getElementById('interventions-points-max').textContent = divinInterventions.maxDivinePoints;
+
+      // Renderizar lista de intervenciones
+      const interventionsList = document.getElementById('interventions-list');
+      const categories = {
+        blessing: { name: 'Bendiciones', icon: '🌟' },
+        resurrection: { name: 'Resurrecciones', icon: '✨' },
+        mutation: { name: 'Mutaciones', icon: '🧬' },
+        time: { name: 'Tiempo', icon: '⏱️' },
+        event: { name: 'Eventos', icon: '🎲' },
+        emergency: { name: 'Emergencias', icon: '🚨' }
+      };
+
+      let html = '';
+
+      Object.entries(categories).forEach(([catId, cat]) => {
+        const interventions = divinInterventions.getByCategory(catId, currentTurn);
+
+        if (interventions.length === 0) return;
+
+        html += `
+          <div>
+            <h4 style="color: #c77dff; font-size: 0.9rem; margin-bottom: 0.5rem;">
+              ${cat.icon} ${cat.name}
+            </h4>
+        `;
+
+        interventions.forEach(intervention => {
+          const canUse = intervention.available && !intervention.onCooldown;
+          const opacity = canUse ? '1' : '0.5';
+
+          html += `
+            <button
+              onclick="useIntervention('${intervention.id}')"
+              ${!canUse ? 'disabled' : ''}
+              style="
+                width: 100%;
+                background: rgba(199, 125, 255, 0.2);
+                border: 2px solid ${canUse ? '#c77dff' : '#6a3579'};
+                border-radius: 6px;
+                padding: 0.75rem;
+                text-align: left;
+                cursor: ${canUse ? 'pointer' : 'not-allowed'};
+                opacity: ${opacity};
+                margin-bottom: 0.5rem;
+                transition: all 0.3s;
+              "
+              ${canUse ? `onmouseover="this.style.background='rgba(199, 125, 255, 0.35)'" onmouseout="this.style.background='rgba(199, 125, 255, 0.2)'"` : ''}
+            >
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                <span style="color: #f4e9d8; font-weight: 600; font-size: 0.95rem;">
+                  ${intervention.icon} ${intervention.name}
+                </span>
+                <span style="color: #d4af37; font-weight: 700; font-size: 0.9rem;">
+                  ${intervention.cost} DP
+                </span>
+              </div>
+              <div style="color: #f4e9d8; font-size: 0.8rem; opacity: 0.8;">
+                ${intervention.description}
+              </div>
+              ${intervention.onCooldown ? `
+                <div style="color: #ff6b35; font-size: 0.75rem; margin-top: 0.25rem;">
+                  ⏱️ Cooldown: ${intervention.cooldownRemaining} turnos
+                </div>
+              ` : ''}
+            </button>
+          `;
+        });
+
+        html += '</div>';
+      });
+
+      interventionsList.innerHTML = html;
+    }
+
+    /**
+     * Usar intervención divina
+     */
+    function useIntervention(interventionId) {
+      if (!window.divinInterventions || !currentSocietyUI) return;
+
+      const result = divinInterventions.useIntervention(interventionId, currentSocietyUI);
+
+      if (result.success) {
+        // Actualizar UI
+        updateInterventionsUI();
+        renderSocietyState();
+
+        // Mensaje de éxito
+        const intervention = divinInterventions.interventions[interventionId];
+        showNotification(`${intervention.icon} ${intervention.name} usado!`, 'success');
+
+        // Sonido ya se reproduce desde DivinInterventions.useIntervention()
+      } else {
+        showNotification(result.message, 'error');
+
+        if (window.microSocietiesAudio) {
+          microSocietiesAudio.playError();
+        }
+      }
+    }
+
+    /**
+     * Abrir configuración sandbox
+     */
+    function openSandboxConfig() {
+      if (!window.sandboxMode) return;
+
+      const modal = document.getElementById('sandbox-modal');
+      modal.style.display = 'block';
+
+      renderSandboxConfig();
+
+      if (window.microSocietiesAudio) {
+        microSocietiesAudio.playSandboxActivate();
+      }
+    }
+
+    /**
+     * Cerrar configuración sandbox
+     */
+    function closeSandboxConfig() {
+      const modal = document.getElementById('sandbox-modal');
+      modal.style.display = 'none';
+    }
+
+    /**
+     * Renderizar configuración sandbox
+     */
+    function renderSandboxConfig() {
+      if (!window.sandboxMode) return;
+
+      const config = sandboxMode.getConfig();
+      const presets = sandboxMode.getPresets();
+
+      let html = `
+        <!-- Presets -->
+        <div style="margin-bottom: 1.5rem;">
+          <label style="color: #f4e9d8; font-weight: 600; margin-bottom: 0.5rem; display: block;">
+            Presets Predefinidos:
+          </label>
+          <select id="sandbox-preset" style="
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: #f4e9d8;
+            border: 2px solid #8b7355;
+            border-radius: 6px;
+            font-size: 1rem;
+          ">
+            <option value="">-- Personalizado --</option>
+      `;
+
+      Object.entries(presets).forEach(([id, preset]) => {
+        html += `<option value="${id}">${preset.name} - ${preset.description}</option>`;
+      });
+
+      html += `
+          </select>
+        </div>
+
+        <!-- Configuración Manual -->
+        <div style="
+          background: rgba(0, 0, 0, 0.3);
+          border: 2px solid #8b7355;
+          border-radius: 8px;
+          padding: 1.5rem;
+          margin-bottom: 1rem;
+        ">
+          <h3 style="color: #d4af37; margin-bottom: 1rem;">⚙️ Configuración Manual</h3>
+
+          <!-- Población Máxima -->
+          <div style="margin-bottom: 1rem;">
+            <label style="color: #f4e9d8; display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Población Máxima:</span>
+              <span id="max-pop-display">${config.maxPopulation}</span>
+            </label>
+            <input type="range" id="max-population" min="5" max="200" value="${config.maxPopulation}"
+              style="width: 100%;" oninput="document.getElementById('max-pop-display').textContent = this.value">
+          </div>
+
+          <!-- Tasa de Mutación -->
+          <div style="margin-bottom: 1rem;">
+            <label style="color: #f4e9d8; display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Tasa de Mutación:</span>
+              <span id="mutation-rate-display">${(config.mutationRate * 100).toFixed(0)}%</span>
+            </label>
+            <input type="range" id="mutation-rate" min="0" max="50" value="${config.mutationRate * 100}"
+              style="width: 100%;" oninput="document.getElementById('mutation-rate-display').textContent = this.value + '%'">
+          </div>
+
+          <!-- Intervalo de Hibridación -->
+          <div style="margin-bottom: 1rem;">
+            <label style="color: #f4e9d8; display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Hibridación cada:</span>
+              <span id="hybrid-interval-display">${config.hybridizationInterval} turnos</span>
+            </label>
+            <input type="range" id="hybrid-interval" min="1" max="50" value="${config.hybridizationInterval}"
+              style="width: 100%;" oninput="document.getElementById('hybrid-interval-display').textContent = this.value + ' turnos'">
+          </div>
+
+          <!-- Checkboxes -->
+          <div style="margin-top: 1.5rem;">
+            <label style="color: #f4e9d8; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="immortal-mode" ${config.immortalMode ? 'checked' : ''}>
+              <span>Modo Inmortal (seres no mueren)</span>
+            </label>
+            <label style="color: #f4e9d8; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="super-metrics" ${config.allowSuperMetrics ? 'checked' : ''}>
+              <span>Permitir métricas > 100</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Info del Modo Sandbox -->
+        <div style="
+          background: rgba(139, 115, 85, 0.2);
+          border-left: 4px solid #d4af37;
+          border-radius: 4px;
+          padding: 1rem;
+          color: #f4e9d8;
+          font-size: 0.9rem;
+        ">
+          <strong>💡 Modo Sandbox:</strong> Experimenta libremente con diferentes configuraciones.
+          Los cambios se aplicarán a la sociedad actual inmediatamente.
+        </div>
+      `;
+
+      document.getElementById('sandbox-config-content').innerHTML = html;
+
+      // Event listener para presets
+      document.getElementById('sandbox-preset').addEventListener('change', (e) => {
+        if (e.target.value) {
+          sandboxMode.applyPreset(e.target.value);
+          renderSandboxConfig();
+        }
+      });
+    }
+
+    /**
+     * Aplicar configuración sandbox
+     */
+    function applySandboxConfig() {
+      if (!window.sandboxMode || !currentSocietyUI) return;
+
+      // Leer valores
+      const maxPopulation = parseInt(document.getElementById('max-population').value);
+      const mutationRate = parseFloat(document.getElementById('mutation-rate').value) / 100;
+      const hybridInterval = parseInt(document.getElementById('hybrid-interval').value);
+      const immortalMode = document.getElementById('immortal-mode').checked;
+      const superMetrics = document.getElementById('super-metrics').checked;
+
+      // Aplicar configuración
+      sandboxMode.setParameter('maxPopulation', maxPopulation);
+      sandboxMode.setParameter('mutationRate', mutationRate);
+      sandboxMode.setParameter('hybridizationInterval', hybridInterval);
+      sandboxMode.setParameter('immortalMode', immortalMode);
+      sandboxMode.setParameter('allowSuperMetrics', superMetrics);
+
+      // Activar sandbox mode
+      if (!sandboxMode.active) {
+        sandboxMode.activate(currentSocietyUI);
+      } else {
+        sandboxMode.applySandboxConfig(currentSocietyUI);
+      }
+
+      showNotification('🎨 Configuración Sandbox aplicada!', 'success');
+      closeSandboxConfig();
+
+      if (window.microSocietiesAudio) {
+        microSocietiesAudio.playSuccess();
+      }
+    }
+
+    /**
+     * Abrir leaderboards
+     */
+    function openLeaderboards() {
+      const modal = document.getElementById('leaderboards-modal');
+      modal.style.display = 'block';
+
+      switchLeaderboardTab('leaderboards');
+
+      if (window.microSocietiesAudio) {
+        microSocietiesAudio.playLeaderboardEntry();
+      }
+    }
+
+    /**
+     * Cerrar leaderboards
+     */
+    function closeLeaderboards() {
+      const modal = document.getElementById('leaderboards-modal');
+      modal.style.display = 'none';
+    }
+
+    /**
+     * Cambiar tab en leaderboards
+     */
+    function switchLeaderboardTab(tab) {
+      // Actualizar botones
+      const tabLeaderboards = document.getElementById('tab-leaderboards');
+      const tabShare = document.getElementById('tab-share');
+
+      if (tab === 'leaderboards') {
+        tabLeaderboards.style.background = 'linear-gradient(135deg, #d4af37 0%, #b87333 100%)';
+        tabLeaderboards.style.color = '#0a0a0f';
+        tabShare.style.background = 'rgba(139, 115, 85, 0.3)';
+        tabShare.style.color = '#f4e9d8';
+
+        renderLeaderboardsContent();
+      } else {
+        tabShare.style.background = 'linear-gradient(135deg, #d4af37 0%, #b87333 100%)';
+        tabShare.style.color = '#0a0a0f';
+        tabLeaderboards.style.background = 'rgba(139, 115, 85, 0.3)';
+        tabLeaderboards.style.color = '#f4e9d8';
+
+        renderShareContent();
+      }
+
+      if (window.microSocietiesAudio) {
+        microSocietiesAudio.playClick();
+      }
+    }
+
+    /**
+     * Renderizar contenido de leaderboards
+     */
+    function renderLeaderboardsContent() {
+      if (!window.leaderboardsSystem) return;
+
+      const html = leaderboardsSystem.createLeaderboardsUI();
+      document.getElementById('leaderboards-content').innerHTML = html;
+    }
+
+    /**
+     * Renderizar contenido de compartir
+     */
+    function renderShareContent() {
+      if (!window.leaderboardsSystem || !currentSocietyUI) {
+        document.getElementById('leaderboards-content').innerHTML = `
+          <div style="text-align: center; padding: 3rem; color: #f4e9d8; opacity: 0.6;">
+            <p>No hay sociedad activa para compartir</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Guardar referencia global para que los botones onclick funcionen
+      window.currentSocietyUI = currentSocietyUI;
+
+      const html = leaderboardsSystem.createSharingUI(currentSocietyUI);
+      document.getElementById('leaderboards-content').innerHTML = html;
+    }
+
+    /**
+     * Mostrar notificación
+     */
+    function showNotification(message, type = 'info') {
+      // Usar el sistema de log de eventos de la sociedad
+      if (currentSocietyUI) {
+        currentSocietyUI.logEvent(message, type);
+      }
+
+
+    }
+
+    // ============================================
+    // FIN FASE 3
+    // ============================================
+
+    /**
+     * Toggle play/pause
+     */
+    function togglePlayPause() {
+      if (!currentSocietyUI) return;
+
+      const btn = document.getElementById('btn-play-pause');
+
+      if (currentSocietyUI.running) {
+        currentSocietyUI.pause();
+        btn.textContent = '▶️ Reanudar';
+        btn.classList.remove('playing');
+      } else {
+        currentSocietyUI.start();
+        btn.textContent = '⏸️ Pausar';
+        btn.classList.add('playing');
+      }
+    }
+
+    /**
+     * Cambiar velocidad de simulación
+     */
+    function setSimulationSpeed(speed) {
+      if (!currentSocietyUI) return;
+      currentSocietyUI.setSpeed(speed);
+
+    }
+
+    /**
+     * Loop de actualización de UI
+     */
+    function startUIUpdateLoop() {
+      // Actualizar cada 100ms
+      window.uiUpdateIntervalId = setInterval(() => {
+        if (currentSocietyUI) {
+          renderSocietyState();
+        }
+      }, 100);
+    }
+
+    /**
+     * Renderizar estado completo de la sociedad
+     */
+    function renderSocietyState() {
+      if (!currentSocietyUI) return;
+
+      const state = currentSocietyUI.getState();
+
+      // Actualizar turno
+      document.getElementById('turn-number').textContent = state.turn;
+
+      // Actualizar métricas
+      updateMetric('health', state.metrics.health);
+      updateMetric('knowledge', state.metrics.knowledge);
+      updateMetric('action', state.metrics.action);
+      updateMetric('cohesion', state.metrics.cohesion);
+
+      // Actualizar gráfico
+      renderEvolutionGraph(state.metricsHistory);
+
+      // Actualizar lista de seres
+      renderBeingsList(state.beings);
+
+      // Actualizar log de eventos
+      renderEventsLog(state.eventLog);
+
+      // Actualizar progresión y misiones (FASE 1)
+      updateProgressionDisplay();
+      updateMissionDisplay();
+
+      // Verificar misiones completadas y dar recompensas
+      if (window.missionSystem && window.progressionSystem) {
+        const completed = missionSystem.checkCompletions();
+        completed.forEach(mission => {
+          // Dar XP
+          const result = progressionSystem.addXP(mission.rewards.xp);
+
+          // FASE 2: Efectos visuales y sonoros
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+
+          if (result.levelsGained.length > 0) {
+            // Level up!
+            currentSocietyUI.logEvent(`🎉 ¡Subiste a nivel ${result.newLevel}!`, 'success');
+
+            // Animaciones
+            if (window.animationSystem) {
+              window.animationSystem.spawnLevelUpParticles(centerX, centerY);
+              window.animationSystem.showFloatingText(`Nivel ${result.newLevel}!`, centerX, centerY - 50, '#d4af37', 32);
+            }
+
+            // Sonido
+            if (window.microSocietiesAudio) {
+              window.microSocietiesAudio.playLevelUp();
+            }
+          }
+
+          // Misión completada
+          currentSocietyUI.logEvent(`✅ Misión completada: ${mission.name} (+${mission.rewards.xp} XP)`, 'success');
+
+          // Animaciones de misión
+          if (window.animationSystem) {
+            window.animationSystem.spawnMissionCompleteParticles(centerX, centerY + 100);
+            window.animationSystem.showFloatingText(`+${mission.rewards.xp} XP`, centerX, centerY + 50, '#85c54e', 24);
+          }
+
+          // Sonido
+          if (window.microSocietiesAudio) {
+            window.microSocietiesAudio.playMissionComplete();
+          }
+        });
+      }
+
+      // FASE 3: Actualizar indicador de intervenciones divinas
+      if (window.divinInterventions) {
+        // Regenerar puntos si corresponde
+        divinInterventions.regeneratePoints(currentSocietyUI);
+
+        // Actualizar cooldowns
+        divinInterventions.updateCooldowns(currentSocietyUI.turn);
+
+        // Actualizar UI si el panel está abierto
+        const interventionsPanel = document.getElementById('interventions-panel');
+        if (interventionsPanel && interventionsPanel.style.display !== 'none') {
+          updateInterventionsUI();
+        } else {
+          // Solo actualizar el indicador del header
+          document.getElementById('divine-points-value').textContent = divinInterventions.divinePoints;
+        }
+      }
+
+      // FASE 3: Procesar turno en Sandbox Mode si está activo
+      if (window.sandboxMode && sandboxMode.active) {
+        sandboxMode.processSandboxTurn(currentSocietyUI);
+      }
+    }
+
+    /**
+     * Actualizar una métrica individual
+     */
+    function updateMetric(metricName, value) {
+      const valueEl = document.getElementById(`metric-${metricName}-value`);
+      const barEl = document.getElementById(`metric-${metricName}-bar`);
+
+      if (valueEl) valueEl.textContent = Math.round(value);
+      if (barEl) barEl.style.width = `${value}%`;
+    }
+
+    /**
+     * Renderizar gráfico de evolución
+     */
+    function renderEvolutionGraph(history) {
+      const canvas = document.getElementById('evolution-graph-canvas');
+      if (!canvas) return;
+
+      // Tomar últimos 30 snapshots
+      const recent = history.slice(-30);
+      if (recent.length === 0) return;
+
+      // Calcular máximo para escalar
+      const maxValue = Math.max(...recent.map(s =>
+        Math.max(s.health, s.knowledge, s.action, s.cohesion)
+      ));
+
+      canvas.innerHTML = recent.map(snapshot => {
+        // Usar el valor promedio de todas las métricas para la barra
+        const avg = (snapshot.health + snapshot.knowledge + snapshot.action + snapshot.cohesion) / 4;
+        const height = (avg / maxValue) * 100;
+
+        return `<div class="graph-bar" style="height: ${height}%" title="Turno ${snapshot.turn}: ${Math.round(avg)}%"></div>`;
+      }).join('');
+    }
+
+    /**
+     * Renderizar lista de seres
+     */
+    function renderBeingsList(beings) {
+      const container = document.getElementById('beings-list');
+      const countEl = document.getElementById('beings-count');
+
+      if (!container) return;
+
+      countEl.textContent = beings.length;
+
+      // Ordenar por fitness descendente
+      const sorted = [...beings].sort((a, b) => b.fitness - a.fitness);
+
+      container.innerHTML = sorted.map(being => {
+        // Generar avatar si AvatarSystem está disponible
+        let avatarHTML = '';
+        if (window.avatarSystem && currentSocietyUI) {
+          // Encontrar el ser completo en la sociedad actual
+          const fullBeing = currentSocietyUI.beings.find(b => b.name === being.name && b.alive);
+          if (fullBeing) {
+            const avatarURL = window.avatarSystem.generateAvatar(fullBeing, 48);
+            avatarHTML = `<img src="${avatarURL}" class="being-avatar" style="width: 48px; height: 48px; border-radius: 8px; margin-right: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">`;
+          }
+        }
+
+        return `
+          <div class="being-item" style="display: flex; align-items: center;">
+            ${avatarHTML}
+            <div class="being-info" style="flex: 1;">
+              <div class="being-name">${being.name}</div>
+              <div class="being-stats">Gen ${being.generation} | Poder: ${Math.round(being.totalPower)}</div>
+            </div>
+            <div class="being-fitness" style="font-weight: bold; font-size: 1.2rem;">${Math.round(being.fitness)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /**
+     * Renderizar log de eventos
+     */
+    function renderEventsLog(events) {
+      const container = document.getElementById('events-log');
+      if (!container) return;
+
+      container.innerHTML = events.map(event => `
+        <div class="event-item ${event.type}">
+          <span class="event-turn">T${event.turn}</span>
+          <span class="event-message">${event.message}</span>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Actualizar display de progresión
+     */
+    function updateProgressionDisplay() {
+      if (!window.progressionSystem) return;
+
+      const player = progressionSystem.player;
+      const xpForNext = progressionSystem.getXPForLevel(player.level);
+      const xpProgress = (player.xp / xpForNext) * 100;
+
+      document.getElementById('player-level').textContent = player.level;
+      document.getElementById('player-xp').textContent = player.xp;
+      document.getElementById('player-xp-next').textContent = xpForNext;
+      document.getElementById('player-xp-bar').style.width = `${xpProgress}%`;
+    }
+
+    /**
+     * Actualizar display de misión activa
+     */
+    function updateMissionDisplay() {
+      if (!window.missionSystem) return;
+
+      const activeMissions = missionSystem.getActiveMissions();
+      const container = document.getElementById('active-mission-display');
+
+      if (activeMissions.length === 0) {
+        container.innerHTML = 'Ninguna misión activa';
+        return;
+      }
+
+      // Mostrar primera misión activa
+      const mission = activeMissions[0];
+      const firstObjective = mission.objectives[0];
+      const progress = Math.min(100, (firstObjective.current / firstObjective.target) * 100);
+
+      container.innerHTML = `
+        <div style="margin-bottom: 0.5rem;">${mission.name}</div>
+        <div style="font-size: 0.85rem; opacity: 0.8;">${firstObjective.description}</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 4px; height: 6px; margin-top: 0.5rem; overflow: hidden;">
+          <div style="background: #d4af37; height: 100%; width: ${progress}%;"></div>
+        </div>
+        <div style="text-align: right; font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.7;">
+          ${firstObjective.current}/${firstObjective.target}
+        </div>
+      `;
+    }
+
+    /**
+     * Guardar sociedad en slot
+     */
+    function saveSocietySlot() {
+      if (!window.saveSystem || !currentSocietyUI) {
+        alert('Sistema de guardado no disponible');
+        return;
+      }
+
+      // Pausar simulación
+      if (currentSocietyUI.running) {
+        currentSocietyUI.pause();
+      }
+
+      // Pedir nombre para el slot
+      const slotName = prompt('Nombre del guardado:', `${currentSocietyUI.name} - T${currentSocietyUI.turn}`) || `save-${Date.now()}`;
+
+      // Generar thumbnail
+      const thumbnail = saveSystem.generateThumbnail(currentSocietyUI);
+
+      // Guardar
+      const success = saveSystem.saveSociety(currentSocietyUI, slotName, { thumbnail });
+
+      if (success) {
+        alert('✅ Sociedad guardada exitosamente!');
+      } else {
+        alert('❌ Error al guardar la sociedad');
+      }
+    }
+
+    /**
+     * Cargar sociedad desde slot
+     */
+    function loadSocietySlot() {
+      if (!window.saveSystem) {
+        alert('Sistema de guardado no disponible');
+        return;
+      }
+
+      const savesList = saveSystem.getSavesList();
+
+      if (savesList.length === 0) {
+        alert('No hay guardados disponibles');
+        return;
+      }
+
+      // Crear diálogo simple para seleccionar guardado
+      const options = savesList.map((save, i) =>
+        `${i + 1}. ${save.name} (Turno ${save.turn}, ${save.population} seres)`
+      ).join('\n');
+
+      const selection = prompt(`Selecciona un guardado:\n\n${options}\n\nIngresa el número:`);
+
+      if (!selection) return;
+
+      const index = parseInt(selection) - 1;
+      if (index < 0 || index >= savesList.length) {
+        alert('Selección inválida');
+        return;
+      }
+
+      const slotId = savesList[index].slotId;
+      const loadedSociety = saveSystem.loadSociety(slotId);
+
+      if (loadedSociety) {
+        // Cerrar modal actual
+        closeMicroSocietiesModal();
+
+        // Agregar sociedad cargada al manager
+        if (window.microSocietiesManager) {
+          microSocietiesManager.societies.push(loadedSociety);
+          microSocietiesManager.currentSociety = loadedSociety;
+        }
+
+        // Reabrir modal con sociedad cargada
+        setTimeout(() => {
+          openMicroSocietiesModal(loadedSociety);
+        }, 100);
+
+        alert('✅ Sociedad cargada exitosamente!');
+      } else {
+        alert('❌ Error al cargar la sociedad');
+      }
+    }
+
+    /**
+     * Función global para crear sociedad desde el Laboratorio Frankenstein
+     */
+    window.createMicroSocietyFromBeings = function(beings) {
+      if (!window.microSocietiesManager) {
+        alert('Sistema de Microsociedades no inicializado');
+        return;
+      }
+
+      // Diálogo para nombre y objetivo
+      const name = prompt('Nombre de la Microsociedad:', `Los ${beings[0].name.split(' ')[0]}s`) || 'Microsociedad Sin Nombre';
+      const goal = prompt('Objetivo de la sociedad:', 'Evolucionar hacia la regeneración') || 'Objetivo desconocido';
+
+      // Crear sociedad
+      const society = window.microSocietiesManager.createSociety(name, beings, goal);
+
+      // Abrir modal
+      openMicroSocietiesModal(society);
+
+
+    };
   </script>
 
 </body>

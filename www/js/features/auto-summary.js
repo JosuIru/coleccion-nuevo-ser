@@ -50,21 +50,21 @@ class AutoSummary {
 
   async generateSummary(chapter, bookId) {
     if (!this.aiAdapter || !window.aiConfig?.getClaudeApiKey()) {
-      console.log('IA no configurada para generar resumen');
+      // console.log('IA no configurada para generar resumen');
       return null;
     }
 
     // Verificar cache primero
     const cached = this.getCachedSummary(bookId, chapter.id);
     if (cached) {
-      console.log('Usando resumen cacheado');
+      // console.log('Usando resumen cacheado');
       return cached.summary;
     }
 
     // Obtener contenido del capítulo
     const content = this.extractChapterText(chapter);
     if (!content || content.length < 100) {
-      console.log('Contenido insuficiente para generar resumen');
+      // console.log('Contenido insuficiente para generar resumen');
       return null;
     }
 
@@ -202,7 +202,10 @@ FORMATO DE RESPUESTA:
               <p class="text-sm text-cyan-400/70">${chapter.title}</p>
             </div>
           </div>
-          <button id="close-summary-modal" class="text-cyan-300 hover:text-white p-2 hover:bg-cyan-800/50 rounded-lg transition">
+          <button id="close-summary-modal"
+                  class="text-cyan-300 hover:text-white p-3 hover:bg-cyan-800/50 rounded-lg transition"
+                  aria-label="Cerrar resumen"
+                  title="Cerrar">
             ${Icons.close(20)}
           </button>
         </div>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Estilos específicos para Android 12+ (API 31)
+        Habilita Material You / Dynamic Colors
+    -->
+
+    <!-- Tema base para Android 12+ con Material You -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Colores dinámicos del sistema (Material You) -->
+        <!-- Estos colores se extraen automáticamente del wallpaper del usuario -->
+
+        <!-- Color primario -->
+        <item name="colorPrimary">@android:color/system_accent1_500</item>
+        <item name="colorPrimaryDark">@android:color/system_accent1_700</item>
+        <item name="colorPrimaryVariant">@android:color/system_accent1_300</item>
+
+        <!-- Color secundario -->
+        <item name="colorSecondary">@android:color/system_accent2_500</item>
+        <item name="colorSecondaryVariant">@android:color/system_accent2_300</item>
+
+        <!-- Color de acento -->
+        <item name="colorAccent">@android:color/system_accent3_500</item>
+
+        <!-- Fondo -->
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+
+        <!-- StatusBar -->
+        <item name="android:statusBarColor">@color/ic_launcher_background</item>
+        <item name="android:navigationBarColor">@color/ic_launcher_background</item>
+    </style>
+
+    <!-- Tema sin ActionBar para lanzamiento (splash screen) -->
+    <style name="AppTheme.NoActionBarLaunch" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <!-- Tema para el splash screen con Material You -->
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/system_neutral1_900</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+</resources>

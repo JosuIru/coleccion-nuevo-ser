@@ -34,11 +34,11 @@ class BiometricHelper {
         this.isAvailable = result.isAvailable;
         this.biometryType = result.biometryType || 'none';
 
-        console.log('Biometric availability:', result);
+        // console.log('Biometric availability:', result);
         return result;
       }
     } catch (error) {
-      console.warn('Error checking biometric availability:', error);
+      // console.warn('Error checking biometric availability:', error);
       this.isAvailable = false;
     }
     return { isAvailable: false, biometryType: 'none' };
@@ -96,7 +96,7 @@ class BiometricHelper {
         return { success: true };
       }
     } catch (error) {
-      console.warn('Biometric authentication failed:', error);
+      // console.warn('Biometric authentication failed:', error);
 
       if (error.code === 'userCancel') {
         return { success: false, cancelled: true };
@@ -170,12 +170,12 @@ class BiometricHelper {
   renderSettingsPanel() {
     if (!this.isAvailable) {
       return `
-        <div class="biometric-settings p-4 bg-gray-800/50 rounded-xl border border-gray-700">
-          <div class="flex items-center gap-3 text-gray-400">
+        <div class="biometric-settings p-4 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-300 dark:border-gray-700">
+          <div class="flex items-center gap-3 text-gray-700 dark:text-gray-400">
             <span class="text-2xl">🔒</span>
             <div>
-              <p class="font-semibold">Biometría no disponible</p>
-              <p class="text-sm">Tu dispositivo no soporta autenticación biométrica</p>
+              <p class="font-semibold text-gray-900 dark:text-white">Biometría no disponible</p>
+              <p class="text-sm text-gray-700 dark:text-gray-400">Tu dispositivo no soporta autenticación biométrica</p>
             </div>
           </div>
         </div>
@@ -184,12 +184,12 @@ class BiometricHelper {
 
     return `
       <div class="biometric-settings space-y-4">
-        <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+        <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-300 dark:border-gray-700">
           <div class="flex items-center gap-3">
             <span class="text-3xl">${this.getBiometryIcon()}</span>
             <div>
-              <p class="font-semibold">${this.getBiometryLabel()}</p>
-              <p class="text-sm text-gray-400">Proteger notas y reflexiones privadas</p>
+              <p class="font-semibold text-gray-900 dark:text-white">${this.getBiometryLabel()}</p>
+              <p class="text-sm text-gray-700 dark:text-gray-400">Proteger notas y reflexiones privadas</p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">

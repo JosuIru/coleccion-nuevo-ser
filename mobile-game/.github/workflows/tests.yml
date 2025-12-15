@@ -1,0 +1,273 @@
+name: Tests - Awakening Protocol
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # UNIT TESTS (Frontend)
+  # ═══════════════════════════════════════════════════════════
+
+  unit-tests:
+    name: Unit Tests (Frontend)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit -- --coverage --maxWorkers=2
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./mobile-app/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: mobile-app/coverage/
+
+  # ═══════════════════════════════════════════════════════════
+  # BACKEND TESTS (PHP)
+  # ═══════════════════════════════════════════════════════════
+
+  backend-tests:
+    name: Backend Tests (PHP)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, xml, ctype, json, curl
+          coverage: xdebug
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./api/coverage.xml
+          flags: backend
+          name: backend-coverage
+
+  # ═══════════════════════════════════════════════════════════
+  # LINT (Frontend)
+  # ═══════════════════════════════════════════════════════════
+
+  lint:
+    name: Lint (Frontend)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  # ═══════════════════════════════════════════════════════════
+  # E2E TESTS - ANDROID
+  # ═══════════════════════════════════════════════════════════
+
+  e2e-android:
+    name: E2E Tests (Android)
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Build Android app
+        run: npm run test:e2e:build:android
+
+      - name: Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: x86_64
+          profile: pixel_5
+          script: cd mobile-app && npm run test:e2e:android
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: detox-android-artifacts
+          path: mobile-app/artifacts/
+
+  # ═══════════════════════════════════════════════════════════
+  # E2E TESTS - iOS
+  # ═══════════════════════════════════════════════════════════
+
+  e2e-ios:
+    name: E2E Tests (iOS)
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install pods
+        run: cd ios && pod install
+
+      - name: Build iOS app
+        run: npm run test:e2e:build:ios
+
+      - name: Run Detox tests
+        run: npm run test:e2e:ios
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: detox-ios-artifacts
+          path: mobile-app/artifacts/
+
+  # ═══════════════════════════════════════════════════════════
+  # BUILD CHECK (Android)
+  # ═══════════════════════════════════════════════════════════
+
+  build-android:
+    name: Build Check (Android)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Install dependencies
+        run: cd mobile-app && npm ci
+
+      - name: Build Android Release
+        run: cd mobile-app && npm run build:android
+
+  # ═══════════════════════════════════════════════════════════
+  # SUMMARY
+  # ═══════════════════════════════════════════════════════════
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, backend-tests, lint]
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Backend Tests: ${{ needs.backend-tests.result }}"
+          echo "Lint: ${{ needs.lint.result }}"
+
+          if [ "${{ needs.unit-tests.result }}" != "success" ] || \
+             [ "${{ needs.backend-tests.result }}" != "success" ] || \
+             [ "${{ needs.lint.result }}" != "success" ]; then
+            echo "❌ Some tests failed"
+            exit 1
+          else
+            echo "✅ All tests passed"
+          fi

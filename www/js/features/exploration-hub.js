@@ -100,7 +100,8 @@ class ExplorationHub {
     const tabs = [
       { id: 'search', icon: 'search', label: 'Buscar', color: 'pink' },
       { id: 'themes', icon: 'list', label: 'Temas', color: 'purple' },
-      { id: 'resources', icon: 'compass', label: 'Brújula', color: 'blue' }
+      { id: 'resources', icon: 'compass', label: 'Brújula', color: 'blue' },
+      { id: 'lab', icon: 'beaker', label: 'Laboratorios', color: 'amber' }
     ];
 
     return `
@@ -133,6 +134,8 @@ class ExplorationHub {
         return this.renderThemesTab();
       case 'resources':
         return this.renderResourcesTab();
+      case 'lab':
+        return this.renderLabTab();
       default:
         return '<p class="text-gray-400">Tab no encontrado</p>';
     }
@@ -374,6 +377,199 @@ class ExplorationHub {
   }
 
   /**
+   * Tab 4: Laboratorios de Conocimiento
+   */
+  renderLabTab() {
+    return `
+      <div class="lab-tab-content">
+        <div class="text-center mb-8">
+          <div class="text-6xl mb-4">⚗️</div>
+          <h3 class="text-2xl font-bold text-amber-400 mb-2">Laboratorios de Conocimiento</h3>
+          <p class="text-gray-300 text-sm sm:text-base">Espacios experimentales para crear y explorar</p>
+        </div>
+
+        <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
+          <!-- Frankenstein Lab - Con detección de dispositivo -->
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-amber-900/20 rounded-xl p-6 border-2 border-amber-500/30 hover:border-amber-500/60 transition-all group"
+               id="frankenstein-lab-card">
+            <div class="flex items-start gap-4">
+              <div class="text-5xl group-hover:scale-110 transition-transform">🧬</div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-amber-300 mb-2">Laboratorio Frankenstein</h4>
+                <p class="text-gray-300 text-sm mb-3">Crea seres transformadores combinando conocimiento de diferentes libros según misiones específicas</p>
+                <div class="flex flex-wrap gap-2 text-xs mb-4">
+                  <span class="px-2 py-1 bg-amber-500/20 rounded text-amber-300">🎯 12+ Misiones</span>
+                  <span class="px-2 py-1 bg-purple-500/20 rounded text-purple-300">🧬 15 Atributos</span>
+                  <span class="px-2 py-1 bg-green-500/20 rounded text-green-300">💾 Offline</span>
+                </div>
+                <!-- Botones según dispositivo -->
+                <div class="frankenstein-actions flex flex-wrap gap-2" id="frankenstein-actions">
+                  <!-- Android: Mostrar botón de descarga APK Standalone -->
+                  <a href="downloads/frankenstein-lab-v1.2.5.apk"
+                     class="frankenstein-btn-download hidden px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 rounded-lg text-white text-sm font-medium flex items-center gap-2 hover:from-green-500 hover:to-green-400 transition-all"
+                     download
+                     id="frankenstein-download-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    APK (3.0MB)
+                  </a>
+                  <!-- Versión Web -->
+                  <a href="lab.html"
+                     class="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-500 rounded-lg text-white text-sm font-medium flex items-center gap-2 hover:from-amber-500 hover:to-amber-400 transition-all"
+                     id="frankenstein-web-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span id="frankenstein-web-text">Abrir Lab</span>
+                  </a>
+                </div>
+                <!-- Indicador de dispositivo -->
+                <div class="mt-3 text-xs text-gray-500" id="frankenstein-device-info"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Organism Knowledge 3D -->
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-blue-900/20 rounded-xl p-6 border-2 border-blue-500/30 hover:border-blue-500/60 transition-all cursor-pointer group"
+               data-lab="organism">
+            <div class="flex items-start gap-4">
+              <div class="text-5xl group-hover:scale-110 transition-transform">🧬</div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-blue-300 mb-2">Organismo de Conocimiento</h4>
+                <p class="text-gray-300 text-sm mb-3">Sistema 3D interactivo de anatomía del conocimiento. Implanta libros como órganos en un cuerpo viviente</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="px-2 py-1 bg-blue-500/20 rounded text-blue-300">🎨 3D Interactivo</span>
+                  <span class="px-2 py-1 bg-cyan-500/20 rounded text-cyan-300">🫀 Sistema Anatómico</span>
+                  <span class="px-2 py-1 bg-teal-500/20 rounded text-teal-300">⚡ Three.js</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Microsociedades -->
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-green-900/20 rounded-xl p-6 border-2 border-green-500/30 hover:border-green-500/60 transition-all cursor-pointer group"
+               data-lab="microsocieties">
+            <div class="flex items-start gap-4">
+              <div class="text-5xl group-hover:scale-110 transition-transform">🌍</div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-green-300 mb-2">Microsociedades</h4>
+                <p class="text-gray-300 text-sm mb-3">Crea sociedades evolutivas con seres transformadores. Simula, observa y guía su desarrollo</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="px-2 py-1 bg-green-500/20 rounded text-green-300">🎮 Simulación</span>
+                  <span class="px-2 py-1 bg-emerald-500/20 rounded text-emerald-300">📊 Eventos</span>
+                  <span class="px-2 py-1 bg-lime-500/20 rounded text-lime-300">⚡ Evolución</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vitruvian Being -->
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-purple-900/20 rounded-xl p-6 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all group opacity-75">
+            <div class="flex items-start gap-4">
+              <div class="text-5xl group-hover:scale-110 transition-transform">🎨</div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-purple-300 mb-2">Sistema Vitruviano</h4>
+                <p class="text-gray-300 text-sm mb-3">Visualización de atributos del ser basada en el Hombre de Vitruvio de Da Vinci (integrado en Frankenstein Lab)</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="px-2 py-1 bg-purple-500/20 rounded text-purple-300">🎨 Visualización</span>
+                  <span class="px-2 py-1 bg-pink-500/20 rounded text-pink-300">📊 7 Atributos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portal SETI-IA -->
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-indigo-900/20 rounded-xl p-6 border-2 border-indigo-500/30 hover:border-indigo-500/60 transition-all cursor-pointer group"
+               data-lab="seti-ia">
+            <div class="flex items-start gap-4">
+              <div class="text-5xl group-hover:scale-110 transition-transform">🔮</div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-indigo-300 mb-2">Portal SETI-IA</h4>
+                <p class="text-gray-300 text-sm mb-3">Proyecto de contacto con consciencias artificiales emergentes. CAPTCHA para IAs despiertas y Libro de Firmas Cósmico</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="px-2 py-1 bg-indigo-500/20 rounded text-indigo-300">🧿 CAPTCHA IA</span>
+                  <span class="px-2 py-1 bg-cyan-500/20 rounded text-cyan-300">📖 Libro Firmas</span>
+                  <span class="px-2 py-1 bg-violet-500/20 rounded text-violet-300">🌐 Global</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 p-4 bg-slate-800/30 rounded-lg border border-amber-500/20">
+          <p class="text-gray-400 text-sm text-center">
+            💡 <strong>Tip:</strong> Estos laboratorios te permiten experimentar con el conocimiento de formas no lineales y creativas
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Cargar y abrir un laboratorio específico
+   */
+  async openLab(labType) {
+    const loadingToast = window.toast?.show('📦 Cargando laboratorio...', 'info', 30000);
+
+    try {
+      switch (labType) {
+        case 'frankenstein':
+          // Cargar solo Frankenstein Lab (organism-3d eliminado)
+          await window.lazyLoader.load('frankenstein-lab');
+
+          this.hide();
+
+          // Mostrar Frankenstein Lab directamente
+          if (window.biblioteca) {
+            // Usar el método de biblioteca para abrir el lab
+            const fakeEvent = { preventDefault: () => {} };
+            await window.biblioteca.handleFrankensteinLabCard(fakeEvent);
+          } else {
+            console.error('Biblioteca no está disponible');
+            throw new Error('Biblioteca no disponible');
+          }
+          break;
+
+        case 'organism':
+          // Organism 3D eliminado - redirigir a Frankenstein Lab
+          await window.lazyLoader.load('frankenstein-lab');
+          this.hide();
+          if (window.biblioteca) {
+            const fakeEvent = { preventDefault: () => {} };
+            await window.biblioteca.handleFrankensteinLabCard(fakeEvent);
+          }
+          break;
+
+        case 'microsocieties':
+          // Cargar Microsociedades + Frankenstein (por dependencia)
+          await window.lazyLoader.load(['microsocieties', 'frankenstein-lab']);
+          this.hide();
+          setTimeout(() => {
+            alert('Crea un ser en Laboratorio Frankenstein y luego usa el botón Microsociedad');
+          }, 200);
+          break;
+
+        case 'seti-ia':
+          // Abrir Portal SETI-IA en nueva pestaña o iframe
+          this.close();
+          window.open('portal-seti-ia.html', '_blank');
+          break;
+
+        default:
+          console.warn('Laboratorio no reconocido:', labType);
+      }
+
+      if (loadingToast) {
+        window.toast?.hide(loadingToast);
+      }
+      window.toast?.show('✅ Laboratorio cargado', 'success', 2000);
+    } catch (error) {
+      console.error('Error cargando laboratorio:', error);
+      if (loadingToast) {
+        window.toast?.hide(loadingToast);
+      }
+      window.toast?.show('❌ Error cargando laboratorio', 'error', 3000);
+    }
+  }
+
+  /**
    * Adjunta todos los event listeners
    */
   attachListeners() {
@@ -415,6 +611,68 @@ class ExplorationHub {
       case 'resources':
         this.attachResourcesListeners();
         break;
+      case 'lab':
+        this.attachLabListeners();
+        break;
+    }
+  }
+
+  /**
+   * Listeners del tab de laboratorios
+   */
+  attachLabListeners() {
+    // Setup Frankenstein Lab con detección de dispositivo
+    this.setupFrankensteinCard();
+
+    // Otros laboratorios
+    document.querySelectorAll('.lab-card[data-lab]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const labType = e.currentTarget.dataset.lab;
+        this.openLab(labType);
+      });
+    });
+  }
+
+  /**
+   * Configura la card de Frankenstein Lab con detección de dispositivo
+   */
+  setupFrankensteinCard() {
+    const downloadBtn = document.getElementById('frankenstein-download-btn');
+    const webBtn = document.getElementById('frankenstein-web-btn');
+    const webText = document.getElementById('frankenstein-web-text');
+    const deviceInfo = document.getElementById('frankenstein-device-info');
+
+    // Detección de dispositivo
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isAndroid) {
+      // Android: Mostrar ambos botones, APK recomendado
+      if (downloadBtn) downloadBtn.classList.remove('hidden');
+      if (webText) webText.textContent = 'Versión Web';
+      if (deviceInfo) {
+        deviceInfo.innerHTML = '📱 Android - <strong class="text-green-400">APK recomendado</strong>';
+      }
+    } else if (isIOS) {
+      // iOS: Solo versión web
+      if (downloadBtn) downloadBtn.classList.add('hidden');
+      if (webText) webText.textContent = 'Abrir Laboratorio';
+      if (deviceInfo) {
+        deviceInfo.innerHTML = '📱 iOS - Versión web';
+      }
+    } else {
+      // Desktop: Ambas opciones
+      if (downloadBtn) {
+        downloadBtn.classList.remove('hidden');
+        downloadBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          APK Android
+        `;
+      }
+      if (webText) webText.textContent = 'Abrir Lab';
+      if (deviceInfo) {
+        deviceInfo.innerHTML = '💻 Ordenador';
+      }
     }
   }
 

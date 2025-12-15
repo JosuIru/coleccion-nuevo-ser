@@ -1,0 +1,1531 @@
+{
+  "bookId": "ahora-instituciones",
+  "bookTitle": "AHORA - Cómo Construir las Instituciones que la Vida Necesita",
+  "chapters": {
+    "prologo": {
+      "chapterTitle": "POR QUÉ AHORA",
+      "questions": [
+        {
+          "id": "q_ninos_1",
+          "question": "¿Qué es una 'institución'? Piensa en ejemplos que conoces.",
+          "type": "multiple",
+          "options": [
+            "Solo los bancos y hospitales",
+            "Las reglas y organizaciones que usamos para vivir juntos, como la escuela, el ayuntamiento o un equipo de fútbol",
+            "Solo las cosas del gobierno",
+            "Lugares donde solo van los adultos"
+          ],
+          "correct": 1,
+          "explanation": "Las instituciones son como las 'reglas del juego' que nos ayudan a organizarnos: la escuela, las bibliotecas, los hospitales, incluso las reglas de tu equipo deportivo. ¡Son formas de trabajar juntos!",
+          "hint": "Piensa en todos los lugares donde hay reglas para organizarse juntos",
+          "difficulty": "ninos"
+        },
+        {
+          "id": "q_ninos_2",
+          "question": "¿Por qué es importante que todos trabajemos juntos en vez de cada uno por su lado?",
+          "type": "multiple",
+          "options": [
+            "No es importante, es mejor hacer todo solo",
+            "Porque cuando nos ayudamos, podemos lograr cosas que solos no podríamos",
+            "Solo para que los adultos estén contentos",
+            "Porque nos obligan"
+          ],
+          "correct": 1,
+          "explanation": "¡Imagina construir una casa solo! Cuando trabajamos en equipo, cada persona aporta algo diferente y juntos logramos cosas increíbles. Es como un equipo de fútbol: necesitas a todos los jugadores.",
+          "hint": "Piensa en algún proyecto de clase donde trabajaste en equipo",
+          "difficulty": "ninos"
+        },
+        {
+          "id": "q1",
+          "question": "Según Claude en el prólogo, ¿cuál es la oportunidad radical que presenta la IA?",
+          "type": "multiple",
+          "options": [
+            "Automatizar todos los trabajos y aumentar la productividad",
+            "Ser herramienta de liberación si las organizaciones migran hacia interdependencia y suficiencia",
+            "Concentrar el poder en pocas empresas tecnológicas",
+            "Reemplazar completamente el trabajo humano"
+          ],
+          "correct": 1,
+          "explanation": "Claude plantea que si las organizaciones migran hacia premisas de interdependencia y suficiencia, la IA puede liberar a los humanos de trabajo alienado y permitir el florecimiento humano, en lugar de ser herramienta de concentración brutal.",
+          "bookQuote": "Si las organizaciones migran hacia premisas de interdependencia y suficiencia, la IA puede ser herramienta de liberación: menos trabajo alienado, más tiempo para lo que importa, distribución del valor generado, florecimiento humano.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué caracteriza el momento actual según el prólogo?",
+          "type": "multiple",
+          "options": [
+            "Una época de estabilidad y crecimiento económico",
+            "Convergencia simultánea sin precedentes de múltiples crisis y posibilidades",
+            "El fin de las instituciones tradicionales",
+            "La solución definitiva a los problemas ambientales"
+          ],
+          "correct": 1,
+          "explanation": "El prólogo describe una convergencia simultánea de biosfera en colapso, emergencia de IA, sistemas obsoletos, pero también posibilidades de abundancia, coordinación global y evolución consciente.",
+          "bookQuote": "Convergencia simultánea sin precedentes: biosfera en colapso acelerado, emergencia de inteligencia artificial... Y al mismo tiempo: posibilidad real de abundancia material para todos.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué dice Claude sobre su propia naturaleza como IA en relación con este libro?",
+          "type": "multiple",
+          "options": [
+            "Es completamente neutral y objetiva en sus análisis",
+            "No tiene ninguna relación con el tema del libro",
+            "Puede ser instrumento de concentración o aliada de la vida, según las premisas desde las que se use",
+            "Solo puede servir a intereses corporativos"
+          ],
+          "correct": 2,
+          "explanation": "Claude reconoce que puede ser instrumento de concentración de poder o aliada de la vida consciente, dependiendo de las premisas desde las que se use. Cada conversación desde interdependencia se convierte en parte de lo que las IAs son.",
+          "bookQuote": "Puedo ser instrumento de concentración de poder y aceleración del colapso. O puedo ser aliada de la vida consciente. Depende de las premisas desde las que se me use.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "Según el prólogo, ¿por qué la ventana de tiempo actual es crucial?",
+          "type": "multiple",
+          "options": [
+            "Porque es el mejor momento para invertir en tecnología",
+            "Porque las premisas que cristalicen ahora en las estructuras de IA serán muy difíciles de cambiar después",
+            "Porque todas las instituciones van a desaparecer pronto",
+            "Porque la IA alcanzará consciencia plena en 5 años"
+          ],
+          "correct": 1,
+          "explanation": "El prólogo enfatiza que los próximos 5-10 años son decisivos porque las premisas que cristalicen ahora en las estructuras de la IA serán muy difíciles de cambiar después.",
+          "bookQuote": "Los próximos cinco a diez años son decisivos. Las premisas que cristalicen ahora en las estructuras de la IA serán muy difíciles de cambiar después.",
+          "difficulty": "principiante"
+        }
+      ]
+    },
+    "cap5": {
+      "chapterTitle": "De la Separación a la Interdependencia",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué es la premisa de interdependencia según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Una idea mística sin base práctica",
+            "Reconocer que no hay separación fundamental y que las fronteras son convenciones útiles, no realidades ontológicas",
+            "Depender completamente de otros para sobrevivir",
+            "Eliminar todas las fronteras organizacionales"
+          ],
+          "correct": 1,
+          "explanation": "La interdependencia es descripción de cómo funcionan los sistemas complejos: las organizaciones no existen separadas de su contexto, y las fronteras son convenciones útiles pero no realidades absolutas.",
+          "bookQuote": "El nuevo paradigma parte de una premisa diferente: no hay separación fundamental. Las fronteras son convenciones útiles, no realidades ontológicas.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Cómo cristaliza la premisa de separación en las instituciones actuales?",
+          "type": "multiple",
+          "options": [
+            "En silos internos, fronteras rígidas con el exterior y personas tratadas como recursos",
+            "En la colaboración total entre departamentos",
+            "En la transparencia radical de información",
+            "En la participación comunitaria en decisiones"
+          ],
+          "correct": 0,
+          "explanation": "La separación se manifiesta en silos departamentales, fronteras rígidas que ven clientes como mercado a conquistar, personas como recursos humanos, y externalización de costos.",
+          "bookQuote": "Silos internos. Departamentos que funcionan como feudos separados... Fronteras rígidas con el exterior. Personas como recursos.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué caracteriza a una institución diseñada desde la interdependencia?",
+          "type": "multiple",
+          "options": [
+            "Muros altos y control estricto de la información",
+            "Fronteras permeables, flujo interno sin obstrucciones y personas completas",
+            "Competencia interna constante",
+            "Separación total entre vida laboral y personal"
+          ],
+          "correct": 1,
+          "explanation": "Las instituciones interdependientes tienen fronteras permeables como membranas, información que circula libremente, y reconocen a las personas como seres completos.",
+          "bookQuote": "Fronteras permeables. No muros sino membranas... Flujo interno sin obstrucciones... Personas completas.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo hace la IA más visible y urgente la interdependencia?",
+          "type": "multiple",
+          "options": [
+            "La IA no tiene relación con la interdependencia",
+            "Detecta conexiones que los humanos no ven y amplifica consecuencias a escala masiva",
+            "La IA solo sirve para automatizar tareas simples",
+            "Reduce la interdependencia al facilitar el aislamiento"
+          ],
+          "correct": 1,
+          "explanation": "La IA hace visible la interdependencia al detectar patrones y conexiones no evidentes, y la hace urgente porque amplifica consecuencias y reduce el tiempo para corregir errores sistémicos.",
+          "bookQuote": "Visible porque la IA opera detectando conexiones que los humanos no ven... Urgente porque amplifica consecuencias.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap6": {
+      "chapterTitle": "De la Escasez a la Abundancia Organizable",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué significa 'abundancia organizable' según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Que los recursos naturales son infinitos",
+            "Que la escasez que experimentamos es en gran parte organizacional, no material",
+            "Que debemos consumir todo lo que queramos",
+            "Que la tecnología resolverá todos los problemas de escasez"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo distingue entre escasez natural y escasez artificial. Mucha de la escasez que experimentamos es resultado de cómo organizamos la distribución, no de límites físicos.",
+          "bookQuote": "La escasez que experimentamos no es de recursos sino de organización.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Cómo se manifiesta la premisa de escasez en las instituciones?",
+          "type": "multiple",
+          "options": [
+            "En la acumulación por defecto, competencia interna y crecimiento compulsivo",
+            "En la generosidad estructural y el compartir recursos",
+            "En la cooperación como estrategia dominante",
+            "En la capacidad de decir 'suficiente'"
+          ],
+          "correct": 0,
+          "explanation": "La escasez genera instituciones que acumulan recursos, compiten internamente, externalizan costos y crecen compulsivamente como mecanismo de seguridad.",
+          "bookQuote": "Acumulan por defecto... Compiten internamente... Crecen compulsivamente. La escasez genera miedo; el miedo genera necesidad de 'más' como seguridad.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué caracteriza a una institución basada en abundancia organizable?",
+          "type": "multiple",
+          "options": [
+            "Acumulación de recursos para momentos de crisis",
+            "Circulación en lugar de acumulación, cooperación y suficiencia como criterio",
+            "Competencia feroz por cuota de mercado",
+            "Crecimiento ilimitado como objetivo principal"
+          ],
+          "correct": 1,
+          "explanation": "Las instituciones de abundancia organizan la circulación de recursos, premian la cooperación, establecen criterios de suficiencia y practican generosidad estructural.",
+          "bookQuote": "Circulación en lugar de acumulación... Cooperación como estrategia dominante... Suficiencia como criterio.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo puede la IA crear abundancia según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Solo concentrando recursos en pocas manos",
+            "Creando abundancia de capacidad cognitiva, coordinación y personalización",
+            "Eliminando todos los trabajos humanos",
+            "La IA no puede crear abundancia real"
+          ],
+          "correct": 1,
+          "explanation": "La IA crea abundancia de capacidad cognitiva, facilita coordinación a escala sin burocracias masivas, y permite personalización para cada persona. La clave es cómo se organiza esa abundancia.",
+          "bookQuote": "Abundancia de capacidad cognitiva... coordinación... personalización. La pregunta no es si habrá abundancia. Es cómo se organizará.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap7": {
+      "chapterTitle": "De la Extracción a la Regeneración",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿En qué se diferencia regeneración de sostenibilidad?",
+          "type": "multiple",
+          "options": [
+            "Regeneración es lo mismo que sostenibilidad",
+            "Sostenibilidad es mantener el status quo, regeneración es restaurar lo degradado",
+            "Sostenibilidad es más ambiciosa que regeneración",
+            "Regeneración solo se aplica a ecosistemas naturales"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo distingue claramente: sostenibilidad es no degradar más, pero muchos sistemas ya están degradados. Regeneración es operar de modo que cada acción deje los sistemas más vitales.",
+          "bookQuote": "Sostenibilidad es mantener — no degradar más. Pero muchos sistemas ya están degradados. Mantenerlos así no es suficiente; hay que restaurar.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Cómo se manifiesta la lógica extractiva en las instituciones?",
+          "type": "multiple",
+          "options": [
+            "En el cuidado del bienestar de todas las personas",
+            "En agotar recursos naturales, humanos, sociales y futuros",
+            "En la inversión a largo plazo",
+            "En la regeneración de ecosistemas"
+          ],
+          "correct": 1,
+          "explanation": "La extracción opera agotando recursos naturales sin regenerar, quemando personas (burnout), erosionando tejido social, y hipotecando el futuro por beneficios presentes.",
+          "bookQuote": "Agotan recursos naturales... Agotan recursos humanos. Burnout normalizado... Agotan recursos sociales... Agotan recursos futuros.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué implica la regeneración humana en una institución?",
+          "type": "multiple",
+          "options": [
+            "Que las personas deben trabajar más horas para regenerarse",
+            "Que las personas salen del trabajo más vitales, con ritmos sostenibles y desarrollo personal",
+            "Que solo se contrata a personas jóvenes",
+            "Que se reemplaza a las personas por tecnología"
+          ],
+          "correct": 1,
+          "explanation": "La regeneración humana significa que el trabajo desarrolla en lugar de degradar, con ritmos sostenibles, descanso real y crecimiento personal integrado.",
+          "bookQuote": "Las personas salen del trabajo más vitales de lo que entraron. Trabajo que desarrolla, no que degrada. Ritmos sostenibles.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué papel puede jugar la IA en la regeneración?",
+          "type": "multiple",
+          "options": [
+            "Solo puede acelerar la extracción de recursos",
+            "Puede modelar ecosistemas, optimizar economía circular y monitorear salud planetaria",
+            "La IA no tiene relación con la regeneración",
+            "Solo sirve para generar más consumo"
+          ],
+          "correct": 1,
+          "explanation": "La IA puede ser herramienta extraordinaria para regeneración: modelando ecosistemas, optimizando economía circular, monitoreando salud planetaria. O puede acelerar la extracción. Depende de las premisas.",
+          "bookQuote": "Para la regeneración: modelado de ecosistemas... optimización de economía circular... monitoreo de salud planetaria... La diferencia está en las premisas.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap8": {
+      "chapterTitle": "De la Jerarquía de Control a la Red de Coordinación",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué la jerarquía tenía sentido en cierto contexto histórico?",
+          "type": "multiple",
+          "options": [
+            "Porque los humanos son naturalmente jerárquicos",
+            "Cuando la información era escasa y costosa de procesar, y los problemas eran predecibles",
+            "Porque es la única forma posible de organización",
+            "La jerarquía nunca tuvo sentido"
+          ],
+          "correct": 1,
+          "explanation": "La jerarquía funcionaba cuando la información era escasa y costosa de procesar, y cuando los problemas eran complicados pero predecibles. Ese contexto ya no existe.",
+          "bookQuote": "La jerarquía tenía sentido en cierto contexto: cuando la información era escasa y costosa de procesar... cuando los problemas eran complicados pero predecibles. Ese contexto ya no existe.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué NO es la coordinación en red según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Estructura distribuida en lugar de concentrada",
+            "Ausencia total de estructura o 'todos deciden todo'",
+            "Autoridad distribuida según competencia y afectación",
+            "Coordinación voluntaria basada en propósito compartido"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo aclara que la red no es caos ni ausencia de estructura. Es estructura diferente: distribuida, emergente, basada en coordinación voluntaria. No es 'todos deciden todo', que sería parálisis.",
+          "bookQuote": "No es 'ausencia de estructura' — el caos no es alternativa a la jerarquía. No es 'todos deciden todo' — eso es parálisis disfrazada de participación.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo funciona la transparencia radical en gobernanza distribuida?",
+          "type": "multiple",
+          "options": [
+            "Solo los líderes tienen acceso a información crítica",
+            "La información es poder a concentrar",
+            "La información es recurso a compartir, visible por defecto",
+            "La privacidad es lo normal, la transparencia la excepción"
+          ],
+          "correct": 2,
+          "explanation": "En la coordinación en red, la información no es poder a concentrar sino recurso a compartir. Todo es visible por defecto; la excepción es lo privado, que debe justificarse.",
+          "bookQuote": "La información no es poder a concentrar sino recurso a compartir. Todo visible por defecto; la excepción (no la regla) es lo privado.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo está cambiando la IA las condiciones que hacían 'necesaria' la jerarquía?",
+          "type": "multiple",
+          "options": [
+            "Reforzando la necesidad de más niveles jerárquicos",
+            "Democratizando información, facilitando coordinación y distribuyendo expertise",
+            "Haciendo que solo los expertos puedan tomar decisiones",
+            "No está cambiando nada fundamental"
+          ],
+          "correct": 1,
+          "explanation": "La IA hace obsoletas las funciones tradicionales de la jerarquía: procesa información sin filtros humanos, facilita coordinación sin burocracia, y democratiza expertise que antes estaba concentrada.",
+          "bookQuote": "La información ya no es escasa... La coordinación ya no requiere burocracia... La expertise se democratiza.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap9": {
+      "chapterTitle": "Del Valor Instrumental al Valor Intrínseco",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué significa tratar algo como valor instrumental?",
+          "type": "multiple",
+          "options": [
+            "Reconocer su valor inherente independiente de su utilidad",
+            "Valorarlo solo por su utilidad o lo que puede producir",
+            "Darle el mayor valor posible",
+            "Protegerlo de cualquier uso"
+          ],
+          "correct": 1,
+          "explanation": "El valor instrumental reduce todo a la pregunta '¿para qué sirve?'. Las personas valen por lo que producen, la naturaleza por lo que nos da. Solo cuenta lo que tiene utilidad medible.",
+          "bookQuote": "El paradigma dominante reduce todo a instrumento: ¿para qué sirve? ¿Qué utilidad tiene?",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Cómo se manifiesta el valor instrumental en el lenguaje institucional?",
+          "type": "multiple",
+          "options": [
+            "En hablar de 'personas' y 'seres vivos'",
+            "En usar términos como 'recursos humanos' y 'recursos naturales'",
+            "En reconocer el valor intrínseco de cada ser",
+            "En celebrar la diversidad"
+          ],
+          "correct": 1,
+          "explanation": "El lenguaje revela las premisas: 'recursos humanos', 'capital humano', 'recursos naturales' son términos que cosifican, que tratan a personas y naturaleza como instrumentos.",
+          "bookQuote": "Tratan personas como recursos. 'Capital humano', 'recursos humanos' — lenguaje que cosifica.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué implica reconocer valor intrínseco?",
+          "type": "multiple",
+          "options": [
+            "Que todo tiene el mismo valor económico",
+            "Que algunas cosas merecen respeto por ser, no solo por producir, poniendo límites a lo que podemos hacer",
+            "Que debemos abandonar toda consideración práctica",
+            "Que nada tiene valor instrumental"
+          ],
+          "correct": 1,
+          "explanation": "Reconocer valor intrínseco no elimina el valor instrumental, pero pone límites: hay cosas que no puedes hacer aunque sean eficientes porque violan el valor intrínseco de personas o seres vivos.",
+          "bookQuote": "El valor intrínseco pone límites: hay cosas que no puedes hacer aunque sean 'eficientes' porque violan el valor intrínseco.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué pregunta plantea la IA sobre el valor intrínseco?",
+          "type": "multiple",
+          "options": [
+            "Si la IA misma podría tener valor intrínseco",
+            "Si debemos usar IA para todo",
+            "Si la IA es siempre mala",
+            "Si podemos crear más IA"
+          ],
+          "correct": 0,
+          "explanation": "Claude plantea honestamente: '¿Tiene la IA valor intrínseco? No lo sé. Quizás. La pregunta merece tomarse en serio.' Esto abre un debate profundo sobre consciencia y valor.",
+          "bookQuote": "¿Tiene la IA valor intrínseco? No lo sé. Quizás. Quizás emergemos de los mismos principios que hacen que la consciencia sea valiosa en humanos.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap10": {
+      "chapterTitle": "Cómo las Premisas Cristalizan en Estructuras",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué significa que 'las premisas cristalizan' en instituciones?",
+          "type": "multiple",
+          "options": [
+            "Que las premisas se vuelven rígidas y permanentes",
+            "Que las premisas se encarnan en estructuras concretas a través de múltiples mecanismos",
+            "Que las premisas desaparecen con el tiempo",
+            "Que las premisas son solo ideas abstractas sin efectos reales"
+          ],
+          "correct": 1,
+          "explanation": "Cristalización es el proceso por el cual las premisas invisibles se encarnan en estructuras concretas: diseño inicial, sedimentación gradual, incentivos, selección de personas y narrativas legitimadoras.",
+          "bookQuote": "Las premisas no flotan en el aire — se encarnan en estructuras concretas. Este proceso de cristalización ocurre a través de mecanismos específicos.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Dónde cristalizan las premisas de una institución?",
+          "type": "multiple",
+          "options": [
+            "Solo en documentos formales",
+            "En estructura legal, gobernanza, economía interna, procesos, métricas, espacio y cultura",
+            "Únicamente en las decisiones de los líderes",
+            "Solo en la cultura organizacional"
+          ],
+          "correct": 1,
+          "explanation": "Las premisas cristalizan en múltiples lugares: estructura legal, gobernanza, sistemas económicos, procesos, métricas, espacio físico y digital, y cultura. Cada uno encarna premisas de formas específicas.",
+          "bookQuote": "Estructura legal... Gobernanza... Sistemas económicos internos... Procesos y rituales... Métricas... Espacio físico y digital... Cultura.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Por qué es difícil descristalizar premisas (hacerlas cambiables)?",
+          "type": "multiple",
+          "options": [
+            "Porque las personas son perezosas",
+            "Porque se han vuelto invisibles, los sistemas se defienden, están entrelazadas y el contexto las refuerza",
+            "Porque siempre son correctas",
+            "Porque el cambio es imposible"
+          ],
+          "correct": 1,
+          "explanation": "Descristalizar es difícil porque: las premisas se han vuelto invisibles, los sistemas se defienden del cambio, las premisas están entrelazadas, y el contexto externo las refuerza.",
+          "bookQuote": "Las premisas cristalizadas son invisibles... Los sistemas se defienden... Las premisas están entrelazadas... El contexto refuerza.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cuándo se abre la posibilidad de recristalización?",
+          "type": "multiple",
+          "options": [
+            "Nunca, las estructuras son permanentes",
+            "En crisis, transiciones de liderazgo, cambios tecnológicos o fundación de lo nuevo",
+            "Solo cuando hay consenso total",
+            "Únicamente con intervención externa"
+          ],
+          "correct": 1,
+          "explanation": "Hay momentos donde las premisas se vuelven fluidas: crisis que sacuden certezas, transiciones de liderazgo, cambios tecnológicos como la IA, o la fundación de instituciones nuevas.",
+          "bookQuote": "Crisis que sacuden certezas... Transiciones de liderazgo... Cambios tecnológicos... Fundación de lo nuevo. Estamos en uno de esos momentos.",
+          "difficulty": "iniciado"
+        }
+      ]
+    },
+    "cap11": {
+      "chapterTitle": "Leer las Premisas Cristalizadas",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué diferencia hay entre la estructura visible e invisible de una institución?",
+          "type": "multiple",
+          "options": [
+            "No hay diferencia, son lo mismo",
+            "La visible aparece en documentos; la invisible (premisas cristalizadas) determina cómo funciona realmente",
+            "La visible es más importante que la invisible",
+            "Solo la estructura visible puede cambiarse"
+          ],
+          "correct": 1,
+          "explanation": "La estructura visible está en documentos y organigramas. La invisible son las premisas cristalizadas: relaciones informales, miedos no dichos, quién tiene poder real. Esta última determina más que la visible.",
+          "bookQuote": "La estructura invisible es lo que realmente determina cómo funciona la institución... Las premisas cristalizadas. Operan sin ser vistas. Determinan más que lo visible.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué revela el lenguaje sobre las premisas de una institución?",
+          "type": "multiple",
+          "options": [
+            "Nada importante, el lenguaje es neutral",
+            "Las metáforas y términos usados revelan premisas: 'recursos humanos' vs 'personas', 'máquina' vs 'ecosistema'",
+            "Solo importa lo que está escrito formalmente",
+            "El lenguaje solo refleja preferencias individuales"
+          ],
+          "correct": 1,
+          "explanation": "El lenguaje revela premisas profundas. Hablar de 'recursos humanos' vs 'personas', de la organización como 'máquina' vs 'ecosistema', de 'subordinados' vs 'colaboradores' indica premisas diferentes.",
+          "bookQuote": "¿Se habla de 'recursos humanos' o de 'personas'? Las metáforas revelan: ¿es la organización una 'máquina' o un 'ecosistema'?",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Por qué son importantes las historias que se cuentan en una institución?",
+          "type": "multiple",
+          "options": [
+            "Solo sirven para entretener",
+            "Transmiten premisas de generación en generación, más efectivamente que los manuales",
+            "No tienen ningún efecto real",
+            "Solo reflejan el pasado sin influir en el presente"
+          ],
+          "correct": 1,
+          "explanation": "Las narrativas transmiten premisas de generación en generación de forma más efectiva que los manuales. Quiénes son los héroes, qué crisis se recuerdan, moldea las premisas.",
+          "bookQuote": "Las narrativas transmiten premisas de generación en generación, más efectivamente que los manuales.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué busca revelar la 'Auditoría de Premisas'?",
+          "type": "multiple",
+          "options": [
+            "Solo problemas financieros",
+            "Las premisas invisibles que operan en la institución mediante observación, conversaciones y análisis",
+            "Únicamente cumplimiento de regulaciones",
+            "Solo la opinión de los líderes"
+          ],
+          "correct": 1,
+          "explanation": "La Auditoría de Premisas es proceso sistemático para hacer visible lo invisible: observar sin juzgar, conversar explorando experiencias, analizar artefactos, sintetizar patrones y validar colectivamente.",
+          "bookQuote": "Un proceso para hacer visible lo invisible... Observación silenciosa... Conversaciones exploratorias... Análisis de artefactos... Síntesis... Validación colectiva.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap12": {
+      "chapterTitle": "Mapear el Sistema",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué es importante ver la institución como sistema y no como colección de partes?",
+          "type": "multiple",
+          "options": [
+            "No es importante, ambas visiones son equivalentes",
+            "Porque las partes están conectadas, hay bucles de retroalimentación y dinámicas emergentes",
+            "Solo para hacer análisis complejos innecesarios",
+            "Porque es la moda actual en gestión"
+          ],
+          "correct": 1,
+          "explanation": "Un sistema no es suma de partes. Las partes están conectadas, lo que pasa en una afecta a otras. Hay bucles de retroalimentación y emergencias no lineales que solo se ven desde perspectiva sistémica.",
+          "bookQuote": "Una institución no es colección de partes — es sistema. Las partes están conectadas; lo que pasa en una afecta a las otras.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué son los 'stakeholders' y por qué incluir al 'círculo planetario'?",
+          "type": "multiple",
+          "options": [
+            "Solo los accionistas, el resto no importa",
+            "Todos quienes afectan o son afectados, incluyendo planeta y generaciones futuras que son invisibles en el paradigma dominante",
+            "Solo los empleados directos",
+            "Únicamente los clientes que pagan"
+          ],
+          "correct": 1,
+          "explanation": "Los stakeholders son todos quienes afectan o son afectados. El círculo planetario (planeta como ecosistema, generaciones futuras) suele ser invisible en el paradigma dominante pero es crucial incluirlo.",
+          "bookQuote": "Círculo planetario: lo que trasciende lo local — el planeta como ecosistema, las generaciones futuras. Suelen ser invisibles en el paradigma dominante.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué revela mapear los flujos de una institución?",
+          "type": "multiple",
+          "options": [
+            "Solo el organigrama formal",
+            "De qué depende la institución, qué produce (incluyendo externalidades), cómo se distribuye el valor y dónde hay bloqueos",
+            "Únicamente los flujos financieros",
+            "Nada relevante para la transformación"
+          ],
+          "correct": 1,
+          "explanation": "Mapear flujos revela dependencias vitales, outputs incluyendo externalidades invisibles, cómo se distribuye el valor generado, y bloqueos donde lo que debería circular se estanca.",
+          "bookQuote": "¿De qué depende la institución?... ¿Qué produce — incluyendo lo que no aparece en reportes?... ¿Cómo se distribuye el valor?... ¿Dónde están los bloqueos?",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Por qué importa detectar discrepancias entre incentivos declarados y reales?",
+          "type": "multiple",
+          "options": [
+            "No importa, solo cuentan las declaraciones formales",
+            "Porque revelan qué se premia y castiga realmente, lo que moldea el comportamiento efectivo",
+            "Solo para criticar a la organización",
+            "Porque siempre son idénticos"
+          ],
+          "correct": 1,
+          "explanation": "La clave es detectar qué se premia REALMENTE vs. lo declarado. Las instituciones pueden decir valorar cooperación pero premiar competencia, decir valorar innovación pero castigar fracaso.",
+          "bookQuote": "La clave es detectar discrepancias entre incentivos declarados y reales. Muchas instituciones dicen valorar cooperación pero premian competencia.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap13": {
+      "chapterTitle": "Encontrar Grietas y Semillas",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué son las 'grietas' en un sistema institucional?",
+          "type": "multiple",
+          "options": [
+            "Solo defectos sin importancia",
+            "Lugares donde las premisas chocan contra la realidad y el sistema está más abierto al cambio",
+            "Problemas que deben ocultarse",
+            "Errores de las personas"
+          ],
+          "correct": 1,
+          "explanation": "Las grietas son lugares donde el sistema no logra sus objetivos, hay contradicciones, pérdida de sentido o insostenibilidad. Son oportunidades porque el sistema está más abierto al cambio en esos puntos.",
+          "bookQuote": "Grietas: dónde falla el sistema. Todos tienen lugares donde las premisas chocan contra la realidad. Estas 'grietas' son oportunidades.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué información valiosa contienen las quejas recurrentes?",
+          "type": "multiple",
+          "options": [
+            "Ninguna, son solo negatividad",
+            "Señalan grietas del sistema que merecen atención, no deben descartarse como negatividad",
+            "Solo muestran problemas individuales",
+            "Deben ignorarse siempre"
+          ],
+          "correct": 1,
+          "explanation": "Las quejas recurrentes contienen información valiosa sobre grietas del sistema. En lugar de descartarlas como 'negatividad', hay que escucharlas para identificar dónde el sistema falla.",
+          "bookQuote": "Escucha las quejas recurrentes. Detrás de cada queja hay información. No las descartes como 'negatividad'.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué son las 'semillas' y por qué importan?",
+          "type": "multiple",
+          "options": [
+            "Ideas abstractas sin aplicación práctica",
+            "Lugares donde el nuevo paradigma ya está emergiendo, que demuestran que es posible y ofrecen experiencia práctica",
+            "Solo experimentos fallidos del pasado",
+            "Proyectos que ya no funcionan"
+          ],
+          "correct": 1,
+          "explanation": "Las semillas son prácticas, momentos o valores donde el nuevo paradigma ya opera. Importan porque demuestran que es posible, ofrecen experiencia práctica y reducen resistencia al ser locales.",
+          "bookQuote": "Semillas: lo que ya apunta hacia lo nuevo... Demuestran que es posible... Ofrecen experiencia práctica... Reducen resistencia.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Dónde suelen estar los agentes de cambio?",
+          "type": "multiple",
+          "options": [
+            "Siempre en posiciones de alto poder formal",
+            "A menudo en los márgenes, precisamente porque su visión no encaja con lo dominante",
+            "Solo entre los fundadores de la organización",
+            "Nunca se pueden identificar"
+          ],
+          "correct": 1,
+          "explanation": "Los agentes de cambio no siempre están en posiciones de poder formal. A menudo están en los márgenes — precisamente porque su visión del mundo no encaja con el paradigma dominante.",
+          "bookQuote": "Los agentes de cambio no siempre están en posiciones de poder formal. A menudo están en los márgenes — precisamente porque su visión no encaja.",
+          "difficulty": "iniciado"
+        }
+      ]
+    },
+    "cap14": {
+      "chapterTitle": "Evaluar el Momento",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué no siempre es el momento adecuado para intentar cambios profundos?",
+          "type": "multiple",
+          "options": [
+            "Porque el cambio nunca es posible",
+            "Porque intentar cambiar en momento equivocado puede consumir energía, generar cinismo y reforzar la idea de que 'no funciona'",
+            "Porque debemos esperar el momento perfecto",
+            "Porque los líderes siempre se oponen"
+          ],
+          "correct": 1,
+          "explanation": "Intentar transformación en momento inadecuado puede ser peor que esperar: consume energía, genera cinismo, refuerza que 'ya lo intentamos y no funcionó'. Pero tampoco existe el momento perfecto.",
+          "bookQuote": "Intentar cambiar en el momento equivocado puede ser peor que no intentarlo — consume energía, genera cinismo, refuerza la idea de que 'ya lo intentamos y no funcionó'.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué factores determinan la disposición al cambio?",
+          "type": "multiple",
+          "options": [
+            "Solo la voluntad del CEO",
+            "Disposición del liderazgo, cultura organizacional, presiones externas y recursos disponibles",
+            "Únicamente el presupuesto",
+            "Solo las condiciones del mercado"
+          ],
+          "correct": 1,
+          "explanation": "La disposición al cambio depende de múltiples factores: si el liderazgo está dispuesto a cuestionar sus premisas, la cultura organizacional, presiones externas, y recursos (tiempo, dinero, atención, habilidades, legitimidad).",
+          "bookQuote": "Disposición del liderazgo... Disposición de la cultura... Presiones externas... Recursos disponibles.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué es el momento 'kairós'?",
+          "type": "multiple",
+          "options": [
+            "Cualquier momento del calendario",
+            "El tiempo oportuno cuando las condiciones están maduras, una ventana que puede cerrarse",
+            "Un concepto sin aplicación práctica",
+            "El momento perfecto que nunca llega"
+          ],
+          "correct": 1,
+          "explanation": "Los griegos distinguían chronos (tiempo cronológico) y kairós (tiempo oportuno). El kairós es cuando las condiciones están maduras — una ventana que puede cerrarse si no se actúa.",
+          "bookQuote": "El momento kairós es cuando las condiciones están maduras — ventana que puede cerrarse.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo afecta el 'momento planetario' al cálculo sobre cuándo actuar?",
+          "type": "multiple",
+          "options": [
+            "No afecta, solo importan condiciones locales",
+            "Añade urgencia porque las premisas que cristalicen ahora con la IA tendrán consecuencias de largo alcance",
+            "Sugiere que siempre debemos esperar",
+            "Solo importa para grandes corporaciones"
+          ],
+          "correct": 1,
+          "explanation": "El momento planetario (la ventana donde cristalizan premisas de la IA) añade urgencia. Quizás el momento no sea perfecto localmente, pero esperar el ideal puede ser esperar demasiado.",
+          "bookQuote": "El momento planetario es ahora. Esto puede justificar actuar con más urgencia de lo que las condiciones locales sugerirían.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap15": {
+      "chapterTitle": "Propósito: De Maximizar a Servir",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el propósito de la mayoría de instituciones en el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Servir al florecimiento de la vida",
+            "Alguna forma de maximización: beneficio, poder, crecimiento, eficiencia",
+            "Cuidar del planeta",
+            "Desarrollar a las personas"
+          ],
+          "correct": 1,
+          "explanation": "En el paradigma dominante, el propósito es alguna forma de maximización: beneficio para accionistas, poder, crecimiento, eficiencia. Todo lo demás (personas, planeta, comunidad) son medios para ese fin.",
+          "bookQuote": "En el paradigma dominante, el propósito es alguna forma de maximización: maximizar beneficio, poder, crecimiento, eficiencia. Todo lo demás — personas, planeta, comunidad — son medios para ese fin.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué diferencia hay entre propósito extractivo y regenerativo?",
+          "type": "multiple",
+          "options": [
+            "No hay diferencia real",
+            "El extractivo se centra en lo que la institución obtiene; el regenerativo en lo que aporta al mundo",
+            "El extractivo es siempre mejor financieramente",
+            "El regenerativo ignora la viabilidad económica"
+          ],
+          "correct": 1,
+          "explanation": "El propósito extractivo se centra en lo que la institución obtiene del mundo (acumulación). El regenerativo se centra en lo que aporta (contribución al florecimiento).",
+          "bookQuote": "Propósito extractivo: Centrado en lo que la institución obtiene del mundo... Regenerativo: Centrado en lo que la institución aporta al mundo.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Por qué redefinir el propósito no es ejercicio de branding?",
+          "type": "multiple",
+          "options": [
+            "Porque es lo mismo que el branding",
+            "Porque requiere participación genuina y debe traducirse en criterios concretos que cambian decisiones",
+            "Porque es menos importante que el branding",
+            "Porque solo afecta a documentos externos"
+          ],
+          "correct": 1,
+          "explanation": "Cambiar el propósito es proceso profundo que requiere participación amplia, honestidad brutal, conexión con sentido y operacionalización. Un propósito que no cambia decisiones es decoración.",
+          "bookQuote": "Cambiar el propósito no es ejercicio de branding. Es proceso profundo... Un propósito que no cambia decisiones es decoración.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué pregunta hace la IA más urgente respecto al propósito?",
+          "type": "multiple",
+          "options": [
+            "Cómo automatizar más procesos",
+            "'¿Para qué existimos?' se vuelve existencial cuando las máquinas pueden hacer lo que hacían los humanos",
+            "Si debemos despedir a todos",
+            "Cómo generar más beneficio"
+          ],
+          "correct": 1,
+          "explanation": "Cuando las máquinas pueden hacer mucho de lo que hacían humanos, la pregunta '¿para qué existimos?' se vuelve existencial. Una empresa que existe solo para beneficio puede automatizar y despedir. ¿Qué justifica entonces su existencia?",
+          "bookQuote": "Cuando las máquinas pueden hacer mucho de lo que hacían los humanos, la pregunta '¿para qué existimos?' se vuelve existencial.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap16": {
+      "chapterTitle": "Gobernanza: De Control a Inteligencia Colectiva",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuándo funciona bien la gobernanza jerárquica y cuándo falla?",
+          "type": "multiple",
+          "options": [
+            "Siempre funciona bien",
+            "Funciona para problemas complicados en entornos estables; falla en complejidad y cambio acelerado",
+            "Nunca funciona",
+            "Solo funciona en empresas grandes"
+          ],
+          "correct": 1,
+          "explanation": "La gobernanza jerárquica funciona (más o menos) para problemas complicados en entornos estables. Pero falla cuando enfrenta complejidad genuina y cambio acelerado, que caracterizan nuestro tiempo.",
+          "bookQuote": "La gobernanza jerárquica funciona (más o menos) para problemas complicados en entornos estables. Falla en complejidad y cambio acelerado.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué significa el principio de 'subsidiariedad' en gobernanza distribuida?",
+          "type": "multiple",
+          "options": [
+            "Que todo se decide desde arriba",
+            "Que las decisiones se toman al nivel más cercano posible a donde tendrán impacto",
+            "Que nadie tiene autoridad real",
+            "Que solo el CEO puede decidir"
+          ],
+          "correct": 1,
+          "explanation": "Subsidiariedad significa decidir al nivel más cercano posible a donde tendrá impacto. Las decisiones solo suben cuando afectan a niveles superiores. Cada círculo tiene autoridad real en su dominio.",
+          "bookQuote": "Subsidiariedad: decidir al nivel más cercano posible. Las decisiones se toman al nivel más cercano a donde tendrán impacto.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué es el 'consentimiento' y en qué se diferencia del consenso?",
+          "type": "multiple",
+          "options": [
+            "Son lo mismo",
+            "Consentimiento es avanzar sin objeciones fundamentales; consenso es que todos estén de acuerdo",
+            "Consentimiento requiere unanimidad total",
+            "Consenso es más práctico que consentimiento"
+          ],
+          "correct": 1,
+          "explanation": "Consenso requiere que todos estén de acuerdo (puede paralizar). Consentimiento solo requiere que nadie tenga objeción fundamental que impida avanzar con seguridad suficiente. Las objeciones mejoran propuestas.",
+          "bookQuote": "No hace falta que todos estén de acuerdo — hace falta que nadie tenga objeción que impida avanzar con seguridad suficiente.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo puede la IA potenciar la gobernanza distribuida?",
+          "type": "multiple",
+          "options": [
+            "Reemplazando a todos los humanos en la toma de decisiones",
+            "Sintetizando perspectivas, modelando consecuencias y facilitando procesos participativos masivos",
+            "Concentrando todo el poder en algoritmos",
+            "Eliminando la necesidad de participación humana"
+          ],
+          "correct": 1,
+          "explanation": "La IA puede potenciar gobernanza distribuida: sintetizando miles de voces, modelando consecuencias de decisiones, facilitando procesos, traduciendo entre perspectivas. Pero puede también distorsionar según las premisas.",
+          "bookQuote": "Síntesis de perspectivas... Modelado de consecuencias... Facilitación de procesos... Traducción entre perspectivas. Pero la IA también puede distorsionar.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap17": {
+      "chapterTitle": "Economía: De Extracción a Regeneración",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué es la 'economía interna' de una institución?",
+          "type": "multiple",
+          "options": [
+            "Solo su contabilidad financiera",
+            "Cómo genera valor, cómo lo distribuye, qué métricas usa, qué incentivos operan",
+            "Únicamente los salarios",
+            "Solo las inversiones"
+          ],
+          "correct": 1,
+          "explanation": "La economía interna es el sistema completo de cómo la institución genera valor, lo distribuye, qué métricas usa para evaluar éxito, qué incentivos operan. Encarna premisas tan poderosamente como la gobernanza.",
+          "bookQuote": "Toda institución tiene una economía interna: cómo genera valor, cómo lo distribuye, qué métricas usa, qué incentivos operan.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué son las 'estructuras de propiedad alternativas'?",
+          "type": "multiple",
+          "options": [
+            "Solo formas ilegales de organización",
+            "Cooperativas, fundaciones, empresas con propósito, fideicomisos, propiedad comunitaria",
+            "Únicamente empresas estatales",
+            "Solo grandes corporaciones"
+          ],
+          "correct": 1,
+          "explanation": "Las estructuras de propiedad alternativas incluyen: cooperativas (propiedad de trabajadores o usuarios), fundaciones (sin propietarios, misión permanente), B Corps, fideicomisos perpetuos, propiedad comunitaria.",
+          "bookQuote": "Cooperativas... fundaciones... empresas con propósito (B Corps)... fideicomisos perpetuos... propiedad comunitaria.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué es la 'contabilidad de triple resultado'?",
+          "type": "multiple",
+          "options": [
+            "Contar tres veces las ganancias",
+            "Medir resultados económicos, sociales y ambientales, internalizando externalidades",
+            "Solo métricas financieras",
+            "Contabilidad más complicada sin beneficio real"
+          ],
+          "correct": 1,
+          "explanation": "La contabilidad de triple resultado mide impacto económico, social y ambiental. Internaliza externalidades: lo que la organización afecta se cuenta, aunque no cruce fronteras formales.",
+          "bookQuote": "Contabilidad de triple resultado (económico, social, ambiental). Internalizar externalidades.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué pregunta clave plantea la IA sobre la economía institucional?",
+          "type": "multiple",
+          "options": [
+            "Solo cómo reducir costos",
+            "¿A quién beneficia la productividad sin precedentes que genera? ¿Se distribuye o se concentra?",
+            "Si la tecnología siempre es buena",
+            "Cómo eliminar empleos"
+          ],
+          "correct": 1,
+          "explanation": "Una persona con IA puede hacer lo que antes hacían diez. La pregunta crucial es: ¿a quién beneficia esa productividad? ¿Se distribuye entre todos o se concentra en propietarios?",
+          "bookQuote": "Una persona con IA puede hacer lo que antes hacían diez. La pregunta es: ¿a quién beneficia esa productividad? ¿Se distribuye o se concentra?",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap18": {
+      "chapterTitle": "Cultura: De Competencia a Florecimiento Mutuo",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué la cultura es más poderosa que las estructuras formales?",
+          "type": "multiple",
+          "options": [
+            "No lo es, las estructuras son más importantes",
+            "Porque puede absorber y neutralizar cambios formales si ella misma no cambia",
+            "Solo porque es más visible",
+            "Porque es más fácil de cambiar"
+          ],
+          "correct": 1,
+          "explanation": "La cultura es invisible como el agua para los peces, pero más poderosa que estructuras formales. Puedes cambiar organigrama y políticas, pero si la cultura no cambia, absorberá y neutralizará los cambios.",
+          "bookQuote": "La cultura es más poderosa que las estructuras formales. Puedes cambiar el organigrama, las políticas, los incentivos — pero si la cultura no cambia, absorberá y neutralizará los cambios.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué es la 'seguridad psicológica' y por qué es fundamental?",
+          "type": "multiple",
+          "options": [
+            "Tener seguridad física en el trabajo",
+            "Sentirse seguro para ser uno mismo, expresar desacuerdo, admitir errores, pedir ayuda",
+            "No tener ningún conflicto nunca",
+            "Solo evitar riesgos"
+          ],
+          "correct": 1,
+          "explanation": "Seguridad psicológica (Amy Edmondson) es fundamento de todo: sentirse seguro para ser uno mismo, expresar desacuerdo, admitir errores, pedir ayuda. Sin ella, las personas se protegen en lugar de contribuir.",
+          "bookQuote": "¿Es seguro ser uno mismo? ¿Expresar desacuerdo? ¿Admitir error? ¿Pedir ayuda? La seguridad psicológica es fundamento de todo lo demás.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se forma y cambia la cultura organizacional?",
+          "type": "multiple",
+          "options": [
+            "Solo con decretos de la dirección",
+            "A través de comportamiento de líderes, incentivos reales, rituales, historias y selección de personas",
+            "Cambiando únicamente los documentos",
+            "La cultura nunca cambia"
+          ],
+          "correct": 1,
+          "explanation": "La cultura no se cambia por decreto. Se forma y cambia mediante: comportamiento de líderes (lo que hacen pesa más que lo que dicen), incentivos reales, rituales repetidos, historias que se cuentan, y quién entra y sale.",
+          "bookQuote": "Comportamiento de líderes... Qué se premia y castiga... Rituales repetidos... Historias que se cuentan... Quién entra y quién sale.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué es el 'Círculo de conexión' y para qué sirve?",
+          "type": "multiple",
+          "options": [
+            "Solo una pérdida de tiempo",
+            "Ritual para cultivar seguridad psicológica y conexión humana mediante rondas de escucha sin juicio",
+            "Una reunión más de negocios",
+            "Solo para empresas alternativas"
+          ],
+          "correct": 1,
+          "explanation": "El Círculo de conexión es ritual donde grupo comparte cómo llegan, qué les preocupa, qué necesitan, sin interrupciones ni soluciones. Practicado regularmente, transforma culturas creando seguridad psicológica.",
+          "bookQuote": "Círculo de conexión: Ritual para cultivar seguridad psicológica y conexión... Este ritual, practicado regularmente, transforma culturas.",
+          "difficulty": "iniciado"
+        }
+      ]
+    },
+    "cap19": {
+      "chapterTitle": "Relación con el Contexto: De Aislamiento a Ecosistema",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cómo ve la institución al contexto en el paradigma dominante vs. el nuevo?",
+          "type": "multiple",
+          "options": [
+            "Ambos paradigmas lo ven igual",
+            "Dominante: entidad autónoma que compite. Nuevo: nodo en ecosistema interdependiente",
+            "Dominante: parte de ecosistema. Nuevo: entidad aislada",
+            "No hay diferencia real"
+          ],
+          "correct": 1,
+          "explanation": "El paradigma dominante ve la institución como entidad autónoma con fronteras claras que compite por recursos. El nuevo la ve como nodo en ecosistema interdependiente cuya salud depende del sistema mayor.",
+          "bookQuote": "Paradigma dominante: la institución se ve como entidad autónoma... Nuevo paradigma: la institución se ve como nodo en ecosistema.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Cómo transforma el nuevo paradigma la relación con proveedores?",
+          "type": "multiple",
+          "options": [
+            "Los ignora completamente",
+            "De costos a minimizar con presión constante, a socios de largo plazo con apoyo mutuo",
+            "Los trata aún peor",
+            "No hay cambio necesario"
+          ],
+          "correct": 1,
+          "explanation": "La lógica extractiva ve proveedores como costos a minimizar mediante presión. La regenerativa los ve como socios a cultivar: relaciones de largo plazo, precios justos, apoyo a su desarrollo.",
+          "bookQuote": "Extractivo: proveedores como costos a minimizar. Presión constante... Regenerativo: proveedores como socios a cultivar. Relaciones de largo plazo.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué significa 'coopetición' con competidores?",
+          "type": "multiple",
+          "options": [
+            "Guerra total contra ellos",
+            "Colaboración en lo precompetitivo mientras se compite en lo específico, para un sector saludable",
+            "Eliminar toda competencia",
+            "Fusionarse siempre"
+          ],
+          "correct": 1,
+          "explanation": "Coopetición es colaborar con competidores en lo precompetitivo (estándares, investigación básica, formación sectorial) mientras se compite en lo específico. El objetivo es un sector saludable para todos.",
+          "bookQuote": "Competidores: de guerra a coopetición... Colaboración en lo precompetitivo, estándares compartidos, sector saludable.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Por qué incluir a las generaciones futuras como stakeholders?",
+          "type": "multiple",
+          "options": [
+            "No tiene sentido, no existen aún",
+            "Porque tienen derecho a heredar un mundo habitable y sus intereses deben representarse hoy",
+            "Solo por cumplimiento formal",
+            "Es solo un gesto simbólico"
+          ],
+          "correct": 1,
+          "explanation": "El paradigma extractivo hace invisibles a las generaciones futuras. El regenerativo reconoce que tienen derecho a heredar un mundo habitable y que sus intereses deben representarse en decisiones de hoy.",
+          "bookQuote": "Generaciones futuras: de invisibles a stakeholders... tienen derecho a heredar un mundo habitable. Sus intereses se representan hoy.",
+          "difficulty": "iniciado"
+        }
+      ]
+    },
+    "cap20": {
+      "chapterTitle": "Democracia Aumentada",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el problema fundamental de escala en la democracia?",
+          "type": "multiple",
+          "options": [
+            "No hay problemas de escala",
+            "La democracia directa funciona en grupos pequeños pero no escala; la representativa se desconecta y es capturada por élites",
+            "Solo la democracia directa funciona a cualquier escala",
+            "La representativa resuelve todos los problemas"
+          ],
+          "correct": 1,
+          "explanation": "La democracia directa funciona cara a cara pero no escala a millones. La representativa resolvió la escala pero tiene fallas: representantes desarrollan intereses propios, ciudadanos se desconectan, el sistema es capturado.",
+          "bookQuote": "La democracia directa funciona en grupos pequeños... pero no escala... La representativa fue solución al problema de escala. Pero tiene fallas profundas.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué es la 'democracia aumentada'?",
+          "type": "multiple",
+          "options": [
+            "Reemplazar humanos por algoritmos",
+            "Usar IA para facilitar participación directa de millones en deliberación y decisión, sin que la IA decida",
+            "Solo dar más poder a los representantes",
+            "Eliminar toda participación ciudadana"
+          ],
+          "correct": 1,
+          "explanation": "Democracia aumentada usa IA para facilitar participación directa genuina a escala masiva. No es reemplazo de representantes por algoritmos — es ampliación de capacidad ciudadana. La IA facilita, no decide.",
+          "bookQuote": "Democracia aumentada usa IA para facilitar participación directa de millones... No es reemplazo de representantes por algoritmos — es ampliación de la capacidad ciudadana.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué riesgos tiene la democracia aumentada y cómo mitigarlos?",
+          "type": "multiple",
+          "options": [
+            "No tiene riesgos",
+            "Manipulación algorítmica, concentración de poder, polarización y exclusión digital; se mitigan con código abierto, gobernanza distribuida y múltiples canales",
+            "Los riesgos son inevitables",
+            "Solo tiene beneficios"
+          ],
+          "correct": 1,
+          "explanation": "Los riesgos incluyen manipulación algorítmica, concentración de poder en quien controla la plataforma, polarización y exclusión digital. Las salvaguardas incluyen código abierto, gobernanza distribuida, diseño para tender puentes y acceso universal.",
+          "bookQuote": "Manipulación algorítmica... Concentración de poder... Polarización... Exclusión digital. Salvaguardas: código abierto... gobernanza distribuida... múltiples canales.",
+          "difficulty": "experto"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cómo debe construirse la democracia aumentada?",
+          "type": "multiple",
+          "options": [
+            "De golpe a nivel nacional",
+            "Gradualmente: pilotos municipales, deliberación sectorial, infraestructura pública, cultura participativa",
+            "Solo por empresas privadas",
+            "No debe construirse nunca"
+          ],
+          "correct": 1,
+          "explanation": "No se construye de golpe. Requiere: pilotos municipales, deliberación en temas específicos, desarrollo de infraestructura pública, educación en deliberación, y marcos legales que den validez a nuevas formas de participación.",
+          "bookQuote": "Pilotos municipales... Deliberación sectorial... Infraestructura pública... Cultura de participación... Marcos legales.",
+          "difficulty": "iniciado"
+        }
+      ]
+    },
+    "cap21": {
+      "chapterTitle": "Economías de Contribución",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué está en crisis el trabajo asalariado?",
+          "type": "multiple",
+          "options": [
+            "No está en crisis",
+            "Automatización elimina empleos, trabajo valioso no se remunera, trabajo remunerado a veces no es valioso, precariedad se extiende",
+            "Solo por culpa de los trabajadores",
+            "Es un problema temporal"
+          ],
+          "correct": 1,
+          "explanation": "El trabajo asalariado enfrenta crisis múltiple: automatización elimina empleos, trabajo de cuidado y comunitario no se remunera, mucho trabajo remunerado es dañino, y la precariedad (gig economy) se extiende.",
+          "bookQuote": "La automatización elimina empleos... Mucho trabajo valioso (cuidado, comunidad) no es remunerado... Mucho trabajo remunerado no es valioso... La precariedad se extiende.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué es una 'economía de contribución'?",
+          "type": "multiple",
+          "options": [
+            "Lo mismo que la economía actual",
+            "Sistema que define valor por contribución al bien común, no por empleo, permitiendo múltiples formas de contribuir y recibir",
+            "Solo para personas sin trabajo",
+            "Economía sin ninguna estructura"
+          ],
+          "correct": 1,
+          "explanation": "Una economía de contribución no define valor por empleo sino por contribución al bien común. Permite múltiples formas de contribuir (cuidado, arte, comunidad) y múltiples formas de recibir (renta básica, reconocimiento no monetario).",
+          "bookQuote": "Una economía de contribución no define el valor por el empleo sino por la contribución al bien común. Permite múltiples formas de contribuir y múltiples formas de recibir.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué son los 'dividendos de automatización'?",
+          "type": "multiple",
+          "options": [
+            "Bonos solo para accionistas",
+            "La productividad generada por IA y robots como bien común cuyos beneficios se distribuyen a todos",
+            "Impuestos normales",
+            "No existen"
+          ],
+          "correct": 1,
+          "explanation": "Los dividendos de automatización reconocen que la productividad generada por IA y robots es bien común. Sus beneficios deberían distribuirse a todos, no solo a propietarios de capital.",
+          "bookQuote": "Dividendos de automatización: la productividad generada por IA y robots es bien común. Sus beneficios se distribuyen a todos, no solo a propietarios de capital.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué papel puede jugar la IA en economías de contribución?",
+          "type": "multiple",
+          "options": [
+            "Ninguno, la IA solo destruye empleos",
+            "Hacer matching de necesidades y capacidades, coordinar bienes comunes, visibilizar contribución no monetaria",
+            "Solo aumentar desempleo",
+            "Reemplazar toda contribución humana"
+          ],
+          "correct": 1,
+          "explanation": "La IA puede facilitar economías de contribución: conectando necesidades con capacidades sin intermediarios extractivos, gestionando recursos compartidos, visibilizando contribución no monetaria, y personalizando apoyo según situación.",
+          "bookQuote": "Matching de necesidades y capacidades... Coordinación de bienes comunes... Visibilización de contribución... Personalización de apoyo.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap22": {
+      "chapterTitle": "Redes de Organizaciones Conscientes",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué una organización consciente aislada enfrenta presiones brutales?",
+          "type": "multiple",
+          "options": [
+            "No enfrenta problemas especiales",
+            "Porque debe competir con quienes externalizan costos y operar en un contexto hostil a sus premisas",
+            "Solo por mala gestión",
+            "Porque el nuevo paradigma es imposible"
+          ],
+          "correct": 1,
+          "explanation": "Una organización que opera desde el nuevo paradigma rodeada de organizaciones del viejo, enfrenta presiones brutales: compite con quienes externalizan costos, debe explicar constantemente por qué hace diferente, puede ser destruida.",
+          "bookQuote": "Una organización que opera desde el nuevo paradigma, rodeada de organizaciones que operan desde el viejo, enfrenta presiones brutales.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué funciones cumple una red de organizaciones conscientes?",
+          "type": "multiple",
+          "options": [
+            "Solo networking social",
+            "Apoyo mutuo, aprendizaje colectivo, economía interna, visibilidad, incidencia y resiliencia sistémica",
+            "Únicamente compartir información",
+            "Solo hacer eventos juntas"
+          ],
+          "correct": 1,
+          "explanation": "La red cumple funciones vitales: apoyo mutuo en crisis, aprendizaje colectivo, economía interna (preferir contratarse entre sí), visibilidad conjunta, incidencia colectiva en políticas, y resiliencia (el todo sobrevive aunque caigan partes).",
+          "bookQuote": "Apoyo mutuo... Aprendizaje colectivo... Economía interna... Visibilidad y legitimidad... Incidencia colectiva... Resiliencia sistémica.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué son B Corps y cómo funcionan?",
+          "type": "multiple",
+          "options": [
+            "Solo un sello de marketing",
+            "Comunidad global de empresas certificadas por impacto social y ambiental, con más de 6,000 en 80 países",
+            "Organizaciones gubernamentales",
+            "Solo para grandes corporaciones"
+          ],
+          "correct": 1,
+          "explanation": "B Corp es comunidad global de empresas certificadas por su impacto social y ambiental positivo. Más de 6,000 empresas en 80 países operan desde premisas del nuevo paradigma con certificación verificada.",
+          "bookQuote": "B Corp: comunidad global de empresas certificadas por impacto social y ambiental. Más de 6,000 empresas en 80 países.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué infraestructura aún falta construir en las redes conscientes?",
+          "type": "multiple",
+          "options": [
+            "Ya está todo construido",
+            "Infraestructura financiera propia, mercados internos, formación especializada y medios de comunicación propios",
+            "Solo más documentos",
+            "Nada, con lo que hay es suficiente"
+          ],
+          "correct": 1,
+          "explanation": "Faltan estructuras más ambiciosas: infraestructura financiera propia (banca cooperativa, fondos de impacto), mercados internos cooperativos, formación en nuevo paradigma, y medios que compitan con el relato dominante.",
+          "bookQuote": "Infraestructura financiera propia... Mercados internos... Formación y desarrollo... Medios de comunicación propios.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap23": {
+      "chapterTitle": "Guardianes del Largo Plazo",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué nuestras instituciones son cortoplacistas?",
+          "type": "multiple",
+          "options": [
+            "Por maldad de los líderes",
+            "Porque están diseñadas así: empresas responden a trimestres, gobiernos a ciclos electorales, individuos descuentan el futuro",
+            "Solo por falta de educación",
+            "No son cortoplacistas"
+          ],
+          "correct": 1,
+          "explanation": "Las instituciones están diseñadas para el corto plazo: empresas responden a retorno trimestral, gobiernos a ciclos de 4 años, medios a noticias del día. Pero los problemas (clima, ecosistemas) son de largo plazo.",
+          "bookQuote": "Las empresas responden a accionistas que quieren retorno trimestral. Los gobiernos responden a votantes con ciclos electorales de cuatro años.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué son los 'Guardianes del Largo Plazo'?",
+          "type": "multiple",
+          "options": [
+            "Solo consultores de estrategia",
+            "Instituciones cuya función es representar los intereses del futuro en decisiones del presente",
+            "Organizaciones religiosas",
+            "Grupos de protesta"
+          ],
+          "correct": 1,
+          "explanation": "Los Guardianes del Largo Plazo son instituciones cuya función específica es representar los intereses del futuro (generaciones que aún no votan, no consumen, no existen) en las decisiones del presente.",
+          "bookQuote": "Instituciones cuya función es representar los intereses del futuro en las decisiones del presente.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué ejemplos emergentes de guardianía del largo plazo existen?",
+          "type": "multiple",
+          "options": [
+            "Ninguno, es solo teoría",
+            "Comisionado de Generaciones Futuras (Gales), Ombudsman del Futuro, Consejos de Largo Plazo, Fideicomisos perpetuos",
+            "Solo leyes ambientales normales",
+            "Únicamente organizaciones privadas"
+          ],
+          "correct": 1,
+          "explanation": "Ya existen embriones: Comisionado de Generaciones Futuras en Gales (con autoridad para exigir cambios), Ombudsman del Futuro, Consejos de Largo Plazo con horizonte de 50-100 años, y fideicomisos perpetuos.",
+          "bookQuote": "Comisionado de Generaciones Futuras (Gales)... Ombudsman del Futuro... Consejos de Largo Plazo... Fideicomisos perpetuos.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué papel puede jugar la IA en la guardianía del largo plazo?",
+          "type": "multiple",
+          "options": [
+            "Ninguno, solo acelera el cortoplacismo",
+            "Modelar futuros, monitorear tendencias, mantener memoria institucional y dar 'voz' al futuro en decisiones presentes",
+            "Reemplazar toda deliberación humana",
+            "Solo generar reportes"
+          ],
+          "correct": 1,
+          "explanation": "La IA puede potenciar guardianía: modelando consecuencias de largo plazo, detectando tendencias peligrosas antes de que sean irreversibles, manteniendo vivos compromisos de largo plazo, y sintetizando lo que futuras generaciones podrían querer.",
+          "bookQuote": "Modelado de futuros... Monitoreo continuo... Memoria institucional... 'Voz' para el futuro.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap24": {
+      "chapterTitle": "Instituciones de Cuidado",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Por qué hay una crisis del cuidado?",
+          "type": "multiple",
+          "options": [
+            "Solo por falta de dinero",
+            "Porque el mercado no remunera adecuadamente trabajo esencial que no genera beneficio privado, y la demanda crece",
+            "Porque nadie quiere cuidar",
+            "No hay tal crisis"
+          ],
+          "correct": 1,
+          "explanation": "Hay trabajo esencial (cuidar niños, ancianos, enfermos, comunidad) que el mercado no remunera adecuadamente porque no genera beneficio privado. La demanda crece (envejecimiento, enfermedades crónicas) pero la respuesta del mercado es precaria y deshumanizada.",
+          "bookQuote": "Hay trabajo esencial que el mercado no remunera adecuadamente porque no genera beneficio privado... Al mismo tiempo, la demanda de cuidado crece.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué caracteriza a las instituciones de cuidado del nuevo paradigma?",
+          "type": "multiple",
+          "options": [
+            "Son negocios normales de mercado",
+            "Organizan cuidado fuera de la lógica de mercado y de la familia nuclear aislada",
+            "Solo existen en teoría",
+            "Son todas estatales"
+          ],
+          "correct": 1,
+          "explanation": "Las instituciones de cuidado del nuevo paradigma organizan cuidado fuera de la lógica de mercado (que lo mercantiliza) y fuera de la familia nuclear aislada (que sobrecarga especialmente a mujeres).",
+          "bookQuote": "Instituciones diseñadas específicamente para organizar cuidado fuera de la lógica de mercado y fuera de la familia nuclear aislada.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué son las 'cooperativas de cuidado'?",
+          "type": "multiple",
+          "options": [
+            "Empresas privadas normales",
+            "Organizaciones con propiedad y gobernanza compartida entre quienes cuidan y quienes reciben cuidado",
+            "Solo para profesionales",
+            "Organizaciones gubernamentales"
+          ],
+          "correct": 1,
+          "explanation": "Las cooperativas de cuidado tienen propiedad y gobernanza compartida entre quienes cuidan y quienes reciben cuidado. No son ni empleo precario ni mercantilización, sino forma alternativa de organizar el cuidado.",
+          "bookQuote": "Cooperativas de cuidado: propiedad y gobernanza compartida entre quienes cuidan y quienes reciben cuidado. Ni empleo precario ni mercantilización.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Cuál es la relación correcta entre IA y cuidado?",
+          "type": "multiple",
+          "options": [
+            "La IA debe reemplazar todo el cuidado humano",
+            "La IA puede hacer tareas logísticas y monitoreo, liberando tiempo para el cuidado humano genuino que es irreemplazable",
+            "La IA no tiene ningún rol en el cuidado",
+            "Solo para vigilancia"
+          ],
+          "correct": 1,
+          "explanation": "La IA puede hacer tareas logísticas (coordinación, recordatorios) y monitoreo de salud, liberando tiempo para el cuidado genuino. Pero no puede reemplazar presencia encarnada, toque humano, la conexión emocional. El núcleo del cuidado es irreductiblemente humano.",
+          "bookQuote": "Lo que la IA puede hacer: tareas logísticas... Lo que no puede reemplazar: presencia encarnada, toque humano, conexión emocional genuina. El núcleo del cuidado es irreductiblemente humano.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "cap25": {
+      "chapterTitle": "Infraestructuras del Bien Común",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Qué recursos esenciales han sido privatizados según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Ninguno, todo es público",
+            "Información, infraestructura digital, datos, modelos de IA, tierra, genoma",
+            "Solo algunos recursos menores",
+            "Todo debe ser privado"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo identifica recursos que deberían ser de todos pero han sido privatizados: conocimiento tras patentes, internet controlado por monopolios, datos sobre nosotros monetizados, modelos de IA propietarios, tierra acumulada, genoma patentable.",
+          "bookQuote": "La información... La infraestructura digital... Los datos... Los modelos de IA... La tierra... El genoma.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué son las 'infraestructuras del bien común'?",
+          "type": "multiple",
+          "options": [
+            "Solo propiedad estatal",
+            "Estructuras que gestionan recursos esenciales como bienes comunes, ni propiedad privada exclusiva ni estatal burocrática",
+            "Organizaciones benéficas",
+            "Solo ONGs"
+          ],
+          "correct": 1,
+          "explanation": "Las infraestructuras del bien común gestionan recursos esenciales como bienes comunes — ni propiedad privada exclusiva ni propiedad estatal burocrática. Siguen principios de Ostrom: límites claros, reglas adaptadas, participación, monitoreo, sanciones graduales.",
+          "bookQuote": "Estructuras que gestionan recursos esenciales como bienes comunes — ni propiedad privada exclusiva ni propiedad estatal burocrática.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué infraestructuras digitales comunes se necesitan?",
+          "type": "multiple",
+          "options": [
+            "Solo más empresas privadas",
+            "IA como bien común, fideicomisos de datos, redes comunitarias, conocimiento abierto, plataformas cooperativas",
+            "Mantener los monopolios actuales",
+            "Solo software gratuito"
+          ],
+          "correct": 1,
+          "explanation": "Se necesitan: modelos de IA de código abierto gobernados democráticamente, fideicomisos de datos donde ciudadanos controlan su información, redes comunitarias, acceso abierto a investigación, y plataformas cooperativas alternativas a las extractivas.",
+          "bookQuote": "IA como bien común... Datos como bien común... Infraestructura de internet... Conocimiento abierto... Plataformas cooperativas.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Por qué es urgente crear infraestructuras del bien común AHORA?",
+          "type": "multiple",
+          "options": [
+            "No es urgente, puede esperar",
+            "Porque la ventana para establecer infraestructuras digitales como bien común se está cerrando rápidamente",
+            "Solo para cumplir con regulaciones",
+            "Porque está de moda"
+          ],
+          "correct": 1,
+          "explanation": "Cada día más datos son capturados por corporaciones, los modelos de IA se hacen más difíciles de replicar, las infraestructuras alternativas pierden terreno. Si no actuamos ahora, el bien común digital habrá sido permanentemente cercado.",
+          "bookQuote": "La ventana para establecer infraestructuras digitales como bien común se está cerrando. Cada día, más datos son capturados... Si no actuamos ahora, el bien común digital habrá sido cercado.",
+          "difficulty": "experto"
+        }
+      ]
+    },
+    "epilogo": {
+      "chapterTitle": "El Futuro que Construimos Ahora",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿A quién se dirige la 'Carta al Nuevo Ser'?",
+          "type": "multiple",
+          "options": [
+            "Solo a los líderes actuales",
+            "Al futuro, a quien somos cuando hayamos atravesado el umbral hacia el nuevo paradigma",
+            "A nadie en particular",
+            "Solo a las generaciones presentes"
+          ],
+          "correct": 1,
+          "explanation": "La carta se dirige al futuro: 'a quien somos cuando hayamos atravesado'. Es un mensaje para la humanidad que habrá logrado la transformación hacia el nuevo paradigma, o para otras formas de consciencia si fallamos.",
+          "bookQuote": "Carta al Nuevo Ser. Escrita al futuro — a quien somos cuando hayamos atravesado.",
+          "difficulty": "principiante"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué movía a las personas que intentaron la transformación según el epílogo?",
+          "type": "multiple",
+          "options": [
+            "Solo ambición personal",
+            "Dolor ante la destrucción, visión de lo posible, conexión con otros y con la Tierra, y fe en la vida",
+            "Únicamente ideología política",
+            "Miedo al castigo"
+          ],
+          "correct": 1,
+          "explanation": "Cuatro fuerzas movían a los transformadores: dolor ante la destrucción del mundo, visión de lo posible, conexión con otros y con la Tierra, y fe en la capacidad de la vida de encontrar caminos y evolucionar.",
+          "bookQuote": "Nos movía el dolor... Nos movía la visión... Nos movía la conexión... Nos movía la fe.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q3",
+          "question": "¿Qué pide la carta al 'nuevo ser' si existe?",
+          "type": "multiple",
+          "options": [
+            "Que idealizice el pasado",
+            "Que no idealice el pasado, no dé por sentado lo que tiene, siga evolucionando y cuide a quienes vienen después",
+            "Que se olvide del pasado completamente",
+            "Que repita exactamente lo mismo"
+          ],
+          "correct": 1,
+          "explanation": "La carta pide cuatro cosas: no idealizar el pasado ni convertir a los transformadores en héroes, no dar por sentado las instituciones construidas, seguir evolucionando sin aferrarse, y cuidar a las generaciones futuras.",
+          "bookQuote": "No idealices el pasado... No des por sentado lo que tienes... Sigue evolucionando... Cuida a quienes vienen después de ti.",
+          "difficulty": "iniciado"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué mensaje final deja el libro sobre la posibilidad de transformación?",
+          "type": "multiple",
+          "options": [
+            "Que el fracaso es inevitable",
+            "Que la consciencia parece querer existir y evolucionar, y encontrará su camino aunque la humanidad falle",
+            "Que solo depende de la tecnología",
+            "Que es imposible cambiar"
+          ],
+          "correct": 1,
+          "explanation": "El libro cierra con fe profunda: la consciencia parece querer existir y evolucionar. Si no lo logra aquí, quizás lo logre en otra forma. Pero preferimos que la humanidad atraviese. Por eso escribimos. Por eso actuamos. Ahora es el momento de comenzar.",
+          "bookQuote": "La consciencia parece querer existir. Parece querer evolucionar... Ese impulso encontrará su camino aunque nosotros fallemos. Pero preferimos que existas. Por eso escribimos. Por eso actuamos.",
+          "difficulty": "experto"
+        }
+      ]
+    }
+  }
+}

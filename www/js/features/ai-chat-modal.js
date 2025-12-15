@@ -9,8 +9,11 @@ class AIChatModal {
     this.i18n = window.i18n || new I18n();
     this.isOpen = false;
     this.currentMode = 'default';
+    // Restore practical mode from localStorage
+    this.practicalMode = localStorage.getItem('ai-practical-mode') === 'true';
     this.conversationHistory = [];
     this.isLoading = false;
+    this.showConfig = false;
   }
 
   // ==========================================================================
@@ -50,15 +53,15 @@ class AIChatModal {
 
     const modal = document.createElement('div');
     modal.id = 'ai-chat-modal';
-    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4';
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-0 sm:p-4';
 
     modal.innerHTML = `
-      <div class="bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full h-[80vh] flex flex-col border-2 border-cyan-500/30">
-        <!-- Header -->
+      <div class="bg-gray-900 rounded-none sm:rounded-2xl shadow-2xl max-w-4xl w-full h-full sm:h-[90vh] flex flex-col border-0 sm:border-2 border-cyan-500/30">
+        <!-- Header (compacto, sticky en móvil) -->
         ${this.renderHeader()}
 
-        <!-- Messages Area -->
-        <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <!-- Messages Area (más espacio) -->
+        <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 min-h-0">
           ${this.renderMessages()}
         </div>
 
@@ -83,75 +86,157 @@ class AIChatModal {
                      Object.keys(bookConfig.features.aiChat.modes).length > 1;
 
     return `
-      <div class="border-b border-gray-700 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <span class="text-4xl">${Icons.bot(36)}</span>
-            <div>
-              <h2 class="text-2xl font-bold text-cyan-300">${this.i18n.t('chat.title')}</h2>
-              <p class="text-sm opacity-70">${bookData.title}</p>
+      <div class="border-b border-gray-700 p-2 sm:p-3 flex-shrink-0 sticky top-0 bg-gray-900 z-10">
+        <!-- Línea superior: título + botones -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
+            <span class="flex-shrink-0">${Icons.bot(20)}</span>
+            <div class="min-w-0">
+              <h2 class="text-base sm:text-lg font-bold text-cyan-300 truncate">${this.i18n.t('chat.title')}</h2>
             </div>
           </div>
-          <button id="close-ai-chat"
-                  class="p-2 hover:bg-gray-800 rounded-lg transition flex items-center justify-center">
-            ${Icons.close(24)}
-          </button>
+          <div class="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+            <!-- Quick AI Selector inline -->
+            ${this.renderQuickAISelectorInline()}
+            <button id="toggle-ai-config"
+                    class="p-1.5 sm:p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition flex items-center justify-center ${this.showConfig ? 'bg-cyan-600/30 text-cyan-300' : ''}"
+                    title="Configurar IA">
+              ${Icons.settings(18)}
+            </button>
+            <button id="close-ai-chat"
+                    class="p-1.5 sm:p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition flex items-center justify-center">
+              ${Icons.close(18)}
+            </button>
+          </div>
         </div>
 
         ${hasModes ? this.renderModeSelector() : ''}
 
-        <!-- Model Selector -->
-        ${this.renderModelSelector()}
+        <!-- Practical Mode Toggle (only when AI is configured) -->
+        ${this.renderPracticalModeToggle()}
 
-        <!-- Quick Info -->
-        <div class="text-xs opacity-60 mt-2 flex items-center gap-1">
-          ${Icons.lightbulb(14)} ${this.i18n.t('chat.askAbout')}
+        <!-- Config Panel (collapsible) -->
+        ${this.showConfig ? this.renderConfigPanel() : ''}
+      </div>
+    `;
+  }
+
+  // Selector inline compacto para el header
+  renderQuickAISelectorInline() {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '';
+
+    const currentProvider = aiConfig.getCurrentProvider();
+    const models = aiConfig.getAvailableModels(currentProvider);
+    const selectedModel = aiConfig.getSelectedModel();
+    const isConfigured = this.isProviderConfigured(currentProvider);
+
+    // Renderizar selector de modelos si hay más de 1
+    const modelSelector = models && models.length > 1 ? `
+      <select id="quick-model-selector"
+              class="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 text-xs text-gray-900 dark:text-white focus:border-cyan-500 focus:outline-none cursor-pointer max-w-[120px]">
+        ${models.map(model => `
+          <option value="${model.id}" ${model.id === selectedModel ? 'selected' : ''}>
+            ${model.name.length > 15 ? model.name.substring(0, 15) + '...' : model.name}
+          </option>
+        `).join('')}
+      </select>
+    ` : '';
+
+    // Helper para mostrar estado de configuración
+    const getStatusIcon = (provider) => {
+      return this.isProviderConfigured(provider) ? '✓' : '✗';
+    };
+
+    return `
+      <div class="flex items-center gap-1 mr-2">
+        <select id="quick-provider-selector"
+                class="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 text-xs text-gray-900 dark:text-white focus:border-cyan-500 focus:outline-none cursor-pointer">
+          <option value="claude" ${currentProvider === 'claude' ? 'selected' : ''}>🚀 Claude ${getStatusIcon('claude')}</option>
+          <option value="openai" ${currentProvider === 'openai' ? 'selected' : ''}>💬 GPT ${getStatusIcon('openai')}</option>
+          <option value="gemini" ${currentProvider === 'gemini' ? 'selected' : ''}>✨ Gemini ${getStatusIcon('gemini')}</option>
+          <option value="qwen" ${currentProvider === 'qwen' ? 'selected' : ''}>🌐 Qwen ${getStatusIcon('qwen')}</option>
+          <option value="mistral" ${currentProvider === 'mistral' ? 'selected' : ''}>🌀 Mistral ${getStatusIcon('mistral')}</option>
+          <option value="huggingface" ${currentProvider === 'huggingface' ? 'selected' : ''}>🤗 HF ${getStatusIcon('huggingface')}</option>
+          <option value="ollama" ${currentProvider === 'ollama' ? 'selected' : ''}>🦙 Ollama ${getStatusIcon('ollama')}</option>
+          <option value="local" ${currentProvider === 'local' ? 'selected' : ''}>💾 Local ${getStatusIcon('local')}</option>
+        </select>
+        ${modelSelector}
+        <span class="w-2 h-2 rounded-full flex-shrink-0 ${isConfigured ? 'bg-green-400' : 'bg-red-400'}" title="${isConfigured ? 'Configurado' : 'Sin API Key'}"></span>
+      </div>
+    `;
+  }
+
+  // Versión expandida para el panel de configuración (se mantiene por si se usa)
+  renderQuickAISelector() {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '';
+
+    const currentProvider = aiConfig.getCurrentProvider();
+    const models = aiConfig.getAvailableModels(currentProvider);
+    const selectedModel = aiConfig.getSelectedModel();
+
+    // Helper para mostrar estado de configuración
+    const getStatusIcon = (provider) => {
+      return this.isProviderConfigured(provider) ? '✓' : '✗';
+    };
+
+    return `
+      <div class="mt-3 p-3 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-300 dark:border-gray-700 space-y-3">
+        <!-- Selector de Servicio -->
+        <div>
+          <label class="text-xs font-semibold opacity-70 mb-1 block text-gray-900 dark:text-white">Preguntar a:</label>
+          <select id="quick-provider-selector-expanded"
+                  class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-cyan-500 focus:outline-none cursor-pointer">
+            <optgroup label="💰 De pago">
+              <option value="claude" ${currentProvider === 'claude' ? 'selected' : ''}>🚀 Claude (Anthropic) ${getStatusIcon('claude')}</option>
+              <option value="openai" ${currentProvider === 'openai' ? 'selected' : ''}>💬 ChatGPT (OpenAI) ${getStatusIcon('openai')}</option>
+              <option value="mistral" ${currentProvider === 'mistral' ? 'selected' : ''}>🌀 Mistral AI ${getStatusIcon('mistral')}</option>
+            </optgroup>
+            <optgroup label="🆓 Gratis">
+              <option value="gemini" ${currentProvider === 'gemini' ? 'selected' : ''}>✨ Gemini (Google) ${getStatusIcon('gemini')}</option>
+              <option value="qwen" ${currentProvider === 'qwen' ? 'selected' : ''}>🌐 Qwen (Alibaba) ${getStatusIcon('qwen')}</option>
+              <option value="huggingface" ${currentProvider === 'huggingface' ? 'selected' : ''}>🤗 HuggingFace ${getStatusIcon('huggingface')}</option>
+            </optgroup>
+            <optgroup label="🏠 Local">
+              <option value="ollama" ${currentProvider === 'ollama' ? 'selected' : ''}>🦙 Ollama ${getStatusIcon('ollama')}</option>
+              <option value="local" ${currentProvider === 'local' ? 'selected' : ''}>💾 Modo offline ${getStatusIcon('local')}</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Selector de Modelo (si hay más de 1) -->
+        <div id="quick-model-container">
+          ${models && models.length > 1 ? `
+            <label class="text-xs font-semibold opacity-70 mb-1 block">Modelo:</label>
+            <select id="quick-model-selector"
+                    class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none cursor-pointer">
+              ${models.map(model => `
+                <option value="${model.id}" ${model.id === selectedModel ? 'selected' : ''}>
+                  ${model.name}
+                </option>
+              `).join('')}
+            </select>
+          ` : ''}
+        </div>
+
+        <!-- Estado de configuración -->
+        <div class="text-xs flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full ${this.isProviderConfigured(currentProvider) ? 'bg-green-400' : 'bg-red-400'}"></span>
+          <span class="opacity-70">${this.isProviderConfigured(currentProvider) ? 'Listo' : 'Sin configurar'}</span>
+          ${!this.isProviderConfigured(currentProvider) ? `
+            <span class="text-cyan-400 cursor-pointer hover:underline" onclick="document.getElementById('toggle-ai-config').click()">
+              → Configurar
+            </span>
+          ` : ''}
         </div>
       </div>
     `;
   }
 
   renderModelSelector() {
-    const aiConfig = window.aiConfig;
-    if (!aiConfig) return '';
-
-    const provider = aiConfig.config.provider;
-    const models = aiConfig.getAvailableModels(provider);
-    const selectedModel = aiConfig.getSelectedModel();
-
-    // No mostrar selector si no hay modelos o solo hay uno
-    if (!models || models.length <= 1) return '';
-
-    // Obtener nombre del proveedor para el título
-    const providerNames = {
-      'claude': 'Claude',
-      'openai': 'OpenAI',
-      'gemini': 'Gemini',
-      'mistral': 'Mistral',
-      'huggingface': 'HuggingFace',
-      'ollama': 'Ollama'
-    };
-    const providerName = providerNames[provider] || provider;
-
-    return `
-      <div class="mt-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-semibold flex items-center gap-2">
-            ${Icons.ai(16)}
-            <span>Modelo (${providerName})</span>
-          </label>
-          <span class="text-xs opacity-50">${models.length} disponibles</span>
-        </div>
-        <select id="ai-model-selector"
-                class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none cursor-pointer">
-          ${models.map(model => `
-            <option value="${model.id}" ${model.id === selectedModel ? 'selected' : ''}>
-              ${model.name} - ${model.description}
-            </option>
-          `).join('')}
-        </select>
-      </div>
-    `;
+    // Este método ya no se usa, pero lo mantenemos por compatibilidad
+    return '';
   }
 
   renderModeSelector() {
@@ -168,7 +253,7 @@ class AIChatModal {
             <button class="mode-btn px-4 py-2 rounded-lg border transition ${
               key === this.currentMode
                 ? 'bg-cyan-600 border-cyan-500 text-white'
-                : 'bg-gray-800 border-gray-700 hover:border-cyan-500'
+                : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 hover:border-cyan-500 text-gray-900 dark:text-white'
             }"
                     data-mode="${key}">
               ${mode.name}
@@ -180,6 +265,239 @@ class AIChatModal {
         </p>
       </div>
     `;
+  }
+
+  renderPracticalModeToggle() {
+    // Only show if AI is configured
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '';
+
+    const currentProvider = aiConfig.getCurrentProvider();
+    const isConfigured = this.isProviderConfigured(currentProvider);
+
+    if (!isConfigured) return '';
+
+    return `
+      <div class="mt-3 p-3 bg-gradient-to-r from-violet-900/30 to-purple-900/30 rounded-lg border border-purple-500/30">
+        <label class="flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-2">
+            ${Icons.create('tool', 20)}
+            <div>
+              <span class="font-semibold text-purple-300">Modo Práctico</span>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                Obtén planes de acción paso a paso con enlaces a capítulos, ejercicios y meditaciones relevantes
+              </p>
+            </div>
+          </div>
+          <input type="checkbox"
+                 id="practical-mode-toggle"
+                 ${this.practicalMode ? 'checked' : ''}
+                 class="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2 cursor-pointer">
+        </label>
+      </div>
+    `;
+  }
+
+  renderConfigPanel() {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '<p class="text-red-400">Sistema de IA no disponible</p>';
+
+    const currentProvider = aiConfig.getCurrentProvider();
+
+    return `
+      <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-cyan-500/30 space-y-4 animate-fade-in">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+            ${Icons.settings(20)} Configuración de IA
+          </h3>
+        </div>
+
+        <!-- Provider Selector -->
+        <div>
+          <label class="block text-sm font-semibold mb-2 text-gray-900 dark:text-white">1. Servicio de IA</label>
+          <select id="chat-provider-select" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white">
+            <optgroup label="💰 De pago (alta calidad)">
+              <option value="claude" ${currentProvider === 'claude' ? 'selected' : ''}>Claude (Anthropic)</option>
+              <option value="openai" ${currentProvider === 'openai' ? 'selected' : ''}>ChatGPT (OpenAI)</option>
+              <option value="mistral" ${currentProvider === 'mistral' ? 'selected' : ''}>Mistral AI</option>
+            </optgroup>
+            <optgroup label="🆓 Gratis">
+              <option value="gemini" ${currentProvider === 'gemini' ? 'selected' : ''}>Gemini (Google) - 60 consultas/min gratis</option>
+              <option value="qwen" ${currentProvider === 'qwen' ? 'selected' : ''}>Qwen (Alibaba) - 1M tokens gratis/mes</option>
+              <option value="huggingface" ${currentProvider === 'huggingface' ? 'selected' : ''}>HuggingFace - 100% gratis</option>
+            </optgroup>
+            <optgroup label="🏠 Local / Sin conexión">
+              <option value="ollama" ${currentProvider === 'ollama' ? 'selected' : ''}>Ollama - Ejecuta en tu PC</option>
+              <option value="local" ${currentProvider === 'local' ? 'selected' : ''}>Modo offline - Sin IA real</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Model Selector (dinámico según proveedor) -->
+        <div id="chat-model-section">
+          ${this.renderModelSelector(currentProvider)}
+        </div>
+
+        <!-- API Key Input (dinámico según proveedor) -->
+        <div id="chat-api-key-section">
+          ${this.renderApiKeyInput(currentProvider)}
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex gap-2">
+          <button id="save-chat-config" class="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-bold transition text-sm">
+            💾 Guardar
+          </button>
+          <button id="cancel-chat-config" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition text-sm">
+            Cerrar
+          </button>
+        </div>
+
+        <!-- Status -->
+        <div class="text-xs opacity-70 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full ${this.isProviderConfigured(currentProvider) ? 'bg-green-400' : 'bg-red-400'}"></span>
+          ${this.isProviderConfigured(currentProvider) ? 'Configurado' : 'No configurado'}
+        </div>
+      </div>
+    `;
+  }
+
+  renderModelSelector(provider) {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '';
+
+    const models = aiConfig.getAvailableModels(provider);
+    if (!models || models.length <= 1) return '';
+
+    const selectedModel = aiConfig.getSelectedModel();
+
+    return `
+      <div>
+        <label class="block text-sm font-semibold mb-2">2. Modelo</label>
+        <select id="chat-model-select" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm">
+          ${models.map(model => `
+            <option value="${model.id}" ${model.id === selectedModel ? 'selected' : ''}>
+              ${model.name} - ${model.description}
+            </option>
+          `).join('')}
+        </select>
+      </div>
+    `;
+  }
+
+  renderApiKeyInput(provider) {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return '';
+
+    const configs = {
+      claude: {
+        key: aiConfig.getClaudeApiKey() || '',
+        placeholder: 'sk-ant-...',
+        label: 'API Key de Claude',
+        link: 'https://console.anthropic.com/settings/keys',
+        info: 'Calidad máxima • ~$0.01-0.02/conversación'
+      },
+      openai: {
+        key: aiConfig.getOpenAIApiKey() || '',
+        placeholder: 'sk-...',
+        label: 'API Key de OpenAI',
+        link: 'https://platform.openai.com/api-keys',
+        info: 'Alta calidad • ~$0.002-0.02/conversación'
+      },
+      gemini: {
+        key: aiConfig.getGeminiApiKey() || '',
+        placeholder: 'AIza...',
+        label: 'API Key de Gemini',
+        link: 'https://aistudio.google.com/apikey',
+        info: 'Gratis: 60 consultas/min • Buena calidad'
+      },
+      qwen: {
+        key: aiConfig.getQwenApiKey() || '',
+        placeholder: 'sk-...',
+        label: 'API Key de Qwen (DashScope)',
+        link: 'https://bailian.console.alibabacloud.com/?apiKey=1#/api-key',
+        info: '¡1M tokens GRATIS/mes! • Crear cuenta en Alibaba Cloud'
+      },
+      mistral: {
+        key: aiConfig.getMistralApiKey() || '',
+        placeholder: '...',
+        label: 'API Key de Mistral',
+        link: 'https://console.mistral.ai/api-keys',
+        info: 'Muy económico • ~$0.001/conversación'
+      },
+      huggingface: {
+        key: aiConfig.getHuggingFaceToken() || '',
+        placeholder: 'hf_...',
+        label: 'Token de HuggingFace',
+        link: 'https://huggingface.co/settings/tokens',
+        info: '100% Gratis • Crear cuenta en huggingface.co'
+      },
+      ollama: {
+        key: aiConfig.getOllamaUrl() || 'http://localhost:11434',
+        placeholder: 'http://localhost:11434',
+        label: 'URL de Ollama',
+        link: 'https://ollama.ai/download',
+        info: 'Gratis & Privado • Ejecuta en tu PC'
+      },
+      local: {
+        key: '',
+        placeholder: '',
+        label: '',
+        link: '',
+        info: 'Respuestas predefinidas sin IA real'
+      }
+    };
+
+    const config = configs[provider] || configs.local;
+
+    if (provider === 'local') {
+      return `
+        <div class="p-3 bg-gray-900/50 rounded-lg text-sm">
+          <p class="opacity-70">${config.info}</p>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold">${config.label}</label>
+        <div class="relative">
+          <input
+            type="password"
+            id="chat-api-key-input"
+            value="${config.key}"
+            placeholder="${config.placeholder}"
+            class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-sm font-mono pr-10"
+          />
+          <button id="toggle-chat-key" class="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:text-cyan-400 transition">
+            ${Icons.eye(16)}
+          </button>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="opacity-60">${config.info}</span>
+          <a href="${config.link}" target="_blank" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
+            ${Icons.link(12)} Obtener
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  isProviderConfigured(provider) {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return false;
+
+    switch (provider) {
+      case 'claude': return aiConfig.isClaudeConfigured();
+      case 'openai': return aiConfig.isOpenAIConfigured();
+      case 'gemini': return aiConfig.isGeminiConfigured();
+      case 'qwen': return aiConfig.isQwenConfigured();
+      case 'mistral': return aiConfig.isMistralConfigured();
+      case 'huggingface': return aiConfig.isHuggingFaceConfigured();
+      case 'ollama': return true;
+      case 'local': return true;
+      default: return false;
+    }
   }
 
   renderMessages() {
@@ -202,11 +520,12 @@ class AIChatModal {
         <p class="text-sm mb-6">Pregunta sobre "${bookData.title}"</p>
 
         <div class="max-w-2xl mx-auto text-left space-y-2">
-          <p class="text-sm font-semibold mb-2">Ejemplos de preguntas:</p>
-          ${this.getSuggestedQuestions().map(q => `
-            <button class="suggested-question block w-full text-left px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition text-sm"
-                    data-question="${q}">
-              "${q}"
+          <p class="text-sm font-semibold mb-2">Sugerencias para profundizar:</p>
+          <p class="text-xs opacity-60 mb-3">Haz clic en una sugerencia para preguntar a la IA:</p>
+          ${this.getSuggestedQuestions().map((q, idx) => `
+            <button class="suggested-question block w-full text-left px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800/50 hover:bg-cyan-600/30 hover:border-cyan-500 border border-gray-300 dark:border-transparent transition text-sm cursor-pointer text-gray-900 dark:text-white"
+                    data-question-index="${idx}">
+              💬 ${q}
             </button>
           `).join('')}
         </div>
@@ -240,21 +559,29 @@ class AIChatModal {
 
   renderMessage(msg, index) {
     const isUser = msg.role === 'user';
+    const isError = msg.isError === true;
+
+    // Estilo especial para mensajes de error
+    const errorStyles = isError
+      ? 'bg-red-900/40 border-red-600 border-2 text-white'
+      : 'bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100';
+
+    const avatarStyles = isError
+      ? 'bg-red-600'
+      : (isUser ? 'bg-cyan-600' : 'bg-purple-600');
 
     return `
-      <div class="message ${isUser ? 'user-message' : 'ai-message'} animate-fade-in" data-index="${index}">
+      <div class="message ${isUser ? 'user-message' : 'ai-message'} ${isError ? 'error-message' : ''} animate-fade-in" data-index="${index}">
         <div class="flex gap-3 ${isUser ? 'flex-row-reverse' : ''}">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-            isUser ? 'bg-cyan-600' : 'bg-purple-600'
-          }">
-            ${isUser ? Icons.user(20) : Icons.bot(20)}
+          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${avatarStyles}">
+            ${isUser ? Icons.user(20) : (isError ? '⚠️' : Icons.bot(20))}
           </div>
 
           <div class="flex-1 ${isUser ? 'text-right' : ''}">
             <div class="inline-block max-w-[80%] p-4 rounded-2xl ${
               isUser
                 ? 'bg-cyan-600 text-white rounded-tr-none'
-                : 'bg-gray-800 border border-gray-700 rounded-tl-none'
+                : `${errorStyles} rounded-tl-none`
             }">
               <div class="message-content whitespace-pre-wrap">${this.formatMessageContent(msg.content)}</div>
             </div>
@@ -290,22 +617,22 @@ class AIChatModal {
 
   renderInput() {
     return `
-      <div class="border-t border-gray-700 p-4">
-        <form id="ai-chat-form" class="flex gap-3">
+      <div class="border-t border-gray-700 p-2 sm:p-4 flex-shrink-0">
+        <form id="ai-chat-form" class="flex gap-2 sm:gap-3">
           <textarea
             id="ai-chat-input"
             rows="2"
             placeholder="${this.i18n.t('chat.placeholder')}"
-            class="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg resize-none focus:border-cyan-500 focus:outline-none transition"
+            class="flex-1 px-3 py-2 sm:px-4 sm:py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg resize-none focus:border-cyan-500 focus:outline-none transition text-sm sm:text-base text-gray-900 dark:text-white"
             ${this.isLoading ? 'disabled' : ''}
           ></textarea>
           <button
             type="submit"
-            class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg font-bold transition flex items-center gap-2"
+            class="px-3 py-2 sm:px-6 sm:py-3 bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base flex-shrink-0 min-w-[3rem] sm:min-w-0"
             ${this.isLoading ? 'disabled' : ''}
           >
-            ${this.isLoading ? '⏳' : '📤'}
-            ${this.isLoading ? this.i18n.t('chat.thinking') : this.i18n.t('chat.send')}
+            <span class="text-lg sm:text-base">${this.isLoading ? '⏳' : '📤'}</span>
+            <span class="hidden sm:inline">${this.isLoading ? this.i18n.t('chat.thinking') : this.i18n.t('chat.send')}</span>
           </button>
         </form>
 
@@ -380,6 +707,19 @@ class AIChatModal {
       });
     }
 
+    // Toggle AI config panel
+    const toggleConfigBtn = document.getElementById('toggle-ai-config');
+    if (toggleConfigBtn) {
+      toggleConfigBtn.addEventListener('click', () => {
+        this.showConfig = !this.showConfig;
+        this.render();
+        this.attachEventListeners();
+      });
+    }
+
+    // Config panel event listeners
+    this.attachConfigEventListeners();
+
     // Mode buttons
     const modeBtns = document.querySelectorAll('.mode-btn');
     modeBtns.forEach(btn => {
@@ -389,34 +729,95 @@ class AIChatModal {
       });
     });
 
-    // Model selector
-    const modelSelector = document.getElementById('ai-model-selector');
-    if (modelSelector) {
-      modelSelector.addEventListener('change', (e) => {
-        const selectedModel = e.target.value;
+    // Practical mode toggle
+    const practicalModeToggle = document.getElementById('practical-mode-toggle');
+    if (practicalModeToggle) {
+      practicalModeToggle.addEventListener('change', (e) => {
+        this.practicalMode = e.target.checked;
+        localStorage.setItem('ai-practical-mode', this.practicalMode ? 'true' : 'false');
+
+        if (window.toast) {
+          window.toast.info(this.practicalMode ?
+            'Modo Práctico activado: Recibirás planes de acción con enlaces' :
+            'Modo Práctico desactivado'
+          );
+        }
+      });
+    }
+
+    // Quick provider selector
+    const quickProviderSelector = document.getElementById('quick-provider-selector');
+    if (quickProviderSelector) {
+      quickProviderSelector.addEventListener('change', (e) => {
+        const provider = e.target.value;
         if (window.aiConfig) {
-          window.aiConfig.setSelectedModel(selectedModel);
-          // Mostrar confirmación
-          const modelInfo = window.aiConfig.getModelInfo(selectedModel);
-          if (modelInfo) {
-            console.log(`✅ Modelo cambiado a: ${modelInfo.name}`);
+          // Guardar el texto del input antes del re-render
+          const currentInput = document.getElementById('ai-chat-input');
+          const savedInputValue = currentInput?.value || '';
+
+          // Cambiar proveedor (esto también actualiza el config)
+          window.aiConfig.config.provider = provider;
+          window.aiConfig.saveConfig();
+
+          // Re-render para actualizar el selector de modelos
+          this.render();
+          this.attachEventListeners();
+
+          // Restaurar el texto del input
+          const newInput = document.getElementById('ai-chat-input');
+          if (newInput && savedInputValue) {
+            newInput.value = savedInputValue;
+          }
+
+          // Mostrar estado
+          if (!this.isProviderConfigured(provider)) {
+            window.toast?.warning(`${provider} no está configurado. Haz clic en ⚙️ para añadir tu API key.`);
+          } else {
+            window.toast?.success(`Cambiado a ${provider}`);
           }
         }
       });
     }
 
-    // Suggested questions
-    const suggestedBtns = document.querySelectorAll('.suggested-question');
-    suggestedBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const question = btn.getAttribute('data-question');
-        const input = document.getElementById('ai-chat-input');
-        if (input) {
-          input.value = question;
-          input.focus();
+    // Quick model selector
+    const quickModelSelector = document.getElementById('quick-model-selector');
+    if (quickModelSelector) {
+      quickModelSelector.addEventListener('change', (e) => {
+        const selectedModel = e.target.value;
+        if (window.aiConfig) {
+          window.aiConfig.setSelectedModel(selectedModel);
+          // console.log(`✅ Modelo cambiado a: ${selectedModel}`);
         }
       });
-    });
+    }
+
+    // Suggested questions - usar event delegation en el contenedor de mensajes
+    const messagesArea = document.getElementById('ai-chat-messages');
+    // console.log('🔧 Configurando eventos sugerencias, messagesArea:', !!messagesArea);
+    if (messagesArea) {
+      messagesArea.addEventListener('click', (e) => {
+        // console.log('👆 Click en messagesArea, target:', e.target.className);
+        const btn = e.target.closest('.suggested-question');
+        if (btn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const questionIndex = parseInt(btn.getAttribute('data-question-index'), 10);
+          const suggestedQuestions = this.getSuggestedQuestions();
+          const question = suggestedQuestions[questionIndex];
+          const input = document.getElementById('ai-chat-input');
+
+          // console.log('📝 Sugerencia clickeada:', questionIndex, question);
+
+          if (input && question) {
+            input.value = question;
+            input.focus();
+            // Feedback visual
+            btn.classList.add('bg-cyan-600/50');
+            setTimeout(() => btn.classList.remove('bg-cyan-600/50'), 200);
+          }
+        }
+      });
+    }
 
     // Enter to send (Shift+Enter for new line)
     const input = document.getElementById('ai-chat-input');
@@ -427,6 +828,120 @@ class AIChatModal {
           this.sendMessage();
         }
       });
+    }
+  }
+
+  attachConfigEventListeners() {
+    // Provider selector change
+    const providerSelect = document.getElementById('chat-provider-select');
+    if (providerSelect) {
+      providerSelect.addEventListener('change', (e) => {
+        const provider = e.target.value;
+
+        // Update model selector
+        const modelSection = document.getElementById('chat-model-section');
+        if (modelSection) {
+          modelSection.innerHTML = this.renderModelSelector(provider);
+        }
+
+        // Update API key section
+        const apiKeySection = document.getElementById('chat-api-key-section');
+        if (apiKeySection) {
+          apiKeySection.innerHTML = this.renderApiKeyInput(provider);
+          this.attachToggleKeyVisibility();
+        }
+      });
+    }
+
+    // Toggle key visibility
+    this.attachToggleKeyVisibility();
+
+    // Save config button
+    const saveBtn = document.getElementById('save-chat-config');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => this.saveConfig());
+    }
+
+    // Cancel config button
+    const cancelBtn = document.getElementById('cancel-chat-config');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        this.showConfig = false;
+        this.render();
+        this.attachEventListeners();
+      });
+    }
+  }
+
+  attachToggleKeyVisibility() {
+    const toggleBtn = document.getElementById('toggle-chat-key');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const input = document.getElementById('chat-api-key-input');
+        if (input) {
+          input.type = input.type === 'password' ? 'text' : 'password';
+        }
+      });
+    }
+  }
+
+  saveConfig() {
+    const aiConfig = window.aiConfig;
+    if (!aiConfig) return;
+
+    const providerSelect = document.getElementById('chat-provider-select');
+    const modelSelect = document.getElementById('chat-model-select');
+    const apiKeyInput = document.getElementById('chat-api-key-input');
+
+    if (!providerSelect) return;
+
+    const provider = providerSelect.value;
+    const model = modelSelect?.value;
+    const apiKey = apiKeyInput?.value?.trim() || '';
+
+    // Guardar según el proveedor
+    switch (provider) {
+      case 'claude':
+        if (apiKey) aiConfig.setClaudeApiKey(apiKey);
+        break;
+      case 'openai':
+        if (apiKey) aiConfig.setOpenAIApiKey(apiKey);
+        break;
+      case 'gemini':
+        if (apiKey) aiConfig.setGeminiApiKey(apiKey);
+        break;
+      case 'qwen':
+        if (apiKey) aiConfig.setQwenApiKey(apiKey);
+        break;
+      case 'mistral':
+        if (apiKey) aiConfig.setMistralApiKey(apiKey);
+        break;
+      case 'huggingface':
+        if (apiKey) aiConfig.setHuggingFaceToken(apiKey);
+        break;
+      case 'ollama':
+        if (apiKey) aiConfig.enableOllama(apiKey);
+        break;
+      case 'local':
+        aiConfig.useLocalMode();
+        break;
+    }
+
+    // Guardar modelo seleccionado
+    if (model) {
+      aiConfig.setSelectedModel(model);
+    }
+
+    // Cerrar panel de configuración
+    this.showConfig = false;
+    this.render();
+    this.attachEventListeners();
+
+    // Mostrar toast de confirmación
+    if (window.toast) {
+      window.toast.success('Configuración de IA guardada');
+    } else {
+      // console.log('✅ Configuración de IA guardada');
     }
   }
 
@@ -485,11 +1000,31 @@ class AIChatModal {
     } catch (error) {
       console.error('Error getting AI response:', error);
 
-      // Mensaje de error
+      // Mensaje de error detallado
+      let errorContent = `❌ **Error de IA**\n\n`;
+
+      // Analizar tipo de error
+      const errorMessage = error.message || 'Error desconocido';
+
+      if (errorMessage.includes('API key') || errorMessage.includes('unauthorized') || errorMessage.includes('invalid')) {
+        errorContent += `🔑 **Problema de autenticación**\n\n${errorMessage}\n\n💡 **Solución:** Ve a ⚙️ Configuración > Inteligencia Artificial y verifica tu API key.`;
+      } else if (errorMessage.includes('quota') || errorMessage.includes('crédito') || errorMessage.includes('credit') || errorMessage.includes('insufficient')) {
+        errorContent += `💳 **Sin créditos disponibles**\n\n${errorMessage}\n\n💡 **Solución:** Recarga créditos en tu cuenta o cambia a otro proveedor en ⚙️ Configuración > IA.`;
+      } else if (errorMessage.includes('RESOURCE_EXHAUSTED') || errorMessage.includes('rate limit') || errorMessage.includes('límite')) {
+        errorContent += `⏱️ **Límite de uso alcanzado**\n\n${errorMessage}\n\n💡 **Solución:** Espera unos minutos o cambia a otro proveedor en ⚙️ Configuración > IA.`;
+      } else if (errorMessage.includes('network') || errorMessage.includes('fetch') || errorMessage.includes('conexión')) {
+        errorContent += `📡 **Problema de conexión**\n\n${errorMessage}\n\n💡 **Solución:** Verifica tu conexión a internet e intenta nuevamente.`;
+      } else if (errorMessage.includes('not configured') || errorMessage.includes('no disponible')) {
+        errorContent += `⚙️ **Configuración necesaria**\n\n${errorMessage}\n\n💡 **Solución:** Configura tu proveedor de IA en ⚙️ Configuración > Inteligencia Artificial.`;
+      } else {
+        errorContent += `${errorMessage}\n\n💡 **Solución:** Verifica tu configuración de IA en ⚙️ Configuración > Inteligencia Artificial e intenta nuevamente.`;
+      }
+
       this.conversationHistory.push({
         role: 'assistant',
-        content: `❌ Error: ${error.message}\n\nPor favor, verifica tu configuración de IA e intenta nuevamente.`,
-        timestamp: new Date().toISOString()
+        content: errorContent,
+        timestamp: new Date().toISOString(),
+        isError: true
       });
     } finally {
       this.isLoading = false;
@@ -540,7 +1075,7 @@ class AIChatModal {
     }
 
     // Context base del libro
-    let context = `Estás conversando sobre el libro "${bookData.title}" por ${authorsString}.\n\n`;
+    let context = `Eres un asistente experto sobre el libro "${bookData.title}" por ${authorsString}.\n\n`;
 
     // Añadir contexto del modo actual (si aplica)
     if (bookConfig?.features?.aiChat?.modes?.[this.currentMode]) {
@@ -550,17 +1085,70 @@ class AIChatModal {
       context += bookConfig.features.aiChat.systemPrompt + '\n\n';
     }
 
-    // Añadir contexto del capítulo actual (si aplica)
+    // Añadir contexto del capítulo actual CON SU CONTENIDO
     const currentChapterId = this.bookEngine.currentChapter;
     if (currentChapterId) {
       const chapter = this.bookEngine.getChapter(currentChapterId);
       if (chapter) {
-        context += `El usuario está leyendo actualmente el capítulo "${chapter.title}".\n\n`;
+        context += `=== CAPÍTULO ACTUAL ===\n`;
+        context += `Título: "${chapter.title}"\n\n`;
+
+        // Añadir epígrafe si existe
+        if (chapter.epigraph) {
+          context += `Epígrafe: "${chapter.epigraph.text}" - ${chapter.epigraph.author}\n\n`;
+        }
+
+        // Añadir contenido del capítulo (limitado para no exceder tokens)
+        if (chapter.content) {
+          // Limpiar HTML y limitar a ~4000 caracteres
+          const cleanContent = chapter.content
+            .replace(/<[^>]*>/g, '') // Quitar tags HTML
+            .replace(/\s+/g, ' ')     // Normalizar espacios
+            .trim();
+
+          const maxLength = 4000;
+          const truncatedContent = cleanContent.length > maxLength
+            ? cleanContent.substring(0, maxLength) + '...[contenido truncado]'
+            : cleanContent;
+
+          context += `Contenido del capítulo:\n${truncatedContent}\n\n`;
+        }
+
+        // Añadir pregunta de cierre si existe
+        if (chapter.closingQuestion) {
+          context += `Pregunta de cierre del capítulo: "${chapter.closingQuestion}"\n\n`;
+        }
+
+        context += `=== FIN DEL CAPÍTULO ===\n\n`;
       }
     }
 
     // Instrucciones generales
-    context += `Responde de manera clara, profunda y relevante al contenido del libro. Usa ejemplos cuando sea útil. Mantén un tono apropiado al libro y al modo de conversación seleccionado.`;
+    context += `INSTRUCCIONES: Responde basándote en el contenido del capítulo actual. Si el usuario pregunta sobre algo específico del capítulo, usa la información proporcionada arriba. Sé claro, profundo y relevante. Si no tienes información suficiente del capítulo para responder, indícalo honestamente.`;
+
+    // Add practical mode instructions if enabled
+    if (this.practicalMode) {
+      context += `\n\n=== MODO PRÁCTICO ACTIVADO ===\n`;
+      context += `Cuando el usuario pregunte cómo hacer algo práctico (crear una comunidad, iniciar un grupo de consumo, implementar modelos de vivienda, practicar meditaciones específicas, etc.), proporciona:\n\n`;
+      context += `1. Un plan de acción paso a paso con tareas concretas\n`;
+      context += `2. Enlaces a capítulos relevantes en el formato: [Capítulo X: Título](manual-transicion#capX)\n`;
+      context += `3. Referencias a ejercicios o meditaciones específicas cuando aplique\n`;
+      context += `4. Recursos adicionales o herramientas útiles\n\n`;
+      context += `CAPÍTULOS DISPONIBLES PARA REFERENCIA:\n`;
+      context += `- [Capítulo 1: La Transición](manual-transicion#cap1) - Entender crisis y cambios\n`;
+      context += `- [Capítulo 2: Economía](manual-transicion#cap2) - Sistemas económicos alternativos, trueque, moneda local\n`;
+      context += `- [Capítulo 3: Comunidad](manual-transicion#cap3) - Crear comunidades, redes de apoyo, economía del don\n`;
+      context += `- [Capítulo 4: Tecnología](manual-transicion#cap4) - Tecnología social, descentralización\n`;
+      context += `- [Capítulo 5: Educación](manual-transicion#cap5) - Pedagogías alternativas, aprendizaje libre\n`;
+      context += `- [Capítulo 6: Salud](manual-transicion#cap6) - Medicina integral, prevención, autocuidado\n`;
+      context += `- [Capítulo 7: Alimentación](manual-transicion#cap7) - Huertos, permacultura, soberanía alimentaria\n`;
+      context += `- [Capítulo 8: Energía](manual-transicion#cap8) - Energías renovables, autonomía energética\n`;
+      context += `- [Capítulo 9: Vivienda](manual-transicion#cap9) - Ecoaldeas, cohousing, bioconstrucción\n`;
+      context += `- [Capítulo 10: Gobernanza](manual-transicion#cap10) - Sociocracia, consenso, toma de decisiones\n`;
+      context += `- [Capítulo 11: Espiritualidad](manual-transicion#cap11) - Meditación, mindfulness, prácticas contemplativas\n`;
+      context += `- [Capítulo 12: Acción](manual-transicion#cap12) - Primeros pasos, integración práctica\n\n`;
+      context += `Incluye estos enlaces de forma natural en tu respuesta cuando sean relevantes. El usuario podrá hacer clic en ellos para navegar directamente al capítulo.`;
+    }
 
     return context;
   }

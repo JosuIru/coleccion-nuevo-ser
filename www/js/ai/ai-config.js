@@ -9,6 +9,7 @@ class AIConfig {
       CLAUDE: 'claude',
       OPENAI: 'openai',        // ChatGPT
       GEMINI: 'gemini',        // Google Gemini
+      QWEN: 'qwen',            // Alibaba Qwen (DashScope) - 1M tokens gratis/mes
       MISTRAL: 'mistral',      // Mistral AI
       HUGGINGFACE: 'huggingface', // API gratuita
       OLLAMA: 'ollama', // Local gratuito
@@ -34,6 +35,13 @@ class AIConfig {
         { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', description: 'Más reciente 2025' },
         { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', description: 'Alta calidad' },
         { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', description: 'Rápido' }
+      ],
+      [this.providers.QWEN]: [
+        { id: 'qwen-turbo', name: 'Qwen Turbo', description: 'Rápido y económico' },
+        { id: 'qwen-plus', name: 'Qwen Plus', description: 'Equilibrado' },
+        { id: 'qwen-max', name: 'Qwen Max', description: 'Máxima calidad' },
+        { id: 'qwen2.5-72b-instruct', name: 'Qwen 2.5 72B', description: 'Open source, muy capaz' },
+        { id: 'qwen2.5-32b-instruct', name: 'Qwen 2.5 32B', description: 'Open source, equilibrado' }
       ],
       [this.providers.MISTRAL]: [
         { id: 'mistral-large-latest', name: 'Mistral Large', description: 'Máxima calidad' },
@@ -81,6 +89,7 @@ class AIConfig {
         claude: '',
         openai: '',      // ChatGPT API key
         gemini: '',      // Google Gemini API key
+        qwen: '',        // DashScope API key (Alibaba) - gratis 1M tokens/mes
         mistral: '',     // Mistral AI API key
         huggingface: ''  // Token gratuito de HuggingFace
       },
@@ -95,6 +104,22 @@ class AIConfig {
 
   saveConfig() {
     localStorage.setItem('ai_config', JSON.stringify(this.config));
+
+    // Sincronizar a la nube si el usuario está autenticado
+    // console.log('[AI Config] saveConfig() called');
+    // console.log('[AI Config] supabaseSyncHelper exists?', !!window.supabaseSyncHelper);
+    // console.log('[AI Config] isAuthenticated?', window.supabaseSyncHelper?.isAuthenticated?.());
+
+    if (window.supabaseSyncHelper?.isAuthenticated?.()) {
+      // console.log('[AI Config] 🔄 Iniciando sincronización de AI config a la nube...');
+      window.supabaseSyncHelper.syncSettingsToCloud(['ai_config']).then(() => {
+        // console.log('[AI Config] ✅ AI config sincronizado exitosamente');
+      }).catch(err => {
+        console.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
+      });
+    } else {
+      // console.warn('[AI Config] ⚠️ No se puede sincronizar: usuario no autenticado o helper no disponible');
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -136,11 +161,23 @@ class AIConfig {
     return true;
   }
 
+  setQwenApiKey(apiKey) {
+    this.config.apiKeys.qwen = apiKey;
+    this.config.provider = this.providers.QWEN;
+    this.saveConfig();
+    return true;
+  }
+
   enableOllama(url = 'http://localhost:11434') {
     this.config.ollamaUrl = url;
     this.config.provider = this.providers.OLLAMA;
     this.saveConfig();
     return true;
+  }
+
+  setOllamaUrl(url) {
+    // Alias para enableOllama, mantiene consistencia con otros métodos set*
+    return this.enableOllama(url);
   }
 
   useLocalMode() {
@@ -175,6 +212,10 @@ class AIConfig {
 
   getMistralApiKey() {
     return this.config.apiKeys.mistral;
+  }
+
+  getQwenApiKey() {
+    return this.config.apiKeys.qwen;
   }
 
   getOllamaUrl() {
@@ -218,7 +259,7 @@ class AIConfig {
     }
     this.config.preferences.selectedModel = modelId;
     this.saveConfig();
-    console.log(`✅ Modelo seleccionado: ${modelId}`);
+    // console.log(`✅ Modelo seleccionado: ${modelId}`);
   }
 
   /**
@@ -250,6 +291,10 @@ class AIConfig {
 
   isMistralConfigured() {
     return this.config.apiKeys.mistral && this.config.apiKeys.mistral.length > 0;
+  }
+
+  isQwenConfigured() {
+    return this.config.apiKeys.qwen && this.config.apiKeys.qwen.length > 0;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

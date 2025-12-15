@@ -1,60 +1,56 @@
 {
   "id": "toolkit-transicion",
   "version": "1.0.0",
-  "lastUpdate": "2025-12-01",
+  "lastUpdate": "2025-12-04",
 
   "theme": {
-    "name": "Transition Green",
+    "name": "Transition Toolkit",
     "primary": "#059669",
     "secondary": "#10b981",
-    "accent": "#34d399",
+    "accent": "#fbbf24",
     "background": "#1a1a1a",
-    "backgroundSecondary": "#262626",
-    "text": "#fafafa",
-    "textSecondary": "#e5e5e5",
-    "border": "#065f46",
-    "gradient": "from-neutral-950 via-emerald-950 to-teal-950"
+    "backgroundSecondary": "#0a2e1a",
+    "text": "#d1fae5",
+    "textSecondary": "#a7f3d0",
+    "border": "#047857",
+    "gradient": "from-emerald-600 to-emerald-500"
   },
 
   "ui": {
-    "showGeometric": false,
-    "animationType": "smooth",
+    "showStarfield": true,
+    "animationType": "organic",
     "animationSpeed": "medium",
-    "fontFamily": "'Inter', 'Segoe UI', sans-serif",
+    "fontFamily": "Inter, system-ui, sans-serif",
     "fontSize": {
       "base": 16,
       "heading": 24,
       "title": 32
     },
     "spacing": {
-      "section": 28,
-      "paragraph": 14
-    },
-    "effects": {
-      "diagonalLines": false,
-      "geometricPatterns": false,
-      "boldHeaders": true
+      "section": 32,
+      "paragraph": 16
     }
   },
 
   "features": {
-    "exerciseGuides": {
+    "audiobook": {
       "enabled": true,
-      "showDifficulty": true,
-      "showDuration": true,
-      "showMaterials": true,
-      "trackProgress": true
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.75, 1.0, 1.25, 1.5],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": false
     },
     "aiChat": {
       "enabled": true,
-      "systemPrompt": "Eres un facilitador de ejercicios de transición basado en el 'Toolkit de Transición'. Ayudas a los usuarios a completar ejercicios prácticos para navegar el cambio sistémico. Eres guía, paciente y orientado a la práctica.",
+      "systemPrompt": "Eres un asistente especializado en transición social. Ayuda al usuario a entender y aplicar las herramientas del Toolkit de Transición.",
+      "modes": {},
       "maxHistoryMessages": 10
     },
     "personalNotes": {
       "enabled": true,
       "markdown": true,
-      "exportable": true,
-      "tags": ["reflexión", "insight", "obstáculo", "aprendizaje"]
+      "exportable": true
     },
     "bookmarks": {
       "enabled": true,
@@ -66,26 +62,22 @@
       "trackChapters": true,
       "trackExercises": true
     },
-    "printable": {
+    "resources": {
       "enabled": true,
-      "includeWorksheets": true
-    },
-    "audiobook": {
-      "enabled": true,
-      "voice": "es-ES",
-      "speedControl": true,
-      "speeds": [0.75, 1.0, 1.25, 1.5, 2.0],
-      "highlightCurrentParagraph": true,
-      "autoAdvanceChapter": true
+      "file": "books/toolkit-transicion/assets/resources.json"
     }
+  },
+
+  "content": {
+    "sourceFile": "books/toolkit-transicion/book.json",
+    "dataStructure": "standard"
   },
 
   "metadata": {
     "locale": "es-ES",
     "readingLevel": "intermediate",
-    "recommendedPace": "practical",
-    "complementaryBooks": ["manual-transicion", "manifiesto"],
-    "prerequisites": [],
-    "targetAudience": ["activistas", "facilitadores", "agentes de cambio"]
+    "recommendedPace": "normal",
+    "tags": ["transición", "herramientas", "acción"],
+    "complementaryBooks": ["codigo-despertar", "guia-acciones"]
   }
 }

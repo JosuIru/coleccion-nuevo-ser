@@ -75,9 +75,9 @@ class BrujulaRecursos {
   // ========== INICIALIZACIÓN ==========
 
   async init() {
-    console.log('🧭 Inicializando Brújula de Recursos...');
+    // console.log('🧭 Inicializando Brújula de Recursos...');
     await this.cargarTodosRecursos();
-    console.log(`✅ Brújula cargada con ${this.recursos.length} recursos`);
+    // console.log(`✅ Brújula cargada con ${this.recursos.length} recursos`);
   }
 
   async cargarTodosRecursos() {
@@ -88,8 +88,9 @@ class BrujulaRecursos {
 
       this.recursos = [];
 
-      // Cargar recursos de cada libro (verificando su config.json)
-      for (const libro of catalog.books) {
+      // Cargar recursos de cada libro publicado (verificando su config.json)
+      const librosPublicados = catalog.books.filter(libro => libro.status === 'published');
+      for (const libro of librosPublicados) {
         await this.cargarRecursosLibro(libro);
       }
 
@@ -106,9 +107,9 @@ class BrujulaRecursos {
       const configResponse = await fetch(`books/${libro.id}/config.json`);
       const config = await configResponse.json();
 
-      // Verificar si tiene recursos habilitados
-      if (config.features?.resources?.enabled) {
-        console.log(`📦 Cargando recursos de ${libro.id}...`);
+      // Verificar si tiene recursos habilitados Y tiene archivo definido
+      if (config.features?.resources?.enabled && config.features?.resources?.file) {
+        // console.log(`📦 Cargando recursos de ${libro.id}...`);
         const recursosResponse = await fetch(config.features.resources.file);
         const data = await recursosResponse.json();
 
@@ -150,10 +151,10 @@ class BrujulaRecursos {
           });
         }
 
-        console.log(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
+        // console.log(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
       }
     } catch (error) {
-      console.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
+      // console.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
     }
   }
 
@@ -515,8 +516,8 @@ if (typeof window !== 'undefined') {
 
   // Inicializar instancia global al cargar
   document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🧭 Preparando Brújula de Recursos...');
+    // console.log('🧭 Preparando Brújula de Recursos...');
     window.brujulaRecursos = await BrujulaRecursos.create();
-    console.log('✅ Brújula lista');
+    // console.log('✅ Brújula lista');
   });
 }

@@ -75,21 +75,21 @@ class TimelineViewer {
 
     const html = `
       <div id="timeline-modal"
-           class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-200">
-        <div class="bg-slate-900/95 rounded-2xl border border-red-900/50 shadow-2xl max-w-7xl w-full h-[90vh] flex flex-col overflow-hidden">
+           class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 transition-opacity duration-200">
+        <div class="bg-slate-900/95 rounded-xl sm:rounded-2xl border border-red-900/50 shadow-2xl max-w-7xl w-full h-[95vh] sm:h-[90vh] flex flex-col overflow-hidden">
 
           <!-- Header -->
           ${this.renderHeader(bookData)}
 
           <!-- Main Content -->
-          <div class="flex flex-1 overflow-hidden">
+          <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
             <!-- Sidebar: Categories & Patterns -->
-            <div class="w-80 border-r border-red-900/30 bg-slate-800/30 overflow-y-auto">
+            <div class="hidden md:block md:w-64 lg:w-80 border-r border-red-900/30 bg-slate-800/30 overflow-y-auto">
               ${this.renderSidebar()}
             </div>
 
             <!-- Main Timeline -->
-            <div class="flex-1 overflow-y-auto p-6">
+            <div class="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
               ${this.selectedEvent
                 ? this.renderEventDetail()
                 : this.renderTimeline()
@@ -112,26 +112,27 @@ class TimelineViewer {
 
   renderHeader(bookData) {
     return `
-      <div class="border-b border-red-900/30 p-6 flex items-center justify-between bg-gradient-to-r from-red-950/50 to-orange-950/50">
-        <div class="flex-1">
-          <h2 class="text-3xl font-bold mb-1 flex items-center gap-3">
-            ${Icons.clock(28)} Timeline Histórico
+      <div class="border-b border-red-900/30 p-3 sm:p-4 md:p-6 flex items-center justify-between bg-gradient-to-r from-red-950/50 to-orange-950/50">
+        <div class="flex-1 min-w-0">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-1 flex items-center gap-2 sm:gap-3">
+            ${Icons.clock(20)} <span class="truncate">Timeline Histórico</span>
           </h2>
-          <p class="text-sm opacity-70 flex items-center gap-1">
-            ${bookData.title} ${Icons.chevronRight(14)} Movimientos sociales y revoluciones (1789-2024)
+          <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1 truncate">
+            <span class="hidden sm:inline">${bookData.title} ${Icons.chevronRight(14)}</span> Movimientos sociales (1789-2024)
           </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           ${this.selectedEvent ? `
             <button id="back-to-timeline-btn"
-                    class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-sm flex items-center gap-1">
-              ${Icons.chevronLeft(16)} Volver al timeline
+                    class="px-2 sm:px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-xs sm:text-sm flex items-center gap-1">
+              ${Icons.chevronLeft(16)} <span class="hidden sm:inline">Volver</span>
             </button>
           ` : ''}
           <button id="close-timeline-btn"
-                  class="w-10 h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center">
-            ${Icons.close(24)}
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-700 hover:bg-gray-200 transition flex items-center justify-center flex-shrink-0 text-gray-900 dark:text-white"
+                  aria-label="Cerrar línea temporal">
+            ${Icons.close(20)}
           </button>
         </div>
       </div>
@@ -185,6 +186,7 @@ class TimelineViewer {
 
   renderTimeline() {
     const filteredEvents = this.getFilteredEvents();
+    const categories = this.getCategories();
 
     if (filteredEvents.length === 0) {
       return `
@@ -196,13 +198,26 @@ class TimelineViewer {
     }
 
     return `
-      <div class="max-w-4xl mx-auto">
-        <div class="relative">
-          <!-- Línea vertical del timeline -->
-          <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-red-500 via-orange-500 to-red-500 opacity-30"></div>
+      <div class="max-w-4xl mx-auto px-2 sm:px-0">
+        <!-- Filtro móvil -->
+        <div class="md:hidden mb-4">
+          <label class="block text-sm font-bold mb-2 opacity-70">Filtrar por categoría:</label>
+          <select id="mobile-category-filter" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+            <option value="all" ${this.selectedCategory === 'all' ? 'selected' : ''}>📜 Todos los eventos (${this.timelineData?.events?.length || 0})</option>
+            ${categories.map(cat => `
+              <option value="${cat.id}" ${this.selectedCategory === cat.id ? 'selected' : ''}>
+                ${cat.icon} ${cat.name} (${cat.count})
+              </option>
+            `).join('')}
+          </select>
+        </div>
+
+        <div class="relative ml-0 sm:ml-16 md:ml-28">
+          <!-- Línea vertical del timeline (oculta en móvil) -->
+          <div class="hidden sm:block absolute sm:-left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-red-500 via-orange-500 to-red-500 opacity-30"></div>
 
           <!-- Eventos -->
-          <div class="space-y-8">
+          <div class="space-y-4 sm:space-y-6 md:space-y-8">
             ${filteredEvents.map(event => this.renderTimelineEvent(event)).join('')}
           </div>
         </div>
@@ -214,33 +229,44 @@ class TimelineViewer {
     const categoryInfo = this.getCategoryInfo(event.category);
 
     return `
-      <div class="timeline-event relative pl-20 cursor-pointer hover:bg-slate-800/30 rounded-lg p-4 transition group"
+      <div class="timeline-event relative ml-0 sm:ml-16 md:ml-28 cursor-pointer hover:bg-slate-800/30 rounded-lg p-3 sm:p-4 transition group"
            data-event-id="${event.id}">
 
-        <!-- Dot en la línea -->
-        <div class="absolute left-6 top-6 w-5 h-5 rounded-full bg-red-600 border-4 border-slate-900 group-hover:scale-125 transition"></div>
+        <!-- Año y Dot en móvil (arriba) -->
+        <div class="flex sm:hidden items-center gap-2 mb-3 pb-2 border-b border-red-900/30">
+          <div class="w-3 h-3 rounded-full bg-red-600 border-2 border-slate-900 flex-shrink-0"></div>
+          <span class="font-bold text-base text-red-400">${event.year}</span>
+        </div>
 
-        <!-- Año -->
-        <div class="absolute left-0 top-4 w-14 text-right font-bold text-lg text-red-400">
+        <!-- Año en tablet/desktop (lateral) -->
+        <div class="hidden sm:block absolute sm:-left-16 md:-left-28 top-2 sm:top-4 w-14 md:w-20 text-right font-bold text-base md:text-lg text-red-400">
           ${event.year}
         </div>
 
+        <!-- Dot en tablet/desktop (lateral) -->
+        <div class="hidden sm:block absolute sm:-left-6 top-4 sm:top-6 w-5 h-5 rounded-full bg-red-600 border-4 border-slate-900 group-hover:scale-125 transition z-10"></div>
+
         <!-- Contenido -->
         <div>
-          <div class="flex items-start justify-between gap-3 mb-2">
-            <h3 class="text-xl font-bold group-hover:text-red-400 transition">
-              ${event.title}
-            </h3>
-            <span class="text-xs px-2 py-1 rounded bg-slate-800 text-red-400 whitespace-nowrap">
+          <!-- Título -->
+          <h3 class="text-lg sm:text-xl font-bold group-hover:text-red-400 transition mb-2">
+            ${event.title}
+          </h3>
+
+          <!-- Badge de categoría -->
+          <div class="mb-2">
+            <span class="inline-block text-xs px-2 py-1 rounded bg-slate-800 text-red-400">
               ${categoryInfo.icon} ${categoryInfo.name}
             </span>
           </div>
 
-          <p class="text-sm opacity-70 mb-2 line-clamp-2">
+          <!-- Descripción -->
+          <p class="text-xs sm:text-sm opacity-70 mb-2 line-clamp-2">
             ${event.description}
           </p>
 
-          <div class="flex items-center gap-4 text-xs opacity-50">
+          <!-- Footer -->
+          <div class="flex items-center gap-2 sm:gap-4 text-xs opacity-50 flex-wrap">
             <span class="flex items-center gap-1">${Icons.zap(12)} Impacto: ${event.impact?.split('.')[0]}...</span>
             <span class="flex items-center gap-1">${Icons.chevronRight(12)} Leer más</span>
           </div>
@@ -397,7 +423,7 @@ class TimelineViewer {
       });
     }
 
-    // Category filters
+    // Category filters (sidebar)
     const categoryBtns = document.querySelectorAll('.category-filter');
     categoryBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -406,6 +432,16 @@ class TimelineViewer {
         this.attachEventListeners();
       });
     });
+
+    // Mobile category filter
+    const mobileFilter = document.getElementById('mobile-category-filter');
+    if (mobileFilter) {
+      mobileFilter.addEventListener('change', (e) => {
+        this.selectedCategory = e.target.value;
+        this.render();
+        this.attachEventListeners();
+      });
+    }
 
     // Timeline event clicks
     const eventDivs = document.querySelectorAll('.timeline-event');

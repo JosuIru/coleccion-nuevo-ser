@@ -18,7 +18,7 @@
 
   "ui": {
     "showGeometric": false,
-    "animationType": "smooth",
+    "animationType": "organic",
     "animationSpeed": "medium",
     "fontFamily": "'Inter', 'Segoe UI', sans-serif",
     "fontSize": {
@@ -77,15 +77,23 @@
       "speeds": [0.75, 1.0, 1.25, 1.5, 2.0],
       "highlightCurrentParagraph": true,
       "autoAdvanceChapter": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/guia-acciones/assets/resources.json"
     }
+  },
+
+  "content": {
+    "sourceFile": "books/guia-acciones/book.json",
+    "dataStructure": "standard"
   },
 
   "metadata": {
     "locale": "es-ES",
-    "readingLevel": "all",
-    "recommendedPace": "active",
-    "complementaryBooks": ["manifiesto"],
-    "prerequisites": [],
-    "targetAudience": ["activistas", "ciudadanos comprometidos", "agentes de cambio"]
+    "readingLevel": "intermediate",
+    "recommendedPace": "normal",
+    "tags": ["acción", "transformación", "activismo"],
+    "complementaryBooks": ["codigo-despertar", "manifiesto"]
   }
 }

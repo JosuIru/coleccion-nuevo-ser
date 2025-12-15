@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0e1f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Laboratorio Frankenstein - Crea Seres Transformadores con Propósito">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <title>Laboratorio Frankenstein</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lab-dark': '#0a0e1f',
+                        'lab-accent': '#00d4ff',
+                        'lab-gold': '#f59e0b',
+                        'lab-green': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Android Native CSS (primero para base) -->
+    <link rel="stylesheet" href="css/android-native.css">
+
+    <!-- Frankenstein CSS -->
+    <link rel="stylesheet" href="css/frankenstein-base.css">
+    <link rel="stylesheet" href="css/frankenstein-lab.css">
+    <link rel="stylesheet" href="css/frankenstein-components.css">
+    <link rel="stylesheet" href="css/frankenstein-quiz.css">
+    <link rel="stylesheet" href="css/frankenstein-vitruvian.css">
+    <link rel="stylesheet" href="css/frankenstein-animations.css">
+
+    <!-- Mobile Enhancements CSS -->
+    <link rel="stylesheet" href="css/mobile-scroll-fix.css">
+    <link rel="stylesheet" href="css/mobile-enhancements.css">
+    <link rel="stylesheet" href="css/glassmorphism-effects.css">
+    <link rel="stylesheet" href="css/gpu-animations.css">
+
+    <style>
+        /* App Shell Styles */
+        :root {
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: #0a0e1f;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overscroll-behavior: none;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Loading Screen Optimizado */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0a0e1f 0%, #1a1f3a 50%, #0a0e1f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-icon {
+            font-size: 80px;
+            animation: pulse 2s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        .loading-title {
+            color: #f59e0b;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .loading-subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #f59e0b);
+            border-radius: 2px;
+            animation: loading 1.5s ease-in-out infinite;
+            will-change: width;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Version indicator */
+        .version-indicator {
+            position: fixed;
+            bottom: calc(8px + var(--safe-area-bottom));
+            right: 8px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-icon">🧬</div>
+        <div class="loading-title">Laboratorio Frankenstein</div>
+        <div class="loading-subtitle">Creación de Seres Transformadores</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app">
+        <div id="organism-container"></div>
+    </div>
+
+    <!-- Version indicator -->
+    <div class="version-indicator">v1.2.6</div>
+
+    <!-- Core Scripts -->
+    <script src="js/core/logger.js"></script>
+    <script src="js/core/icons.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/core/native-bridge.js"></script>
+    <script src="js/core/mobile-gestures.js"></script>
+
+    <!-- Frankenstein Lab Scripts -->
+    <script src="js/features/frankenstein-missions.js"></script>
+    <script src="js/features/frankenstein-quiz.js"></script>
+    <script src="js/features/frankenstein-audio.js"></script>
+    <script src="js/features/frankenstein-avatar-system.js"></script>
+    <script src="js/features/frankenstein-tooltips.js"></script>
+    <script src="js/features/frankenstein-demo-data.js"></script>
+    <script src="js/features/frankenstein-microsocieties.js"></script>
+    <script src="js/features/frankenstein-challenges.js"></script>
+    <script src="js/features/frankenstein-ui.js"></script>
+
+    <!-- Initialization -->
+    <script>
+        // Global toast function con haptic feedback
+        window.showToast = function(message, type = 'info') {
+            // Haptic feedback según tipo
+            if (window.NativeBridge && window.NativeBridge.initialized) {
+                switch(type) {
+                    case 'success':
+                        window.NativeBridge.hapticSuccess();
+                        break;
+                    case 'error':
+                        window.NativeBridge.hapticError();
+                        break;
+                    default:
+                        window.NativeBridge.hapticLight();
+                }
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastIn 0.25s cubic-bezier(0.4, 0.0, 0.2, 1) reverse';
+                setTimeout(() => toast.remove(), 250);
+            }, 3000);
+        };
+
+        // Initialize Lucide icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        // Initialize Frankenstein Lab
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🧬 Inicializando Laboratorio Frankenstein v1.2.6...');
+
+            try {
+                // Inicializar NativeBridge primero
+                if (window.NativeBridge) {
+                    await window.NativeBridge.init();
+                }
+
+                // Esperar un poco para que carguen todos los scripts
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Initialize Quiz System
+                if (typeof FrankensteinQuizSystem !== 'undefined') {
+                    window.FrankensteinQuiz = new FrankensteinQuizSystem();
+                    console.log('✅ FrankensteinQuiz inicializado');
+                }
+
+                // Mock organism knowledge for standalone mode
+                const mockOrganismKnowledge = {
+                    getAvailablePieces: () => [],
+                    getCurrentBook: () => null,
+                    getProgress: () => ({ completedChapters: [], totalChapters: 0 })
+                };
+
+                // Initialize Lab UI
+                if (typeof FrankensteinLabUI !== 'undefined') {
+                    window.FrankensteinLabUI = new FrankensteinLabUI(mockOrganismKnowledge);
+
+                    // Check container exists
+                    const container = document.getElementById('organism-container');
+                    if (container) {
+                        // Enable demo mode by default for standalone
+                        if (window.FrankensteinQuiz) {
+                            window.FrankensteinQuiz.setMode('demo');
+                        }
+
+                        await window.FrankensteinLabUI.init();
+                        console.log('✅ FrankensteinLabUI inicializado');
+                    } else {
+                        console.error('❌ organism-container no encontrado');
+                    }
+                }
+
+                // Hide loading screen con transición suave
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => loadingScreen.remove(), 400);
+                }
+
+                // Haptic feedback de éxito
+                if (window.NativeBridge) {
+                    window.NativeBridge.hapticSuccess();
+                }
+
+                showToast('¡Laboratorio listo!', 'success');
+
+            } catch (error) {
+                console.error('❌ Error inicializando:', error);
+
+                if (window.NativeBridge) {
+                    window.NativeBridge.hapticError();
+                }
+
+                showToast('Error al cargar', 'error');
+
+                // Show error in loading screen
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.innerHTML = `
+                        <div style="color: #ef4444; font-size: 60px;">⚠️</div>
+                        <div style="color: white; margin-top: 20px; font-size: 18px;">Error al cargar</div>
+                        <div style="color: #94a3b8; margin-top: 10px; font-size: 12px; max-width: 280px; text-align: center;">${error.message}</div>
+                        <button onclick="location.reload()" style="margin-top: 24px; padding: 14px 32px; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; min-height: 48px;">
+                            Reintentar
+                        </button>
+                    `;
+                }
+            }
+        });
+
+        // Agregar haptic feedback a todos los botones y elementos clickables
+        document.addEventListener('click', function(e) {
+            const clickable = e.target.closest('button, .btn, .clickable, .mode-option, .difficulty-option, .piece-item, [role="button"]');
+            if (clickable && window.NativeBridge) {
+                window.NativeBridge.hapticLight();
+            }
+        }, true);
+
+        // Agregar clase ripple a elementos interactivos
+        document.addEventListener('DOMContentLoaded', function() {
+            const addRipple = () => {
+                const elements = document.querySelectorAll('button:not(.ripple), .btn:not(.ripple), .mode-option:not(.ripple), .difficulty-option:not(.ripple)');
+                elements.forEach(el => el.classList.add('ripple'));
+            };
+
+            // Observar cambios en el DOM para nuevos elementos
+            const observer = new MutationObserver(addRipple);
+            observer.observe(document.body, { childList: true, subtree: true });
+            addRipple();
+        });
+
+        // Prevenir pull-to-refresh en móvil
+        let touchStartY = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            const touchY = e.touches[0].clientY;
+            const scrollTop = document.scrollingElement.scrollTop;
+
+            // Si estamos en la parte superior y deslizamos hacia abajo, prevenir
+            if (scrollTop === 0 && touchY > touchStartY) {
+                const target = e.target.closest('#app, .native-scroll, .modal-content');
+                if (!target || target.scrollTop === 0) {
+                    e.preventDefault();
+                }
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

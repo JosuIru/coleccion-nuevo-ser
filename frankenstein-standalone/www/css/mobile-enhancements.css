@@ -1,0 +1,668 @@
+/**
+ * MOBILE ENHANCEMENTS - Mejoras específicas para móvil
+ * Optimización táctil, scroll suave, navegación mobile-first
+ *
+ * @version 1.0.0
+ * @author J. Irurtzun & Claude Sonnet 4.5
+ */
+
+/* ========================================
+   VARIABLES MÓVILES
+   ======================================== */
+:root {
+  /* Touch Targets - Mínimo 48x48px según Material Design */
+  --touch-target-min: 48px;
+  --touch-target-comfortable: 56px;
+
+  /* Espaciado móvil */
+  --mobile-padding: 1rem;
+  --mobile-gap: 0.75rem;
+
+  /* Scroll suave */
+  --scroll-behavior: smooth;
+}
+
+/* ========================================
+   SCROLL OPTIMIZADO PARA MÓVIL
+   ======================================== */
+
+/* Scroll suave en todo el documento */
+html {
+  scroll-behavior: var(--scroll-behavior);
+  -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+  overflow-x: hidden; /* Evitar scroll horizontal accidental */
+}
+
+body {
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Evitar bounce/overscroll en iOS */
+body {
+  overscroll-behavior-y: none;
+  position: relative;
+}
+
+/* Contenedores scrollables optimizados */
+.scrollable-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y; /* Solo scroll vertical */
+}
+
+/* ========================================
+   TOUCH TARGETS MEJORADOS
+   ======================================== */
+
+/* Todos los botones y elementos interactivos */
+button,
+.btn,
+.lab-button,
+a[role="button"],
+[onclick],
+.clickable {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: 0.75rem 1.25rem;
+  position: relative;
+}
+
+/* Área táctil expandida invisible */
+button::before,
+.lab-button::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: inherit;
+}
+
+/* Feedback táctil inmediato */
+button:active,
+.lab-button:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* ========================================
+   MODALES MÓVILES MEJORADOS
+   ======================================== */
+
+/* Modales ocupan toda la pantalla en móvil */
+@media (max-width: 768px) {
+  [id$="-modal"],
+  .modal,
+  .frankenstein-start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header de modal sticky */
+  .modal-header,
+  .saved-beings-header,
+  .frankenstein-start-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: inherit;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Botón de cierre más grande y accesible */
+  .modal-close,
+  .saved-beings-close,
+  [id$="-close-button"] {
+    min-width: 56px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+}
+
+/* ========================================
+   BOTTOM SHEET OPTIMIZADO
+   ======================================== */
+
+#pieces-bottom-sheet {
+  /* Mejorar rendimiento de animación */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+
+  /* Scroll interno optimizado */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+#bottom-sheet-handle {
+  /* Área táctil más grande */
+  padding: 1rem;
+  cursor: grab;
+  touch-action: none; /* Control total del gesture */
+}
+
+#bottom-sheet-handle:active {
+  cursor: grabbing;
+}
+
+/* Contenido del bottom sheet con scroll independiente */
+.pieces-container,
+.pieces-grid {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(100vh - 200px);
+}
+
+/* ========================================
+   NAVEGACIÓN MÓVIL
+   ======================================== */
+
+/* Barra de navegación inferior sticky */
+@media (max-width: 768px) {
+  .lab-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Botones de navegación espaciados */
+  .lab-nav-buttons,
+  .lab-actions {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Ocultar textos largos en botones pequeños */
+  .lab-button .button-text-desktop {
+    display: none;
+  }
+
+  .lab-button .button-icon {
+    display: inline-block;
+    font-size: 1.25rem;
+  }
+}
+
+/* ========================================
+   GRID Y LAYOUT RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Grids de 1 columna en móvil */
+  .beings-grid,
+  .pieces-grid,
+  .missions-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* Padding reducido pero confortable */
+  .organism-container,
+  .lab-workspace {
+    padding: var(--mobile-padding);
+  }
+
+  /* Reducir márgenes excesivos */
+  .being-display,
+  .vitruvian-container,
+  .being-attributes {
+    margin: 0.5rem 0;
+  }
+}
+
+/* ========================================
+   TIPOGRAFÍA MÓVIL
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Tamaños de fuente optimizados */
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  h4, .h4 { font-size: 1.1rem; }
+
+  body, p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  small, .text-sm {
+    font-size: 0.875rem;
+  }
+
+  /* Interlineado cómodo para lectura */
+  p, li {
+    line-height: 1.65;
+  }
+}
+
+/* ========================================
+   FORMULARIOS Y INPUTS MÓVILES
+   ======================================== */
+
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    min-height: 48px;
+    font-size: 16px; /* Evita zoom en iOS */
+    padding: 0.75rem;
+  }
+
+  /* Evitar zoom en inputs en iOS */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    font-size: 16px;
+  }
+}
+
+/* ========================================
+   CARDS Y CONTENEDORES MÓVILES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .being-card,
+  .mission-card,
+  .piece-card {
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Imágenes responsive */
+  .being-card img,
+  .avatar-image {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Flexbox responsive */
+  .being-card > div {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* ========================================
+   PERFORMANCE Y ANIMACIONES MÓVILES
+   ======================================== */
+
+/* Reducir animaciones en móviles de gama baja */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimizar rendimiento de animaciones */
+.animated-element {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ========================================
+   ACCESIBILIDAD TÁCTIL
+   ======================================== */
+
+/* Aumentar contraste en modo táctil */
+@media (hover: none) and (pointer: coarse) {
+  button:hover,
+  .lab-button:hover {
+    /* Hover no aplica en móvil, usar active */
+    background-color: inherit;
+  }
+
+  button:active,
+  .lab-button:active {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+}
+
+/* ========================================
+   LANDSCAPE MÓVIL
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Reducir paddings verticales en landscape */
+  .organism-container {
+    padding: 0.5rem 1rem;
+  }
+
+  /* Header más compacto */
+  .lab-header {
+    padding: 0.5rem 1rem;
+  }
+
+  /* Vitruvio más pequeño en landscape */
+  .vitruvian-container {
+    max-width: 300px;
+    min-height: 300px;
+  }
+}
+
+/* ========================================
+   GESTOS NATIVOS
+   ======================================== */
+
+/* Evitar selección de texto en elementos interactivos */
+button,
+.lab-button,
+.piece-card,
+.mission-card,
+#bottom-sheet-handle {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Permitir selección en textos de lectura */
+p,
+.content-text,
+.description {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ========================================
+   SAFE AREAS (NOTCH)
+   ======================================== */
+
+/* Soporte para notch de iOS */
+@supports (padding: max(0px)) {
+  .lab-header {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
+  .organism-container {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  #pieces-bottom-sheet {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ========================================
+   SCROLLBAR PERSONALIZADO MÓVIL
+   ======================================== */
+
+/* Scrollbar delgado en móvil */
+@media (max-width: 768px) {
+  *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.5);
+    border-radius: 2px;
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    background: rgba(212, 175, 55, 0.8);
+  }
+}
+
+/* ========================================
+   VITRUVIO MÓVIL OPTIMIZADO
+   ======================================== */
+
+@media (max-width: 768px) {
+  .vitruvian-container {
+    max-width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .vitruvian-svg {
+    max-height: 400px;
+  }
+
+  /* Avatar display móvil */
+  .being-avatar-display {
+    padding: 1rem;
+  }
+
+  .being-avatar-display > div {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  .being-avatar-display img {
+    width: 120px !important;
+    height: 120px !important;
+  }
+}
+
+/* ========================================
+   PANTALLA DE INICIO MÓVIL
+   ======================================== */
+
+@media (max-width: 768px) {
+  .frankenstein-start-screen {
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .start-content {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .mode-card,
+  .difficulty-card {
+    min-height: 80px;
+    padding: 1rem;
+  }
+
+  .start-button {
+    width: 100%;
+    min-height: 56px;
+    font-size: 1.1rem;
+  }
+}
+
+/* ========================================
+   MISIONES - TABS HORIZONTALES (MÓVIL)
+   ======================================== */
+
+/* Contenedor de tabs horizontal con scroll */
+@media (max-width: 768px) {
+  .missions-grid.horizontal-tabs {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 1rem;
+    padding: 1rem;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .missions-grid.horizontal-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Indicador de scroll */
+  .missions-grid.horizontal-tabs.has-scroll::after {
+    content: '→';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, rgba(15, 15, 25, 0.9));
+    padding: 1rem 2rem 1rem 3rem;
+    color: var(--franken-brass);
+    font-size: 1.5rem;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+  }
+
+  .missions-grid.horizontal-tabs.scroll-end::after {
+    opacity: 0;
+  }
+
+  /* Tabs individuales */
+  .mission-tab {
+    flex: 0 0 auto;
+    width: 160px;
+    min-height: 180px;
+    padding: 1rem;
+    background: rgba(30, 30, 45, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Touch feedback */
+    -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+  }
+
+  /* Tab seleccionado */
+  .mission-tab.selected {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 115, 51, 0.2));
+    border-color: var(--franken-brass);
+    transform: scale(1.05);
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(212, 175, 55, 0.3);
+  }
+
+  /* Hover/Touch feedback */
+  .mission-tab:active {
+    transform: scale(0.98);
+  }
+
+  /* Icono del tab */
+  .mission-tab-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Nombre del tab */
+  .mission-tab-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--franken-brass);
+    text-align: center;
+    line-height: 1.2;
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  /* Dificultad del tab */
+  .mission-tab-difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .mission-tab-difficulty.principiante {
+    background: rgba(76, 175, 80, 0.2);
+    color: #81C784;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+
+  .mission-tab-difficulty.intermedio {
+    background: rgba(255, 152, 0, 0.2);
+    color: #FFB74D;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+  }
+
+  .mission-tab-difficulty.avanzado {
+    background: rgba(244, 67, 54, 0.2);
+    color: #E57373;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+  }
+}
+
+/* Desktop - Grid tradicional */
+@media (min-width: 769px) {
+  .missions-grid.desktop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .mission-card {
+    padding: 1.5rem;
+    background: rgba(30, 30, 45, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mission-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--franken-brass);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(212, 175, 55, 0.2);
+  }
+
+  .mission-card.selected {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 115, 51, 0.2));
+    border-color: var(--franken-brass);
+  }
+}

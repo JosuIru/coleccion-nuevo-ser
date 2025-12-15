@@ -32,7 +32,7 @@ class WidgetDataHelper {
     // Exponer globalmente
     window.widgetDataHelper = this;
 
-    console.log('WidgetDataHelper initialized');
+    // console.log('WidgetDataHelper initialized');
   }
 
   // ==========================================================================
@@ -52,7 +52,7 @@ class WidgetDataHelper {
     }
 
     this.lastUpdate = Date.now();
-    console.log('Widget data synced:', widgetData);
+    // console.log('Widget data synced:', widgetData);
 
     return widgetData;
   }
@@ -289,10 +289,31 @@ class WidgetDataHelper {
           value: String(Date.now())
         });
 
-        console.log('Widget data synced to SharedPreferences');
+        // Actualizar widgets nativos usando el plugin
+        if (window.Capacitor?.Plugins?.WidgetBridge) {
+          try {
+            await window.Capacitor.Plugins.WidgetBridge.updateWidgetData({
+              currentBook: widgetData.currentBook.title,
+              progress: widgetData.currentBook.progress,
+              streak: widgetData.streak.days,
+              totalChapters: widgetData.currentBook.totalChapters,
+              chaptersRead: widgetData.currentBook.chaptersRead,
+              dailyKoan: widgetData.dailyKoan.shortText,
+              koanDate: new Date().toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short'
+              })
+            });
+            // console.log('✓ Native widgets updated');
+          } catch (widgetError) {
+            // console.warn('Error updating native widgets:', widgetError);
+          }
+        }
+
+        // console.log('Widget data synced to SharedPreferences');
       }
     } catch (error) {
-      console.warn('Error syncing to SharedPreferences:', error);
+      // console.warn('Error syncing to SharedPreferences:', error);
     }
   }
 
@@ -369,7 +390,7 @@ class WidgetDataHelper {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.warn('Error saving to storage:', error);
+      // console.warn('Error saving to storage:', error);
     }
   }
 

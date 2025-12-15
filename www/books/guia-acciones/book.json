@@ -2,10 +2,8 @@
   "id": "guia-acciones",
   "title": "Guía de Acciones Transformadoras",
   "subtitle": "Del pensamiento a la práctica: 54 acciones para cambiar el mundo desde tu realidad",
-  "authors": [
-    "J. Irurtzun",
-    "Claude"
-  ],
+  "author": "J. Irurtzun",
+  "coAuthor": "Claude",
   "year": 2025,
   "epigraph": {
     "text": "La acción es el antídoto del desespero.",

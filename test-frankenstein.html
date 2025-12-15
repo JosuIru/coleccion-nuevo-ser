@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Frankenstein Lab</title>
+  <link rel="stylesheet" href="www/css/frankenstein-lab.css">
+  <style>
+    body {
+      background: #1a1a2e;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="color: white;">Test de Book Tree Toggle</h1>
+
+  <div class="pieces-grid" style="max-width: 600px;">
+    <div class="book-tree-item">
+      <div class="book-tree-header" id="test-header">
+        <span class="book-tree-toggle" id="test-toggle">▶</span>
+        <span class="book-tree-icon">📚</span>
+        <span class="book-tree-title">La Tierra que Despierta - Test Manual</span>
+        <span class="book-tree-stats">
+          <span class="book-tree-count">48</span>
+          <span class="book-tree-power">⚡5114</span>
+        </span>
+      </div>
+      <div class="book-tree-content" id="test-content">
+        <div class="book-chapters">
+          <div class="chapter-tree-item">
+            <div class="chapter-tree-header">
+              <span class="chapter-tree-icon">📖</span>
+              <span class="chapter-tree-title">Capítulo de Prueba</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const header = document.getElementById('test-header');
+    const toggle = document.getElementById('test-toggle');
+    const content = document.getElementById('test-content');
+
+    header.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log('Click en header!');
+      const isOpen = content.classList.contains('open');
+      console.log('isOpen:', isOpen);
+
+      if (isOpen) {
+        toggle.classList.remove('open');
+        header.classList.remove('open');
+        content.classList.remove('open');
+        console.log('Cerrando...');
+      } else {
+        toggle.classList.add('open');
+        header.classList.add('open');
+        content.classList.add('open');
+        console.log('Abriendo...');
+      }
+    });
+  </script>
+</body>
+</html>

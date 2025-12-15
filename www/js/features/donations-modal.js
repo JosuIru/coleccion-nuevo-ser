@@ -122,14 +122,14 @@ class DonationsModal {
 
               <!-- Ko-fi -->
               <a href="https://ko-fi.com/codigodespierto" target="_blank"
-                 class="block p-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 rounded-lg transition transform hover:scale-105">
+                 class="block p-4 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 rounded-lg transition transform hover:scale-105 text-white">
                 <div class="flex items-center gap-4">
                   <div class="text-4xl">☕</div>
                   <div class="flex-1">
-                    <div class="font-bold text-lg">Ko-fi</div>
-                    <div class="text-sm opacity-90">${this.i18n.t('donate.coffee')}</div>
+                    <div class="font-bold text-lg text-white">Ko-fi</div>
+                    <div class="text-sm text-white/90">${this.i18n.t('donate.coffee')}</div>
                   </div>
-                  <div class="text-2xl">${Icons.chevronRight(24)}</div>
+                  <div class="text-2xl text-white">${Icons.chevronRight(24)}</div>
                 </div>
               </a>
 
@@ -147,31 +147,31 @@ class DonationsModal {
               </a>
 
               <!-- Bitcoin Native SegWit -->
-              <div class="p-4 bg-gradient-to-r from-orange-600 to-yellow-600 rounded-lg">
+              <div class="p-4 bg-gradient-to-r from-orange-700 to-yellow-700 rounded-lg text-white">
                 <div class="flex items-center gap-4 mb-3">
                   <div class="text-4xl">₿</div>
                   <div class="flex-1">
-                    <div class="font-bold text-lg">Bitcoin (Native SegWit)</div>
-                    <div class="text-xs opacity-90 font-mono break-all">bc1qjnva46wy92ldhsv4w0j26jmu8c5wm5cxvgdfd7</div>
+                    <div class="font-bold text-lg text-white">Bitcoin (Native SegWit)</div>
+                    <div class="text-xs text-white/90 font-mono break-all">bc1qjnva46wy92ldhsv4w0j26jmu8c5wm5cxvgdfd7</div>
                   </div>
                 </div>
                 <button id="copy-btc-bc1q" onclick="window.donationsModal.copyToClipboard('bc1qjnva46wy92ldhsv4w0j26jmu8c5wm5cxvgdfd7', 'copy-btc-bc1q')"
-                        class="w-full px-4 py-2 bg-black/30 hover:bg-black/50 rounded transition text-sm">
+                        class="w-full px-4 py-2 bg-black/30 hover:bg-black/50 rounded transition text-sm text-white">
                   📋 ${this.i18n.currentLang === 'es' ? 'Copiar dirección' : 'Copy address'}
                 </button>
               </div>
 
               <!-- Bitcoin Taproot -->
-              <div class="p-4 bg-gradient-to-r from-yellow-600 to-amber-600 rounded-lg">
+              <div class="p-4 bg-gradient-to-r from-yellow-700 to-amber-700 rounded-lg text-white">
                 <div class="flex items-center gap-4 mb-3">
                   <div class="text-4xl">₿</div>
                   <div class="flex-1">
-                    <div class="font-bold text-lg">Bitcoin (Taproot)</div>
-                    <div class="text-xs opacity-90 font-mono break-all">bc1p29l9vjelerljlwhg6dhr0uldldus4zgn8vjaecer0spj7273d7rss4gnyk</div>
+                    <div class="font-bold text-lg text-white">Bitcoin (Taproot)</div>
+                    <div class="text-xs text-white/90 font-mono break-all">bc1p29l9vjelerljlwhg6dhr0uldldus4zgn8vjaecer0spj7273d7rss4gnyk</div>
                   </div>
                 </div>
                 <button id="copy-btc-bc1p" onclick="window.donationsModal.copyToClipboard('bc1p29l9vjelerljlwhg6dhr0uldldus4zgn8vjaecer0spj7273d7rss4gnyk', 'copy-btc-bc1p')"
-                        class="w-full px-4 py-2 bg-black/30 hover:bg-black/50 rounded transition text-sm">
+                        class="w-full px-4 py-2 bg-black/30 hover:bg-black/50 rounded transition text-sm text-white">
                   📋 ${this.i18n.currentLang === 'es' ? 'Copiar dirección' : 'Copy address'}
                 </button>
               </div>
@@ -179,8 +179,8 @@ class DonationsModal {
             </div>
 
             <!-- Share on Social Networks -->
-            <div class="p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
-              <h3 class="font-bold mb-3 flex items-center gap-2">
+            <div class="p-4 bg-gray-100 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg">
+              <h3 class="font-bold mb-3 flex items-center gap-2 text-gray-900 dark:text-white">
                 📢 ${this.i18n.currentLang === 'es' ? 'Compartir en redes' : 'Share on social media'}
               </h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -245,11 +245,11 @@ class DonationsModal {
             </div>
 
             <!-- Other Ways to Help -->
-            <div class="p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
-              <h3 class="font-bold mb-3 flex items-center gap-2">
+            <div class="p-4 bg-gray-100 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg">
+              <h3 class="font-bold mb-3 flex items-center gap-2 text-gray-900 dark:text-white">
                 🌟 ${this.i18n.currentLang === 'es' ? 'Otras formas de ayudar' : 'Other ways to help'}
               </h3>
-              <ul class="space-y-2 text-sm opacity-80">
+              <ul class="space-y-2 text-sm opacity-80 text-gray-900 dark:text-white">
                 <li>⭐ ${this.i18n.currentLang === 'es' ? 'Dale una estrella en GitHub' : 'Star on GitHub'}</li>
                 <li>🐛 ${this.i18n.currentLang === 'es' ? 'Reporta bugs o sugiere mejoras' : 'Report bugs or suggest improvements'}</li>
                 <li>📢 ${this.i18n.currentLang === 'es' ? 'Comparte el proyecto con amigos' : 'Share the project with friends'}</li>
@@ -259,9 +259,9 @@ class DonationsModal {
             </div>
 
             <!-- Thank You -->
-            <div class="text-center p-4 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border border-cyan-700/30 rounded-lg">
-              <p class="text-lg font-bold mb-2">🙏 ${this.i18n.t('donate.thanks')}</p>
-              <p class="text-sm opacity-80">
+            <div class="text-center p-4 bg-gradient-to-r from-cyan-200/30 to-purple-200/30 dark:from-cyan-900/20 dark:to-purple-900/20 border border-cyan-400/30 dark:border-cyan-700/30 rounded-lg">
+              <p class="text-lg font-bold mb-2 text-gray-900 dark:text-white">🙏 ${this.i18n.t('donate.thanks')}</p>
+              <p class="text-sm opacity-80 text-gray-900 dark:text-white">
                 ${this.i18n.t('donate.thanksText')}
               </p>
             </div>
@@ -269,8 +269,8 @@ class DonationsModal {
           </div>
 
           <!-- Footer -->
-          <div class="p-4 sm:p-6 border-t border-gray-800 flex justify-center">
-            <button id="close-donations-btn" class="px-6 sm:px-8 py-2 sm:py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition">
+          <div class="p-4 sm:p-6 border-t border-gray-300 dark:border-gray-800 flex justify-center">
+            <button id="close-donations-btn" class="px-6 sm:px-8 py-2 sm:py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg transition text-gray-900 dark:text-white">
               ${this.i18n.t('btn.close')}
             </button>
           </div>

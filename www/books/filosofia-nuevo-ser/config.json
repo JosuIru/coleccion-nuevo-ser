@@ -1,0 +1,96 @@
+{
+  "id": "filosofia-nuevo-ser",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-04",
+
+  "theme": {
+    "name": "Philosophical Purple",
+    "primary": "#9333ea",
+    "secondary": "#7c3aed",
+    "accent": "#a855f7",
+    "background": "#1e1b4b",
+    "backgroundSecondary": "#312e81",
+    "text": "#e9d5ff",
+    "textSecondary": "#d8b4fe",
+    "border": "#6d28d9",
+    "gradient": "from-purple-700 to-indigo-800"
+  },
+
+  "ui": {
+    "showStarfield": true,
+    "animationType": "cosmic",
+    "animationSpeed": "slow",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+
+  "features": {
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.75, 1.0, 1.25, 1.5],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": false
+    },
+    "aiChat": {
+      "enabled": true,
+      "systemPrompt": "Eres un asistente filosófico especializado en la Filosofía del Nuevo Ser. Ayudas al usuario a explorar conceptos de ontología, epistemología y reconexión.",
+      "modes": {
+        "socratico": {
+          "name": "Guía Socrático",
+          "prompt": "Eres un guía socrático que ayuda a examinar premisas filosóficas mediante preguntas profundas."
+        },
+        "integrador": {
+          "name": "Facilitador de Integración",
+          "prompt": "Ayudas a conectar conceptos filosóficos abstractos con experiencias personales concretas."
+        },
+        "critico": {
+          "name": "Pensador Crítico",
+          "prompt": "Eres un pensador crítico que examina argumentos filosóficos con rigor."
+        }
+      },
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/filosofia-nuevo-ser/assets/resources.json"
+    }
+  },
+
+  "content": {
+    "sourceFile": "books/filosofia-nuevo-ser/book.json",
+    "dataStructure": "standard"
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "advanced",
+    "recommendedPace": "slow",
+    "tags": ["filosofía", "ontología", "epistemología"],
+    "complementaryBooks": ["codigo-despertar", "practicas-radicales"]
+  }
+}

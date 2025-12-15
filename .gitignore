@@ -65,3 +65,5 @@ __pycache__/
 google-services.json
 .env
 .env.local
+www/.env
+www/js/core/env.js

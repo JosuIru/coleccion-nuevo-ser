@@ -1,0 +1,26 @@
+{
+  "name": "awakening-protocol/api",
+  "description": "API para Awakening Protocol Mobile Game",
+  "type": "project",
+  "require": {
+    "php": ">=8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "AwakeningProtocol\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AwakeningProtocol\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:coverage": "phpunit --coverage-html coverage/",
+    "test:verbose": "phpunit --verbose"
+  }
+}

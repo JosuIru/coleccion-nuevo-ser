@@ -1,0 +1,384 @@
+{
+  "resources": {
+    "title": "Recursos para el Borde del Conocimiento",
+    "description": "Maestros, libros, retiros y enseñanzas para practicantes avanzados que buscan deconstrucción profunda, vacuidad radical y prácticas más allá del consuelo"
+  },
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "Seeing That Frees: Meditations on Emptiness and Dependent Arising",
+      "author": "Rob Burbea",
+      "year": 2014,
+      "description": "Exploración sistemática de vacuidad (emptiness) mediante 50+ prácticas progresivas",
+      "why": "El manual más completo de prácticas de vacuidad en inglés. Deconstrucción profunda de realidad percibida",
+      "relatedChapters": ["espiral1", "espiral2", "espiral4"]
+    },
+    {
+      "id": "book-002",
+      "title": "Mastering the Core Teachings of the Buddha (2nd Edition)",
+      "author": "Daniel Ingram",
+      "year": 2018,
+      "description": "Mapa pragmático de jhanas, vipassana ñanas y despertar según Theravada. Sin sentimentalismo",
+      "why": "Instrucciones técnicas para alcanzar cessations y stream entry. Honestidad brutal sobre la práctica",
+      "relatedChapters": ["espiral1", "espiral3"]
+    },
+    {
+      "id": "book-003",
+      "title": "The Mind Illuminated",
+      "author": "Culadasa (John Yates)",
+      "year": 2015,
+      "description": "Mapa de 10 etapas de shamatha con neurociencia. Hasta 8 jhanas",
+      "why": "Base sólida de concentración necesaria para prácticas radicales",
+      "relatedChapters": ["espiral1"]
+    },
+    {
+      "id": "book-004",
+      "title": "The Way of Zen",
+      "author": "Alan Watts",
+      "year": 1957,
+      "description": "Filosofía zen: no-mente, espontaneidad, vacío. Sin religiosidad",
+      "why": "Perspectiva zen sobre vacío que complementa aproximaciones vipassana",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "book-005",
+      "title": "The Spectrum of Ecstasy: Embracing Emotions as a Path",
+      "author": "Ngakpa Chögyam & Khandro Déchen",
+      "year": 1997,
+      "description": "Tantra tibetano: trabajar con emociones como energía, no como enemigos a purificar",
+      "why": "Aproximación no-dual a emociones aflictivas. Ver su vacuidad directamente",
+      "relatedChapters": ["espiral1", "espiral4"]
+    },
+    {
+      "id": "book-006",
+      "title": "Cutting Through Spiritual Materialism",
+      "author": "Chögyam Trungpa",
+      "year": 1973,
+      "description": "Cómo el ego espiritual se apropia del camino. Advertencia contra auto-engaño",
+      "why": "Confrontación necesaria con materialismo espiritual y búsqueda neurótica",
+      "relatedChapters": ["espiral3"]
+    },
+    {
+      "id": "book-007",
+      "title": "The Book of Not Knowing",
+      "author": "Peter Ralston",
+      "year": 2010,
+      "description": "Investigación directa de consciencia sin creencias. Deconstrucción radical",
+      "why": "Método de indagación directa más allá de conceptos",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "book-008",
+      "title": "I Am That",
+      "author": "Nisargadatta Maharaj",
+      "year": 1973,
+      "description": "Advaita Vedanta radical: negación de todo fenómeno hasta 'yo soy'",
+      "why": "Enseñanzas no-duales sin concesiones. Vacío absoluto",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "book-009",
+      "title": "The End of Your World",
+      "author": "Adyashanti",
+      "year": 2008,
+      "description": "Qué pasa después del despertar inicial. Integración y deconstrucción continua",
+      "why": "Realismo sobre despertar: no es el final, es el principio",
+      "relatedChapters": ["espiral3", "espiral4"]
+    },
+    {
+      "id": "book-010",
+      "title": "Progressive Stages of Meditation on Emptiness",
+      "author": "Khenpo Tsultrim Gyamtso Rinpoche",
+      "year": 1986,
+      "description": "Vacuidad según Madhyamaka: 4 escuelas budistas de análisis filosófico",
+      "why": "Deconstrucción filosófica sistemática de realidad",
+      "relatedChapters": ["espiral1", "espiral2"]
+    },
+    {
+      "id": "book-011",
+      "title": "Realizing Emptiness",
+      "author": "David Loy",
+      "year": 1996,
+      "description": "Comparación entre vacuidad budista (śūnyatā) y no-dualidad advaita",
+      "why": "Perspectiva académica comparativa de tradiciones no-duales",
+      "relatedChapters": ["espiral2"]
+    },
+    {
+      "id": "book-012",
+      "title": "After Buddhism: Rethinking the Dharma for a Secular Age",
+      "author": "Stephen Batchelor",
+      "year": 2015,
+      "description": "Budismo secular: práctica sin renacimiento, karma cosmológico o metafísica",
+      "why": "Deconstrucción de dogmas budistas manteniendo práctica radical",
+      "relatedChapters": ["espiral3"]
+    }
+  ],
+
+  "teachers": [
+    {
+      "id": "teacher-001",
+      "name": "Rob Burbea",
+      "tradition": "Vipassana / Vacuidad / Imaginal",
+      "status": "Fallecido 2020",
+      "description": "Maestro de Gaia House (UK). Explorador profundo de vacuidad y práctica imaginal",
+      "resources": "200+ charlas en Dharma Seed, libro 'Seeing That Frees', retiros grabados",
+      "website": "https://hermesamara.org",
+      "why": "El maestro occidental más completo de prácticas de vacuidad. Enseñanzas post-mortem disponibles",
+      "relatedChapters": ["espiral1", "espiral2", "espiral4", "espiral5"]
+    },
+    {
+      "id": "teacher-002",
+      "name": "Daniel Ingram",
+      "tradition": "Pragmatic Dharma / Theravada",
+      "description": "Médico de emergencias y arahat auto-declarado. Autor de MCTB",
+      "resources": "Libro MCTB gratuito online, Dharma Overground forum",
+      "website": "https://www.mctb.org",
+      "why": "Instrucciones técnicas sin romanticismo. Honestidad brutal sobre logros y problemas",
+      "relatedChapters": ["espiral1", "espiral3"]
+    },
+    {
+      "id": "teacher-003",
+      "name": "Adyashanti",
+      "tradition": "Zen / Advaita",
+      "description": "Maestro americano de despertar no-dual. Ex-estudiante zen que enseña fuera de tradiciones",
+      "resources": "Libros, retiros, cursos, charlas online",
+      "website": "https://adyashanti.org",
+      "why": "Claridad contemporánea sobre despertar sin misticismo oriental",
+      "relatedChapters": ["espiral2", "espiral3", "espiral4"]
+    },
+    {
+      "id": "teacher-004",
+      "name": "Shinzen Young",
+      "tradition": "Vipassana / Zen / Shingon",
+      "description": "Maestro que integra tradiciones. Desarrolló sistema 'Unified Mindfulness'",
+      "resources": "App Brightmind, YouTube, libros, cursos",
+      "website": "https://shinzen.org",
+      "why": "Aproximación algorítmica a deconstrucción de experiencia",
+      "relatedChapters": ["espiral1", "espiral2"]
+    },
+    {
+      "id": "teacher-005",
+      "name": "Kenneth Folk",
+      "tradition": "Pragmatic Dharma",
+      "description": "Maestro de dharma pragmático. Mapas de progreso claros",
+      "resources": "Blog, videos YouTube, coaching 1-on-1",
+      "website": "https://kennethfolkdharma.com",
+      "why": "Instrucciones pragmáticas de jhanas y vipassana ñanas",
+      "relatedChapters": ["espiral1"]
+    },
+    {
+      "id": "teacher-006",
+      "name": "Chögyam Trungpa Rinpoche",
+      "tradition": "Tibetano / Shambhala",
+      "status": "Fallecido 1987",
+      "description": "Maestro tibetano controversial. Confrontador del materialismo espiritual",
+      "resources": "Libros ('Cutting Through Spiritual Materialism', 'Crazy Wisdom')",
+      "why": "Advertencias contra auto-engaño espiritual y ego que se disfraza",
+      "relatedChapters": ["espiral3"]
+    },
+    {
+      "id": "teacher-007",
+      "name": "Nisargadatta Maharaj",
+      "tradition": "Advaita Vedanta",
+      "status": "Fallecido 1981",
+      "description": "Vendedor de cigarrillos en Mumbai. Advaita radical sin concesiones",
+      "resources": "Libro 'I Am That' (diálogos transcritos)",
+      "why": "No-dualidad absoluta: negación de todo hasta 'yo soy'",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "teacher-008",
+      "name": "Peter Ralston",
+      "tradition": "Artes Marciales / Investigación Directa",
+      "description": "Maestro de artes marciales y consciencia. Método de investigación directa",
+      "resources": "Libros, retiros Cheng Hsin",
+      "website": "https://chenghsin.com",
+      "why": "Método de indagación radical más allá de creencias",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "teacher-009",
+      "name": "Stephen Batchelor",
+      "tradition": "Budismo Secular",
+      "description": "Ex-monje budista. Defensor de budismo sin dogmas metafísicos",
+      "resources": "Libros ('Buddhism Without Beliefs', 'After Buddhism')",
+      "website": "https://stephenbatchelor.org",
+      "why": "Deconstrucción de creencias budistas manteniendo práctica",
+      "relatedChapters": ["espiral3"]
+    }
+  ],
+
+  "retreats": [
+    {
+      "id": "retreat-001",
+      "name": "Gaia House Emptiness Retreats",
+      "location": "Devon, Inglaterra",
+      "duration": "7-14 días",
+      "tradition": "Vipassana / Vacuidad",
+      "description": "Retiros especializados en prácticas de vacuidad según enseñanzas de Rob Burbea",
+      "website": "https://gaiahouse.co.uk",
+      "why": "El único centro occidental con tradición establecida de enseñar vacuidad sistemáticamente",
+      "relatedChapters": ["espiral1", "espiral2", "espiral4"]
+    },
+    {
+      "id": "retreat-002",
+      "name": "IMS Long Retreat (3 months)",
+      "location": "Barre, Massachusetts, USA",
+      "duration": "3 meses",
+      "tradition": "Vipassana",
+      "description": "Retiro de 3 meses de vipassana intensivo. Requisito: retiro previo de 7+ días",
+      "website": "https://dharma.org",
+      "why": "Tiempo suficiente para alcanzar jhanas profundos y cessations",
+      "relatedChapters": ["espiral1", "espiral4"]
+    },
+    {
+      "id": "retreat-003",
+      "name": "Adyashanti Silent Retreats",
+      "location": "California, USA",
+      "duration": "5-7 días",
+      "tradition": "Zen / Advaita",
+      "description": "Retiros en silencio sobre despertar no-dual",
+      "website": "https://adyashanti.org/retreat-schedule",
+      "why": "Instrucción directa sobre vacío desde maestro contemporáneo",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "retreat-004",
+      "name": "Spirit Rock Dedicated Practitioner Program",
+      "location": "California, USA",
+      "duration": "9 meses (modular)",
+      "tradition": "Vipassana",
+      "description": "Programa para practicantes serios. 60+ días de retiro total",
+      "website": "https://spiritrock.org",
+      "why": "Profundización seria con maestros senior",
+      "relatedChapters": ["espiral1", "espiral3"]
+    }
+  ],
+
+  "practices": [
+    {
+      "id": "practice-001",
+      "name": "Noting Practice (Mahasi Style)",
+      "description": "Etiquetar fenómenos mentales ('pensando', 'sintiendo', 'viendo') para ver impermanencia",
+      "source": "Mahasi Sayadaw / Daniel Ingram",
+      "difficulty": "Intermedio",
+      "why": "Técnica poderosa para alcanzar insights de vipassana ñanas",
+      "relatedChapters": ["espiral1"]
+    },
+    {
+      "id": "practice-002",
+      "name": "Jhana Practice",
+      "description": "Cultivo de 8 jhanas (absorción concentrativa) mediante unificación atencional",
+      "source": "Leigh Brasington / Culadasa",
+      "difficulty": "Avanzado",
+      "why": "Estados de absorción que permiten ver construcción de experiencia",
+      "relatedChapters": ["espiral1", "espiral4"]
+    },
+    {
+      "id": "practice-003",
+      "name": "Ways of Looking (Rob Burbea)",
+      "description": "50+ formas de ver experiencia que revelan su vacuidad progresivamente",
+      "source": "Rob Burbea - 'Seeing That Frees'",
+      "difficulty": "Muy avanzado",
+      "why": "Sistema más completo de deconstrucción de realidad percibida",
+      "relatedChapters": ["espiral1", "espiral2", "espiral4"]
+    },
+    {
+      "id": "practice-004",
+      "name": "Self-Inquiry (Atma Vichara)",
+      "description": "Preguntar '¿Quién soy?' hasta deconstruir el observador",
+      "source": "Ramana Maharshi / Advaita",
+      "difficulty": "Avanzado",
+      "why": "Indagación directa que colapsa sujeto-objeto",
+      "relatedChapters": ["espiral2", "espiral4"]
+    },
+    {
+      "id": "practice-005",
+      "name": "Do Nothing Meditation",
+      "description": "Soltar toda intención de meditar o controlar. Ver qué queda",
+      "source": "Shinzen Young",
+      "difficulty": "Paradójicamente simple y difícil",
+      "why": "Expone el hacedor como construcción",
+      "relatedChapters": ["espiral2", "espiral4"]
+    }
+  ],
+
+  "communities": [
+    {
+      "id": "community-001",
+      "name": "r/streamentry",
+      "platform": "Reddit",
+      "description": "Comunidad de practicantes serios discutiendo progreso, jhanas, insights, problemas",
+      "link": "https://reddit.com/r/streamentry",
+      "why": "Comunidad activa que habla abiertamente de logros meditativos sin tabú",
+      "relatedChapters": ["espiral1", "espiral3", "espiral5"]
+    },
+    {
+      "id": "community-002",
+      "name": "Dharma Overground",
+      "platform": "Forum",
+      "description": "Foro de dharma pragmático asociado a Daniel Ingram y MCTB",
+      "link": "https://dharmaoverground.org",
+      "why": "Discusión técnica de mapas de progreso sin falsa modestia",
+      "relatedChapters": ["espiral1", "espiral3"]
+    },
+    {
+      "id": "community-003",
+      "name": "Hermes Amara (Rob Burbea Legacy)",
+      "platform": "Website / Retreats",
+      "description": "Organización preservando y enseñando legado de Rob Burbea",
+      "link": "https://hermesamara.org",
+      "why": "Acceso a enseñanzas completas de vacuidad de Rob Burbea",
+      "relatedChapters": ["espiral1", "espiral2", "espiral4"]
+    }
+  ],
+
+  "warnings": [
+    {
+      "id": "warning-001",
+      "title": "Dark Night of the Soul",
+      "description": "Vipassana ñanas 4-10 pueden causar ansiedad, despersonalización, miedo intenso",
+      "recommendation": "Tener maestro experimentado. No practicar solo si tienes historial de trauma/psicosis",
+      "relatedChapters": ["espiral1", "espiral3"]
+    },
+    {
+      "id": "warning-002",
+      "title": "Spiritual Emergency",
+      "description": "Despertar puede desestabilizar identidad y relaciones. Crisis existencial",
+      "recommendation": "Red de apoyo, terapeuta familiarizado con emergencias espirituales",
+      "resources": "Spiritual Emergence Network",
+      "relatedChapters": ["espiral3", "espiral4"]
+    },
+    {
+      "id": "warning-003",
+      "title": "Ego Espiritual Post-Insight",
+      "description": "Alcanzar stream entry o despertar puede inflar ego: 'yo desperté, otros no'",
+      "recommendation": "Recordar que insights no te hacen especial. Trabajo con sombra continúa",
+      "relatedChapters": ["espiral3"]
+    }
+  ],
+
+  "by_chapter": {
+    "espiral1": {
+      "title": "Fundamentos que Tiemblan",
+      "recommended": ["book-001", "book-002", "book-003", "book-005", "book-010", "teacher-001", "teacher-002", "teacher-004", "teacher-005", "retreat-001", "retreat-002", "retreat-004", "practice-001", "practice-002", "practice-003", "community-001", "community-002", "community-003", "warning-001"]
+    },
+    "espiral2": {
+      "title": "El Borde del Lenguaje",
+      "recommended": ["book-001", "book-004", "book-007", "book-008", "book-010", "book-011", "teacher-001", "teacher-003", "teacher-004", "teacher-007", "teacher-008", "retreat-001", "retreat-003", "practice-003", "practice-004", "practice-005", "community-003"]
+    },
+    "espiral3": {
+      "title": "La Sombra del Despertar",
+      "recommended": ["book-002", "book-006", "book-009", "book-012", "teacher-002", "teacher-003", "teacher-006", "teacher-009", "retreat-004", "community-001", "community-002", "warning-001", "warning-002", "warning-003"]
+    },
+    "espiral4": {
+      "title": "Habitando lo Imposible",
+      "recommended": ["book-001", "book-004", "book-005", "book-007", "book-008", "book-009", "teacher-001", "teacher-003", "teacher-007", "teacher-008", "retreat-001", "retreat-002", "retreat-003", "practice-002", "practice-003", "practice-004", "practice-005", "community-003", "warning-002"]
+    },
+    "espiral5": {
+      "title": "Preguntas Vivas",
+      "recommended": ["teacher-001", "community-001"]
+    }
+  }
+}

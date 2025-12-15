@@ -81,6 +81,10 @@
       "trackChapters": true,
       "trackExercises": true
     },
+    "resources": {
+      "enabled": true,
+      "file": "books/codigo-despertar/assets/resources.json"
+    },
     "manualPractico": true,
     "practicasRadicales": true
   },

@@ -114,7 +114,8 @@ class ResourcesViewer {
         </div>
 
         <button id="close-resources-btn"
-                class="w-10 h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center">
+                class="w-10 h-10 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-700 hover:bg-gray-200 transition flex items-center justify-center text-gray-900 dark:text-white"
+                aria-label="Cerrar recursos">
           ${Icons.close(24)}
         </button>
       </div>

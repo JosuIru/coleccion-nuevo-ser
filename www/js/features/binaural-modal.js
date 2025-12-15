@@ -13,7 +13,7 @@ class BinauralModal {
   // Open modal
   open() {
     if (!this.binauralAudio) {
-      console.warn('BinauralAudioGenerator no disponible');
+      // console.warn('BinauralAudioGenerator no disponible');
       return;
     }
 
@@ -81,7 +81,7 @@ class BinauralModal {
                     class="preset-btn p-4 rounded-lg border-2 transition ${
                       this.selectedPreset === key
                         ? 'border-purple-400 bg-purple-500/30'
-                        : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+                        : 'border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 hover:border-gray-400 dark:hover:border-gray-600'
                     }"
                     style="border-color: ${this.selectedPreset === key ? preset.color : ''}"
                   >

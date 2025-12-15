@@ -18,7 +18,7 @@
 
   "ui": {
     "showStarfield": false,
-    "animationType": "subtle",
+    "animationType": "minimal",
     "animationSpeed": "normal",
     "fontFamily": "Inter, system-ui, sans-serif",
     "fontSize": {
@@ -80,6 +80,10 @@
       "allowCustomActions": true,
       "categories": ["personal", "community", "organizational", "political"],
       "trackProgress": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/manual-transicion/assets/resources.json"
     },
     "externalResources": {
       "enabled": true,

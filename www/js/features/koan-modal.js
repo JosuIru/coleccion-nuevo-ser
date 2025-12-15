@@ -6,7 +6,6 @@ class KoanModal {
   constructor(koanGenerator) {
     this.koanGenerator = koanGenerator;
     this.i18n = window.i18n || new I18n();
-    this.binauralAudio = window.binauralAudio;
     this.currentKoan = null;
     this.showBinauralControls = false;
     this.selectedPreset = 'THETA';
@@ -16,7 +15,7 @@ class KoanModal {
   // Open modal with koan for current chapter
   open(chapterId) {
     if (!this.koanGenerator) {
-      console.warn('KoanGenerator no disponible');
+      // console.warn('KoanGenerator no disponible');
       return;
     }
 
@@ -38,9 +37,11 @@ class KoanModal {
 
   // Render binaural section
   renderBinauralSection() {
-    if (!this.binauralAudio) return '';
+    // Verificar window.binauralAudio en tiempo real, no usar this.binauralAudio
+    const binauralAudio = window.binauralAudio;
+    if (!binauralAudio) return '';
 
-    const presets = this.binauralAudio.getPresets();
+    const presets = binauralAudio.getPresets();
 
     return `
       <!-- Audio Binaural Section -->
@@ -132,10 +133,10 @@ class KoanModal {
     if (!this.currentKoan) return;
 
     const html = `
-      <div id="koan-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 rounded-2xl max-w-2xl w-full border-2 border-amber-500/30 shadow-2xl">
+      <div id="koan-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 rounded-2xl max-w-2xl w-full border-2 border-amber-500/30 shadow-2xl my-4 max-h-[90vh] flex flex-col">
           <!-- Header -->
-          <div class="p-4 sm:p-6 border-b border-amber-500/20">
+          <div class="p-4 sm:p-6 border-b border-amber-500/20 flex-shrink-0">
             <div class="flex items-center justify-between">
               <h2 class="text-xl sm:text-2xl md:text-3xl font-bold flex items-center gap-2 sm:gap-3">
                 <span class="text-2xl sm:text-3xl md:text-4xl">${Icons.meditation(32)}</span>
@@ -143,14 +144,14 @@ class KoanModal {
                   ${this.i18n.t('koan.title')}
                 </span>
               </h2>
-              <button id="close-koan" class="hover:text-red-400 transition flex items-center justify-center">
+              <button id="close-koan" class="hover:text-red-400 transition flex items-center justify-center text-gray-900 dark:text-white" aria-label="Cerrar koan">
                 ${Icons.close(28)}
               </button>
             </div>
           </div>
 
           <!-- Content -->
-          <div class="p-8">
+          <div class="p-4 sm:p-8 overflow-y-auto flex-1">
             <!-- Tema -->
             <div class="mb-6 text-center">
               <span class="inline-block px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-sm font-semibold">
@@ -197,7 +198,7 @@ class KoanModal {
           </div>
 
           <!-- Footer -->
-          <div class="p-4 border-t border-amber-500/20 bg-black/20">
+          <div class="p-4 border-t border-amber-500/20 bg-black/20 flex-shrink-0">
             <p class="text-xs text-center text-gray-400 italic">
               "No busques la respuesta fuera. La pregunta es el camino."
             </p>
@@ -273,11 +274,12 @@ class KoanModal {
 
   // Play binaural audio
   async playBinaural() {
-    if (!this.binauralAudio) return;
+    const binauralAudio = window.binauralAudio;
+    if (!binauralAudio) return;
 
     try {
       const durationSeconds = this.duration * 60;
-      await this.binauralAudio.play(this.selectedPreset, durationSeconds);
+      await binauralAudio.play(this.selectedPreset, durationSeconds);
 
       const statusEl = document.getElementById('binaural-status-koan');
       if (statusEl) {
@@ -292,9 +294,10 @@ class KoanModal {
 
   // Stop binaural audio
   stopBinaural() {
-    if (!this.binauralAudio) return;
+    const binauralAudio = window.binauralAudio;
+    if (!binauralAudio) return;
 
-    this.binauralAudio.stop();
+    binauralAudio.stop();
 
     const statusEl = document.getElementById('binaural-status-koan');
     if (statusEl) {

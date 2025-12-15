@@ -43,7 +43,7 @@ class NotificationsHelper {
         return this.hasPermission;
       }
     } catch (error) {
-      console.warn('Error checking notification permission:', error);
+      // console.warn('Error checking notification permission:', error);
     }
     return false;
   }
@@ -57,7 +57,7 @@ class NotificationsHelper {
         return this.hasPermission;
       }
     } catch (error) {
-      console.warn('Error requesting notification permission:', error);
+      // console.warn('Error requesting notification permission:', error);
     }
     return false;
   }
@@ -73,7 +73,7 @@ class NotificationsHelper {
         });
       }
     } catch (error) {
-      console.warn('Error setting up notification listeners:', error);
+      // console.warn('Error setting up notification listeners:', error);
     }
   }
 
@@ -235,7 +235,7 @@ class NotificationsHelper {
         if (!this.hasPermission) {
           const granted = await this.requestPermission();
           if (!granted) {
-            console.warn('Notification permission denied');
+            // console.warn('Notification permission denied');
             return false;
           }
         }
@@ -256,7 +256,7 @@ class NotificationsHelper {
         return true;
       }
     } catch (error) {
-      console.warn('Error scheduling notifications:', error);
+      // console.warn('Error scheduling notifications:', error);
     }
     return false;
   }
@@ -280,7 +280,7 @@ class NotificationsHelper {
         this.saveScheduled();
       }
     } catch (error) {
-      console.warn('Error canceling notifications:', error);
+      // console.warn('Error canceling notifications:', error);
     }
   }
 
@@ -300,7 +300,7 @@ class NotificationsHelper {
         this.saveScheduled();
       }
     } catch (error) {
-      console.warn('Error canceling all notifications:', error);
+      // console.warn('Error canceling all notifications:', error);
     }
   }
 

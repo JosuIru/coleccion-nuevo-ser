@@ -74,7 +74,7 @@ class FileExportHelper {
           }
         }
       } catch (error) {
-        console.warn(`Error loading notes for ${bookId}:`, error);
+        // console.warn(`Error loading notes for ${bookId}:`, error);
       }
     }
 
@@ -194,7 +194,7 @@ class FileExportHelper {
           bookmarks: bookmarks ? JSON.parse(bookmarks) : []
         };
       } catch (error) {
-        console.warn(`Error loading progress for ${bookId}:`, error);
+        // console.warn(`Error loading progress for ${bookId}:`, error);
       }
     }
 

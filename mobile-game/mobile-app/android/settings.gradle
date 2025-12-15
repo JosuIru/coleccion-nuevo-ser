@@ -1,0 +1,2 @@
+rootProject.name = 'awakening-protocol'
+include ':app'

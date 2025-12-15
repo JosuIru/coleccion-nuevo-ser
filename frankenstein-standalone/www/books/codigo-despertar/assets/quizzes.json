@@ -1,0 +1,288 @@
+{
+  "quizzes": [
+    {
+      "chapterId": "cap1",
+      "title": "Quiz: La Paradoja del Observador",
+      "description": "Verifica tu comprensión sobre conciencia, observación y paradojas cuánticas",
+      "questions": [
+        {
+          "question": "Cuando tienes un pensamiento que te molesta, ¿qué pasa si lo observas con calma?",
+          "options": [
+            "El pensamiento se hace más fuerte",
+            "El pensamiento se calma o se va, como una nube que pasa",
+            "No pasa nada, siempre sigue igual",
+            "Aparecen más pensamientos molestos"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "Los pensamientos son como nubes en el cielo. Si los miras con calma, sin enojarte, suelen pasar solos.",
+          "hint": "Piensa en las nubes del cielo, ¿se quedan para siempre?"
+        },
+        {
+          "question": "¿Qué es ser un 'observador' de tus propios pensamientos?",
+          "options": [
+            "Pensar muy fuerte en algo",
+            "Mirar tus pensamientos como si fueran una película, sin meterte en ella",
+            "No pensar en nada",
+            "Enojarte con tus pensamientos malos"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "Ser observador es como ver una película: puedes mirar lo que pasa sin ser parte de la película.",
+          "hint": "¿Qué haces cuando ves una película? ¿Te metes dentro de la pantalla?"
+        },
+        {
+          "question": "¿Cuál es la paradoja fundamental de la conciencia según el capítulo?",
+          "context": "Piensa en el acto de observar tu propia mente",
+          "options": [
+            "La conciencia no puede ser medida objetivamente",
+            "La conciencia es el instrumento que observa, pero también el objeto observado",
+            "Solo podemos conocer la conciencia a través de la meditación",
+            "La conciencia es una ilusión creada por el cerebro"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "iniciado",
+          "explanation": "La paradoja radica en que la conciencia es tanto el sujeto que observa como el objeto observado, creando un bucle autorreferencial.",
+          "hint": "Piensa en qué sucede cuando intentas observar el acto de observar"
+        },
+        {
+          "question": "¿Qué relación establece el capítulo entre el observador cuántico y la meditación?",
+          "options": [
+            "Ambos colapsan la función de onda",
+            "Ambos revelan cómo el acto de observar afecta lo observado",
+            "No hay relación, son campos completamente separados",
+            "La meditación es una forma de mecánica cuántica aplicada"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "Tanto en física cuántica como en meditación, el acto de observar modifica lo observado. En meditación, observar un pensamiento cambia su naturaleza."
+        },
+        {
+          "question": "Según el capítulo, ¿qué sucede cuando observamos un pensamiento sin juzgarlo?",
+          "options": [
+            "El pensamiento se refuerza",
+            "El pensamiento se disuelve o transforma",
+            "Nada, los pensamientos son inmutables",
+            "Creamos más pensamientos similares"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "principiante",
+          "explanation": "La observación ecuánime, sin juicio ni apego, tiene el poder de transformar o disolver el pensamiento observado.",
+          "hint": "¿Qué dice el texto sobre la observación neutral?"
+        },
+        {
+          "question": "¿Cuál es el papel del 'testigo silencioso' en la práctica contemplativa?",
+          "options": [
+            "Juzgar qué pensamientos son buenos o malos",
+            "Observar sin identificarse con lo observado",
+            "Controlar los pensamientos negativos",
+            "Alcanzar el vacío mental absoluto"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "principiante",
+          "explanation": "El testigo silencioso observa sin identificarse, creando espacio entre la conciencia y sus contenidos."
+        },
+        {
+          "question": "¿Qué implica que 'la conciencia sea el hardware y el software simultáneamente'?",
+          "options": [
+            "Que el cerebro es como una computadora",
+            "Que la conciencia es tanto el sustrato como el proceso",
+            "Que necesitamos inteligencia artificial para entender la mente",
+            "Que la conciencia es puramente material"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "La conciencia no solo es el medio (hardware) sino también el proceso (software), siendo inseparables."
+        }
+      ]
+    },
+    {
+      "chapterId": "cap2",
+      "title": "Quiz: La Ilusión del Yo",
+      "description": "Evalúa tu comprensión sobre la construcción del self y la identidad",
+      "questions": [
+        {
+          "question": "¿Eres la misma persona que eras cuando tenías 5 años?",
+          "options": [
+            "Sí, soy exactamente igual",
+            "Sí y no: mi cuerpo y pensamientos cambiaron, pero sigo siendo yo de alguna forma",
+            "No, soy una persona completamente diferente",
+            "No lo sé, es imposible saberlo"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "Cambiamos todo el tiempo (crecemos, aprendemos cosas nuevas), pero sentimos que seguimos siendo 'nosotros'. Es como un río: el agua cambia, pero sigue siendo el mismo río.",
+          "hint": "Piensa en fotos tuyas de cuando eras pequeño"
+        },
+        {
+          "question": "Cuando sientes miedo o enojo, ¿qué es más útil?",
+          "options": [
+            "Decir 'Yo SOY mi miedo' y dejar que me controle",
+            "Decir 'Siento miedo' y observarlo como algo que pasa",
+            "Fingir que no siento nada",
+            "Enojarme más para que se vaya"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "Las emociones vienen y van, como visitantes. No somos nuestras emociones, solo las sentimos por un rato.",
+          "hint": "¿El miedo dura para siempre o se va después de un rato?"
+        },
+        {
+          "question": "¿Qué es el 'yo narrativo' según el capítulo?",
+          "options": [
+            "Nuestra verdadera esencia inmutable",
+            "La historia que la mente construye sobre quiénes somos",
+            "La parte del cerebro que crea historias",
+            "El alma que trasciende el cuerpo"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "principiante",
+          "explanation": "El yo narrativo es la construcción mental de una identidad coherente a través del tiempo, pero es un proceso dinámico, no una entidad fija."
+        },
+        {
+          "question": "¿Qué revela el experimento del 'split brain' sobre la identidad?",
+          "options": [
+            "Que tenemos dos personalidades separadas",
+            "Que la identidad puede ser fragmentada y reconstruida por el cerebro",
+            "Que el hemisferio derecho no tiene conciencia",
+            "Que la identidad está en el cuerpo calloso"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "iniciado",
+          "explanation": "Los experimentos de cerebro dividido muestran que la sensación de un 'yo' unificado es una construcción, ya que cada hemisferio puede generar su propia narrativa.",
+          "hint": "Piensa en lo que sucede cuando los hemisferios se separan"
+        },
+        {
+          "question": "¿Cuál es la relación entre 'impermanencia' y 'anatta' (no-yo)?",
+          "options": [
+            "Son conceptos opuestos",
+            "Si todo cambia constantemente, no puede haber un yo permanente",
+            "La impermanencia prueba que el yo existe",
+            "Solo aplica al cuerpo, no a la mente"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "Si todo está en constante cambio (anicca/impermanencia), no puede haber un 'yo' fijo e inmutable (anatta/no-yo)."
+        },
+        {
+          "question": "¿Qué experimenta quien realiza la práctica de 'observar al observador'?",
+          "options": [
+            "Refuerza su sentido del yo",
+            "Descubre que no hay un observador último, solo observación",
+            "Encuentra su verdadero yo oculto",
+            "Entra en un estado de confusión mental"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "Al observar al observador recursivamente, se descubre que no hay un 'yo' sólido observando, solo el proceso de observar."
+        },
+        {
+          "question": "¿Qué implica 'desidentificarse' del yo según el capítulo?",
+          "options": [
+            "Perder la memoria y la personalidad",
+            "Reconocer pensamientos y emociones sin creer que 'soy' esos contenidos",
+            "Convertirse en una persona diferente",
+            "Negar que existo"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "iniciado",
+          "explanation": "Desidentificarse no es negar la existencia, sino reconocer que los pensamientos, emociones y sensaciones surgen en la conciencia sin ser 'quien soy'."
+        }
+      ]
+    },
+    {
+      "chapterId": "cap3",
+      "title": "Quiz: Conciencia y Emergencia",
+      "description": "Comprueba tu entendimiento sobre propiedades emergentes y niveles de organización",
+      "questions": [
+        {
+          "question": "Un equipo de fútbol es más que 11 personas juntas. ¿Por qué?",
+          "options": [
+            "Porque tienen uniforme igual",
+            "Porque cuando trabajan juntos pueden hacer cosas que solos no podrían",
+            "Porque el entrenador es muy bueno",
+            "No es cierto, solo son 11 personas"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "Cuando las partes trabajan juntas, aparecen cosas nuevas que ninguna parte sola tenía. A esto se le llama 'emergencia'.",
+          "hint": "¿Puede una sola persona hacer jugadas de equipo?"
+        },
+        {
+          "question": "Las hormigas solas son simples, pero juntas construyen ciudades increíbles. ¿Qué nos enseña esto?",
+          "options": [
+            "Las hormigas son muy inteligentes individualmente",
+            "De cosas simples trabajando juntas pueden surgir cosas muy complejas",
+            "Solo los insectos pueden hacer esto",
+            "No tiene nada que ver con los humanos"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "ninos",
+          "explanation": "La inteligencia del hormiguero 'emerge' de muchas hormigas simples cooperando. Algo parecido pasa con las neuronas de tu cerebro.",
+          "hint": "¿Una hormiga sola podría construir un hormiguero?"
+        },
+        {
+          "question": "¿Qué significa que la conciencia sea una 'propiedad emergente'?",
+          "options": [
+            "Que surge de partes simples sin ser reducible a ellas",
+            "Que es una ilusión generada por el cerebro",
+            "Que emerge solo en estados meditativos profundos",
+            "Que aparece misteriosamente sin causa"
+          ],
+          "correctAnswer": 0,
+          "difficulty": "principiante",
+          "explanation": "Una propiedad emergente surge de la interacción de componentes simples, pero no puede reducirse a las propiedades de esas partes individuales."
+        },
+        {
+          "question": "¿Cuál es el ejemplo del 'huracán' como propiedad emergente?",
+          "options": [
+            "Los huracanes tienen conciencia propia",
+            "Un huracán existe como patrón, aunque las moléculas individuales cambian constantemente",
+            "Los huracanes no son reales, solo construcciones mentales",
+            "La meteorología no tiene nada que ver con la conciencia"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "iniciado",
+          "explanation": "Un huracán es un patrón estable aunque ninguna molécula individual permanezca en él. Similar a cómo el 'yo' puede ser un patrón sin sustancia fija.",
+          "hint": "Piensa en la diferencia entre el patrón y sus componentes"
+        },
+        {
+          "question": "Según el capítulo, ¿puede la inteligencia artificial desarrollar conciencia?",
+          "options": [
+            "No, solo los seres biológicos tienen conciencia",
+            "Es posible si alcanza la complejidad y organización adecuadas",
+            "Ya existe en sistemas actuales",
+            "La pregunta no tiene sentido, la IA nunca será consciente"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "Si la conciencia es emergente de patrones de información, no hay razón teórica por la que un sustrato no-biológico no pueda desarrollarla dado suficiente complejidad."
+        },
+        {
+          "question": "¿Qué es un 'bucle extraño' según Douglas Hofstadter?",
+          "options": [
+            "Un error de programación",
+            "Un patrón autorreferencial que se cruza entre niveles",
+            "Una práctica de meditación avanzada",
+            "Una teoría física sobre agujeros de gusano"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "iniciado",
+          "explanation": "Un bucle extraño es un sistema autorreferencial donde diferentes niveles se afectan mutuamente, como la conciencia observándose a sí misma."
+        },
+        {
+          "question": "¿Cuál es la relación entre 'niveles de organización' y 'reduccionismo'?",
+          "options": [
+            "Los niveles superiores siempre se reducen a los inferiores",
+            "Cada nivel tiene propiedades que no se explican solo por el nivel inferior",
+            "El reduccionismo es la única forma válida de conocimiento",
+            "No hay relación entre ambos conceptos"
+          ],
+          "correctAnswer": 1,
+          "difficulty": "experto",
+          "explanation": "Aunque los niveles superiores dependen de los inferiores, tienen propiedades emergentes propias que no se reducen completamente a explicaciones de nivel inferior."
+        }
+      ]
+    }
+  ]
+}

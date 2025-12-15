@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0e1f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Laboratorio Frankenstein - Crea Seres Transformadores con Propósito">
+
+    <title>Laboratorio Frankenstein - Versión Web</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lab-dark': '#0a0e1f',
+                        'lab-accent': '#00d4ff',
+                        'lab-gold': '#f59e0b',
+                        'lab-green': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Frankenstein CSS -->
+    <link rel="stylesheet" href="css/frankenstein-base.css">
+    <link rel="stylesheet" href="css/frankenstein-lab.css">
+    <link rel="stylesheet" href="css/frankenstein-components.css">
+    <link rel="stylesheet" href="css/frankenstein-quiz.css">
+    <link rel="stylesheet" href="css/frankenstein-vitruvian.css">
+    <link rel="stylesheet" href="css/frankenstein-animations.css">
+    <!-- UX Improvements v1.0 -->
+    <link rel="stylesheet" href="css/frankenstein-ux-improvements.css">
+    <!-- Settings & UI Components -->
+    <link rel="stylesheet" href="css/frankenstein-settings.css">
+
+    <style>
+        :root {
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: #0a0e1f;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(10, 14, 31, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1000;
+            padding-top: var(--safe-area-top);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .top-bar-title {
+            flex: 1;
+            text-align: center;
+            color: #f59e0b;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .download-btn-small {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .download-btn-small:hover {
+            transform: scale(1.05);
+        }
+
+        .download-btn-small.hidden {
+            display: none;
+        }
+
+        /* Main Content */
+        #organism-container {
+            margin-top: calc(56px + var(--safe-area-top));
+            min-height: calc(100vh - 56px - var(--safe-area-top));
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0a0e1f 0%, #1a1f3a 50%, #0a0e1f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-icon {
+            font-size: 80px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-title {
+            color: #f59e0b;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .loading-subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #f59e0b);
+            border-radius: 2px;
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: calc(20px + var(--safe-area-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 10000;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .toast.success { background: rgba(16, 185, 129, 0.95); }
+        .toast.error { background: rgba(239, 68, 68, 0.95); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-icon">🧬</div>
+        <div class="loading-title">Laboratorio Frankenstein</div>
+        <div class="loading-subtitle">Cargando versión web...</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="frankenstein-lab.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Volver
+        </a>
+        <div class="top-bar-title">🧬 Laboratorio</div>
+        <a href="downloads/frankenstein-lab-v1.2.6.apk" class="download-btn-small" id="download-apk-btn" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            APK
+        </a>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app">
+        <div id="organism-container"></div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/core/logger.js"></script>
+    <script src="js/core/icons.js"></script>
+    <script src="js/core/i18n.js"></script>
+
+    <!-- Enhanced UI System (Toasts, Tooltips, Bottom Sheets) -->
+    <script src="js/core/enhanced-ui-system.js"></script>
+
+    <!-- Settings, Header & Stats -->
+    <script src="js/features/frankenstein-settings.js"></script>
+
+    <!-- Frankenstein Lab Scripts -->
+    <script src="js/features/frankenstein-missions.js"></script>
+    <script src="js/features/frankenstein-quiz.js"></script>
+    <script src="js/features/frankenstein-audio.js"></script>
+    <script src="js/features/frankenstein-avatar-system.js"></script>
+    <script src="js/features/frankenstein-tooltips.js"></script>
+    <script src="js/features/frankenstein-demo-data.js"></script>
+    <script src="js/features/frankenstein-microsocieties.js"></script>
+    <script src="js/features/frankenstein-challenges.js"></script>
+    <script src="js/features/frankenstein-ui.js"></script>
+
+    <script>
+        // Device Detection
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+        // Show/hide APK download button based on device
+        const downloadBtn = document.getElementById('download-apk-btn');
+        if (!isAndroid && downloadBtn) {
+            downloadBtn.classList.add('hidden');
+        }
+
+        // Toast function
+        window.showToast = function(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        // Initialize Lucide icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        // Initialize Frankenstein Lab
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🧬 Inicializando Laboratorio Frankenstein (Web)...');
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Initialize Quiz System
+                if (typeof FrankensteinQuizSystem !== 'undefined') {
+                    window.FrankensteinQuiz = new FrankensteinQuizSystem();
+                }
+
+                // Mock organism knowledge
+                const mockOrganismKnowledge = {
+                    getAvailablePieces: () => [],
+                    getCurrentBook: () => null,
+                    getProgress: () => ({ completedChapters: [], totalChapters: 0 })
+                };
+
+                // Initialize Lab UI
+                if (typeof FrankensteinLabUI !== 'undefined') {
+                    window.FrankensteinLabUI = new FrankensteinLabUI(mockOrganismKnowledge);
+
+                    if (window.FrankensteinQuiz) {
+                        window.FrankensteinQuiz.setMode('demo');
+                    }
+
+                    await window.FrankensteinLabUI.init();
+                    console.log('✅ Laboratorio inicializado');
+                }
+
+                // Hide loading screen
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => loadingScreen.remove(), 500);
+                }
+
+                showToast('¡Laboratorio listo!', 'success');
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showToast('Error al cargar', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

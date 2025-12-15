@@ -74,6 +74,16 @@
       "relatedChapters": ["cap2", "cap3"]
     },
     {
+      "id": "evt-006b",
+      "year": 1952,
+      "title": "Revolución de los Claveles (Egipto)",
+      "category": "revoluciones",
+      "description": "Golpe de Estado liderado por Nasser. Nacionalización del Canal de Suez. Movimiento panárabe y no alineación en la Guerra Fría.",
+      "impact": "Inspiró movimientos de liberación nacional en África y Medio Oriente. Desafío al colonialismo occidental",
+      "lessons": "La autodeterminación de los pueblos puede desafiar el orden geopolítico establecido",
+      "relatedChapters": ["cap3", "cap10"]
+    },
+    {
       "id": "evt-007",
       "year": 1956,
       "title": "Cooperativa Mondragón (España)",
@@ -82,6 +92,26 @@
       "impact": "Prueba empírica de que empresas sin accionistas pueden ser competitivas y sostenibles",
       "lessons": "La propiedad cooperativa funciona a escala, pero enfrenta presiones del mercado capitalista circundante",
       "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "evt-007b",
+      "year": 1957,
+      "title": "Independencia de Ghana",
+      "category": "revoluciones",
+      "description": "Primera nación del África subsahariana en independizarse del colonialismo. Kwame Nkrumah lidera movimiento panafricanista.",
+      "impact": "Catalizó ola de independencias africanas. Inspiró pensamiento de liberación del Sur Global",
+      "lessons": "La descolonización política no garantiza independencia económica sin transformación de estructuras",
+      "relatedChapters": ["cap3", "cap10"]
+    },
+    {
+      "id": "evt-007c",
+      "year": 1959,
+      "title": "Revolución Cubana",
+      "category": "revoluciones",
+      "description": "Derrocamiento de dictadura de Batista. Experimento socialista en el Caribe. Alfabetización masiva, salud universal, resistencia al embargo.",
+      "impact": "Desafió hegemonía estadounidense en América Latina. Inspiró movimientos de liberación",
+      "lessons": "Los experimentos alternativos enfrentan hostilidad sistémica del orden global dominante",
+      "relatedChapters": ["cap3", "cap9", "cap10"]
     },
     {
       "id": "evt-008",
@@ -94,6 +124,26 @@
       "relatedChapters": ["cap4", "cap7"]
     },
     {
+      "id": "evt-008b",
+      "year": 1964,
+      "title": "Malcolm X y Nation of Islam",
+      "category": "movimientos_sociales",
+      "description": "Malcolm X rompe con Nation of Islam. Discurso sobre autodeterminación negra, orgullo racial, crítica al racismo sistémico y colonialismo interno.",
+      "impact": "Radicalizó movimiento por derechos civiles. Conectó lucha racial con antiimperialismo global",
+      "lessons": "La liberación requiere más que reformas legales; exige transformación de conciencia y estructuras de poder",
+      "relatedChapters": ["cap3", "cap10", "cap11"]
+    },
+    {
+      "id": "evt-008c",
+      "year": 1966,
+      "title": "Black Panther Party (Panteras Negras)",
+      "category": "movimientos_sociales",
+      "description": "Fundación del partido en Oakland. Programas comunitarios: desayunos gratuitos, clínicas de salud, educación. Autodefensa armada contra brutalidad policial.",
+      "impact": "Modelo de organización comunitaria autónoma y programa político radical desde la comunidad negra",
+      "lessons": "El poder se construye desde la base con servicios concretos, no solo con retórica",
+      "relatedChapters": ["cap10", "cap12", "cap13"]
+    },
+    {
       "id": "evt-009",
       "year": 1968,
       "title": "Mayo Francés",
@@ -104,6 +154,16 @@
       "relatedChapters": ["cap3", "cap11"]
     },
     {
+      "id": "evt-009b",
+      "year": 1970,
+      "title": "Gobierno de Salvador Allende (Chile)",
+      "category": "revoluciones",
+      "description": "Primera vía democrática al socialismo. Nacionalización del cobre, reforma agraria, educación y salud gratuitas. Experimento Cybersyn de planificación cibernética.",
+      "impact": "Demostró posibilidad de transformación socialista por vía electoral. Anticipó uso de tecnología para democracia económica",
+      "lessons": "Los experimentos democráticos de izquierda enfrentan sabotaje interno y externo (golpe de Pinochet 1973)",
+      "relatedChapters": ["cap3", "cap9", "cap10", "cap14"]
+    },
+    {
       "id": "evt-010",
       "year": 1972,
       "title": "Los Límites del Crecimiento",
@@ -112,6 +172,36 @@
       "impact": "Primera advertencia sistémica sobre insostenibilidad del modelo de crecimiento infinito",
       "lessons": "Conocer el problema no garantiza acción si las estructuras de incentivo no cambian",
       "relatedChapters": ["cap2", "cap4", "cap7"]
+    },
+    {
+      "id": "evt-010b",
+      "year": 1977,
+      "title": "Movimiento Chipko (India)",
+      "category": "movimientos_ambientales",
+      "description": "Mujeres campesinas abrazando árboles para impedir tala comercial. Ecofeminismo, defensa de bosques comunales, conocimiento tradicional.",
+      "impact": "Conectó ecología, feminismo y resistencia al desarrollo extractivista. Inspiró movimientos ambientales del Sur Global",
+      "lessons": "Las comunidades locales son guardianes efectivos de ecosistemas cuando tienen autonomía",
+      "relatedChapters": ["cap4", "cap7", "cap12"]
+    },
+    {
+      "id": "evt-010c",
+      "year": 1988,
+      "title": "Asesinato de Chico Mendes (Brasil)",
+      "category": "movimientos_ambientales",
+      "description": "Líder seringueiro asesinado por defender Amazonía. Unió derechos laborales, conservación ambiental y derechos indígenas.",
+      "impact": "Visibilizó internacionalmente destrucción amazónica y conflictos socioambientales",
+      "lessons": "La defensa ambiental es peligrosa cuando amenaza intereses económicos poderosos",
+      "relatedChapters": ["cap4", "cap7", "cap10"]
+    },
+    {
+      "id": "evt-010d",
+      "year": 1990,
+      "title": "Liberación de Nelson Mandela",
+      "category": "movimientos_sociales",
+      "description": "Fin del apartheid en Sudáfrica tras décadas de lucha. Transición negociada, comisión de verdad y reconciliación.",
+      "impact": "Victoria sobre régimen de segregación racial institucionalizado. Modelo de justicia transicional",
+      "lessons": "La resistencia sostenida puede derrotar sistemas de opresión racial, pero las desigualdades económicas persisten",
+      "relatedChapters": ["cap3", "cap10", "cap13"]
     },
     {
       "id": "evt-011",
@@ -174,6 +264,16 @@
       "relatedChapters": ["cap2", "cap10", "cap13"]
     },
     {
+      "id": "evt-016b",
+      "year": 2013,
+      "title": "Black Lives Matter",
+      "category": "movimientos_sociales",
+      "description": "Movimiento descentralizado contra violencia policial y racismo sistémico. Hashtag que se convierte en red global tras asesinatos de Trayvon Martin, Michael Brown, George Floyd.",
+      "impact": "Renovó conciencia sobre racismo estructural. Conectó brutalidad policial con capitalismo racial y encarcelamiento masivo",
+      "lessons": "Las redes sociales permiten organización descentralizada, pero requieren estructuras para sostenibilidad",
+      "relatedChapters": ["cap3", "cap10", "cap14"]
+    },
+    {
       "id": "evt-017",
       "year": 2015,
       "title": "Acuerdo de París sobre Clima",
@@ -228,7 +328,7 @@
       "year": 2022,
       "title": "Guerra en Ucrania",
       "category": "revoluciones",
-      "description": "Invasión rusa de Ucrania. Crisis energética. Ruptura de globalización. Nuevo alineamiento geopolítico.",
+      "description": "Conflicto armado en Ucrania. Crisis energética global. Ruptura de cadenas de suministro. Nuevo alineamiento geopolítico.",
       "impact": "Aceleró transición energética europea y cuestionó dependencias sistémicas",
       "lessons": "Las crisis revelan interdependencias ocultas y fuerzan reconfiguración de sistemas",
       "relatedChapters": ["cap2", "cap3"]

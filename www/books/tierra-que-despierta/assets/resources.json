@@ -1,0 +1,937 @@
+{
+  "resources": {
+    "title": "Recursos para la Reconexión Ecológica",
+    "description": "Libros, organizaciones, documentales, prácticas y herramientas para profundizar en la ecología profunda, el activismo enraizado y la reconexión con la Tierra"
+  },
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "Coming Back to Life: The Updated Guide to the Work That Reconnects",
+      "author": "Joanna Macy & Molly Brown",
+      "year": 2014,
+      "language": "Inglés",
+      "description": "Guía completa del Trabajo que Reconecta, con ejercicios prácticos para atravesar el duelo ecológico y encontrar esperanza activa",
+      "why": "Fundamento práctico del trabajo con el dolor del mundo. Incluye la espiral completa: gratitud, duelo, nuevos ojos, acción",
+      "relatedChapters": ["cap9", "cap10", "cap11", "cap14"],
+      "available": "https://www.newsociety.com/Books/C/Coming-Back-to-Life",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-002",
+      "title": "Active Hope: How to Face the Mess We're in Without Going Crazy",
+      "author": "Joanna Macy & Chris Johnstone",
+      "year": 2012,
+      "language": "Inglés (disponible en español: 'Esperanza Activa')",
+      "description": "Introducción accesible al concepto de esperanza activa y el Trabajo que Reconecta",
+      "why": "Define la diferencia entre esperanza pasiva y activa. Herramientas para mantener el compromiso sin quemarse",
+      "relatedChapters": ["cap11", "cap18"],
+      "available": "https://www.newsociety.com/books/a/active-hope",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-003",
+      "title": "The Spell of the Sensuous: Perception and Language in a More-Than-Human World",
+      "author": "David Abram",
+      "year": 1996,
+      "language": "Inglés (disponible en español: 'La magia de los sentidos')",
+      "description": "Fenomenología de la percepción aplicada a la relación con la naturaleza. Cómo el lenguaje abstracto nos separó del mundo vivo",
+      "why": "Perspectiva filosófica profunda sobre la separación. Puente entre Merleau-Ponty y ecología",
+      "relatedChapters": ["cap1", "cap17"],
+      "available": "https://www.penguinrandomhouse.com/books/319/the-spell-of-the-sensuous-by-david-abram/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-004",
+      "title": "Becoming Animal: An Earthly Cosmology",
+      "author": "David Abram",
+      "year": 2010,
+      "language": "Inglés",
+      "description": "Continuación de 'The Spell of the Sensuous'. Exploración de cómo re-encarnar la percepción",
+      "why": "Prácticas concretas de percepción ecológica. Filosofía encarnada de la animalidad humana",
+      "relatedChapters": ["cap3", "cap13", "cap17"],
+      "available": "https://www.penguinrandomhouse.com/books/301626/becoming-animal-by-david-abram/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-005",
+      "title": "Deep Ecology: Living As If Nature Mattered",
+      "author": "Bill Devall & George Sessions",
+      "year": 1985,
+      "language": "Inglés",
+      "description": "Primer libro que popularizó la ecología profunda de Arne Naess en el mundo anglosajón",
+      "why": "Texto fundacional del movimiento. Los 8 principios de la plataforma de ecología profunda",
+      "relatedChapters": ["cap4"],
+      "available": "https://www.gibbs-smith.com/deep-ecology.html",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-006",
+      "title": "Ecology, Community and Lifestyle",
+      "author": "Arne Naess",
+      "year": 1989,
+      "language": "Inglés",
+      "description": "Ecosofía de Naess: filosofía de la armonía ecológica. Su obra magna sobre ecología profunda",
+      "why": "Pensamiento del fundador del movimiento. Integra ontología, ética y práctica política",
+      "relatedChapters": ["cap4"],
+      "available": "https://www.cambridge.org/core/books/ecology-community-and-lifestyle/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-007",
+      "title": "The Dream of the Earth",
+      "author": "Thomas Berry",
+      "year": 1988,
+      "language": "Inglés (disponible en español: 'El sueño de la Tierra')",
+      "description": "Visión cosmológica de nuestro momento: de era tecnozoica a era ecozoica",
+      "why": "Reencuadre radical de la historia humana en la Gran Historia del universo. El universo como comunión de sujetos",
+      "relatedChapters": ["cap6"],
+      "available": "https://www.counterpoint-press.com/dd-product/the-dream-of-the-earth/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-008",
+      "title": "The Great Work: Our Way into the Future",
+      "author": "Thomas Berry",
+      "year": 1999,
+      "language": "Inglés",
+      "description": "La 'Gran Obra' de nuestro tiempo: transitar a una relación mutuamente enriquecedora con la Tierra",
+      "why": "Marco para entender nuestro propósito histórico. Visión de largo plazo del activismo ecológico",
+      "relatedChapters": ["cap6", "cap24"],
+      "available": "https://www.penguinrandomhouse.com/books/56758/the-great-work-by-thomas-berry/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-009",
+      "title": "Gaia: A New Look at Life on Earth",
+      "author": "James Lovelock",
+      "year": 1979,
+      "language": "Inglés (disponible en español: 'Gaia: una nueva visión de la vida sobre la Tierra')",
+      "description": "Presentación original de la hipótesis Gaia: la Tierra como sistema autorregulado",
+      "why": "Cambió la ciencia del sistema Tierra. De planeta muerto con vida a planeta vivo",
+      "relatedChapters": ["cap5"],
+      "available": "https://global.oup.com/academic/product/gaia-9780198788669",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-010",
+      "title": "Symbiotic Planet: A New Look at Evolution",
+      "author": "Lynn Margulis",
+      "year": 1998,
+      "language": "Inglés",
+      "description": "Teoría endosimbiótica: la cooperación, no la competencia, como motor de la evolución",
+      "why": "Biología de la interconexión. La vida como red cooperativa, no árbol competitivo",
+      "relatedChapters": ["cap5", "cap8"],
+      "available": "https://www.basicbooks.com/titles/lynn-margulis/symbiotic-planet/9780465072729/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-011",
+      "title": "Braiding Sweetgrass: Indigenous Wisdom, Scientific Knowledge, and the Teachings of Plants",
+      "author": "Robin Wall Kimmerer",
+      "year": 2013,
+      "language": "Inglés (disponible en español: 'Trenzando hierba sagrada')",
+      "description": "Integración de conocimiento botánico occidental y sabiduría indígena Potawatomi sobre reciprocidad con las plantas",
+      "why": "Ejemplo magistral de síntesis entre ciencia y conocimiento tradicional. Prosa bellísima sobre reconexión",
+      "relatedChapters": ["cap8", "cap13", "cap17"],
+      "available": "https://milkweed.org/book/braiding-sweetgrass",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-012",
+      "title": "The Web of Life: A New Scientific Understanding of Living Systems",
+      "author": "Fritjof Capra",
+      "year": 1996,
+      "language": "Inglés (disponible en español: 'La trama de la vida')",
+      "description": "Síntesis de teoría de sistemas, cibernética y ecología. El cambio de paradigma hacia el pensamiento relacional",
+      "why": "Marco científico del pensamiento sistémico. Conecta complejidad, autopoiesis y ecología profunda",
+      "relatedChapters": ["cap5", "cap8"],
+      "available": "https://www.penguinrandomhouse.com/books/325503/the-web-of-life-by-fritjof-capra/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-013",
+      "title": "The Ecology of Freedom: The Emergence and Dissolution of Hierarchy",
+      "author": "Murray Bookchin",
+      "year": 1982,
+      "language": "Inglés (disponible en español: 'La ecología de la libertad')",
+      "description": "Ecología social: la dominación de la naturaleza surge de la dominación entre humanos",
+      "why": "Conexión entre jerarquías sociales y destrucción ecológica. Municipalismo libertario",
+      "relatedChapters": ["cap1", "cap18", "cap20"],
+      "available": "https://theanarchistlibrary.org/library/murray-bookchin-the-ecology-of-freedom",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-014",
+      "title": "Staying with the Trouble: Making Kin in the Chthulucene",
+      "author": "Donna Haraway",
+      "year": 2016,
+      "language": "Inglés",
+      "description": "Propuesta de hacer parientes (no bebés) con especies compañeras. Pensamiento tentacular post-humanista",
+      "why": "Crítica feminista de las narrativas apocalípticas. Respons-abilidad en tiempos de colapso",
+      "relatedChapters": ["cap22", "cap23"],
+      "available": "https://www.dukeupress.edu/staying-with-the-trouble",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-015",
+      "title": "Thinking Like a Mountain: Towards a Council of All Beings",
+      "author": "John Seed, Joanna Macy, Pat Fleming & Arne Naess",
+      "year": 1988,
+      "language": "Inglés",
+      "description": "Guía del ritual 'Consejo de Todos los Seres'. Cómo hablar desde la perspectiva de otros seres",
+      "why": "Práctica específica de despersonalización e identificación ecológica. Incluye versión del ritual completa",
+      "relatedChapters": ["cap14", "cap15"],
+      "available": "https://www.newsociety.com/books/t/thinking-like-a-mountain",
+      "type": "práctico"
+    },
+    {
+      "id": "book-016",
+      "title": "Biomimicry: Innovation Inspired by Nature",
+      "author": "Janine Benyus",
+      "year": 1997,
+      "language": "Inglés (disponible en español: 'Biomímesis')",
+      "description": "La naturaleza como mentora: aprender de 3.8 mil millones de años de I+D evolutivo",
+      "why": "Puente entre diseño humano y sabiduría de los ecosistemas. Ejemplos concretos de aprendizaje",
+      "relatedChapters": ["cap7", "cap19"],
+      "available": "https://www.harpercollins.com/products/biomimicry-janine-m-benyus",
+      "type": "práctico"
+    },
+    {
+      "id": "book-017",
+      "title": "Permaculture: Principles and Pathways Beyond Sustainability",
+      "author": "David Holmgren",
+      "year": 2002,
+      "language": "Inglés (disponible en español: 'Permacultura: principios y senderos más allá de la sustentabilidad')",
+      "description": "Los 12 principios de permacultura explicados en profundidad. Ética del cuidado de la tierra",
+      "why": "Marco de diseño regenerativo aplicable a jardines, comunidades, sistemas económicos",
+      "relatedChapters": ["cap7", "cap19", "cap21"],
+      "available": "https://holmgren.com.au/product/permaculture-principles-and-pathways-beyond-sustainability/",
+      "type": "práctico"
+    },
+    {
+      "id": "book-018",
+      "title": "The Voice of the Earth: An Exploration of Ecopsychology",
+      "author": "Theodore Roszak",
+      "year": 1992,
+      "language": "Inglés",
+      "description": "Fundación de la ecopsicología: la salud mental requiere reconexión con la Tierra",
+      "why": "Teoría de que el malestar contemporáneo tiene raíces ecológicas. Locura no es estar desconectado de uno mismo sino de la Tierra",
+      "relatedChapters": ["cap3", "cap9", "cap10"],
+      "available": "https://www.simonandschuster.com/books/The-Voice-of-the-Earth/Theodore-Roszak/9781568980706",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-019",
+      "title": "Earthwalking: Rituals for Sacred Walks",
+      "author": "James Endredy",
+      "year": 2002,
+      "language": "Inglés",
+      "description": "Guía práctica de caminatas contemplativas y rituales de conexión con la tierra",
+      "why": "Herramientas concretas para convertir el caminar en práctica espiritual ecológica",
+      "relatedChapters": ["cap13", "cap15"],
+      "available": "https://www.simonandschuster.com/books/Earthwalking/James-Endredy/9781591430780",
+      "type": "práctico"
+    },
+    {
+      "id": "book-020",
+      "title": "World as Lover, World as Self: Courage for Global Justice and Ecological Renewal",
+      "author": "Joanna Macy",
+      "year": 2007,
+      "language": "Inglés",
+      "description": "Ensayos sobre budismo comprometido, ecología profunda y activismo. El mundo como amante y como yo expandido",
+      "why": "Integra tradiciones contemplativas budistas con activismo ecológico. Concepto de 'yo ecológico'",
+      "relatedChapters": ["cap4", "cap8", "cap11", "cap18"],
+      "available": "https://www.parallax.org/product/world-as-lover-world-as-self/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-021",
+      "title": "Coyote's Guide to Connecting with Nature",
+      "author": "Jon Young, Ellen Haas & Evan McGown",
+      "year": 2010,
+      "language": "Inglés (disponible en español: 'Guía del Coyote para Conectar con la Naturaleza')",
+      "description": "Pedagogía de rastreadores nativos americanos. Core routines para conexión profunda con la naturaleza",
+      "why": "Método probado de mentoría naturalista. Sit spot, mapeo de gratitud, historias de animal",
+      "relatedChapters": ["cap13", "cap17"],
+      "available": "https://www.owlinksmedia.com/coyotes-guide-to-connecting-with-nature/",
+      "type": "práctico"
+    },
+    {
+      "id": "book-022",
+      "title": "Derrick Jensen: A Language Older Than Words",
+      "author": "Derrick Jensen",
+      "year": 2000,
+      "language": "Inglés",
+      "description": "Exploración de la violencia sistémica contra la naturaleza y contra el cuerpo. Escuchar lo no-humano",
+      "why": "Rabia sagrada articulada. Conexión entre abuso personal, social y ecológico",
+      "relatedChapters": ["cap1", "cap12", "cap23"],
+      "available": "https://www.chelseagreen.com/product/a-language-older-than-words/",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-023",
+      "title": "The Great Derangement: Climate Change and the Unthinkable",
+      "author": "Amitav Ghosh",
+      "year": 2016,
+      "language": "Inglés (disponible en español: 'El gran desajuste')",
+      "description": "Por qué la cultura contemporánea no puede pensar el cambio climático. El fracaso de la imaginación",
+      "why": "Crítica cultural del negacionismo implícito. Por qué nuestras narrativas nos impiden ver lo que ocurre",
+      "relatedChapters": ["cap2", "cap3", "cap22"],
+      "available": "https://www.press.uchicago.edu/ucp/books/book/chicago/G/bo22265507.html",
+      "type": "avanzado"
+    },
+    {
+      "id": "book-024",
+      "title": "The Sacred Balance: Rediscovering Our Place in Nature",
+      "author": "David Suzuki",
+      "year": 1997,
+      "language": "Inglés (disponible en español: 'El equilibrio sagrado')",
+      "description": "Ciencia y espiritualidad sobre nuestra dependencia de aire, agua, tierra, fuego y biodiversidad",
+      "why": "Accesible, científicamente sólido, espiritualmente resonante. Buen punto de entrada",
+      "relatedChapters": ["cap5", "cap8", "cap13"],
+      "available": "https://www.penguinrandomhouse.com/books/118851/the-sacred-balance-by-david-suzuki-with-amanda-mcconnell-and-adrienne-mason/",
+      "type": "fundamental"
+    },
+    {
+      "id": "book-025",
+      "title": "Ecología Profunda: Una ética integral para nuestro tiempo",
+      "author": "Jorge Riechmann",
+      "year": 2005,
+      "language": "Español",
+      "description": "Introducción en español a la ecología profunda, con perspectiva crítica desde la filosofía práctica",
+      "why": "Uno de los pocos textos rigurosos sobre ecología profunda en español. Adapta el pensamiento al contexto ibérico",
+      "relatedChapters": ["cap4", "cap8"],
+      "available": "https://www.librosdelinnombrable.com/libro/ecologia-profunda/",
+      "type": "fundamental"
+    }
+  ],
+
+  "articles": [
+    {
+      "id": "article-001",
+      "title": "The Shallow and the Deep, Long-Range Ecology Movement",
+      "author": "Arne Naess",
+      "year": 1973,
+      "journal": "Inquiry",
+      "description": "Artículo fundacional que acuñó el término 'ecología profunda' y distinguió entre shallow y deep ecology",
+      "why": "Texto original de 16 páginas que inició el movimiento. Lectura esencial",
+      "relatedChapters": ["cap4"],
+      "available": "https://doi.org/10.1080/00201747308601682",
+      "type": "fundamental"
+    },
+    {
+      "id": "article-002",
+      "title": "Gaia and the Theory of the Living Planet",
+      "author": "James Lovelock & Lynn Margulis",
+      "year": 1974,
+      "journal": "Tellus",
+      "description": "Primera publicación científica de la hipótesis Gaia",
+      "why": "Documento histórico del nacimiento de la teoría",
+      "relatedChapters": ["cap5"],
+      "available": "https://doi.org/10.1111/j.2153-3490.1974.tb01946.x",
+      "type": "académico"
+    },
+    {
+      "id": "article-003",
+      "title": "Solastalgia: A New Concept in Health and Identity",
+      "author": "Glenn Albrecht",
+      "year": 2005,
+      "journal": "PAN: Philosophy Activism Nature",
+      "description": "Definición del concepto de solastalgia: dolor por la pérdida del lugar que aún habitamos",
+      "why": "Nombra una experiencia que muchos sienten pero no sabían articular",
+      "relatedChapters": ["cap2", "cap10"],
+      "available": "https://doi.org/10.3316/informit.897670064797135",
+      "type": "académico"
+    },
+    {
+      "id": "article-004",
+      "title": "Planetary Boundaries: Exploring the Safe Operating Space for Humanity",
+      "author": "Johan Rockström et al.",
+      "year": 2009,
+      "journal": "Nature",
+      "description": "Definición de los 9 límites planetarios que no deberíamos traspasar",
+      "why": "Marco científico de los límites ecológicos. Traduce ecología en umbrales medibles",
+      "relatedChapters": ["cap2", "cap5"],
+      "available": "https://doi.org/10.1038/461472a",
+      "type": "académico"
+    },
+    {
+      "id": "article-005",
+      "title": "The Trauma of Ongoing Climate Change: Fostering Resilience Through Collective Grief Work",
+      "author": "Zhiwa Woodbury",
+      "year": 2019,
+      "journal": "Ecopsychology",
+      "description": "Marco para trabajar con el trauma climático colectivo a través del duelo compartido",
+      "why": "Integra teoría del trauma con duelo ecológico. Propuesta terapéutica colectiva",
+      "relatedChapters": ["cap9", "cap10", "cap20"],
+      "available": "https://doi.org/10.1089/eco.2019.0014",
+      "type": "académico"
+    }
+  ],
+
+  "documentaries": [
+    {
+      "id": "doc-001",
+      "title": "Journey of the Universe",
+      "director": "David Kennard & Patsy Northcutt",
+      "year": 2011,
+      "duration": "56 min",
+      "description": "Narración de Brian Thomas Swimme de la historia evolutiva del universo. Basado en el trabajo de Thomas Berry",
+      "why": "Visualización de la Gran Historia. Conecta cosmología con ecología",
+      "relatedChapters": ["cap6"],
+      "available": "https://www.journeyoftheuniverse.org/",
+      "language": "Inglés con subtítulos"
+    },
+    {
+      "id": "doc-002",
+      "title": "The Gaia Hypothesis",
+      "director": "BBC Horizon",
+      "year": 1986,
+      "duration": "50 min",
+      "description": "Documental clásico sobre James Lovelock y la hipótesis Gaia",
+      "why": "Explicación directa de Lovelock de su teoría revolucionaria",
+      "relatedChapters": ["cap5"],
+      "available": "YouTube",
+      "language": "Inglés"
+    },
+    {
+      "id": "doc-003",
+      "title": "I Am",
+      "director": "Tom Shadyac",
+      "year": 2010,
+      "duration": "76 min",
+      "description": "Director de Hollywood explora qué está mal en el mundo y qué podemos hacer. Entrevistas con científicos y pensadores sobre interconexión",
+      "why": "Accesible, emotivo, centrado en la pregunta de qué significa ser humano",
+      "relatedChapters": ["cap8", "cap11"],
+      "available": "Varias plataformas",
+      "language": "Inglés con subtítulos en español"
+    },
+    {
+      "id": "doc-004",
+      "title": "The Economics of Happiness",
+      "director": "Helena Norberg-Hodge",
+      "year": 2011,
+      "duration": "65 min",
+      "description": "Crítica de la globalización económica y propuesta de localización como respuesta ecológica y social",
+      "why": "Conecta economía con ecología. Visión de alternativas sistémicas",
+      "relatedChapters": ["cap19", "cap20", "cap21"],
+      "available": "https://www.theeconomicsofhappiness.org/",
+      "language": "Inglés con subtítulos"
+    },
+    {
+      "id": "doc-005",
+      "title": "Planetary",
+      "director": "Guy Reid",
+      "year": 2015,
+      "duration": "84 min",
+      "description": "Astronautas describen el 'overview effect' de ver la Tierra desde el espacio. Científicos hablan de los límites planetarios",
+      "why": "Cambio de perspectiva visual y filosófico. La Tierra como sistema frágil e interconectado",
+      "relatedChapters": ["cap5"],
+      "available": "https://www.planetaryfilm.com/",
+      "language": "Inglés con subtítulos"
+    },
+    {
+      "id": "doc-006",
+      "title": "Symbiotic Earth: How Lynn Margulis Rocked the Boat and Started a Scientific Revolution",
+      "director": "John Feldman",
+      "year": 2017,
+      "duration": "144 min",
+      "description": "Biografía científica de Lynn Margulis y su teoría endosimbiótica",
+      "why": "Historia de cómo una idea radical sobre cooperación transformó la biología",
+      "relatedChapters": ["cap5", "cap8"],
+      "available": "https://symbioticearth.com/",
+      "language": "Inglés"
+    },
+    {
+      "id": "doc-007",
+      "title": "The Regenerators",
+      "director": "Alex Lotery",
+      "year": 2021,
+      "duration": "80 min",
+      "description": "Historias de proyectos de agricultura regenerativa y permacultura alrededor del mundo",
+      "why": "Ejemplos concretos de acción enraizada. Inspiración para el 'qué puedo hacer'",
+      "relatedChapters": ["cap19", "cap21"],
+      "available": "https://www.theregeneratorsfilm.com/",
+      "language": "Inglés"
+    }
+  ],
+
+  "organizations": [
+    {
+      "id": "org-001",
+      "name": "The Work That Reconnects Network",
+      "type": "Red global",
+      "description": "Red mundial de facilitadores del Trabajo que Reconecta de Joanna Macy",
+      "offerings": "Talleres, formación de facilitadores, recursos gratuitos, comunidad de práctica",
+      "website": "https://workthatreconnects.org/",
+      "relatedChapters": ["cap9", "cap14", "cap20"],
+      "language": "Inglés (algunos recursos en español)"
+    },
+    {
+      "id": "org-002",
+      "name": "Deep Ecology Education",
+      "type": "Educación",
+      "description": "Programas educativos basados en ecología profunda y Trabajo que Reconecta",
+      "offerings": "Retiros, cursos online, materiales educativos",
+      "website": "https://www.deepecology.org/",
+      "relatedChapters": ["cap4", "cap14"],
+      "language": "Inglés"
+    },
+    {
+      "id": "org-003",
+      "name": "Ecopsychology.org",
+      "type": "Asociación profesional",
+      "description": "Asociación Internacional de Ecopsicología. Conecta salud mental con salud planetaria",
+      "offerings": "Conferencias, publicaciones, directorio de profesionales",
+      "website": "https://www.ecopsychology.org/",
+      "relatedChapters": ["cap3", "cap9", "cap10"],
+      "language": "Inglés"
+    },
+    {
+      "id": "org-004",
+      "name": "Pachamama Alliance",
+      "type": "Organización sin ánimo de lucro",
+      "description": "Alianza con pueblos indígenas amazónicos para defender la selva y promover nuevo sueño para la humanidad",
+      "offerings": "Programa 'Awakening the Dreamer', viajes a la Amazonía, activismo",
+      "website": "https://www.pachamama.org/",
+      "relatedChapters": ["cap1", "cap8", "cap18"],
+      "language": "Inglés y español"
+    },
+    {
+      "id": "org-005",
+      "name": "Schumacher College",
+      "type": "Centro educativo",
+      "description": "Colegio de estudios ecológicos en Devon, UK. Programas de permacultura, ecología profunda, economía ecológica",
+      "offerings": "Cursos cortos, MSc en Economía Ecológica, comunidad residencial",
+      "website": "https://campus.dartington.org/schumacher-college/",
+      "relatedChapters": ["cap4", "cap7", "cap19"],
+      "language": "Inglés"
+    },
+    {
+      "id": "org-006",
+      "name": "Wilderness Awareness School",
+      "type": "Escuela de naturaleza",
+      "description": "Pedagogía de rastreadores nativos americanos. Core routines de Jon Young",
+      "offerings": "Programas para jóvenes y adultos, formación de mentores naturalistas",
+      "website": "https://www.wildernessawareness.org/",
+      "relatedChapters": ["cap13", "cap17"],
+      "language": "Inglés"
+    },
+    {
+      "id": "org-007",
+      "name": "Regeneration International",
+      "type": "Movimiento global",
+      "description": "Promoción de agricultura regenerativa y ganadería holística para revertir el cambio climático",
+      "offerings": "Recursos educativos, red de proyectos, campañas",
+      "website": "https://regenerationinternational.org/",
+      "relatedChapters": ["cap7", "cap19", "cap21"],
+      "language": "Inglés y español"
+    },
+    {
+      "id": "org-008",
+      "name": "Permaculture Institute",
+      "type": "Educación",
+      "description": "Instituto de David Holmgren. Recursos y formación en permacultura",
+      "offerings": "Cursos PDC (Permaculture Design Certificate), publicaciones, consultoría",
+      "website": "https://holmgren.com.au/",
+      "relatedChapters": ["cap7", "cap19"],
+      "language": "Inglés"
+    },
+    {
+      "id": "org-009",
+      "name": "Transition Network",
+      "type": "Movimiento global",
+      "description": "Red de iniciativas de transición: comunidades trabajando hacia resiliencia local y descarbonización",
+      "offerings": "Guías, cursos, conexión con iniciativas locales",
+      "website": "https://transitionnetwork.org/",
+      "relatedChapters": ["cap18", "cap19", "cap20"],
+      "language": "Inglés (materiales en varios idiomas)"
+    },
+    {
+      "id": "org-010",
+      "name": "Ecologistas en Acción",
+      "type": "Confederación",
+      "description": "Confederación de grupos ecologistas del Estado español. Perspectiva ecosocial",
+      "offerings": "Campañas, publicaciones, grupos locales",
+      "website": "https://www.ecologistasenaccion.org/",
+      "relatedChapters": ["cap18", "cap23"],
+      "language": "Español"
+    },
+    {
+      "id": "org-011",
+      "name": "EGÜEK (Eguzki Energia Jasangarria)",
+      "type": "Organización local",
+      "description": "Grupo ecologista de Navarra. Defensa del territorio, energía sostenible",
+      "offerings": "Campañas locales, denuncias ecológicas, alternativas energéticas",
+      "website": "https://www.eguek.org/",
+      "relatedChapters": ["cap21"],
+      "language": "Euskera y español"
+    },
+    {
+      "id": "org-012",
+      "name": "Ekologistak Martxan",
+      "type": "Organización País Vasco",
+      "description": "Movimiento ecologista de Euskal Herria. Defensa del territorio, justicia ambiental",
+      "offerings": "Campañas, publicaciones en euskera, activismo local",
+      "website": "https://www.ekologistakmartxan.org/",
+      "relatedChapters": ["cap21"],
+      "language": "Euskera y español"
+    }
+  ],
+
+  "podcasts": [
+    {
+      "id": "podcast-001",
+      "name": "For the Wild",
+      "host": "Ayana Young",
+      "description": "Entrevistas profundas con pensadores, activistas y artistas sobre ecología radical",
+      "why": "Voces diversas del movimiento ecológico. Muy bien producido",
+      "website": "https://forthewild.world/",
+      "relatedChapters": ["cap4", "cap18", "cap23"],
+      "language": "Inglés"
+    },
+    {
+      "id": "podcast-002",
+      "name": "The Emerald Podcast",
+      "host": "Josh Schrei",
+      "description": "Mitología, ecología y las historias que sostienen el mundo",
+      "why": "Narración magistral. Conecta mito con ecología profunda",
+      "website": "https://www.theemeraldpodcast.com/",
+      "relatedChapters": ["cap1", "cap8", "cap15"],
+      "language": "Inglés"
+    },
+    {
+      "id": "podcast-003",
+      "name": "Upstream Podcast",
+      "host": "Della Duncan",
+      "description": "Conversaciones sobre economía, ecología y transformación sistémica",
+      "why": "Puente entre ecología profunda y cambio de sistemas económicos",
+      "website": "https://www.upstreampodcast.org/",
+      "relatedChapters": ["cap19", "cap20"],
+      "language": "Inglés"
+    },
+    {
+      "id": "podcast-004",
+      "name": "Crazy Town",
+      "host": "Asher Miller, Jason Bradford & Rob Dietz",
+      "description": "Análisis del colapso ecológico con humor negro. Del Post Carbon Institute",
+      "why": "Rigor científico con honestidad radical sobre la situación. No evita temas duros",
+      "website": "https://www.resilience.org/crazy-town-podcast/",
+      "relatedChapters": ["cap2", "cap22"],
+      "language": "Inglés"
+    },
+    {
+      "id": "podcast-005",
+      "name": "Carne Cruda",
+      "host": "Javier Gallego 'Crudo'",
+      "description": "Radio online española con secciones regulares sobre ecología, decrecimiento, alternativas",
+      "why": "Uno de los pocos espacios en español que toca ecología profunda y colapso",
+      "website": "https://www.carnecruda.es/",
+      "relatedChapters": ["cap2", "cap18", "cap23"],
+      "language": "Español"
+    }
+  ],
+
+  "practices": [
+    {
+      "id": "practice-001",
+      "name": "Sit Spot",
+      "type": "Práctica diaria",
+      "description": "Sentarse en el mismo lugar natural 15-30 minutos diarios. Observar cambios sutiles, aprender patrones",
+      "duration": "15-30 min/día, mínimo 30 días",
+      "difficulty": "Principiante",
+      "benefits": "Desarrolla percepción ecológica, atención, paciencia. Conexión profunda con un lugar específico",
+      "relatedChapters": ["cap13"],
+      "guide": "Ver Capítulo 13 del libro y 'Coyote's Guide to Connecting with Nature'"
+    },
+    {
+      "id": "practice-002",
+      "name": "Consejo de Todos los Seres",
+      "type": "Ritual grupal",
+      "description": "Ritual en el que participantes hablan desde la perspectiva de otros seres (animales, plantas, ríos, montañas)",
+      "duration": "2-4 horas",
+      "difficulty": "Intermedio (requiere facilitador)",
+      "benefits": "Despersonalización, expansión de identidad, escucha profunda del más-que-humano",
+      "relatedChapters": ["cap14", "cap15"],
+      "guide": "Ver libro 'Thinking Like a Mountain' o Capítulo 14"
+    },
+    {
+      "id": "practice-003",
+      "name": "La Espiral del Trabajo que Reconecta",
+      "type": "Taller grupal",
+      "description": "Secuencia de ejercicios: Gratitud → Honrar el dolor → Ver con nuevos ojos → Ir adelante",
+      "duration": "Medio día o día completo",
+      "difficulty": "Intermedio (requiere facilitador formado)",
+      "benefits": "Trabajo profundo con duelo ecológico, reconexión grupal, movilización para la acción",
+      "relatedChapters": ["cap14"],
+      "guide": "Recursos en workthatreconnects.org o Capítulo 14"
+    },
+    {
+      "id": "practice-004",
+      "name": "Diario Ecológico",
+      "type": "Escritura contemplativa",
+      "description": "Escribir diariamente observaciones de la naturaleza, reflexiones ecológicas, gratitudes y duelos",
+      "duration": "10-20 min/día, 21 días mínimo",
+      "difficulty": "Principiante",
+      "benefits": "Desarrolla atención, procesa emociones ecológicas, crea registro de reconexión",
+      "relatedChapters": ["cap16"],
+      "guide": "Ver Capítulo 16 con prompts específicos"
+    },
+    {
+      "id": "practice-005",
+      "name": "Caminata Consciente en la Naturaleza",
+      "type": "Práctica individual o grupal",
+      "description": "Caminar lentamente, en silencio, con atención plena. Diferentes modalidades: owl eyes, deer ears, fox walk",
+      "duration": "1-3 horas",
+      "difficulty": "Principiante",
+      "benefits": "Aquieta la mente, afina sentidos, desarrolla presencia encarnada",
+      "relatedChapters": ["cap13"],
+      "guide": "Ver Capítulo 13 o 'Coyote's Guide'"
+    },
+    {
+      "id": "practice-006",
+      "name": "Ritual Estacional",
+      "type": "Ritual individual o grupal",
+      "description": "Marcar solsticios y equinoccios con ritual de reconexión con los ciclos de la Tierra",
+      "duration": "1-2 horas",
+      "difficulty": "Intermedio",
+      "benefits": "Re-sincronización con ritmos naturales, sentido de pertenencia al ciclo anual",
+      "relatedChapters": ["cap15"],
+      "guide": "Ver Capítulo 15 con plantillas de ritual"
+    },
+    {
+      "id": "practice-007",
+      "name": "Meditación Gaia",
+      "type": "Meditación",
+      "description": "Visualización de la Tierra como ser vivo. Sentir el planeta como cuerpo del que somos células",
+      "duration": "20-30 minutos",
+      "difficulty": "Principiante",
+      "benefits": "Cambio de escala de percepción, sentido de interconexión planetaria",
+      "relatedChapters": ["cap5"],
+      "guide": "Meditación guiada en Capítulo 5"
+    },
+    {
+      "id": "practice-008",
+      "name": "Cairn del Duelo",
+      "type": "Ritual grupal",
+      "description": "Compartir en círculo el dolor por el mundo. Cada persona nombra lo que duele, grupo responde 'te escuchamos'",
+      "duration": "1-2 horas",
+      "difficulty": "Intermedio (requiere contenedor seguro)",
+      "benefits": "Libera duelo reprimido, rompe aislamiento, valida dolor ecológico",
+      "relatedChapters": ["cap9", "cap14"],
+      "guide": "Ver Capítulo 9 y recursos de Work That Reconnects"
+    }
+  ],
+
+  "tools": [
+    {
+      "id": "tool-001",
+      "name": "iNaturalist",
+      "type": "App móvil",
+      "description": "Identificación de especies mediante foto. Red social de naturalistas. Ciencia ciudadana",
+      "why": "Aprende a reconocer vida local. Contribuye a conocimiento científico. Comunidad global",
+      "platform": "iOS, Android, Web",
+      "cost": "Gratuita",
+      "website": "https://www.inaturalist.org/",
+      "relatedChapters": ["cap13", "cap17", "cap21"]
+    },
+    {
+      "id": "tool-002",
+      "name": "Seek by iNaturalist",
+      "type": "App móvil",
+      "description": "Versión gamificada de iNaturalist para niños y principiantes. Identificación instantánea",
+      "why": "Excelente para reconectar familias con naturaleza local",
+      "platform": "iOS, Android",
+      "cost": "Gratuita",
+      "website": "https://www.inaturalist.org/pages/seek_app",
+      "relatedChapters": ["cap13", "cap21"]
+    },
+    {
+      "id": "tool-003",
+      "name": "Merlin Bird ID",
+      "type": "App móvil",
+      "description": "Identificación de aves por foto, canto o descripción. Del Cornell Lab of Ornithology",
+      "why": "Aprende cantos de aves de tu región. Desarrolla escucha ecológica",
+      "platform": "iOS, Android",
+      "cost": "Gratuita",
+      "website": "https://merlin.allaboutbirds.org/",
+      "relatedChapters": ["cap13", "cap17"]
+    },
+    {
+      "id": "tool-004",
+      "name": "Insight Timer",
+      "type": "App de meditación",
+      "description": "Miles de meditaciones guiadas, incluyendo muchas sobre naturaleza y ecología",
+      "why": "Buscar 'nature meditation', 'earth meditation', 'ecological mindfulness'",
+      "platform": "iOS, Android, Web",
+      "cost": "Gratuita con opciones premium",
+      "website": "https://insighttimer.com/",
+      "relatedChapters": ["cap5", "cap13"]
+    },
+    {
+      "id": "tool-005",
+      "name": "Planetary Boundaries Dashboard",
+      "type": "Visualización web",
+      "description": "Visualización interactiva del estado actual de los 9 límites planetarios",
+      "why": "Comprende visualmente dónde estamos. Traduce ciencia en imágenes",
+      "platform": "Web",
+      "cost": "Gratuita",
+      "website": "https://www.stockholmresilience.org/research/planetary-boundaries.html",
+      "relatedChapters": ["cap2", "cap5"]
+    },
+    {
+      "id": "tool-006",
+      "name": "Global Forest Watch",
+      "type": "Plataforma web",
+      "description": "Monitoreo en tiempo real de deforestación global mediante satélites",
+      "why": "Ver la destrucción en tiempo real. Información para activismo",
+      "platform": "Web",
+      "cost": "Gratuita",
+      "website": "https://www.globalforestwatch.org/",
+      "relatedChapters": ["cap2", "cap18"]
+    },
+    {
+      "id": "tool-007",
+      "name": "Naturalist Journal",
+      "type": "Plantilla imprimible",
+      "description": "Plantilla de diario naturalista con prompts para observación fenológica",
+      "why": "Estructura para práctica de sit spot y diario ecológico",
+      "platform": "PDF imprimible",
+      "cost": "Gratuita",
+      "website": "Disponible en recursos del libro",
+      "relatedChapters": ["cap13", "cap16"]
+    }
+  ],
+
+  "communities": [
+    {
+      "id": "community-001",
+      "name": "Work That Reconnects en Español",
+      "type": "Grupo online",
+      "description": "Comunidad hispanohablante de practicantes del Trabajo que Reconecta",
+      "platform": "Facebook, Telegram",
+      "how_to_join": "Buscar 'Trabajo que Reconecta' en Facebook o contactar workthatreconnects.org",
+      "relatedChapters": ["cap14", "cap20"]
+    },
+    {
+      "id": "community-002",
+      "name": "Ecología Profunda Península Ibérica",
+      "type": "Red presencial y online",
+      "description": "Practicantes de ecología profunda en España y Portugal. Encuentros periódicos",
+      "platform": "Email list, encuentros presenciales",
+      "how_to_join": "Contactar a través de Ecologistas en Acción o grupos locales",
+      "relatedChapters": ["cap4", "cap20"]
+    },
+    {
+      "id": "community-003",
+      "name": "Permacultura en Navarra",
+      "type": "Red local",
+      "description": "Proyectos y practicantes de permacultura en Navarra",
+      "platform": "Encuentros presenciales, WhatsApp",
+      "how_to_join": "A través de grupos de Facebook 'Permacultura Navarra' o eventos locales",
+      "relatedChapters": ["cap19", "cap21"]
+    },
+    {
+      "id": "community-004",
+      "name": "Transición Sostenible",
+      "type": "Red de iniciativas",
+      "description": "Iniciativas de transición en el Estado español",
+      "platform": "Web, email list",
+      "how_to_join": "https://www.transicionsostenible.com/",
+      "relatedChapters": ["cap18", "cap19", "cap20"]
+    }
+  ],
+
+  "local_resources": [
+    {
+      "id": "local-001",
+      "name": "Bosques de Navarra",
+      "type": "Lugares de práctica",
+      "description": "Hayedos, robledales y otros bosques de Navarra mencionados en el libro",
+      "locations": [
+        "Hayedo de Urbasa-Andía",
+        "Selva de Irati",
+        "Valle de Yerri",
+        "Bosques de Bertiz"
+      ],
+      "why": "Lugares específicos donde Josu practica sit spot y conexión con la tierra vasca",
+      "relatedChapters": ["cap13", "cap21"],
+      "info": "Rutas accesibles, información en turismonavarra.es"
+    },
+    {
+      "id": "local-002",
+      "name": "Mitología Vasca de la Naturaleza",
+      "type": "Patrimonio cultural",
+      "description": "Figuras mitológicas vascas relacionadas con la naturaleza: Mari, Basajaun, Lamiak",
+      "why": "Recuperar cosmovisión vasca pre-cristiana de relación con la tierra",
+      "relatedChapters": ["cap1", "cap8", "cap15"],
+      "resources": [
+        "'Mitología Vasca' - José Miguel de Barandiarán",
+        "'Leyendas de Euskal Herria' - varias recopilaciones"
+      ]
+    },
+    {
+      "id": "local-003",
+      "name": "Euskera y Ecología",
+      "type": "Lenguaje",
+      "description": "Términos vascos que expresan relación con la tierra",
+      "examples": [
+        "lurra - tierra (también 'lugar', 'mundo')",
+        "auzolan - trabajo comunal tradicional",
+        "baserri - caserío, forma de vida agrícola vasca",
+        "lur-jabe - 'dueño de la tierra' pero también 'cuidador'"
+      ],
+      "why": "El idioma revela cosmovisión. Euskera mantiene conceptos de relación con la tierra",
+      "relatedChapters": ["cap1", "cap8"]
+    }
+  ],
+
+  "downloadable_guides": [
+    {
+      "id": "guide-001",
+      "title": "Guía de 30 Días de Sit Spot",
+      "description": "Programa estructurado con prompts diarios para práctica de sit spot",
+      "format": "PDF",
+      "pages": 12,
+      "relatedChapters": ["cap13"],
+      "download": "Disponible en www/books/tierra-que-despierta/assets/guia-sit-spot.pdf"
+    },
+    {
+      "id": "guide-002",
+      "title": "Plantillas de Rituales Estacionales",
+      "description": "Guías para crear rituales de solsticios y equinoccios",
+      "format": "PDF",
+      "pages": 8,
+      "relatedChapters": ["cap15"],
+      "download": "Disponible en www/books/tierra-que-despierta/assets/rituales-estacionales.pdf"
+    },
+    {
+      "id": "guide-003",
+      "title": "Diario Ecológico: 21 Días de Prompts",
+      "description": "Preguntas y ejercicios de escritura para diario ecológico",
+      "format": "PDF",
+      "pages": 10,
+      "relatedChapters": ["cap16"],
+      "download": "Disponible en www/books/tierra-que-despierta/assets/diario-ecologico.pdf"
+    },
+    {
+      "id": "guide-004",
+      "title": "Facilitar un Círculo de Ecología Profunda",
+      "description": "Guía práctica para crear y sostener un grupo de estudio y práctica",
+      "format": "PDF",
+      "pages": 15,
+      "relatedChapters": ["cap20"],
+      "download": "Disponible en www/books/tierra-que-despierta/assets/facilitar-circulo.pdf"
+    },
+    {
+      "id": "guide-005",
+      "title": "Investigación de tu Biorregión",
+      "description": "Preguntas y recursos para conocer profundamente el lugar donde vives",
+      "format": "PDF",
+      "pages": 8,
+      "relatedChapters": ["cap21"],
+      "download": "Disponible en www/books/tierra-que-despierta/assets/investigacion-biorregion.pdf"
+    }
+  ]
+}

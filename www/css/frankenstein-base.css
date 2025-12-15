@@ -1,0 +1,251 @@
+/**
+ * LABORATORIO FRANKENSTEIN - Estética Gótica Victoriana (1800-1900)
+ * Inspirado en: Mary Shelley's Frankenstein, grabados médicos victorianos,
+ * gabinetes de curiosidades, y laboratorios de alquimia
+ */
+
+/* ========================================
+   VARIABLES TEMÁTICAS
+   ======================================== */
+:root {
+  /* Colores Góticos */
+  --franken-dark: #0a0a0f;
+  --franken-parchment: #f4e9d8;
+  --franken-sepia: #8b7355;
+  --franken-blood: #8b0000;
+  --franken-copper: #b87333;
+  --franken-brass: #d4af37;
+  --franken-green: #2d5016;
+  --franken-purple: #4a235a;
+  --franken-lightning: #e0f7ff;
+
+  /* Texturas */
+  --paper-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+
+  /* Textura de pergamino vintage */
+  --parchment-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><defs><filter id="parchment"><feTurbulence baseFrequency="0.02" numOctaves="5" seed="2"/><feColorMatrix values="1 0 0 0 0.9 0 1 0 0 0.85 0 0 1 0 0.7 0 0 0 1 0"/></filter></defs><rect width="200" height="200" fill="%23f4e9d8" filter="url(%23parchment)"/></svg>');
+
+  /* Cuadrícula técnica estilo Leonardo da Vinci */
+  --technical-grid:
+    repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.12) 0px, transparent 1px, transparent 40px, rgba(139, 115, 85, 0.12) 41px),
+    repeating-linear-gradient(90deg, rgba(139, 115, 85, 0.12) 0px, transparent 1px, transparent 40px, rgba(139, 115, 85, 0.12) 41px),
+    repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.05) 0px, transparent 1px, transparent 10px, rgba(139, 115, 85, 0.05) 11px),
+    repeating-linear-gradient(90deg, rgba(139, 115, 85, 0.05) 0px, transparent 1px, transparent 10px, rgba(139, 115, 85, 0.05) 11px);
+
+  /* Imágenes vintage de fondo (se alterna aleatoriamente via JS) */
+  /* Fallback a imagen local de Vitruvio */
+  --da-vinci-bg: url('../assets/backgrounds/vitruvio.jpg');
+
+  /* Manchas de tinta más sutiles */
+  --ink-stains: radial-gradient(ellipse at 15% 20%, rgba(139, 115, 85, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 75%, rgba(139, 115, 85, 0.04) 0%, transparent 35%),
+                radial-gradient(ellipse at 50% 90%, rgba(139, 115, 85, 0.03) 0%, transparent 30%);
+
+  /* Patrón de papel viejo con líneas de escritura */
+  --old-paper-pattern: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 24px,
+    rgba(139, 115, 85, 0.03) 24px,
+    rgba(139, 115, 85, 0.03) 25px
+  );
+
+  /* Sombras Victorianas */
+  --shadow-deep: 0 8px 20px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  --glow-lightning: 0 0 20px var(--franken-lightning), 0 0 40px rgba(224, 247, 255, 0.5);
+}
+
+/* ========================================
+   CONTENEDOR PRINCIPAL DEL LABORATORIO
+   ======================================== */
+.frankenstein-laboratory {
+  position: fixed;
+  inset: 0;
+  background:
+    /* Cuadrícula técnica de Leonardo da Vinci */
+    var(--technical-grid),
+    /* Dibujos técnicos de Leonardo (alterna aleatoriamente) */
+    var(--da-vinci-bg),
+    /* Manchas de tinta sutiles */
+    var(--ink-stains),
+    /* Textura de pergamino */
+    var(--parchment-texture),
+    /* Patrón de líneas de escritura */
+    var(--old-paper-pattern),
+    /* Gradiente base oscuro */
+    linear-gradient(180deg,
+      rgba(26, 26, 46, 0.92) 0%,
+      rgba(10, 10, 15, 0.95) 50%,
+      rgba(26, 26, 46, 0.92) 100%
+    );
+  background-size:
+    40px 40px,
+    contain,
+    100% 100%,
+    400px 400px,
+    100% 100%,
+    100% 100%;
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center,
+    center;
+  background-repeat: repeat, no-repeat, repeat, repeat, repeat, no-repeat;
+  background-blend-mode: overlay, luminosity, multiply, overlay, overlay, normal;
+  font-family: 'Crimson Text', 'Garamond', 'Georgia', serif;
+  color: var(--franken-parchment);
+  overflow: hidden;
+  z-index: 50;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* ========================================
+   ANIMACIONES LIBRO DE CUENTOS
+   ======================================== */
+
+/* Efecto de relámpagos ocasionales */
+@keyframes lightning-flash {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.3; }
+}
+
+/* Animación de página girando */
+@keyframes page-turn {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(-15deg);
+    transform-origin: left center;
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+/* Pulso suave */
+@keyframes gentle-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Aparición con rebote */
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Flotación suave */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.frankenstein-laboratory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--franken-lightning) 0%, transparent 40%);
+  opacity: 0;
+  pointer-events: none;
+  animation: lightning-flash 8s ease-in-out infinite;
+}
+
+/* ========================================
+   HEADER: Título del Laboratorio
+   ======================================== */
+.lab-header {
+  position: relative;
+  padding: 0.75rem 1.5rem; /* ⬇️ Reducido de 1.5rem 2rem */
+  background: linear-gradient(180deg, rgba(26, 26, 46, 0.95) 0%, rgba(10, 10, 15, 0.9) 100%);
+  border-bottom: 3px solid var(--franken-copper);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  z-index: 10;
+}
+
+.lab-title {
+  font-size: 1.8rem; /* ⬇️ Reducido de 2.5rem */
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(135deg, var(--franken-brass) 0%, var(--franken-copper) 50%, var(--franken-brass) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  font-family: 'Cinzel', 'Playfair Display', serif;
+}
+
+.lab-subtitle {
+  font-size: 0.8rem; /* ⬇️ Reducido de 1rem */
+  color: var(--franken-sepia);
+  margin-top: 0.25rem; /* ⬇️ Reducido de 0.5rem */
+  font-style: italic;
+  letter-spacing: 0.15em;
+}
+
+/* Decoración: Tornillos en las esquinas */
+.lab-header::before,
+.lab-header::after {
+  content: '⚙';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: var(--franken-brass);
+  opacity: 0.6;
+}
+
+.lab-header::before { left: 1rem; }
+.lab-header::after { right: 1rem; }
+
+/* ========================================
+   LAYOUT: Tres Paneles
+   ======================================== */
+.lab-workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  height: calc(100vh - 150px); /* ⬆️ Aumentado para compensar header real */
+  padding: 0.75rem; /* ⬇️ Reducido de 1rem */
+  gap: 0.75rem; /* ⬇️ Reducido de 1rem */
+  overflow: hidden;
+}
+
+/* Layout responsivo para tablets y móviles */
+@media (max-width: 1024px) {
+  .lab-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    overflow: auto;
+  }
+
+  /* Forzar que todos los elementos ocupen 1 columna */
+  .mission-selector,

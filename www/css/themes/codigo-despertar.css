@@ -4,14 +4,14 @@
    Tema cósmico, místico con estrellas animadas
    ============================================================================ */
 
-/* Fondo estrellado animado */
-body.theme-codigo-despertar {
+/* Fondo estrellado animado - DARK MODE */
+body.theme-dark.theme-codigo-despertar {
   background: #0f172a;
   position: relative;
   overflow-x: hidden;
 }
 
-body.theme-codigo-despertar::before {
+body.theme-dark.theme-codigo-despertar::before {
   content: '';
   position: fixed;
   top: 0;
@@ -29,6 +29,35 @@ body.theme-codigo-despertar::before {
   background-position: 0% 0%;
   animation: twinkle 200s linear infinite;
   opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Fondo claro - LIGHT MODE */
+body.theme-light.theme-codigo-despertar {
+  background: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-light.theme-codigo-despertar::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, #cbd5e1, transparent),
+    radial-gradient(2px 2px at 60% 70%, #cbd5e1, transparent),
+    radial-gradient(1px 1px at 50% 50%, #cbd5e1, transparent),
+    radial-gradient(1px 1px at 80% 10%, #cbd5e1, transparent),
+    radial-gradient(2px 2px at 90% 60%, #cbd5e1, transparent),
+    radial-gradient(1px 1px at 33% 80%, #cbd5e1, transparent);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  animation: twinkle 200s linear infinite;
+  opacity: 0.15;
   z-index: -1;
   pointer-events: none;
 }
@@ -52,9 +81,9 @@ body.theme-codigo-despertar::before {
   }
 }
 
-/* Gradiente cósmico para fondos */
-.theme-codigo-despertar .biblioteca-container,
-.theme-codigo-despertar .book-reader-container {
+/* Gradiente cósmico para fondos - DARK MODE */
+.theme-dark.theme-codigo-despertar .biblioteca-container,
+.theme-dark.theme-codigo-despertar .book-reader-container {
   background: linear-gradient(180deg,
     #0f172a 0%,
     #1e293b 50%,
@@ -62,8 +91,18 @@ body.theme-codigo-despertar::before {
   );
 }
 
-/* Colores específicos del tema */
-.theme-codigo-despertar {
+/* Fondos claros - LIGHT MODE */
+.theme-light.theme-codigo-despertar .biblioteca-container,
+.theme-light.theme-codigo-despertar .book-reader-container {
+  background: linear-gradient(180deg,
+    #f8fafc 0%,
+    #e2e8f0 50%,
+    #f8fafc 100%
+  );
+}
+
+/* Colores específicos del tema - DARK MODE */
+.theme-dark.theme-codigo-despertar {
   --color-primary: #0ea5e9;
   --color-secondary: #a855f7;
   --color-accent: #fbbf24;
@@ -74,25 +113,54 @@ body.theme-codigo-despertar::before {
   --color-border: #334155;
 }
 
-/* Efectos de brillo en tarjetas */
-.theme-codigo-despertar .book-card:hover {
+/* Colores específicos del tema - LIGHT MODE */
+.theme-light.theme-codigo-despertar {
+  --color-primary: #0284c7;
+  --color-secondary: #9333ea;
+  --color-accent: #d97706;
+  --color-background: #f8fafc;
+  --color-background-secondary: #e2e8f0;
+  --color-text: #1e293b;
+  --color-text-secondary: #475569;
+  --color-border: #cbd5e1;
+}
+
+/* Efectos de brillo en tarjetas - DARK MODE */
+.theme-dark.theme-codigo-despertar .book-card:hover {
   box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);
 }
 
-/* Animación especial para el scroll */
-.theme-codigo-despertar .chapter-content {
+/* Efectos de brillo en tarjetas - LIGHT MODE */
+.theme-light.theme-codigo-despertar .book-card:hover {
+  box-shadow: 0 0 30px rgba(2, 132, 199, 0.2);
+}
+
+/* Animación especial para el scroll - DARK MODE */
+.theme-dark.theme-codigo-despertar .chapter-content {
   background: radial-gradient(ellipse at center, #1e293b 0%, #0f172a 100%);
 }
 
-/* Meditaciones con aura especial */
-.theme-codigo-despertar .exercises .exercise {
+/* Fondo claro para el contenido - LIGHT MODE */
+.theme-light.theme-codigo-despertar .chapter-content {
+  background: radial-gradient(ellipse at center, #ffffff 0%, #f8fafc 100%);
+}
+
+/* Meditaciones con aura especial - DARK MODE */
+.theme-dark.theme-codigo-despertar .exercises .exercise {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border: 1px solid #3b82f6;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
 }
 
-/* Efecto aurora en epígrafes */
-.theme-codigo-despertar .epigraph {
+/* Meditaciones - LIGHT MODE */
+.theme-light.theme-codigo-despertar .exercises .exercise {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border: 1px solid #0284c7;
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.1);
+}
+
+/* Efecto aurora en epígrafes - DARK MODE */
+.theme-dark.theme-codigo-despertar .epigraph {
   background: linear-gradient(135deg,
     rgba(14, 165, 233, 0.1) 0%,
     rgba(168, 85, 247, 0.1) 100%
@@ -101,8 +169,18 @@ body.theme-codigo-despertar::before {
   box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
 }
 
-/* Preguntas de cierre místicas */
-.theme-codigo-despertar .closing-question {
+/* Epígrafes - LIGHT MODE */
+.theme-light.theme-codigo-despertar .epigraph {
+  background: linear-gradient(135deg,
+    rgba(2, 132, 199, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 100%
+  );
+  border-left: 4px solid #d97706;
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.1);
+}
+
+/* Preguntas de cierre místicas - DARK MODE */
+.theme-dark.theme-codigo-despertar .closing-question {
   background: linear-gradient(135deg,
     rgba(168, 85, 247, 0.1) 0%,
     rgba(14, 165, 233, 0.1) 100%
@@ -111,13 +189,28 @@ body.theme-codigo-despertar::before {
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
 }
 
-/* Botones con efecto glow */
-.theme-codigo-despertar button:hover {
+/* Preguntas de cierre - LIGHT MODE */
+.theme-light.theme-codigo-despertar .closing-question {
+  background: linear-gradient(135deg,
+    rgba(147, 51, 234, 0.1) 0%,
+    rgba(2, 132, 199, 0.1) 100%
+  );
+  border: 2px solid #9333ea;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.15);
+}
+
+/* Botones con efecto glow - DARK MODE */
+.theme-dark.theme-codigo-despertar button:hover {
   box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
 }
 
-/* Sidebar con efecto nebulosa */
-.theme-codigo-despertar .sidebar {
+/* Botones - LIGHT MODE */
+.theme-light.theme-codigo-despertar button:hover {
+  box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);
+}
+
+/* Sidebar con efecto nebulosa - DARK MODE */
+.theme-dark.theme-codigo-despertar .sidebar {
   background: linear-gradient(180deg,
     rgba(15, 23, 42, 0.9) 0%,
     rgba(30, 41, 59, 0.9) 100%
@@ -125,26 +218,53 @@ body.theme-codigo-despertar::before {
   backdrop-filter: blur(10px);
 }
 
-/* Capítulos activos con aura */
-.theme-codigo-despertar .chapter-item.bg-cyan-600\/30 {
+/* Sidebar - LIGHT MODE */
+.theme-light.theme-codigo-despertar .sidebar {
+  background: linear-gradient(180deg,
+    rgba(248, 250, 252, 0.9) 0%,
+    rgba(226, 232, 240, 0.9) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+/* Capítulos activos con aura - DARK MODE */
+.theme-dark.theme-codigo-despertar .chapter-item.bg-cyan-600\/30 {
   background: rgba(14, 165, 233, 0.3);
   box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
 }
 
-/* Texto con brillo sutil */
-.theme-codigo-despertar h1,
-.theme-codigo-despertar h2,
-.theme-codigo-despertar h3 {
+/* Capítulos activos - LIGHT MODE */
+.theme-light.theme-codigo-despertar .chapter-item.bg-cyan-600\/30 {
+  background: rgba(2, 132, 199, 0.2);
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.15);
+}
+
+/* Texto con brillo sutil - DARK MODE */
+.theme-dark.theme-codigo-despertar h1,
+.theme-dark.theme-codigo-despertar h2,
+.theme-dark.theme-codigo-despertar h3 {
   text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
 }
 
-/* Enlaces con efecto místico */
-.theme-codigo-despertar a:hover {
+/* Texto - LIGHT MODE (sin sombra excesiva) */
+.theme-light.theme-codigo-despertar h1,
+.theme-light.theme-codigo-despertar h2,
+.theme-light.theme-codigo-despertar h3 {
+  text-shadow: 0 0 10px rgba(2, 132, 199, 0.15);
+}
+
+/* Enlaces con efecto místico - DARK MODE */
+.theme-dark.theme-codigo-despertar a:hover {
   text-shadow: 0 0 10px rgba(14, 165, 233, 0.8);
 }
 
-/* Estadísticas con brillo */
-.theme-codigo-despertar .global-stats {
+/* Enlaces - LIGHT MODE */
+.theme-light.theme-codigo-despertar a:hover {
+  text-shadow: 0 0 10px rgba(2, 132, 199, 0.6);
+}
+
+/* Estadísticas con brillo - DARK MODE */
+.theme-dark.theme-codigo-despertar .global-stats {
   background: linear-gradient(135deg,
     rgba(14, 165, 233, 0.1) 0%,
     rgba(168, 85, 247, 0.1) 100%
@@ -153,8 +273,19 @@ body.theme-codigo-despertar::before {
   box-shadow: 0 4px 30px rgba(14, 165, 233, 0.1);
 }
 
+/* Estadísticas - LIGHT MODE */
+.theme-light.theme-codigo-despertar .global-stats {
+  background: linear-gradient(135deg,
+    rgba(2, 132, 199, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 100%
+  );
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 30px rgba(2, 132, 199, 0.1);
+}
+
 /* Animación de entrada suave */
-.theme-codigo-despertar .fade-in-up {
+.theme-dark.theme-codigo-despertar .fade-in-up,
+.theme-light.theme-codigo-despertar .fade-in-up {
   animation: fadeInCosmic 1s ease-out forwards;
 }
 
@@ -171,13 +302,20 @@ body.theme-codigo-despertar::before {
 
 /* Efectos para mobile */
 @media (max-width: 768px) {
-  body.theme-codigo-despertar::before {
+  body.theme-dark.theme-codigo-despertar::before,
+  body.theme-light.theme-codigo-despertar::before {
     animation-duration: 150s;
   }
 }
 
-/* Scrollbar cósmica */
-.theme-codigo-despertar::-webkit-scrollbar-thumb {
+/* Scrollbar cósmica - DARK MODE */
+.theme-dark.theme-codigo-despertar::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #0ea5e9, #a855f7);
   box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+}
+
+/* Scrollbar - LIGHT MODE */
+.theme-light.theme-codigo-despertar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0284c7, #9333ea);
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
 }

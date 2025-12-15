@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Sistema de Versiones</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 30px;
+    }
+    h1 { margin-bottom: 20px; color: #00d4ff; }
+    h2 { margin-top: 30px; margin-bottom: 15px; color: #667eea; font-size: 18px; }
+    .test-section {
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #667eea;
+    }
+    .test-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .status-pass { color: #10b981; }
+    .status-fail { color: #ef4444; }
+    .status-info { color: #f59e0b; }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button:hover { background: #764ba2; }
+    button.secondary {
+      background: #475569;
+    }
+    button.secondary:hover {
+      background: #64748b;
+    }
+    .output {
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #333;
+      margin-top: 20px;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .output-line {
+      margin: 5px 0;
+      padding: 3px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Test - Sistema de Versiones y Actualizaciones</h1>
+
+    <h2>1. Verificar Carga de Scripts</h2>
+    <div class="test-section">
+      <button onclick="testScriptsLoaded()">Verificar Scripts</button>
+      <div id="test-scripts" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>2. Verificar VersionManager</h2>
+    <div class="test-section">
+      <button onclick="testVersionManager()">Test VersionManager</button>
+      <div id="test-vm" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>3. Verificar UpdateHelper</h2>
+    <div class="test-section">
+      <button onclick="testUpdateHelper()">Test UpdateHelper</button>
+      <div id="test-uh" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>4. Verificar UpdateModal</h2>
+    <div class="test-section">
+      <button onclick="testUpdateModal()">Test UpdateModal</button>
+      <div id="test-modal" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>5. Test API Endpoint</h2>
+    <div class="test-section">
+      <button onclick="testAPIEndpoint()">Test API</button>
+      <div id="test-api" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>6. Simular Actualización Disponible</h2>
+    <div class="test-section">
+      <button onclick="simulateUpdate()">Simular Update</button>
+      <button class="secondary" onclick="closeUpdateModal()">Cerrar Modal</button>
+      <div id="test-simulate" class="test-item">Esperando...</div>
+    </div>
+
+    <h2>7. Debug Info Completo</h2>
+    <div class="test-section">
+      <button onclick="showDebugInfo()">Ver Debug Info</button>
+    </div>
+
+    <h2>Salida de Logs</h2>
+    <div class="output" id="output">
+      <div class="output-line"><span class="status-info">ℹ Iniciando tests...</span></div>
+    </div>
+  </div>
+
+  <!-- Incluir Version System Scripts -->
+  <script src="js/core/version-manager.js"></script>
+  <script src="js/core/update-helper.js"></script>
+  <script src="js/core/app-initialization.js"></script>
+  <script src="js/features/update-modal.js"></script>
+
+  <script>
+    const outputEl = document.getElementById('output');
+
+    function log(type, message) {
+      const line = document.createElement('div');
+      line.className = 'output-line';
+      let color = 'status-info';
+      let prefix = 'ℹ';
+
+      if (type === 'success') {
+        color = 'status-pass';
+        prefix = '✓';
+      } else if (type === 'error') {
+        color = 'status-fail';
+        prefix = '✗';
+      } else if (type === 'warn') {
+        color = 'status-info';
+        prefix = '⚠';
+      }
+
+      line.innerHTML = `<span class="${color}">${prefix} ${message}</span>`;
+      outputEl.appendChild(line);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function testScriptsLoaded() {
+      log('info', '--- Test: Verificar Scripts Cargados ---');
+
+      const checks = [
+        { name: 'VersionManager', obj: window.VersionManager },
+        { name: 'UpdateHelper', obj: window.UpdateHelper },
+        { name: 'UpdateModal', obj: window.UpdateModal },
+        { name: 'AppInitialization', obj: window.AppInitialization },
+        { name: 'versionManager (global)', obj: window.versionManager },
+        { name: 'updateHelper (global)', obj: window.updateHelper },
+        { name: 'updateModal (global)', obj: window.updateModal }
+      ];
+
+      let passed = 0;
+      checks.forEach(check => {
+        if (check.obj) {
+          log('success', `${check.name} cargado correctamente`);
+          passed++;
+        } else {
+          log('error', `${check.name} NO cargado`);
+        }
+      });
+
+      document.getElementById('test-scripts').textContent =
+        `${passed}/${checks.length} scripts cargados correctamente`;
+    }
+
+    function testVersionManager() {
+      log('info', '--- Test: VersionManager ---');
+
+      if (!window.versionManager) {
+        log('error', 'versionManager no está inicializado');
+        return;
+      }
+
+      const info = window.versionManager.getVersionInfo();
+      log('success', `Versión actual: ${info.full}`);
+      log('success', `Plataforma: ${info.platform}`);
+      log('success', `Major.Minor.Patch: ${info.major}.${info.minor}.${info.patch}`);
+
+      const debugInfo = window.versionManager.getDebugInfo();
+      log('info', `Último check: ${debugInfo.lastCheckTime}`);
+      log('info', `Update disponible: ${debugInfo.availableUpdate ? 'SÍ' : 'NO'}`);
+
+      document.getElementById('test-vm').textContent =
+        `VersionManager: OK | Version ${info.full} | ${info.platform}`;
+    }
+
+    function testUpdateHelper() {
+      log('info', '--- Test: UpdateHelper ---');
+
+      if (!window.updateHelper) {
+        log('error', 'updateHelper no está inicializado');
+        return;
+      }
+
+      log('success', 'UpdateHelper inicializado correctamente');
+      log('success', `Métodos disponibles: downloadUpdate(), checkUpdateStatus()`);
+      log('success', 'Listeners: downloadStarted, downloadProgress, downloadCompleted, updateError');
+
+      document.getElementById('test-uh').textContent = 'UpdateHelper: OK';
+    }
+
+    function testUpdateModal() {
+      log('info', '--- Test: UpdateModal ---');
+
+      if (!window.updateModal) {
+        log('error', 'updateModal no está inicializado');
+        return;
+      }
+
+      log('success', 'UpdateModal inicializado correctamente');
+      log('success', 'Métodos: showUpdateNotification(), showDownloadProgress(), showError()');
+      log('success', 'Estilos: CSS inyectado automáticamente');
+
+      document.getElementById('test-modal').textContent = 'UpdateModal: OK';
+    }
+
+    async function testAPIEndpoint() {
+      log('info', '--- Test: API Endpoint ---');
+
+      try {
+        const response = await fetch('/api/check-version.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            currentVersion: '2.9.31',
+            platform: 'web',
+            timestamp: Date.now()
+          })
+        });
+
+        if (!response.ok) {
+          log('error', `API error: ${response.status} ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          log('success', `API respondió correctamente`);
+          log('success', `Status: ${data.status}`);
+          log('success', `Versión actual (según API): ${data.currentVersion}`);
+          log('success', `Última versión: ${data.latestVersion}`);
+          log('success', `Actualización disponible: ${data.updateAvailable ? 'SÍ' : 'NO'}`);
+
+          if (data.updateAvailable && data.update) {
+            log('success', `Nueva versión: ${data.update.version}`);
+            log('success', `Tamaño estimado: ${data.update.estimatedSize}`);
+            log('success', `Crítica: ${data.update.isCritical ? 'SÍ' : 'NO'}`);
+          }
+
+          document.getElementById('test-api').textContent = 'API: OK ✓';
+        } else {
+          log('warn', `API respondió con status: ${data.status}`);
+          log('warn', `Mensaje: ${data.message}`);
+          document.getElementById('test-api').textContent = 'API: Warning ⚠';
+        }
+      } catch (error) {
+        log('error', `Error al llamar API: ${error.message}`);
+        document.getElementById('test-api').textContent = 'API: ERROR ✗';
+      }
+    }
+
+    function simulateUpdate() {
+      log('info', '--- Test: Simular Actualización ---');
+
+      const mockUpdate = {
+        version: '2.9.32',
+        releaseDate: '2025-12-14',
+        isSecurity: false,
+        isCritical: false,
+        features: [
+          'Sistema de versiones y actualizaciones',
+          'Verificación automática de updates',
+          'Modal de notificación de nuevas versiones'
+        ],
+        estimatedSize: '2.5MB',
+        downloadUrl: '/downloads/coleccion-nuevo-ser-latest.apk'
+      };
+
+      if (window.updateModal) {
+        log('success', 'Mostrando modal de actualización...');
+        window.updateModal.showUpdateNotification(mockUpdate);
+        document.getElementById('test-simulate').textContent = 'Modal mostrado ✓';
+      } else {
+        log('error', 'UpdateModal no disponible');
+      }
+    }
+
+    function closeUpdateModal() {
+      if (window.updateModal) {
+        window.updateModal.hide();
+        log('success', 'Modal cerrado');
+        document.getElementById('test-simulate').textContent = 'Modal cerrado ✓';
+      }
+    }
+
+    function showDebugInfo() {
+      log('info', '--- Debug Info Completo ---');
+
+      const sysStatus = window.AppInitialization.getSystemStatus();
+      log('info', `Estado del sistema:`);
+      log('info', `  Versión: ${sysStatus.version}`);
+      log('info', `  Plataforma: ${sysStatus.platform}`);
+      log('info', `  Entorno: ${sysStatus.environment}`);
+      log('info', `  Update disponible: ${sysStatus.updateAvailable}`);
+
+      const debugInfo = window.AppInitialization.getDebugInfo();
+      log('info', `Debug completo: ${JSON.stringify(debugInfo, null, 2)}`);
+    }
+
+    // Auto-log al cargar
+    window.addEventListener('load', () => {
+      log('success', 'Página cargada completamente');
+      log('success', 'Todos los scripts inyectados');
+      log('info', 'Haz clic en los botones para ejecutar tests');
+    });
+  </script>
+</body>
+</html>

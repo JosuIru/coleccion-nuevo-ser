@@ -31,7 +31,7 @@ class ShareHelper {
         return this.fallbackShare({ title, text, url });
       }
     } catch (error) {
-      console.warn('Error sharing:', error);
+      // console.warn('Error sharing:', error);
       return this.fallbackShare({ title, text, url });
     }
   }
@@ -207,9 +207,9 @@ ${answer}`;
         <div class="bg-gray-800 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <span class="text-2xl">📤</span>
-            <h2 class="text-lg font-bold">Compartir</h2>
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white">Compartir</h2>
           </div>
-          <button id="close-share-modal" class="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded-lg transition">
+          <button id="close-share-modal" class="text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition">
             ${window.Icons?.close(20) || '✕'}
           </button>
         </div>
@@ -217,19 +217,19 @@ ${answer}`;
         <!-- Content -->
         <div class="p-6">
           <textarea id="share-text-content" readonly
-            class="w-full h-40 p-4 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 resize-none"
+            class="w-full h-40 p-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-200 resize-none"
           >${this.escapeHtml(fullText)}</textarea>
 
           <div class="flex gap-3 mt-4">
-            <button id="copy-share-text" class="flex-1 px-4 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold transition flex items-center justify-center gap-2">
+            <button id="copy-share-text" class="flex-1 px-4 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold transition flex items-center justify-center gap-2 text-white">
               ${window.Icons?.create('copy', 18) || '📋'}
               Copiar texto
             </button>
           </div>
 
           <!-- Social Links -->
-          <div class="mt-4 pt-4 border-t border-gray-700">
-            <p class="text-sm text-gray-400 mb-3">Compartir en:</p>
+          <div class="mt-4 pt-4 border-t border-gray-300 dark:border-gray-700">
+            <p class="text-sm text-gray-700 dark:text-gray-400 mb-3">Compartir en:</p>
             <div class="flex gap-2 flex-wrap">
               <button id="share-twitter" class="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition text-sm">
                 Twitter/X
@@ -240,7 +240,7 @@ ${answer}`;
               <button id="share-telegram" class="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition text-sm">
                 Telegram
               </button>
-              <button id="share-email" class="px-4 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-400 rounded-lg transition text-sm">
+              <button id="share-email" class="px-4 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-700 dark:text-gray-400 rounded-lg transition text-sm">
                 Email
               </button>
             </div>

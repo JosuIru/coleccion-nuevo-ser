@@ -7,6 +7,10 @@
     <!-- Permiso para mantener pantalla activa durante reproducción de audio -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- Permisos para audio en segundo plano (Foreground Service) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

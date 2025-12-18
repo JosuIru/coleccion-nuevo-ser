@@ -914,21 +914,38 @@ class ExplorationHub {
 
     contentContainer.innerHTML = '<div class="text-center text-gray-400 py-12"><div class="animate-pulse text-6xl mb-4">🧭</div><p>Cargando recursos...</p></div>';
 
-    // Filtrar recursos por dimensión usando BrujulaRecursos
-    this.brujulaRecursos.filtro.dimension = dimension;
+    // Filtrar recursos por dimensión
+    const dimensionInfo = this.brujulaRecursos.dimensiones[dimension];
+    const filteredResources = this.brujulaRecursos.recursos.filter(r =>
+      r.dimensiones && r.dimensiones.includes(dimension)
+    );
 
-    // TODO: Implementar renderizado de recursos filtrados
-    // Por ahora mostrar placeholder
     setTimeout(() => {
+      if (filteredResources.length === 0) {
+        contentContainer.innerHTML = `
+          <div class="text-center text-gray-300 py-12">
+            <div class="text-6xl mb-4">${dimensionInfo?.emoji || '🧭'}</div>
+            <h3 class="text-xl font-bold mb-2">${dimensionInfo?.nombre || dimension}</h3>
+            <p class="text-gray-500">No se encontraron recursos para esta dimensión</p>
+          </div>
+        `;
+        return;
+      }
+
       contentContainer.innerHTML = `
-        <div class="text-center text-gray-300 py-12">
-          <div class="text-6xl mb-4">${this.brujulaRecursos.dimensiones[dimension].emoji}</div>
-          <h3 class="text-xl font-bold mb-2">${this.brujulaRecursos.dimensiones[dimension].nombre}</h3>
-          <p class="text-sm text-gray-400 mb-6 max-w-md mx-auto">${this.brujulaRecursos.dimensiones[dimension].pregunta}</p>
-          <p class="text-gray-500">Recursos filtrados por esta dimensión aparecerán aquí</p>
+        <div class="mb-6 text-center">
+          <div class="text-4xl mb-2">${dimensionInfo?.emoji || '🧭'}</div>
+          <h3 class="text-xl font-bold text-amber-400">${dimensionInfo?.nombre || dimension}</h3>
+          <p class="text-sm text-gray-400">${filteredResources.length} recursos encontrados</p>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${filteredResources.slice(0, 20).map(r => this.renderResourceCard(r)).join('')}
+        </div>
+        ${filteredResources.length > 20 ? `<p class="text-center text-gray-500 mt-4">Mostrando 20 de ${filteredResources.length} recursos</p>` : ''}
       `;
-    }, 500);
+
+      this.attachResourceCardListeners();
+    }, 300);
   }
 
   async filterResourcesByType(type) {
@@ -938,17 +955,85 @@ class ExplorationHub {
     contentContainer.innerHTML = '<div class="text-center text-gray-400 py-12"><div class="animate-pulse text-6xl mb-4">🧭</div><p>Filtrando recursos...</p></div>';
 
     // Filtrar recursos por tipo
-    this.brujulaRecursos.filtro.tipo = type === 'all' ? null : type;
+    const filteredResources = type === 'all'
+      ? this.brujulaRecursos.recursos
+      : this.brujulaRecursos.recursos.filter(r => r.tipo === type);
 
-    // TODO: Implementar renderizado de recursos filtrados
+    const typeIcons = {
+      'libro': '📚',
+      'artículo': '📄',
+      'documental': '🎬',
+      'podcast': '🎙️',
+      'organización': '🏛️',
+      'herramienta': '🔧',
+      'libro_colección': '📖',
+      'all': '🌐'
+    };
+
     setTimeout(() => {
+      if (filteredResources.length === 0) {
+        contentContainer.innerHTML = `
+          <div class="text-center text-gray-300 py-12">
+            <div class="text-6xl mb-4">${typeIcons[type] || '📚'}</div>
+            <p class="text-gray-500">No se encontraron recursos de este tipo</p>
+          </div>
+        `;
+        return;
+      }
+
       contentContainer.innerHTML = `
-        <div class="text-center text-gray-300 py-12">
-          <div class="text-6xl mb-4">📚</div>
-          <p class="text-gray-400">Recursos de tipo "${type}" aparecerán aquí</p>
+        <div class="mb-6 text-center">
+          <div class="text-4xl mb-2">${typeIcons[type] || '📚'}</div>
+          <h3 class="text-xl font-bold text-amber-400">${type === 'all' ? 'Todos los recursos' : type}</h3>
+          <p class="text-sm text-gray-400">${filteredResources.length} recursos encontrados</p>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${filteredResources.slice(0, 20).map(r => this.renderResourceCard(r)).join('')}
+        </div>
+        ${filteredResources.length > 20 ? `<p class="text-center text-gray-500 mt-4">Mostrando 20 de ${filteredResources.length} recursos</p>` : ''}
       `;
-    }, 500);
+
+      this.attachResourceCardListeners();
+    }, 300);
+  }
+
+  /**
+   * Renderizar tarjeta de recurso individual
+   */
+  renderResourceCard(resource) {
+    const url = resource.url || resource.link || '#';
+    const hasUrl = url && url !== '#';
+
+    return `
+      <div class="resource-card bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:border-amber-500/50 transition-all cursor-pointer" data-url="${url}">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl">${resource.icono || '📄'}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-gray-200 truncate">${resource.title || 'Sin título'}</h4>
+            <p class="text-sm text-gray-400 line-clamp-2 mt-1">${resource.description || ''}</p>
+            <div class="flex items-center gap-2 mt-2 flex-wrap">
+              <span class="text-xs bg-slate-700 text-gray-300 px-2 py-0.5 rounded">${resource.tipo || 'recurso'}</span>
+              ${resource.libroNombre ? `<span class="text-xs text-amber-400/70">📖 ${resource.libroNombre}</span>` : ''}
+              ${hasUrl ? '<span class="text-xs text-blue-400">🔗 Enlace disponible</span>' : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Attach listeners a tarjetas de recursos
+   */
+  attachResourceCardListeners() {
+    document.querySelectorAll('.resource-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const url = card.dataset.url;
+        if (url && url !== '#') {
+          window.open(url, '_blank');
+        }
+      });
+    });
   }
 }
 

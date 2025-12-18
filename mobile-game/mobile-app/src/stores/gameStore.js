@@ -62,6 +62,12 @@ const useGameStore = create((set, get) => ({
   activeMissions: [],
 
   // ═══════════════════════════════════════════════════════════
+  // BOOSTS TEMPORALES
+  // ═══════════════════════════════════════════════════════════
+
+  activeBoosts: [], // Array de { type, multiplier, expiresAt }
+
+  // ═══════════════════════════════════════════════════════════
   // UBICACIÓN
   // ═══════════════════════════════════════════════════════════
 
@@ -94,6 +100,32 @@ const useGameStore = create((set, get) => ({
 
   setUser: (user) => set({ user }),
 
+  // ═══════════════════════════════════════════════════════════
+  // ACCIONES - BOOSTS
+  // ═══════════════════════════════════════════════════════════
+
+  addBoost: (type, multiplier, durationHours) => set((state) => {
+    const expiresAt = Date.now() + (durationHours * 60 * 60 * 1000);
+    const newBoost = { type, multiplier, expiresAt, activatedAt: Date.now() };
+
+    return {
+      activeBoosts: [...(state.activeBoosts || []), newBoost]
+    };
+  }),
+
+  cleanExpiredBoosts: () => set((state) => {
+    const now = Date.now();
+    return {
+      activeBoosts: (state.activeBoosts || []).filter(b => b.expiresAt > now)
+    };
+  }),
+
+  getActiveBoosts: () => {
+    const state = useGameStore.getState();
+    const now = Date.now();
+    return (state.activeBoosts || []).filter(b => b.expiresAt > now);
+  },
+
   addXP: (amount) => {
     // Validar amount
     if (typeof amount !== 'number' || amount < 0 || !isFinite(amount)) {
@@ -102,8 +134,19 @@ const useGameStore = create((set, get) => ({
     }
 
     set((state) => {
+      // Aplicar multiplicadores de boosts activos
+      let finalAmount = amount;
+      const now = Date.now();
+      const activeXPBoosts = (state.activeBoosts || []).filter(
+        b => b.type === 'xp' && b.expiresAt > now
+      );
+      if (activeXPBoosts.length > 0) {
+        const totalMultiplier = activeXPBoosts.reduce((acc, b) => acc * b.multiplier, 1);
+        finalAmount = Math.round(amount * totalMultiplier);
+      }
+
       const current_xp = state.user.xp || 0;
-      const new_xp = Math.min(current_xp + amount, 999999); // Límite máximo
+      const new_xp = Math.min(current_xp + finalAmount, 999999); // Límite máximo
       let new_level = state.user.level || 1;
 
       // Verificar si sube de nivel

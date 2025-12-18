@@ -7843,10 +7843,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         break;
 
       case 'retos':
-        if (window.FrankensteinChallenges) {
-          window.FrankensteinChallenges.openChallengesModal();
+        if (window.frankensteinChallengesModal && this.currentBeing && this.currentMission) {
+          window.frankensteinChallengesModal.open(this.currentBeing, this.currentMission);
+        } else if (!this.currentBeing || !this.currentMission) {
+          this.showNotification('Primero crea y valida un ser con una misión', 'warning');
         } else {
-          this.showNotification('Retos en desarrollo', 'info');
+          this.showNotification('Sistema de retos no disponible', 'info');
         }
         break;
 
@@ -7922,7 +7924,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Intentar abrir la experiencia de microsociedades con fallbacks
    */
   openMicrosocietiesSimulator() {
-    // Preferir la nueva galería si está disponible
+    // Preferir el nuevo panel de microsociedades
+    if (window.microsocietiesInit && typeof window.microsocietiesInit.open === 'function') {
+      window.microsocietiesInit.open();
+      return;
+    }
+
+    // Fallback: galería si está disponible
     if (window.microsocietiesGallery && typeof window.microsocietiesGallery.open === 'function') {
       window.microsocietiesGallery.open();
       return;
@@ -7931,7 +7939,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     // Asegurar que exista un manager de microsociedades
     const manager = this.ensureMicroSocietiesManager();
     if (!manager) {
-      this.showNotification('Microsociedades en desarrollo', 'info');
+      this.showNotification('Sistema de microsociedades no disponible', 'info');
       return;
     }
 

@@ -669,15 +669,65 @@ class PracticeLibrary {
     const practice = this.practices.find(p => p.id === practiceId);
     if (!practice) return;
 
-    // TODO: Integrar con action-plans.js cuando esté disponible
-    // console.log('Adding to plan:', practice);
-
-    // Por ahora, mostrar toast
-    if (window.Toast) {
-      window.Toast.show(`"${practice.title}" añadido a tu plan`, 'success');
-    } else {
-      alert(`"${practice.title}" añadido a tu plan`);
+    // Obtener plan actual de localStorage
+    let actionPlan = [];
+    try {
+      actionPlan = JSON.parse(localStorage.getItem('user_action_plan') || '[]');
+    } catch (e) {
+      actionPlan = [];
     }
+
+    // Verificar si ya está en el plan
+    if (actionPlan.some(p => p.id === practiceId)) {
+      if (window.Toast) {
+        window.Toast.show(`"${practice.title}" ya está en tu plan`, 'info');
+      }
+      return;
+    }
+
+    // Agregar al plan
+    actionPlan.push({
+      id: practice.id,
+      title: practice.title,
+      duration: practice.duration,
+      type: practice.type || 'practice',
+      source: 'practice-library',
+      addedAt: new Date().toISOString(),
+      completed: false
+    });
+
+    // Guardar en localStorage
+    localStorage.setItem('user_action_plan', JSON.stringify(actionPlan));
+
+    // Integrar con action-plans.js si está disponible
+    if (window.actionPlans && typeof window.actionPlans.addPractice === 'function') {
+      window.actionPlans.addPractice(practice);
+    }
+
+    // Mostrar confirmación
+    if (window.Toast) {
+      window.Toast.show(`"${practice.title}" añadido a tu plan (${actionPlan.length} prácticas)`, 'success');
+    } else if (window.showToast) {
+      window.showToast(`"${practice.title}" añadido a tu plan`, 'success');
+    }
+  }
+
+  /**
+   * Obtener plan de acción actual
+   */
+  getActionPlan() {
+    try {
+      return JSON.parse(localStorage.getItem('user_action_plan') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * Limpiar plan de acción
+   */
+  clearActionPlan() {
+    localStorage.removeItem('user_action_plan');
   }
 }
 

@@ -308,8 +308,12 @@ const ConsciousnessShopScreen = ({ navigation }) => {
         break;
 
       case 'xp_boost':
-        // TODO: Implementar sistema de boosts temporales
-        Alert.alert('Boost Activado', `+25% XP durante ${effect.duration} horas`);
+        // Activar boost de XP usando el store
+        useGameStore.getState().addBoost('xp', 1.25, effect.duration);
+        Alert.alert(
+          'Boost de XP Activado',
+          `+25% XP durante ${effect.duration} horas.\nTodo el XP que ganes se multiplicará automáticamente.`
+        );
         break;
     }
   };

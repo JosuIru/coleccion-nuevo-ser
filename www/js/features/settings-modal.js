@@ -1921,20 +1921,190 @@ class SettingsModal {
      */
     attachSyncListeners() {
         document.getElementById('sync-now-btn')?.addEventListener('click', async () => {
-            // console.log('[Settings] Manual sync triggered');
-            // TODO: Implementar cuando cloudSyncHelper esté disponible
+            const btn = document.getElementById('sync-now-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Sincronizando...';
+            }
+
+            try {
+                // Intentar sincronizar con Supabase si está disponible
+                if (window.supabaseSyncHelper && typeof window.supabaseSyncHelper.syncAll === 'function') {
+                    await window.supabaseSyncHelper.syncAll();
+                    this.showToast('Sincronización completada', 'success');
+                } else if (window.cloudSyncHelper && typeof window.cloudSyncHelper.sync === 'function') {
+                    await window.cloudSyncHelper.sync();
+                    this.showToast('Sincronización completada', 'success');
+                } else {
+                    // Simular sincronización local (guardar timestamp)
+                    localStorage.setItem('last_sync_timestamp', new Date().toISOString());
+                    this.showToast('Datos guardados localmente', 'info');
+                }
+            } catch (error) {
+                console.error('Error en sincronización:', error);
+                this.showToast('Error al sincronizar', 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Sincronizar Ahora';
+                }
+            }
         });
 
         document.getElementById('export-data-btn')?.addEventListener('click', () => {
             if (window.fileExportHelper) {
                 window.fileExportHelper.exportFullBackup();
+            } else {
+                // Fallback: exportar datos manualmente
+                this.exportDataFallback();
             }
         });
 
         document.getElementById('import-data-btn')?.addEventListener('click', () => {
-            // console.log('[Settings] Import data clicked');
-            // TODO: Implementar import
+            this.showImportDialog();
         });
+    }
+
+    /**
+     * Mostrar diálogo de importación
+     */
+    showImportDialog() {
+        // Crear input file oculto
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                // Validar estructura básica
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Formato de archivo inválido');
+                }
+
+                // Confirmar importación
+                const confirmed = confirm(
+                    '¿Estás seguro de importar estos datos?\n\n' +
+                    'Esto sobrescribirá tus datos actuales.\n' +
+                    'Se recomienda exportar primero un backup.'
+                );
+
+                if (!confirmed) return;
+
+                // Importar datos
+                this.importData(data);
+                this.showToast('Datos importados correctamente', 'success');
+
+            } catch (error) {
+                console.error('Error importando datos:', error);
+                this.showToast('Error al importar: ' + error.message, 'error');
+            }
+        };
+
+        input.click();
+    }
+
+    /**
+     * Importar datos desde objeto
+     */
+    importData(data) {
+        // Importar cada categoría de datos si existe
+        const importKeys = [
+            'readProgress',
+            'completedPractices',
+            'userNotes',
+            'bookmarks',
+            'achievements',
+            'frankenstein-saved-beings',
+            'microsocieties_saves',
+            'user_action_plan',
+            'appSettings'
+        ];
+
+        for (const key of importKeys) {
+            if (data[key] !== undefined) {
+                localStorage.setItem(key, JSON.stringify(data[key]));
+            }
+        }
+
+        // Importar settings directamente si existen
+        if (data.settings) {
+            Object.entries(data.settings).forEach(([key, value]) => {
+                localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+            });
+        }
+
+        // Recargar la página para aplicar cambios
+        setTimeout(() => {
+            if (confirm('Los datos se han importado. ¿Deseas recargar la página para aplicar los cambios?')) {
+                window.location.reload();
+            }
+        }, 500);
+    }
+
+    /**
+     * Exportar datos (fallback si fileExportHelper no está disponible)
+     */
+    exportDataFallback() {
+        const exportKeys = [
+            'readProgress',
+            'completedPractices',
+            'userNotes',
+            'bookmarks',
+            'achievements',
+            'frankenstein-saved-beings',
+            'microsocieties_saves',
+            'user_action_plan',
+            'appSettings'
+        ];
+
+        const data = {
+            exportDate: new Date().toISOString(),
+            version: '1.0',
+            settings: {}
+        };
+
+        for (const key of exportKeys) {
+            const value = localStorage.getItem(key);
+            if (value) {
+                try {
+                    data[key] = JSON.parse(value);
+                } catch (e) {
+                    data[key] = value;
+                }
+            }
+        }
+
+        // Crear y descargar archivo
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `coleccion-nuevo-ser-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        this.showToast('Backup exportado', 'success');
+    }
+
+    /**
+     * Mostrar toast notification
+     */
+    showToast(message, type = 'info') {
+        if (window.Toast && window.Toast.show) {
+            window.Toast.show(message, type);
+        } else if (window.showToast) {
+            window.showToast(message, type);
+        } else {
+            console.log(`[${type}] ${message}`);
+        }
     }
 
     /**

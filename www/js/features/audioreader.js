@@ -1685,9 +1685,15 @@ class AudioReader {
   }
 
   renderMinimizedPlayer(bookData, tiempoEstimado) {
+    // Detectar si hay bottom nav visible (móvil)
+    const bottomNav = document.querySelector('.app-bottom-nav');
+    const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
+    // Altura del bottom nav: 64px + safe-area
+    const bottomOffset = hasBottomNav ? 'bottom-16' : 'bottom-0';
+
     const html = `
       <div id="audioreader-controls"
-           class="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-t-2 border-slate-300 dark:border-slate-700/50 shadow-2xl px-4 py-3 z-40 backdrop-blur-lg transition-transform duration-300">
+           class="fixed ${bottomOffset} left-0 right-0 bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-t-2 border-slate-300 dark:border-slate-700/50 shadow-2xl px-4 py-3 z-50 backdrop-blur-lg transition-transform duration-300">
 
         <!-- Barra de arrastre -->
         <div id="audioreader-drag-handle" class="flex justify-center pb-2 cursor-grab active:cursor-grabbing touch-none">

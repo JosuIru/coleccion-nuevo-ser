@@ -590,6 +590,12 @@ const CommandCenterScreen = ({ navigation }) => {
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.headerButton}
+            onPress={() => navigation.navigate('DailyMissions')}
+          >
+            <Icon name="calendar-check" size={24} color="#22c55e" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
             onPress={() => navigation.navigate('League')}
           >
             <Icon name="trophy" size={24} color="#eab308" />

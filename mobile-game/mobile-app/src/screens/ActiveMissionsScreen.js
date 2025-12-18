@@ -30,20 +30,24 @@ const ActiveMissionsScreen = ({ navigation }) => {
   const { user, beings } = useGameStore();
   const timerRef = useRef(null);
 
-  // Cargar misiones activas
+  // Cargar misiones activas al montar
   useEffect(() => {
     loadActiveMissions();
-    return () => clearTimeout(timerRef.current);
   }, []);
 
-  // Actualizar misiones cada 5 segundos
+  // Actualizar misiones cada 5 segundos (con cleanup correcto)
   useEffect(() => {
-    timerRef.current = setInterval(() => {
+    const intervalId = setInterval(() => {
       loadActiveMissions();
     }, 5000);
 
-    return () => clearInterval(timerRef.current);
-  }, []);
+    // Cleanup: limpiar el intervalo al desmontar
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [user?.id]);
 
   const loadActiveMissions = async () => {
     try {

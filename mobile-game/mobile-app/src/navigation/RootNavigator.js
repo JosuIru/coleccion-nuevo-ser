@@ -13,9 +13,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Screens
 import {
@@ -26,6 +24,9 @@ import {
   LibraryScreen,
   TutorialScreen,
   ActiveMissionsScreen,
+  DailyMissionsScreen,
+  ConsciousnessShopScreen,
+  PieceFusionScreen,
   HerramientasScreen,
   HelpScreen,
   FrankensteinLabScreen
@@ -189,6 +190,36 @@ const CommandStack = () => (
           borderBottomWidth: 1
         },
         title: 'Misiones Activas'
+      }}
+    />
+    <Stack.Screen
+      name="DailyMissions"
+      component={DailyMissionsScreen}
+      options={{
+        headerShown: true,
+        headerTintColor: COLORS.text.primary,
+        headerStyle: {
+          backgroundColor: COLORS.bg.elevated,
+          borderBottomColor: COLORS.bg.card,
+          borderBottomWidth: 1
+        },
+        title: 'Misiones Diarias'
+      }}
+    />
+    <Stack.Screen
+      name="Shop"
+      component={ConsciousnessShopScreen}
+      options={{
+        headerShown: false,
+        animationEnabled: true
+      }}
+    />
+    <Stack.Screen
+      name="PieceFusion"
+      component={PieceFusionScreen}
+      options={{
+        headerShown: false,
+        animationEnabled: true
       }}
     />
   </Stack.Navigator>

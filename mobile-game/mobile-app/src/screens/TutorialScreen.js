@@ -18,9 +18,7 @@ import {
   Image
 } from 'react-native';
 
-// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { COLORS } from '../config/constants';
 import useGameStore from '../stores/gameStore';

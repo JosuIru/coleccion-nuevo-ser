@@ -373,7 +373,97 @@ class FrankensteinLabUI {
 
     this.isInitialized = true;
     this.loadExperimentLog();
+
+    // Inicializar sistema de recompensas
+    this.initRewardsSystem();
+
     console.log('✅ FrankensteinLabUI inicializado completamente');
+  }
+
+  /**
+   * Inicializar sistema de recompensas
+   */
+  initRewardsSystem() {
+    if (typeof FrankensteinRewards === 'undefined') {
+      console.warn('⚠️ FrankensteinRewards no disponible');
+      return;
+    }
+
+    if (!window.frankensteinRewards) {
+      window.frankensteinRewards = new FrankensteinRewards();
+    }
+
+    // Verificar login diario y mostrar recompensa si aplica
+    const dailyReward = window.frankensteinRewards.checkDailyLogin();
+    if (dailyReward) {
+      setTimeout(() => {
+        this.showDailyLoginReward(dailyReward);
+      }, 1500);
+    }
+
+    console.log('✅ Sistema de recompensas inicializado');
+  }
+
+  /**
+   * Mostrar recompensa de login diario
+   */
+  showDailyLoginReward(reward) {
+    const modal = document.createElement('div');
+    modal.className = 'daily-reward-modal';
+    modal.innerHTML = `
+      <div class="daily-reward-content">
+        <div class="daily-reward-icon">${reward.streak >= 7 ? '🔥' : '☀️'}</div>
+        <h2>¡Bienvenido de nuevo!</h2>
+        <p class="daily-streak">Racha: ${reward.streak} día${reward.streak !== 1 ? 's' : ''}</p>
+        ${reward.isNewRecord ? '<p class="new-record">🏆 ¡Nuevo récord!</p>' : ''}
+        <div class="daily-rewards">
+          <span class="daily-xp">+${reward.xp} ⭐ XP</span>
+          <span class="daily-coins">+${reward.coins} 🪙</span>
+        </div>
+        <button class="lab-button primary" onclick="this.closest('.daily-reward-modal').remove()">
+          ¡Genial!
+        </button>
+      </div>
+    `;
+    modal.style.cssText = \`
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10005;
+      animation: frFadeIn 0.3s ease-out;
+    \`;
+
+    const content = modal.querySelector('.daily-reward-content');
+    content.style.cssText = \`
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      color: white;
+      max-width: 320px;
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+    \`;
+
+    modal.querySelector('.daily-reward-icon').style.cssText = 'font-size: 64px; margin-bottom: 16px;';
+    modal.querySelector('h2').style.cssText = 'margin: 0 0 8px; font-size: 24px;';
+    modal.querySelector('.daily-streak').style.cssText = 'color: #fbbf24; font-size: 18px; margin: 8px 0;';
+    modal.querySelector('.daily-rewards').style.cssText = 'display: flex; justify-content: center; gap: 20px; margin: 16px 0; font-size: 20px;';
+
+    const newRecord = modal.querySelector('.new-record');
+    if (newRecord) newRecord.style.cssText = 'color: #22c55e; font-size: 14px; margin: 4px 0;';
+
+    // Aplicar recompensas
+    window.frankensteinRewards.addXP(reward.xp, 'dailyLogin');
+    window.frankensteinRewards.addCoins(reward.coins, 'dailyLogin');
+
+    document.body.appendChild(modal);
   }
 
   /**
@@ -1544,6 +1634,67 @@ class FrankensteinLabUI {
 
     // Inicializar cache de referencias DOM para optimizar rendimiento
     this.initDomCache();
+
+    // Inicializar HUD de recompensas
+    this.initRewardsHUD();
+
+    // Iniciar onboarding si es primera vez
+    this.checkOnboarding();
+  }
+
+  /**
+   * Verificar y mostrar onboarding si aplica
+   */
+  checkOnboarding() {
+    if (typeof FrankensteinOnboarding === 'undefined') {
+      console.warn('⚠️ FrankensteinOnboarding no disponible');
+      return;
+    }
+
+    if (!window.frankensteinOnboarding) {
+      window.frankensteinOnboarding = new FrankensteinOnboarding();
+    }
+
+    // Esperar a que la UI esté lista
+    setTimeout(() => {
+      if (window.frankensteinOnboarding.shouldShow()) {
+        window.frankensteinOnboarding.start();
+      }
+    }, 1000);
+  }
+
+  /**
+   * Inicializar HUD de recompensas en la UI
+   */
+  initRewardsHUD() {
+    if (!window.frankensteinRewards) return;
+
+    // Remover HUD existente si hay
+    const existingHUD = document.getElementById('fr-rewards-hud');
+    if (existingHUD) existingHUD.remove();
+
+    // Crear nuevo HUD
+    const hud = window.frankensteinRewards.createRewardsHUD();
+    document.body.appendChild(hud);
+
+    // Agregar botón de logros al header si existe
+    const headerActions = document.querySelector('.lab-header-actions');
+    if (headerActions) {
+      const achievementsBtn = document.createElement('button');
+      achievementsBtn.className = 'lab-header-icon-btn';
+      achievementsBtn.id = 'btn-achievements';
+      achievementsBtn.title = 'Logros';
+      achievementsBtn.innerHTML = '<span>🏆</span>';
+      achievementsBtn.onclick = () => window.frankensteinRewards.showAchievementsPanel();
+
+      // Insertar antes del botón de ajustes
+      const settingsBtn = document.getElementById('btn-settings');
+      if (settingsBtn) {
+        headerActions.insertBefore(achievementsBtn, settingsBtn);
+      } else {
+        headerActions.appendChild(achievementsBtn);
+      }
+    }
   }
 
   /**
@@ -3229,6 +3380,11 @@ class FrankensteinLabUI {
       this.playLightningEffect();
       setTimeout(() => this.playLightningEffect(), 300);
       setTimeout(() => this.playLightningEffect(), 600);
+
+      // Recompensas por validar ser viable
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.giveReward('validateBeing');
+      }
     }
   }
 
@@ -4341,6 +4497,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }
 
       this.showNotification(`✅ Ser "${savedBeing.name}" guardado exitosamente`, 'success', 4000);
+
+      // Recompensa por crear/guardar ser
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.giveReward('createBeing');
+      }
+
       return true;
     } catch (error) {
       console.error('Error guardando ser:', error);
@@ -6424,6 +6586,16 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
                 // Guardar resultado del quiz
                 piece.quizScore = quizResult.correctCount;
                 piece.quizTotal = quizResult.totalQuestions;
+
+                // Dar recompensas por completar quiz
+                if (window.frankensteinRewards) {
+                  const isPerfect = quizResult.correctCount === quizResult.totalQuestions;
+                  if (isPerfect) {
+                    window.frankensteinRewards.giveReward('perfectQuiz', quizResult.powerMultiplier);
+                  } else {
+                    window.frankensteinRewards.giveReward('completeQuiz', quizResult.powerMultiplier);
+                  }
+                }
               }
             } catch (error) {
               console.error('[FrankensteinUI] Error en quiz:', error);
@@ -6476,6 +6648,11 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         targetCard.classList.add('selected');
       }
       this.selectedPieces.push(piece);
+
+      // Trackear pieza para estadísticas de recompensas
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.trackPieceUsed();
+      }
 
       // Disparar partículas de energía si el sistema está disponible
       if (window.energyParticles && targetCard) {

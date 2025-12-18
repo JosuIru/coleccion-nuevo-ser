@@ -18,8 +18,12 @@ class FrankensteinQuizSystem {
   constructor() {
     this.mode = 'investigacion'; // 'investigacion' | 'juego' | 'demo'
     this.difficulty = 'iniciado'; // 'principiante' | 'iniciado' | 'experto'
+    this.quickMode = false; // Modo rápido: 1 pregunta en lugar de 2-3
+    this.skipMastered = true; // Saltar quizzes de piezas ya dominadas
     this.quizCache = {}; // Cache de quizzes cargados
     this.piecesPower = {}; // Registro de poder de cada pieza
+    this.masteredPieces = {}; // Piezas que ya dominaste (pasaste quiz)
+    this.quizAttempts = {}; // Intentos por pieza
     this.weakPieces = []; // Array de piezas débiles que pueden fortalecerse
 
     // Configuración de niveles de dificultad
@@ -71,6 +75,9 @@ class FrankensteinQuizSystem {
       }
     };
 
+    this.chapterMetadata = null;
+    this.chapterMetadataPromise = null;
+
     this.powerMultipliers = this.difficultySettings.iniciado.powerMultipliers;
 
     this.init();
@@ -113,7 +120,94 @@ class FrankensteinQuizSystem {
       }
     }
 
-    console.log(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty`);
+    // Cargar piezas dominadas (mastered)
+    const savedMastered = localStorage.getItem('frankenstein_mastered_pieces');
+    if (savedMastered) {
+      try {
+        this.masteredPieces = JSON.parse(savedMastered);
+      } catch (e) {
+        console.error('Error loading mastered pieces:', e);
+      }
+    }
+
+    // Cargar intentos de quiz
+    const savedAttempts = localStorage.getItem('frankenstein_quiz_attempts');
+    if (savedAttempts) {
+      try {
+        this.quizAttempts = JSON.parse(savedAttempts);
+      } catch (e) {
+        console.error('Error loading quiz attempts:', e);
+      }
+    }
+
+    // Cargar modo rápido
+    const savedQuickMode = localStorage.getItem('frankenstein_quick_mode');
+    if (savedQuickMode !== null) {
+      this.quickMode = savedQuickMode === 'true';
+    }
+
+    // Cargar opción de saltar dominadas
+    const savedSkipMastered = localStorage.getItem('frankenstein_skip_mastered');
+    if (savedSkipMastered !== null) {
+      this.skipMastered = savedSkipMastered !== 'false';
+    }
+
+    console.log(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty (quickMode: ${this.quickMode}, skipMastered: ${this.skipMastered})`);
+  }
+
+  /**
+   * Activar/desactivar modo rápido
+   */
+  setQuickMode(enabled) {
+    this.quickMode = enabled;
+    localStorage.setItem('frankenstein_quick_mode', String(enabled));
+    console.log(`[FrankensteinQuiz] Quick mode: ${enabled}`);
+  }
+
+  /**
+   * Activar/desactivar saltar piezas dominadas
+   */
+  setSkipMastered(enabled) {
+    this.skipMastered = enabled;
+    localStorage.setItem('frankenstein_skip_mastered', String(enabled));
+    console.log(`[FrankensteinQuiz] Skip mastered: ${enabled}`);
+  }
+
+  /**
+   * Marcar pieza como dominada
+   */
+  markAsMastered(pieceKey, score) {
+    this.masteredPieces[pieceKey] = {
+      masteredAt: new Date().toISOString(),
+      score: score
+    };
+    localStorage.setItem('frankenstein_mastered_pieces', JSON.stringify(this.masteredPieces));
+  }
+
+  /**
+   * Verificar si una pieza está dominada
+   */
+  isPieceMastered(pieceKey) {
+    return Boolean(this.masteredPieces[pieceKey]);
+  }
+
+  /**
+   * Registrar intento de quiz
+   */
+  recordAttempt(pieceKey) {
+    if (!this.quizAttempts[pieceKey]) {
+      this.quizAttempts[pieceKey] = 0;
+    }
+    this.quizAttempts[pieceKey]++;
+    localStorage.setItem('frankenstein_quiz_attempts', JSON.stringify(this.quizAttempts));
+    return this.quizAttempts[pieceKey];
+  }
+
+  /**
+   * Obtener número de intentos
+   */
+  getAttempts(pieceKey) {
+    return this.quizAttempts[pieceKey] || 0;
   }
 
   /**
@@ -176,6 +270,110 @@ class FrankensteinQuizSystem {
     return this.mode;
   }
 
+  isKidMode() {
+    return this.difficulty === 'ninos';
+  }
+
+  simplifyForKids(text = '') {
+    if (!text) return '';
+    const replacements = [
+      ['consciencia', 'mente'],
+      ['filosóficamente', 'de forma muy profunda'],
+      ['inteligencia artificial', 'robots inteligentes'],
+      ['información', 'datos'],
+      ['evolución', 'cambio'],
+      ['metafísica', 'ideas profundas'],
+      ['emergencia', 'aparecimiento'],
+      ['constante', 'valor fijo']
+    ];
+    let simplified = text;
+    replacements.forEach(([from, to]) => {
+      simplified = simplified.replace(new RegExp(from, 'gi'), to);
+    });
+    if (simplified.length > 180) {
+      simplified = simplified.substring(0, 177) + '...';
+    }
+    return simplified;
+  }
+
+  async ensureChapterMetadata() {
+    if (this.chapterMetadata) return this.chapterMetadata;
+    if (this.chapterMetadataPromise) return this.chapterMetadataPromise;
+    this.chapterMetadataPromise = fetch('books/metadata/chapters-metadata.json')
+      .then(response => (response.ok ? response.json() : null))
+      .catch(error => {
+        console.warn('[FrankensteinQuiz] No se pudo cargar el metadata de capítulos:', error);
+        return null;
+      })
+      .finally(() => {
+        this.chapterMetadataPromise = null;
+      });
+    this.chapterMetadata = await this.chapterMetadataPromise;
+    return this.chapterMetadata;
+  }
+
+  getChapterMetadata(bookId, chapterId) {
+    if (!this.chapterMetadata?.chapters) return null;
+    return this.chapterMetadata.chapters[bookId]?.[chapterId] || null;
+  }
+
+  getQuestionPrompt(question) {
+    const base = question.question || '';
+    if (this.isKidMode()) {
+      return `Pregunta amigable: ${this.simplifyForKids(base)}`;
+    }
+    return base;
+  }
+
+  buildQuestionHint(question, chapterMeta) {
+    const candidates = [];
+    if (question.hint) candidates.push(question.hint);
+    if (question.explanation) candidates.push(question.explanation);
+    if (chapterMeta?.description) candidates.push(chapterMeta.description);
+    if (chapterMeta?.keywords && chapterMeta.keywords.length) {
+      candidates.push(`Palabras clave: ${chapterMeta.keywords.slice(0, 4).join(', ')}`);
+    }
+    if (question.bookQuote) {
+      candidates.push(`Cita: "${question.bookQuote}"`);
+    }
+    const hint = candidates.filter(Boolean).join(' ');
+    if (!hint) return '';
+    if (this.isKidMode()) {
+      return this.simplifyForKids(hint);
+    }
+    return hint;
+  }
+
+  openChapterInLibrary(bookId, chapterId) {
+    if (window.biblioteca?.openBook) {
+      window.biblioteca.openBook(bookId, chapterId);
+      return;
+    }
+    const url = `books/${bookId}/book.html`;
+    window.open(`${url}#${chapterId}`, '_blank');
+  }
+
+  formatChapterSnippet(chapterMeta) {
+    if (!chapterMeta) return '';
+    const parts = [];
+    if (chapterMeta.type) parts.push(`Tipo: ${chapterMeta.type}`);
+    if (chapterMeta.difficulty) parts.push(`Nivel: ${chapterMeta.difficulty}`);
+    if (chapterMeta.readingTime) parts.push(`Lectura: ${chapterMeta.readingTime} min`);
+    if (chapterMeta.practicalUses && chapterMeta.practicalUses.length) {
+      parts.push(`Aplicación: ${chapterMeta.practicalUses[0]}`);
+    }
+    return parts.join(' · ');
+  }
+
+  escapeHtml(text = '') {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   /**
    * Cargar quiz de un capítulo
    */
@@ -187,19 +385,25 @@ class FrankensteinQuizSystem {
     }
 
     try {
-      // Intentar cargar desde la raíz del libro primero (usar ruta relativa para compatibilidad)
-      let response = await fetch(`./books/${bookId}/quizzes.json`);
+      const quizFiles = [];
+      if (this.isKidMode()) {
+        quizFiles.push(`./books/${bookId}/quizzes-kids.json`);
+        quizFiles.push(`./books/${bookId}/assets/quizzes-kids.json`);
+      }
+      quizFiles.push(`./books/${bookId}/quizzes.json`);
+      quizFiles.push(`./books/${bookId}/assets/quizzes.json`);
 
-      // Si no existe, intentar desde assets/
-      if (!response.ok) {
-        response = await fetch(`./books/${bookId}/assets/quizzes.json`);
+      let quizData = null;
+      for (const path of quizFiles) {
+        let response = await fetch(path);
+        if (!response.ok) continue;
+        quizData = await response.json();
+        break;
       }
 
-      if (!response.ok) {
-        throw new Error(`Failed to load quiz for ${bookId} - tried both /quizzes.json and /assets/quizzes.json`);
+      if (!quizData) {
+        throw new Error(`Failed to load quiz for ${bookId} - tried ${quizFiles.join(', ')}`);
       }
-
-      const quizData = await response.json();
 
       // Cachear todo el libro - manejar ambas estructuras
       if (quizData.chapters) {
@@ -264,6 +468,8 @@ class FrankensteinQuizSystem {
    * Mostrar modal de quiz
    */
   async showQuizModal(piece, bookId, chapterId) {
+    const pieceKey = `${bookId}/${chapterId}`;
+
     // En modo investigación, saltar quiz
     if (this.mode === 'investigacion') {
       return {
@@ -283,6 +489,35 @@ class FrankensteinQuizSystem {
       };
     }
 
+    // Si la pieza ya está dominada y skipMastered está activo, saltar quiz
+    if (this.skipMastered && this.isPieceMastered(pieceKey)) {
+      const mastered = this.masteredPieces[pieceKey];
+      console.log(`[FrankensteinQuiz] Pieza ${pieceKey} ya dominada, saltando quiz`);
+      return {
+        passed: true,
+        powerMultiplier: 1.15, // Bonus moderado por pieza dominada
+        skipped: true,
+        mastered: true,
+        previousScore: mastered.score
+      };
+    }
+
+    // Si el usuario ha fallado 3+ veces, ofrecer auto-pass con penalización
+    const attempts = this.getAttempts(pieceKey);
+    if (attempts >= 3) {
+      console.log(`[FrankensteinQuiz] ${attempts} intentos en ${pieceKey}, ofreciendo auto-pass`);
+      const autoPass = await this.showAutoPassOption(pieceKey, attempts);
+      if (autoPass) {
+        return {
+          passed: true,
+          powerMultiplier: 0.85, // Penalización por auto-pass
+          skipped: true,
+          autoPass: true,
+          attempts: attempts
+        };
+      }
+    }
+
     // Cargar quiz del capítulo
     const quizData = await this.loadQuiz(bookId, chapterId);
     if (!quizData || !quizData.questions || quizData.questions.length === 0) {
@@ -294,20 +529,97 @@ class FrankensteinQuizSystem {
       };
     }
 
-    // Seleccionar 2 preguntas aleatorias
-    const selectedQuestions = this.selectRandomQuestions(quizData.questions);
+    // Registrar intento
+    this.recordAttempt(pieceKey);
+
+    // Seleccionar preguntas (menos si quickMode está activo)
+    const questionCount = this.quickMode ? 1 : this.difficultySettings[this.difficulty]?.questionsCount || 2;
+    const selectedQuestions = this.selectRandomQuestions(quizData.questions, questionCount);
+    await this.ensureChapterMetadata();
 
     // Mostrar modal y esperar respuesta del usuario
     return new Promise((resolve) => {
-      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, resolve);
+      const chapterMeta = this.getChapterMetadata(bookId, chapterId);
+
+      // Wrapper para marcar como dominada si pasa
+      const wrappedResolve = (result) => {
+        if (result.passed && !result.cancelled) {
+          this.markAsMastered(pieceKey, result.correctCount);
+        }
+        resolve(result);
+      };
+
+      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, wrappedResolve, bookId, chapterId, chapterMeta);
+    });
+  }
+
+  /**
+   * Mostrar opción de auto-pass después de múltiples intentos fallidos
+   */
+  showAutoPassOption(pieceKey, attempts) {
+    return new Promise((resolve) => {
+      const modal = document.createElement('div');
+      modal.className = 'quiz-modal-overlay active';
+      modal.innerHTML = `
+        <div class="quiz-auto-pass-modal">
+          <div class="quiz-auto-pass-icon">😓</div>
+          <h3>¿Te está costando?</h3>
+          <p>Has intentado este quiz ${attempts} veces.</p>
+          <p class="quiz-auto-pass-note">Puedes saltar el quiz, pero la pieza tendrá menos poder (-15%).</p>
+          <div class="quiz-auto-pass-actions">
+            <button class="quiz-btn quiz-btn-retry" id="btn-retry">
+              🔄 Intentar de nuevo
+            </button>
+            <button class="quiz-btn quiz-btn-skip" id="btn-auto-pass">
+              ⏭️ Saltar quiz
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Estilos inline para el modal
+      const content = modal.querySelector('.quiz-auto-pass-modal');
+      content.style.cssText = \`
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+        color: white;
+        max-width: 340px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      \`;
+
+      modal.querySelector('.quiz-auto-pass-icon').style.cssText = 'font-size: 48px; margin-bottom: 16px;';
+      modal.querySelector('h3').style.cssText = 'margin: 0 0 8px; font-size: 20px;';
+      modal.querySelector('p').style.cssText = 'color: #94a3b8; margin: 8px 0;';
+      modal.querySelector('.quiz-auto-pass-note').style.cssText = 'color: #f59e0b; font-size: 14px;';
+      modal.querySelector('.quiz-auto-pass-actions').style.cssText = 'display: flex; gap: 12px; justify-content: center; margin-top: 20px;';
+
+      document.body.appendChild(modal);
+
+      modal.querySelector('#btn-retry').onclick = () => {
+        modal.remove();
+        resolve(false); // Continuar con el quiz
+      };
+
+      modal.querySelector('#btn-auto-pass').onclick = () => {
+        modal.remove();
+        resolve(true); // Auto-pass
+      };
     });
   }
 
   /**
    * Crear modal de quiz
    */
-  createQuizModal(piece, chapterTitle, questions, resolveCallback) {
+  createQuizModal(piece, chapterTitle, questions, resolveCallback, bookId, chapterId, chapterMeta) {
     // Crear overlay
+    const chapterSnippet = this.formatChapterSnippet(chapterMeta);
+    const difficultyLabel = this.escapeHtml(this.difficultySettings[this.difficulty]?.description || '');
     const overlay = document.createElement('div');
     overlay.className = 'quiz-modal-overlay active';
     overlay.innerHTML = `
@@ -323,6 +635,19 @@ class FrankensteinQuizSystem {
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
           </button>
+          <div class="quiz-meta">
+            <div class="quiz-meta-info">
+              <span class="quiz-chapter-label">Capítulo:</span>
+              <strong>${chapterTitle}</strong>
+              ${chapterSnippet ? `<p class="quiz-chapter-snippet">${this.escapeHtml(chapterSnippet)}</p>` : ''}
+            </div>
+            <div class="quiz-meta-actions">
+              <span class="quiz-level-badge">${difficultyLabel}</span>
+              <button class="quiz-link-btn" type="button" data-book="${bookId}" data-chapter="${chapterId}">
+                🧭 Ver capítulo
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="quiz-modal-body" id="quiz-questions-container">
@@ -373,13 +698,14 @@ class FrankensteinQuizSystem {
     const userAnswers = new Array(questions.length).fill(null);
 
     questions.forEach((q, qIndex) => {
+      const hintText = this.buildQuestionHint(q, chapterMeta);
       const questionEl = document.createElement('div');
       questionEl.className = 'quiz-question';
       questionEl.innerHTML = `
         <div class="quiz-question-header">
           <span class="quiz-question-number">Pregunta ${qIndex + 1}/${questions.length}</span>
         </div>
-        <div class="quiz-question-text">${q.question}</div>
+        <div class="quiz-question-text">${this.escapeHtml(this.getQuestionPrompt(q))}</div>
         <div class="quiz-options" data-question="${qIndex}">
           ${q.options.map((option, optIndex) => `
             <div class="quiz-option" data-option="${optIndex}">
@@ -389,11 +715,19 @@ class FrankensteinQuizSystem {
                 id="q${qIndex}_opt${optIndex}"
                 value="${optIndex}"
               >
-              <label for="q${qIndex}_opt${optIndex}">${option}</label>
+              <label for="q${qIndex}_opt${optIndex}">${this.escapeHtml(option)}</label>
             </div>
           `).join('')}
         </div>
         <div class="quiz-feedback" id="feedback_${qIndex}" style="display: none;"></div>
+        ${hintText ? `
+          <div class="quiz-question-context">
+            <button class="quiz-hint-btn" type="button">
+              ${this.isKidMode() ? 'Ver pista sencilla' : 'Ver pista'}
+            </button>
+            <p class="quiz-hint-text">${this.escapeHtml(hintText)}</p>
+          </div>
+        ` : ''}
       `;
 
       container.appendChild(questionEl);
@@ -413,6 +747,24 @@ class FrankensteinQuizSystem {
     // Botón de submit
     overlay.querySelector('#quiz-submit-btn').addEventListener('click', () => {
       this.evaluateQuiz(overlay, questions, userAnswers, piece, resolveCallback);
+    });
+
+    overlay.querySelector('.quiz-link-btn')?.addEventListener('click', (event) => {
+      const btn = event.currentTarget;
+      const targetBook = btn.dataset.book;
+      const targetChapter = btn.dataset.chapter;
+      this.openChapterInLibrary(targetBook, targetChapter);
+    });
+
+    overlay.querySelectorAll('.quiz-hint-btn').forEach(btn => {
+      const hintEl = btn.parentElement?.querySelector('.quiz-hint-text');
+      if (!hintEl) return;
+      btn.addEventListener('click', () => {
+        const isVisible = hintEl.classList.toggle('visible');
+        btn.textContent = isVisible
+          ? (this.isKidMode() ? 'Ocultar pista' : 'Ocultar pista')
+          : (this.isKidMode() ? 'Ver pista sencilla' : 'Ver pista');
+      });
     });
   }
 

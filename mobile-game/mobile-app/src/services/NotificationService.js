@@ -11,8 +11,7 @@
  * - Background processing
  */
 
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PushNotification from 'react-native-push-notification';
 import { Platform, PermissionsAndroid } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';

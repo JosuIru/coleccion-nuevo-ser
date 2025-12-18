@@ -18,8 +18,12 @@ class FrankensteinQuizSystem {
   constructor() {
     this.mode = 'investigacion'; // 'investigacion' | 'juego' | 'demo'
     this.difficulty = 'iniciado'; // 'principiante' | 'iniciado' | 'experto'
+    this.quickMode = false; // Modo rápido: 1 pregunta en lugar de 2-3
+    this.skipMastered = true; // Saltar quizzes de piezas ya dominadas
     this.quizCache = {}; // Cache de quizzes cargados
     this.piecesPower = {}; // Registro de poder de cada pieza
+    this.masteredPieces = {}; // Piezas que ya dominaste (pasaste quiz)
+    this.quizAttempts = {}; // Intentos por pieza
     this.weakPieces = []; // Array de piezas débiles que pueden fortalecerse
 
     // Configuración de niveles de dificultad
@@ -116,7 +120,94 @@ class FrankensteinQuizSystem {
       }
     }
 
-    console.log(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty`);
+    // Cargar piezas dominadas (mastered)
+    const savedMastered = localStorage.getItem('frankenstein_mastered_pieces');
+    if (savedMastered) {
+      try {
+        this.masteredPieces = JSON.parse(savedMastered);
+      } catch (e) {
+        console.error('Error loading mastered pieces:', e);
+      }
+    }
+
+    // Cargar intentos de quiz
+    const savedAttempts = localStorage.getItem('frankenstein_quiz_attempts');
+    if (savedAttempts) {
+      try {
+        this.quizAttempts = JSON.parse(savedAttempts);
+      } catch (e) {
+        console.error('Error loading quiz attempts:', e);
+      }
+    }
+
+    // Cargar modo rápido
+    const savedQuickMode = localStorage.getItem('frankenstein_quick_mode');
+    if (savedQuickMode !== null) {
+      this.quickMode = savedQuickMode === 'true';
+    }
+
+    // Cargar opción de saltar dominadas
+    const savedSkipMastered = localStorage.getItem('frankenstein_skip_mastered');
+    if (savedSkipMastered !== null) {
+      this.skipMastered = savedSkipMastered !== 'false';
+    }
+
+    console.log(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty (quickMode: ${this.quickMode}, skipMastered: ${this.skipMastered})`);
+  }
+
+  /**
+   * Activar/desactivar modo rápido
+   */
+  setQuickMode(enabled) {
+    this.quickMode = enabled;
+    localStorage.setItem('frankenstein_quick_mode', String(enabled));
+    console.log(`[FrankensteinQuiz] Quick mode: ${enabled}`);
+  }
+
+  /**
+   * Activar/desactivar saltar piezas dominadas
+   */
+  setSkipMastered(enabled) {
+    this.skipMastered = enabled;
+    localStorage.setItem('frankenstein_skip_mastered', String(enabled));
+    console.log(`[FrankensteinQuiz] Skip mastered: ${enabled}`);
+  }
+
+  /**
+   * Marcar pieza como dominada
+   */
+  markAsMastered(pieceKey, score) {
+    this.masteredPieces[pieceKey] = {
+      masteredAt: new Date().toISOString(),
+      score: score
+    };
+    localStorage.setItem('frankenstein_mastered_pieces', JSON.stringify(this.masteredPieces));
+  }
+
+  /**
+   * Verificar si una pieza está dominada
+   */
+  isPieceMastered(pieceKey) {
+    return Boolean(this.masteredPieces[pieceKey]);
+  }
+
+  /**
+   * Registrar intento de quiz
+   */
+  recordAttempt(pieceKey) {
+    if (!this.quizAttempts[pieceKey]) {
+      this.quizAttempts[pieceKey] = 0;
+    }
+    this.quizAttempts[pieceKey]++;
+    localStorage.setItem('frankenstein_quiz_attempts', JSON.stringify(this.quizAttempts));
+    return this.quizAttempts[pieceKey];
+  }
+
+  /**
+   * Obtener número de intentos
+   */
+  getAttempts(pieceKey) {
+    return this.quizAttempts[pieceKey] || 0;
   }
 
   /**
@@ -377,6 +468,8 @@ class FrankensteinQuizSystem {
    * Mostrar modal de quiz
    */
   async showQuizModal(piece, bookId, chapterId) {
+    const pieceKey = `${bookId}/${chapterId}`;
+
     // En modo investigación, saltar quiz
     if (this.mode === 'investigacion') {
       return {
@@ -396,6 +489,35 @@ class FrankensteinQuizSystem {
       };
     }
 
+    // Si la pieza ya está dominada y skipMastered está activo, saltar quiz
+    if (this.skipMastered && this.isPieceMastered(pieceKey)) {
+      const mastered = this.masteredPieces[pieceKey];
+      console.log(`[FrankensteinQuiz] Pieza ${pieceKey} ya dominada, saltando quiz`);
+      return {
+        passed: true,
+        powerMultiplier: 1.15, // Bonus moderado por pieza dominada
+        skipped: true,
+        mastered: true,
+        previousScore: mastered.score
+      };
+    }
+
+    // Si el usuario ha fallado 3+ veces, ofrecer auto-pass con penalización
+    const attempts = this.getAttempts(pieceKey);
+    if (attempts >= 3) {
+      console.log(`[FrankensteinQuiz] ${attempts} intentos en ${pieceKey}, ofreciendo auto-pass`);
+      const autoPass = await this.showAutoPassOption(pieceKey, attempts);
+      if (autoPass) {
+        return {
+          passed: true,
+          powerMultiplier: 0.85, // Penalización por auto-pass
+          skipped: true,
+          autoPass: true,
+          attempts: attempts
+        };
+      }
+    }
+
     // Cargar quiz del capítulo
     const quizData = await this.loadQuiz(bookId, chapterId);
     if (!quizData || !quizData.questions || quizData.questions.length === 0) {
@@ -407,14 +529,87 @@ class FrankensteinQuizSystem {
       };
     }
 
-    // Seleccionar 2 preguntas aleatorias
-    const selectedQuestions = this.selectRandomQuestions(quizData.questions);
+    // Registrar intento
+    this.recordAttempt(pieceKey);
+
+    // Seleccionar preguntas (menos si quickMode está activo)
+    const questionCount = this.quickMode ? 1 : this.difficultySettings[this.difficulty]?.questionsCount || 2;
+    const selectedQuestions = this.selectRandomQuestions(quizData.questions, questionCount);
     await this.ensureChapterMetadata();
 
     // Mostrar modal y esperar respuesta del usuario
     return new Promise((resolve) => {
       const chapterMeta = this.getChapterMetadata(bookId, chapterId);
-      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, resolve, bookId, chapterId, chapterMeta);
+
+      // Wrapper para marcar como dominada si pasa
+      const wrappedResolve = (result) => {
+        if (result.passed && !result.cancelled) {
+          this.markAsMastered(pieceKey, result.correctCount);
+        }
+        resolve(result);
+      };
+
+      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, wrappedResolve, bookId, chapterId, chapterMeta);
+    });
+  }
+
+  /**
+   * Mostrar opción de auto-pass después de múltiples intentos fallidos
+   */
+  showAutoPassOption(pieceKey, attempts) {
+    return new Promise((resolve) => {
+      const modal = document.createElement('div');
+      modal.className = 'quiz-modal-overlay active';
+      modal.innerHTML = `
+        <div class="quiz-auto-pass-modal">
+          <div class="quiz-auto-pass-icon">😓</div>
+          <h3>¿Te está costando?</h3>
+          <p>Has intentado este quiz ${attempts} veces.</p>
+          <p class="quiz-auto-pass-note">Puedes saltar el quiz, pero la pieza tendrá menos poder (-15%).</p>
+          <div class="quiz-auto-pass-actions">
+            <button class="quiz-btn quiz-btn-retry" id="btn-retry">
+              🔄 Intentar de nuevo
+            </button>
+            <button class="quiz-btn quiz-btn-skip" id="btn-auto-pass">
+              ⏭️ Saltar quiz
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Estilos inline para el modal
+      const content = modal.querySelector('.quiz-auto-pass-modal');
+      content.style.cssText = \`
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+        color: white;
+        max-width: 340px;
+        margin: auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      \`;
+
+      modal.querySelector('.quiz-auto-pass-icon').style.cssText = 'font-size: 48px; margin-bottom: 16px;';
+      modal.querySelector('h3').style.cssText = 'margin: 0 0 8px; font-size: 20px;';
+      modal.querySelector('p').style.cssText = 'color: #94a3b8; margin: 8px 0;';
+      modal.querySelector('.quiz-auto-pass-note').style.cssText = 'color: #f59e0b; font-size: 14px;';
+      modal.querySelector('.quiz-auto-pass-actions').style.cssText = 'display: flex; gap: 12px; justify-content: center; margin-top: 20px;';
+
+      document.body.appendChild(modal);
+
+      modal.querySelector('#btn-retry').onclick = () => {
+        modal.remove();
+        resolve(false); // Continuar con el quiz
+      };
+
+      modal.querySelector('#btn-auto-pass').onclick = () => {
+        modal.remove();
+        resolve(true); // Auto-pass
+      };
     });
   }
 

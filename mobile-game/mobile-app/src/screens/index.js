@@ -17,6 +17,7 @@ export { default as TutorialScreen } from './TutorialScreen';
 
 // Pantallas de misiones
 export { default as ActiveMissionsScreen } from './ActiveMissionsScreen';
+export { default as DailyMissionsScreen } from './DailyMissionsScreen';
 
 // Pantallas de herramientas y ecosistema
 export { default as HerramientasScreen } from './HerramientasScreen';
@@ -26,3 +27,9 @@ export { default as HelpScreen } from './HelpScreen';
 
 // Laboratorio Frankenstein embebido
 export { default as FrankensteinLabScreen } from './FrankensteinLabScreen';
+
+// Tienda de Consciencia
+export { default as ConsciousnessShopScreen } from './ConsciousnessShopScreen';
+
+// Fusión de Piezas
+export { default as PieceFusionScreen } from './PieceFusionScreen';

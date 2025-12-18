@@ -11,9 +11,7 @@
  * @version 1.0.0
  */
 
-// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { API_BASE_URL } from '../config/constants';
 import logger from '../utils/logger';

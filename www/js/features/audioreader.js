@@ -1373,261 +1373,228 @@ class AudioReader {
       return this.renderMinimizedPlayer(bookData, tiempoEstimado);
     }
 
+    // Detectar si hay bottom nav visible (móvil)
+    const bottomNav = document.querySelector('.app-bottom-nav');
+    const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
+    const bottomOffset = hasBottomNav ? 'bottom-16' : 'bottom-0';
+
     const html = `
       <div id="audioreader-controls"
-           class="fixed bottom-0 left-0 right-0 sm:bottom-6 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 max-w-full sm:max-w-5xl bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-slate-300 dark:border-slate-700/50 sm:rounded-2xl rounded-t-2xl shadow-2xl px-4 sm:px-8 py-4 sm:py-6 z-40 backdrop-blur-lg transition-transform duration-300">
+           class="fixed ${bottomOffset} left-0 right-0 sm:bottom-6 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 max-w-full sm:max-w-5xl max-h-[70vh] sm:max-h-[85vh] flex flex-col bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-slate-300 dark:border-slate-700/50 sm:rounded-2xl rounded-t-2xl shadow-2xl z-50 backdrop-blur-lg transition-transform duration-300">
 
-        <!-- Header: Barra de arrastre, Título y botones -->
-        <div class="flex flex-col mb-4">
+        <!-- Header FIJO: Barra de arrastre, Título y botones -->
+        <div class="flex-shrink-0 px-4 sm:px-8 pt-3 sm:pt-4 pb-2 border-b border-slate-200 dark:border-slate-700/50">
           <!-- Barra de arrastre (solo móvil) -->
-          <div id="audioreader-drag-handle" class="sm:hidden flex justify-center py-2 cursor-grab active:cursor-grabbing touch-none">
+          <div id="audioreader-drag-handle" class="sm:hidden flex justify-center pb-2 cursor-grab active:cursor-grabbing touch-none">
             <div class="w-12 h-1.5 bg-slate-400 dark:bg-slate-600 rounded-full"></div>
           </div>
 
-          <div class="flex items-start justify-between">
-            <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
               <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">${bookData.title}</div>
-              <div class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-2 mt-1">
+              <div class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-2 mt-0.5">
                 ${this.paragraphs.length > 0
-                  ? `<span>📄 ${this.currentParagraphIndex + 1} / ${this.paragraphs.length}</span>
-                     ${tiempoEstimado > 0 ? `<span>• ⏱️ ${this.formatearTiempo(tiempoEstimado)}</span>` : ''}`
-                  : '<span>⏸️ Listo para narrar</span>'
+                  ? `<span>${this.currentParagraphIndex + 1}/${this.paragraphs.length}</span>
+                     ${tiempoEstimado > 0 ? `<span>• ${this.formatearTiempo(tiempoEstimado)}</span>` : ''}`
+                  : '<span>Listo</span>'
                 }
-                ${sleepTimerRestante > 0 ? `<span class="text-orange-400">• 😴 ${sleepTimerRestante}min</span>` : ''}
+                ${sleepTimerRestante > 0 ? `<span class="text-orange-400">• 😴 ${sleepTimerRestante}m</span>` : ''}
               </div>
             </div>
 
             <!-- Botones minimizar y cerrar -->
-            <div class="flex items-center gap-2 ml-3">
+            <div class="flex items-center gap-1 ml-2">
               <button id="audioreader-minimize"
-                      class="w-10 h-10 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition flex items-center justify-center"
+                      class="w-9 h-9 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400 transition flex items-center justify-center"
                       title="Minimizar">
-                ${Icons.chevronDown(22)}
+                ${Icons.chevronDown(20)}
               </button>
               <button id="audioreader-close"
-                      class="w-10 h-10 rounded-lg hover:bg-red-600/20 text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 transition flex items-center justify-center"
+                      class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/50 text-red-500 dark:text-red-400 transition flex items-center justify-center"
                       title="Cerrar (Esc)">
-                ${Icons.close(22)}
+                ${Icons.close(20)}
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Controles principales: Play/Pause centrado con prev/next -->
-        <div class="flex items-center justify-center gap-3 sm:gap-4 mb-5">
+        <!-- Contenido scrolleable -->
+        <div class="flex-1 overflow-y-auto px-4 sm:px-8 py-3 sm:py-4">
+
+        <!-- Controles principales: Play/Pause centrado con prev/next y stop -->
+        <div class="flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4">
           <button id="audioreader-prev"
-                  class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-600 dark:hover:to-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center text-slate-900 dark:text-white"
+                  class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-600 dark:hover:to-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center text-slate-900 dark:text-white"
                   ${this.currentParagraphIndex === 0 || this.paragraphs.length === 0 ? 'disabled' : ''}
-                  title="Párrafo anterior (←)">
-            ${Icons.skipBack(22)}
+                  title="Anterior">
+            ${Icons.skipBack(18)}
           </button>
 
           ${!this.isPlaying || this.isPaused ? `
             <button id="audioreader-play"
-                    class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-2xl hover:shadow-cyan-500/50 hover:scale-110 flex items-center justify-center text-white"
-                    title="Reproducir (Espacio)">
-              ${Icons.play(32)}
+                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-xl flex items-center justify-center text-white"
+                    title="Reproducir">
+              ${Icons.play(28)}
             </button>
           ` : `
             <button id="audioreader-pause"
-                    class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 transition-all shadow-2xl hover:shadow-orange-500/50 hover:scale-110 flex items-center justify-center text-white animate-pulse"
-                    title="Pausar (Espacio)">
-              ${Icons.pause(32)}
+                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 transition-all shadow-xl flex items-center justify-center text-white animate-pulse"
+                    title="Pausar">
+              ${Icons.pause(28)}
             </button>
           `}
 
           <button id="audioreader-next"
-                  class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-600 dark:hover:to-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center text-slate-900 dark:text-white"
+                  class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-600 dark:hover:to-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center text-slate-900 dark:text-white"
                   ${this.currentParagraphIndex >= this.paragraphs.length - 1 || this.paragraphs.length === 0 ? 'disabled' : ''}
-                  title="Siguiente párrafo (→)">
-            ${Icons.skipForward(22)}
+                  title="Siguiente">
+            ${Icons.skipForward(18)}
           </button>
-        </div>
 
-        <!-- Botón Stop más visible -->
-        <div class="flex justify-center mb-4">
           <button id="audioreader-stop"
-                  class="px-6 py-2.5 rounded-lg bg-red-100 dark:bg-red-600/20 hover:bg-red-200 dark:hover:bg-red-600/30 border border-red-300 dark:border-red-500/50 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                  class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-red-100 dark:bg-red-600/20 hover:bg-red-200 dark:hover:bg-red-600/30 border border-red-300 dark:border-red-500/50 text-red-600 dark:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center"
                   ${!this.isPlaying && !this.isPaused ? 'disabled' : ''}
                   title="Detener">
             ${Icons.stop(18)}
-            <span class="text-sm font-medium">Detener</span>
           </button>
         </div>
 
-        <!-- Controles secundarios organizados por secciones -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-
-          <!-- Sección: Reproducción -->
-          <div class="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-300 dark:border-slate-700/50">
-            <div class="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2 flex items-center gap-2">
-              ${Icons.settings(14)} REPRODUCCIÓN
-            </div>
-            <div class="flex flex-col gap-2">
-              <!-- Velocidad -->
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-slate-700 dark:text-slate-300">Velocidad</span>
-                <select id="audioreader-rate"
-                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-cyan-500 focus:outline-none">
-                  <option value="0.5" ${this.rate === 0.5 ? 'selected' : ''}>🐌 0.5x</option>
-                  <option value="0.75" ${this.rate === 0.75 ? 'selected' : ''}>🚶 0.75x</option>
-                  <option value="1" ${this.rate === 1.0 ? 'selected' : ''}>▶️ Normal</option>
-                  <option value="1.25" ${this.rate === 1.25 ? 'selected' : ''}>🏃 1.25x</option>
-                  <option value="1.5" ${this.rate === 1.5 ? 'selected' : ''}>⚡ 1.5x</option>
-                  <option value="2" ${this.rate === 2.0 ? 'selected' : ''}>🚀 2x</option>
-                </select>
-              </div>
-
-              <!-- Voz -->
-              ${voices.length > 1 ? `
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-slate-700 dark:text-slate-300">Voz</span>
-                  <select id="audioreader-voice"
-                          class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white max-w-[180px] truncate focus:ring-2 focus:ring-cyan-500 focus:outline-none">
-                    ${voices.map((v, idx) => {
-                      const voiceId = v.voiceURI || v.name || `voice-${idx}`;
-                      const displayName = this.simplificarNombreVoz(v.name || v.voiceURI || `Voz ${idx + 1}`);
-                      const isSelected = this.selectedVoice && (this.selectedVoice.voiceURI === v.voiceURI || this.selectedVoice.name === v.name);
-                      return `<option value="${voiceId}" ${isSelected ? 'selected' : ''}>${displayName}</option>`;
-                    }).join('')}
-                  </select>
-                </div>
-              ` : ''}
-
-              <!-- TTS Provider -->
-              ${this.ttsManager ? `
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-slate-700 dark:text-slate-300">Motor</span>
-                  <select id="audioreader-tts-provider"
-                          class="px-3 py-1.5 rounded-lg text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                            this.ttsProvider === 'elevenlabs'
-                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                              : this.ttsProvider === 'openai'
-                                ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
-                                : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white'
-                          }">
-                    <option value="browser" ${this.ttsProvider === 'browser' ? 'selected' : ''}>🔊 Navegador</option>
-                    ${localStorage.getItem('openai-tts-key') ? `
-                      <option value="openai" ${this.ttsProvider === 'openai' ? 'selected' : ''}>✨ OpenAI</option>
-                    ` : ''}
-                    ${this.ttsManager.isElevenLabsAvailable?.() || (this.ttsManager.providers?.elevenlabs && window.authHelper?.isPremium?.()) ? `
-                      <option value="elevenlabs" ${this.ttsProvider === 'elevenlabs' ? 'selected' : ''}>🎙️ ElevenLabs</option>
-                    ` : ''}
-                  </select>
-                </div>
-              ` : ''}
-            </div>
+        <!-- Controles secundarios: diseño compacto -->
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <!-- Velocidad -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-600 dark:text-slate-400">⚡</span>
+            <select id="audioreader-rate"
+                    class="flex-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              <option value="0.5" ${this.rate === 0.5 ? 'selected' : ''}>0.5x</option>
+              <option value="0.75" ${this.rate === 0.75 ? 'selected' : ''}>0.75x</option>
+              <option value="1" ${this.rate === 1.0 ? 'selected' : ''}>1x</option>
+              <option value="1.25" ${this.rate === 1.25 ? 'selected' : ''}>1.25x</option>
+              <option value="1.5" ${this.rate === 1.5 ? 'selected' : ''}>1.5x</option>
+              <option value="2" ${this.rate === 2.0 ? 'selected' : ''}>2x</option>
+            </select>
           </div>
 
-          <!-- Sección: Opciones -->
-          <div class="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-300 dark:border-slate-700/50">
-            <div class="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2 flex items-center gap-2">
-              ${Icons.wrench(14)} OPCIONES
+          <!-- Sleep Timer -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-600 dark:text-slate-400">😴</span>
+            <select id="audioreader-sleep-timer"
+                    class="flex-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-orange-500 focus:outline-none ${sleepTimerRestante > 0 ? 'ring-1 ring-orange-400' : ''}">
+              <option value="0" ${sleepTimerRestante === 0 ? 'selected' : ''}>Off</option>
+              <option value="15" ${this.sleepTimerMinutes === 15 ? 'selected' : ''}>15m</option>
+              <option value="30" ${this.sleepTimerMinutes === 30 ? 'selected' : ''}>30m</option>
+              <option value="60" ${this.sleepTimerMinutes === 60 ? 'selected' : ''}>60m</option>
+            </select>
+          </div>
+
+          <!-- Voz (si hay múltiples) -->
+          ${voices.length > 1 ? `
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-600 dark:text-slate-400">🗣️</span>
+              <select id="audioreader-voice"
+                      class="flex-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs text-slate-900 dark:text-white truncate focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+                ${voices.map((v, idx) => {
+                  const voiceId = v.voiceURI || v.name || `voice-${idx}`;
+                  const displayName = this.simplificarNombreVoz(v.name || v.voiceURI || `Voz ${idx + 1}`);
+                  const isSelected = this.selectedVoice && (this.selectedVoice.voiceURI === v.voiceURI || this.selectedVoice.name === v.name);
+                  return `<option value="${voiceId}" ${isSelected ? 'selected' : ''}>${displayName}</option>`;
+                }).join('')}
+              </select>
             </div>
-            <div class="flex flex-col gap-2">
-              <!-- Auto-avance -->
-              <button id="audioreader-auto-advance"
-                      class="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${
-                        this.autoAdvanceChapter
-                          ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/30'
-                          : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300'
+          ` : ''}
+
+          <!-- TTS Provider -->
+          ${this.ttsManager ? `
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-600 dark:text-slate-400">🔊</span>
+              <select id="audioreader-tts-provider"
+                      class="flex-1 px-2 py-1 rounded text-xs font-medium focus:ring-1 focus:ring-amber-500 focus:outline-none ${
+                        this.ttsProvider === 'elevenlabs'
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                          : this.ttsProvider === 'openai'
+                            ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
+                            : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white'
                       }">
-                <span class="flex items-center gap-2">
-                  ${Icons.book(16)} Continuo
-                </span>
-                <span class="text-xs">${this.autoAdvanceChapter ? 'ON' : 'OFF'}</span>
-              </button>
-
-              <!-- Palabra por Palabra -->
-              <button id="audioreader-word-by-word"
-                      class="w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${
-                        this.wordByWordEnabled
-                          ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-lg shadow-amber-500/30'
-                          : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300'
-                      }">
-                <span class="flex items-center gap-2">
-                  <span class="text-base">✨</span> Palabra a palabra
-                </span>
-                <span class="text-xs">${this.wordByWordEnabled ? 'ON' : 'OFF'}</span>
-              </button>
-
-              <!-- Sleep Timer -->
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-slate-700 dark:text-slate-300">Sleep Timer</span>
-                <select id="audioreader-sleep-timer"
-                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none ${sleepTimerRestante > 0 ? 'ring-2 ring-orange-400' : ''}">
-                  <option value="0" ${sleepTimerRestante === 0 ? 'selected' : ''}>Desactivado</option>
-                  <option value="15" ${this.sleepTimerMinutes === 15 ? 'selected' : ''}>15 min</option>
-                  <option value="30" ${this.sleepTimerMinutes === 30 ? 'selected' : ''}>30 min</option>
-                  <option value="45" ${this.sleepTimerMinutes === 45 ? 'selected' : ''}>45 min</option>
-                  <option value="60" ${this.sleepTimerMinutes === 60 ? 'selected' : ''}>60 min</option>
-                </select>
-              </div>
-
-              <!-- Botones adicionales -->
-              <div class="flex gap-2">
-                <button id="audioreader-add-bookmark"
-                        class="flex-1 px-3 py-2 rounded-lg text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white transition-all flex items-center justify-center gap-2 hover:scale-105"
-                        title="Añadir bookmark (M)">
-                  ${Icons.bookmark(16)} Marcar
-                </button>
-
-                ${window.audioControlModal ? `
-                  <button id="audioreader-audio-control"
-                          class="flex-1 px-3 py-2 rounded-lg text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white transition-all flex items-center justify-center gap-2 hover:scale-105"
-                          title="Control de Audio Avanzado">
-                    ${Icons.headphones(16)} Audio
-                  </button>
+                <option value="browser" ${this.ttsProvider === 'browser' ? 'selected' : ''}>Navegador</option>
+                ${localStorage.getItem('openai-tts-key') ? `
+                  <option value="openai" ${this.ttsProvider === 'openai' ? 'selected' : ''}>OpenAI</option>
                 ` : ''}
-              </div>
+                ${this.ttsManager.isElevenLabsAvailable?.() || (this.ttsManager.providers?.elevenlabs && window.authHelper?.isPremium?.()) ? `
+                  <option value="elevenlabs" ${this.ttsProvider === 'elevenlabs' ? 'selected' : ''}>ElevenLabs</option>
+                ` : ''}
+              </select>
             </div>
-          </div>
-
-          <!-- Sección: Ambiente (Música y Binaural) -->
-          <div class="col-span-1 sm:col-span-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-lg p-3 border border-purple-300 dark:border-purple-700/50">
-            <div class="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
-              🎵 AMBIENTE Y BINAURAL
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <!-- Música ambiental -->
-              <div class="flex flex-col gap-1">
-                <span class="text-xs text-slate-600 dark:text-slate-400">🌊 Sonidos</span>
-                <select id="audioreader-ambient-select"
-                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
-                  <option value="">Sin ambiente</option>
-                  <option value="rain">🌧️ Lluvia</option>
-                  <option value="forest">🌳 Bosque</option>
-                  <option value="ocean">🌊 Océano</option>
-                  <option value="fire">🔥 Fogata</option>
-                  <option value="wind">💨 Viento</option>
-                  <option value="cafe">☕ Cafetería</option>
-                </select>
-              </div>
-
-              <!-- Ondas binaurales -->
-              <div class="flex flex-col gap-1">
-                <span class="text-xs text-slate-600 dark:text-slate-400">🧠 Binaural</span>
-                <select id="audioreader-binaural-select"
-                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                  <option value="">Sin binaural</option>
-                  <option value="focus">🎯 Enfoque (15Hz)</option>
-                  <option value="relax">😌 Relajación (10Hz)</option>
-                  <option value="deep">🧘 Meditación (7Hz)</option>
-                  <option value="sleep">😴 Sueño (4Hz)</option>
-                </select>
-              </div>
-
-              <!-- Controles de volumen ambiente -->
-              <div class="col-span-2 flex items-center gap-3 mt-1">
-                <label class="text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">Vol:</label>
-                <input type="range" id="audioreader-ambient-volume"
-                       min="0" max="100" value="30"
-                       class="flex-1 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full appearance-none cursor-pointer accent-purple-500">
-                <span id="audioreader-ambient-volume-label" class="text-xs text-slate-600 dark:text-slate-400 w-8 text-right">30%</span>
-              </div>
-            </div>
-          </div>
+          ` : ''}
         </div>
+
+        <!-- Botones de opciones -->
+        <div class="flex gap-2 mb-3">
+          <button id="audioreader-auto-advance"
+                  class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1 ${
+                    this.autoAdvanceChapter
+                      ? 'bg-green-600 text-white'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                  }">
+            ${Icons.book(14)} Auto
+          </button>
+
+          <button id="audioreader-word-by-word"
+                  class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition-all flex items-center justify-center gap-1 ${
+                    this.wordByWordEnabled
+                      ? 'bg-amber-600 text-white'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                  }">
+            ✨ Palabra
+          </button>
+
+          <button id="audioreader-add-bookmark"
+                  class="flex-1 px-2 py-1.5 rounded text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white transition-all flex items-center justify-center gap-1"
+                  title="Bookmark">
+            ${Icons.bookmark(14)} Marcar
+          </button>
+
+          ${window.audioControlModal ? `
+            <button id="audioreader-audio-control"
+                    class="px-2 py-1.5 rounded text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white transition-all flex items-center justify-center"
+                    title="Audio avanzado">
+              ${Icons.headphones(14)}
+            </button>
+          ` : ''}
+        </div>
+
+        <!-- Ambiente y Binaural (colapsable en móvil) -->
+        <details class="mb-2">
+          <summary class="text-xs font-medium text-purple-700 dark:text-purple-300 cursor-pointer flex items-center gap-1 py-1">
+            🎵 Ambiente y Binaural
+          </summary>
+          <div class="mt-2 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg grid grid-cols-2 gap-2">
+            <select id="audioreader-ambient-select"
+                    class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-purple-500 focus:outline-none">
+              <option value="">🌊 Sin ambiente</option>
+              <option value="rain">🌧️ Lluvia</option>
+              <option value="forest">🌳 Bosque</option>
+              <option value="ocean">🌊 Océano</option>
+              <option value="fire">🔥 Fogata</option>
+            </select>
+
+            <select id="audioreader-binaural-select"
+                    class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-blue-500 focus:outline-none">
+              <option value="">🧠 Sin binaural</option>
+              <option value="focus">🎯 Enfoque</option>
+              <option value="relax">😌 Relax</option>
+              <option value="deep">🧘 Meditación</option>
+              <option value="sleep">😴 Sueño</option>
+            </select>
+
+            <div class="col-span-2 flex items-center gap-2">
+              <span class="text-xs text-slate-600 dark:text-slate-400">Vol</span>
+              <input type="range" id="audioreader-ambient-volume"
+                     min="0" max="100" value="30"
+                     class="flex-1 h-1 bg-slate-300 dark:bg-slate-600 rounded-full appearance-none cursor-pointer accent-purple-500">
+              <span id="audioreader-ambient-volume-label" class="text-xs text-slate-600 dark:text-slate-400 w-6">30%</span>
+            </div>
+          </div>
+        </details>
 
         <!-- Progress bar -->
         ${this.paragraphs.length > 0 ? `
@@ -1654,20 +1621,17 @@ class AudioReader {
           </div>
         ` : ''}
 
-        <!-- Ayuda de atajos (colapsable) -->
-        <details class="mt-2 text-xs text-slate-600 dark:text-slate-400 opacity-70">
-          <summary class="cursor-pointer hover:opacity-100">⌨️ Atajos de teclado</summary>
-          <div class="mt-2 grid grid-cols-2 gap-1 text-xs">
-            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">Espacio/K</kbd> Play/Pause</div>
-            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">←/→</kbd> Anterior/Siguiente</div>
-            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">↑/↓</kbd> Velocidad</div>
-            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">M</kbd> Bookmark</div>
-            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">Ctrl+1-9</kbd> Saltar a bookmark</div>
+        <!-- Ayuda de atajos (colapsable, oculto en móvil) -->
+        <details class="hidden sm:block mt-2 text-xs text-slate-600 dark:text-slate-400 opacity-70">
+          <summary class="cursor-pointer hover:opacity-100">⌨️ Atajos</summary>
+          <div class="mt-1 grid grid-cols-3 gap-1 text-xs">
+            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">Espacio</kbd> Play</div>
+            <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">←/→</kbd> Nav</div>
             <div><kbd class="px-1 bg-slate-200 dark:bg-slate-800 rounded">Esc</kbd> Cerrar</div>
           </div>
         </details>
 
-        </div>
+        </div><!-- Fin contenido scrolleable -->
       </div>
     `;
 

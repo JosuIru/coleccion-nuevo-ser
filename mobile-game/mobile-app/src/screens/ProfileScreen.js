@@ -16,9 +16,7 @@ import {
   Dimensions
 } from 'react-native';
 
-// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import useGameStore from '../stores/gameStore';
 import { COLORS, LEVELS, APP_VERSION } from '../config/constants';
@@ -284,11 +282,14 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={styles.statLabel}>Energía</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <TouchableOpacity
+              style={styles.statCard}
+              onPress={() => navigation.navigate('Command', { screen: 'Shop' })}
+            >
               <Text style={styles.statIcon}>🌟</Text>
               <Text style={styles.statValue}>{stats.totalConsciousness}</Text>
-              <Text style={styles.statLabel}>Consciencia</Text>
-            </View>
+              <Text style={styles.statLabel}>Tienda</Text>
+            </TouchableOpacity>
 
             <View style={styles.statCard}>
               <Text style={styles.statIcon}>📅</Text>

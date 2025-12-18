@@ -6,10 +6,7 @@
  */
 
 import { create } from 'zustand';
-import memoryStorage from '../utils/MemoryStorage';
-
-// Usar MemoryStorage - almacenamiento en memoria sin dependencias nativas
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { RESOURCES, LEVELS } from '../config/constants';
 import logger from '../utils/logger';
@@ -205,6 +202,85 @@ const useGameStore = create((set, get) => ({
       being.id === beingId ? { ...being, ...updates } : being
     )
   })),
+
+  /**
+   * Añadir XP a un ser específico (sistema de progresión)
+   * Los seres suben de nivel y mejoran atributos
+   */
+  addBeingXP: (beingId, xpAmount) => {
+    if (!beingId || typeof xpAmount !== 'number' || xpAmount <= 0) {
+      logger.error('Invalid being XP params:', { beingId, xpAmount });
+      return;
+    }
+
+    set((state) => {
+      const being = state.beings.find(b => b.id === beingId);
+      if (!being) return state;
+
+      const currentXP = being.experience || 0;
+      const currentLevel = being.level || 1;
+      const newXP = currentXP + xpAmount;
+
+      // XP requerido para siguiente nivel: 100 * nivel^1.5
+      const xpForNextLevel = Math.floor(100 * Math.pow(currentLevel, 1.5));
+
+      let newLevel = currentLevel;
+      let remainingXP = newXP;
+      let leveledUp = false;
+
+      // Verificar si sube de nivel (puede subir múltiples)
+      while (remainingXP >= xpForNextLevel && newLevel < 50) { // Max nivel 50
+        remainingXP -= xpForNextLevel;
+        newLevel++;
+        leveledUp = true;
+      }
+
+      // Si subió de nivel, mejorar atributos
+      let newAttributes = being.attributes || {};
+      if (leveledUp) {
+        const levelsGained = newLevel - currentLevel;
+        const attributeKeys = Object.keys(newAttributes);
+
+        // +2 a todos los atributos por cada nivel
+        attributeKeys.forEach(attr => {
+          newAttributes[attr] = (newAttributes[attr] || 0) + (2 * levelsGained);
+        });
+
+        // Bonus extra al atributo más alto
+        const topAttr = attributeKeys.reduce((a, b) =>
+          (newAttributes[a] || 0) > (newAttributes[b] || 0) ? a : b
+        );
+        newAttributes[topAttr] = (newAttributes[topAttr] || 0) + (3 * levelsGained);
+
+        logger.info(`🎉 ${being.name} subió a nivel ${newLevel}! (+${levelsGained} niveles)`, '');
+      }
+
+      // Recalcular poder total
+      const newTotalPower = Object.values(newAttributes).reduce((sum, v) => sum + (v || 0), 0);
+
+      return {
+        beings: state.beings.map(b =>
+          b.id === beingId
+            ? {
+                ...b,
+                experience: remainingXP,
+                level: newLevel,
+                attributes: newAttributes,
+                totalPower: newTotalPower,
+                leveledUpAt: leveledUp ? new Date().toISOString() : b.leveledUpAt
+              }
+            : b
+        )
+      };
+    });
+  },
+
+  /**
+   * Obtener XP necesario para siguiente nivel de un ser
+   */
+  getBeingXPForNextLevel: (beingLevel) => {
+    return Math.floor(100 * Math.pow(beingLevel || 1, 1.5));
+  },
 
   deployBeing: (beingId, crisisId) => {
     // Validar inputs
@@ -417,7 +493,8 @@ const useGameStore = create((set, get) => ({
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Guardar estado en AsyncStorage (con lock para evitar race conditions)
+   * Guardar estado en AsyncStorage REAL (persistente)
+   * Incluye: user, beings, pieces, communities, settings
    */
   saveToStorage: async () => {
     // Prevenir guardados concurrentes
@@ -440,12 +517,15 @@ const useGameStore = create((set, get) => ({
       const data_to_save = {
         user: state.user,
         beings: Array.isArray(state.beings) ? state.beings : [],
-        settings: state.settings || {}
+        pieces: Array.isArray(state.pieces) ? state.pieces : [],
+        communities: Array.isArray(state.communities) ? state.communities : [],
+        settings: state.settings || {},
+        savedAt: new Date().toISOString()
       };
 
       await AsyncStorage.setItem('game_state', JSON.stringify(data_to_save));
 
-      logger.info('✅ Estado guardado en AsyncStorage', '');
+      logger.info('💾 Estado guardado (AsyncStorage persistente)', '');
     } catch (error) {
       logger.error('❌ Error guardando estado:', error);
     } finally {
@@ -454,7 +534,7 @@ const useGameStore = create((set, get) => ({
   },
 
   /**
-   * Cargar estado desde AsyncStorage
+   * Cargar estado desde AsyncStorage REAL (persistente)
    */
   loadFromStorage: async () => {
     try {
@@ -466,10 +546,16 @@ const useGameStore = create((set, get) => ({
         set({
           user: parsed.user || get().user,
           beings: parsed.beings || [],
+          pieces: parsed.pieces || [],
+          communities: parsed.communities || [],
           settings: parsed.settings || get().settings
         });
 
-        logger.info('✅ Estado cargado desde AsyncStorage', '');
+        const beingCount = (parsed.beings || []).length;
+        const pieceCount = (parsed.pieces || []).length;
+        const communityCount = (parsed.communities || []).length;
+
+        logger.info(`📂 Datos cargados: ${beingCount} seres, ${pieceCount} piezas, ${communityCount} comunidades`, '');
 
         // Si no hay seres, inicializar uno
         if (!parsed.beings || parsed.beings.length === 0) {
@@ -507,6 +593,8 @@ const useGameStore = create((set, get) => ({
       maxBeings: 3
     },
     beings: [],
+    pieces: [],
+    communities: [],
     crises: [],
     localCrises: [],
     activeMissions: [],
@@ -605,6 +693,8 @@ const useGameStore = create((set, get) => ({
         maxBeings: 3
       },
       beings: [starterBeing],
+      pieces: [],
+      communities: [],
       crises: initialCrises,
       localCrises: initialCrises,
       error: null

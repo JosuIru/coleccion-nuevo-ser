@@ -11,8 +11,7 @@
  * - Persistencia en AsyncStorage
  */
 
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackgroundTimer from 'react-native-background-timer';
 import PushNotification from 'react-native-push-notification';
 import { RESOURCES, ATTRIBUTES } from '../config/constants';
@@ -679,8 +678,9 @@ class MissionService {
       // 3. Aplicar recompensas
       this.aplicarRecompensas(recompensas, gameStore);
 
-      // 4. Devolver seres a estado disponible
-      this.devolverSeres(mision.beingIds, gameStore);
+      // 4. Devolver seres a estado disponible y otorgar XP individual
+      const baseXPForBeings = recompensas.xp || mision.baseRewards?.xp || 50;
+      this.devolverSeres(mision.beingIds, gameStore, exito, baseXPForBeings);
 
       // 5. Guardar en historial
       await this.guardarEnHistorial(userId, {
@@ -854,12 +854,17 @@ class MissionService {
   }
 
   /**
-   * Devolver seres a estado disponible (o resting si tienen baja energía)
+   * Devolver seres a estado disponible y otorgar XP individual
+   * @param {Array} beingIds - IDs de los seres
+   * @param {Object} gameStore - Store de Zustand
+   * @param {boolean} misionExitosa - Si la misión fue exitosa
+   * @param {number} baseXP - XP base de la misión
    */
-  devolverSeres(beingIds, gameStore) {
+  devolverSeres(beingIds, gameStore, misionExitosa = false, baseXP = 0) {
+    const state = gameStore.getState();
+
     beingIds.forEach(beingId => {
-      const estado = gameStore.getState();
-      const ser = estado.beings.find(b => b.id === beingId);
+      const ser = state.beings.find(b => b.id === beingId);
 
       if (!ser) return;
 
@@ -875,6 +880,20 @@ class MissionService {
         energy: nuevaEnergia,
         deployedAt: null
       });
+
+      // ========== SISTEMA DE XP POR SER ==========
+      // Otorgar XP individual al ser
+      if (baseXP > 0 && state.addBeingXP) {
+        // XP = base dividido entre seres, con bonus por éxito
+        const xpPerBeing = Math.floor(baseXP / beingIds.length);
+        const xpBonus = misionExitosa ? Math.floor(xpPerBeing * 0.5) : 0; // +50% si éxito
+        const totalBeingXP = xpPerBeing + xpBonus;
+
+        if (totalBeingXP > 0) {
+          state.addBeingXP(beingId, totalBeingXP);
+          logger.info(`⭐ ${ser.name} ganó ${totalBeingXP} XP`, '');
+        }
+      }
 
       logger.info(`🔙 ${ser.name} devuelto (${nuevoEstado}, ${nuevaEnergia}% energía)`, '');
 

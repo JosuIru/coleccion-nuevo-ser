@@ -31,7 +31,15 @@
  * @version 1.0.0
  */
 
-import { createClient } from '@supabase/supabase-js';
+// Supabase desactivado temporalmente - instalar @supabase/supabase-js si se necesita
+// import { createClient } from '@supabase/supabase-js';
+let createClient = null;
+try {
+  createClient = require('@supabase/supabase-js').createClient;
+} catch (e) {
+  console.log('[WebBridge] Supabase not available, sync disabled');
+}
+
 import useGameStore from '../stores/gameStore';
 import logger from '../utils/logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,6 +47,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 class WebBridgeService {
   constructor() {
     this.supabase = null;
+    this.supabaseAvailable = !!createClient;
     this.platform = 'mobile';
     this.deviceId = null;
     this.lastSync = null;
@@ -62,9 +71,17 @@ class WebBridgeService {
     }
 
     try {
+      // Verificar si Supabase está disponible
+      if (!this.supabaseAvailable || !createClient) {
+        logger.warn('WebBridge', 'Supabase no disponible, sync desactivado');
+        this.initialized = true;
+        return;
+      }
+
       // Validar configuración
       if (!supabaseConfig || !supabaseConfig.url || !supabaseConfig.anonKey) {
         logger.error('Configuración de Supabase inválida', '');
+        this.initialized = true;
         return;
       }
 

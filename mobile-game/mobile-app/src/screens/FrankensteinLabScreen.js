@@ -67,9 +67,21 @@ const FrankensteinLabScreen = ({ navigation }) => {
         .modal-footer {
           padding-bottom: 20px !important;
         }
-        /* Marcar que estamos en app embebida */
+        /* Marcar que estamos en app embebida - añadir padding inferior */
         body {
-          --embedded-app-bottom-padding: 50px;
+          --embedded-app-bottom-padding: 16px;
+          padding-bottom: 16px !important;
+        }
+
+        /* Asegurar que el contenedor principal tenga espacio inferior */
+        #app, .app-container, .main-content, #organism-container {
+          padding-bottom: 20px !important;
+        }
+
+        /* Header más compacto en modo embebido */
+        .lab-header, .frankenstein-header, header {
+          padding-top: 8px !important;
+          padding-bottom: 8px !important;
         }
 
         /* ===== FIX SCROLL PARA WEBVIEW EMBEBIDO ===== */
@@ -359,16 +371,17 @@ const FrankensteinLabScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header compacto */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🧬 Laboratorio Frankenstein</Text>
+        <Text style={styles.headerTitle}>🧬 Lab Frankenstein</Text>
         <TouchableOpacity onPress={handleReload} style={styles.reloadButton}>
           <Text style={styles.reloadIcon}>🔄</Text>
         </TouchableOpacity>
       </View>
 
-      {/* WebView */}
-      <WebView
+      {/* WebView con margen inferior para tab bar */}
+      <View style={styles.webviewContainer}>
+        <WebView
         ref={webViewRef}
         source={{ uri: LAB_URL }}
         style={styles.webview}
@@ -418,6 +431,7 @@ const FrankensteinLabScreen = ({ navigation }) => {
           </View>
         )}
       />
+      </View>
 
       {/* Loading overlay */}
       {loading && (
@@ -440,26 +454,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 40,
-    paddingBottom: 12,
-    paddingHorizontal: 16,
+    paddingTop: 36,
+    paddingBottom: 8,
+    paddingHorizontal: 12,
     backgroundColor: COLORS.bg.elevated,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.accent.primary + '30'
   },
 
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: COLORS.text.primary
   },
 
   reloadButton: {
-    padding: 8
+    padding: 6
   },
 
   reloadIcon: {
-    fontSize: 20
+    fontSize: 18
+  },
+
+  webviewContainer: {
+    flex: 1,
+    marginBottom: 0  // El tab navigator ya agrega su propio espacio
   },
 
   webview: {

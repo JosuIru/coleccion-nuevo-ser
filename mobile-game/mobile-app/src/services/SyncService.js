@@ -10,8 +10,7 @@
  * @version 1.1.0
  */
 
-import memoryStorage from '../utils/MemoryStorage';
-const AsyncStorage = memoryStorage;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL, SYNC_CONFIG } from '../config/constants';
 import logger from '../utils/logger';
 

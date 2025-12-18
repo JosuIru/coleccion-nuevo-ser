@@ -338,39 +338,64 @@ const BeingsScreen = ({ navigation }) => {
 
       {/* LISTA DE PIEZAS */}
       {activeTab === 'pieces' && (
-        (pieces || []).length > 0 ? (
-          <FlatList
-            data={pieces || []}
-            renderItem={({ item }) => (
-              <View style={styles.pieceCard}>
-                <Text style={styles.pieceIcon}>{item.icon || '✨'}</Text>
-                <View style={styles.pieceInfo}>
-                  <Text style={styles.pieceName}>{item.name}</Text>
-                  <Text style={styles.pieceDescription}>{item.description}</Text>
-                  <View style={styles.pieceRarityBadge}>
-                    <Text style={[styles.pieceRarity, { color: getRarityColor(item.rarity) }]}>
-                      {item.rarity?.toUpperCase() || 'COMÚN'}
-                    </Text>
+        <View style={{ flex: 1 }}>
+          {/* Botón de Fusión */}
+          {(pieces || []).length >= 3 && (
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: COLORS.accent.primary,
+                marginHorizontal: 16,
+                marginVertical: 12,
+                paddingVertical: 14,
+                borderRadius: 12,
+                gap: 8
+              }}
+              onPress={() => navigation.navigate('Command', { screen: 'PieceFusion' })}
+            >
+              <Text style={{ fontSize: 20 }}>🔮</Text>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
+                Fusionar Fragmentos
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {(pieces || []).length > 0 ? (
+            <FlatList
+              data={pieces || []}
+              renderItem={({ item }) => (
+                <View style={styles.pieceCard}>
+                  <Text style={styles.pieceIcon}>{item.icon || '✨'}</Text>
+                  <View style={styles.pieceInfo}>
+                    <Text style={styles.pieceName}>{item.name}</Text>
+                    <Text style={styles.pieceDescription}>{item.description}</Text>
+                    <View style={styles.pieceRarityBadge}>
+                      <Text style={[styles.pieceRarity, { color: getRarityColor(item.rarity) }]}>
+                        {item.rarity?.toUpperCase() || 'COMÚN'}
+                      </Text>
+                    </View>
                   </View>
+                  <Text style={styles.piecePower}>+{item.power}</Text>
                 </View>
-                <Text style={styles.piecePower}>+{item.power}</Text>
-              </View>
-            )}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateIcon}>🧩</Text>
-            <Text style={styles.emptyStateText}>
-              Aún no tienes piezas. ¡Resuelve crisis para obtener fragmentos!
-            </Text>
-            <Text style={styles.emptyStateHint}>
-              Las piezas se usan en el Laboratorio Frankenstein para crear seres más poderosos
-            </Text>
-          </View>
-        )
+              )}
+              keyExtractor={item => item.id}
+              contentContainerStyle={styles.listContent}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateIcon}>🧩</Text>
+              <Text style={styles.emptyStateText}>
+                Aún no tienes piezas. ¡Resuelve crisis para obtener fragmentos!
+              </Text>
+              <Text style={styles.emptyStateHint}>
+                Las piezas se usan en el Laboratorio Frankenstein para crear seres más poderosos
+              </Text>
+            </View>
+          )}
+        </View>
       )}
 
       {/* LISTA DE COMUNIDADES */}

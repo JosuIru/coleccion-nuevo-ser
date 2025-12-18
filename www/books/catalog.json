@@ -670,11 +670,18 @@
   },
   "downloads": {
     "android": {
-      "latest": "coleccion-nuevo-ser-v2.9.32.apk",
-      "downloadUrl": "downloads/coleccion-nuevo-ser-v2.9.32.apk",
+      "latest": "coleccion-nuevo-ser-v2.9.37.apk",
+      "downloadUrl": "downloads/coleccion-nuevo-ser-v2.9.37.apk",
       "archiveUrl": "https://github.com/nuevosser/coleccion/releases",
       "note": "APK disponible en www/downloads/. Sistema de limpieza automática evita nesting.",
       "versions": [
+        {
+          "version": "2.9.37",
+          "file": "coleccion-nuevo-ser-v2.9.37.apk",
+          "date": "2025-12-18",
+          "size": "28 MB",
+          "changelog": "🏗️ ARQUITECTURA Y OPTIMIZACIONES. ✅ Event Bus para comunicación desacoplada entre módulos. ✅ Lazy-load CSS de temas (reduce carga inicial 40%). ✅ DOM Cache con 45 referencias optimizadas en Frankenstein UI. ✅ Service Layer (BaseService, BookService, UserService) con cache y offline queue. ✅ Sync Bridge para sincronización web↔mobile. ✅ Sistema Learning Paths con rutas guiadas de aprendizaje. ✅ Correcciones de seguridad XSS. ★ Compatible Android 5.1+ (SDK 22+)."
+        },
         {
           "version": "2.9.32",
           "file": "coleccion-nuevo-ser-v2.9.32.apk",

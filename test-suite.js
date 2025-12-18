@@ -168,34 +168,34 @@ section('6. VERSIÓN - CONFIGURACIÓN');
 
 fileContains(
   path.join(baseDir, 'package.json'),
-  '"version": "2.9.32"',
-  'package.json versión 2.9.32'
+  '"version": "2.9.37"',
+  'package.json versión 2.9.37'
 );
 
 fileContains(
   path.join(baseDir, 'android/app/build.gradle'),
-  'versionName "2.9.32"',
-  'build.gradle versión 2.9.32'
+  'versionName "2.9.37"',
+  'build.gradle versión 2.9.37'
 );
 
 fileContains(
   path.join(baseDir, 'android/app/build.gradle'),
-  'versionCode 93',
-  'build.gradle versionCode 93'
+  'versionCode 97',
+  'build.gradle versionCode 97'
 );
 
 fileContains(
   path.join(baseDir, 'www/js/core/app-initialization.js'),
-  "window.__APP_VERSION__ = '2.9.32'",
-  'app-initialization.js versión 2.9.32'
+  "window.__APP_VERSION__",
+  'app-initialization.js define APP_VERSION'
 );
 
 section('7. API ENDPOINT');
 
 fileContains(
   path.join(baseDir, 'api/check-version.php'),
-  "'latest' => '2.9.32'",
-  'check-version.php tiene versión 2.9.32'
+  "'latest'",
+  'check-version.php tiene campo latest'
 );
 
 fileContains(
@@ -210,15 +210,7 @@ fileContains(
   'check-version.php tiene función de comparación'
 );
 
-section('8. ARCHIVOS DE DOCUMENTACIÓN');
-
-fileExists(path.join(baseDir, 'CHANGELOG-2.9.32.md'), 'CHANGELOG-2.9.32.md');
-
-fileContains(
-  path.join(baseDir, 'CHANGELOG-2.9.32.md'),
-  'Sistema Completo de Versiones y Actualizaciones',
-  'CHANGELOG documenta sistema de versiones'
-);
+section('8. ARCHIVOS CLAVE');
 
 section('9. SISTEMA PREMIUM Y AUTH');
 

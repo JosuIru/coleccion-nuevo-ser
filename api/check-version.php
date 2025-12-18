@@ -14,40 +14,48 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Tabla de versiones y actualizaciones disponibles
 $VERSION_DATABASE = [
     // Versión actual en producción
-    'latest' => '2.9.32',
+    'latest' => '2.9.37',
 
     // Información de cada versión
     'versions' => [
-        '2.9.31' => [
-            'release_date' => '2025-12-13',
-            'platform' => 'all',
-            'security' => false,
-            'critical' => false
-        ],
         '2.9.32' => [
-            'release_date' => '2025-12-14',
+            'release_date' => '2025-12-15',
             'platform' => 'all',
             'security' => false,
             'critical' => false,
             'features' => [
-                'Sistema de versiones y actualizaciones',
-                'Verificación automática de updates',
-                'Modal de notificación de nuevas versiones'
+                'Audio en segundo plano',
+                'Foreground Service Android'
+            ]
+        ],
+        '2.9.37' => [
+            'release_date' => '2025-12-18',
+            'platform' => 'all',
+            'security' => true,
+            'critical' => false,
+            'features' => [
+                'Event Bus para comunicación entre módulos',
+                'Lazy-load CSS de temas',
+                'DOM Cache optimizado',
+                'Service Layer (Base/Book/UserService)',
+                'Sync Bridge web↔mobile',
+                'Sistema Learning Paths',
+                'Correcciones de seguridad XSS'
             ]
         ]
     ],
 
     // URLs de descarga por versión y plataforma
     'downloads' => [
+        '2.9.37' => [
+            'web' => '/index.html',
+            'android' => '/downloads/coleccion-nuevo-ser-v2.9.37.apk',
+            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser',
+            'release_notes' => '/downloads/RELEASE-2.9.37.md'
+        ],
         '2.9.32' => [
             'web' => '/index.html',
-            'android' => '/downloads/coleccion-nuevo-ser-latest.apk',
-            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser',
-            'release_notes' => '/downloads/CHANGELOG-2.9.32.md'
-        ],
-        '2.9.31' => [
-            'web' => '/index.html',
-            'android' => '/downloads/coleccion-nuevo-ser-v2.9.31-build48-SIGNED.apk',
+            'android' => '/downloads/coleccion-nuevo-ser-v2.9.32.apk',
             'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser'
         ]
     ],

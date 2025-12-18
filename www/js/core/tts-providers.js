@@ -439,7 +439,8 @@ class TTSManager {
   constructor() {
     this.providers = {
       browser: new BrowserTTSProvider(),
-      openai: new OpenAITTSProvider()
+      openai: new OpenAITTSProvider(),
+      elevenlabs: null // Se inicializa lazy si está disponible
     };
 
     // Cargar configuración guardada
@@ -451,6 +452,32 @@ class TTSManager {
 
     const cacheEnabled = localStorage.getItem('tts-cache-enabled') !== 'false';
     this.providers.openai.setCacheEnabled(cacheEnabled);
+
+    // Inicializar ElevenLabs si está disponible
+    this.initElevenLabs();
+  }
+
+  /**
+   * Inicializar ElevenLabs provider (lazy loading)
+   */
+  initElevenLabs() {
+    if (typeof window.ElevenLabsTTSProvider !== 'undefined') {
+      this.providers.elevenlabs = new window.ElevenLabsTTSProvider();
+      const elevenLabsKey = localStorage.getItem('elevenlabs-tts-key');
+      if (elevenLabsKey) {
+        this.providers.elevenlabs.setApiKey(elevenLabsKey);
+      }
+      const cacheEnabled = localStorage.getItem('tts-cache-enabled') !== 'false';
+      this.providers.elevenlabs.setCacheEnabled(cacheEnabled);
+      console.log('✅ ElevenLabs TTS provider inicializado');
+    } else {
+      // Reintentar después de que carguen todos los scripts
+      setTimeout(() => {
+        if (typeof window.ElevenLabsTTSProvider !== 'undefined' && !this.providers.elevenlabs) {
+          this.initElevenLabs();
+        }
+      }, 1000);
+    }
   }
 
   setProvider(providerName) {
@@ -529,7 +556,9 @@ class TTSManager {
   }
 
   setHuggingFaceKey(key) {
-    this.providers.huggingface.setApiKey(key);
+    if (this.providers.huggingface) {
+      this.providers.huggingface.setApiKey(key);
+    }
     localStorage.setItem('huggingface-tts-key', key);
   }
 
@@ -537,19 +566,65 @@ class TTSManager {
     return localStorage.getItem('huggingface-tts-key');
   }
 
+  setElevenLabsKey(key) {
+    if (this.providers.elevenlabs) {
+      this.providers.elevenlabs.setApiKey(key);
+    }
+    localStorage.setItem('elevenlabs-tts-key', key);
+  }
+
+  getElevenLabsKey() {
+    return localStorage.getItem('elevenlabs-tts-key');
+  }
+
   setCacheEnabled(enabled) {
     this.providers.openai.setCacheEnabled(enabled);
-    this.providers.huggingface.setCacheEnabled(enabled);
+    if (this.providers.huggingface) {
+      this.providers.huggingface.setCacheEnabled(enabled);
+    }
+    if (this.providers.elevenlabs) {
+      this.providers.elevenlabs.setCacheEnabled(enabled);
+    }
     localStorage.setItem('tts-cache-enabled', enabled.toString());
   }
 
   clearCache() {
     this.providers.openai.clearCache();
-    this.providers.huggingface.clearCache();
+    if (this.providers.huggingface) {
+      this.providers.huggingface.clearCache();
+    }
+    if (this.providers.elevenlabs) {
+      this.providers.elevenlabs.clearCache();
+    }
   }
 
   getCacheSize() {
-    return this.providers.openai.getCacheSize();
+    let total = this.providers.openai.getCacheSize();
+    if (this.providers.elevenlabs) {
+      total += this.providers.elevenlabs.cache.size;
+    }
+    return total;
+  }
+
+  /**
+   * Verificar si ElevenLabs está disponible (provider + premium)
+   */
+  isElevenLabsAvailable() {
+    if (!this.providers.elevenlabs) return false;
+    if (typeof window.aiPremium !== 'undefined') {
+      return window.aiPremium.hasFeature('elevenlabs_tts');
+    }
+    return false;
+  }
+
+  /**
+   * Obtener voces de ElevenLabs
+   */
+  async getElevenLabsVoices() {
+    if (this.providers.elevenlabs) {
+      return await this.providers.elevenlabs.getAvailableVoices();
+    }
+    return [];
   }
 }
 

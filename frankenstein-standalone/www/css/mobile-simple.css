@@ -1,0 +1,1201 @@
+/**
+ * MOBILE SIMPLE UI - Frankenstein Lab
+ * Diseño minimalista y optimizado para Android
+ * v2.0.0
+ */
+
+/* ========================================
+   MÓVIL: PANTALLA PRINCIPAL SIMPLIFICADA
+   ======================================== */
+@media (max-width: 768px) {
+  /* === OCULTAR ELEMENTOS COMPLEJOS === */
+  .lab-header-actions,
+  .lab-header-left,
+  .lab-side-menu,
+  .lab-side-menu-overlay,
+  .fab-container,
+  .requirements-modal,
+  .pieces-modal,
+  .being-visual-grid,
+  .label-chip,
+  .floating-particle {
+    display: none !important;
+  }
+
+  /* === MOSTRAR PANELES DE JUEGO SIMPLIFICADOS === */
+  .being-panels {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .being-panels .data-card {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(96, 165, 250, 0.15) !important;
+    border-radius: 16px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .being-panels .data-card summary {
+    padding: 14px 16px !important;
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #f1f5f9 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer !important;
+    list-style: none !important;
+    border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+  }
+
+  .being-panels .data-card summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .being-panels .data-card summary::after {
+    content: '▼' !important;
+    font-size: 10px !important;
+    color: #60a5fa !important;
+    transition: transform 0.2s ease !important;
+  }
+
+  .being-panels .data-card[open] summary::after {
+    transform: rotate(180deg) !important;
+  }
+
+  .being-panels .data-card summary small {
+    font-size: 12px !important;
+    color: #60a5fa !important;
+    font-weight: 700 !important;
+  }
+
+  .being-panels .card-body {
+    padding: 12px 16px !important;
+  }
+
+  /* === PANEL DE ATRIBUTOS SIMPLIFICADO === */
+  .being-panels #being-attributes {
+    display: block !important;
+  }
+
+  .being-panels .attributes-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Vista resumen (radial meters) */
+  .being-panels .attributes-overview {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 8px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .being-panels .attribute-radar-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .being-panels .attribute-radar-meter {
+    width: 44px !important;
+    height: 44px !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    border: 2px solid rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .being-panels .attribute-radar-value {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #60a5fa !important;
+    line-height: 1 !important;
+  }
+
+  .being-panels .attribute-radar-label {
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  .being-panels .attribute-radar-card small {
+    font-size: 9px !important;
+    color: #64748b !important;
+    text-align: center !important;
+  }
+
+  /* Grid de atributos individuales */
+  .being-panels .attributes-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .being-panels .attribute-chip {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px 12px !important;
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-radius: 10px !important;
+    border-left: 3px solid rgba(96, 165, 250, 0.5) !important;
+  }
+
+  .being-panels .attribute-chip.met {
+    border-left-color: #34d399 !important;
+  }
+
+  .being-panels .attribute-chip.unmet {
+    border-left-color: #ef4444 !important;
+  }
+
+  .being-panels .attribute-chip .chip-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .being-panels .attribute-chip .attribute-icon {
+    font-size: 16px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .being-panels .attribute-chip .chip-title {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex: 1 !important;
+    gap: 8px !important;
+  }
+
+  .being-panels .attribute-chip .attribute-name {
+    font-size: 13px !important;
+    color: #e2e8f0 !important;
+    font-weight: 500 !important;
+  }
+
+  .being-panels .attribute-chip .attribute-value {
+    font-size: 12px !important;
+    color: #60a5fa !important;
+    font-weight: 700 !important;
+  }
+
+  .being-panels .attribute-chip .chip-bar {
+    height: 6px !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-radius: 3px !important;
+    overflow: hidden !important;
+  }
+
+  .being-panels .attribute-chip .chip-bar span {
+    display: block !important;
+    height: 100% !important;
+    border-radius: 3px !important;
+    transition: width 0.3s ease !important;
+  }
+
+  /* === REQUISITOS SIMPLIFICADOS === */
+  .being-panels .mission-requirements-summary {
+    display: block !important;
+  }
+
+  .being-panels .requirements-summary-progress {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .being-panels .progress-bar-mini {
+    flex: 1 !important;
+    height: 8px !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+  }
+
+  .being-panels .progress-fill-mini {
+    height: 100% !important;
+    background: linear-gradient(90deg, #34d399, #10b981) !important;
+    border-radius: 4px !important;
+    transition: width 0.3s ease !important;
+  }
+
+  .being-panels .requirements-list-mini {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .being-panels .requirement-mini-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    color: #94a3b8 !important;
+  }
+
+  .being-panels .requirement-mini-item.met {
+    color: #34d399 !important;
+  }
+
+  .being-panels .requirement-mini-item.unmet {
+    color: #ef4444 !important;
+  }
+
+  .being-panels .view-all-requirements {
+    display: none !important;
+  }
+
+  /* === BALANCE SIMPLIFICADO === */
+  .being-panels .being-balance {
+    display: block !important;
+  }
+
+  .being-panels .balance-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .being-panels .balance-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 12px 8px !important;
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+  }
+
+  .being-panels .balance-item .balance-label {
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .being-panels .balance-item .balance-value {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #60a5fa !important;
+  }
+
+  .being-panels .harmony-meter {
+    height: 8px !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    margin-bottom: 8px !important;
+  }
+
+  .being-panels .harmony-meter span {
+    display: block !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, #34d399, #10b981) !important;
+    border-radius: 4px !important;
+    transition: width 0.3s ease !important;
+  }
+
+  .being-panels .balance-total {
+    font-size: 14px !important;
+    color: #f1f5f9 !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+
+  /* === HEADER MINIMALISTA === */
+  .awakening-header {
+    padding: 12px 16px !important;
+    background: transparent !important;
+    border: none !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+
+  .lab-header-content {
+    justify-content: center !important;
+  }
+
+  .lab-header-titles {
+    text-align: center;
+  }
+
+  .lab-title {
+    font-size: 16px !important;
+    margin: 0 !important;
+    opacity: 0.7;
+  }
+
+  .lab-subtitle {
+    display: none !important;
+  }
+
+  /* === WORKSPACE: PANTALLA PRINCIPAL === */
+  .lab-workspace {
+    padding: 0 !important;
+    padding-top: 50px !important;
+    padding-bottom: 72px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100% !important;
+  }
+
+  .being-display {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+
+  .being-overview {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  /* === CARD PRINCIPAL DEL SER === */
+  .being-info-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)) !important;
+    border: 1px solid rgba(96, 165, 250, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .being-info-top {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  .being-info-top > div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Avatar grande centrado */
+  .being-info-top::before {
+    content: '🧬';
+    font-size: 72px;
+    display: block;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  }
+
+  .being-name {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #f1f5f9 !important;
+    margin: 8px 0 !important;
+  }
+
+  /* Botón de misión */
+  .change-mission-btn {
+    width: 100% !important;
+    padding: 14px 20px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+    margin-top: 8px !important;
+  }
+
+  .being-mission-row {
+    width: 100%;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin: 12px 0 !important;
+  }
+
+  .being-mission {
+    font-size: 14px !important;
+    color: #94a3b8 !important;
+    margin: 0 !important;
+  }
+
+  .mission-pill {
+    padding: 4px 12px !important;
+    font-size: 11px !important;
+    border-radius: 20px !important;
+    background: rgba(96, 165, 250, 0.2) !important;
+    color: #60a5fa !important;
+  }
+
+  /* === STATS EN FILA === */
+  .being-quick-stats {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .stat-chip {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 12px 8px !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    border-radius: 12px !important;
+    gap: 4px !important;
+  }
+
+  .stat-label {
+    font-size: 12px !important;
+    color: #64748b !important;
+    white-space: nowrap !important;
+  }
+
+  .stat-value {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #60a5fa !important;
+  }
+
+  /* === CARD DE ACCIONES === */
+  .data-card.actions-card {
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .lab-controls {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .lab-button {
+    padding: 16px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 14px !important;
+    min-height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(96, 165, 250, 0.2) !important;
+    color: #e2e8f0 !important;
+  }
+
+  .lab-button.primary {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+  }
+
+  .lab-button.primary:disabled {
+    background: rgba(30, 41, 59, 0.6) !important;
+    box-shadow: none !important;
+    opacity: 0.5 !important;
+  }
+
+  /* Ocultar botones secundarios */
+  #btn-clear-selection,
+  #btn-export-being {
+    display: none !important;
+  }
+
+  /* Hacer botones principales full width */
+  #btn-validate-being,
+  #btn-talk-to-being {
+    grid-column: span 1 !important;
+  }
+
+  .validation-results {
+    margin-top: 16px;
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+  }
+
+  /* === BOTTOM NAV === */
+  .awakening-bottom-nav {
+    height: 64px !important;
+    padding: 0 !important;
+    background: rgba(15, 23, 42, 0.98) !important;
+    border-top: 1px solid rgba(96, 165, 250, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  .awakening-tab {
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 8px 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #64748b !important;
+    transition: color 0.2s ease !important;
+  }
+
+  .awakening-tab.active {
+    color: #60a5fa !important;
+  }
+
+  .awakening-tab-icon {
+    font-size: 24px !important;
+    line-height: 1 !important;
+  }
+
+  .awakening-tab-label {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+  }
+}
+
+/* ========================================
+   PANTALLAS MÓVILES (TABS)
+   ======================================== */
+.mobile-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 64px;
+  background: #0a0e14;
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mobile-screen.active {
+  display: flex;
+}
+
+.mobile-screen-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(21, 26, 36, 0.98);
+  border-bottom: 1px solid rgba(96, 165, 250, 0.15);
+  gap: 12px;
+  flex-shrink: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.mobile-screen-back {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(30, 37, 48, 0.8);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  color: #f1f5f9;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mobile-screen-title {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.mobile-screen-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  overscroll-behavior: contain;
+}
+
+/* === LISTAS === */
+.beings-list,
+.missions-list,
+.pieces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Seres */
+.being-list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.being-list-item:active {
+  transform: scale(0.98);
+  background: rgba(30, 41, 59, 1);
+}
+
+.being-list-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.being-list-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.being-list-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 4px 0;
+}
+
+.being-list-mission {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.being-list-power {
+  font-size: 16px;
+  font-weight: 700;
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+/* Misiones */
+.mission-list-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mission-list-item:active {
+  transform: scale(0.98);
+}
+
+.mission-list-item.selected {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.15);
+}
+
+.mission-list-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.mission-list-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mission-list-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 6px 0;
+}
+
+.mission-list-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.mission-list-difficulty {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mission-list-difficulty.principiante {
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+}
+
+.mission-list-difficulty.iniciado {
+  background: rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
+}
+
+.mission-list-difficulty.avanzado {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.mission-list-difficulty.maestro {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Piezas */
+.pieces-filters {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.pieces-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.piece-filter-btn {
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: rgba(30, 37, 48, 0.8);
+  border: 1px solid rgba(96, 165, 250, 0.15);
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.piece-filter-btn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.piece-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.piece-list-item:active {
+  transform: scale(0.98);
+}
+
+.piece-list-item.selected {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.piece-list-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.piece-list-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.piece-list-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 3px 0;
+}
+
+.piece-list-book {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.piece-list-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #34d399;
+  color: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.piece-list-item.selected .piece-list-check {
+  display: flex;
+}
+
+/* === PERFIL === */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 8px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.profile-stat-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.profile-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #60a5fa;
+  margin-bottom: 4px;
+}
+
+.profile-stat-label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.profile-section {
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.profile-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.profile-option:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.profile-option:first-of-type {
+  padding-top: 0;
+}
+
+.profile-option-icon {
+  font-size: 22px;
+  width: 36px;
+  text-align: center;
+}
+
+.profile-option-info {
+  flex: 1;
+}
+
+.profile-option-label {
+  font-size: 15px;
+  color: #f1f5f9;
+  margin: 0 0 2px 0;
+}
+
+.profile-option-value {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.profile-option-arrow {
+  color: #475569;
+  font-size: 18px;
+}
+
+/* === ESTADO VACÍO === */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+  opacity: 0.4;
+}
+
+.empty-state-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 8px 0;
+}
+
+.empty-state-text {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0 0 28px 0;
+  max-width: 260px;
+  line-height: 1.5;
+}
+
+.empty-state-btn {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* ========================================
+   BIBLIOTECA MÓVIL - LIBROS Y CAPÍTULOS
+   ======================================== */
+
+/* Lista de libros */
+.mobile-books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Item de libro */
+.mobile-book-item {
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.1);
+  overflow: hidden;
+}
+
+.mobile-book-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mobile-book-header:active {
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.mobile-book-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.mobile-book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-book-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.mobile-book-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.mobile-book-attrs {
+  display: flex;
+  gap: 8px;
+  color: #60a5fa;
+}
+
+.mobile-book-toggle {
+  font-size: 12px;
+  color: #64748b;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Lista de capítulos dentro de libro */
+.mobile-book-chapters {
+  border-top: 1px solid rgba(96, 165, 250, 0.1);
+  background: rgba(15, 23, 42, 0.5);
+  padding: 8px;
+}
+
+.mobile-chapter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.mobile-chapter-item:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-chapter-item:active {
+  transform: scale(0.98);
+}
+
+.mobile-chapter-item.selected {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.mobile-chapter-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(96, 165, 250, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.mobile-chapter-item.selected .mobile-chapter-icon {
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+}
+
+.mobile-chapter-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-chapter-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e2e8f0;
+  margin: 0 0 3px 0;
+  line-height: 1.3;
+}
+
+.mobile-chapter-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.mobile-chapter-attrs {
+  display: flex;
+  gap: 6px;
+  color: #60a5fa;
+}
+
+/* === SCROLL FIX === */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-screen-content,
+.lab-workspace {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}

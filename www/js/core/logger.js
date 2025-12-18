@@ -23,48 +23,48 @@ class Logger {
 
   log(...args) {
     if (this.isDev) {
-      // console.log(...args);
+      console.log('[LOG]', ...args);
     }
   }
 
   warn(...args) {
     if (this.isDev) {
-      // console.warn(...args);
+      console.warn('[WARN]', ...args);
     }
   }
 
   error(...args) {
     // Always show errors, even in production
-    console.error(...args);
+    console.error('[ERROR]', ...args);
   }
 
   info(...args) {
     if (this.isDev) {
-      // console.info(...args);
+      console.info('[INFO]', ...args);
     }
   }
 
   debug(...args) {
     if (this.isDev) {
-      // console.debug(...args);
+      console.debug('[DEBUG]', ...args);
     }
   }
 
   group(...args) {
     if (this.isDev) {
-      // console.group(...args);
+      console.group(...args);
     }
   }
 
   groupEnd() {
     if (this.isDev) {
-      // console.groupEnd();
+      console.groupEnd();
     }
   }
 
   table(data) {
     if (this.isDev) {
-      // console.table(data);
+      console.table(data);
     }
   }
 

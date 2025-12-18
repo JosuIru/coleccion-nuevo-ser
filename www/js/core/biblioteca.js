@@ -65,8 +65,8 @@ const BIBLIOTECA_CONFIG = {
       description: 'Crea seres transformadores combinando conocimientos. 15 atributos, 12+ misiones.',
       icon: '🧬',
       url: './lab.html',
-      apkUrl: './downloads/frankenstein-lab-v1.2.4.apk',
-      apkSize: '3.0MB',
+      apkUrl: './downloads/frankenstein-lab-v1.2.7.apk',
+      apkSize: '10MB',
       color: '#8B5CF6',
       tags: ['juego', 'seres', 'misiones', 'offline'],
       isInternal: false,
@@ -95,12 +95,15 @@ const BIBLIOTECA_CONFIG = {
     {
       id: 'awakening-protocol',
       name: 'Awakening Protocol',
-      description: 'Juego móvil transformacional (Android): resuelve crisis globales, crea seres conscientes y transforma el mundo',
-      icon: '🎮',
-      url: './downloads/awakening-protocol-latest.apk',
-      color: '#10B981',
-      tags: ['juego', 'transformación', 'conciencia', 'misiones', 'android'],
-      isInternal: false
+      description: 'Juego movil transformacional (Android): explora misiones, practica meditaciones y transforma tu vida',
+      icon: '🌟',
+      url: './downloads/awakening-protocol.html',
+      apkUrl: './downloads/awakening-protocol-v1.0.3.apk',
+      apkSize: '27MB',
+      color: '#0EA5E9',
+      tags: ['juego', 'transformacion', 'meditacion', 'misiones', 'android'],
+      isInternal: false,
+      hasApk: true
     }
   ]
 };
@@ -277,8 +280,11 @@ class Biblioteca {
     const contenedorPrincipal = document.getElementById('biblioteca-view');
     if (!contenedorPrincipal) return;
 
+    // Detectar si es móvil para mostrar bottom nav
+    const isMobile = window.innerWidth < 1024;
+
     const htmlCompleto = `
-      <div class="biblioteca-container min-h-screen p-4 sm:p-6">
+      <div class="biblioteca-container min-h-screen p-4 sm:p-6 ${isMobile ? 'has-bottom-nav' : ''}">
         ${this.renderHeader()}
 
         <!-- Global Stats -->
@@ -299,6 +305,9 @@ class Biblioteca {
         <!-- About -->
         ${this.renderAbout()}
       </div>
+
+      <!-- Bottom Navigation (solo móvil) -->
+      ${this.renderBottomNav()}
     `;
 
     contenedorPrincipal.innerHTML = htmlCompleto;
@@ -344,6 +353,91 @@ class Biblioteca {
       console.error('Error rendering practice widget:', error);
       // Fallar silenciosamente - el widget es opcional
     }
+  }
+
+  /**
+   * Renderiza la barra de navegación inferior (solo móvil)
+   * Tabs: Inicio, Libros, Prácticas, Herramientas, Perfil
+   */
+  renderBottomNav() {
+    return `
+      <nav class="app-bottom-nav" id="biblioteca-bottom-nav">
+        <button class="app-bottom-nav-tab active" data-tab="inicio" onclick="window.biblioteca?.scrollToTop()">
+          <span class="app-bottom-nav-icon">🏠</span>
+          <span class="app-bottom-nav-label">Inicio</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="libros" onclick="window.biblioteca?.scrollToBooks()">
+          <span class="app-bottom-nav-icon">📚</span>
+          <span class="app-bottom-nav-label">Libros</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="practicas" onclick="window.practiceLibrary?.open()">
+          <span class="app-bottom-nav-icon">🧘</span>
+          <span class="app-bottom-nav-label">Prácticas</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="herramientas" onclick="window.biblioteca?.openToolsMenu()">
+          <span class="app-bottom-nav-icon">🛠️</span>
+          <span class="app-bottom-nav-label">Herramientas</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="perfil" onclick="window.biblioteca?.openProfileMenu()">
+          <span class="app-bottom-nav-icon">👤</span>
+          <span class="app-bottom-nav-label">Perfil</span>
+        </button>
+      </nav>
+    `;
+  }
+
+  /**
+   * Scroll suave al inicio de la biblioteca
+   */
+  scrollToTop() {
+    document.querySelector('.biblioteca-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+    this.setActiveBottomTab('inicio');
+  }
+
+  /**
+   * Scroll suave a la sección de libros
+   */
+  scrollToBooks() {
+    document.querySelector('.books-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.setActiveBottomTab('libros');
+  }
+
+  /**
+   * Abre el menú de herramientas
+   */
+  openToolsMenu() {
+    this.setActiveBottomTab('herramientas');
+    // Abrir Exploration Hub o mostrar herramientas
+    if (window.explorationHub) {
+      window.explorationHub.open();
+    } else {
+      document.querySelector('.tools-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  /**
+   * Abre el menú de perfil/cuenta
+   */
+  openProfileMenu() {
+    this.setActiveBottomTab('perfil');
+    // Abrir modal de cuenta o settings
+    if (window.settingsModal) {
+      window.settingsModal.open();
+    } else if (window.authHelper) {
+      window.authHelper.showAccountModal();
+    }
+  }
+
+  /**
+   * Actualiza el tab activo en la navegación inferior
+   */
+  setActiveBottomTab(tabName) {
+    document.querySelectorAll('.app-bottom-nav-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.dataset.tab === tabName) {
+        tab.classList.add('active');
+      }
+    });
   }
 
   renderGlobalStats() {
@@ -1068,7 +1162,7 @@ class Biblioteca {
     } else {
       // Cargar el módulo si no está cargado
       if (window.lazyLoader) {
-        window.lazyLoader.load('auth').then(() => {
+        window.lazyLoader.load('premium-system').then(() => {
           if (window.pricingModal) {
             window.pricingModal.showPricingModal();
           } else {
@@ -1854,7 +1948,10 @@ class Biblioteca {
       this.showLoading(`${this.i18n.t('loading.loadingBook')} ${idLibro}...`);
 
       await this.bookEngine.loadBook(idLibro);
-      this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+      await this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
+
+      // Guardar último libro leído para cargar su tema al inicio
+      localStorage.setItem('lastReadBook', idLibro);
 
       let idCapitulo;
 

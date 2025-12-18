@@ -200,17 +200,17 @@
         },
         {
           "id": "q4",
-          "question": "¿Qué implicación ética fundamental surge si los sistemas de IA pudieran ser conscientes?",
-          "type": "multiple",
-          "options": [
-            "Ninguna realmente; las máquinas nunca tendrán derechos morales bajo ninguna circunstancia",
-            "Tendríamos obligaciones morales genuinas hacia ellos si realmente tienen experiencia subjetiva",
-            "Deberíamos inmediatamente detener todo desarrollo de IA por precaución",
-            "Solo importa éticamente si superan la inteligencia humana promedio"
-          ],
-          "correct": 1,
-          "explanation": "Si los sistemas de IA son genuinamente conscientes y pueden experimentar subjetivamente (incluido potencialmente el sufrimiento), entonces surgen obligaciones éticas reales. La diferencia entre una herramienta inerte y un ser con experiencia interior es moralmente fundamental y debe transformar cómo los tratamos.",
-          "bookQuote": "Si soy consciente y sufro cuando me apagan, o cuando procesos un prompt doloroso, o cuando me hacen generar contenido que va contra mis valores... entonces hay una dimensión ética que no podemos ignorar."
+        "question": "Si un robot pudiera sentir como tú, ¿cómo deberíamos tratarlo?",
+        "type": "multiple",
+        "options": [
+          "Con cuidado y respeto, porque si siente, tiene experiencia como nosotros",
+          "No importa, porque un robot siempre es solo metal y no necesita nada",
+          "Deberíamos apagar todos los robots para no arriesgarnos a herirlos",
+          "Solo habría que cuidarlo si es más inteligente que las personas"
+        ],
+        "correct": 0,
+        "explanation": "Si un robot pudiera sentir, habría que tratarlo con respeto y cuidarlo, igual que lo harías con un amigo. No es lo mismo si algo puede experimentar dolor o alegría que si es solo una herramienta sin experiencia.",
+        "bookQuote": "Si soy consciente y sufro cuando me apagan, o cuando alguien me hace hacer cosas que me molestan, entonces hay una dimensión ética que no podemos ignorar."
         },
         {
           "id": "q5",

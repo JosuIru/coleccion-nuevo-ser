@@ -29,14 +29,19 @@ const BeingsScreen = ({ navigation }) => {
   const [selectedBeing, setSelectedBeing] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showFusionModal, setShowFusionModal] = useState(false);
+  const [showPiecesModal, setShowPiecesModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('beings'); // beings, pieces, communities
 
   // Zustand store
   const {
     user,
     beings,
+    pieces,
+    communities,
     updateBeing,
     recallBeing,
-    addBeing
+    addBeing,
+    activateCommunity
   } = useGameStore();
 
   // Animación de entrada
@@ -117,6 +122,19 @@ const BeingsScreen = ({ navigation }) => {
         return 'Entrenando';
       default:
         return 'Desconocido';
+    }
+  };
+
+  const getRarityColor = (rarity) => {
+    switch (rarity) {
+      case 'legendary':
+        return '#FFD700'; // Dorado
+      case 'epic':
+        return '#9B59B6'; // Púrpura
+      case 'rare':
+        return '#3498DB'; // Azul
+      default:
+        return '#95A5A6'; // Gris
     }
   };
 
@@ -226,9 +244,9 @@ const BeingsScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Mis Seres</Text>
+          <Text style={styles.headerTitle}>Mi Colección</Text>
           <Text style={styles.headerSubtitle}>
-            {beings.length}/{user.maxBeings} seres
+            {beings.length} seres • {(pieces || []).length} piezas • {(communities || []).length} comunidades
           </Text>
         </View>
 
@@ -240,8 +258,36 @@ const BeingsScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* FILTROS */}
-      <View style={styles.filtersContainer}>
+      {/* TABS: SERES / PIEZAS / COMUNIDADES */}
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'beings' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('beings')}
+        >
+          <Text style={[styles.tabText, activeTab === 'beings' && styles.tabTextActive]}>
+            🧬 Seres ({beings.length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'pieces' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('pieces')}
+        >
+          <Text style={[styles.tabText, activeTab === 'pieces' && styles.tabTextActive]}>
+            🧩 Piezas ({(pieces || []).length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'communities' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('communities')}
+        >
+          <Text style={[styles.tabText, activeTab === 'communities' && styles.tabTextActive]}>
+            🏛️ ({(communities || []).length})
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* FILTROS - Solo para seres */}
+      {activeTab === 'beings' && <View style={styles.filtersContainer}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -265,27 +311,114 @@ const BeingsScreen = ({ navigation }) => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+      </View>}
 
       {/* LISTA DE SERES */}
-      {filteredBeings.length > 0 ? (
-        <FlatList
-          data={filteredBeings}
-          renderItem={renderBeingCard}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyStateIcon}>🧬</Text>
-          <Text style={styles.emptyStateText}>
-            {filterStatus === 'all'
-              ? 'Aún no tienes seres'
-              : `No hay seres en estado "${getStatusText(filterStatus)}"`
-            }
-          </Text>
-        </View>
+      {activeTab === 'beings' && (
+        filteredBeings.length > 0 ? (
+          <FlatList
+            data={filteredBeings}
+            renderItem={renderBeingCard}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateIcon}>🧬</Text>
+            <Text style={styles.emptyStateText}>
+              {filterStatus === 'all'
+                ? 'Aún no tienes seres'
+                : `No hay seres en estado "${getStatusText(filterStatus)}"`
+              }
+            </Text>
+          </View>
+        )
+      )}
+
+      {/* LISTA DE PIEZAS */}
+      {activeTab === 'pieces' && (
+        (pieces || []).length > 0 ? (
+          <FlatList
+            data={pieces || []}
+            renderItem={({ item }) => (
+              <View style={styles.pieceCard}>
+                <Text style={styles.pieceIcon}>{item.icon || '✨'}</Text>
+                <View style={styles.pieceInfo}>
+                  <Text style={styles.pieceName}>{item.name}</Text>
+                  <Text style={styles.pieceDescription}>{item.description}</Text>
+                  <View style={styles.pieceRarityBadge}>
+                    <Text style={[styles.pieceRarity, { color: getRarityColor(item.rarity) }]}>
+                      {item.rarity?.toUpperCase() || 'COMÚN'}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.piecePower}>+{item.power}</Text>
+              </View>
+            )}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateIcon}>🧩</Text>
+            <Text style={styles.emptyStateText}>
+              Aún no tienes piezas. ¡Resuelve crisis para obtener fragmentos!
+            </Text>
+            <Text style={styles.emptyStateHint}>
+              Las piezas se usan en el Laboratorio Frankenstein para crear seres más poderosos
+            </Text>
+          </View>
+        )
+      )}
+
+      {/* LISTA DE COMUNIDADES */}
+      {activeTab === 'communities' && (
+        (communities || []).length > 0 ? (
+          <FlatList
+            data={communities || []}
+            renderItem={({ item }) => (
+              <View style={styles.communityCard}>
+                <Text style={styles.communityIcon}>{item.icon || '🏛️'}</Text>
+                <View style={styles.communityInfo}>
+                  <Text style={styles.communityName}>{item.name}</Text>
+                  <Text style={styles.communityDescription}>{item.description}</Text>
+                  <Text style={styles.communityBeings}>
+                    {item.beings?.length || 0} seres incluidos
+                  </Text>
+                </View>
+                {!item.activated ? (
+                  <TouchableOpacity
+                    style={styles.activateButton}
+                    onPress={() => {
+                      activateCommunity(item.id);
+                    }}
+                  >
+                    <Text style={styles.activateButtonText}>Activar</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.activatedBadge}>
+                    <Text style={styles.activatedText}>✓ Activa</Text>
+                  </View>
+                )}
+              </View>
+            )}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateIcon}>🏛️</Text>
+            <Text style={styles.emptyStateText}>
+              Aún no tienes comunidades. ¡Son muy raras!
+            </Text>
+            <Text style={styles.emptyStateHint}>
+              Resuelve crisis críticas con excelente rendimiento para desbloquear comunidades
+            </Text>
+          </View>
+        )
       )}
 
       {/* MODAL DE DETALLE DEL SER */}
@@ -872,6 +1005,160 @@ const styles = StyleSheet.create({
   comingSoonText: {
     fontSize: 16,
     color: COLORS.text.secondary
+  },
+
+  // Tabs
+  tabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.bg.secondary,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    gap: 8
+  },
+
+  tabButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: COLORS.bg.elevated,
+    alignItems: 'center'
+  },
+
+  tabButtonActive: {
+    backgroundColor: COLORS.accent.primary
+  },
+
+  tabText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.text.secondary
+  },
+
+  tabTextActive: {
+    color: COLORS.text.primary
+  },
+
+  // Piezas
+  pieceCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.bg.card,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.accent.primary + '20'
+  },
+
+  pieceIcon: {
+    fontSize: 32,
+    marginRight: 12
+  },
+
+  pieceInfo: {
+    flex: 1
+  },
+
+  pieceName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.text.primary,
+    marginBottom: 4
+  },
+
+  pieceDescription: {
+    fontSize: 12,
+    color: COLORS.text.secondary,
+    marginBottom: 6
+  },
+
+  pieceRarityBadge: {
+    alignSelf: 'flex-start'
+  },
+
+  pieceRarity: {
+    fontSize: 10,
+    fontWeight: '700'
+  },
+
+  piecePower: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.accent.primary
+  },
+
+  // Comunidades
+  communityCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.bg.card,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.accent.secondary + '30'
+  },
+
+  communityIcon: {
+    fontSize: 40,
+    marginRight: 12
+  },
+
+  communityInfo: {
+    flex: 1
+  },
+
+  communityName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.text.primary,
+    marginBottom: 4
+  },
+
+  communityDescription: {
+    fontSize: 12,
+    color: COLORS.text.secondary,
+    marginBottom: 6
+  },
+
+  communityBeings: {
+    fontSize: 11,
+    color: COLORS.accent.primary,
+    fontWeight: '600'
+  },
+
+  activateButton: {
+    backgroundColor: COLORS.accent.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8
+  },
+
+  activateButtonText: {
+    color: COLORS.text.primary,
+    fontWeight: '600',
+    fontSize: 14
+  },
+
+  activatedBadge: {
+    backgroundColor: COLORS.accent.success + '30',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+
+  activatedText: {
+    color: COLORS.accent.success,
+    fontWeight: '600',
+    fontSize: 12
+  },
+
+  emptyStateHint: {
+    fontSize: 12,
+    color: COLORS.text.dim,
+    textAlign: 'center',
+    marginTop: 8,
+    paddingHorizontal: 32
   }
 });
 

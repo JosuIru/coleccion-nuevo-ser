@@ -40,6 +40,18 @@ const useGameStore = create((set, get) => ({
   beings: [],
 
   // ═══════════════════════════════════════════════════════════
+  // PIEZAS/FRAGMENTOS (para crear seres en el Lab)
+  // ═══════════════════════════════════════════════════════════
+
+  pieces: [],  // Fragmentos de atributos desbloqueados
+
+  // ═══════════════════════════════════════════════════════════
+  // COMUNIDADES DE SERES
+  // ═══════════════════════════════════════════════════════════
+
+  communities: [],  // Grupos de seres desbloqueados
+
+  // ═══════════════════════════════════════════════════════════
   // CRISIS ACTIVAS
   // ═══════════════════════════════════════════════════════════
 
@@ -246,6 +258,73 @@ const useGameStore = create((set, get) => ({
   })),
 
   // ═══════════════════════════════════════════════════════════
+  // ACCIONES - PIEZAS/FRAGMENTOS
+  // ═══════════════════════════════════════════════════════════
+
+  addPiece: (piece) => set((state) => ({
+    pieces: [...state.pieces, {
+      id: `piece_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      ...piece,
+      obtainedAt: new Date().toISOString()
+    }]
+  })),
+
+  addPieces: (newPieces) => set((state) => ({
+    pieces: [...state.pieces, ...newPieces.map(p => ({
+      id: `piece_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      ...p,
+      obtainedAt: new Date().toISOString()
+    }))]
+  })),
+
+  removePiece: (pieceId) => set((state) => ({
+    pieces: state.pieces.filter(p => p.id !== pieceId)
+  })),
+
+  usePieces: (pieceIds) => set((state) => ({
+    pieces: state.pieces.filter(p => !pieceIds.includes(p.id))
+  })),
+
+  // ═══════════════════════════════════════════════════════════
+  // ACCIONES - COMUNIDADES
+  // ═══════════════════════════════════════════════════════════
+
+  addCommunity: (community) => set((state) => ({
+    communities: [...state.communities, {
+      id: `community_${Date.now()}`,
+      ...community,
+      unlockedAt: new Date().toISOString()
+    }]
+  })),
+
+  activateCommunity: (communityId) => {
+    const state = get();
+    const community = state.communities.find(c => c.id === communityId);
+
+    if (!community || community.activated) return;
+
+    // Añadir todos los seres de la comunidad a la colección
+    const newBeings = (community.beings || []).map((being, idx) => ({
+      id: `${communityId}_being_${idx}_${Date.now()}`,
+      ...being,
+      status: 'available',
+      currentMission: null,
+      level: 1,
+      experience: 0,
+      createdAt: new Date().toISOString(),
+      sourceApp: 'community-reward',
+      communityId: communityId
+    }));
+
+    set((state) => ({
+      beings: [...state.beings, ...newBeings],
+      communities: state.communities.map(c =>
+        c.id === communityId ? { ...c, activated: true } : c
+      )
+    }));
+  },
+
+  // ═══════════════════════════════════════════════════════════
   // ACCIONES - CRISIS
   // ═══════════════════════════════════════════════════════════
 
@@ -391,12 +470,24 @@ const useGameStore = create((set, get) => ({
         });
 
         logger.info('✅ Estado cargado desde AsyncStorage', '');
+
+        // Si no hay seres, inicializar uno
+        if (!parsed.beings || parsed.beings.length === 0) {
+          logger.info('⚠️ No hay seres, inicializando jugador...', '');
+          get().initializeNewPlayer();
+        }
+
         return true;
       }
 
-      return false;
+      // No hay datos guardados, inicializar nuevo jugador
+      logger.info('📱 Primera ejecución, inicializando nuevo jugador...', '');
+      get().initializeNewPlayer();
+      return true;
     } catch (error) {
       logger.error('❌ Error cargando estado:', error);
+      // En caso de error, asegurar que hay un ser disponible
+      get().initializeNewPlayer();
       return false;
     }
   },
@@ -422,7 +513,108 @@ const useGameStore = create((set, get) => ({
     userLocation: null,
     nearbyFractals: [],
     error: null
-  })
+  }),
+
+  /**
+   * Inicializar nuevo jugador con datos base
+   */
+  initializeNewPlayer: () => {
+    const playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    // Ser inicial - "Primer Despertar"
+    const starterBeing = {
+      id: 'being_starter_' + Date.now(),
+      name: 'Primer Despertar',
+      avatar: '🌱',
+      status: 'available',
+      currentMission: null,
+      level: 1,
+      experience: 0,
+      createdAt: new Date().toISOString(),
+      attributes: {
+        reflection: 25,
+        analysis: 20,
+        creativity: 30,
+        empathy: 35,
+        communication: 25,
+        leadership: 15,
+        action: 20,
+        resilience: 25,
+        strategy: 15,
+        consciousness: 40,
+        connection: 30,
+        wisdom: 20,
+        organization: 15,
+        collaboration: 25,
+        technical: 10
+      }
+    };
+
+    // Crisis locales iniciales para empezar a jugar
+    const initialCrises = [
+      {
+        id: 'crisis_local_1',
+        type: 'social',
+        title: 'Falta de conexión comunitaria',
+        description: 'Los vecinos del barrio no se conocen entre sí. Se necesita fomentar encuentros.',
+        lat: 40.4168 + (Math.random() - 0.5) * 0.02,
+        lon: -3.7038 + (Math.random() - 0.5) * 0.02,
+        scale: 'local',
+        difficulty: 1,
+        requiredAttributes: { empathy: 20, communication: 15 },
+        rewards: { xp: 50, consciousness: 20, energy: 10 },
+        duration: 30 // 30 minutos
+      },
+      {
+        id: 'crisis_local_2',
+        type: 'environmental',
+        title: 'Parque descuidado',
+        description: 'Un parque cercano necesita limpieza y cuidado de sus plantas.',
+        lat: 40.4168 + (Math.random() - 0.5) * 0.02,
+        lon: -3.7038 + (Math.random() - 0.5) * 0.02,
+        scale: 'local',
+        difficulty: 1,
+        requiredAttributes: { action: 15, connection: 20 },
+        rewards: { xp: 40, consciousness: 15, energy: 15 },
+        duration: 20
+      },
+      {
+        id: 'crisis_local_3',
+        type: 'educational',
+        title: 'Niños sin apoyo escolar',
+        description: 'Varios niños del barrio necesitan ayuda con sus tareas.',
+        lat: 40.4168 + (Math.random() - 0.5) * 0.02,
+        lon: -3.7038 + (Math.random() - 0.5) * 0.02,
+        scale: 'local',
+        difficulty: 2,
+        requiredAttributes: { wisdom: 25, communication: 20 },
+        rewards: { xp: 75, consciousness: 30, energy: 5 },
+        duration: 45
+      }
+    ];
+
+    set({
+      user: {
+        id: playerId,
+        username: 'Nuevo Ser',
+        level: 1,
+        xp: 0,
+        energy: RESOURCES.ENERGY.DEFAULT,
+        maxEnergy: RESOURCES.ENERGY.MAX_BASE,
+        consciousnessPoints: 0,
+        maxBeings: 3
+      },
+      beings: [starterBeing],
+      crises: initialCrises,
+      localCrises: initialCrises,
+      error: null
+    });
+
+    logger.info('✅ Nuevo jugador inicializado con ser inicial y crisis', '');
+
+    // Guardar inmediatamente
+    get().saveToStorage();
+  }
 }));
 
 export default useGameStore;

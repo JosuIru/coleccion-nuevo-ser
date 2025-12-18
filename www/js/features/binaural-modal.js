@@ -51,8 +51,8 @@ class BinauralModal {
                   ${this.i18n.t('binaural.title')}
                 </span>
               </h2>
-              <button id="close-binaural" class="text-3xl hover:text-red-400 transition">
-                ×
+              <button id="close-binaural" class="text-3xl hover:text-red-400 transition" aria-label="Cerrar ondas binaurales">
+                <span aria-hidden="true">×</span>
               </button>
             </div>
             <p class="text-sm text-gray-300 mt-2">

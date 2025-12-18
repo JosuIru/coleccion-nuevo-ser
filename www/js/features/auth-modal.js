@@ -10,6 +10,7 @@ class AuthModal {
     this.authHelper = window.authHelper;
     this.currentView = 'login'; // 'login', 'signup', 'reset', 'profile'
     this.modal = null;
+    this.escapeHandler = null; // Handler for escape key
 
     this.init();
   }
@@ -91,8 +92,8 @@ class AuthModal {
     this.modal.className = 'auth-modal-overlay fade-in';
     this.modal.innerHTML = `
       <div class="auth-modal-container scale-in">
-        <button class="auth-modal-close" onclick="window.authModal.closeModal()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <button class="auth-modal-close" onclick="window.authModal.closeModal()" aria-label="Cerrar modal de autenticación">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" stroke-width="2"/>
           </svg>
         </button>
@@ -452,6 +453,14 @@ class AuthModal {
         this.closeModal();
       }
     });
+
+    // Escape key para cerrar modal
+    this.escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.closeModal();
+      }
+    };
+    document.addEventListener('keydown', this.escapeHandler);
   }
 
   /**
@@ -551,9 +560,16 @@ class AuthModal {
    * Manejar cierre de sesión
    */
   async handleSignOut() {
-    if (!confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-      return;
-    }
+    const confirmed = await window.confirmModal?.show({
+      title: 'Cerrar sesión',
+      message: '¿Estás seguro de que quieres cerrar sesión?',
+      confirmText: 'Cerrar sesión',
+      cancelText: 'Cancelar',
+      type: 'warning',
+      icon: '🚪'
+    }) ?? confirm('¿Estás seguro de que quieres cerrar sesión?');
+
+    if (!confirmed) return;
 
     await this.authHelper.signOut();
     this.closeModal();
@@ -581,6 +597,12 @@ class AuthModal {
    * Cerrar modal
    */
   closeModal() {
+    // Limpiar escape key handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+    }
+
     if (this.modal) {
       this.modal.remove();
       this.modal = null;

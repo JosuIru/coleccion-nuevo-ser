@@ -48,8 +48,9 @@
   <!-- Core Styles -->
   <link rel="stylesheet" href="css/core.css?v=2.8.6.4-a11y">
 
-  <!-- Theme Styles -->
-  <link rel="stylesheet" href="css/themes/codigo-despertar.css">
+  <!-- Theme Styles - LAZY LOADED -->
+  <!-- Los temas ahora se cargan dinámicamente según el libro seleccionado -->
+  <!-- <link rel="stylesheet" href="css/themes/codigo-despertar.css">
   <link rel="stylesheet" href="css/themes/dialogos-maquina.css">
   <link rel="stylesheet" href="css/themes/filosofia-nuevo-ser.css">
   <link rel="stylesheet" href="css/themes/guia-acciones.css">
@@ -58,7 +59,7 @@
   <link rel="stylesheet" href="css/themes/practicas-radicales.css">
   <link rel="stylesheet" href="css/themes/tierra-que-despierta.css">
   <link rel="stylesheet" href="css/themes/toolkit-transicion.css">
-  <link rel="stylesheet" href="css/themes/ahora-instituciones.css">
+  <link rel="stylesheet" href="css/themes/ahora-instituciones.css"> -->
 
   <!-- Frankenstein Lab - Modular CSS - LAZY LOADED -->
   <!-- <link rel="stylesheet" href="css/frankenstein-base.css?v=2.9.52">
@@ -70,6 +71,9 @@
 
   <!-- Microsocieties CSS -->
   <link rel="stylesheet" href="css/features/microsocieties.css">
+
+  <!-- Learning Paths CSS -->
+  <link rel="stylesheet" href="css/learning-paths.css">
 
   <link rel="stylesheet" href="css/brujula-recursos.css">
 
@@ -219,6 +223,37 @@
 </head>
 <body class="min-h-screen">
 
+  <!-- Skip Link for Accessibility -->
+  <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-accent-gold focus:text-black focus:rounded-lg focus:font-semibold">
+    Saltar al contenido principal
+  </a>
+
+  <!-- Main Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-white/10 transition-transform duration-300" id="main-nav" aria-label="Navegación principal">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 text-white hover:text-amber-400 transition-colors" aria-label="Ir a inicio">
+        <span class="text-xl" aria-hidden="true">📚</span>
+        <span class="font-bold text-sm sm:text-base">Colección Nuevo Ser</span>
+      </a>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="about.html" class="text-xs sm:text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">Acerca de</a>
+        <a href="lab.html" class="text-xs sm:text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">Laboratorio</a>
+        <a href="downloads/" class="text-xs sm:text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">Descargas</a>
+        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="sm:hidden p-2 text-slate-400 hover:text-white" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden sm:hidden border-t border-white/10 bg-slate-900/95">
+      <div class="px-4 py-3 space-y-2">
+        <a href="about.html" class="block text-sm text-slate-400 hover:text-white py-2">Acerca de</a>
+        <a href="lab.html" class="block text-sm text-slate-400 hover:text-white py-2">Laboratorio</a>
+        <a href="downloads/" class="block text-sm text-slate-400 hover:text-white py-2">Descargas</a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Splash Screen -->
   <div id="splash-screen">
     <div class="splash-content">
@@ -231,19 +266,24 @@
   </div>
 
   <!-- Main App Container -->
-  <div id="app">
+  <main id="main-content" role="main">
     <!-- Biblioteca (Home) View -->
     <div id="biblioteca-view"></div>
 
     <!-- Book Reader View -->
     <div id="book-reader-view" class="hidden"></div>
-  </div>
+  </main>
 
   <!-- Capacitor TTS Plugin (must load before audioreader) -->
   <script src="js/vendor/capacitor-tts.js"></script>
 
   <!-- Core JS -->
   <script src="js/core/logger.js"></script>
+  <script src="js/core/event-bus.js"></script>
+  <script src="js/core/sanitizer.js"></script>
+  <script src="js/core/focus-trap.js"></script>
+  <script src="js/core/confirm-modal.js"></script>
+  <script src="js/core/loading-indicator.js"></script>
 
   <!-- Lazy Loader - Dynamic Module Loading System -->
   <script src="js/core/lazy-loader.js?v=1.0.0"></script>
@@ -259,23 +299,39 @@
   <script src="js/core/dynamic-colors-helper.js?v=2.9.30"></script>
   <script src="js/core/supabase-config.js"></script>
   <script src="js/core/custom-captcha.js"></script>
-  <script src="js/core/supabase-auth-helper.js"></script>
+  <!-- Auth consolidado: incluye funcionalidades de supabase-auth-helper + premium -->
+  <script src="js/core/auth-helper.js?v=2.2.0"></script>
+  <!-- Configuración de planes premium -->
+  <script src="js/core/plans-config.js?v=1.0.0"></script>
+
+  <!-- Service Layer - Abstracción de Supabase con cache y offline queue -->
+  <script src="js/services/BaseService.js?v=1.0.0"></script>
+  <script src="js/services/BookService.js?v=1.0.0"></script>
+  <script src="js/services/UserService.js?v=1.0.0"></script>
+  <!-- Sync Bridge - Sincronización bidireccional Web <-> Mobile -->
+  <script src="js/services/SyncBridgeService.js?v=1.0.0"></script>
+
   <script src="js/core/supabase-sync-helper.js?v=2.8.6.3-debug"></script>
   <script src="js/core/supabase-notifications-helper.js"></script>
   <script src="js/core/i18n.js"></script>
   <script src="js/core/toast.js"></script>
   <script src="js/core/tts-providers.js"></script>
+  <script src="js/core/audio-cache-manager.js"></script>
+  <script src="js/core/elevenlabs-tts-provider.js"></script>
   <script src="js/core/book-engine.js?v=2.8.6.1"></script>
-  <script src="js/core/biblioteca.js?v=2.9.38"></script>
+  <script src="js/core/biblioteca.js?v=2.9.39"></script>
   <script src="js/core/book-reader.js?v=2.9.28"></script>
 
   <!-- AI System -->
   <script src="js/ai/ai-config.js?v=2.8.6.3-debug"></script>
-  <script src="js/ai/ai-adapter.js?v=2.8.6"></script>
+  <script src="js/ai/ai-adapter.js?v=2.9.32"></script>
+  <!-- Sistema Premium IA -->
+  <script src="js/features/ai-premium.js?v=1.0.0"></script>
+  <script src="js/features/pricing-modal.js?v=1.0.0"></script>
 
   <!-- Features -->
   <script src="js/features/language-selector.js"></script>
-  <script src="js/features/ai-chat-modal.js"></script>
+  <script src="js/features/ai-chat-modal.js?v=2.9.33"></script>
   <script src="js/features/text-selection-helper.js"></script>
   <script src="js/features/ai-settings-modal.js"></script>
   <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
@@ -287,6 +343,8 @@
   <script src="js/core/tts-polyfill.js?v=2.9.30"></script>
   <!-- TTS Platform Helper (detecta y ofrece soluciones para Linux + Chrome) -->
   <script src="js/core/tts-platform-helper.js?v=3.1.2"></script>
+  <!-- Background Audio Helper (mantiene audio activo con pantalla apagada) -->
+  <script src="js/core/background-audio-helper.js?v=1.0.0"></script>
   <script src="js/features/audioreader.js?v=2.9.30"></script>
   <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
   <!-- <script src="js/features/audio-mixer.js?v=3.0.0"></script>
@@ -585,6 +643,13 @@
           autoSummary = new AutoSummary(bookEngine, aiAdapter);
           window.autoSummary = autoSummary;
 
+        }
+
+        // Learning Paths (Rutas de Aprendizaje)
+        if (window.LearningPaths) {
+          learningPaths = new LearningPaths();
+          window.learningPaths = learningPaths;
+          console.log('✅ Learning Paths inicializado');
         }
 
         // AI Suggestions (Sugerencias Contextuales)
@@ -2288,7 +2353,7 @@
           const fullBeing = currentSocietyUI.beings.find(b => b.name === being.name && b.alive);
           if (fullBeing) {
             const avatarURL = window.avatarSystem.generateAvatar(fullBeing, 48);
-            avatarHTML = `<img src="${avatarURL}" class="being-avatar" style="width: 48px; height: 48px; border-radius: 8px; margin-right: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">`;
+            avatarHTML = `<img src="${avatarURL}" alt="Avatar de ${fullBeing.name || 'Ser'}" class="being-avatar" style="width: 48px; height: 48px; border-radius: 8px; margin-right: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">`;
           }
         }
 

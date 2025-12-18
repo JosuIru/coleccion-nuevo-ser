@@ -14,6 +14,7 @@ class AIChatModal {
     this.conversationHistory = [];
     this.isLoading = false;
     this.showConfig = false;
+    this.boundEscHandler = null; // Bound escape key handler
   }
 
   // ==========================================================================
@@ -35,6 +36,12 @@ class AIChatModal {
   }
 
   close() {
+    // Limpiar escape key handler
+    if (this.boundEscHandler) {
+      document.removeEventListener('keydown', this.boundEscHandler);
+      this.boundEscHandler = null;
+    }
+
     const modal = document.getElementById('ai-chat-modal');
     if (modal) {
       modal.remove();
@@ -54,6 +61,7 @@ class AIChatModal {
     const modal = document.createElement('div');
     modal.id = 'ai-chat-modal';
     modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-0 sm:p-4';
+    modal.style.zIndex = '10000';
 
     modal.innerHTML = `
       <div class="bg-gray-900 rounded-none sm:rounded-2xl shadow-2xl max-w-4xl w-full h-full sm:h-[90vh] flex flex-col border-0 sm:border-2 border-cyan-500/30">
@@ -594,11 +602,21 @@ class AIChatModal {
     `;
   }
 
-  formatMessageContent(content) {
-    // Formateo básico de markdown
-    let formatted = content;
+  escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-    // Negritas
+  formatMessageContent(content) {
+    // Sanitizar primero para prevenir XSS
+    let formatted = this.escapeHtml(content);
+
+    // Negritas (después de sanitizar)
     formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
 
     // Cursivas
@@ -695,8 +713,9 @@ class AIChatModal {
       });
     }
 
-    // ESC key
-    document.addEventListener('keydown', this.handleEscKey.bind(this));
+    // ESC key - store bound handler for cleanup
+    this.boundEscHandler = this.handleEscKey.bind(this);
+    document.addEventListener('keydown', this.boundEscHandler);
 
     // Form submit
     const form = document.getElementById('ai-chat-form');
@@ -968,6 +987,36 @@ class AIChatModal {
     const userMessage = input.value.trim();
     input.value = '';
 
+    // Para usuarios Premium/Pro, el proxy maneja los créditos
+    // Solo verificar créditos localmente para usuarios free con API key propia
+    const profile = window.authHelper?.getProfile?.();
+    const isPremiumUser = ['premium', 'pro'].includes(profile?.subscription_tier);
+
+    // Verificar creditos ANTES de procesar (solo para usuarios NO premium)
+    if (window.aiPremium && !isPremiumUser) {
+      try {
+        const estimatedInputTokens = Math.ceil(userMessage.length / 4) + 500;
+        const estimatedOutputTokens = 500;
+        const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
+
+        const hasCredits = await window.aiPremium.checkCredits(estimatedTotalTokens, 'ai_chat');
+        if (!hasCredits) {
+          this.conversationHistory.push({
+            role: 'assistant',
+            content: `💳 **Sin creditos suficientes**\n\nNecesitas aproximadamente ${estimatedTotalTokens} creditos para esta consulta.\n\n💡 **Soluciones:**\n- Actualiza tu plan en ⚙️ Configuracion > Premium\n- Espera al proximo mes para el reset de creditos\n- Usa un proveedor gratuito como HuggingFace u Ollama local`,
+            timestamp: new Date().toISOString(),
+            isError: true
+          });
+          this.render();
+          this.attachEventListeners();
+          return;
+        }
+      } catch (creditError) {
+        console.warn('Credit check warning:', creditError.message);
+        // Continuar si el sistema de creditos falla (modo graceful degradation)
+      }
+    }
+
     // Añadir mensaje del usuario
     this.conversationHistory.push({
       role: 'user',
@@ -984,6 +1033,19 @@ class AIChatModal {
     try {
       // Obtener respuesta de IA
       const response = await this.getAIResponse(userMessage);
+
+      // El proxy ya descuenta créditos automáticamente para usuarios Premium/Pro
+      // Solo consumir localmente si el usuario NO es premium (usa su propia API key)
+      if (window.aiPremium && !isPremiumUser) {
+        try {
+          const provider = window.aiConfig?.getCurrentProvider?.() || 'local';
+          const model = window.aiConfig?.getSelectedModel?.() || 'local';
+          // Usar 1 crédito fijo por mensaje
+          await window.aiPremium.consumeCredits(1, 'ai_chat', provider, model, 0);
+        } catch (consumeError) {
+          console.warn('Credit consume warning:', consumeError.message);
+        }
+      }
 
       // Añadir respuesta de IA
       this.conversationHistory.push({

@@ -1113,3 +1113,176 @@ body, .sidebar, .book-card, input, textarea, select, button {
   transform: scale(1.1);
   transition: transform 0.2s ease;
 }
+
+/* ============================================================================
+   BOTTOM NAVIGATION - Colección Nuevo Ser
+   ============================================================================ */
+
+/* Contenedor con bottom nav necesita padding inferior */
+.has-bottom-nav {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* Bottom Navigation Bar */
+.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  background: var(--color-background-secondary);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  padding: 8px 4px;
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Tab individual */
+.app-bottom-nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 12px;
+  min-width: 56px;
+  min-height: 48px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-bottom-nav-tab:hover,
+.app-bottom-nav-tab:focus {
+  color: var(--color-primary);
+}
+
+.app-bottom-nav-tab.active {
+  color: var(--color-primary);
+}
+
+.app-bottom-nav-tab.active .app-bottom-nav-icon {
+  transform: scale(1.1);
+}
+
+/* Icono del tab */
+.app-bottom-nav-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+/* Label del tab */
+.app-bottom-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* Badge/Indicador (para notificaciones) */
+.app-bottom-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ocultar bottom nav en desktop */
+@media (min-width: 1024px) {
+  .app-bottom-nav {
+    display: none;
+  }
+
+  .has-bottom-nav {
+    padding-bottom: 0 !important;
+  }
+}
+
+/* Ajuste para Android con barra de navegación por gestos */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .app-bottom-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================================================
+   ACCESIBILIDAD - Reduced Motion
+   ============================================================================ */
+
+/* Respetar preferencia del usuario para reducir animaciones */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Mantener indicadores de carga pero sin animación */
+  .loading-spinner,
+  .animate-spin,
+  .animate-pulse {
+    animation: none !important;
+  }
+}
+
+/* ============================================================================
+   ACCESIBILIDAD - Focus Visible
+   ============================================================================ */
+
+/* Mejorar visibilidad del foco para navegación con teclado */
+:focus-visible {
+  outline: 3px solid var(--color-primary, #0ea5e9);
+  outline-offset: 2px;
+}
+
+/* Focus visible mejorado para modales (z-index alto) */
+.modal :focus-visible,
+[role="dialog"] :focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.3);
+}
+
+/* Skip link visible solo cuando está enfocado */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--color-accent, #d4a000);
+  color: #000;
+  padding: 0.75rem 1.5rem;
+  z-index: 10000;
+  font-weight: 600;
+  border-radius: 0 0 8px 0;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}

@@ -19,10 +19,9 @@ class AIConfig {
     // Modelos disponibles por proveedor (actualizados 2025)
     this.availableModels = {
       [this.providers.CLAUDE]: [
-        { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', description: 'Más reciente, equilibrado' },
-        { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', description: 'Rápido y capaz' },
-        { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', description: 'Más económico' },
-        { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', description: 'Máxima calidad' }
+        { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', description: 'Rápido y económico (recomendado)' },
+        { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', description: 'Muy rápido, más económico' },
+        { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', description: 'Máxima calidad (3 créditos)' }
       ],
       [this.providers.OPENAI]: [
         { id: 'gpt-4.1', name: 'GPT-4.1', description: 'Más reciente 2025' },

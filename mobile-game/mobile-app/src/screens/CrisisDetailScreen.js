@@ -15,8 +15,9 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { SafeMapView as MapView, Marker } from '../components/SafeMapView';
 import useGameStore from '../stores/gameStore';
+import MissionService from '../services/MissionService';
 import { COLORS, ATTRIBUTES, CRISIS_TYPES, RESOURCES } from '../config/constants';
 
 const { width } = Dimensions.get('window');
@@ -158,32 +159,36 @@ const CrisisDetailScreen = ({ route, navigation }) => {
     );
   };
 
-  const handleDeployment = () => {
+  const handleDeployment = async () => {
     setDeploymentInProgress(true);
 
-    // Desplegar cada ser
-    selectedBeings.forEach(being => {
-      deployBeing(being.id, crisis.id);
-    });
+    try {
+      // Usar MissionService para el despliegue completo
+      const beingIds = selectedBeings.map(b => b.id);
 
-    // Simular resolución de crisis (en una app real, esto sería asíncrono)
-    setTimeout(() => {
-      const success = Math.random() * 100 < successProbability;
+      const resultado = await MissionService.desplegarSeres(
+        user.id,
+        crisis.id,
+        beingIds,
+        useGameStore
+      );
 
-      if (success) {
-        // Crisis resuelta exitosamente
-        const rewards = {
-          xp: crisis.rewards?.xp || 50,
-          consciousness: crisis.rewards?.consciousness || 20,
-          energy: crisis.rewards?.energy || 0
-        };
-
-        resolveCrisis(crisis.id, true, rewards);
+      if (resultado.exito) {
+        // Misión creada exitosamente
+        const duracionMinutos = resultado.tiempoMinutos || crisis.duration || 30;
+        const probabilidad = resultado.probabilidad?.probabilidad || successProbability / 100;
 
         Alert.alert(
-          '¡Éxito!',
-          `La crisis ha sido resuelta exitosamente.\n\n+${rewards.xp} XP\n+${rewards.consciousness} Consciencia`,
+          '¡Misión Iniciada!',
+          `${selectedBeings.length} ser(es) han sido desplegados.\n\n` +
+          `⏱️ Duración: ${duracionMinutos} minutos\n` +
+          `🎲 Probabilidad: ${(probabilidad * 100).toFixed(0)}%\n\n` +
+          `La misión se resolverá automáticamente. Puedes ver el progreso en "Misiones Activas".`,
           [
+            {
+              text: 'Ver Misiones',
+              onPress: () => navigation.navigate('ActiveMissions')
+            },
             {
               text: 'OK',
               onPress: () => navigation.goBack()
@@ -191,22 +196,31 @@ const CrisisDetailScreen = ({ route, navigation }) => {
           ]
         );
       } else {
-        // Fallo
+        // Error en el despliegue
         Alert.alert(
-          'Misión fallida',
-          'Los seres no pudieron resolver la crisis. Inténtalo de nuevo con un equipo más fuerte.',
+          'Error en el despliegue',
+          resultado.error || 'No se pudo iniciar la misión',
           [
             {
               text: 'OK',
-              onPress: () => {
-                setDeploymentInProgress(false);
-                setSelectedBeings([]);
-              }
+              onPress: () => setDeploymentInProgress(false)
             }
           ]
         );
       }
-    }, 2000);
+    } catch (error) {
+      console.error('Error en handleDeployment:', error);
+      Alert.alert(
+        'Error',
+        'Ocurrió un error inesperado. Inténtalo de nuevo.',
+        [
+          {
+            text: 'OK',
+            onPress: () => setDeploymentInProgress(false)
+          }
+        ]
+      );
+    }
   };
 
   // ═══════════════════════════════════════════════════════════
@@ -307,7 +321,6 @@ const CrisisDetailScreen = ({ route, navigation }) => {
         {/* MAPA PEQUEÑO */}
         <Animated.View style={[styles.mapContainer, { opacity: fadeAnim }]}>
           <MapView
-            provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: crisis.lat,

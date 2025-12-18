@@ -54,6 +54,12 @@
             </intent-filter>
         </service>
 
+        <!-- Audio Foreground Service para reproducción en segundo plano -->
+        <service
+            android:name=".AudioForegroundService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
+
         <!-- Firebase Cloud Messaging Service -->
         <service
             android:name=".NuevoSerFirebaseMessagingService"

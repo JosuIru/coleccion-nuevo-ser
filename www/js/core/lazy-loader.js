@@ -110,11 +110,11 @@ class LazyLoader {
       },
 
       // Premium System (Auth + Payment)
+      // Nota: auth-helper.js ahora se carga globalmente en index.html
       'premium-system': {
         name: 'Sistema Premium',
         scripts: [
-          'js/core/supabase-config.js?v=1.0.0',
-          'js/core/auth-helper.js?v=1.0.0',
+          'js/core/plans-config.js?v=1.0.0',
           'js/features/auth-modal.js?v=1.0.0',
           'js/features/pricing-modal.js?v=1.0.0'
         ],
@@ -130,7 +130,9 @@ class LazyLoader {
           'js/features/ai-premium.js?v=1.0.0',
           'js/features/ai-book-features.js?v=1.0.0',
           'js/features/ai-game-master.js?v=1.0.0',
-          'js/core/ia-integration.js?v=1.0.0'
+          'js/core/ia-integration.js?v=1.0.0',
+          'js/features/ai-persistence.js?v=1.0.0',
+          'js/features/ai-dashboard-widget.js?v=1.0.0'
         ],
         css: [
           'css/ai-features.css?v=1.0.0'
@@ -209,6 +211,9 @@ class LazyLoader {
 
     console.log(`📦 Cargando módulo: ${config.name}...`);
 
+    // Mostrar indicador de carga si está disponible
+    const loaderId = window.loadingIndicator?.showBar(`module-${moduleName}`);
+
     // Crear Promise de carga
     const loadingPromise = this.loadModule(moduleName, config);
     this.loadingModules.set(moduleName, loadingPromise);
@@ -218,10 +223,18 @@ class LazyLoader {
       this.loadedModules.add(moduleName);
       this.loadingModules.delete(moduleName);
       console.log(`✅ Módulo "${config.name}" cargado exitosamente`);
+
+      // Ocultar indicador de carga
+      if (loaderId) window.loadingIndicator?.hide(loaderId);
+
       return Promise.resolve();
     } catch (error) {
       this.loadingModules.delete(moduleName);
       console.error(`❌ Error cargando módulo "${config.name}":`, error);
+
+      // Ocultar indicador de carga en error
+      if (loaderId) window.loadingIndicator?.hide(loaderId);
+
       return Promise.reject(error);
     }
   }
@@ -320,6 +333,62 @@ class LazyLoader {
    */
   getAvailableModules() {
     return Object.keys(this.moduleConfig);
+  }
+
+  /**
+   * Cargar tema CSS de forma dinámica
+   * @param {string} nombreTema - Nombre del tema (ej: 'codigo-despertar')
+   * @returns {Promise} Promise que se resuelve cuando el tema está cargado
+   */
+  async loadThemeCSS(nombreTema) {
+    const dataAtributoTema = 'data-theme-css';
+    const temaActual = document.querySelector(`link[${dataAtributoTema}]`);
+
+    // Si el tema actual es el mismo, no hacer nada
+    if (temaActual && temaActual.getAttribute(dataAtributoTema) === nombreTema) {
+      console.log(`✅ Tema "${nombreTema}" ya está cargado`);
+      return Promise.resolve();
+    }
+
+    console.log(`🎨 Cargando tema: ${nombreTema}...`);
+
+    // Crear la URL del CSS del tema
+    const urlTema = `css/themes/${nombreTema}.css`;
+
+    // Crear nuevo elemento link para el tema
+    const nuevoLinkTema = document.createElement('link');
+    nuevoLinkTema.rel = 'stylesheet';
+    nuevoLinkTema.href = urlTema;
+    nuevoLinkTema.setAttribute(dataAtributoTema, nombreTema);
+
+    return new Promise((resolve, reject) => {
+      nuevoLinkTema.onload = () => {
+        // Remover el tema anterior después de que el nuevo esté cargado
+        if (temaActual) {
+          temaActual.remove();
+          console.log(`🗑️ Tema anterior removido`);
+        }
+        console.log(`✅ Tema "${nombreTema}" cargado exitosamente`);
+        resolve();
+      };
+
+      nuevoLinkTema.onerror = () => {
+        console.error(`❌ Error cargando tema: ${urlTema}`);
+        reject(new Error(`Error cargando tema: ${urlTema}`));
+      };
+
+      // Agregar el nuevo tema al head
+      document.head.appendChild(nuevoLinkTema);
+    });
+  }
+
+  /**
+   * Obtener el tema actualmente cargado
+   * @returns {string|null} Nombre del tema actual o null si no hay ninguno
+   */
+  getCurrentTheme() {
+    const temaActual = document.querySelector('link[data-theme-css]');
+    return temaActual ? temaActual.getAttribute('data-theme-css') : null;
   }
 }
 

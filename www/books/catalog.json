@@ -670,11 +670,18 @@
   },
   "downloads": {
     "android": {
-      "latest": "coleccion-nuevo-ser-v2.9.31-build48-SIGNED.apk",
-      "downloadUrl": "downloads/coleccion-nuevo-ser-v2.9.31-build48-SIGNED.apk",
+      "latest": "coleccion-nuevo-ser-v2.9.32.apk",
+      "downloadUrl": "downloads/coleccion-nuevo-ser-v2.9.32.apk",
       "archiveUrl": "https://github.com/nuevosser/coleccion/releases",
       "note": "APK disponible en www/downloads/. Sistema de limpieza automática evita nesting.",
       "versions": [
+        {
+          "version": "2.9.32",
+          "file": "coleccion-nuevo-ser-v2.9.32.apk",
+          "date": "2025-12-15",
+          "size": "32 MB",
+          "changelog": "🎧 AUDIO EN SEGUNDO PLANO. ✅ Foreground Service para Android: el audio TTS continúa con pantalla apagada. ✅ Notificación persistente con controles de reproducción. ✅ Audio silencioso para web: mantiene proceso activo en navegadores móviles. ✅ Media Session API para controles del sistema. ✅ WakeLock de CPU para prevenir suspensión durante audio. ★ Compatible Android 5.1+ (SDK 22+)."
+        },
         {
           "version": "2.9.31",
           "file": "coleccion-nuevo-ser-v2.9.31-build48-SIGNED.apk",

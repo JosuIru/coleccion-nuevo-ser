@@ -308,10 +308,21 @@ class NotesModal {
     `;
   }
 
-  formatNoteContent(content) {
-    let html = content;
+  escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-    // Headers
+  formatNoteContent(content) {
+    // Sanitizar primero para prevenir XSS
+    let html = this.escapeHtml(content);
+
+    // Headers (después de sanitizar)
     html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
     html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
 

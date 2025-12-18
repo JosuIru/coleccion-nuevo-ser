@@ -54,12 +54,34 @@ class BookReader {
     }
   }
 
+  backToLibrary() {
+    // Hide the book reader
+    this.hide();
+
+    // Show the biblioteca view
+    const bibliotecaView = document.getElementById('biblioteca-view');
+    if (bibliotecaView) {
+      bibliotecaView.classList.remove('hidden');
+    }
+
+    // Update URL hash to remove book reference
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, '', window.location.pathname);
+    }
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+  }
+
   render() {
     const container = document.getElementById('book-reader-view');
     if (!container) return;
 
+    // Detectar si es móvil para mostrar bottom nav
+    const isMobile = window.innerWidth < 1024;
+
     let html = `
-      <div class="book-reader-container flex h-screen overflow-x-hidden">
+      <div class="book-reader-container flex h-screen overflow-x-hidden ${isMobile ? 'has-bottom-nav' : ''}">
         <!-- Sidebar -->
         ${this.renderSidebar()}
 
@@ -73,8 +95,10 @@ class BookReader {
             ${this.renderChapterContent()}
           </div>
 
-          <!-- Footer Navigation -->
-          ${this.renderFooterNav()}
+          <!-- Footer Navigation (prev/next) - oculto en móvil con bottom nav -->
+          <div class="lg:block ${isMobile ? 'hidden' : ''}">
+            ${this.renderFooterNav()}
+          </div>
         </div>
       </div>
     `;
@@ -84,6 +108,9 @@ class BookReader {
 
     // Add floating ExplorationHub button
     html += this.renderExplorationHubButton();
+
+    // Add bottom navigation (solo móvil)
+    html += this.renderReaderBottomNav();
 
     container.innerHTML = html;
 
@@ -113,6 +140,14 @@ class BookReader {
             <h2 class="text-2xl font-bold mb-1">${bookData.title}</h2>
             <p class="text-sm opacity-70">${bookData.subtitle}</p>
           </div>
+
+          <!-- Back to Library Button -->
+          <button onclick="window.bookReader?.backToLibrary()"
+                  class="w-full mb-4 px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm border border-slate-600/50"
+                  aria-label="Volver a la biblioteca">
+            <span aria-hidden="true">←</span>
+            <span>Volver a Biblioteca</span>
+          </button>
 
           <!-- Progress -->
           ${this.renderSidebarProgress()}
@@ -374,6 +409,9 @@ class BookReader {
                   <button id="chapter-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-blue-400" aria-label="Recursos del Capítulo">
                     ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
                   </button>
+                  <button id="learning-paths-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Learning Paths">
+                    ${Icons.target(18)} <span>Learning Paths</span>
+                  </button>
                   ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
                   ${hasResources ? `<button id="book-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
                   ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
@@ -456,6 +494,9 @@ class BookReader {
                   </button>
                   <button id="achievements-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-amber-400" aria-label="Mis Logros">
                     ${Icons.trophy(18)} <span>Mis Logros</span>
+                  </button>
+                  <button id="learning-paths-btn-desktop" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Learning Paths">
+                    ${Icons.target(18)} <span>Learning Paths</span>
                   </button>
                   <div class="border-t border-gray-700 my-1"></div>
                   <button id="content-adapter-btn" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Adaptar Contenido">
@@ -729,6 +770,107 @@ class BookReader {
     `;
   }
 
+  /**
+   * Renderiza la barra de navegación inferior para el lector (solo móvil)
+   * Tabs: Capítulos, Audio, Chat IA, Notas, Más
+   */
+  renderReaderBottomNav() {
+    const prevChapter = this.bookEngine.getPreviousChapter(this.currentChapter?.id);
+    const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
+
+    return `
+      <nav class="app-bottom-nav" id="reader-bottom-nav">
+        <button class="app-bottom-nav-tab" data-tab="capitulos" onclick="window.bookReader?.toggleSidebar()">
+          <span class="app-bottom-nav-icon">📖</span>
+          <span class="app-bottom-nav-label">Índice</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="audio" onclick="window.bookReader?.toggleAudioPlayer()">
+          <span class="app-bottom-nav-icon">🎧</span>
+          <span class="app-bottom-nav-label">Audio</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="chat" onclick="window.bookReader?.openAIChat()">
+          <span class="app-bottom-nav-icon">💬</span>
+          <span class="app-bottom-nav-label">Chat IA</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="notas" onclick="window.bookReader?.openNotes()">
+          <span class="app-bottom-nav-icon">📝</span>
+          <span class="app-bottom-nav-label">Notas</span>
+        </button>
+        <button class="app-bottom-nav-tab" data-tab="nav" onclick="window.bookReader?.showNavOptions()">
+          <span class="app-bottom-nav-icon">${nextChapter ? '➡️' : (prevChapter ? '⬅️' : '⋯')}</span>
+          <span class="app-bottom-nav-label">${nextChapter ? 'Siguiente' : (prevChapter ? 'Anterior' : 'Más')}</span>
+        </button>
+      </nav>
+    `;
+  }
+
+  /**
+   * Toggle del reproductor de audio
+   */
+  toggleAudioPlayer() {
+    if (window.audioReader) {
+      window.audioReader.toggle();
+    } else {
+      window.toast?.info('Cargando reproductor de audio...');
+    }
+    this.setReaderActiveTab('audio');
+  }
+
+  /**
+   * Abre el chat de IA
+   */
+  openAIChat() {
+    if (window.aiBookFeatures) {
+      window.aiBookFeatures.openChat();
+    } else if (window.aiChatModal) {
+      window.aiChatModal.open();
+    } else {
+      window.toast?.info('Chat de IA no disponible');
+    }
+    this.setReaderActiveTab('chat');
+  }
+
+  /**
+   * Abre el modal de notas
+   */
+  openNotes() {
+    if (window.smartNotes) {
+      window.smartNotes.open();
+    } else {
+      window.toast?.info('Sistema de notas no disponible');
+    }
+    this.setReaderActiveTab('notas');
+  }
+
+  /**
+   * Muestra opciones de navegación (prev/next o menú móvil)
+   */
+  showNavOptions() {
+    const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
+    const prevChapter = this.bookEngine.getPreviousChapter(this.currentChapter?.id);
+
+    if (nextChapter) {
+      this.bookEngine.navigateToChapter(nextChapter.id);
+    } else if (prevChapter) {
+      this.bookEngine.navigateToChapter(prevChapter.id);
+    } else {
+      // Si no hay prev/next, abrir menú móvil
+      this.toggleMobileMenu();
+    }
+  }
+
+  /**
+   * Actualiza el tab activo en la navegación inferior del lector
+   */
+  setReaderActiveTab(tabName) {
+    document.querySelectorAll('#reader-bottom-nav .app-bottom-nav-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.dataset.tab === tabName) {
+        tab.classList.add('active');
+      }
+    });
+  }
+
   renderMobileMenu() {
     const bookConfig = this.bookEngine.getCurrentBookConfig();
     const hasTimeline = bookConfig?.features?.timeline?.enabled;
@@ -779,6 +921,12 @@ class BookReader {
             <button id="chapter-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-blue-400">
               ${Icons.create('link', 24)}
               <span>Recursos del Capítulo</span>
+            </button>
+
+            <!-- Learning Paths Button -->
+            <button id="learning-paths-btn-mobile" class="w-full text-left p-3 hover:bg-purple-900/30 rounded-lg transition flex items-center gap-3 text-purple-400 border border-purple-500/30">
+              ${Icons.target(24)}
+              <span>Learning Paths</span>
             </button>
 
             <div class="border-t border-gray-700 my-3"></div>
@@ -1445,6 +1593,22 @@ class BookReader {
       });
     }
 
+    // Learning Paths button mobile
+    const learningPathsBtnMobile = document.getElementById('learning-paths-btn-mobile');
+    if (learningPathsBtnMobile) {
+      learningPathsBtnMobile.addEventListener('click', () => {
+        closeMobileMenuDropdown();
+        if (window.learningPaths) {
+          const currentBookId = this.bookEngine.getCurrentBook();
+          window.learningPaths.open(currentBookId);
+        } else {
+          if (window.toast) {
+            window.toast.error('Learning Paths no disponible');
+          }
+        }
+      });
+    }
+
     // Book Resources button mobile (resourcesViewer)
     const bookResourcesBtnMobile = document.getElementById('book-resources-btn-mobile');
     if (bookResourcesBtnMobile) {
@@ -1746,6 +1910,34 @@ class BookReader {
         closeDropdownHelper();
         if (window.donationsModal) {
           window.donationsModal.open();
+        }
+      });
+    }
+
+    // Learning Paths button dropdown
+    const learningPathsBtnDropdown = document.getElementById('learning-paths-btn-dropdown');
+    if (learningPathsBtnDropdown) {
+      learningPathsBtnDropdown.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.learningPaths) {
+          const currentBookId = this.bookEngine.getCurrentBook();
+          window.learningPaths.open(currentBookId);
+        } else {
+          window.toast?.error('Learning Paths no disponible');
+        }
+      });
+    }
+
+    // Learning Paths button desktop (tools dropdown)
+    const learningPathsBtnDesktop = document.getElementById('learning-paths-btn-desktop');
+    if (learningPathsBtnDesktop) {
+      learningPathsBtnDesktop.addEventListener('click', () => {
+        closeDropdownHelper();
+        if (window.learningPaths) {
+          const currentBookId = this.bookEngine.getCurrentBook();
+          window.learningPaths.open(currentBookId);
+        } else {
+          window.toast?.error('Learning Paths no disponible');
         }
       });
     }

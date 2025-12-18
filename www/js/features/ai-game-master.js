@@ -29,6 +29,60 @@ class AIGameMaster {
     console.log('✅ AIGameMaster inicializado');
   }
 
+  /**
+   * Obtener userId actual
+   */
+  getUserId() {
+    return this.authHelper?.getUser?.()?.id || null;
+  }
+
+  /**
+   * Registrar actividad IA (misiones, chat, narrativa, análisis)
+   */
+  async recordActivity(feature, creditsUsed, payload = {}) {
+    if (!window.aiPersistence) return;
+    try {
+      await window.aiPersistence.logActivity({
+        userId: this.getUserId(),
+        feature,
+        creditsUsed,
+        payload,
+      });
+    } catch (error) {
+      console.warn('AI Game Master > recordActivity falló', error);
+    }
+  }
+
+  async persistConversation(args) {
+    if (!window.aiPersistence || !this.getUserId()) return;
+    try {
+      await window.aiPersistence.logConversation({
+        userId: this.getUserId(),
+        ...args,
+      });
+    } catch (error) {
+      console.warn('AI Game Master > persistConversation falló', error);
+    }
+  }
+
+  async persistMission(mission, metadata = {}) {
+    if (!window.aiPersistence || !mission?.name) return;
+    try {
+      await window.aiPersistence.createMission({
+        name: mission.name,
+        source: 'Game Master IA',
+        parameters: {
+          difficulty: metadata.difficulty,
+          theme: metadata.theme,
+          missionId: mission.id,
+          ...metadata,
+        },
+      });
+    } catch (error) {
+      console.warn('AI Game Master > persistMission falló', error);
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // NPCs CONVERSACIONALES (PRO Feature)
   // ═══════════════════════════════════════════════════════════════════════════
@@ -117,6 +171,28 @@ INSTRUCCIONES:
       const cache = this.conversationCache.get(npcId);
       cache.push({ role: 'user', content: userMessage });
       cache.push({ role: 'assistant', content: response });
+
+      const missionId = gameState?.missionId || null;
+      await Promise.all([
+        this.persistConversation({
+          missionId,
+          message: userMessage,
+          role: 'user',
+          metadata: { npcId, missionPhase: gameState?.missionPhase },
+        }),
+        this.persistConversation({
+          missionId,
+          message: response,
+          role: 'npc',
+          metadata: { npcId, npcName: npcPersonality.name },
+        }),
+      ]);
+
+      await this.recordActivity('npc_chat', 250, {
+        npcId,
+        missionId,
+        phase: gameState?.missionPhase,
+      });
 
       return {
         success: true,
@@ -255,9 +331,22 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO:
 
       console.log(`✅ Misión generada: ${mission.mission.name}`);
 
+      const missionPayload = mission.mission;
+      await this.persistMission(missionPayload, {
+        difficulty,
+        theme,
+        generatedAt: new Date().toISOString(),
+      });
+
+      await this.recordActivity('mission_generate', 600, {
+        difficulty,
+        theme,
+        missionName: missionPayload.name,
+      });
+
       return {
         success: true,
-        mission: mission.mission,
+        mission: missionPayload,
         metadata: {
           generatedAt: new Date().toISOString(),
         },
@@ -349,6 +438,12 @@ LONGITUD: 300-400 palabras`;
         estimatedTokens
       );
 
+      await this.recordActivity('adaptive_narrative', 400, {
+        storyContext,
+        lastAction,
+        availableChoices,
+      });
+
       return {
         success: true,
         narrative,
@@ -435,6 +530,11 @@ Formato: Análisis conciso, tono motivador, incluir emojis`;
         this.aiAdapter.currentModel || 'claude-3-5-sonnet',
         estimatedTokens
       );
+
+      await this.recordActivity('being_analysis', 300, {
+        targetMission: targetMission?.name,
+        advantage: analysis,
+      });
 
       return {
         success: true,

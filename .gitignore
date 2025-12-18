@@ -67,3 +67,16 @@ google-services.json
 .env.local
 www/.env
 www/js/core/env.js
+
+# API Proxy configuration (contiene CLAUDE_API_KEY)
+api/config.php
+
+# Gradle local properties (contiene API keys y credenciales)
+gradle.properties.local
+**/gradle.properties.local
+
+# APK signature files
+*.idsig
+
+# Mobile game specific
+mobile-game/mobile-app/android/gradle.properties.local

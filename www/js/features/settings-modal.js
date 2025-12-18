@@ -17,6 +17,7 @@ class SettingsModal {
     constructor() {
         this.currentTab = 'general';
         this.modalId = 'settings-modal';
+        this.escapeHandler = null; // Handler for escape key
     }
 
     /**
@@ -401,9 +402,361 @@ class SettingsModal {
                     </div>
                 ` : ''}
             </div>
+
+            <!-- ElevenLabs Premium (requiere suscripción) -->
+            ${this.renderElevenLabsTTSSettings()}
         `;
     }
 
+    /**
+     * Renderiza la configuración de ElevenLabs TTS (Premium con suscripción)
+     */
+    renderElevenLabsTTSSettings() {
+        const hasPremium = window.aiPremium && window.aiPremium.hasFeature('elevenlabs_tts');
+        const elevenLabsVoice = localStorage.getItem('elevenlabs-voice') || 'EXAVITQu4vr4xnSDxMaL';
+        const elevenLabsStability = localStorage.getItem('elevenlabs-stability') || '0.5';
+        const elevenLabsSimilarity = localStorage.getItem('elevenlabs-similarity') || '0.75';
+
+        const voices = [
+            { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sara', gender: 'Femenina', desc: 'Clara y natural' },
+            { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam', gender: 'Masculina', desc: 'Profesional' },
+            { id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel', gender: 'Femenina', desc: 'Cálida' },
+            { id: 'AZnzlk1XvdvUeBnXmlld', name: 'Domi', gender: 'Femenina', desc: 'Joven' },
+            { id: 'MF3mGyEYCl7XYWbV9V6O', name: 'Elli', gender: 'Femenina', desc: 'Expresiva' },
+            { id: 'TxGEqnHWrfWFTfGW9XjX', name: 'Josh', gender: 'Masculina', desc: 'Profunda' },
+            { id: 'VR6AewLTigWG4xSOukaG', name: 'Arnold', gender: 'Masculina', desc: 'Fuerte' },
+            { id: 'pMsXgVXv3BLzUgSXRplE', name: 'Serena', gender: 'Femenina', desc: 'Suave' }
+        ];
+
+        return `
+            <div class="setting-item border-t border-slate-700 pt-6 mt-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="mic-2" class="w-5 h-5 text-purple-400"></i>
+                    <h4 class="text-base sm:text-lg font-bold text-white">Voces Premium ElevenLabs</h4>
+                    <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">Suscripción</span>
+                </div>
+
+                <p class="text-sm text-gray-400 mb-4">
+                    Voces IA ultra-realistas de ElevenLabs. Las voces más naturales disponibles para narración.
+                </p>
+
+                <!-- Estado de suscripción -->
+                <div class="flex items-center gap-2 mb-4">
+                    ${hasPremium ?
+                        `<span class="text-xs bg-green-500/20 text-green-300 px-3 py-1 rounded-full flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-3 h-3"></i>
+                            Premium activo
+                        </span>` :
+                        `<span class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full flex items-center gap-1">
+                            <i data-lucide="lock" class="w-3 h-3"></i>
+                            Requiere Premium
+                        </span>`
+                    }
+                </div>
+
+                ${hasPremium ? `
+                    <!-- Selector de voz ElevenLabs -->
+                    <div class="mb-4">
+                        <label class="block mb-2">
+                            <span class="text-sm text-gray-300 font-medium">Voz ElevenLabs</span>
+                        </label>
+                        <select id="elevenlabs-voice-select"
+                                class="w-full bg-slate-700 text-white rounded-lg px-3 py-2 text-sm border border-slate-600 focus:border-purple-500 focus:outline-none">
+                            ${voices.map(v => `
+                                <option value="${v.id}" ${elevenLabsVoice === v.id ? 'selected' : ''}>
+                                    ${v.name} (${v.gender}) - ${v.desc}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+
+                    <!-- Ajustes de voz -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block mb-2">
+                                <span class="text-sm text-gray-300 font-medium">Estabilidad</span>
+                                <span class="text-xs text-gray-500 ml-2">(${elevenLabsStability})</span>
+                            </label>
+                            <input type="range" id="elevenlabs-stability-slider" min="0" max="1" step="0.1" value="${elevenLabsStability}"
+                                   class="w-full accent-purple-600">
+                            <p class="text-xs text-gray-500 mt-1">Mayor = más consistente, Menor = más expresivo</p>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2">
+                                <span class="text-sm text-gray-300 font-medium">Similitud</span>
+                                <span class="text-xs text-gray-500 ml-2">(${elevenLabsSimilarity})</span>
+                            </label>
+                            <input type="range" id="elevenlabs-similarity-slider" min="0" max="1" step="0.05" value="${elevenLabsSimilarity}"
+                                   class="w-full accent-purple-600">
+                            <p class="text-xs text-gray-500 mt-1">Mayor = más fiel a la voz original</p>
+                        </div>
+                    </div>
+
+                    <!-- Botón de prueba -->
+                    <div class="mt-4">
+                        <button id="test-elevenlabs-voice-btn"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors">
+                            <i data-lucide="play" class="w-4 h-4 inline mr-1"></i>
+                            Probar Voz
+                        </button>
+                    </div>
+
+                    <!-- Información de créditos -->
+                    <div class="mt-4 p-3 bg-slate-700/50 rounded-lg border border-slate-600">
+                        <h5 class="text-xs font-semibold text-purple-400 mb-2 flex items-center gap-1">
+                            <i data-lucide="coins" class="w-3 h-3"></i>
+                            Uso de créditos
+                        </h5>
+                        <ul class="text-xs text-gray-400 space-y-1">
+                            <li>• ~5 créditos por cada 1000 caracteres</li>
+                            <li>• Capítulo promedio: ~15-25 créditos</li>
+                            <li>• Audio cacheado para no repetir gastos</li>
+                        </ul>
+                        ${window.aiPremium ? `
+                            <p class="text-xs text-purple-300 mt-2">
+                                Créditos disponibles: ${window.aiPremium.getCreditsRemaining()} / ${window.aiPremium.getCreditsTotal()}
+                            </p>
+                        ` : ''}
+                    </div>
+
+                    <!-- Botón para activar como provider -->
+                    <div class="mt-4 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <div>
+                                <span class="text-sm text-white font-medium">Usar ElevenLabs como voz principal</span>
+                                <p class="text-xs text-gray-400 mt-1">Activar para la narración de libros</p>
+                            </div>
+                            <input type="checkbox" id="elevenlabs-as-default-toggle"
+                                   ${localStorage.getItem('tts-provider') === 'elevenlabs' ? 'checked' : ''}
+                                   class="toggle-checkbox">
+                        </label>
+                    </div>
+                ` : `
+                    <!-- Call to action para Premium -->
+                    <div class="p-4 bg-purple-900/20 rounded-lg border border-purple-500/30 text-center">
+                        <p class="text-sm text-purple-200 mb-3">
+                            Actualiza a Premium para desbloquear voces ElevenLabs y todas las funciones de IA.
+                        </p>
+                        <button onclick="window.pricingModal?.showPricingModal()"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors">
+                            Ver Planes Premium
+                        </button>
+                    </div>
+                `}
+
+                <!-- Opción de API key personal (alternativa) -->
+                ${this.renderElevenLabsPersonalKeySection()}
+
+                <!-- Gestión de caché de audio -->
+                ${this.renderAudioCacheSection()}
+            </div>
+        `;
+    }
+
+    /**
+     * Renderiza la sección de gestión de caché de audio ElevenLabs
+     */
+    renderAudioCacheSection() {
+        const isNative = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
+
+        return `
+            <div class="mt-6 pt-6 border-t border-slate-600" id="audio-cache-section">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="folder-open" class="w-4 h-4 text-blue-400"></i>
+                    <h5 class="text-sm font-semibold text-gray-300">AudioLibros Descargados</h5>
+                </div>
+
+                <p class="text-xs text-gray-500 mb-3">
+                    ${isNative
+                        ? 'Los audios se guardan en <strong class="text-blue-400">Documentos/AudioLibros</strong> para escuchar offline.'
+                        : 'Los audios se guardan en el almacenamiento del navegador.'}
+                </p>
+
+                <!-- Ubicación de archivos -->
+                <div id="audio-path-info" class="text-xs text-gray-500 mb-3 p-2 bg-slate-900 rounded border border-slate-700">
+                    <i data-lucide="folder" class="w-3 h-3 inline"></i>
+                    <span id="audio-path-text">Cargando ubicación...</span>
+                </div>
+
+                <!-- Estadísticas de caché -->
+                <div id="audio-cache-stats" class="p-3 bg-slate-800 rounded-lg mb-3">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-400">Cargando estadísticas...</span>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex gap-2">
+                    <button id="refresh-cache-stats-btn"
+                            class="flex-1 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-gray-300 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                        Actualizar
+                    </button>
+                    <button id="clear-audio-cache-btn"
+                            class="flex-1 px-3 py-2 bg-red-900/30 hover:bg-red-900/50 text-red-300 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1">
+                        <i data-lucide="trash-2" class="w-3 h-3"></i>
+                        Limpiar Todo
+                    </button>
+                </div>
+
+                <p class="text-xs text-gray-600 mt-2">
+                    ${isNative
+                        ? 'Puedes acceder a los archivos MP3 desde cualquier reproductor de música.'
+                        : 'Límite: 500 MB. Los audios más antiguos se eliminan automáticamente.'}
+                </p>
+            </div>
+        `;
+    }
+
+    /**
+     * Actualiza las estadísticas de caché de audio en la UI
+     */
+    async updateAudioCacheStats() {
+        const statsContainer = document.getElementById('audio-cache-stats');
+        const pathText = document.getElementById('audio-path-text');
+
+        const cacheManager = window.audioCacheManager;
+        if (!cacheManager) {
+            if (statsContainer) {
+                statsContainer.innerHTML = `
+                    <p class="text-xs text-gray-500">Sistema de caché no disponible</p>
+                `;
+            }
+            return;
+        }
+
+        try {
+            // Mostrar ubicación de archivos
+            if (pathText) {
+                const audioPath = await cacheManager.getAudioLibrosPath();
+                pathText.textContent = audioPath;
+            }
+
+            const cacheSize = await cacheManager.getCacheSize();
+            const downloadedBooks = await cacheManager.getDownloadedBooks();
+
+            if (!statsContainer) return;
+
+            if (cacheSize.itemCount === 0) {
+                statsContainer.innerHTML = `
+                    <div class="text-center py-2">
+                        <i data-lucide="music" class="w-6 h-6 text-gray-600 mx-auto mb-2"></i>
+                        <p class="text-xs text-gray-500">No hay audios descargados</p>
+                        <p class="text-xs text-gray-600 mt-1">Reproduce un capítulo con voz ElevenLabs para descargar</p>
+                    </div>
+                `;
+                if (window.Icons) window.Icons.init();
+                return;
+            }
+
+            statsContainer.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-xs">Espacio usado</span>
+                        <span class="text-white text-sm font-medium">${cacheSize.megabytes} MB</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-xs">Archivos MP3</span>
+                        <span class="text-white text-sm font-medium">${cacheSize.itemCount}</span>
+                    </div>
+                    ${downloadedBooks.length > 0 ? `
+                        <div class="pt-2 border-t border-slate-700">
+                            <span class="text-gray-500 text-xs block mb-2">Libros descargados:</span>
+                            ${downloadedBooks.map(book => `
+                                <div class="flex items-center justify-between text-xs mb-1 p-1.5 bg-slate-900/50 rounded">
+                                    <div class="flex items-center gap-1.5 truncate max-w-[65%]">
+                                        <i data-lucide="book" class="w-3 h-3 text-blue-400 flex-shrink-0"></i>
+                                        <span class="text-gray-300 truncate">${this.formatBookName(book.bookId)}</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-gray-400">${book.totalFiles} audio${book.totalFiles > 1 ? 's' : ''}</span>
+                                        <span class="text-gray-600 ml-1">(${(book.totalSize / 1024 / 1024).toFixed(1)} MB)</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            if (window.Icons) window.Icons.init();
+        } catch (error) {
+            console.error('Error obteniendo estadísticas de caché:', error);
+            if (statsContainer) {
+                statsContainer.innerHTML = `
+                    <p class="text-xs text-red-400">Error cargando estadísticas</p>
+                `;
+            }
+        }
+    }
+
+    /**
+     * Formatea el nombre del libro para mostrar
+     */
+    formatBookName(bookId) {
+        if (!bookId) return 'Desconocido';
+        return bookId
+            .replace(/-/g, ' ')
+            .replace(/_/g, ' ')
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    /**
+     * Renderiza la sección de API key personal de ElevenLabs
+     */
+    renderElevenLabsPersonalKeySection() {
+        const hasPersonalKey = !!localStorage.getItem('elevenlabs-personal-key');
+        const usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
+
+        return `
+            <div class="mt-6 pt-6 border-t border-slate-600">
+                <div class="flex items-center gap-2 mb-3">
+                    <i data-lucide="key" class="w-4 h-4 text-gray-400"></i>
+                    <h5 class="text-sm font-semibold text-gray-300">Usar tu propia cuenta ElevenLabs</h5>
+                </div>
+
+                <p class="text-xs text-gray-500 mb-3">
+                    Alternativa: usa tu API key personal de ElevenLabs en vez del servicio incluido.
+                    Pagas directamente a ElevenLabs.
+                </p>
+
+                <!-- Toggle para usar key personal -->
+                <label class="flex items-center justify-between cursor-pointer mb-3 p-2 bg-slate-800 rounded-lg">
+                    <span class="text-sm text-gray-300">Usar mi API key personal</span>
+                    <input type="checkbox" id="elevenlabs-use-personal-key-toggle"
+                           ${usePersonalKey ? 'checked' : ''}
+                           class="toggle-checkbox">
+                </label>
+
+                <!-- Input de API key (visible si toggle activo) -->
+                <div id="elevenlabs-personal-key-section" class="${usePersonalKey ? '' : 'hidden'}">
+                    <label class="block mb-2">
+                        <span class="text-xs text-gray-400">API Key de ElevenLabs</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="password"
+                               id="elevenlabs-personal-key-input"
+                               placeholder="xi-..."
+                               value="${hasPersonalKey ? '••••••••••••••••' : ''}"
+                               class="flex-1 bg-slate-700 text-white rounded-lg px-3 py-2 text-sm border border-slate-600 focus:border-purple-500 focus:outline-none">
+                        <button id="test-elevenlabs-personal-key-btn"
+                                class="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm transition-colors"
+                                ${!hasPersonalKey ? 'disabled' : ''}>
+                            Probar
+                        </button>
+                    </div>
+                    <a href="https://elevenlabs.io/app/settings/api-keys"
+                       target="_blank"
+                       class="text-xs text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 mt-2">
+                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                        Obtener API Key en ElevenLabs
+                    </a>
+                </div>
+            </div>
+        `;
+    }
 
     /**
      * Carga las voces disponibles de forma asíncrona
@@ -911,6 +1264,14 @@ class SettingsModal {
             }
         });
 
+        // Escape key para cerrar modal
+        this.escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                this.close();
+            }
+        };
+        document.addEventListener('keydown', this.escapeHandler);
+
         // Tab switching (desktop sidebar)
         document.querySelectorAll('.settings-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
@@ -1132,6 +1493,291 @@ class SettingsModal {
                 window.toast.success(enabled ? 'Caché activado' : 'Caché desactivado');
             }
         });
+
+        // ==================== ElevenLabs TTS Premium ====================
+
+        // Selector de voz ElevenLabs
+        const elevenLabsVoiceSelect = document.getElementById('elevenlabs-voice-select');
+        elevenLabsVoiceSelect?.addEventListener('change', (e) => {
+            const voice = e.target.value;
+            localStorage.setItem('elevenlabs-voice', voice);
+
+            if (window.toast) {
+                const voiceName = e.target.options[e.target.selectedIndex].text.split(' (')[0];
+                window.toast.success(`Voz cambiada a ${voiceName}`);
+            }
+        });
+
+        // Slider de estabilidad
+        const stabilitySlider = document.getElementById('elevenlabs-stability-slider');
+        stabilitySlider?.addEventListener('input', (e) => {
+            const value = e.target.value;
+            localStorage.setItem('elevenlabs-stability', value);
+            // Actualizar label
+            const label = stabilitySlider.parentElement?.querySelector('.text-gray-500');
+            if (label) {
+                label.textContent = `(${value})`;
+            }
+        });
+
+        // Slider de similitud
+        const similaritySlider = document.getElementById('elevenlabs-similarity-slider');
+        similaritySlider?.addEventListener('input', (e) => {
+            const value = e.target.value;
+            localStorage.setItem('elevenlabs-similarity', value);
+            // Actualizar label
+            const label = similaritySlider.parentElement?.querySelector('.text-gray-500');
+            if (label) {
+                label.textContent = `(${value})`;
+            }
+        });
+
+        // Botón de prueba ElevenLabs
+        const testElevenLabsBtn = document.getElementById('test-elevenlabs-voice-btn');
+        testElevenLabsBtn?.addEventListener('click', async () => {
+            // Verificar premium
+            if (!window.aiPremium || !window.aiPremium.hasFeature('elevenlabs_tts')) {
+                if (window.toast) {
+                    window.toast.error('Requiere suscripción Premium');
+                }
+                return;
+            }
+
+            // Deshabilitar botón
+            testElevenLabsBtn.disabled = true;
+            testElevenLabsBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 inline mr-1 animate-spin"></i> Generando...';
+
+            try {
+                // Obtener configuración
+                const voice = localStorage.getItem('elevenlabs-voice') || 'EXAVITQu4vr4xnSDxMaL';
+                const stability = parseFloat(localStorage.getItem('elevenlabs-stability') || '0.5');
+                const similarity = parseFloat(localStorage.getItem('elevenlabs-similarity') || '0.75');
+
+                const testText = 'Hola, soy una voz de ElevenLabs. Mi pronunciación es increíblemente natural y expresiva.';
+
+                // Usar el provider de ElevenLabs
+                if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
+                    await window.audioReader.ttsManager.providers.elevenlabs.speak(testText, {
+                        voice,
+                        stability,
+                        similarity_boost: similarity,
+                        onEnd: () => {
+                            if (window.toast) {
+                                window.toast.success('¡Voz ElevenLabs funcionando!');
+                            }
+                        },
+                        onError: (error) => {
+                            console.error('Error en prueba ElevenLabs:', error);
+                            if (window.toast) {
+                                window.toast.error(error.message || 'Error al probar voz');
+                            }
+                        }
+                    });
+                } else {
+                    throw new Error('ElevenLabs provider no disponible');
+                }
+            } catch (error) {
+                console.error('Error al probar ElevenLabs:', error);
+                if (window.toast) {
+                    window.toast.error(error.message || 'Error al probar voz ElevenLabs');
+                }
+            } finally {
+                // Rehabilitar botón
+                testElevenLabsBtn.disabled = false;
+                testElevenLabsBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4 inline mr-1"></i> Probar Voz';
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+        });
+
+        // Toggle para usar ElevenLabs como provider predeterminado
+        const elevenLabsDefaultToggle = document.getElementById('elevenlabs-as-default-toggle');
+        elevenLabsDefaultToggle?.addEventListener('change', (e) => {
+            const useElevenLabs = e.target.checked;
+            const usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
+
+            if (useElevenLabs) {
+                // Si usa key personal, no necesita premium
+                if (!usePersonalKey) {
+                    // Verificar que tenga premium
+                    if (!window.aiPremium || !window.aiPremium.hasFeature('elevenlabs_tts')) {
+                        e.target.checked = false;
+                        if (window.toast) {
+                            window.toast.error('Requiere suscripción Premium o API key personal');
+                        }
+                        return;
+                    }
+                }
+
+                // Activar ElevenLabs
+                localStorage.setItem('tts-provider', 'elevenlabs');
+                if (window.audioReader) {
+                    window.audioReader.ttsProvider = 'elevenlabs';
+                }
+                if (window.toast) {
+                    window.toast.success('Voces ElevenLabs activadas');
+                }
+            } else {
+                // Volver a navegador
+                localStorage.setItem('tts-provider', 'browser');
+                if (window.audioReader) {
+                    window.audioReader.ttsProvider = 'browser';
+                }
+                if (window.toast) {
+                    window.toast.info('Volviendo a voces del navegador');
+                }
+            }
+        });
+
+        // ==================== ElevenLabs API Key Personal ====================
+
+        // Toggle para usar API key personal
+        const usePersonalKeyToggle = document.getElementById('elevenlabs-use-personal-key-toggle');
+        usePersonalKeyToggle?.addEventListener('change', (e) => {
+            const usePersonal = e.target.checked;
+            localStorage.setItem('elevenlabs-use-personal-key', usePersonal.toString());
+
+            // Mostrar/ocultar sección de API key
+            const keySection = document.getElementById('elevenlabs-personal-key-section');
+            if (keySection) {
+                keySection.classList.toggle('hidden', !usePersonal);
+            }
+
+            // Actualizar provider si está activo
+            if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
+                window.audioReader.ttsManager.providers.elevenlabs.setUsePersonalKey(usePersonal);
+            }
+
+            if (window.toast) {
+                window.toast.info(usePersonal ? 'Usando API key personal' : 'Usando servicio Premium');
+            }
+        });
+
+        // Input de API key personal
+        const personalKeyInput = document.getElementById('elevenlabs-personal-key-input');
+        personalKeyInput?.addEventListener('change', (e) => {
+            const apiKey = e.target.value.trim();
+            if (apiKey && apiKey !== '••••••••••••••••') {
+                localStorage.setItem('elevenlabs-personal-key', apiKey);
+
+                // Configurar en provider
+                if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
+                    window.audioReader.ttsManager.providers.elevenlabs.setApiKey(apiKey);
+                }
+
+                // Habilitar botón de prueba
+                const testBtn = document.getElementById('test-elevenlabs-personal-key-btn');
+                if (testBtn) {
+                    testBtn.disabled = false;
+                }
+
+                if (window.toast) {
+                    window.toast.success('API Key personal guardada');
+                }
+            }
+        });
+
+        // Botón de prueba de API key personal
+        const testPersonalKeyBtn = document.getElementById('test-elevenlabs-personal-key-btn');
+        testPersonalKeyBtn?.addEventListener('click', async () => {
+            const apiKey = localStorage.getItem('elevenlabs-personal-key');
+            if (!apiKey) {
+                if (window.toast) {
+                    window.toast.error('Configura tu API Key primero');
+                }
+                return;
+            }
+
+            testPersonalKeyBtn.disabled = true;
+            testPersonalKeyBtn.textContent = '...';
+
+            try {
+                // Crear provider temporal para probar
+                const testProvider = new window.ElevenLabsTTSProvider();
+                testProvider.setApiKey(apiKey);
+                testProvider.setUsePersonalKey(true);
+
+                const testText = 'Prueba de voz con tu API key personal.';
+                await testProvider.speak(testText, {
+                    onEnd: () => {
+                        if (window.toast) {
+                            window.toast.success('¡API Key válida!');
+                        }
+                    },
+                    onError: (error) => {
+                        if (window.toast) {
+                            window.toast.error(error.message || 'API Key inválida');
+                        }
+                    }
+                });
+            } catch (error) {
+                if (window.toast) {
+                    window.toast.error(error.message || 'Error probando API Key');
+                }
+            } finally {
+                testPersonalKeyBtn.disabled = false;
+                testPersonalKeyBtn.textContent = 'Probar';
+            }
+        });
+
+        // === Listeners de Caché de Audio ===
+
+        // Actualizar estadísticas de caché cuando se abre el tab
+        this.updateAudioCacheStats();
+
+        // Botón de actualizar estadísticas
+        const refreshCacheBtn = document.getElementById('refresh-cache-stats-btn');
+        refreshCacheBtn?.addEventListener('click', async () => {
+            refreshCacheBtn.disabled = true;
+            const icon = refreshCacheBtn.querySelector('i');
+            if (icon) icon.classList.add('animate-spin');
+
+            await this.updateAudioCacheStats();
+
+            setTimeout(() => {
+                refreshCacheBtn.disabled = false;
+                if (icon) icon.classList.remove('animate-spin');
+            }, 500);
+        });
+
+        // Botón de limpiar caché
+        const clearCacheBtn = document.getElementById('clear-audio-cache-btn');
+        clearCacheBtn?.addEventListener('click', async () => {
+            const cacheManager = window.audioCacheManager;
+            if (!cacheManager) return;
+
+            // Confirmar antes de borrar
+            const confirmed = await window.confirmModal?.show({
+                title: 'Limpiar caché de audio',
+                message: '¿Eliminar todos los audios guardados? Tendrás que regenerarlos la próxima vez.',
+                confirmText: 'Eliminar',
+                cancelText: 'Cancelar',
+                type: 'warning'
+            }) ?? confirm('¿Eliminar todos los audios guardados?');
+            if (!confirmed) return;
+
+            clearCacheBtn.disabled = true;
+            clearCacheBtn.innerHTML = '<i data-lucide="loader" class="w-3 h-3 animate-spin"></i> Limpiando...';
+
+            try {
+                await cacheManager.clearAll();
+                await this.updateAudioCacheStats();
+
+                if (window.toast) {
+                    window.toast.success('Caché de audio limpiado');
+                }
+            } catch (error) {
+                console.error('Error limpiando caché:', error);
+                if (window.toast) {
+                    window.toast.error('Error al limpiar caché');
+                }
+            } finally {
+                clearCacheBtn.disabled = false;
+                clearCacheBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i> Limpiar Caché';
+                if (window.Icons) window.Icons.init();
+            }
+        });
     }
 
     /**
@@ -1326,6 +1972,12 @@ class SettingsModal {
      * Cierra el modal
      */
     close() {
+        // Limpiar escape key handler
+        if (this.escapeHandler) {
+            document.removeEventListener('keydown', this.escapeHandler);
+            this.escapeHandler = null;
+        }
+
         // Remover listener de resize
         if (this.resizeListener) {
             window.removeEventListener('resize', this.resizeListener);

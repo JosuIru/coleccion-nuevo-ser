@@ -136,41 +136,113 @@ class DeepLinkService {
                 return;
             }
 
+            // Normalize attributes (Frankenstein uses same names)
+            const normalizedAttributes = this.normalizeAttributes(beingData.attributes || beingData.being?.attributes || {});
+
+            // Select avatar based on dominant attribute
+            const avatar = this.selectAvatarForBeing(normalizedAttributes);
+
             // Add being to game store
             const gameStore = useGameStore.getState();
             const newBeing = {
-                id: beingData.id || `web_${Date.now()}`,
-                name: beingData.name || name || 'Ser Importado',
-                attributes: beingData.attributes || {},
-                sourceApp: 'coleccion-nuevo-ser',
-                webBeingId: beingData.id,
-                importedAt: new Date().toISOString(),
+                id: `frankenstein_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                name: beingData.name || beingData.being?.name || name || 'Ser Importado',
+                avatar: avatar,
+                status: 'available',
+                currentMission: null,
                 level: 1,
                 experience: 0,
-                synergy: beingData.synergy || 0,
-                deployed: false
+                createdAt: new Date().toISOString(),
+                attributes: normalizedAttributes,
+                // Metadata de origen
+                sourceApp: 'frankenstein-lab',
+                webBeingId: beingData.id,
+                importedAt: new Date().toISOString(),
+                totalPower: beingData.totalPower || beingData.being?.totalPower || 0,
+                missionName: beingData.mission?.name || beingData.missionId || null
             };
 
             gameStore.addBeing(newBeing);
 
             // Show success feedback
             Alert.alert(
-                '¡Ser Recibido!',
-                `"${newBeing.name}" ha sido importado desde el Laboratorio Frankenstein.\n\nAhora puedes desplegarlo a resolver crisis.`,
+                '¡Ser Importado!',
+                `"${newBeing.name}" ${avatar} ha llegado desde el Laboratorio Frankenstein.\n\nPoder total: ${newBeing.totalPower}\n\n¡Ya puedes desplegarlo en misiones!`,
                 [
                     {
                         text: 'Ver Mis Seres',
-                        onPress: () => this.navigateToScreen('BeingsScreen')
+                        onPress: () => this.navigateToScreen('Beings')
                     },
                     { text: 'Continuar', style: 'cancel' }
                 ]
             );
 
-            console.log('[DeepLinkService] Being imported successfully:', newBeing.id);
+            console.log('[DeepLinkService] Being imported successfully:', newBeing.name, newBeing.id);
         } catch (error) {
             console.error('[DeepLinkService] Error parsing being data:', error);
             Alert.alert('Error', 'No se pudo importar el ser. Formato de datos inválido.');
         }
+    }
+
+    /**
+     * Normalize attributes from Frankenstein Lab format
+     */
+    normalizeAttributes(attrs) {
+        // Default attributes
+        const defaults = {
+            reflection: 20,
+            analysis: 20,
+            creativity: 20,
+            empathy: 20,
+            communication: 20,
+            leadership: 20,
+            action: 20,
+            resilience: 20,
+            strategy: 20,
+            consciousness: 20,
+            connection: 20,
+            wisdom: 20,
+            organization: 20,
+            collaboration: 20,
+            technical: 20
+        };
+
+        // Merge with provided attributes
+        return { ...defaults, ...attrs };
+    }
+
+    /**
+     * Select avatar emoji based on dominant attributes
+     */
+    selectAvatarForBeing(attributes) {
+        // Find top 2 attributes
+        const sorted = Object.entries(attributes)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 2);
+
+        const top1 = sorted[0]?.[0];
+        const top2 = sorted[1]?.[0];
+
+        // Avatar mapping based on dominant traits
+        const avatarMap = {
+            consciousness: '🌟',
+            wisdom: '🦉',
+            empathy: '💜',
+            creativity: '🎨',
+            leadership: '👑',
+            action: '⚡',
+            resilience: '💪',
+            analysis: '🔬',
+            reflection: '🧠',
+            communication: '🗣️',
+            connection: '🌍',
+            strategy: '♟️',
+            organization: '📋',
+            collaboration: '🤝',
+            technical: '⚙️'
+        };
+
+        return avatarMap[top1] || avatarMap[top2] || '🧬';
     }
 
     /**

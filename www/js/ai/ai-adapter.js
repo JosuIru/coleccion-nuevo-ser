@@ -156,19 +156,25 @@ class AIAdapter {
         { role: 'user', content: prompt }
       ];
 
-      // URL del proxy premium
-      const PREMIUM_PROXY_URL = 'https://gailu.net/api/premium-ai-proxy.php';
+      // URL del proxy premium (desplegado en gailu.net)
+      const PREMIUM_PROXY_URL = 'https://gailu.net/api/ai-proxy.php';
+
+      // Seleccionar modelo según preferencias (claude-3-5-haiku es el más nuevo disponible)
+      const selectedModel = this.config.getSelectedModel() || 'claude-3-5-haiku-20241022';
 
       const response = await fetch(PREMIUM_PROXY_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Token': userToken
+          'Authorization': `Bearer ${userToken}`
         },
         body: JSON.stringify({
+          model: selectedModel,
           messages: messages,
-          systemPrompt: systemContext,
-          feature: feature // 'chat', 'tutor', 'adapter', 'game_master'
+          system: systemContext || undefined,
+          max_tokens: 1024,
+          temperature: 0.7,
+          _token: userToken  // Fallback si el header no llega
         })
       });
 
@@ -176,28 +182,35 @@ class AIAdapter {
 
       if (!response.ok) {
         // Si es error de créditos o suscripción, no usar premium
-        if (data.upgrade || data.creditsRemaining === 0) {
-          console.log('Premium proxy: sin créditos o requiere upgrade');
+        if (data.code === 'NO_CREDITS' || data.code === 'SUBSCRIPTION_REQUIRED') {
+          console.log('Premium proxy:', data.error);
           // Mostrar mensaje al usuario
           if (window.toast && data.error) {
-            window.toast.info(data.error, 5000);
+            if (data.code === 'NO_CREDITS') {
+              window.toast.warning(`Sin créditos IA. ${data.creditsRemaining || 0} restantes.`, 5000);
+            } else {
+              window.toast.info('Funcionalidad Premium. Actualiza tu plan para usar IA.', 5000);
+            }
           }
           return { used: false, response: null };
         }
         throw new Error(data.error || 'Error en proxy premium');
       }
 
+      // Extraer respuesta de Claude
+      const responseText = data.content?.[0]?.text || data.text || '';
+
       // Éxito - mostrar créditos restantes si es relevante
-      if (data.creditsRemaining !== undefined && data.creditsRemaining < 50) {
-        console.log(`Premium: ${data.creditsRemaining} créditos restantes`);
+      if (data._credits?.remaining !== undefined && data._credits.remaining < 50) {
+        console.log(`Premium: ${data._credits.remaining} créditos restantes`);
       }
 
       return {
         used: true,
-        response: data.text,
-        creditsUsed: data.creditsUsed,
-        creditsRemaining: data.creditsRemaining,
-        plan: data.plan
+        response: responseText,
+        creditsUsed: data._credits?.used || 1,
+        creditsRemaining: data._credits?.remaining,
+        plan: subscription?.plan || 'premium'
       };
 
     } catch (error) {

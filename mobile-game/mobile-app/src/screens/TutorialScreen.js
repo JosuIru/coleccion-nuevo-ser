@@ -23,6 +23,7 @@ import memoryStorage from '../utils/MemoryStorage';
 const AsyncStorage = memoryStorage;
 
 import { COLORS } from '../config/constants';
+import useGameStore from '../stores/gameStore';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,27 +35,32 @@ const TUTORIAL_STEPS = [
     content: [
       'Tu misión: desplegar seres transformadores para resolver crisis del mundo real',
       'Cada acción cuenta para crear un futuro más consciente',
-      'Lee libros, gana consciencia, evoluciona tus seres'
+      'Lee libros, gana consciencia, evoluciona tus seres',
+      '¡Puedes jugar en casa o explorando tu ciudad!'
     ],
     icon: '🌍',
     color: COLORS.accent.primary
   },
   {
     id: 2,
-    title: 'Fractales de Consciencia',
-    description: 'Camina por tu ciudad para encontrar fractales - puntos de energía que alimentan tu transformación.',
+    title: 'Dos Modos de Juego',
+    description: 'Elige cómo quieres jugar según tu situación.',
     content: [
-      '📚 Fractales de Sabiduría: En bibliotecas y escuelas',
-      '🤝 Fractales de Comunidad: En centros comunitarios',
-      '🌳 Fractales de Naturaleza: En parques y bosques',
-      '⚡ Fractales de Acción: En ONGs y cooperativas',
-      '🌟 Fractales de Consciencia: En centros de meditación'
+      '🗺️ MODO EXPLORADOR (Tab "Mapa")',
+      '   • Sal a explorar tu ciudad con GPS',
+      '   • Encuentra fractales en lugares reales',
+      '   • Crisis locales cerca de ti',
+      '',
+      '🛡️ MODO COMANDANTE (Tab "Comando")',
+      '   • Juega desde casa sin GPS',
+      '   • Crisis globales basadas en noticias reales',
+      '   • Compite en la Liga de Crisis semanal'
     ],
-    icon: '✨',
+    icon: '🎮',
     color: COLORS.accent.wisdom,
     interactive: {
-      type: 'map_preview',
-      action: 'Acércate a 50 metros de un fractal para recolectarlo'
+      type: 'mode_selection',
+      action: 'Usa "Mapa" para explorar o "Comando" para jugar en casa'
     }
   },
   {
@@ -62,47 +68,65 @@ const TUTORIAL_STEPS = [
     title: 'Seres Transformadores',
     description: 'Los seres son tus agentes de cambio. Cada uno tiene atributos únicos.',
     content: [
-      '🧠 15 atributos diferentes: Empatía, Análisis, Creatividad, Liderazgo...',
+      '🧠 15 atributos: Empatía, Análisis, Creatividad, Liderazgo...',
       '🔧 Cada ser es único con fortalezas específicas',
-      '⚡ Consumen energía al ser desplegados (10 ⚡ por despliegue)',
-      '📈 Puedes fusionarlos para crear híbridos más poderosos',
-      '💪 Entrena y mejora sus atributos leyendo libros'
+      '⚡ Consumen energía al ser desplegados (10 ⚡)',
+      '📈 Fusiónalos para crear híbridos más poderosos',
+      '💪 Mejora atributos leyendo libros'
     ],
     icon: '🧬',
     color: COLORS.accent.success,
     interactive: {
       type: 'being_preview',
-      action: 'Importa seres desde Frankenstein Lab o créalos en el juego'
+      action: 'Importa seres desde Frankenstein Lab o créalos aquí'
     }
   },
   {
     id: 4,
     title: 'Crisis y Misiones',
-    description: 'Resuelve crisis reales extraídas de noticias globales (UN, Reuters, BBC).',
+    description: 'Resuelve crisis reales extraídas de noticias globales.',
     content: [
-      '🌍 7 tipos de crisis: Ambientales, Sociales, Económicas, Humanitarias...',
+      '🌍 7 tipos: Ambientales, Sociales, Económicas, Humanitarias...',
       '🎯 Cada crisis requiere atributos específicos',
-      '📊 Tu probabilidad de éxito depende del match de atributos',
-      '⏱️ Las misiones toman tiempo real (30-90 minutos)',
-      '🏆 Al completar: ganas XP, consciencia y subes de nivel'
+      '📊 Tu probabilidad de éxito = match de atributos',
+      '⏱️ Las misiones toman 30-90 minutos',
+      '🏆 Gana XP, consciencia y sube de nivel'
     ],
     icon: '🚨',
     color: COLORS.accent.critical,
     interactive: {
       type: 'mission_preview',
-      action: 'Selecciona seres con atributos que coincidan con la crisis'
+      action: 'Selecciona seres con atributos que coincidan'
     }
   },
   {
     id: 5,
-    title: '¡Comienza Tu Viaje!',
-    description: 'Todo listo. Ahora sal al mundo y comienza la transformación.',
+    title: 'Liga de Crisis',
+    description: 'Compite semanalmente contra otros jugadores resolviendo crisis globales.',
     content: [
-      '👣 Camina por tu ciudad para encontrar fractales',
-      '📖 Lee libros de la Colección Nuevo Ser para ganar consciencia',
-      '🧬 Crea y mejora tus seres transformadores',
-      '🌍 Resuelve crisis reales y ayuda a construir un mundo mejor',
-      '📈 Sube de nivel (1→50) desbloqueando más seres y energía'
+      '🏆 Ranking semanal con recompensas',
+      '📈 7 divisiones: Bronce → Leyenda',
+      '🔥 Bonificaciones por rachas diarias',
+      '⭐ Crisis destacadas con puntos extra',
+      '🎁 Premios: XP y puntos de consciencia'
+    ],
+    icon: '🏆',
+    color: '#FFD700',
+    interactive: {
+      type: 'league_preview',
+      action: 'Accede desde el icono 🏆 en el Centro de Comando'
+    }
+  },
+  {
+    id: 6,
+    title: '¡Comienza Tu Viaje!',
+    description: 'Todo listo. Elige tu modo y comienza la transformación.',
+    content: [
+      '🏠 En casa: Tab "Comando" → Crisis globales',
+      '🚶 Afuera: Tab "Mapa" → Explora tu ciudad',
+      '📖 Lee libros para ganar consciencia',
+      '🧬 Crea y mejora tus seres',
+      '❓ Ayuda disponible en Perfil → Ayuda'
     ],
     icon: '🚀',
     color: COLORS.gradient.main[1],
@@ -114,6 +138,9 @@ const TutorialScreen = ({ navigation, route }) => {
   // Estado
   const [currentStep, setCurrentStep] = useState(0);
   const [canSkip, setCanSkip] = useState(true);
+
+  // Game Store
+  const initializeNewPlayer = useGameStore(state => state.initializeNewPlayer);
 
   // Animaciones
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -167,6 +194,9 @@ const TutorialScreen = ({ navigation, route }) => {
   // Saltar tutorial
   const handleSkip = async () => {
     try {
+      // Inicializar jugador con ser y crisis
+      initializeNewPlayer();
+
       if (AsyncStorage && typeof AsyncStorage.setItem === 'function') {
         await AsyncStorage.setItem('tutorial_completed', 'true');
       }
@@ -179,6 +209,9 @@ const TutorialScreen = ({ navigation, route }) => {
   // Completar tutorial
   const completeTutorial = async () => {
     try {
+      // Inicializar jugador con ser y crisis
+      initializeNewPlayer();
+
       if (AsyncStorage && typeof AsyncStorage.setItem === 'function') {
         await AsyncStorage.setItem('tutorial_completed', 'true');
         await AsyncStorage.setItem('tutorial_completion_date', new Date().toISOString());

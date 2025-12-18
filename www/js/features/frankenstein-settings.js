@@ -481,8 +481,16 @@ class FrankensteinSettings {
     }
   }
 
-  confirmClearData() {
-    if (confirm('¿Estas seguro de que quieres borrar TODOS los datos?\n\nEsto incluye:\n- Seres guardados\n- Microsociedades\n- Ajustes\n\nEsta accion NO se puede deshacer.')) {
+  async confirmClearData() {
+    const confirmed = await window.confirmModal?.show({
+      title: 'Borrar todos los datos',
+      message: '¿Estás seguro de que quieres borrar TODOS los datos?\n\nEsto incluye:\n- Seres guardados\n- Microsociedades\n- Ajustes\n\nEsta acción NO se puede deshacer.',
+      confirmText: 'Borrar todo',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    }) ?? confirm('¿Estás seguro de que quieres borrar TODOS los datos?');
+
+    if (confirmed) {
       this.clearAllData();
     }
   }
@@ -504,8 +512,16 @@ class FrankensteinSettings {
     setTimeout(() => this.open(), 300);
   }
 
-  resetToDefaults() {
-    if (confirm('¿Restaurar todos los ajustes a sus valores predeterminados?')) {
+  async resetToDefaults() {
+    const confirmed = await window.confirmModal?.show({
+      title: 'Restaurar ajustes',
+      message: '¿Restaurar todos los ajustes a sus valores predeterminados?',
+      confirmText: 'Restaurar',
+      cancelText: 'Cancelar',
+      type: 'warning'
+    }) ?? confirm('¿Restaurar todos los ajustes a sus valores predeterminados?');
+
+    if (confirmed) {
       localStorage.removeItem('frankenstein-settings');
       this.settings = this.loadSettings();
       this.close();
@@ -892,9 +908,19 @@ class MicrosocietiesGallery {
     }
   }
 
-  confirmDelete(id) {
+  async confirmDelete(id) {
     const society = this.societies.find(s => s.id === id);
-    if (society && confirm(`¿Eliminar "${society.name}"?\n\nEsta accion no se puede deshacer.`)) {
+    if (!society) return;
+
+    const confirmed = await window.confirmModal?.show({
+      title: 'Eliminar microsociedad',
+      message: `¿Eliminar "${society.name}"?\n\nEsta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    }) ?? confirm(`¿Eliminar "${society.name}"?`);
+
+    if (confirmed) {
       this.deleteSociety(id);
       // Refrescar lista
       const content = this.modal.querySelector('.societies-gallery-content');

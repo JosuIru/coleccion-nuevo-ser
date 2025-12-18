@@ -13,11 +13,9 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  LinearGradient,
   Animated,
   Alert
 } from 'react-native';
-import { ProgressBar } from 'react-native-paper';
 import useGameStore from '../stores/gameStore';
 import MissionService from '../services/MissionService';
 import { COLORS, CRISIS_TYPES } from '../config/constants';
@@ -50,6 +48,8 @@ const ActiveMissionsScreen = ({ navigation }) => {
   const loadActiveMissions = async () => {
     try {
       setLoading(true);
+      // Cargar datos en caché primero
+      await MissionService.loadCachedData(user?.id);
       const missions = MissionService.getActiveMissions();
       setActiveMissions(missions);
       setCompletedCount(MissionService.getCompletedMissionsCount());
@@ -73,8 +73,8 @@ const ActiveMissionsScreen = ({ navigation }) => {
         { text: 'No', style: 'cancel' },
         {
           text: 'Sí, cancelar',
-          onPress: () => {
-            MissionService.cancelMission(missionId);
+          onPress: async () => {
+            await MissionService.cancelMission(missionId, useGameStore);
             loadActiveMissions();
           },
           style: 'destructive'
@@ -94,19 +94,15 @@ const ActiveMissionsScreen = ({ navigation }) => {
   };
 
   const renderMissionCard = ({ item: mission }) => {
-    const progress = mission.elapsed_minutes / mission.duration_minutes;
+    const progress = mission.elapsed_minutes / (mission.duration_minutes || mission.durationMinutes || 60);
     const progressColor = getProgressColor(progress);
-    const beingName = beings.find(b => b.id === mission.being_id)?.name || 'Ser desconocido';
+    const beingName = beings.find(b => b.id === mission.being_id)?.name ||
+                      (mission.teamData?.beingNames?.[0]) || 'Ser desplegado';
 
     return (
       <View style={styles.missionCard}>
         {/* Header */}
-        <LinearGradient
-          colors={[progressColor, `${progressColor}80`]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.missionHeader}
-        >
+        <View style={[styles.missionHeader, { backgroundColor: progressColor }]}>
           <Text style={styles.missionIcon}>{getMissionIcon(mission.crisis_type)}</Text>
           <View style={styles.missionTitleContainer}>
             <Text style={styles.missionTitle} numberOfLines={2}>
@@ -115,24 +111,26 @@ const ActiveMissionsScreen = ({ navigation }) => {
             <Text style={styles.missionBeing}>{beingName}</Text>
           </View>
           <Text style={styles.urgencyBadge}>{mission.urgency}/10</Text>
-        </LinearGradient>
+        </View>
 
         {/* Progreso */}
         <View style={styles.missionBody}>
           <View style={styles.progressSection}>
             <View style={styles.progressLabels}>
               <Text style={styles.progressLabel}>
-                {mission.elapsed_minutes} / {mission.duration_minutes} min
+                {mission.elapsed_minutes} / {mission.duration_minutes || mission.durationMinutes} min
               </Text>
               <Text style={styles.probabilityLabel}>
                 {(mission.success_probability * 100).toFixed(0)}% éxito
               </Text>
             </View>
-            <ProgressBar
-              progress={Math.min(progress, 1)}
-              color={progressColor}
-              style={styles.progressBar}
-            />
+            {/* Barra de progreso simple */}
+            <View style={styles.progressBarContainer}>
+              <View style={[
+                styles.progressBarFill,
+                { width: `${Math.min(progress * 100, 100)}%`, backgroundColor: progressColor }
+              ]} />
+            </View>
           </View>
 
           {/* Info de recompensas */}
@@ -152,7 +150,7 @@ const ActiveMissionsScreen = ({ navigation }) => {
             <View style={styles.rewardItem}>
               <Text style={styles.rewardIcon}>👥</Text>
               <Text style={styles.rewardText}>
-                {(mission.population_affected / 1000).toFixed(0)}K pessoas
+                {mission.teamData?.teamSize || 1} ser(es)
               </Text>
             </View>
           </View>
@@ -357,10 +355,15 @@ const styles = StyleSheet.create({
     color: COLORS.accent.success,
     fontWeight: '600'
   },
-  progressBar: {
+  progressBarContainer: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: COLORS.bg.card
+    backgroundColor: COLORS.bg.card,
+    overflow: 'hidden'
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4
   },
   rewardsSection: {
     flexDirection: 'row',

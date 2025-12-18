@@ -25,10 +25,10 @@ const FrankensteinDemoData = {
     { type: 'exercise', id: 'codigo-ex1', chapterId: 'ex1', bookId: 'codigo-despertar', bookTitle: 'Código del Despertar', title: 'Práctica de Presencia', icon: '🧘', category: 'meditation', color: '#10B981' },
 
     // Libro 3: Toolkit de Transición
-    { type: 'chapter', id: 'toolkit-cap1', chapterId: 'cap1', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Herramientas para el Cambio', icon: '📖', tags: ['herramientas', 'práctica'], color: '#F59E0B' },
-    { type: 'chapter', id: 'toolkit-cap2', chapterId: 'cap2', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Organización Comunitaria', icon: '📖', tags: ['comunidad', 'organización'], color: '#F59E0B' },
-    { type: 'chapter', id: 'toolkit-cap3', chapterId: 'cap3', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Estrategias de Acción', icon: '📖', tags: ['acción', 'estrategia'], color: '#F59E0B' },
-    { type: 'exercise', id: 'toolkit-ex1', chapterId: 'ex1', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Mapeo de Recursos', icon: '🛠️', category: 'practical', color: '#F59E0B' },
+    { type: 'chapter', id: 'toolkit-transicion-cap1', chapterId: 'cap1', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Herramientas para el Cambio', icon: '📖', tags: ['herramientas', 'práctica'], color: '#F59E0B' },
+    { type: 'chapter', id: 'toolkit-transicion-cap2', chapterId: 'cap2', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Organización Comunitaria', icon: '📖', tags: ['comunidad', 'organización'], color: '#F59E0B' },
+    { type: 'chapter', id: 'toolkit-transicion-cap3', chapterId: 'cap3', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Estrategias de Acción', icon: '📖', tags: ['acción', 'estrategia'], color: '#F59E0B' },
+    { type: 'exercise', id: 'toolkit-transicion-ex1', chapterId: 'ex1', bookId: 'toolkit-transicion', bookTitle: 'Toolkit de Transición', title: 'Mapeo de Recursos', icon: '🛠️', category: 'practical', color: '#F59E0B' },
 
     // Libro 4: Prácticas Radicales
     { type: 'chapter', id: 'practicas-cap1', chapterId: 'cap1', bookId: 'practicas-radicales', bookTitle: 'Prácticas Radicales', title: 'Conexión con la Tierra', icon: '📖', tags: ['naturaleza', 'conexión'], color: '#EF4444' },
@@ -37,14 +37,14 @@ const FrankensteinDemoData = {
     { type: 'exercise', id: 'practicas-ex1', chapterId: 'ex1', bookId: 'practicas-radicales', bookTitle: 'Prácticas Radicales', title: 'Meditación Terrestre', icon: '🧘', category: 'meditation', color: '#EF4444' },
 
     // Libro 5: Manual de Transición
-    { type: 'chapter', id: 'manual-trans-cap1', chapterId: 'cap1', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Fundamentos del Cambio', icon: '📖', tags: ['cambio', 'fundamentos'], color: '#6366F1' },
-    { type: 'chapter', id: 'manual-trans-cap2', chapterId: 'cap2', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Construyendo Comunidad', icon: '📖', tags: ['comunidad', 'construcción'], color: '#6366F1' },
-    { type: 'exercise', id: 'manual-ex1', chapterId: 'ex1', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Círculo de Diálogo', icon: '💬', category: 'reflection', color: '#6366F1' },
+    { type: 'chapter', id: 'manual-transicion-cap1', chapterId: 'cap1', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Fundamentos del Cambio', icon: '📖', tags: ['cambio', 'fundamentos'], color: '#6366F1' },
+    { type: 'chapter', id: 'manual-transicion-cap2', chapterId: 'cap2', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Construyendo Comunidad', icon: '📖', tags: ['comunidad', 'construcción'], color: '#6366F1' },
+    { type: 'exercise', id: 'manual-transicion-ex1', chapterId: 'ex1', bookId: 'manual-transicion', bookTitle: 'Manual de Transición', title: 'Círculo de Diálogo', icon: '💬', category: 'reflection', color: '#6366F1' },
 
     // Libro 6: Guía de Acciones
-    { type: 'chapter', id: 'guia-cap1', chapterId: 'cap1', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Acciones Directas', icon: '📖', tags: ['acción', 'directa'], color: '#EC4899' },
-    { type: 'chapter', id: 'guia-cap2', chapterId: 'cap2', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Activismo Consciente', icon: '📖', tags: ['activismo', 'consciencia'], color: '#EC4899' },
-    { type: 'exercise', id: 'guia-ex1', chapterId: 'ex1', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Plan de Acción Personal', icon: '📝', category: 'practical', color: '#EC4899' }
+    { type: 'chapter', id: 'guia-acciones-cap1', chapterId: 'cap1', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Acciones Directas', icon: '📖', tags: ['acción', 'directa'], color: '#EC4899' },
+    { type: 'chapter', id: 'guia-acciones-cap2', chapterId: 'cap2', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Activismo Consciente', icon: '📖', tags: ['activismo', 'consciencia'], color: '#EC4899' },
+    { type: 'exercise', id: 'guia-acciones-ex1', chapterId: 'ex1', bookId: 'guia-acciones', bookTitle: 'Guía de Acciones', title: 'Plan de Acción Personal', icon: '📝', category: 'practical', color: '#EC4899' }
   ],
 
   /**
@@ -369,6 +369,50 @@ const FrankensteinDemoData = {
     }
   ],
 
+  demoScenarios: {
+    'demo-eco-activist-001': {
+      title: 'Ruta Eco-Guardiana',
+      intro: 'Este ser demuestra cómo combinar piezas ecológicas con acción directa. Úsalo para explorar la misión Defensor de la Tierra.',
+      objectives: [
+        { id: 'mission-earth', type: 'mission', missionId: 'earth-defender', label: 'Activa la misión Defensor de la Tierra' },
+        { id: 'attr-connection', type: 'attribute', attribute: 'connection', target: 95, label: '🌍 Conexión ≥ 95' },
+        { id: 'attr-resilience', type: 'attribute', attribute: 'resilience', target: 90, label: '💪 Resiliencia ≥ 90' }
+      ],
+      tips: [
+        'Arrastra piezas de "Prácticas Radicales" y "Toolkit de Transición" para subir Conexión.',
+        'Abre la sección de microsociedades y prueba “Comunidad Regenerativa” para ver cómo responde.'
+      ],
+      callToAction: 'Objetivo educativo: comprender cómo los atributos ecológicos afectan las misiones defensivas.'
+    },
+    'demo-philosopher-002': {
+      title: 'Ruta del Sabio Contemplativo',
+      intro: 'Explora el puente entre conciencia y tecnología usando las piezas filosóficas del catálogo.',
+      objectives: [
+        { id: 'mission-conscious', type: 'mission', missionId: 'consciousness-awakener', label: 'Activa la misión Despertador de Consciencia' },
+        { id: 'attr-wisdom', type: 'attribute', attribute: 'wisdom', target: 100, label: '🧠 Sabiduría ≥ 100' }
+      ],
+      tips: [
+        'Refuerza Sabiduría con piezas de "Código del Despertar" y ejercicios contemplativos.',
+        'Valida el ser para registrar en la bitácora en qué afecta el equilibrio intelectual vs emocional.'
+      ],
+      callToAction: 'Objetivo educativo: analizar cómo las piezas filosóficas alteran el balance espiritual.'
+    },
+    'demo-community-builder-003': {
+      title: 'Ruta del Tejedor',
+      intro: 'Aprende a equilibrar empatía, colaboración y acción para crear comunidades resilientes.',
+      objectives: [
+        { id: 'mission-community', type: 'mission', missionId: 'community-weaver', label: 'Activa la misión Tejedor de Comunidad' },
+        { id: 'attr-collaboration', type: 'attribute', attribute: 'collaboration', target: 80, label: '🤝 Colaboración ≥ 80' },
+        { id: 'attr-communication', type: 'attribute', attribute: 'communication', target: 90, label: '🗣️ Comunicación ≥ 90' }
+      ],
+      tips: [
+        'Combina capítulos del Manual de Transición con ejercicios dialógicos para potenciar Comunicación.',
+        'Revisa la bitácora tras cada validación para comparar estrategias comunitarias.'
+      ],
+      callToAction: 'Objetivo educativo: experimentar con atributos sociales antes de pasar a microsistemas.'
+    }
+  },
+
   /**
    * Microsociedades de ejemplo
    */
@@ -519,6 +563,14 @@ const FrankensteinDemoData = {
   },
 
   /**
+   * Obtener narrativa guiada para un ser demo
+   */
+  getDemoScenario(beingId) {
+    if (!beingId || !this.demoScenarios[beingId]) return null;
+    return JSON.parse(JSON.stringify(this.demoScenarios[beingId]));
+  },
+
+  /**
    * Obtener un ser aleatorio de demo
    */
   getRandomDemoBeing() {
@@ -544,14 +596,21 @@ const FrankensteinDemoData = {
     }
 
     try {
-      // Cargar piezas de demo en availablePieces
+      // Referenciar piezas del catálogo real (sin sobreescribir la colección principal)
       const demoPieces = this.getDemoPieces();
-      if (frankensteinUI.availablePieces) {
+      if (!Array.isArray(frankensteinUI.availablePieces) || frankensteinUI.availablePieces.length === 0) {
         frankensteinUI.availablePieces = [...demoPieces];
-        console.log(`✅ ${demoPieces.length} piezas de demo cargadas`);
+        console.warn('⚠️ Catálogo real no disponible. Usando piezas demo como respaldo.');
       } else {
-        frankensteinUI.availablePieces = demoPieces;
-        console.log(`✅ ${demoPieces.length} piezas de demo inicializadas`);
+        const catalogMap = new Map(frankensteinUI.availablePieces.map(piece => [piece.id, piece]));
+        const missingIds = [];
+        demoPieces.forEach(piece => {
+          if (!catalogMap.has(piece.id)) {
+            frankensteinUI.availablePieces.push(piece);
+            missingIds.push(piece.id);
+          }
+        });
+        console.log(`✅ Modo demo listo. ${demoPieces.length - missingIds.length} piezas referencian el catálogo real${missingIds.length ? `, ${missingIds.length} añadidas como respaldo` : ''}.`);
       }
 
       // Cargar seres de demo en localStorage con prefijo 'demo-'
@@ -573,6 +632,26 @@ const FrankensteinDemoData = {
       if (frankensteinUI.renderPiecesTree) {
         frankensteinUI.renderPiecesTree();
         console.log('✅ UI de piezas actualizada');
+      }
+
+      // Auto cargar un ser demo si no hay ser activo aún
+      if ((!frankensteinUI.currentBeing || frankensteinUI.selectedPieces.length === 0) && demoBeings.length > 0) {
+        const defaultDemo = demoBeings[0];
+        setTimeout(() => {
+          if (!frankensteinUI.labStarted) {
+            frankensteinUI.startLab();
+          }
+
+          const waitForLabUI = () => {
+            if (document.getElementById('requirements-checklist')) {
+              frankensteinUI.loadBeing(defaultDemo.id);
+            } else {
+              setTimeout(waitForLabUI, 100);
+            }
+          };
+
+          waitForLabUI();
+        }, 200);
       }
 
       return true;

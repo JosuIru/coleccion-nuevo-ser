@@ -242,17 +242,29 @@ Responde SOLO con la pregunta sugerida, sin explicaciones.`;
     }
   }
 
+  escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   renderNoteSuggestion(suggestion) {
     if (!suggestion) return '';
+
+    const safeSuggestion = this.escapeHtml(suggestion);
 
     return `
       <div class="note-suggestion mt-3 p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg">
         <div class="flex items-start gap-2">
           <span class="text-lg">💡</span>
           <div class="flex-1">
-            <p class="text-sm text-purple-200">${suggestion}</p>
+            <p class="text-sm text-purple-200">${safeSuggestion}</p>
             <button class="use-suggestion-btn mt-2 text-xs text-purple-400 hover:text-purple-300 underline"
-                    data-suggestion="${suggestion}">
+                    data-suggestion="${safeSuggestion}">
               Usar esta pregunta
             </button>
           </div>

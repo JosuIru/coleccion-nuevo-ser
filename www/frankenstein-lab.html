@@ -216,7 +216,12 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-amber-400 focus:text-black focus:rounded-lg focus:font-semibold">
+        Saltar al contenido principal
+    </a>
+
+    <main id="main-content" class="container" role="main">
         <div class="icon">🧬</div>
         <h1>Laboratorio Frankenstein</h1>
         <p class="subtitle">Creación de Seres Transformadores con Propósito</p>
@@ -260,7 +265,7 @@
         <!-- Footer -->
         <div class="footer">
             <p>Parte de la <a href="index.html">Colección Nuevo Ser</a></p>
-            <p style="margin-top: 8px;">v1.2.4 • © 2025</p>
+            <p style="margin-top: 8px;">v1.3.4 • © 2025</p>
         </div>
     </div>
 
@@ -358,10 +363,10 @@
                 this.platformMessage.classList.remove('hidden');
 
                 this.actions.innerHTML = `
-                    <a href="downloads/frankenstein-lab-v1.2.6.apk" class="btn btn-primary" download>
+                    <a href="downloads/frankenstein-lab-v1.3.4.apk" class="btn btn-primary" download>
                         ${this.icons.download}
                         Descargar APK
-                        <span class="btn-badge">3.0 MB</span>
+                        <span class="btn-badge">11 MB</span>
                     </a>
                     <a href="frankenstein-web.html" class="btn btn-secondary">
                         ${this.icons.play}
@@ -399,10 +404,10 @@
                         ${this.icons.play}
                         Abrir Laboratorio
                     </a>
-                    <a href="downloads/frankenstein-lab-v1.2.6.apk" class="btn btn-secondary" download>
+                    <a href="downloads/frankenstein-lab-v1.3.4.apk" class="btn btn-secondary" download>
                         ${this.icons.download}
                         Descargar APK Android
-                        <span class="btn-badge">3.0 MB</span>
+                        <span class="btn-badge">11 MB</span>
                     </a>
                 `;
 

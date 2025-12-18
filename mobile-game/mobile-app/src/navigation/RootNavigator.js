@@ -26,13 +26,20 @@ import {
   LibraryScreen,
   TutorialScreen,
   ActiveMissionsScreen,
-  HerramientasScreen
+  HerramientasScreen,
+  HelpScreen,
+  FrankensteinLabScreen
 } from '../screens';
+
+// Nuevas pantallas - Modo Comandante Global y Liga
+import CommandCenterScreen from '../screens/CommandCenterScreen';
+import LeagueScreen from '../screens/LeagueScreen';
 
 import { COLORS } from '../config/constants';
 import useGameStore from '../stores/gameStore';
 import logger from '../utils/logger';
 import deepLinkService from '../services/DeepLinkService';
+import webBridgeService from '../services/WebBridgeService';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -117,7 +124,7 @@ const BeingsStack = () => (
 );
 
 /**
- * STACK: Navegación de misiones
+ * STACK: Navegación de misiones (legacy)
  */
 const MissionsStack = () => (
   <Stack.Navigator
@@ -141,6 +148,48 @@ const MissionsStack = () => (
       name="MissionsList"
       component={ActiveMissionsScreen}
       options={{ title: 'Misiones Activas' }}
+    />
+  </Stack.Navigator>
+);
+
+/**
+ * STACK: Centro de Comando Global (Modo Estrategia con Noticias Reales)
+ * Incluye CommandCenter y Liga de Crisis
+ */
+const CommandStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+      animationEnabled: true,
+      cardStyle: { backgroundColor: COLORS.bg.primary }
+    }}
+  >
+    <Stack.Screen
+      name="CommandCenter"
+      component={CommandCenterScreen}
+      options={{ gestureEnabled: false }}
+    />
+    <Stack.Screen
+      name="League"
+      component={LeagueScreen}
+      options={{
+        headerShown: false,
+        animationEnabled: true
+      }}
+    />
+    <Stack.Screen
+      name="ActiveMissions"
+      component={ActiveMissionsScreen}
+      options={{
+        headerShown: true,
+        headerTintColor: COLORS.text.primary,
+        headerStyle: {
+          backgroundColor: COLORS.bg.elevated,
+          borderBottomColor: COLORS.bg.card,
+          borderBottomWidth: 1
+        },
+        title: 'Misiones Activas'
+      }}
     />
   </Stack.Navigator>
 );
@@ -201,9 +250,33 @@ const ProfileStack = () => (
       options={{ title: 'Mi Perfil' }}
     />
     <Stack.Screen
+      name="HelpFlow"
+      component={HelpScreen}
+      options={{ title: 'Ayuda' }}
+    />
+    <Stack.Screen
       name="HerramientasFlow"
       component={HerramientasScreen}
       options={{ title: 'Herramientas del Ecosistema' }}
+    />
+  </Stack.Navigator>
+);
+
+/**
+ * STACK: Laboratorio Frankenstein
+ */
+const LabStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+      animationEnabled: true,
+      cardStyle: { backgroundColor: COLORS.bg.primary }
+    }}
+  >
+    <Stack.Screen
+      name="LabFlow"
+      component={FrankensteinLabScreen}
+      options={{ gestureEnabled: false }}
     />
   </Stack.Navigator>
 );
@@ -235,11 +308,11 @@ const TabNavigator = () => (
           case 'Beings':
             iconName = 'dna';
             break;
-          case 'Missions':
-            iconName = 'target-variant';
+          case 'Lab':
+            iconName = 'flask'; // Icono del Laboratorio
             break;
-          case 'Library':
-            iconName = 'book-open-page-variant';
+          case 'Command':
+            iconName = 'shield-star'; // Icono del Centro de Comando
             break;
           case 'Profile':
             iconName = 'account-circle';
@@ -274,23 +347,23 @@ const TabNavigator = () => (
       }}
     />
 
-    {/* Misiones */}
+    {/* Laboratorio Frankenstein */}
     <Tab.Screen
-      name="Missions"
-      component={MissionsStack}
+      name="Lab"
+      component={LabStack}
       options={{
-        title: 'Misiones',
-        tabBarLabel: 'Misiones'
+        title: 'Lab',
+        tabBarLabel: 'Lab'
       }}
     />
 
-    {/* Biblioteca */}
+    {/* Centro de Comando - Modo Estrategia con Noticias Reales */}
     <Tab.Screen
-      name="Library"
-      component={LibraryStack}
+      name="Command"
+      component={CommandStack}
       options={{
-        title: 'Biblioteca',
-        tabBarLabel: 'Libros'
+        title: 'Comando',
+        tabBarLabel: 'Comando'
       }}
     />
 
@@ -324,6 +397,29 @@ export default function RootNavigator() {
     try {
       // Cargar estado del juego desde storage
       const gameStateLoaded = await loadFromStorage();
+
+      // Inicializar WebBridgeService para sincronización con webapp
+      // NOTA: Configurar con las credenciales de Supabase reales
+      const supabaseConfig = {
+        url: 'https://YOUR_SUPABASE_URL.supabase.co',
+        anonKey: 'YOUR_SUPABASE_ANON_KEY'
+      };
+
+      try {
+        await webBridgeService.init(supabaseConfig);
+        logger.info('RootNavigator', '✓ WebBridgeService initialized');
+
+        // Opcional: Iniciar auto-sync si hay usuario autenticado
+        const user = useGameStore.getState().user;
+        if (user && user.id) {
+          // Sincronizar al iniciar
+          await webBridgeService.sync();
+          // Activar auto-sync cada 10 minutos
+          webBridgeService.startAutoSync(10);
+        }
+      } catch (bridgeError) {
+        logger.warn('RootNavigator', 'WebBridge init failed, continuing without sync', bridgeError);
+      }
 
       // Verificar si es la primera vez (con fallback si AsyncStorage no existe)
       let tutorialCompleted = null;

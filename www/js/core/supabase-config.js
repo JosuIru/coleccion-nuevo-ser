@@ -5,10 +5,20 @@
  * Priority order for configuration:
  * 1. window.env (from env.js - production)
  * 2. Fallback values (development defaults)
+ *
+ * IMPORTANTE: En producción, crea www/js/core/env.js con tus credenciales reales.
+ * Ver env.example.js para el formato correcto.
  */
 
 // Get environment variables if available
 const env = window.env || {};
+
+// Check if we're likely in production but missing env.js
+const isLikelyProduction = (
+  window.location.hostname !== 'localhost' &&
+  window.location.hostname !== '127.0.0.1' &&
+  !window.location.hostname.includes('192.168.')
+);
 
 // Development fallback values
 const DEV_DEFAULTS = {
@@ -16,6 +26,15 @@ const DEV_DEFAULTS = {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZseHJpbHN4Z2hpcWZzZmlmeGNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2ODUzMDQsImV4cCI6MjA4MDI2MTMwNH0.Q-loU9hZybMoFr4SrIvnCyhZPOmsYdRAqnJnyIvUdV4',
     recaptchaSiteKey: ''
 };
+
+// Warn if using fallback in production
+if (!window.env && isLikelyProduction) {
+  console.warn(
+    '⚠️ SUPABASE CONFIG: Usando valores de desarrollo en lo que parece ser producción.\n' +
+    'Crea www/js/core/env.js con tus credenciales reales.\n' +
+    'Ver env.example.js para el formato correcto.'
+  );
+}
 
 const supabaseConfig = {
     // Use env variables if available, otherwise fallback to dev defaults

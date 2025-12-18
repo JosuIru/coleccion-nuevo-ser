@@ -14,6 +14,7 @@ class SearchModal {
       difficulty: 'all',
       practicalUse: 'all'
     };
+    this.escapeHandler = null; // Handler for escape key
     this.loadMetadata();
   }
 
@@ -46,6 +47,12 @@ class SearchModal {
   }
 
   close() {
+    // Limpiar escape key handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+    }
+
     const modal = document.getElementById('search-modal');
     if (modal) modal.remove();
   }
@@ -627,14 +634,13 @@ class SearchModal {
       }
     });
 
-    // ESC to close
-    const handleEscape = (e) => {
+    // ESC to close - store handler for cleanup
+    this.escapeHandler = (e) => {
       if (e.key === 'Escape') {
         this.close();
-        document.removeEventListener('keydown', handleEscape);
       }
     };
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', this.escapeHandler);
 
     // Click outside to close
     document.getElementById('search-modal')?.addEventListener('click', (e) => {

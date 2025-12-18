@@ -2,7 +2,10 @@
  * PRICING MODAL - UI de Planes y Pagos
  * Modal para seleccionar plan de suscripción y procesar pagos
  *
- * @version 1.0.0
+ * Usa PLANS_CONFIG como fuente centralizada de verdad.
+ *
+ * @version 2.0.0
+ * @updated 2024-12-16
  */
 
 class PricingModal {
@@ -10,18 +13,38 @@ class PricingModal {
     this.stripe = null;
     this.authHelper = window.authHelper;
     this.supabase = null;
+    this.escapeHandler = null; // Handler for escape key
 
-    this.plans = {
+    // Generar planes desde PLANS_CONFIG
+    this.plans = this.buildPlansFromConfig();
+
+    this.init();
+  }
+
+  /**
+   * Construir planes desde PLANS_CONFIG centralizado
+   */
+  buildPlansFromConfig() {
+    const config = window.PLANS_CONFIG;
+    if (!config) {
+      console.warn('PLANS_CONFIG no disponible, usando configuración por defecto');
+      return this.getDefaultPlans();
+    }
+
+    const featureDescriptions = config.featureDescriptions;
+
+    return {
       free: {
-        name: 'Gratuito',
+        name: config.plans.free.name,
         price: '0€',
         period: '/mes',
-        icon: '🆓',
+        icon: config.plans.free.icon,
+        credits: config.plans.free.credits,
         features: [
           'Acceso a todos los libros',
           'Progreso sincronizado',
           'Quizzes básicos',
-          '10 consultas IA/mes',
+          `${config.plans.free.credits} créditos IA/mes`,
           'Comunidad',
         ],
         notIncluded: [
@@ -29,8 +52,72 @@ class PricingModal {
           'Tutor IA personalizado',
           'Game Master IA',
           'Analytics avanzados',
-          'Exportar a PDF',
         ],
+        button: 'Plan Actual',
+        buttonAction: 'current',
+        stripePriceId: null,
+      },
+      premium: {
+        name: config.plans.premium.name,
+        price: `${config.plans.premium.price.toFixed(2).replace('.', ',')}€`,
+        period: '/mes',
+        icon: config.plans.premium.icon,
+        badge: config.plans.premium.recommended ? 'Recomendado' : null,
+        credits: config.plans.premium.credits,
+        features: [
+          'Todo lo de Gratuito',
+          `${featureDescriptions.ai_chat.icon} ${featureDescriptions.ai_chat.name}`,
+          `${featureDescriptions.ai_tutor.icon} ${featureDescriptions.ai_tutor.name}`,
+          `${featureDescriptions.ai_content_adapter.icon} ${featureDescriptions.ai_content_adapter.name}`,
+          `${featureDescriptions.advanced_analytics.icon} ${featureDescriptions.advanced_analytics.name}`,
+          `${config.plans.premium.credits} créditos IA/mes`,
+          'Sin anuncios',
+        ],
+        notIncluded: [
+          `${featureDescriptions.ai_game_master.icon} ${featureDescriptions.ai_game_master.name}`,
+          `${featureDescriptions.priority_support.icon} ${featureDescriptions.priority_support.name}`,
+        ],
+        button: 'Comenzar Premium',
+        buttonAction: 'premium',
+        stripePriceId: config.plans.premium.stripePriceId,
+      },
+      pro: {
+        name: config.plans.pro.name,
+        price: `${config.plans.pro.price.toFixed(2).replace('.', ',')}€`,
+        period: '/mes',
+        icon: config.plans.pro.icon,
+        credits: config.plans.pro.credits,
+        features: [
+          'Todo lo de Premium',
+          `${featureDescriptions.ai_game_master.icon} ${featureDescriptions.ai_game_master.name}`,
+          'NPCs conversacionales ilimitados',
+          'Generación de misiones dinámicas',
+          'Narrativa adaptativa',
+          `${config.plans.pro.credits} créditos IA/mes`,
+          `${featureDescriptions.priority_support.icon} ${featureDescriptions.priority_support.name}`,
+          'API access',
+        ],
+        notIncluded: [],
+        button: 'Comenzar Pro',
+        buttonAction: 'pro',
+        stripePriceId: config.plans.pro.stripePriceId,
+      },
+    };
+  }
+
+  /**
+   * Configuración por defecto si PLANS_CONFIG no está disponible
+   */
+  getDefaultPlans() {
+    return {
+      free: {
+        name: 'Gratuito',
+        price: '0€',
+        period: '/mes',
+        icon: '🆓',
+        credits: 10,
+        features: ['Acceso a todos los libros', '10 créditos IA/mes'],
+        notIncluded: ['Chat IA ilimitado', 'Tutor IA', 'Game Master IA'],
         button: 'Plan Actual',
         buttonAction: 'current',
       },
@@ -40,53 +127,26 @@ class PricingModal {
         period: '/mes',
         icon: '⭐',
         badge: 'Recomendado',
-        features: [
-          'Todo lo de Gratuito',
-          'Chat IA ilimitado sobre libros',
-          'Tutor IA personalizado',
-          'Generación de quizzes personalizados',
-          'Sincronización en la nube',
-          'Exportar a PDF',
-          '500 consultas IA/mes',
-          'Sin anuncios',
-        ],
-        notIncluded: [
-          'Game Master IA',
-          'NPCs conversacionales',
-          'Temas personalizados',
-          'Soporte prioritario',
-        ],
+        credits: 500,
+        features: ['Todo lo de Gratuito', 'Chat IA', 'Tutor IA', '500 créditos/mes'],
+        notIncluded: ['Game Master IA'],
         button: 'Comenzar Premium',
         buttonAction: 'premium',
-        priceId: 'price_premium_monthly', // Obtener de Stripe
-        stripePriceId: null, // Se obtiene de env
+        stripePriceId: 'price_premium_monthly',
       },
       pro: {
         name: 'Pro',
         price: '19,99€',
         period: '/mes',
         icon: '👑',
-        features: [
-          'Todo lo de Premium',
-          'Game Master IA para juegos',
-          'NPCs conversacionales ilimitados',
-          'Generación de misiones dinámicas',
-          'Narrativa adaptativa',
-          'Analytics avanzados',
-          'Temas personalizados',
-          '2000 consultas IA/mes',
-          'Soporte prioritario',
-          'API access',
-        ],
+        credits: 2000,
+        features: ['Todo lo de Premium', 'Game Master IA', '2000 créditos/mes'],
         notIncluded: [],
         button: 'Comenzar Pro',
         buttonAction: 'pro',
-        priceId: 'price_pro_monthly',
-        stripePriceId: null,
+        stripePriceId: 'price_pro_monthly',
       },
     };
-
-    this.init();
   }
 
   /**
@@ -151,8 +211,8 @@ class PricingModal {
     modal.className = 'pricing-modal-overlay fade-in';
     modal.innerHTML = `
       <div class="pricing-modal-container scale-in">
-        <button class="pricing-modal-close" onclick="window.pricingModal.closeModal()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <button class="pricing-modal-close" onclick="window.pricingModal.closeModal()" aria-label="Cerrar modal de precios">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
             <path d="M18 6L6 18M6 6l12 12" stroke-width="2"/>
           </svg>
         </button>
@@ -182,6 +242,14 @@ class PricingModal {
         this.closeModal();
       }
     });
+
+    // Escape key para cerrar modal
+    this.escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.closeModal();
+      }
+    };
+    document.addEventListener('keydown', this.escapeHandler);
   }
 
   /**
@@ -309,6 +377,12 @@ class PricingModal {
    * Cerrar modal
    */
   closeModal() {
+    // Limpiar escape key handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+    }
+
     const overlay = document.querySelector('.pricing-modal-overlay');
     if (overlay) {
       overlay.remove();

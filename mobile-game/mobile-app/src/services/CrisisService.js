@@ -35,10 +35,11 @@ class CrisisService {
    * Obtener crisis activas (desde caché o red)
    *
    * @param {Object} options Opciones de filtrado
+   * @param {Object} options.userLocation - Ubicación del usuario { latitude, longitude }
    * @returns {Promise<Array>} Lista de crisis
    */
   async getCrises(options = {}) {
-    const { forceRefresh = false, type = null, limit = 10 } = options;
+    const { forceRefresh = false, type = null, limit = 10, userLocation = null } = options;
 
     try {
       // Intentar obtener de caché
@@ -64,9 +65,9 @@ class CrisisService {
         }
       }
 
-      // Fallback: Crisis procedurales locales
-      logger.info('⚠️ Modo offline: Generando crisis procedurales', '');
-      const proceduralCrises = this.generateProceduralCrises();
+      // Fallback: Crisis procedurales locales (CERCA DEL USUARIO si hay ubicación)
+      logger.info('⚠️ Modo offline: Generando crisis procedurales cerca del usuario', '');
+      const proceduralCrises = this.generateProceduralCrises(userLocation);
       await this.saveToCache(proceduralCrises);
 
       return this.filterCrises(proceduralCrises, type, limit);
@@ -74,8 +75,8 @@ class CrisisService {
     } catch (error) {
       logger.error('❌ Error obteniendo crisis:', error);
 
-      // Fallback en caso de error
-      const fallback = this.generateProceduralCrises();
+      // Fallback en caso de error (CERCA DEL USUARIO si hay ubicación)
+      const fallback = this.generateProceduralCrises(userLocation);
       return this.filterCrises(fallback, type, limit);
     }
   }
@@ -191,8 +192,9 @@ class CrisisService {
 
   /**
    * Generar crisis procedurales cuando no hay conexión
+   * @param {Object} userLocation - Ubicación del usuario { latitude, longitude }
    */
-  generateProceduralCrises() {
+  generateProceduralCrises(userLocation = null) {
     const proceduralTemplates = [
       {
         type: 'environmental',
@@ -279,14 +281,15 @@ class CrisisService {
     for (let i = 0; i < numberOfCrises; i++) {
       const template = proceduralTemplates[i % proceduralTemplates.length];
 
+      const scale = this.randomScale();
       const crisis = {
         id: this.generateCrisisId(),
         type: template.type,
         title: template.titles[Math.floor(Math.random() * template.titles.length)],
         description: this.generateDescription(template.type),
-        location: this.generateRandomLocation(),
+        location: this.generateRandomLocation(userLocation, scale),
         urgency: this.randomInRange(template.urgencyRange[0], template.urgencyRange[1]),
-        scale: this.randomScale(),
+        scale: scale,
         attributes: this.generateAttributes(template.type),
         population_affected: this.randomInRange(
           template.populationRange[0],
@@ -324,8 +327,17 @@ class CrisisService {
 
   /**
    * Generar ubicación aleatoria
+   * Si se proporciona userLocation, genera crisis CERCA del usuario
+   * @param {Object} userLocation - { latitude, longitude } del usuario
+   * @param {string} scale - 'local' | 'regional' | 'national' | 'continental'
    */
-  generateRandomLocation() {
+  generateRandomLocation(userLocation = null, scale = 'local') {
+    // Si tenemos ubicación del usuario, generar cerca de él
+    if (userLocation && userLocation.latitude && userLocation.longitude) {
+      return this.generateNearbyLocation(userLocation, scale);
+    }
+
+    // Fallback: ciudades predefinidas (solo si no hay ubicación del usuario)
     const cities = [
       { country: 'México', city: 'Ciudad de México', lat: 19.4326, lon: -99.1332 },
       { country: 'España', city: 'Madrid', lat: 40.4168, lon: -3.7038 },
@@ -338,6 +350,56 @@ class CrisisService {
     ];
 
     return cities[Math.floor(Math.random() * cities.length)];
+  }
+
+  /**
+   * Genera ubicación cerca del usuario según la escala
+   * @param {Object} userLocation - { latitude, longitude }
+   * @param {string} scale - Escala de la crisis
+   */
+  generateNearbyLocation(userLocation, scale) {
+    // Radios por escala en kilómetros
+    const radiusByScale = {
+      local: 5,        // 5 km
+      regional: 50,    // 50 km
+      national: 200,   // 200 km
+      continental: 1000 // 1000 km
+    };
+
+    const radiusKm = radiusByScale[scale] || 5;
+
+    // Generar punto aleatorio en círculo alrededor del usuario
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = Math.random() * radiusKm;
+
+    // Convertir a deltas de coordenadas
+    // 1 grado de latitud ≈ 111 km
+    // 1 grado de longitud ≈ 111 km * cos(latitud)
+    const deltaLat = (distance / 111) * Math.cos(angle);
+    const deltaLon = (distance / (111 * Math.cos(userLocation.latitude * Math.PI / 180))) * Math.sin(angle);
+
+    const lat = userLocation.latitude + deltaLat;
+    const lon = userLocation.longitude + deltaLon;
+
+    // Generar nombre de ubicación descriptivo
+    const locationNames = {
+      local: ['Cerca de tu ubicación', 'En tu zona', 'Tu vecindario', 'Área cercana'],
+      regional: ['En tu región', 'Zona regional', 'Área metropolitana', 'Región cercana'],
+      national: ['En tu país', 'Zona nacional', 'Territorio nacional'],
+      continental: ['Continente', 'Zona continental', 'Región amplia']
+    };
+
+    const names = locationNames[scale] || locationNames.local;
+    const city = names[Math.floor(Math.random() * names.length)];
+
+    return {
+      country: 'Tu país',
+      city: city,
+      lat: lat,
+      lon: lon,
+      isNearUser: true,
+      distanceKm: distance.toFixed(1)
+    };
   }
 
   /**

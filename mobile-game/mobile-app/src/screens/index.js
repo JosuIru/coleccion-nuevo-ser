@@ -20,3 +20,9 @@ export { default as ActiveMissionsScreen } from './ActiveMissionsScreen';
 
 // Pantallas de herramientas y ecosistema
 export { default as HerramientasScreen } from './HerramientasScreen';
+
+// Pantalla de ayuda
+export { default as HelpScreen } from './HelpScreen';
+
+// Laboratorio Frankenstein embebido
+export { default as FrankensteinLabScreen } from './FrankensteinLabScreen';

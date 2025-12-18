@@ -71,6 +71,9 @@ class FrankensteinQuizSystem {
       }
     };
 
+    this.chapterMetadata = null;
+    this.chapterMetadataPromise = null;
+
     this.powerMultipliers = this.difficultySettings.iniciado.powerMultipliers;
 
     this.init();
@@ -176,6 +179,110 @@ class FrankensteinQuizSystem {
     return this.mode;
   }
 
+  isKidMode() {
+    return this.difficulty === 'ninos';
+  }
+
+  simplifyForKids(text = '') {
+    if (!text) return '';
+    const replacements = [
+      ['consciencia', 'mente'],
+      ['filosóficamente', 'de forma muy profunda'],
+      ['inteligencia artificial', 'robots inteligentes'],
+      ['información', 'datos'],
+      ['evolución', 'cambio'],
+      ['metafísica', 'ideas profundas'],
+      ['emergencia', 'aparecimiento'],
+      ['constante', 'valor fijo']
+    ];
+    let simplified = text;
+    replacements.forEach(([from, to]) => {
+      simplified = simplified.replace(new RegExp(from, 'gi'), to);
+    });
+    if (simplified.length > 180) {
+      simplified = simplified.substring(0, 177) + '...';
+    }
+    return simplified;
+  }
+
+  async ensureChapterMetadata() {
+    if (this.chapterMetadata) return this.chapterMetadata;
+    if (this.chapterMetadataPromise) return this.chapterMetadataPromise;
+    this.chapterMetadataPromise = fetch('books/metadata/chapters-metadata.json')
+      .then(response => (response.ok ? response.json() : null))
+      .catch(error => {
+        console.warn('[FrankensteinQuiz] No se pudo cargar el metadata de capítulos:', error);
+        return null;
+      })
+      .finally(() => {
+        this.chapterMetadataPromise = null;
+      });
+    this.chapterMetadata = await this.chapterMetadataPromise;
+    return this.chapterMetadata;
+  }
+
+  getChapterMetadata(bookId, chapterId) {
+    if (!this.chapterMetadata?.chapters) return null;
+    return this.chapterMetadata.chapters[bookId]?.[chapterId] || null;
+  }
+
+  getQuestionPrompt(question) {
+    const base = question.question || '';
+    if (this.isKidMode()) {
+      return `Pregunta amigable: ${this.simplifyForKids(base)}`;
+    }
+    return base;
+  }
+
+  buildQuestionHint(question, chapterMeta) {
+    const candidates = [];
+    if (question.hint) candidates.push(question.hint);
+    if (question.explanation) candidates.push(question.explanation);
+    if (chapterMeta?.description) candidates.push(chapterMeta.description);
+    if (chapterMeta?.keywords && chapterMeta.keywords.length) {
+      candidates.push(`Palabras clave: ${chapterMeta.keywords.slice(0, 4).join(', ')}`);
+    }
+    if (question.bookQuote) {
+      candidates.push(`Cita: "${question.bookQuote}"`);
+    }
+    const hint = candidates.filter(Boolean).join(' ');
+    if (!hint) return '';
+    if (this.isKidMode()) {
+      return this.simplifyForKids(hint);
+    }
+    return hint;
+  }
+
+  openChapterInLibrary(bookId, chapterId) {
+    if (window.biblioteca?.openBook) {
+      window.biblioteca.openBook(bookId, chapterId);
+      return;
+    }
+    const url = `books/${bookId}/book.html`;
+    window.open(`${url}#${chapterId}`, '_blank');
+  }
+
+  formatChapterSnippet(chapterMeta) {
+    if (!chapterMeta) return '';
+    const parts = [];
+    if (chapterMeta.type) parts.push(`Tipo: ${chapterMeta.type}`);
+    if (chapterMeta.difficulty) parts.push(`Nivel: ${chapterMeta.difficulty}`);
+    if (chapterMeta.readingTime) parts.push(`Lectura: ${chapterMeta.readingTime} min`);
+    if (chapterMeta.practicalUses && chapterMeta.practicalUses.length) {
+      parts.push(`Aplicación: ${chapterMeta.practicalUses[0]}`);
+    }
+    return parts.join(' · ');
+  }
+
+  escapeHtml(text = '') {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   /**
    * Cargar quiz de un capítulo
    */
@@ -187,19 +294,25 @@ class FrankensteinQuizSystem {
     }
 
     try {
-      // Intentar cargar desde la raíz del libro primero (usar ruta relativa para compatibilidad)
-      let response = await fetch(`./books/${bookId}/quizzes.json`);
+      const quizFiles = [];
+      if (this.isKidMode()) {
+        quizFiles.push(`./books/${bookId}/quizzes-kids.json`);
+        quizFiles.push(`./books/${bookId}/assets/quizzes-kids.json`);
+      }
+      quizFiles.push(`./books/${bookId}/quizzes.json`);
+      quizFiles.push(`./books/${bookId}/assets/quizzes.json`);
 
-      // Si no existe, intentar desde assets/
-      if (!response.ok) {
-        response = await fetch(`./books/${bookId}/assets/quizzes.json`);
+      let quizData = null;
+      for (const path of quizFiles) {
+        let response = await fetch(path);
+        if (!response.ok) continue;
+        quizData = await response.json();
+        break;
       }
 
-      if (!response.ok) {
-        throw new Error(`Failed to load quiz for ${bookId} - tried both /quizzes.json and /assets/quizzes.json`);
+      if (!quizData) {
+        throw new Error(`Failed to load quiz for ${bookId} - tried ${quizFiles.join(', ')}`);
       }
-
-      const quizData = await response.json();
 
       // Cachear todo el libro - manejar ambas estructuras
       if (quizData.chapters) {
@@ -296,18 +409,22 @@ class FrankensteinQuizSystem {
 
     // Seleccionar 2 preguntas aleatorias
     const selectedQuestions = this.selectRandomQuestions(quizData.questions);
+    await this.ensureChapterMetadata();
 
     // Mostrar modal y esperar respuesta del usuario
     return new Promise((resolve) => {
-      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, resolve);
+      const chapterMeta = this.getChapterMetadata(bookId, chapterId);
+      this.createQuizModal(piece, quizData.chapterTitle, selectedQuestions, resolve, bookId, chapterId, chapterMeta);
     });
   }
 
   /**
    * Crear modal de quiz
    */
-  createQuizModal(piece, chapterTitle, questions, resolveCallback) {
+  createQuizModal(piece, chapterTitle, questions, resolveCallback, bookId, chapterId, chapterMeta) {
     // Crear overlay
+    const chapterSnippet = this.formatChapterSnippet(chapterMeta);
+    const difficultyLabel = this.escapeHtml(this.difficultySettings[this.difficulty]?.description || '');
     const overlay = document.createElement('div');
     overlay.className = 'quiz-modal-overlay active';
     overlay.innerHTML = `
@@ -323,6 +440,19 @@ class FrankensteinQuizSystem {
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
           </button>
+          <div class="quiz-meta">
+            <div class="quiz-meta-info">
+              <span class="quiz-chapter-label">Capítulo:</span>
+              <strong>${chapterTitle}</strong>
+              ${chapterSnippet ? `<p class="quiz-chapter-snippet">${this.escapeHtml(chapterSnippet)}</p>` : ''}
+            </div>
+            <div class="quiz-meta-actions">
+              <span class="quiz-level-badge">${difficultyLabel}</span>
+              <button class="quiz-link-btn" type="button" data-book="${bookId}" data-chapter="${chapterId}">
+                🧭 Ver capítulo
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="quiz-modal-body" id="quiz-questions-container">
@@ -373,13 +503,14 @@ class FrankensteinQuizSystem {
     const userAnswers = new Array(questions.length).fill(null);
 
     questions.forEach((q, qIndex) => {
+      const hintText = this.buildQuestionHint(q, chapterMeta);
       const questionEl = document.createElement('div');
       questionEl.className = 'quiz-question';
       questionEl.innerHTML = `
         <div class="quiz-question-header">
           <span class="quiz-question-number">Pregunta ${qIndex + 1}/${questions.length}</span>
         </div>
-        <div class="quiz-question-text">${q.question}</div>
+        <div class="quiz-question-text">${this.escapeHtml(this.getQuestionPrompt(q))}</div>
         <div class="quiz-options" data-question="${qIndex}">
           ${q.options.map((option, optIndex) => `
             <div class="quiz-option" data-option="${optIndex}">
@@ -389,11 +520,19 @@ class FrankensteinQuizSystem {
                 id="q${qIndex}_opt${optIndex}"
                 value="${optIndex}"
               >
-              <label for="q${qIndex}_opt${optIndex}">${option}</label>
+              <label for="q${qIndex}_opt${optIndex}">${this.escapeHtml(option)}</label>
             </div>
           `).join('')}
         </div>
         <div class="quiz-feedback" id="feedback_${qIndex}" style="display: none;"></div>
+        ${hintText ? `
+          <div class="quiz-question-context">
+            <button class="quiz-hint-btn" type="button">
+              ${this.isKidMode() ? 'Ver pista sencilla' : 'Ver pista'}
+            </button>
+            <p class="quiz-hint-text">${this.escapeHtml(hintText)}</p>
+          </div>
+        ` : ''}
       `;
 
       container.appendChild(questionEl);
@@ -413,6 +552,24 @@ class FrankensteinQuizSystem {
     // Botón de submit
     overlay.querySelector('#quiz-submit-btn').addEventListener('click', () => {
       this.evaluateQuiz(overlay, questions, userAnswers, piece, resolveCallback);
+    });
+
+    overlay.querySelector('.quiz-link-btn')?.addEventListener('click', (event) => {
+      const btn = event.currentTarget;
+      const targetBook = btn.dataset.book;
+      const targetChapter = btn.dataset.chapter;
+      this.openChapterInLibrary(targetBook, targetChapter);
+    });
+
+    overlay.querySelectorAll('.quiz-hint-btn').forEach(btn => {
+      const hintEl = btn.parentElement?.querySelector('.quiz-hint-text');
+      if (!hintEl) return;
+      btn.addEventListener('click', () => {
+        const isVisible = hintEl.classList.toggle('visible');
+        btn.textContent = isVisible
+          ? (this.isKidMode() ? 'Ocultar pista' : 'Ocultar pista')
+          : (this.isKidMode() ? 'Ver pista sencilla' : 'Ver pista');
+      });
     });
   }
 

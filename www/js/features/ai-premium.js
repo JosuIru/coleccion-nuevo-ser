@@ -245,6 +245,46 @@ class AIPremium {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // ELEVENLABS TTS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Consumir créditos para ElevenLabs TTS
+   * @param {number} textLength - Longitud del texto a sintetizar
+   * @returns {Promise<object>} Resultado del consumo
+   */
+  async consumeElevenLabsCredits(textLength) {
+    // Verificar feature
+    if (!this.hasFeature('elevenlabs_tts')) {
+      throw new Error('Voces ElevenLabs solo disponibles en Premium/Pro');
+    }
+
+    // Calcular créditos: ~5 créditos por 1000 caracteres
+    const creditsNeeded = Math.ceil((textLength / 1000) * 5);
+
+    // Verificar créditos
+    await this.checkCredits(creditsNeeded, 'elevenlabs_tts');
+
+    // Consumir
+    return await this.consumeCredits(
+      creditsNeeded,
+      'elevenlabs_tts',
+      'elevenlabs',
+      'eleven_multilingual_v2',
+      textLength
+    );
+  }
+
+  /**
+   * Estimar créditos ElevenLabs sin consumir
+   * @param {number} textLength - Longitud del texto
+   * @returns {number} Créditos estimados
+   */
+  estimateElevenLabsCredits(textLength) {
+    return Math.ceil((textLength / 1000) * 5);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // ESTIMACIONES DE COSTO
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -261,14 +301,32 @@ class AIPremium {
    * Estimar costo en USD
    */
   estimateCostUSD(tokens, provider = 'claude', model = 'claude-3-5-sonnet') {
-    // Costos por 1K tokens (actualizar según pricing actual)
+    // Costos por 1K tokens - Actualizado Diciembre 2024
+    // Fuentes: anthropic.com/pricing, openai.com/pricing, ai.google.dev/pricing
     const costPerK = {
-      'claude-sonnet-4': 0.003,
-      'claude-3-5-sonnet': 0.003,
-      'claude-3-5-haiku': 0.0008,
-      'gpt-4o': 0.005,
-      'gpt-4o-mini': 0.00015,
-      'gemini-2.0-flash': 0.001,
+      // Anthropic Claude (por 1K tokens output, input ~1/5)
+      'claude-opus-4': 0.075,
+      'claude-sonnet-4': 0.015,
+      'claude-3-5-sonnet': 0.015,
+      'claude-3-5-haiku': 0.004,
+      'claude-3-haiku': 0.00125,
+      // OpenAI GPT (por 1K tokens output)
+      'gpt-4o': 0.010,
+      'gpt-4o-mini': 0.0006,
+      'gpt-4-turbo': 0.030,
+      'gpt-3.5-turbo': 0.002,
+      // Google Gemini
+      'gemini-2.0-flash': 0.0004,
+      'gemini-1.5-flash': 0.000075,
+      'gemini-1.5-pro': 0.005,
+      // Mistral
+      'mistral-large': 0.008,
+      'mistral-small': 0.002,
+      // Gratuitos
+      'qwen-turbo': 0.0,
+      'huggingface': 0.0,
+      'ollama': 0.0,
+      'local': 0.0,
       'default': 0.002,
     };
 

@@ -436,6 +436,14 @@ const ProfileScreen = ({ navigation }) => {
           </Animated.View>
         )}
 
+        {/* BOTÓN DE AYUDA */}
+        <TouchableOpacity
+          style={styles.helpButton}
+          onPress={() => navigation.navigate('HelpFlow')}
+        >
+          <Text style={styles.helpButtonText}>❓ Ayuda - Cómo Jugar</Text>
+        </TouchableOpacity>
+
         {/* BOTÓN DE HERRAMIENTAS */}
         <TouchableOpacity
           style={styles.herramientasButton}
@@ -831,9 +839,28 @@ const styles = StyleSheet.create({
     color: COLORS.text.primary
   },
 
+  // Ayuda
+  helpButton: {
+    margin: 16,
+    marginBottom: 8,
+    paddingVertical: 14,
+    backgroundColor: COLORS.accent.primary,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.accent.primary
+  },
+
+  helpButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff'
+  },
+
   // Herramientas
   herramientasButton: {
     margin: 16,
+    marginTop: 0,
     marginBottom: 8,
     paddingVertical: 14,
     backgroundColor: '#6366F1',

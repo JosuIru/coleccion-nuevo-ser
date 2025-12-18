@@ -13,6 +13,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(WidgetBridgePlugin.class);
         registerPlugin(DynamicColorsPlugin.class);
         registerPlugin(FCMPlugin.class);
+        registerPlugin(BackgroundAudioPlugin.class);
 
         // Aplicar Material You dynamic colors si está disponible (Android 12+)
         // DynamicColorsHelper es un objeto Kotlin (singleton)

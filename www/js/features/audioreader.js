@@ -462,6 +462,15 @@ class AudioReader {
     // Adquirir wake lock para mantener pantalla activa
     await this.acquireWakeLock();
 
+    // Iniciar Background Audio Helper (Foreground Service en Android, audio silencioso en web)
+    if (window.backgroundAudio) {
+      const bookData = this.bookEngine.getCurrentBookData();
+      await window.backgroundAudio.start({
+        title: bookData?.title || 'Audiolibro',
+        chapter: this.bookEngine.currentChapter?.title || ''
+      });
+    }
+
     // Configurar Media Session API para controles nativos en móvil
     this.setupMediaSession();
 
@@ -483,10 +492,14 @@ class AudioReader {
   async pause() {
     if (!this.isPlaying || this.isPaused) return;
 
-    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
-      // Premium TTS pause (OpenAI o Hugging Face)
+    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
+      // Premium TTS pause (OpenAI, Hugging Face o ElevenLabs)
       try {
-        this.ttsManager.pause();
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+          this.ttsManager.providers.elevenlabs.pause();
+        } else {
+          this.ttsManager.pause();
+        }
         this.isPaused = true;
         logger.log('⏸️ Audio premium pausado');
       } catch (e) {
@@ -515,6 +528,12 @@ class AudioReader {
         logger.log('⏸️ Audio marcado como pausado');
       }
     }
+
+    // Notificar al Background Audio Helper que está pausado
+    if (window.backgroundAudio) {
+      window.backgroundAudio.pause();
+    }
+
     await this.updateUI();
   }
 
@@ -526,10 +545,19 @@ class AudioReader {
     // Adquirir wake lock
     await this.acquireWakeLock();
 
-    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
-      // Premium TTS resume (OpenAI o Hugging Face)
+    // Notificar al Background Audio Helper que se reanuda
+    if (window.backgroundAudio) {
+      window.backgroundAudio.resume();
+    }
+
+    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
+      // Premium TTS resume (OpenAI, Hugging Face o ElevenLabs)
       try {
-        this.ttsManager.resume();
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+          this.ttsManager.providers.elevenlabs.resume();
+        } else {
+          this.ttsManager.resume();
+        }
         logger.log('▶️ Audio premium reanudado');
       } catch (e) {
         console.error('Error reanudando TTS premium, reiniciando:', e);
@@ -548,9 +576,13 @@ class AudioReader {
   }
 
   async stop(resetPosition = true) {
-    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
+    if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       try {
-        this.ttsManager.stop();
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+          this.ttsManager.providers.elevenlabs.stop();
+        } else {
+          this.ttsManager.stop();
+        }
       } catch (e) {
         console.error('Error deteniendo TTS premium:', e);
       }
@@ -566,6 +598,11 @@ class AudioReader {
 
     // Liberar wake lock cuando se detiene la reproducción
     await this.releaseWakeLock();
+
+    // Detener Background Audio Helper (Foreground Service en Android, audio silencioso en web)
+    if (window.backgroundAudio) {
+      await window.backgroundAudio.stop();
+    }
 
     this.isPlaying = false;
     this.isPaused = false;
@@ -714,13 +751,13 @@ class AudioReader {
 
   async setTTSProvider(provider) {
     // Validar provider
-    if (!['browser', 'openai', 'huggingface'].includes(provider)) {
+    if (!['browser', 'openai', 'huggingface', 'elevenlabs'].includes(provider)) {
       console.error('❌ Provider inválido:', provider);
       return;
     }
 
     // Validar que TTSManager esté disponible para providers premium
-    if ((provider === 'openai' || provider === 'huggingface') && !this.ttsManager) {
+    if ((provider === 'openai' || provider === 'huggingface' || provider === 'elevenlabs') && !this.ttsManager) {
       window.toast?.error('Sistema TTS Premium no disponible');
       return;
     }
@@ -742,6 +779,14 @@ class AudioReader {
       }
     }
 
+    // Validar ElevenLabs (requiere suscripción Premium)
+    if (provider === 'elevenlabs') {
+      if (!this.ttsManager.isElevenLabsAvailable()) {
+        window.toast?.warning('Voces ElevenLabs requieren suscripción Premium');
+        return;
+      }
+    }
+
     // Cambiar provider
     this.ttsProvider = provider;
     localStorage.setItem('tts-provider', provider);
@@ -754,7 +799,8 @@ class AudioReader {
     const providerNames = {
       browser: '🔊 Navegador',
       openai: '✨ OpenAI TTS',
-      huggingface: '🤗 Hugging Face'
+      huggingface: '🤗 Hugging Face',
+      elevenlabs: '🎙️ ElevenLabs Premium'
     };
     window.toast?.success(`Voz cambiada a: ${providerNames[provider]}`);
 
@@ -781,7 +827,10 @@ class AudioReader {
     this.savePosition();
 
     // ⭐ Selección de provider según configuración
-    if (this.ttsProvider === 'openai' && this.ttsManager && localStorage.getItem('openai-tts-key')) {
+    if (this.ttsProvider === 'elevenlabs' && this.ttsManager && this.ttsManager.isElevenLabsAvailable()) {
+      // Usar ElevenLabs Premium (requiere suscripción)
+      await this.speakWithElevenLabs(paragraph, index);
+    } else if (this.ttsProvider === 'openai' && this.ttsManager && localStorage.getItem('openai-tts-key')) {
       // Usar OpenAI TTS Premium
       await this.speakWithOpenAI(paragraph, index);
     } else if (this.nativeTTS) {
@@ -1024,6 +1073,88 @@ class AudioReader {
     }
   }
 
+  async speakWithElevenLabs(paragraph, index) {
+    if (!this.ttsManager || !this.ttsManager.providers.elevenlabs) {
+      console.error('❌ ElevenLabs provider no disponible');
+      // Fallback a navegador
+      this.speakWithWebSpeechAPI(paragraph, index);
+      return;
+    }
+
+    try {
+      const voice = localStorage.getItem('elevenlabs-voice') || 'EXAVITQu4vr4xnSDxMaL'; // Sara por defecto
+      const stability = parseFloat(localStorage.getItem('elevenlabs-stability') || '0.5');
+      const similarityBoost = parseFloat(localStorage.getItem('elevenlabs-similarity') || '0.75');
+
+      logger.log('🎙️ Iniciando síntesis ElevenLabs con voz:', voice);
+
+      // Establecer contexto para el caché persistente
+      const bookId = this.bookEngine?.currentBook || 'unknown';
+      const chapterId = this.bookEngine?.currentChapter || 'unknown';
+      this.ttsManager.providers.elevenlabs.setContext(bookId, chapterId, index);
+
+      // Usar el provider ElevenLabs directamente (maneja créditos internamente)
+      await this.ttsManager.providers.elevenlabs.speak(paragraph.text, {
+        voice,
+        stability,
+        similarity_boost: similarityBoost,
+        speed: this.rate,
+        onProgress: (current, total) => {
+          logger.log(`Progreso audio: ${current.toFixed(1)}s / ${total.toFixed(1)}s`);
+        },
+        onEnd: () => {
+          paragraph.spoken = true;
+          logger.log('✅ Síntesis ElevenLabs completada para párrafo', index);
+
+          // Avanzar al siguiente párrafo
+          this.currentParagraphIndex++;
+
+          if (this.currentParagraphIndex < this.paragraphs.length && this.isPlaying && !this.isPaused) {
+            setTimeout(() => {
+              if (this.isPlaying && !this.isPaused) {
+                this.speakParagraph(this.currentParagraphIndex);
+              }
+            }, 300);
+          } else {
+            this.onChapterEnd();
+          }
+        },
+        onError: (error) => {
+          console.error('❌ Error en ElevenLabs TTS:', error);
+
+          // Mostrar error específico
+          if (error.message.includes('Premium')) {
+            window.toast?.error('Voces ElevenLabs requieren suscripción Premium');
+          } else if (error.message.includes('créditos') || error.message.includes('insuficientes')) {
+            window.toast?.error('Sin créditos para ElevenLabs. Renueva tu suscripción');
+          } else if (error.message.includes('API key')) {
+            window.toast?.error('API key de ElevenLabs no configurada');
+          } else {
+            window.toast?.error('Error en voz ElevenLabs');
+          }
+
+          // Fallback automático a navegador
+          logger.log('⚠️ Fallback a Web Speech API');
+          this.ttsProvider = 'browser';
+          localStorage.setItem('tts-provider', 'browser');
+          if (this.ttsManager) {
+            this.ttsManager.setProvider('browser');
+          }
+
+          // Reintentar con Web Speech API
+          this.speakWithWebSpeechAPI(paragraph, index);
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error en speakWithElevenLabs:', error);
+      window.toast?.error('Error en voz premium, usando voz del navegador');
+
+      // Fallback a navegador
+      this.ttsProvider = 'browser';
+      localStorage.setItem('tts-provider', 'browser');
+      this.speakWithWebSpeechAPI(paragraph, index);
+    }
+  }
 
   async onChapterEnd() {
     logger.log('✅ Capítulo terminado');

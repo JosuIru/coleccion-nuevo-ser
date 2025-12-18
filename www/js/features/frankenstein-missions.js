@@ -115,8 +115,63 @@ class FrankensteinMissions {
       }
     };
 
+    this.difficultyRank = {
+      facil: 0,
+      intermedio: 1,
+      avanzado: 2,
+      experto: 3
+    };
+
     // Misiones disponibles
     this.missions = [
+      {
+        id: 'curious-explorer',
+        name: 'Explorador Curioso',
+        icon: '🧭',
+        description: 'Recolecta aprendizajes, observa patrones y experimenta con nuevas combinaciones.',
+        longDescription: 'Un ser dispuesto a probar piezas con curiosidad, validar hipótesis sencillas y compartir descubrimientos con humildad.',
+        difficulty: 'facil',
+        requiredAttributes: {
+          reflection: 25,
+          creativity: 30,
+          action: 30,
+          empathy: 20
+        },
+        balanceRequired: {
+          action: { min: 25 },
+          reflection: { min: 20 }
+        },
+        successMessage: '¡Ser viable! Puedes explorar experiencias sin miedo a equivocarte.',
+        failureReasons: {
+          lowReflection: 'Necesitas pausar y observar antes de actuar.',
+          lowAction: 'Falta coraje para integrar aprendizajes en acción.'
+        }
+      },
+      {
+        id: 'community-starter',
+        name: 'Acompañante de Base',
+        icon: '🤝',
+        description: 'Activa círculos de confianza y escucha a quienes te rodean.',
+        longDescription: 'Un ser que genera seguridad, comparte herramientas prácticas y construye puentes desde lo cotidiano.',
+        difficulty: 'facil',
+        requiredAttributes: {
+          empathy: 40,
+          communication: 40,
+          collaboration: 35,
+          action: 30,
+          resilience: 30
+        },
+        balanceRequired: {
+          'empathy+communication': { min: 120 },
+          action: { min: 30 }
+        },
+        successMessage: '¡Ser viable! Puedes sostener comunidades con presencia y claridad.',
+        failureReasons: {
+          lowEmpathy: 'Necesitas escuchar más allá de lo evidente.',
+          lowCommunication: 'Tus mensajes se pierden. Habla con claridad y calidez.',
+          lowAction: 'La comunidad espera movimiento, no discursos.'
+        }
+      },
       {
         id: 'social-entrepreneur',
         name: 'Emprendedor Social',
@@ -591,8 +646,22 @@ class FrankensteinMissions {
       }
     });
 
+    this.sortMissionsByDifficulty();
+
     this.currentMission = null;
     this.createdBeing = null;
+  }
+
+  sortMissionsByDifficulty() {
+    if (!Array.isArray(this.missions)) return;
+    this.missions.sort((a, b) => {
+      const rankA = this.difficultyRank[a.difficulty] ?? 99;
+      const rankB = this.difficultyRank[b.difficulty] ?? 99;
+      if (rankA !== rankB) {
+        return rankA - rankB;
+      }
+      return (a.name || '').localeCompare(b.name || '');
+    });
   }
 
   /**
@@ -600,6 +669,23 @@ class FrankensteinMissions {
    */
   analyzePiece(piece) {
     // piece puede ser: chapter, exercise, resource
+    if (piece?.syntheticAttributes) {
+      const multiplier = piece.powerMultiplier || 1;
+      const adjustedAttributes = {};
+      Object.entries(piece.syntheticAttributes).forEach(([attr, value]) => {
+        adjustedAttributes[attr] = Math.round(value * multiplier);
+      });
+      const totalPower = Object.values(adjustedAttributes).reduce((sum, val) => sum + val, 0);
+      return {
+        piece,
+        attributes: adjustedAttributes,
+        totalPower,
+        powerMultiplier: multiplier,
+        quizScore: piece.quizScore,
+        quizTotal: piece.quizTotal
+      };
+    }
+
     const attributes = {};
     const title = (piece.title || '').toLowerCase();
 

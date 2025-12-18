@@ -446,6 +446,17 @@ class WidgetDataHelper {
       </div>
     `;
   }
+
+  /**
+   * Destruir la instancia y limpiar recursos
+   */
+  destroy() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+      this.updateInterval = null;
+    }
+    console.log('[WidgetDataHelper] Instancia destruida');
+  }
 }
 
 // ==========================================================================

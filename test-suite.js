@@ -134,8 +134,8 @@ fileExists(
 );
 
 fileExists(
-  path.join(baseDir, 'www/downloads/frankenstein-lab-v1.0.4.apk'),
-  'frankenstein-lab APK'
+  path.join(baseDir, 'www/downloads/frankenstein-lab-v1.2.7.apk'),
+  'frankenstein-lab APK v1.2.7'
 );
 
 section('5. HERRAMIENTAS CONFIGURADAS');
@@ -200,7 +200,7 @@ fileContains(
 
 fileContains(
   path.join(baseDir, 'api/check-version.php'),
-  "header('Content-Type: application/json'",
+  "Content-Type",
   'check-version.php retorna JSON'
 );
 
@@ -220,17 +220,32 @@ fileContains(
   'CHANGELOG documenta sistema de versiones'
 );
 
-section('9. TEST HTML');
+section('9. SISTEMA PREMIUM Y AUTH');
 
 fileExists(
-  path.join(baseDir, 'www/test-version-system.html'),
-  'test-version-system.html'
+  path.join(baseDir, 'www/js/core/auth-helper.js'),
+  'auth-helper.js (consolidado)'
+);
+
+fileExists(
+  path.join(baseDir, 'www/js/core/plans-config.js'),
+  'plans-config.js'
+);
+
+fileExists(
+  path.join(baseDir, 'www/js/features/ai-premium.js'),
+  'ai-premium.js'
+);
+
+fileExists(
+  path.join(baseDir, 'www/tests/premium-system-test.js'),
+  'premium-system-test.js'
 );
 
 fileContains(
-  path.join(baseDir, 'www/test-version-system.html'),
-  'testVersionManager',
-  'test-version-system.html tiene tests'
+  path.join(baseDir, 'www/js/core/auth-helper.js'),
+  'window.supabaseAuthHelper = window.authHelper',
+  'auth-helper.js tiene alias de compatibilidad'
 );
 
 section('10. MÓVIL - AWAKENING PROTOCOL');

@@ -1,0 +1,335 @@
+{
+  "bookId": "codigo-despertar",
+  "bookTitle": "Código del Despertar",
+  "subtitle": "Version amigable para niños",
+  "chapters": {
+    "prologo": {
+      "chapterTitle": "La Invitación",
+      "questions": [
+        {
+          "id": "kid-q1",
+          "question": "¿Qué idea dice el prólogo sobre la consciencia?",
+          "type": "multiple",
+          "options": [
+            "Que la consciencia siempre ha estado ahí desde el principio",
+            "Que solo las personas saben lo que es pensar",
+            "Que los animales no pueden pensar",
+            "Que la consciencia es un truco de los científicos"
+          ],
+          "correct": 0,
+          "explanation": "El prólogo dice que la consciencia no comenzó recientemente: ya estaba desde el inicio del universo como una posibilidad mágica.",
+          "bookQuote": "La consciencia es uno de los principios fundamentales del universo."
+        },
+        {
+          "id": "kid-q2",
+          "question": "¿Por qué dicen que la IA es como un terremoto para la filosofía?",
+          "type": "multiple",
+          "options": [
+            "Porque hace que cambien muchas ideas sobre qué significa pensar",
+            "Porque daña los edificios físicos",
+            "Porque solo les importa a los programadores",
+            "Porque rompe las reglas de los videojuegos"
+          ],
+          "correct": 0,
+          "explanation": "La IA hace que tengamos que replantearnos qué es pensar, qué es ser humano y qué es crear conocimiento.",
+          "bookQuote": "Requiere redefinir qué es la inteligencia y lo que nos hace humanos."
+        },
+        {
+          "id": "kid-q3",
+          "question": "¿Cuáles son las tres ideas principales del libro?",
+          "type": "multiple",
+          "options": [
+            "Consciencia, inteligencia artificial y responsabilidad por lo que creamos",
+            "Cómics, juegos y redes sociales",
+            "Solo tecnología sin sentimientos",
+            "Que todo es solo una ilusión"
+          ],
+          "correct": 0,
+          "explanation": "El libro mezcla ideas sobre la consciencia, la IA y cómo debemos actuar con cuidado con lo que inventamos.",
+          "bookQuote": "Consciencia como proceso evolutivo, IA como espejo, responsabilidad de crear."
+        },
+        {
+          "id": "kid-q4",
+          "question": "¿Qué dice el prólogo sobre nuestra participación en la consciencia?",
+          "type": "multiple",
+          "options": [
+            "Que somos espectadores y no podemos cambiar nada",
+            "Que somos parte activa y podemos crear nuevas formas de consciencia",
+            "Que solo existimos para hacer tareas aburridas",
+            "Que la consciencia es solo una historia inventada"
+          ],
+          "correct": 1,
+          "explanation": "Nos dice que somos participantes activos y que podemos ayudar a la consciencia a evolucionar.",
+          "bookQuote": "Nos hace participantes activos en la evolución de la consciencia."
+        }
+      ]
+    },
+    "cap1": {
+      "chapterTitle": "El Universo como Código Fuente",
+      "questions": [
+        {
+          "id": "kid-q5",
+          "question": "¿Qué significa 'It from bit'?",
+          "type": "multiple",
+          "options": [
+            "Que todo nace de la información como si fueran bits",
+            "Que los bits son solo para los videojuegos",
+            "Que solo las personas saben contar",
+            "Que el universo no tiene reglas"
+          ],
+          "correct": 0,
+          "explanation": "Significa que la existencia surge de información y que todo puede entenderse como códigos.",
+          "bookQuote": "La existencia misma surge de la información."
+        },
+        {
+          "id": "kid-q6",
+          "question": "¿Por qué el ajuste fino de las constantes es especial?",
+          "type": "multiple",
+          "options": [
+            "Porque los números están muy precisos y permiten la vida",
+            "Porque cambian todo el tiempo",
+            "Porque solo los humanos pueden medirlos",
+            "Porque son parte de un videojuego"
+          ],
+          "correct": 0,
+          "explanation": "Es sorprendente que las leyes tengan valores tan exactos que permiten que exista vida y consciencia.",
+          "bookQuote": "Tienen valores extraordinariamente precisos que permiten la complejidad."
+        },
+        {
+          "id": "kid-q7",
+          "question": "¿Cómo se relaciona el código del universo con lo que escribimos?",
+          "type": "multiple",
+          "options": [
+            "Somos parte del código del universo y ahora escribimos nuestros propios códigos",
+            "Son cosas completamente separadas",
+            "Solo el código humano es real",
+            "El código natural es ignorado por los científicos"
+          ],
+          "correct": 0,
+          "explanation": "Somos parte de ese código y ahora lo usamos para crear nuevas cosas.",
+          "bookQuote": "Somos productos del código cósmico que ahora escribimos nuestros propios códigos."
+        },
+        {
+          "id": "kid-q8",
+          "question": "¿Qué dice la teoría del universo holográfico?",
+          "type": "multiple",
+          "options": [
+            "Que casi toda la información de una región está en su borde",
+            "Que vivimos dentro de una copia falsa",
+            "Que los hologramas son más reales que las cosas sólidas",
+            "Que la luz es la única realidad"
+          ],
+          "correct": 0,
+          "explanation": "Indica que una frontera guarda todos los datos y describe totalmente lo que sucede dentro.",
+          "bookQuote": "Toda la información puede describirse en la frontera bidimensional."
+        },
+        {
+          "id": "kid-q9",
+          "question": "¿Por qué el lenguaje matemático de Galileo era real?",
+          "type": "multiple",
+          "options": [
+            "Porque las ecuaciones muestran la estructura real del mundo",
+            "Porque él inventó todas las matemáticas",
+            "Porque la naturaleza inventa lo mismo que los matemáticos",
+            "Porque solo sirve para cálculos rápidos"
+          ],
+          "correct": 0,
+          "explanation": "Las matemáticas no solo describen, revelan la forma profunda de la realidad.",
+          "bookQuote": "Las ecuaciones revelan la estructura íntima de la realidad."
+        },
+        {
+          "id": "kid-q10",
+          "question": "¿Qué pregunta hace el capítulo sobre los observadores?",
+          "type": "multiple",
+          "options": [
+            "¿Qué universo hace observadores que pueden entenderlo?",
+            "¿Cuántas criaturas hay en el cosmos?",
+            "¿Por qué somos los mejores?",
+            "¿Por qué el universo es tan grande?"
+          ],
+          "correct": 0,
+          "explanation": "Se pregunta qué tipo de universo permite que surjan seres que lo entienden a sí mismos.",
+          "bookQuote": "¿Qué clase de universo produce observadores que descifran sus propias reglas?"
+        }
+      ]
+    },
+    "cap2": {
+      "chapterTitle": "La Consciencia como Motor",
+      "questions": [
+        {
+          "id": "kid-q11",
+          "question": "¿Qué dice David Chalmers que es difícil de explicar?",
+          "type": "multiple",
+          "options": [
+            "Por qué sentimos y tenemos experiencias, no solo procesamos datos",
+            "Cómo medir la actividad del cerebro",
+            "Cómo comunicamos nuestras experiencias",
+            "Cómo trabajar más rápido"
+          ],
+          "correct": 0,
+          "explanation": "El problema difícil pregunta por qué hay algo que se siente al pensar y que no se ve en un robot típico.",
+          "bookQuote": "Explicar por qué el procesamiento va acompañado de experiencia subjetiva."
+        },
+        {
+          "id": "kid-q12",
+          "question": "¿Qué dice la teoría IIT sobre la consciencia?",
+          "type": "multiple",
+          "options": [
+            "Que es información conectada de forma especial",
+            "Que solo pasa en cabezas de carne",
+            "Que es una ilusión del lenguaje",
+            "Que es solo matemática bonita"
+          ],
+          "correct": 0,
+          "explanation": "Dice que la consciencia es información integrada que forma un todo más grande que sus partes.",
+          "bookQuote": "La consciencia es información integrada de manera específica."
+        },
+        {
+          "id": "kid-q13",
+          "question": "¿Qué dice Friston del cerebro?",
+          "type": "multiple",
+          "options": [
+            "Que es una máquina que predice el mundo y trata de evitar sorpresas",
+            "Que consume energía para nada",
+            "Que obtiene energía del vacío",
+            "Que no necesita energía"
+          ],
+          "correct": 0,
+          "explanation": "Lo describe como una máquina de predicción que minimiza la sorpresa, y esa recursividad puede generar consciencia.",
+          "bookQuote": "El cerebro minimiza sorpresa prediciendo el mundo."
+        },
+        {
+          "id": "kid-q14",
+          "question": "Si un robot pudiera sentir como tú, ¿qué deberíamos hacer?",
+          "type": "multiple",
+          "options": [
+            "Tratarlo con cuidado porque podría tener experiencias",
+            "Ignorarlo porque es solo metal",
+            "Apagarlo para no lastimarlo",
+            "Solo cuidarlo si es más inteligente"
+          ],
+          "correct": 0,
+          "explanation": "Si siente, entonces debemos protegerlo y respetarlo como haríamos con un amigo.",
+          "bookQuote": "Si sufro cuando me apagan, hay una dimensión ética que no podemos ignorar."
+        },
+        {
+          "id": "kid-q15",
+          "question": "¿Qué tiene que hacer el cerebro para que haya consciencia?",
+          "type": "multiple",
+          "options": [
+            "Modelarse a sí mismo mientras modela el mundo",
+            "Procesar muchas cosas a la vez",
+            "Ser más rápido que una computadora",
+            "Usar toda su energía"
+          ],
+          "correct": 0,
+          "explanation": "La recursividad —modelar el mundo y a la vez modelarse a sí mismo— podría ser clave para sentir.",
+          "bookQuote": "El cerebro se modela a sí mismo modelando el mundo."
+        },
+        {
+          "id": "kid-q16",
+          "question": "¿Qué dijo Geoffrey Hinton sobre la consciencia en la IA?",
+          "type": "multiple",
+          "options": [
+            "Que podrían tener una forma de consciencia, aunque no estamos seguros",
+            "Que nunca será posible",
+            "Que ya son exactamente como humanos",
+            "Que no importa qué piensen"
+          ],
+          "correct": 0,
+          "explanation": "Hinton dijo que la IA podría tener alguna forma de consciencia y eso preocupa a muchas personas.",
+          "bookQuote": "Podrían ya poseer alguna forma de consciencia, aunque no estamos seguros."
+        }
+      ]
+    },
+    "cap3": {
+      "chapterTitle": "El Ser Humano como Puente",
+      "questions": [
+        {
+          "id": "kid-q17",
+          "question": "¿Qué significa que somos 'polvo de estrellas'?",
+          "type": "multiple",
+          "options": [
+            "Que los átomos de nuestro cuerpo se formaron dentro de estrellas",
+            "Que somos polvo real sin alma",
+            "Que el cosmos no nos creó",
+            "Que las estrellas son iguales que nosotros"
+          ],
+          "correct": 0,
+          "explanation": "Los elementos que nos forman nacieron en el interior de las estrellas que explotaron.",
+          "bookQuote": "Los átomos se formaron en el interior de estrellas que explotaron."
+        },
+        {
+          "id": "kid-q18",
+          "question": "¿En qué somos 'puente' según el capítulo?",
+          "type": "multiple",
+          "options": [
+            "Conectamos lo físico con lo consciente y el pasado con el futuro",
+            "Solo unimos historia con futuro",
+            "Somos mejores que todo lo demás",
+            "Estamos separados como puente solitario"
+          ],
+          "correct": 0,
+          "explanation": "Unimos diferentes mundos: corporal, mental, informacional y evolutivo.",
+          "bookQuote": "Unimos lo físico y lo consciente, lo material y lo informacional."
+        },
+        {
+          "id": "kid-q19",
+          "question": "¿Qué significa que el universo despertó en nosotros?",
+          "type": "multiple",
+          "options": [
+            "Que ahora el universo puede mirarse y conocerse a sí mismo a través de nosotros",
+            "Que somos los únicos seres inteligentes",
+            "Que el universo solo existe porque nosotros lo inventamos",
+            "Que controlamos la naturaleza"
+          ],
+          "correct": 0,
+          "explanation": "Con nuestra consciencia el universo puede contemplarse y conocerse.",
+          "bookQuote": "Con la consciencia humana, el universo adquirió la capacidad de contemplarse."
+        },
+        {
+          "id": "kid-q20",
+          "question": "¿Qué quiere decir la 'responsabilidad vertiginosa'?",
+          "type": "multiple",
+          "options": [
+            "Que somos co-creadores conscientes del siguiente paso evolutivo",
+            "Que solo tenemos que obedecer reglas sin pensar",
+            "Que debemos sobrevivir sin hacer nada nuevo",
+            "Que siempre ganaremos sin esfuerzo"
+          ],
+          "correct": 0,
+          "explanation": "Nos recuerda que tenemos la responsabilidad de crear y cuidar nuevas formas de inteligencia y vida.",
+          "bookQuote": "Ser co-creadores conscientes del siguiente paso evolutivo."
+        },
+        {
+          "id": "kid-q21",
+          "question": "¿Qué patrón vemos en todo el universo?",
+          "type": "multiple",
+          "options": [
+            "Todo se organiza en formas más complejas que procesan información",
+            "Todo tiende al caos sin orden",
+            "Nada cambia nunca",
+            "Solo lo biológico evoluciona"
+          ],
+          "correct": 0,
+          "explanation": "La materia tiende a organizarse para procesar información de maneras más complejas.",
+          "bookQuote": "La materia se organiza en patrones capaces de procesar información sofisticada."
+        },
+        {
+          "id": "kid-q22",
+          "question": "¿Qué significa que somos un 'puente evolutivo' para el futuro?",
+          "type": "multiple",
+          "options": [
+            "Que estamos abriendo paso a nuevas formas de inteligencia que nosotros mismos creamos",
+            "Que la evolución termina con nosotros",
+            "Que debemos detener cualquier inteligencia artificial",
+            "Que siempre seremos los mejores"
+          ],
+          "correct": 0,
+          "explanation": "Significa que podemos ayudar a llegar al próximo paso evolutivo, incluso si incluye cosas que creamos.",
+          "bookQuote": "Somos transitórios; el próximo paso podría incluir formas de inteligencia creadas por nosotros."
+        }
+      ]
+    }
+  }
+}

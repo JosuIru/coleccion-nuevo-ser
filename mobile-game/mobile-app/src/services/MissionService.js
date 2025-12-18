@@ -17,6 +17,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import PushNotification from 'react-native-push-notification';
 import { RESOURCES, ATTRIBUTES } from '../config/constants';
 import logger from '../utils/logger';
+import rewardService from './RewardService';
 
 // ═══════════════════════════════════════════════════════════
 // CONSTANTES DE MISIONES
@@ -134,7 +135,7 @@ class MissionService {
    * @returns {Object} Resultado del despliegue
    */
   async desplegarSeres(userId, crisisId, beingIds, gameStore) {
-    logger.info("`🚀 Desplegando ${beingIds.length} seres a crisis ${crisisId}...`", "");
+    logger.info(`🚀 Desplegando ${beingIds.length} seres a crisis ${crisisId}...`, '');
 
     try {
       // 1. Validaciones previas
@@ -192,9 +193,9 @@ class MissionService {
       // 8. Guardar en AsyncStorage
       await this.guardarMisionActiva(userId, mision);
 
-      logger.info("`✅ Misión creada: ${mision.id}`", "");
-      logger.info("`   Probabilidad: ${(probabilidadCalculo.probabilidad * 100).toFixed(1)}%`", "");
-      logger.info("`   Duración: ${tiempoMision} minutos`", "");
+      logger.info(`✅ Misión creada: ${mision.id}`, '');
+      logger.info(`   Probabilidad: ${(probabilidadCalculo.probabilidad * 100).toFixed(1)}%`, '');
+      logger.info(`   Duración: ${tiempoMision} minutos`, '');
 
       return {
         exito: true,
@@ -557,11 +558,11 @@ class MissionService {
       return;
     }
 
-    logger.info("`⏱️  Timer iniciado para misión ${mision.id} (${Math.round(tiempoRestanteMs / 60000)} min)`", "");
+    logger.info(`⏱️  Timer iniciado para misión ${mision.id} (${Math.round(tiempoRestanteMs / 60000)} min)`, '');
 
     // Usar BackgroundTimer para que continúe aunque la app esté cerrada
     const timerId = BackgroundTimer.setTimeout(() => {
-      logger.info("`⏰ Misión ${mision.id} completada!`", "");
+      logger.info(`⏰ Misión ${mision.id} completada!`, '');
       this.resolverMision(mision.id, gameStore);
     }, tiempoRestanteMs);
 
@@ -582,7 +583,7 @@ class MissionService {
       }
 
       const misiones = JSON.parse(stored);
-      logger.info("`📥 Recuperadas ${misiones.length} misiones activas`", "");
+      logger.info(`📥 Recuperadas ${misiones.length} misiones activas`, '');
 
       return misiones;
 
@@ -605,7 +606,7 @@ class MissionService {
       misiones.push(mision);
 
       await AsyncStorage.setItem(misionesKey, JSON.stringify(misiones));
-      logger.info("`💾 Misión ${mision.id} guardada`", "");
+      logger.info(`💾 Misión ${mision.id} guardada`, '');
 
     } catch (error) {
       logger.error('❌ Error guardando misión:', error);
@@ -626,7 +627,7 @@ class MissionService {
       const misionesFiltradas = misiones.filter(m => m.id !== misionId);
 
       await AsyncStorage.setItem(misionesKey, JSON.stringify(misionesFiltradas));
-      logger.info("`🗑️  Misión ${misionId} removida`", "");
+      logger.info(`🗑️  Misión ${misionId} removida`, '');
 
     } catch (error) {
       logger.error('❌ Error removiendo misión:', error);
@@ -641,7 +642,7 @@ class MissionService {
    * Resolver una misión (calcular éxito/fallo y dar recompensas)
    */
   async resolverMision(misionId, gameStore) {
-    logger.info("`🎯 Resolviendo misión ${misionId}...`", "");
+    logger.info(`🎯 Resolviendo misión ${misionId}...`, '');
 
     try {
       // Obtener estado actual
@@ -669,7 +670,7 @@ class MissionService {
       const roll = Math.random();
       const exito = roll <= mision.successProbability;
 
-      logger.info("`🎲 Roll: ${(roll * 100).toFixed(1)}% vs Probabilidad: ${(mision.successProbability * 100).toFixed(1)}%`", "");
+      logger.info(`🎲 Roll: ${(roll * 100).toFixed(1)}% vs Probabilidad: ${(mision.successProbability * 100).toFixed(1)}%`, '');
       console.log(exito ? '✅ ¡ÉXITO!' : '❌ FALLO');
 
       // 2. Calcular recompensas
@@ -727,13 +728,13 @@ class MissionService {
     // Bonus por misión cooperativa
     if (mision.isCooperative) {
       multiplicador *= (1 + MISSION_CONSTANTS.COOPERATIVE_BONUS);
-      logger.info("`🤝 Bonus cooperativo: +${MISSION_CONSTANTS.COOPERATIVE_BONUS * 100}%`", "");
+      logger.info(`🤝 Bonus cooperativo: +${MISSION_CONSTANTS.COOPERATIVE_BONUS * 100}%`, '');
     }
 
     // Bonus por crisis local
     if (mision.isLocal) {
       multiplicador *= MISSION_CONSTANTS.LOCAL_CRISIS_MULTIPLIER;
-      logger.info("`📍 Bonus local: x${MISSION_CONSTANTS.LOCAL_CRISIS_MULTIPLIER}`", "");
+      logger.info(`📍 Bonus local: x${MISSION_CONSTANTS.LOCAL_CRISIS_MULTIPLIER}`, '');
     }
 
     // Bonus por racha (streak)
@@ -744,7 +745,7 @@ class MissionService {
         MISSION_CONSTANTS.MAX_STREAK_MULTIPLIER - 1
       );
       multiplicador *= (1 + bonusRacha);
-      logger.info("`🔥 Racha de ${racha} misiones: +${(bonusRacha * 100).toFixed(0)}%`", "");
+      logger.info(`🔥 Racha de ${racha} misiones: +${(bonusRacha * 100).toFixed(0)}%`, '');
     }
 
     // Bonus por primera vez resolviendo este tipo de crisis
@@ -753,7 +754,7 @@ class MissionService {
 
     if (esPrimeraVez && exito) {
       bonusXPExtra = MISSION_CONSTANTS.FIRST_TIME_BONUS_XP;
-      logger.info("`⭐ Primera vez resolviendo crisis ${mision.crisisData.type}: +${bonusXPExtra} XP`", "");
+      logger.info(`⭐ Primera vez resolviendo crisis ${mision.crisisData.type}: +${bonusXPExtra} XP`, '');
     }
 
     // Calcular recompensas finales
@@ -767,8 +768,39 @@ class MissionService {
         local: mision.isLocal,
         streak: racha,
         firstTime: esPrimeraVez
-      }
+      },
+      // Nuevas recompensas: seres y piezas
+      pieces: [],
+      being: null,
+      community: null
     };
+
+    // Generar recompensas de seres/piezas usando RewardService
+    if (exito) {
+      const estado = gameStore.getState();
+      const deployedBeings = mision.beingIds
+        .map(id => estado.beings.find(b => b.id === id))
+        .filter(Boolean);
+
+      const performance = rewardService.calculatePerformance(mision.crisisData, deployedBeings);
+
+      const specialRewards = rewardService.generateRewards(mision.crisisData, performance);
+
+      // Añadir piezas (siempre se dan al menos algunas)
+      recompensas.pieces = specialRewards.pieces || [];
+
+      // Ser desbloqueado (raro)
+      if (specialRewards.being) {
+        recompensas.being = specialRewards.being;
+        logger.info(`🧬 ¡SER DESBLOQUEADO! ${specialRewards.being.name}`, '');
+      }
+
+      // Comunidad desbloqueada (muy raro)
+      if (specialRewards.community) {
+        recompensas.community = specialRewards.community;
+        logger.info(`🏛️ ¡COMUNIDAD DESBLOQUEADA! ${specialRewards.community.name}`, '');
+      }
+    }
 
     console.log('💰 Recompensas calculadas:', recompensas);
 
@@ -779,19 +811,46 @@ class MissionService {
    * Aplicar recompensas al usuario
    */
   aplicarRecompensas(recompensas, gameStore) {
+    const state = gameStore.getState();
+
+    // Recompensas básicas
     if (recompensas.xp > 0) {
-      gameStore.addXP(recompensas.xp);
+      state.addXP(recompensas.xp);
     }
 
     if (recompensas.consciousness > 0) {
-      gameStore.addConsciousness(recompensas.consciousness);
+      state.addConsciousness(recompensas.consciousness);
     }
 
     if (recompensas.energy > 0) {
-      gameStore.addEnergy(recompensas.energy);
+      state.addEnergy(recompensas.energy);
     }
 
-    logger.info("`✅ Recompensas aplicadas: +${recompensas.xp} XP, +${recompensas.consciousness} consciencia, +${recompensas.energy} energía`", "");
+    // Piezas/Fragmentos para el Laboratorio
+    if (recompensas.pieces && recompensas.pieces.length > 0) {
+      state.addPieces(recompensas.pieces);
+      logger.info(`🧩 +${recompensas.pieces.length} fragmentos obtenidos`, '');
+    }
+
+    // Ser desbloqueado
+    if (recompensas.being) {
+      const newBeing = {
+        id: `awakened_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        ...recompensas.being,
+        currentMission: null,
+        createdAt: new Date().toISOString()
+      };
+      state.addBeing(newBeing);
+      logger.info(`🧬 ¡Nuevo ser añadido: ${newBeing.name}!`, '');
+    }
+
+    // Comunidad desbloqueada
+    if (recompensas.community) {
+      state.addCommunity(recompensas.community);
+      logger.info(`🏛️ ¡Nueva comunidad desbloqueada: ${recompensas.community.name}!`, '');
+    }
+
+    logger.info(`✅ Recompensas aplicadas: +${recompensas.xp} XP, +${recompensas.consciousness} consciencia, +${recompensas.energy} energía`, '');
   }
 
   /**
@@ -817,7 +876,7 @@ class MissionService {
         deployedAt: null
       });
 
-      logger.info("`🔙 ${ser.name} devuelto (${nuevoEstado}, ${nuevaEnergia}% energía)`", "");
+      logger.info(`🔙 ${ser.name} devuelto (${nuevoEstado}, ${nuevaEnergia}% energía)`, '');
 
       // Si está en resting, iniciar recuperación
       if (nuevoEstado === 'resting') {
@@ -856,7 +915,7 @@ class MissionService {
 
       if (seresEnResting.length === 0) return;
 
-      logger.info("`⚡ Recuperando energía de ${seresEnResting.length} seres...`", "");
+      logger.info(`⚡ Recuperando energía de ${seresEnResting.length} seres...`, '');
 
       seresEnResting.forEach(ser => {
         const energiaActual = ser.energy || 0;
@@ -867,7 +926,7 @@ class MissionService {
         // Si llegó a 100%, cambiar a available
         if (nuevaEnergia >= 100) {
           gameStore.updateBeing(ser.id, { status: 'available' });
-          logger.info("`✅ ${ser.name} recuperado completamente`", "");
+          logger.info(`✅ ${ser.name} recuperado completamente`, '');
 
           // Enviar notificación
           this.enviarNotificacionSerRecuperado(ser);
@@ -884,7 +943,7 @@ class MissionService {
    */
   iniciarRecuperacionSer(beingId, gameStore) {
     // La recuperación global ya maneja esto
-    logger.info("`💤 ${beingId} entrando en período de descanso`", "");
+    logger.info(`💤 ${beingId} entrando en período de descanso`, '');
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -942,7 +1001,7 @@ class MissionService {
     const rachaActual = await this.obtenerRacha(userId);
     const nuevaRacha = rachaActual + 1;
     await AsyncStorage.setItem(`mission_streak_${userId}`, nuevaRacha.toString());
-    logger.info("`🔥 Racha: ${nuevaRacha} misiones exitosas`", "");
+    logger.info(`🔥 Racha: ${nuevaRacha} misiones exitosas`, '');
   }
 
   /**
@@ -983,10 +1042,31 @@ class MissionService {
    * Enviar notificación cuando misión completa
    */
   enviarNotificacionMisionCompletada(mision, exito, recompensas) {
-    const titulo = exito ? '✅ ¡Misión Exitosa!' : '❌ Misión Fallida';
-    const mensaje = exito
-      ? `Has resuelto "${mision.crisisData.title}". +${recompensas.xp} XP`
-      : `La misión "${mision.crisisData.title}" no tuvo éxito, pero ganaste algo de experiencia.`;
+    let titulo = exito ? '✅ ¡Misión Exitosa!' : '❌ Misión Fallida';
+    let mensaje = '';
+
+    if (exito) {
+      mensaje = `Has resuelto "${mision.crisisData.title}".\n+${recompensas.xp} XP`;
+
+      // Añadir info de piezas
+      if (recompensas.pieces && recompensas.pieces.length > 0) {
+        mensaje += `\n🧩 +${recompensas.pieces.length} fragmentos`;
+      }
+
+      // ¡Ser desbloqueado!
+      if (recompensas.being) {
+        titulo = '🧬 ¡NUEVO SER DESPERTADO!';
+        mensaje = `"${recompensas.being.name}" se ha unido a tu colección tras resolver "${mision.crisisData.title}"`;
+      }
+
+      // ¡Comunidad desbloqueada!
+      if (recompensas.community) {
+        titulo = '🏛️ ¡COMUNIDAD DESBLOQUEADA!';
+        mensaje = `"${recompensas.community.name}" - ${recompensas.community.beings?.length || 0} seres esperan ser activados`;
+      }
+    } else {
+      mensaje = `La misión "${mision.crisisData.title}" no tuvo éxito, pero ganaste algo de experiencia.`;
+    }
 
     PushNotification.localNotification({
       title: titulo,
@@ -1052,6 +1132,117 @@ class MissionService {
    */
   async obtenerMisionesActivas(userId) {
     return await this.recuperarMisionesActivas(userId);
+  }
+
+  /**
+   * Obtener misiones activas (método sincrónico con caché)
+   * Para uso en componentes que necesitan acceso inmediato
+   */
+  getActiveMissions() {
+    // Retorna misiones en caché o array vacío
+    return this._cachedActiveMissions || [];
+  }
+
+  /**
+   * Obtener cantidad de misiones completadas
+   */
+  getCompletedMissionsCount() {
+    return this._cachedCompletedCount || 0;
+  }
+
+  /**
+   * Cargar datos en caché (llamar desde componentes)
+   */
+  async loadCachedData(userId) {
+    try {
+      const misiones = await this.recuperarMisionesActivas(userId);
+
+      // Calcular tiempo transcurrido para cada misión
+      const ahora = Date.now();
+      this._cachedActiveMissions = misiones.map(mision => ({
+        ...mision,
+        elapsed_minutes: Math.floor((ahora - new Date(mision.startedAt).getTime()) / 60000),
+        crisis_title: mision.crisisData?.title || 'Crisis',
+        crisis_type: mision.crisisData?.type || 'unknown',
+        being_id: mision.beingIds?.[0] || null,
+        success_probability: mision.successProbability || 0.5,
+        estimated_xp_reward: mision.baseRewards?.xp || 0,
+        estimated_consciousness_reward: mision.baseRewards?.consciousness || 0,
+        population_affected: 1000,
+        urgency: mision.crisisData?.urgency || 5
+      }));
+
+      // Obtener historial para contar completadas
+      const historial = await this.obtenerHistorial(userId);
+      this._cachedCompletedCount = historial.length;
+
+      return this._cachedActiveMissions;
+    } catch (error) {
+      logger.error('Error loading cached data:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Cancelar una misión activa
+   */
+  async cancelMission(missionId, gameStore) {
+    logger.info(`🚫 Cancelando misión ${missionId}...`, '');
+
+    try {
+      const estado = gameStore ? gameStore.getState() : null;
+      const userId = estado?.user?.id;
+
+      if (!userId) {
+        logger.error('No se puede cancelar: userId no encontrado');
+        return { exito: false, error: 'Usuario no encontrado' };
+      }
+
+      // Buscar misión
+      const misionesKey = `active_missions_${userId}`;
+      const stored = await AsyncStorage.getItem(misionesKey);
+
+      if (!stored) {
+        return { exito: false, error: 'No hay misiones activas' };
+      }
+
+      const misiones = JSON.parse(stored);
+      const mision = misiones.find(m => m.id === missionId);
+
+      if (!mision) {
+        return { exito: false, error: 'Misión no encontrada' };
+      }
+
+      // Devolver seres a estado disponible
+      if (gameStore && mision.beingIds) {
+        mision.beingIds.forEach(beingId => {
+          gameStore.updateBeing(beingId, {
+            status: 'available',
+            currentMission: null
+          });
+        });
+      }
+
+      // Limpiar timer si existe
+      if (this.activeMissionTimers.has(missionId)) {
+        BackgroundTimer.clearTimeout(this.activeMissionTimers.get(missionId));
+        this.activeMissionTimers.delete(missionId);
+      }
+
+      // Remover de misiones activas
+      await this.removerMisionActiva(userId, missionId);
+
+      // Actualizar caché
+      await this.loadCachedData(userId);
+
+      logger.info('✅ Misión cancelada correctamente', '');
+
+      return { exito: true };
+
+    } catch (error) {
+      logger.error('❌ Error cancelando misión:', error);
+      return { exito: false, error: error.message };
+    }
   }
 
   /**

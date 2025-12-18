@@ -48,8 +48,8 @@ class LanguageSelector {
               <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 sm:gap-3">
                 🌐 ${this.i18n.t('lang.title')}
               </h2>
-              <button id="close-language" class="text-3xl hover:text-red-400 transition">
-                ×
+              <button id="close-language" class="text-3xl hover:text-red-400 transition" aria-label="Cerrar selector de idioma">
+                <span aria-hidden="true">×</span>
               </button>
             </div>
           </div>

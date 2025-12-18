@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0e1f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -34,16 +34,16 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
     <!-- Frankenstein CSS -->
-    <link rel="stylesheet" href="css/frankenstein-base.css">
-    <link rel="stylesheet" href="css/frankenstein-lab.css">
-    <link rel="stylesheet" href="css/frankenstein-components.css">
-    <link rel="stylesheet" href="css/frankenstein-quiz.css">
-    <link rel="stylesheet" href="css/frankenstein-vitruvian.css">
-    <link rel="stylesheet" href="css/frankenstein-animations.css">
+    <link rel="stylesheet" href="css/frankenstein-base.css?v=1.2.7">
+    <link rel="stylesheet" href="css/frankenstein-lab.css?v=1.2.7">
+    <link rel="stylesheet" href="css/frankenstein-components.css?v=1.2.7">
+    <link rel="stylesheet" href="css/frankenstein-quiz.css?v=1.2.7">
+    <link rel="stylesheet" href="css/frankenstein-vitruvian.css?v=1.2.7">
+    <link rel="stylesheet" href="css/frankenstein-animations.css?v=1.2.7">
     <!-- UX Improvements v1.0 -->
-    <link rel="stylesheet" href="css/frankenstein-ux-improvements.css">
+    <link rel="stylesheet" href="css/frankenstein-ux-improvements.css?v=1.2.7">
     <!-- Settings & UI Components -->
-    <link rel="stylesheet" href="css/frankenstein-settings.css">
+    <link rel="stylesheet" href="css/frankenstein-settings.css?v=1.2.7">
 
     <style>
         :root {
@@ -75,76 +75,9 @@
             overflow-x: hidden;
         }
 
-        /* Top Bar */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: rgba(10, 14, 31, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            z-index: 1000;
-            padding-top: var(--safe-area-top);
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .top-bar-title {
-            flex: 1;
-            text-align: center;
-            color: #f59e0b;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .download-btn-small {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .download-btn-small:hover {
-            transform: scale(1.05);
-        }
-
-        .download-btn-small.hidden {
-            display: none;
-        }
-
         /* Main Content */
         #organism-container {
-            margin-top: calc(56px + var(--safe-area-top));
-            min-height: calc(100vh - 56px - var(--safe-area-top));
+            min-height: 100vh;
         }
 
         /* Loading Screen */
@@ -240,6 +173,11 @@
     </style>
 </head>
 <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-amber-400 focus:text-black focus:rounded-lg focus:font-semibold">
+        Saltar al contenido principal
+    </a>
+
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-icon">🧬</div>
@@ -250,63 +188,35 @@
         </div>
     </div>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <a href="frankenstein-lab.html" class="back-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Volver
-        </a>
-        <div class="top-bar-title">🧬 Laboratorio</div>
-        <a href="downloads/frankenstein-lab-v1.2.6.apk" class="download-btn-small" id="download-apk-btn" download>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            APK
-        </a>
-    </div>
-
     <!-- Main App Container -->
-    <div id="app">
+    <main id="main-content" role="main">
         <div id="organism-container"></div>
-    </div>
+    </main>
 
     <!-- Core Scripts -->
-    <script src="js/core/logger.js"></script>
-    <script src="js/core/icons.js"></script>
-    <script src="js/core/i18n.js"></script>
+    <script src="js/core/logger.js?v=1.2.7"></script>
+    <script src="js/core/icons.js?v=1.2.7"></script>
+    <script src="js/core/i18n.js?v=1.2.7"></script>
 
     <!-- Enhanced UI System (Toasts, Tooltips, Bottom Sheets) -->
-    <script src="js/core/enhanced-ui-system.js"></script>
+    <script src="js/core/enhanced-ui-system.js?v=1.2.7"></script>
 
     <!-- Settings, Header & Stats -->
-    <script src="js/features/frankenstein-settings.js"></script>
+    <script src="js/features/frankenstein-settings.js?v=1.2.7"></script>
 
     <!-- Frankenstein Lab Scripts -->
-    <script src="js/features/frankenstein-missions.js"></script>
-    <script src="js/features/frankenstein-quiz.js"></script>
-    <script src="js/features/frankenstein-audio.js"></script>
-    <script src="js/features/frankenstein-avatar-system.js"></script>
-    <script src="js/features/frankenstein-tooltips.js"></script>
-    <script src="js/features/frankenstein-demo-data.js"></script>
-    <script src="js/features/frankenstein-microsocieties.js"></script>
-    <script src="js/features/frankenstein-challenges.js"></script>
-    <script src="js/features/frankenstein-ui.js"></script>
+    <script src="js/features/frankenstein-missions.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-quiz.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-audio.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-avatar-system.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-tooltips.js?v=1.2.7"></script>
+    <script src="js/features/vitruvian-being.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-demo-data.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-microsocieties.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-challenges.js?v=1.2.7"></script>
+    <script src="js/features/frankenstein-ui.js?v=1.2.7"></script>
 
     <script>
-        // Device Detection
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
-
-        // Show/hide APK download button based on device
-        const downloadBtn = document.getElementById('download-apk-btn');
-        if (!isAndroid && downloadBtn) {
-            downloadBtn.classList.add('hidden');
-        }
-
         // Toast function
         window.showToast = function(message, type = 'info') {
             const toast = document.createElement('div');
@@ -346,6 +256,8 @@
                 // Initialize Lab UI
                 if (typeof FrankensteinLabUI !== 'undefined') {
                     window.FrankensteinLabUI = new FrankensteinLabUI(mockOrganismKnowledge);
+                    // Alias para compatibilidad con onclick handlers (minúscula)
+                    window.frankensteinLabUI = window.FrankensteinLabUI;
 
                     if (window.FrankensteinQuiz) {
                         window.FrankensteinQuiz.setMode('demo');

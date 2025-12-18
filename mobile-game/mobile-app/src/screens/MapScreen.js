@@ -16,7 +16,7 @@ import {
   PermissionsAndroid,
   Alert
 } from 'react-native';
-import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
+import { SafeMapView as MapView, Marker, Circle } from '../components/SafeMapView';
 import Geolocation from 'react-native-geolocation-service';
 import useGameStore from '../stores/gameStore';
 import logger from '../utils/logger';
@@ -370,7 +370,6 @@ const MapScreen = ({ navigation }) => {
       {/* MAPA */}
       <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={region}
         onRegionChangeComplete={(newRegion) => {

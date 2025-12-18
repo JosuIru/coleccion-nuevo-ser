@@ -23,6 +23,9 @@ class BookEngine {
     try {
       await this.loadCatalog();
       this.loadUserData();
+
+      // Cargar tema por defecto (del primer libro del catálogo o tema predeterminado)
+      await this.loadDefaultTheme();
     } catch (error) {
       console.error('Error initializing BookEngine:', error);
     }
@@ -36,6 +39,43 @@ class BookEngine {
     } catch (error) {
       console.error('Error loading catalog:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Cargar tema por defecto al iniciar la aplicación
+   */
+  async loadDefaultTheme() {
+    try {
+      // Intentar obtener el último libro leído del localStorage
+      const lastBookId = localStorage.getItem('lastReadBook');
+
+      let themeToLoad = null;
+
+      if (lastBookId) {
+        // Si hay un último libro leído, usar su tema
+        const lastBook = this.catalog.books.find(b => b.id === lastBookId);
+        if (lastBook && lastBook.theme) {
+          themeToLoad = lastBook.theme;
+          logger.log(`📖 Cargando tema del último libro leído: ${lastBook.title}`);
+        }
+      }
+
+      // Si no hay último libro leído, usar el primer libro del catálogo
+      if (!themeToLoad && this.catalog.books && this.catalog.books.length > 0) {
+        const firstBook = this.catalog.books[0];
+        if (firstBook && firstBook.theme) {
+          themeToLoad = firstBook.theme;
+          logger.log(`📖 Cargando tema por defecto: ${firstBook.title}`);
+        }
+      }
+
+      // Cargar el tema usando lazy-loader
+      if (themeToLoad && window.lazyLoader) {
+        await window.lazyLoader.loadThemeCSS(themeToLoad);
+      }
+    } catch (error) {
+      console.error('Error cargando tema por defecto:', error);
     }
   }
 
@@ -1362,7 +1402,7 @@ class BookEngine {
   // TEMAS
   // ==========================================================================
 
-  applyTheme(config) {
+  async applyTheme(config) {
     if (!config || !config.theme) return;
 
     const root = document.documentElement;
@@ -1380,6 +1420,16 @@ class BookEngine {
 
     // Aplicar clase de tema al body
     document.body.className = `theme-${this.currentBook}`;
+
+    // Cargar CSS del tema dinámicamente usando lazy-loader
+    const bookInfo = this.getBookInfo(this.currentBook);
+    if (bookInfo && bookInfo.theme && window.lazyLoader) {
+      try {
+        await window.lazyLoader.loadThemeCSS(bookInfo.theme);
+      } catch (error) {
+        console.error(`Error cargando tema CSS: ${bookInfo.theme}`, error);
+      }
+    }
 
     logger.log(`✅ Theme applied: ${theme.name}`);
   }

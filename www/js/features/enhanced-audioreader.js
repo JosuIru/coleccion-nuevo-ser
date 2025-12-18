@@ -30,6 +30,9 @@ class EnhancedAudioReader {
     this.audioMixer = new AudioMixer();
     await this.audioMixer.initialize();
 
+    // Exponer audioMixer globalmente para acceso desde audioreader.js
+    window.audioMixer = this.audioMixer;
+
     // Inicializar AudioProcessor
     this.audioProcessor = new AudioProcessor(this.audioMixer.audioContext);
     this.audioProcessor.initialize();

@@ -411,6 +411,40 @@ class AudioReader {
   // PREPARACIÓN DEL CONTENIDO
   // ==========================================================================
 
+  /**
+   * Sanitiza texto para TTS - elimina símbolos markdown y caracteres problemáticos
+   */
+  sanitizeTextForTTS(text) {
+    if (!text) return '';
+
+    return text
+      // Eliminar símbolos markdown de encabezados (# ## ### etc.)
+      .replace(/^#{1,6}\s*/gm, '')
+      // Eliminar asteriscos de negrita/cursiva
+      .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')
+      // Eliminar guiones bajos de negrita/cursiva
+      .replace(/_{1,3}([^_]+)_{1,3}/g, '$1')
+      // Eliminar backticks de código
+      .replace(/`([^`]+)`/g, '$1')
+      // Eliminar corchetes de enlaces markdown [texto](url)
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      // Eliminar símbolos de lista al inicio
+      .replace(/^[\s]*[-*+]\s+/gm, '')
+      // Eliminar números de lista ordenada al inicio
+      .replace(/^[\s]*\d+\.\s+/gm, '')
+      // Eliminar blockquote markers
+      .replace(/^>\s*/gm, '')
+      // Eliminar múltiples espacios
+      .replace(/\s{2,}/g, ' ')
+      // Eliminar caracteres especiales que se leen mal
+      .replace(/[│├└┌┐┘┬┴┼─═║╔╗╚╝╠╣╬]/g, '')
+      // Normalizar puntuación para pausas naturales
+      .replace(/\.{3,}/g, '...')
+      .replace(/!{2,}/g, '!')
+      .replace(/\?{2,}/g, '?')
+      .trim();
+  }
+
   prepareContent(chapterContent) {
     // Extraer texto del HTML del capítulo
     const tempDiv = document.createElement('div');
@@ -421,7 +455,10 @@ class AudioReader {
     this.paragraphs = [];
 
     elements.forEach((el, index) => {
-      const text = el.innerText.trim();
+      // Sanitizar texto para TTS
+      const rawText = el.innerText.trim();
+      const text = this.sanitizeTextForTTS(rawText);
+
       if (text && text.length > 0) {
         this.paragraphs.push({
           index,
@@ -1463,13 +1500,18 @@ class AudioReader {
                   <span class="text-xs text-slate-700 dark:text-slate-300">Motor</span>
                   <select id="audioreader-tts-provider"
                           class="px-3 py-1.5 rounded-lg text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none ${
-                            this.ttsProvider === 'openai'
-                              ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
-                              : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white'
+                            this.ttsProvider === 'elevenlabs'
+                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                              : this.ttsProvider === 'openai'
+                                ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
+                                : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white'
                           }">
                     <option value="browser" ${this.ttsProvider === 'browser' ? 'selected' : ''}>🔊 Navegador</option>
                     ${localStorage.getItem('openai-tts-key') ? `
                       <option value="openai" ${this.ttsProvider === 'openai' ? 'selected' : ''}>✨ OpenAI</option>
+                    ` : ''}
+                    ${this.ttsManager.isElevenLabsAvailable?.() || (this.ttsManager.providers?.elevenlabs && window.authHelper?.isPremium?.()) ? `
+                      <option value="elevenlabs" ${this.ttsProvider === 'elevenlabs' ? 'selected' : ''}>🎙️ ElevenLabs</option>
                     ` : ''}
                   </select>
                 </div>
@@ -1537,6 +1579,51 @@ class AudioReader {
                     ${Icons.headphones(16)} Audio
                   </button>
                 ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección: Ambiente (Música y Binaural) -->
+          <div class="col-span-1 sm:col-span-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-lg p-3 border border-purple-300 dark:border-purple-700/50">
+            <div class="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
+              🎵 AMBIENTE Y BINAURAL
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <!-- Música ambiental -->
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-slate-600 dark:text-slate-400">🌊 Sonidos</span>
+                <select id="audioreader-ambient-select"
+                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                  <option value="">Sin ambiente</option>
+                  <option value="rain">🌧️ Lluvia</option>
+                  <option value="forest">🌳 Bosque</option>
+                  <option value="ocean">🌊 Océano</option>
+                  <option value="fire">🔥 Fogata</option>
+                  <option value="wind">💨 Viento</option>
+                  <option value="cafe">☕ Cafetería</option>
+                </select>
+              </div>
+
+              <!-- Ondas binaurales -->
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-slate-600 dark:text-slate-400">🧠 Binaural</span>
+                <select id="audioreader-binaural-select"
+                        class="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="">Sin binaural</option>
+                  <option value="focus">🎯 Enfoque (15Hz)</option>
+                  <option value="relax">😌 Relajación (10Hz)</option>
+                  <option value="deep">🧘 Meditación (7Hz)</option>
+                  <option value="sleep">😴 Sueño (4Hz)</option>
+                </select>
+              </div>
+
+              <!-- Controles de volumen ambiente -->
+              <div class="col-span-2 flex items-center gap-3 mt-1">
+                <label class="text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">Vol:</label>
+                <input type="range" id="audioreader-ambient-volume"
+                       min="0" max="100" value="30"
+                       class="flex-1 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full appearance-none cursor-pointer accent-purple-500">
+                <span id="audioreader-ambient-volume-label" class="text-xs text-slate-600 dark:text-slate-400 w-8 text-right">30%</span>
               </div>
             </div>
           </div>
@@ -1886,6 +1973,62 @@ class AudioReader {
       });
     }
 
+    // ⭐ Ambient Sound Select
+    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    if (ambientSelect) {
+      ambientSelect.addEventListener('change', async (e) => {
+        const sound = e.target.value;
+        // Inicializar AudioMixer si no existe
+        if (!window.audioMixer && window.AudioMixer) {
+          window.audioMixer = new AudioMixer();
+          await window.audioMixer.initialize();
+        }
+        if (sound && window.audioMixer) {
+          await window.audioMixer.playAmbient(sound);
+          window.toast?.success(`🎵 Sonido: ${e.target.options[e.target.selectedIndex].text}`);
+        } else if (!sound && window.audioMixer) {
+          window.audioMixer.stopAmbient();
+          window.toast?.info('🔇 Sonido ambiente desactivado');
+        }
+      });
+    }
+
+    // ⭐ Binaural Select
+    const binauralSelect = document.getElementById('audioreader-binaural-select');
+    if (binauralSelect) {
+      binauralSelect.addEventListener('change', async (e) => {
+        const preset = e.target.value;
+        // Inicializar AudioMixer si no existe
+        if (!window.audioMixer && window.AudioMixer) {
+          window.audioMixer = new AudioMixer();
+          await window.audioMixer.initialize();
+        }
+        if (preset && window.audioMixer) {
+          await window.audioMixer.playBinaural(preset);
+          window.toast?.success(`🧠 Binaural: ${e.target.options[e.target.selectedIndex].text}`);
+        } else if (!preset && window.audioMixer) {
+          window.audioMixer.stopBinaural();
+          window.toast?.info('🔇 Binaural desactivado');
+        }
+      });
+    }
+
+    // ⭐ Ambient Volume
+    const ambientVolume = document.getElementById('audioreader-ambient-volume');
+    const ambientVolumeLabel = document.getElementById('audioreader-ambient-volume-label');
+    if (ambientVolume) {
+      ambientVolume.addEventListener('input', (e) => {
+        const volume = parseInt(e.target.value) / 100;
+        if (window.audioMixer) {
+          window.audioMixer.setChannelVolume('ambient', volume);
+          window.audioMixer.setChannelVolume('binaural', volume);
+        }
+        if (ambientVolumeLabel) {
+          ambientVolumeLabel.textContent = `${e.target.value}%`;
+        }
+      });
+    }
+
     // Minimize/Expand
     const minimizeBtn = document.getElementById('audioreader-minimize');
     if (minimizeBtn) {
@@ -1972,6 +2115,30 @@ class AudioReader {
     }
     if (stopBtn) {
       stopBtn.disabled = !this.isPlaying && !this.isPaused;
+    }
+
+    // Actualizar botón Auto-advance
+    const autoBtn = document.getElementById('audioreader-auto-advance');
+    if (autoBtn) {
+      if (this.autoAdvanceChapter) {
+        autoBtn.className = 'w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/30';
+      } else {
+        autoBtn.className = 'w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300';
+      }
+      const statusSpan = autoBtn.querySelector('span:last-child');
+      if (statusSpan) statusSpan.textContent = this.autoAdvanceChapter ? 'ON' : 'OFF';
+    }
+
+    // Actualizar botón Word-by-Word
+    const wordByWordBtn = document.getElementById('audioreader-word-by-word');
+    if (wordByWordBtn) {
+      if (this.wordByWordEnabled) {
+        wordByWordBtn.className = 'w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between bg-amber-600 hover:bg-amber-700 text-white shadow-lg shadow-amber-500/30';
+      } else {
+        wordByWordBtn.className = 'w-full px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300';
+      }
+      const statusSpan = wordByWordBtn.querySelector('span:last-child');
+      if (statusSpan) statusSpan.textContent = this.wordByWordEnabled ? 'ON' : 'OFF';
     }
   }
 

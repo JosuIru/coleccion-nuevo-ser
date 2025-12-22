@@ -425,7 +425,7 @@ class FrankensteinLabUI {
         </button>
       </div>
     `;
-    modal.style.cssText = \`
+    modal.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -437,10 +437,10 @@ class FrankensteinLabUI {
       justify-content: center;
       z-index: 10005;
       animation: frFadeIn 0.3s ease-out;
-    \`;
+    `;
 
     const content = modal.querySelector('.daily-reward-content');
-    content.style.cssText = \`
+    content.style.cssText = `
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border-radius: 20px;
       padding: 32px;
@@ -449,7 +449,7 @@ class FrankensteinLabUI {
       max-width: 320px;
       border: 2px solid #fbbf24;
       box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
-    \`;
+    `;
 
     modal.querySelector('.daily-reward-icon').style.cssText = 'font-size: 64px; margin-bottom: 16px;';
     modal.querySelector('h2').style.cssText = 'margin: 0 0 8px; font-size: 24px;';
@@ -4498,6 +4498,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       this.showNotification(`✅ Ser "${savedBeing.name}" guardado exitosamente`, 'success', 4000);
 
+      // Sonido dramático de trueno al crear ser
+      if (window.frankenAudio && window.frankenAudio.enabled) {
+        window.frankenAudio.playThunder();
+        console.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
+      }
+
       // Recompensa por crear/guardar ser
       if (window.frankensteinRewards) {
         window.frankensteinRewards.giveReward('createBeing');
@@ -6513,7 +6519,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Play selection sound
    */
   playSelectionSound() {
-    // Create audio context if needed
+    // Usar FrankensteinAudioSystem si está disponible y habilitado
+    if (window.frankenAudio && window.frankenAudio.enabled) {
+      window.frankenAudio.playElectricity();
+      return;
+    }
+
+    // Fallback: usar el ping básico si FrankensteinAudioSystem no está disponible
     if (!window.AudioContext && !window.webkitAudioContext) return;
 
     try {

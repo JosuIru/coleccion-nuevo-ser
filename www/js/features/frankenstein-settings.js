@@ -99,6 +99,27 @@ class FrankensteinSettings {
   set(key, value) {
     this.settings[key] = value;
     this.saveSettings();
+
+    // Conectar cambios de audio al FrankensteinAudioSystem
+    if (window.frankenAudio) {
+      if (key === 'soundEnabled') {
+        if (value) {
+          // Habilitar audio
+          window.frankenAudio.enabled = true;
+          window.frankenAudio.start();
+          console.log('[FrankenAudio] ✅ Audio habilitado desde Settings');
+        } else {
+          // Deshabilitar audio
+          window.frankenAudio.stop();
+          window.frankenAudio.enabled = false;
+          console.log('[FrankenAudio] 🔇 Audio deshabilitado desde Settings');
+        }
+      } else if (key === 'soundVolume') {
+        // Actualizar volumen (value ya está en rango 0-1)
+        window.frankenAudio.setVolume(value);
+        console.log(`[FrankenAudio] 🔊 Volumen actualizado: ${Math.round(value * 100)}%`);
+      }
+    }
   }
 
   open() {

@@ -14,7 +14,9 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"
+            crossorigin="anonymous"
+            onerror="document.head.appendChild(Object.assign(document.createElement('link'),{rel:'stylesheet',href:'css/tailwind-fallback.css'}))"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -195,6 +197,7 @@
 
     <!-- Frankenstein Lab Scripts -->
     <script src="js/features/frankenstein-missions.js"></script>
+    <script src="js/features/frankenstein-being-card.js"></script>
     <script src="js/features/frankenstein-quiz.js"></script>
     <script src="js/features/frankenstein-audio.js"></script>
     <script src="js/features/frankenstein-avatar-system.js"></script>
@@ -219,7 +222,37 @@
     <script src="js/features/frankenstein-ui.js"></script>
 
     <script>
-        // Device detection
+        // =====================================================
+        // FRANKENSTEIN AUDIO SYSTEM - INITIALIZATION
+        // =====================================================
+        window.frankenAudio = new FrankensteinAudioSystem();
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[FrankenAudio] 🔊 Inicializando sistema de audio...');
+
+            try {
+                // Inicializar contexto de audio
+                await window.frankenAudio.init();
+
+                // Iniciar si está habilitado en settings
+                if (window.frankenAudio.enabled) {
+                    window.frankenAudio.start();
+                    console.log('[FrankenAudio] ✅ Sistema de audio iniciado (enabled=true)');
+                } else {
+                    console.log('[FrankenAudio] ℹ️ Sistema de audio listo pero deshabilitado (enabled=false)');
+                }
+
+                // Log del volumen actual
+                console.log(`[FrankenAudio] 🔊 Volumen maestro: ${Math.round(window.frankenAudio.masterVolume * 100)}%`);
+            } catch (error) {
+                console.error('[FrankenAudio] ❌ Error inicializando:', error);
+            }
+        });
+
+        // =====================================================
+        // DEVICE DETECTION & UI
+        // =====================================================
         const isAndroid = /Android/i.test(navigator.userAgent);
 
         // Show Android-specific UI

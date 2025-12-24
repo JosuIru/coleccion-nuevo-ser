@@ -639,28 +639,74 @@ class AIChatModal {
     `;
   }
 
+  // 🔧 FIX #25: Preguntas sugeridas dinámicas basadas en el contexto actual
   getSuggestedQuestions() {
     const bookId = this.bookEngine.getCurrentBook();
+    const chapterId = this.bookEngine.getCurrentChapter();
+    const bookData = this.bookEngine.getCurrentBookData();
 
-    if (bookId === 'codigo-despertar') {
-      return [
+    const questions = [];
+
+    // Intentar obtener datos del capítulo actual
+    let currentChapter = null;
+    if (chapterId && bookData?.sections) {
+      for (const section of bookData.sections) {
+        if (section.chapters) {
+          currentChapter = section.chapters.find(ch => ch.id === chapterId);
+          if (currentChapter) break;
+        }
+      }
+    }
+
+    // Si hay capítulo actual, generar preguntas contextuales
+    if (currentChapter) {
+      // Pregunta sobre el tema del capítulo
+      if (currentChapter.title) {
+        questions.push(`¿Cuál es la idea principal de "${currentChapter.title}"?`);
+      }
+
+      // Pregunta sobre ejercicios si los hay
+      if (currentChapter.exercises && currentChapter.exercises.length > 0) {
+        questions.push(`¿Cómo puedo practicar los ejercicios de este capítulo?`);
+      }
+
+      // Pregunta sobre recursos si los hay
+      if (currentChapter.resources && currentChapter.resources.length > 0) {
+        questions.push(`¿Qué recursos adicionales recomiendas para profundizar?`);
+      }
+
+      // Pregunta sobre aplicación práctica
+      questions.push('¿Cómo aplico estos conceptos en mi vida diaria?');
+    }
+    // Si no hay capítulo, usar preguntas específicas del libro
+    else if (bookId === 'codigo-despertar') {
+      questions.push(
         '¿Qué es la conciencia según el libro?',
         '¿Cómo puedo empezar a meditar?',
         '¿Cuál es la relación entre IA y conciencia?'
-      ];
+      );
     } else if (bookId === 'manifiesto') {
-      return [
+      questions.push(
         '¿Cuáles son las premisas ocultas del sistema actual?',
         '¿Qué alternativas económicas propone el Manifiesto?',
         '¿Cómo puedo empezar a actuar para el cambio?'
-      ];
+      );
+    } else {
+      // Preguntas genéricas para cualquier libro
+      questions.push(
+        '¿Cuál es la idea central del libro?',
+        'Explícame un concepto clave',
+        '¿Cómo aplico esto en mi vida?'
+      );
     }
 
-    return [
-      '¿Cuál es la idea central del libro?',
-      'Explícame un concepto clave',
-      '¿Cómo aplico esto en mi vida?'
-    ];
+    // Asegurar que siempre haya al menos 3 preguntas
+    while (questions.length < 3) {
+      questions.push('Cuéntame más sobre este tema');
+    }
+
+    // Limitar a 4 preguntas máximo
+    return questions.slice(0, 4);
   }
 
   renderMessage(msg, index) {
@@ -885,11 +931,14 @@ class AIChatModal {
           this.render();
           this.attachEventListeners();
 
-          // Restaurar el texto del input
-          const newInput = document.getElementById('ai-chat-input');
-          if (newInput && savedInputValue) {
-            newInput.value = savedInputValue;
-          }
+          // 🔧 FIX #22: Restaurar texto con requestAnimationFrame para asegurar DOM listo
+          requestAnimationFrame(() => {
+            const newInput = document.getElementById('ai-chat-input');
+            if (newInput && savedInputValue) {
+              newInput.value = savedInputValue;
+              newInput.focus(); // Mantener foco en input
+            }
+          });
 
           // Mostrar estado
           if (!this.isProviderConfigured(provider)) {
@@ -1143,8 +1192,19 @@ class AIChatModal {
         try {
           const provider = window.aiConfig?.getCurrentProvider?.() || 'local';
           const model = window.aiConfig?.getSelectedModel?.() || 'local';
-          // Usar 1 crédito fijo por mensaje
-          await window.aiPremium.consumeCredits(1, 'ai_chat', provider, model, 0);
+
+          // 🔧 FIX #24: Calcular créditos basado en tokens reales (input + output)
+          // Estimación: ~4 caracteres = 1 token
+          const inputTokens = Math.ceil(userMessage.length / 4);
+          const outputTokens = Math.ceil(response.length / 4);
+          const totalTokens = inputTokens + outputTokens;
+
+          // Convertir tokens a créditos: 1 crédito = 1000 tokens
+          const creditsToConsume = Math.max(1, Math.ceil(totalTokens / 1000));
+
+          logger.debug(`[AI Chat] Consumiendo ${creditsToConsume} créditos (${totalTokens} tokens: ${inputTokens} input + ${outputTokens} output)`);
+
+          await window.aiPremium.consumeCredits(creditsToConsume, 'ai_chat', provider, model, totalTokens);
         } catch (consumeError) {
           console.warn('Credit consume warning:', consumeError.message);
         }

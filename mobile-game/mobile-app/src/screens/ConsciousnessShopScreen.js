@@ -25,7 +25,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import useGameStore from '../stores/gameStore';
 import { COLORS } from '../config/constants';
 
-// Catálogo de la tienda
+// Catálogo de la tienda (Precios reducidos 50% para mejor progresión)
 const SHOP_CATALOG = {
   energy: [
     {
@@ -33,7 +33,7 @@ const SHOP_CATALOG = {
       name: 'Recarga Menor',
       description: '+20 Energía',
       icon: '⚡',
-      price: 25,
+      price: 15, // Reducido de 25
       effect: { type: 'energy', amount: 20 }
     },
     {
@@ -41,7 +41,7 @@ const SHOP_CATALOG = {
       name: 'Recarga Media',
       description: '+50 Energía',
       icon: '🔋',
-      price: 50,
+      price: 25, // Reducido de 50
       effect: { type: 'energy', amount: 50 },
       popular: true
     },
@@ -50,7 +50,7 @@ const SHOP_CATALOG = {
       name: 'Recarga Completa',
       description: 'Energía al máximo',
       icon: '💎',
-      price: 100,
+      price: 50, // Reducido de 100
       effect: { type: 'energy_full' }
     }
   ],
@@ -60,7 +60,7 @@ const SHOP_CATALOG = {
       name: 'Fragmento Aleatorio',
       description: 'Un fragmento de atributo random',
       icon: '🧩',
-      price: 30,
+      price: 15, // Reducido de 30
       effect: { type: 'piece_random' }
     },
     {
@@ -68,7 +68,7 @@ const SHOP_CATALOG = {
       name: 'Pack de Fragmentos',
       description: '3 fragmentos aleatorios',
       icon: '📦',
-      price: 75,
+      price: 40, // Reducido de 75
       effect: { type: 'piece_pack', count: 3 },
       popular: true
     },
@@ -77,7 +77,7 @@ const SHOP_CATALOG = {
       name: 'Fragmento Raro',
       description: 'Fragmento con rareza garantizada',
       icon: '💜',
-      price: 150,
+      price: 75, // Reducido de 150
       effect: { type: 'piece_rare' }
     }
   ],
@@ -87,7 +87,7 @@ const SHOP_CATALOG = {
       name: 'Ser del Mercado',
       description: 'Un ser equilibrado listo para misiones',
       icon: '🌱',
-      price: 200,
+      price: 100, // Reducido de 200
       effect: { type: 'being_basic' }
     },
     {
@@ -95,7 +95,7 @@ const SHOP_CATALOG = {
       name: 'Ser Especializado',
       description: 'Ser con atributos concentrados',
       icon: '🎯',
-      price: 400,
+      price: 200, // Reducido de 400
       effect: { type: 'being_specialized' },
       popular: true
     },
@@ -104,7 +104,7 @@ const SHOP_CATALOG = {
       name: 'Ser Legendario',
       description: 'Ser poderoso de atributos altos',
       icon: '👑',
-      price: 1000,
+      price: 500, // Reducido de 1000
       effect: { type: 'being_legendary' },
       limited: true
     }
@@ -115,7 +115,7 @@ const SHOP_CATALOG = {
       name: 'Tanque de Energía',
       description: '+10 Energía máxima (permanente)',
       icon: '🔺',
-      price: 300,
+      price: 150, // Reducido de 300
       effect: { type: 'upgrade_max_energy', amount: 10 },
       oneTime: true
     },
@@ -124,7 +124,7 @@ const SHOP_CATALOG = {
       name: 'Slot de Ser',
       description: '+1 ser máximo en colección',
       icon: '➕',
-      price: 500,
+      price: 250, // Reducido de 500
       effect: { type: 'upgrade_max_beings', amount: 1 },
       oneTime: true
     },
@@ -133,7 +133,7 @@ const SHOP_CATALOG = {
       name: 'Boost de XP',
       description: '+25% XP por 24 horas',
       icon: '🚀',
-      price: 150,
+      price: 75, // Reducido de 150
       effect: { type: 'xp_boost', duration: 24 }
     }
   ]

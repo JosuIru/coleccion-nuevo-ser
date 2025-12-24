@@ -1,12 +1,16 @@
 package com.nuevosser.coleccion
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import androidx.core.content.ContextCompat
 
 /**
  * Plugin de Capacitor para controlar el Foreground Service de audio.
@@ -16,6 +20,40 @@ import com.getcapacitor.annotation.CapacitorPlugin
  */
 @CapacitorPlugin(name = "BackgroundAudio")
 class BackgroundAudioPlugin : Plugin() {
+    private var eventReceiver: BroadcastReceiver? = null
+
+    override fun load() {
+        super.load()
+
+        val filter = IntentFilter(AudioForegroundService.ACTION_EVENT)
+        eventReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val event = intent?.getStringExtra(AudioForegroundService.EXTRA_EVENT) ?: return
+                val result = JSObject()
+                result.put("type", event)
+                notifyListeners("event", result)
+            }
+        }
+
+        ContextCompat.registerReceiver(
+            context,
+            eventReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    override fun handleOnDestroy() {
+        eventReceiver?.let {
+            try {
+                context.unregisterReceiver(it)
+            } catch (_: Exception) {
+                // ignore unregister errors
+            }
+        }
+        eventReceiver = null
+        super.handleOnDestroy()
+    }
 
     /**
      * Inicia el Foreground Service para audio en segundo plano.

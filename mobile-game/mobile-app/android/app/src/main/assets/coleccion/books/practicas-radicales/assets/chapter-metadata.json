@@ -1,0 +1,86 @@
+{
+  "introduccion": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 12,
+    "tags": ["introducción", "radicalidad", "transformación-profunda"],
+    "practicalUses": []
+  },
+  "cap1": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["simplicidad-voluntaria", "minimalismo", "decrecimiento"],
+    "practicalUses": ["simplificar", "desprender"]
+  },
+  "cap2": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["consumo-consciente", "boicot", "ética-compra"],
+    "practicalUses": ["consumo", "ética"]
+  },
+  "cap3": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 30,
+    "tags": ["desobediencia-civil", "resistencia-noviolenta", "activismo"],
+    "practicalUses": ["resistir", "confrontar"]
+  },
+  "cap4": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 22,
+    "tags": ["arte-activista", "culture-jamming", "creatividad-subversiva"],
+    "practicalUses": ["crear", "intervenir"]
+  },
+  "cap5": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 28,
+    "tags": ["comunas", "vida-comunitaria", "alternativas-radicales"],
+    "practicalUses": ["vivir-colectivo", "experimentación"]
+  },
+  "cap6": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["educación-popular", "pedagogía-crítica", "desescolarización"],
+    "practicalUses": ["educar", "desaprender"]
+  },
+  "cap7": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["okupación", "recuperación-espacios", "lucha-vivienda"],
+    "practicalUses": ["espacios", "okupar"]
+  },
+  "cap8": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 18,
+    "tags": ["alimentación-consciente", "veganismo", "ética-animal"],
+    "practicalUses": ["alimentación", "compasión"]
+  },
+  "cap9": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 22,
+    "tags": ["sabotaje", "ecotaje", "acción-directa"],
+    "practicalUses": ["acción-directa", "resistencia"]
+  },
+  "cap10": {
+    "type": "teoría-práctica",
+    "difficulty": "avanzado",
+    "readingTime": 20,
+    "tags": ["sostenibilidad-activista", "cuidado-militante", "largo-plazo"],
+    "practicalUses": ["autocuidado", "resiliencia"]
+  },
+  "conclusion": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["síntesis", "compromiso", "futuro"],
+    "practicalUses": []
+  }
+}

@@ -210,6 +210,26 @@ const useGameStore = create((set, get) => ({
     });
   },
 
+  updateEnergy: (newEnergy) => {
+    // Validar newEnergy
+    if (typeof newEnergy !== 'number' || newEnergy < 0 || !isFinite(newEnergy)) {
+      logger.error('Invalid energy value to update:', newEnergy);
+      return;
+    }
+
+    set((state) => {
+      const max_energy = state.user.maxEnergy || 100;
+      const clamped_energy = Math.min(max_energy, Math.max(0, newEnergy));
+
+      return {
+        user: {
+          ...state.user,
+          energy: clamped_energy
+        }
+      };
+    });
+  },
+
   addConsciousness: (amount) => {
     // Validar amount
     if (typeof amount !== 'number' || amount < 0 || !isFinite(amount)) {

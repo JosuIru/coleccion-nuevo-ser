@@ -16,16 +16,10 @@ android {
     namespace "com.awakeningprotocol"
 
     defaultConfig {
-        applicationId "com.awakeningprotocol"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 5
         versionName "1.0.4"
-
-        // Exponer API key como manifest placeholder (más seguro que hardcodear)
-        manifestPlaceholders = [
-            MAPS_API_KEY: mapsApiKey
-        ]
     }
 
     signingConfigs {
@@ -63,6 +57,30 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    flavorDimensions "app"
+    productFlavors {
+        awakening {
+            dimension "app"
+            applicationId "com.awakeningprotocol"
+            resValue "string", "app_name", "Awakening Protocol"
+            manifestPlaceholders = [
+                MAPS_API_KEY: mapsApiKey,
+                DEEPLINK_SCHEME: "awakeningprotocol",
+                DEEPLINK_HOST: "awakeningprotocol.nuevosser.com"
+            ]
+        }
+        trascendencia {
+            dimension "app"
+            applicationId "com.nuevosser.trascendencia"
+            resValue "string", "app_name", "Trascendencia"
+            manifestPlaceholders = [
+                MAPS_API_KEY: mapsApiKey,
+                DEEPLINK_SCHEME: "trascendencia",
+                DEEPLINK_HOST: "trascendencia.nuevosser.com"
+            ]
         }
     }
 

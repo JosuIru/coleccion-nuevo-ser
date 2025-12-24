@@ -11,6 +11,7 @@ export { default as BeingsScreen } from './BeingsScreen';
 export { default as CrisisDetailScreen } from './CrisisDetailScreen';
 export { default as ProfileScreen } from './ProfileScreen';
 export { default as LibraryScreen } from './LibraryScreen';
+export { default as BibliotecaScreen } from './BibliotecaScreen'; // Webapp embebida
 
 // Pantallas de onboarding y tutorial
 export { default as TutorialScreen } from './TutorialScreen';

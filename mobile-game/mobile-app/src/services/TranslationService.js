@@ -1,14 +1,16 @@
 /**
  * TranslationService.js
  *
- * Servicio de traducción gratuito usando MyMemory API.
- * Traduce textos de inglés a español con caché para optimizar llamadas.
+ * Servicio de traducción con múltiples APIs de respaldo.
+ * Intenta varios proveedores gratuitos para asegurar la traducción.
  *
- * API: https://mymemory.translated.net/doc/spec.php
- * Límite: 5,000 palabras/día (sin API key)
+ * APIs utilizadas (en orden de prioridad):
+ * 1. Lingva Translate (proxy gratuito de Google Translate)
+ * 2. MyMemory API (5,000 palabras/día gratis)
+ * 3. LibreTranslate (instancias públicas gratuitas)
  *
- * @version 1.0.0
- * @date 2025-12-17
+ * @version 2.0.0
+ * @date 2025-12-23
  */
 
 // Caché en memoria para traducciones
@@ -16,14 +18,116 @@ const translationCache = new Map();
 
 // Configuración
 const CONFIG = {
-  API_URL: 'https://api.mymemory.translated.net/get',
   SOURCE_LANG: 'en',
   TARGET_LANG: 'es',
-  MAX_TEXT_LENGTH: 500, // MyMemory limit per request
-  CACHE_SIZE_LIMIT: 500, // Máximo de traducciones en caché
-  REQUEST_DELAY: 100, // ms entre requests para no saturar
-  TIMEOUT: 10000 // 10 segundos timeout
+  MAX_TEXT_LENGTH: 500,
+  CACHE_SIZE_LIMIT: 500,
+  REQUEST_TIMEOUT: 8000,
+  RETRY_DELAY: 200
 };
+
+// APIs de traducción disponibles
+const TRANSLATION_APIS = {
+  // Lingva - Proxy gratuito de Google Translate (sin límites)
+  lingva: {
+    name: 'Lingva',
+    translate: async (text, sourceLang, targetLang) => {
+      const url = `https://lingva.ml/api/v1/${sourceLang}/${targetLang}/${encodeURIComponent(text)}`;
+      const response = await fetchWithTimeout(url, CONFIG.REQUEST_TIMEOUT);
+      const data = await response.json();
+      if (data.translation) {
+        return data.translation;
+      }
+      throw new Error('Lingva: No translation in response');
+    }
+  },
+
+  // Lingva alternativo (otro servidor)
+  lingva_alt: {
+    name: 'Lingva Alt',
+    translate: async (text, sourceLang, targetLang) => {
+      const url = `https://translate.plausibility.cloud/api/v1/${sourceLang}/${targetLang}/${encodeURIComponent(text)}`;
+      const response = await fetchWithTimeout(url, CONFIG.REQUEST_TIMEOUT);
+      const data = await response.json();
+      if (data.translation) {
+        return data.translation;
+      }
+      throw new Error('Lingva Alt: No translation in response');
+    }
+  },
+
+  // MyMemory - 5,000 palabras/día gratis
+  mymemory: {
+    name: 'MyMemory',
+    translate: async (text, sourceLang, targetLang) => {
+      const params = new URLSearchParams({
+        q: text,
+        langpair: `${sourceLang}|${targetLang}`
+      });
+      const url = `https://api.mymemory.translated.net/get?${params.toString()}`;
+      const response = await fetchWithTimeout(url, CONFIG.REQUEST_TIMEOUT);
+      const data = await response.json();
+      if (data.responseStatus === 200 && data.responseData?.translatedText) {
+        // MyMemory a veces devuelve el texto original si alcanza el límite
+        const translated = data.responseData.translatedText;
+        if (translated.toUpperCase() === text.toUpperCase()) {
+          throw new Error('MyMemory: Possible rate limit (returned original text)');
+        }
+        return translated;
+      }
+      throw new Error(`MyMemory: ${data.responseDetails || 'Unknown error'}`);
+    }
+  },
+
+  // LibreTranslate - Instancia pública gratuita
+  libretranslate: {
+    name: 'LibreTranslate',
+    translate: async (text, sourceLang, targetLang) => {
+      const url = 'https://libretranslate.com/translate';
+      const response = await fetchWithTimeout(url, CONFIG.REQUEST_TIMEOUT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          q: text,
+          source: sourceLang,
+          target: targetLang
+        })
+      });
+      const data = await response.json();
+      if (data.translatedText) {
+        return data.translatedText;
+      }
+      throw new Error('LibreTranslate: No translation in response');
+    }
+  }
+};
+
+// Orden de prioridad de APIs
+const API_PRIORITY = ['lingva', 'lingva_alt', 'mymemory', 'libretranslate'];
+
+/**
+ * Fetch con timeout
+ */
+async function fetchWithTimeout(url, timeout, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
 
 /**
  * Genera una clave de caché para un texto
@@ -37,10 +141,9 @@ const getCacheKey = (text, targetLang) => {
  */
 const cleanCacheIfNeeded = () => {
   if (translationCache.size > CONFIG.CACHE_SIZE_LIMIT) {
-    // Eliminar las primeras 100 entradas (más antiguas)
     const keysToDelete = Array.from(translationCache.keys()).slice(0, 100);
     keysToDelete.forEach(key => translationCache.delete(key));
-    console.log('[TranslationService] Cache cleaned, removed', keysToDelete.length, 'entries');
+    console.log('[TranslationService] Cache cleaned');
   }
 };
 
@@ -50,7 +153,7 @@ const cleanCacheIfNeeded = () => {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
- * Traduce un texto de inglés a español
+ * Traduce un texto intentando múltiples APIs
  * @param {string} text - Texto a traducir
  * @param {string} targetLang - Idioma destino (default: 'es')
  * @returns {Promise<string>} - Texto traducido
@@ -63,94 +166,56 @@ export const translateText = async (text, targetLang = CONFIG.TARGET_LANG) => {
 
   const trimmedText = text.trim();
 
+  // Si el texto ya parece estar en español, no traducir
+  if (!isEnglish(trimmedText)) {
+    return trimmedText;
+  }
+
   // Verificar caché
   const cacheKey = getCacheKey(trimmedText, targetLang);
   if (translationCache.has(cacheKey)) {
-    console.log('[TranslationService] Cache hit');
     return translationCache.get(cacheKey);
   }
 
-  try {
-    // Truncar si es muy largo
-    const textToTranslate = trimmedText.length > CONFIG.MAX_TEXT_LENGTH
-      ? trimmedText.substring(0, CONFIG.MAX_TEXT_LENGTH) + '...'
-      : trimmedText;
+  // Truncar si es muy largo
+  const textToTranslate = trimmedText.length > CONFIG.MAX_TEXT_LENGTH
+    ? trimmedText.substring(0, CONFIG.MAX_TEXT_LENGTH) + '...'
+    : trimmedText;
 
-    // Construir URL
-    const params = new URLSearchParams({
-      q: textToTranslate,
-      langpair: `${CONFIG.SOURCE_LANG}|${targetLang}`
-    });
+  // Intentar cada API en orden de prioridad
+  let lastError = null;
 
-    const url = `${CONFIG.API_URL}?${params.toString()}`;
+  for (const apiKey of API_PRIORITY) {
+    const api = TRANSLATION_APIS[apiKey];
 
-    // Hacer petición con timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+    try {
+      console.log(`[TranslationService] Trying ${api.name}...`);
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      },
-      signal: controller.signal
-    });
+      const translatedText = await api.translate(
+        textToTranslate,
+        CONFIG.SOURCE_LANG,
+        targetLang
+      );
 
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Verificar respuesta
-    if (data.responseStatus === 200 && data.responseData?.translatedText) {
-      const translatedText = data.responseData.translatedText;
-
-      // Guardar en caché
+      // Éxito - guardar en caché
       cleanCacheIfNeeded();
       translationCache.set(cacheKey, translatedText);
 
-      console.log('[TranslationService] Translated:', trimmedText.substring(0, 30), '...');
+      console.log(`[TranslationService] Success with ${api.name}`);
       return translatedText;
-    }
 
-    // Si hay error en la respuesta, devolver original
-    console.warn('[TranslationService] API error:', data.responseStatus, data.responseDetails);
-    return trimmedText;
+    } catch (error) {
+      console.warn(`[TranslationService] ${api.name} failed:`, error.message);
+      lastError = error;
 
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      console.warn('[TranslationService] Request timeout');
-    } else {
-      console.error('[TranslationService] Translation error:', error.message);
-    }
-    // En caso de error, devolver texto original
-    return trimmedText;
-  }
-};
-
-/**
- * Traduce múltiples textos con delay entre peticiones
- * @param {string[]} texts - Array de textos a traducir
- * @param {string} targetLang - Idioma destino
- * @returns {Promise<string[]>} - Array de textos traducidos
- */
-export const translateBatch = async (texts, targetLang = CONFIG.TARGET_LANG) => {
-  const results = [];
-
-  for (let i = 0; i < texts.length; i++) {
-    const translated = await translateText(texts[i], targetLang);
-    results.push(translated);
-
-    // Pequeño delay entre peticiones para no saturar API
-    if (i < texts.length - 1) {
-      await delay(CONFIG.REQUEST_DELAY);
+      // Pequeño delay antes de intentar siguiente API
+      await delay(CONFIG.RETRY_DELAY);
     }
   }
 
-  return results;
+  // Si todas las APIs fallan, devolver texto original
+  console.error('[TranslationService] All APIs failed, returning original text');
+  return trimmedText;
 };
 
 /**
@@ -162,6 +227,7 @@ export const translateCrisis = async (crisis) => {
   if (!crisis) return crisis;
 
   try {
+    // Traducir título y descripción en paralelo
     const [translatedTitle, translatedDescription] = await Promise.all([
       translateText(crisis.title || ''),
       translateText(crisis.description || '')
@@ -190,14 +256,14 @@ export const translateCrisis = async (crisis) => {
  * @param {number} maxConcurrent - Máximo de traducciones simultáneas
  * @returns {Promise<Object[]>} - Crisis traducidas
  */
-export const translateCrises = async (crises, maxConcurrent = 3) => {
+export const translateCrises = async (crises, maxConcurrent = 2) => {
   if (!crises || crises.length === 0) return crises;
 
   console.log('[TranslationService] Translating', crises.length, 'crises...');
 
   const results = [];
 
-  // Procesar en lotes para no saturar
+  // Procesar en lotes pequeños para no saturar
   for (let i = 0; i < crises.length; i += maxConcurrent) {
     const batch = crises.slice(i, i + maxConcurrent);
     const translatedBatch = await Promise.all(batch.map(translateCrisis));
@@ -205,41 +271,57 @@ export const translateCrises = async (crises, maxConcurrent = 3) => {
 
     // Delay entre lotes
     if (i + maxConcurrent < crises.length) {
-      await delay(CONFIG.REQUEST_DELAY * 2);
+      await delay(300);
     }
+
+    // Log progreso
+    console.log(`[TranslationService] Progress: ${results.length}/${crises.length}`);
   }
 
-  console.log('[TranslationService] Translation complete');
+  const successCount = results.filter(c => c.translated).length;
+  console.log(`[TranslationService] Complete: ${successCount}/${crises.length} translated`);
+
   return results;
 };
 
 /**
- * Detecta si un texto está en inglés (heurística simple)
+ * Detecta si un texto está en inglés (heurística mejorada)
  * @param {string} text - Texto a analizar
  * @returns {boolean} - true si parece estar en inglés
  */
 export const isEnglish = (text) => {
   if (!text) return false;
 
-  // Palabras comunes en inglés que rara vez aparecen en español
+  // Palabras muy comunes en inglés que rara vez aparecen en español
   const englishIndicators = [
     'the', 'and', 'for', 'with', 'from', 'have', 'has', 'been',
     'will', 'would', 'could', 'should', 'their', 'this', 'that',
-    'which', 'about', 'after', 'before', 'between', 'through'
+    'which', 'about', 'after', 'before', 'between', 'through',
+    'said', 'says', 'according', 'people', 'government', 'report'
+  ];
+
+  // Palabras comunes en español
+  const spanishIndicators = [
+    'el', 'la', 'los', 'las', 'de', 'del', 'que', 'en', 'es',
+    'por', 'con', 'para', 'como', 'más', 'pero', 'sus', 'una', 'uno'
   ];
 
   const lowerText = text.toLowerCase();
   const words = lowerText.split(/\s+/);
 
-  let englishWordCount = 0;
+  let englishCount = 0;
+  let spanishCount = 0;
+
   for (const word of words) {
-    if (englishIndicators.includes(word)) {
-      englishWordCount++;
-    }
+    if (englishIndicators.includes(word)) englishCount++;
+    if (spanishIndicators.includes(word)) spanishCount++;
   }
 
-  // Si más del 10% son palabras inglesas comunes, probablemente es inglés
-  return (englishWordCount / words.length) > 0.1;
+  // Si hay más palabras españolas, no es inglés
+  if (spanishCount > englishCount) return false;
+
+  // Si más del 8% son palabras inglesas comunes, probablemente es inglés
+  return (englishCount / words.length) > 0.08;
 };
 
 /**
@@ -260,15 +342,47 @@ export const clearCache = () => {
   console.log('[TranslationService] Cache cleared');
 };
 
+/**
+ * Prueba todas las APIs disponibles
+ * @returns {Promise<Object>} - Estado de cada API
+ */
+export const testAPIs = async () => {
+  const testText = 'Hello world';
+  const results = {};
+
+  for (const [key, api] of Object.entries(TRANSLATION_APIS)) {
+    try {
+      const start = Date.now();
+      const translated = await api.translate(testText, 'en', 'es');
+      const duration = Date.now() - start;
+
+      results[key] = {
+        name: api.name,
+        status: 'ok',
+        result: translated,
+        duration: `${duration}ms`
+      };
+    } catch (error) {
+      results[key] = {
+        name: api.name,
+        status: 'error',
+        error: error.message
+      };
+    }
+  }
+
+  return results;
+};
+
 // Exportar servicio como objeto
 const translationService = {
   translateText,
-  translateBatch,
   translateCrisis,
   translateCrises,
   isEnglish,
   getCacheStats,
-  clearCache
+  clearCache,
+  testAPIs
 };
 
 export default translationService;

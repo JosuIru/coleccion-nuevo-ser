@@ -1,0 +1,771 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2025-12-03",
+  "description": "Metadatos completos de todos los libros para búsqueda semántica e índice temático con categorías prácticas",
+
+  "practicalCategories": {
+    "crear-comunidad": {
+      "title": "Crear una Comunidad",
+      "icon": "users",
+      "description": "Guía para crear y mantener comunidades intencionales, ecoaldeas o grupos de apoyo mutuo",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap3"},
+        {"bookId": "manual-transicion", "chapterId": "cap9"},
+        {"bookId": "manual-transicion", "chapterId": "cap10"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-4"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-5"},
+        {"bookId": "guia-acciones", "chapterId": "accion-10"},
+        {"bookId": "codigo-despertar", "chapterId": "cap3"}
+      ],
+      "color": "purple"
+    },
+    "grupo-consumo": {
+      "title": "Grupo de Consumo",
+      "icon": "shopping-bag",
+      "description": "Organizar grupos de consumo responsable, cooperativas alimentarias y economía local",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap2"},
+        {"bookId": "manual-transicion", "chapterId": "cap3"},
+        {"bookId": "manual-transicion", "chapterId": "cap7"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-1"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-2"},
+        {"bookId": "guia-acciones", "chapterId": "accion-4"},
+        {"bookId": "guia-acciones", "chapterId": "accion-19"}
+      ],
+      "color": "green"
+    },
+    "vivienda-colaborativa": {
+      "title": "Vivienda Colaborativa",
+      "icon": "home",
+      "description": "Modelos de cohousing, ecoaldeas, vivienda cooperativa y co-living",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap9"},
+        {"bookId": "manual-transicion", "chapterId": "cap10"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-5"},
+        {"bookId": "guia-acciones", "chapterId": "accion-20"},
+        {"bookId": "manifiesto", "chapterId": "cap11"}
+      ],
+      "color": "amber"
+    },
+    "meditación": {
+      "title": "Meditación y Práctica",
+      "icon": "heart",
+      "description": "Meditaciones, ejercicios de mindfulness y prácticas contemplativas específicas",
+      "relatedChapters": [
+        {"bookId": "manual-practico", "chapterId": "meditacion-1"},
+        {"bookId": "manual-practico", "chapterId": "meditacion-2"},
+        {"bookId": "manual-practico", "chapterId": "meditacion-3"},
+        {"bookId": "manual-practico", "chapterId": "meditacion-4"},
+        {"bookId": "manual-practico", "chapterId": "meditacion-5"},
+        {"bookId": "codigo-despertar", "chapterId": "cap9"},
+        {"bookId": "practicas-radicales", "chapterId": "practica-1"},
+        {"bookId": "manual-transicion", "chapterId": "cap11"}
+      ],
+      "color": "pink"
+    },
+    "huerto": {
+      "title": "Huerto y Permacultura",
+      "icon": "sprout",
+      "description": "Agricultura ecológica, permacultura, soberanía alimentaria y huertos urbanos",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap7"}
+      ],
+      "color": "lime"
+    },
+    "energía-renovable": {
+      "title": "Energía Renovable",
+      "icon": "zap",
+      "description": "Autonomía energética, energías renovables y descentralización energética",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap8"}
+      ],
+      "color": "yellow"
+    },
+    "toma-decisiones": {
+      "title": "Toma de Decisiones",
+      "icon": "git-branch",
+      "description": "Sociocracia, consenso, gobernanza participativa y democracia horizontal",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap10"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-4"},
+        {"bookId": "guia-acciones", "chapterId": "accion-29"},
+        {"bookId": "manifiesto", "chapterId": "cap12"}
+      ],
+      "color": "cyan"
+    },
+    "educación-alternativa": {
+      "title": "Educación Alternativa",
+      "icon": "book-open",
+      "description": "Pedagogías libres, aprendizaje autónomo y educación transformadora",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap5"},
+        {"bookId": "guia-acciones", "chapterId": "accion-16"},
+        {"bookId": "manifiesto", "chapterId": "cap10"}
+      ],
+      "color": "indigo"
+    },
+    "activismo": {
+      "title": "Activismo y Cambio Social",
+      "icon": "megaphone",
+      "description": "Estrategias, tácticas y herramientas para el activismo y la transformación social",
+      "relatedChapters": [
+        {"bookId": "guia-acciones", "chapterId": "accion-37"},
+        {"bookId": "guia-acciones", "chapterId": "accion-38"},
+        {"bookId": "guia-acciones", "chapterId": "accion-54"},
+        {"bookId": "manifiesto", "chapterId": "cap15"},
+        {"bookId": "manifiesto", "chapterId": "cap16"},
+        {"bookId": "manifiesto", "chapterId": "cap18"},
+        {"bookId": "manual-transicion", "chapterId": "cap4"}
+      ],
+      "color": "red"
+    },
+    "cooperativas": {
+      "title": "Crear Cooperativas",
+      "icon": "users",
+      "description": "Guías para crear cooperativas de trabajo, consumo, vivienda y servicios",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap2"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-2"},
+        {"bookId": "guia-acciones", "chapterId": "accion-28"},
+        {"bookId": "manifiesto", "chapterId": "cap9"}
+      ],
+      "color": "green"
+    },
+    "tecnología-ética": {
+      "title": "Tecnología Ética",
+      "icon": "code",
+      "description": "Software libre, privacidad, tecnología soberana y herramientas digitales éticas",
+      "relatedChapters": [
+        {"bookId": "manual-transicion", "chapterId": "cap4"},
+        {"bookId": "toolkit-transicion", "chapterId": "toolkit-7"},
+        {"bookId": "guia-acciones", "chapterId": "accion-34"},
+        {"bookId": "manifiesto", "chapterId": "cap13"}
+      ],
+      "color": "cyan"
+    },
+    "trabajo-interior": {
+      "title": "Trabajo Interior",
+      "icon": "star",
+      "description": "Autoconocimiento, transformación personal, coherencia interna y desarrollo consciente",
+      "relatedChapters": [
+        {"bookId": "codigo-despertar", "chapterId": "cap1"},
+        {"bookId": "codigo-despertar", "chapterId": "cap13"},
+        {"bookId": "practicas-radicales", "chapterId": "practica-3"},
+        {"bookId": "guia-acciones", "chapterId": "accion-1"},
+        {"bookId": "manual-transicion", "chapterId": "cap6"}
+      ],
+      "color": "purple"
+    }
+  },
+
+  "chapters": {
+    "codigo-despertar": {
+      "prologo": {
+        "tags": ["introducción", "filosofía", "misterio", "consciencia"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 10,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["consciencia", "misterio", "despertar", "inicio", "umbral", "viaje"]
+      },
+      "cap1": {
+        "tags": ["consciencia", "despertar", "neurociencia", "meditación"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["consciencia", "despertar", "neurociencia", "estados alterados", "meditación", "autoconocimiento"]
+      },
+      "cap2": {
+        "tags": ["física cuántica", "realidad", "filosofía", "ciencia"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["realidad", "física cuántica", "observador", "materia", "energía", "percepción"]
+      },
+      "cap3": {
+        "tags": ["consciencia colectiva", "inteligencia distribuida", "sistemas", "comunidad"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["crear-comunidad", "trabajo-interior"],
+        "keywords": ["consciencia colectiva", "campo unificado", "inteligencia distribuida", "conexión", "colectivo"]
+      },
+      "cap4": {
+        "tags": ["IA", "consciencia artificial", "tecnología", "futuro"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["tecnología-ética", "trabajo-interior"],
+        "keywords": ["inteligencia artificial", "consciencia artificial", "singularidad", "máquinas", "algoritmos", "emergencia"]
+      },
+      "cap5": {
+        "tags": ["tiempo", "física", "filosofía", "eternidad"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 20,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["tiempo", "eternidad", "presente", "ilusión", "física", "percepción temporal"]
+      },
+      "cap6": {
+        "tags": ["muerte", "transformación", "consciencia", "ego"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["muerte", "renacimiento", "transformación", "ego", "disolución", "trascendencia"]
+      },
+      "cap7": {
+        "tags": ["no-dualidad", "advaita", "filosofía", "unidad"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 22,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["no-dualidad", "advaita", "unidad", "separación", "vacío", "plenitud"]
+      },
+      "cap8": {
+        "tags": ["lenguaje", "experiencia directa", "misticismo", "silencio"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 18,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["lenguaje", "indecible", "experiencia directa", "misticismo", "símbolos", "silencio"]
+      },
+      "cap9": {
+        "tags": ["meditación", "práctica", "contemplación", "mindfulness"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 30,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["meditación", "contemplación", "práctica", "mindfulness", "atención plena", "técnicas"]
+      },
+      "cap10": {
+        "tags": ["ciencia", "espiritualidad", "integración", "puente"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["trabajo-interior", "educación-alternativa"],
+        "keywords": ["ciencia", "espiritualidad", "integración", "puente", "conocimiento", "sabiduría"]
+      },
+      "cap11": {
+        "tags": ["despertar colectivo", "transformación social", "evolución", "consciencia planetaria"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["crear-comunidad", "activismo", "trabajo-interior"],
+        "keywords": ["despertar colectivo", "evolución", "transformación social", "nueva era", "consciencia planetaria"]
+      },
+      "cap12": {
+        "tags": ["integración", "vida cotidiana", "práctica", "encarnación"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["integración", "vida cotidiana", "encarnación", "práctica diaria", "despertar encarnado"]
+      },
+      "cap13": {
+        "tags": ["coherencia", "integridad", "autenticidad", "valores"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["trabajo-interior", "activismo"],
+        "keywords": ["coherencia", "integridad", "autenticidad", "alineación", "valores", "acción"]
+      },
+      "cap14": {
+        "tags": ["síntesis", "conclusión", "camino", "código"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 25,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["código", "síntesis", "camino", "mapa", "guía", "despertar"]
+      }
+    },
+
+    "manifiesto": {
+      "cap1": {
+        "tags": ["crítica", "sistema", "capitalismo", "mentira"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["activismo", "educación-alternativa"],
+        "keywords": ["capitalismo", "sistema", "mentira", "ilusión", "crítica", "desenmascarar"]
+      },
+      "cap2": {
+        "tags": ["economía", "crecimiento", "límites", "degrowth"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["activismo", "educación-alternativa", "cooperativas"],
+        "keywords": ["crecimiento", "límites", "economía", "degrowth", "sostenibilidad", "colapso"]
+      },
+      "cap3": {
+        "tags": ["política", "democracia", "poder", "oligarquía"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["activismo", "toma-decisiones"],
+        "keywords": ["democracia", "poder", "corrupción", "oligarquía", "participación", "soberanía"]
+      },
+      "cap4": {
+        "tags": ["individualismo", "aislamiento", "comunidad", "fragmentación"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["crear-comunidad", "trabajo-interior"],
+        "keywords": ["individualismo", "aislamiento", "fragmentación", "soledad", "comunidad", "vínculo"]
+      },
+      "cap5": {
+        "tags": ["trabajo", "alienación", "tiempo", "explotación"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["activismo", "cooperativas"],
+        "keywords": ["trabajo", "alienación", "explotación", "tiempo", "sentido", "bullshit jobs"]
+      },
+      "cap6": {
+        "tags": ["educación", "sistema", "control", "adoctrinamiento"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["educación-alternativa", "activismo"],
+        "keywords": ["educación", "domesticación", "adoctrinamiento", "sistema", "pensamiento crítico", "liberación"]
+      },
+      "cap7": {
+        "tags": ["medios", "espectáculo", "control", "manipulación"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 24,
+        "practicalUses": ["activismo", "tecnología-ética"],
+        "keywords": ["espectáculo", "medios", "manipulación", "distracción", "entretenimiento", "control"]
+      },
+      "cap8": {
+        "tags": ["consciencia", "colectivo", "alternativa", "inteligencia colectiva"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["crear-comunidad", "trabajo-interior", "activismo"],
+        "keywords": ["consciencia compartida", "inteligencia colectiva", "colaboración", "redes", "emergencia"]
+      },
+      "cap9": {
+        "tags": ["economía", "comunes", "cooperación", "P2P"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["cooperativas", "grupo-consumo", "crear-comunidad"],
+        "keywords": ["comunes", "cooperación", "economía", "compartir", "reciprocidad", "P2P"]
+      },
+      "cap10": {
+        "tags": ["educación", "libertad", "autonomía", "pedagogía"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["educación-alternativa", "crear-comunidad"],
+        "keywords": ["educación libertaria", "autonomía", "aprendizaje", "creatividad", "pensamiento crítico"]
+      },
+      "cap11": {
+        "tags": ["vivienda", "derechos", "ciudad", "especulación"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["vivienda-colaborativa", "activismo"],
+        "keywords": ["vivienda", "derecho", "especulación", "gentrificación", "ciudad", "espacio"]
+      },
+      "cap12": {
+        "tags": ["democracia", "participación", "poder", "asamblea"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["toma-decisiones", "activismo"],
+        "keywords": ["democracia directa", "participación", "asamblea", "autogestión", "poder popular"]
+      },
+      "cap13": {
+        "tags": ["tecnología", "ética", "control", "vigilancia"],
+        "type": "teoría",
+        "difficulty": "avanzado",
+        "readingTime": 24,
+        "practicalUses": ["tecnología-ética", "activismo"],
+        "keywords": ["tecnología", "ética", "vigilancia", "algoritmos", "libertad", "soberanía"]
+      },
+      "cap14": {
+        "tags": ["ecología", "naturaleza", "crisis climática", "Gaia"],
+        "type": "teoría",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["activismo", "crear-comunidad"],
+        "keywords": ["ecología", "naturaleza", "crisis climática", "antropocentrismo", "Gaia", "interconexión"]
+      },
+      "cap15": {
+        "tags": ["activismo", "desobediencia", "resistencia", "acción directa"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["activismo"],
+        "keywords": ["desobediencia civil", "resistencia", "activismo", "creatividad", "acción directa"]
+      },
+      "cap16": {
+        "tags": ["estrategia", "cambio", "movimientos", "poder"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["activismo", "toma-decisiones"],
+        "keywords": ["estrategia", "cambio sistémico", "movimientos sociales", "poder", "alianzas", "contrapoder"]
+      },
+      "cap17": {
+        "tags": ["prefiguración", "construcción", "alternativas", "utopía"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["crear-comunidad", "cooperativas", "activismo"],
+        "keywords": ["prefiguración", "construcción", "alternativas", "utopía concreta", "experiencias"]
+      },
+      "cap18": {
+        "tags": ["estrategia", "acción", "roadmap", "transición"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["activismo", "crear-comunidad", "cooperativas"],
+        "keywords": ["hoja de ruta", "acción", "estrategia", "pasos", "transición", "camino"]
+      }
+    },
+
+    "manual-transicion": {
+      "cap1": {
+        "tags": ["transición", "cambio", "crisis", "oportunidad"],
+        "type": "teoría",
+        "difficulty": "básico",
+        "readingTime": 15,
+        "practicalUses": ["activismo", "trabajo-interior"],
+        "keywords": ["transición", "colapso", "paradigma", "crisis", "oportunidad"]
+      },
+      "cap2": {
+        "tags": ["economía", "cooperativas", "autogestión", "trabajo"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 25,
+        "practicalUses": ["cooperativas", "vivienda-colaborativa", "grupo-consumo"],
+        "keywords": ["cooperativas", "autogestión", "trabajo", "democracia económica", "coops", "modelo"]
+      },
+      "cap3": {
+        "tags": ["comunidad", "redes", "cooperación", "economía del don"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["crear-comunidad", "grupo-consumo"],
+        "keywords": ["comunidad", "don", "reciprocidad", "confianza", "cooperación"]
+      },
+      "cap4": {
+        "tags": ["tecnología", "commons", "digital", "software libre"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["tecnología-ética", "activismo"],
+        "keywords": ["commons", "digital", "software libre", "código abierto", "licencias", "compartir"]
+      },
+      "cap5": {
+        "tags": ["educación", "aprendizaje", "transformación", "pedagogía"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["educación-alternativa"],
+        "keywords": ["educación", "aprendizaje", "escuela", "pedagogía", "transformación"]
+      },
+      "cap6": {
+        "tags": ["comunicación", "conflictos", "relaciones", "CNV"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["crear-comunidad", "trabajo-interior", "toma-decisiones"],
+        "keywords": ["comunicación no violenta", "CNV", "conflictos", "empatía", "escucha", "mediación"]
+      },
+      "cap7": {
+        "tags": ["alimentación", "agricultura", "permacultura", "soberanía"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 25,
+        "practicalUses": ["huerto", "grupo-consumo"],
+        "keywords": ["alimentación", "agricultura", "permacultura", "huerto", "soberanía alimentaria"]
+      },
+      "cap8": {
+        "tags": ["energía", "renovables", "autonomía", "descentralización"],
+        "type": "teoría-práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["energía-renovable"],
+        "keywords": ["energía", "renovables", "solar", "eólica", "autonomía"]
+      },
+      "cap9": {
+        "tags": ["vivienda", "ecoaldeas", "cohousing", "colaborativa"],
+        "type": "teoría-práctica",
+        "difficulty": "avanzado",
+        "readingTime": 30,
+        "practicalUses": ["vivienda-colaborativa", "crear-comunidad"],
+        "keywords": ["vivienda", "ecoaldea", "cohousing", "comunidad", "bioconstrucción"]
+      },
+      "cap10": {
+        "tags": ["gobernanza", "toma de decisiones", "sociocracia", "organización"],
+        "type": "teoría-práctica",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["toma-decisiones", "crear-comunidad", "cooperativas"],
+        "keywords": ["gobernanza", "sociocracia", "consenso", "decisiones", "organización"]
+      },
+      "cap11": {
+        "tags": ["espiritualidad", "meditación", "conciencia", "práctica"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["espiritualidad", "meditación", "mindfulness", "conciencia", "práctica"]
+      },
+      "cap12": {
+        "tags": ["acción", "práctica", "primeros pasos", "integración"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 15,
+        "practicalUses": ["activismo", "trabajo-interior"],
+        "keywords": ["acción", "práctica", "empezar", "cambio", "pasos"]
+      }
+    },
+
+    "guia-acciones": {
+      "accion-1": {
+        "tags": ["individual", "coherencia", "autoconocimiento", "valores"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 10,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["diario", "coherencia", "valores", "autoevaluación", "reflexión"]
+      },
+      "accion-4": {
+        "tags": ["individual", "consumo", "local", "responsable"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 12,
+        "practicalUses": ["grupo-consumo", "activismo"],
+        "keywords": ["consumo", "local", "responsable", "sostenible", "comercio justo"]
+      },
+      "accion-10": {
+        "tags": ["comunitario", "comunidad", "apoyo", "círculo"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 15,
+        "practicalUses": ["crear-comunidad", "trabajo-interior"],
+        "keywords": ["círculo", "confianza", "apoyo mutuo", "comunidad", "intimidad"]
+      },
+      "accion-16": {
+        "tags": ["comunitario", "educación", "aprendizaje", "pedagogía"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 18,
+        "practicalUses": ["educación-alternativa", "crear-comunidad"],
+        "keywords": ["aprendizaje", "educación libre", "espacio", "horizontal", "pedagogía"]
+      },
+      "accion-19": {
+        "tags": ["comunitario", "consumo", "cooperativa", "alimentación"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["grupo-consumo", "cooperativas"],
+        "keywords": ["grupo de consumo", "cooperativa", "alimentación", "local", "organización"]
+      },
+      "accion-20": {
+        "tags": ["comunitario", "vivienda", "cooperativa", "cohousing"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["vivienda-colaborativa", "cooperativas", "crear-comunidad"],
+        "keywords": ["cohousing", "vivienda cooperativa", "comunidad", "autogestión", "diseño participativo"]
+      },
+      "accion-28": {
+        "tags": ["comunitario", "trabajo", "cooperativa", "autogestión"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 30,
+        "practicalUses": ["cooperativas", "activismo"],
+        "keywords": ["cooperativa", "trabajo", "autogestión", "estatutos", "legal", "democracia"]
+      },
+      "accion-29": {
+        "tags": ["comunitario", "gobernanza", "decisiones", "sociocracia"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["toma-decisiones", "cooperativas", "crear-comunidad"],
+        "keywords": ["sociocracia", "círculos", "consentimiento", "doble enlace", "decisiones"]
+      },
+      "accion-34": {
+        "tags": ["sistémico", "tecnología", "privacidad", "soberanía"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 20,
+        "practicalUses": ["tecnología-ética", "activismo"],
+        "keywords": ["soberanía digital", "privacidad", "software libre", "alternativas", "migración"]
+      },
+      "accion-37": {
+        "tags": ["sistémico", "activismo", "incidencia", "campaña"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 30,
+        "practicalUses": ["activismo"],
+        "keywords": ["campaña", "incidencia", "advocacy", "estrategia", "movilización", "objetivos"]
+      },
+      "accion-38": {
+        "tags": ["sistémico", "activismo", "alianzas", "redes"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 25,
+        "practicalUses": ["activismo", "toma-decisiones"],
+        "keywords": ["alianzas", "coaliciones", "redes", "estrategia", "movimientos", "cooperación"]
+      },
+      "accion-54": {
+        "tags": ["sistémico", "cambio", "estrategia", "transformación"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 35,
+        "practicalUses": ["activismo", "crear-comunidad", "toma-decisiones"],
+        "keywords": ["cambio sistémico", "transformación", "estrategia", "múltiples niveles", "integral"]
+      }
+    },
+
+    "toolkit-transicion": {
+      "toolkit-1": {
+        "tags": ["ejercicio", "economía", "mapeo", "solidaria"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 45,
+        "practicalUses": ["grupo-consumo", "cooperativas"],
+        "keywords": ["economía solidaria", "mapeo", "recursos", "local", "ejercicio"]
+      },
+      "toolkit-2": {
+        "tags": ["ejercicio", "cooperativa", "diseño", "autogestión"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 60,
+        "practicalUses": ["cooperativas", "grupo-consumo"],
+        "keywords": ["diseño", "cooperativa", "estatutos", "gobernanza", "ejercicio"]
+      },
+      "toolkit-4": {
+        "tags": ["ejercicio", "gobernanza", "sociocracia", "decisiones"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 50,
+        "practicalUses": ["toma-decisiones", "crear-comunidad", "cooperativas"],
+        "keywords": ["gobernanza", "diseño", "sociocracia", "círculos", "ejercicio"]
+      },
+      "toolkit-5": {
+        "tags": ["ejercicio", "vivienda", "cohousing", "espacios"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 55,
+        "practicalUses": ["vivienda-colaborativa", "crear-comunidad"],
+        "keywords": ["espacios compartidos", "diseño", "cohousing", "participativo", "ejercicio"]
+      },
+      "toolkit-7": {
+        "tags": ["ejercicio", "tecnología", "auditoría", "digital"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 40,
+        "practicalUses": ["tecnología-ética"],
+        "keywords": ["auditoría digital", "privacidad", "análisis", "herramientas", "ejercicio"]
+      }
+    },
+
+    "manual-practico": {
+      "meditacion-1": {
+        "tags": ["meditación", "presencia", "atención", "mindfulness"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 20,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["presencia", "aquí y ahora", "atención", "respiración", "meditación"]
+      },
+      "meditacion-2": {
+        "tags": ["meditación", "respiración", "observación", "cuerpo"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 18,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["respiración", "observación", "cuerpo", "sensaciones", "meditación"]
+      },
+      "meditacion-3": {
+        "tags": ["meditación", "cuerpo", "exploración", "sensaciones"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 25,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["cuerpo", "exploración", "sensaciones", "body scan", "meditación"]
+      },
+      "meditacion-4": {
+        "tags": ["meditación", "pensamientos", "observación", "mente"],
+        "type": "práctica",
+        "difficulty": "intermedio",
+        "readingTime": 22,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["pensamientos", "mente", "observación", "desidentificación", "meditación"]
+      },
+      "meditacion-5": {
+        "tags": ["meditación", "caminar", "movimiento", "atención"],
+        "type": "práctica",
+        "difficulty": "básico",
+        "readingTime": 20,
+        "practicalUses": ["meditación", "trabajo-interior"],
+        "keywords": ["caminar", "movimiento", "atención", "pasos", "meditación"]
+      }
+    },
+
+    "practicas-radicales": {
+      "practica-1": {
+        "tags": ["radical", "observador", "paradoja", "consciencia"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 30,
+        "practicalUses": ["trabajo-interior", "meditación"],
+        "keywords": ["observador", "paradoja", "consciencia", "quien observa", "radical"]
+      },
+      "practica-3": {
+        "tags": ["radical", "sombra", "confrontación", "autoconocimiento"],
+        "type": "práctica",
+        "difficulty": "avanzado",
+        "readingTime": 35,
+        "practicalUses": ["trabajo-interior"],
+        "keywords": ["sombra", "confrontación", "autoconocimiento", "oscuridad", "radical"]
+      }
+    }
+  },
+
+  "difficultyLevels": {
+    "básico": {
+      "label": "Básico",
+      "description": "Conceptos introductorios, no requiere conocimiento previo",
+      "color": "green"
+    },
+    "intermedio": {
+      "label": "Intermedio",
+      "description": "Requiere familiaridad con los conceptos básicos",
+      "color": "amber"
+    },
+    "avanzado": {
+      "label": "Avanzado",
+      "description": "Contenido profundo que requiere base sólida",
+      "color": "red"
+    }
+  },
+
+  "contentTypes": {
+    "teoría": {
+      "label": "Teoría",
+      "icon": "book",
+      "description": "Contenido conceptual y marco teórico"
+    },
+    "práctica": {
+      "label": "Práctica",
+      "icon": "tool",
+      "description": "Ejercicios, meditaciones y aplicaciones prácticas"
+    },
+    "teoría-práctica": {
+      "label": "Teoría + Práctica",
+      "icon": "layers",
+      "description": "Combina conceptos con aplicaciones prácticas"
+    }
+  }
+}

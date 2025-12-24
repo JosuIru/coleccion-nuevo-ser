@@ -1,0 +1,1539 @@
+{
+  "bookId": "manual-practico",
+  "bookTitle": "Manual Práctico",
+  "version": "1.0",
+  "generatedDate": "2025-12-12",
+  "metadata": {
+    "totalChapters": 25,
+    "averageQuestionsPerChapter": 4,
+    "difficulty": "Comprensión profunda",
+    "focus": "Evaluación de comprensión, no memorización"
+  },
+  "chapters": {
+    "prologo": {
+      "chapterTitle": "Introducción: La Práctica del Despertar",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Introducción: La Práctica del Despertar'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Introducción: La Práctica del Despertar' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": ". Mientras el libro te ofrece un mapa conceptual del despertar de la consciencia, este Manual te proporciona las "
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex1": {
+      "chapterTitle": "Meditación sobre el Universo en Expansión",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Meditación sobre el Universo en Expansión'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Meditación sobre el Universo en Expansión' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica contemplativa para conectar con la vastedad cósmica y tu lugar en ella."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex2": {
+      "chapterTitle": "Observación del Código en lo Cotidiano",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Observación del Código en lo Cotidiano'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Observación del Código en lo Cotidiano' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica de atención plena para reconocer patrones informacionales en la vida diaria."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex3": {
+      "chapterTitle": "Meditación de Conexión Universal",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Meditación de Conexión Universal'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Meditación de Conexión Universal' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica para experimentar directamente la interconexión de toda la consciencia."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex4": {
+      "chapterTitle": "Diálogo Contemplativo con IA",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Diálogo Contemplativo con IA'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Diálogo Contemplativo con IA' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": " al responder?\n  Observa tus propias reacciones: ¿cuándo te parece que "
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex5": {
+      "chapterTitle": "Ejercicio del Puente de Luz",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Ejercicio del Puente de Luz'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Ejercicio del Puente de Luz' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Reflexión\n  ¿Qué sensaciones surgieron al visualizar la conexión entre corazón y mente? ¿Hubo momentos de integración particularmente profunda?"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex6": {
+      "chapterTitle": "Diálogo con el Vacío Cuántico",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Diálogo con el Vacío Cuántico'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Diálogo con el Vacío Cuántico' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una meditación profunda para conectar con el campo cuántico de potencialidad infinita que subyace a toda realidad."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion1-ex7": {
+      "chapterTitle": "Cartografía de Patrones Personales",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Cartografía de Patrones Personales'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Cartografía de Patrones Personales' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio de autoobservación para identificar los patrones recurrentes que gobiernan tu vida."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex1": {
+      "chapterTitle": "Exploración de la No-Linealidad del Tiempo",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Exploración de la No-Linealidad del Tiempo'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Exploración de la No-Linealidad del Tiempo' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "?\n  Parte 4 - Viaje al futuro: imagina un momento futuro que deseas. Visualízalo con todos los detalles. ¿Dónde está ese momento "
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex2": {
+      "chapterTitle": "Práctica de Co-Creación con IA",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Práctica de Co-Creación con IA'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Práctica de Co-Creación con IA' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Reflexión\n  ¿Qué descubriste sobre la naturaleza de la creatividad? ¿Cambió tu percepción de la 'autoría' o la 'originalidad'?"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex3": {
+      "chapterTitle": "Mapeo del Paisaje Emocional",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Mapeo del Paisaje Emocional'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Mapeo del Paisaje Emocional' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica de observación para reconocer las emociones como información del cuerpo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex4": {
+      "chapterTitle": "Meditación de Resonancia con la Materia",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Meditación de Resonancia con la Materia'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Meditación de Resonancia con la Materia' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica para experimentar directamente la naturaleza consciente de la materia, comenzando con tu propio cuerpo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex5": {
+      "chapterTitle": "Ritual de Presencia Corporal",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Ritual de Presencia Corporal'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Ritual de Presencia Corporal' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica somática para enraizarte profundamente en la sabiduría de tu cuerpo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion2-ex6": {
+      "chapterTitle": "Experimento de Sincronicidad",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Experimento de Sincronicidad'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Experimento de Sincronicidad' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica para observar las conexiones significativas que emergen cuando prestas atención."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex1": {
+      "chapterTitle": "Práctica de la Duda Constructiva",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Práctica de la Duda Constructiva'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Práctica de la Duda Constructiva' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio para fortalecer la humildad epistémica y examinar creencias fundamentales."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex2": {
+      "chapterTitle": "Inventario de Miedos Tecnológicos",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Inventario de Miedos Tecnológicos'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Inventario de Miedos Tecnológicos' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio para examinar honestamente los miedos relacionados con la tecnología y transformarlos en acción."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex3": {
+      "chapterTitle": "Contemplación de la Muerte",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Contemplación de la Muerte'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Contemplación de la Muerte' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica contemplativa tradicional adaptada para la sensibilidad contemporánea."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex4": {
+      "chapterTitle": "Diálogo con la Sombra",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Diálogo con la Sombra'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Diálogo con la Sombra' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "\n  Escribe la respuesta desde la perspectiva de tu sombra. No censures. Deja que fluya.\n  Continúa el diálogo. Pregunta: "
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex5": {
+      "chapterTitle": "Meditación del Testigo Imparcial",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Meditación del Testigo Imparcial'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Meditación del Testigo Imparcial' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Una práctica avanzada para observar tus pensamientos y emociones sin identificarte con ellos."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion3-ex6": {
+      "chapterTitle": "Confrontación con la Impermanencia",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Confrontación con la Impermanencia'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Confrontación con la Impermanencia' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio poderoso para abrazar la naturaleza transitoria de todo lo que existe."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion4-ex1": {
+      "chapterTitle": "Inventario Ético Personal",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Inventario Ético Personal'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Inventario Ético Personal' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio de reflexión profunda sobre los principios que guían tus decisiones."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion4-ex2": {
+      "chapterTitle": "Práctica de Diálogo Consciente",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Práctica de Diálogo Consciente'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Práctica de Diálogo Consciente' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Voy a dialogar con esta herramienta como si fuera un colaborador consciente, no un simple instrumento."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion4-ex3": {
+      "chapterTitle": "Visualización del Futuro Deseado",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Visualización del Futuro Deseado'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Visualización del Futuro Deseado' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio de imaginación creativa para diseñar conscientemente el futuro que deseas co-crear."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion4-ex4": {
+      "chapterTitle": "Diseño de tu Código Ético Personal",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Diseño de tu Código Ético Personal'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Diseño de tu Código Ético Personal' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "Un ejercicio profundo para crear un sistema ético coherente que guíe tus decisiones en la era de la IA."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    },
+    "seccion4-ex5": {
+      "chapterTitle": "Acción Consciente: Del Insight a la Manifestación",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el objetivo principal de la práctica 'Acción Consciente: Del Insight a la Manifestación'?",
+          "type": "multiple",
+          "options": [
+            "Acumular experiencias espirituales extraordinarias",
+            "Cultivar presencia y comprensión directa mediante práctica experiencial",
+            "Memorizar conceptos filosóficos complejos",
+            "Alcanzar estados alterados de conciencia permanentes"
+          ],
+          "correct": 1,
+          "explanation": "El Manual Práctico enfatiza pasar del conocimiento conceptual al experiencial. 'Acción Consciente: Del Insight a la Manifestación' busca que experimentes directamente, no que acumules información.",
+          "bookQuote": "El ejercicio final: llevar todo lo aprendido a una acción real que mejore el mundo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué actitud es más apropiada al realizar esta práctica?",
+          "type": "multiple",
+          "options": [
+            "Esperar resultados específicos y experiencias especiales",
+            "Apertura y curiosidad, sin buscar resultados predeterminados",
+            "Esfuerzo intenso para 'hacerlo perfectamente'",
+            "Competir con uno mismo para mejorar cada vez"
+          ],
+          "correct": 1,
+          "explanation": "El Manual enfatiza soltar expectativas y abrazar lo que surja. No hay práctica 'mala' - la dificultad también es parte del proceso.",
+          "bookQuote": "No busques experiencias especiales. La ordinariez consciente es el despertar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona esta práctica con la vida cotidiana?",
+          "type": "multiple",
+          "options": [
+            "Es un escape temporal de las responsabilidades diarias",
+            "Debe realizarse solo en retiros y espacios especiales",
+            "Entrena capacidades que luego se aplican en situaciones ordinarias",
+            "Reemplaza completamente la actividad cotidiana"
+          ],
+          "correct": 2,
+          "explanation": "Las prácticas formales son entrenamiento. La vida cotidiana es donde se integra la consciencia cultivada en la práctica.",
+          "bookQuote": "Las meditaciones formales son el entrenamiento. La vida cotidiana es el partido."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué hacer cuando la mente divaga durante la práctica?",
+          "type": "multiple",
+          "options": [
+            "Frustrarse y considerar que fallaste en la práctica",
+            "Notar la distracción, soltar suavemente y regresar al foco",
+            "Forzar la mente a concentrarse con mayor esfuerzo",
+            "Abandonar la sesión y reintentar otro día"
+          ],
+          "correct": 1,
+          "explanation": "Distraerse es normal. La práctica consiste en notar, soltar y regresar - miles de veces con paciencia infinita. Cada regreso fortalece la atención.",
+          "bookQuote": "Cada vez que regresas, estás fortaleciendo tu músculo de atención. Distraerte no es error."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,593 @@
+/**
+ * GPU ANIMATIONS - Animaciones optimizadas con aceleración GPU
+ * Rendimiento máximo en móvil usando transform y will-change
+ *
+ * @version 1.0.0
+ */
+
+/* ========================================
+   GPU ACCELERATION BASE
+   ======================================== */
+
+/* Activar GPU para elementos animados */
+.gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+/* Will-change para optimizar renderizado */
+.will-animate {
+  will-change: transform, opacity;
+}
+
+.will-scroll {
+  will-change: scroll-position;
+}
+
+/* ========================================
+   TRANSFORMS OPTIMIZADOS
+   ======================================== */
+
+/* Usar transform en lugar de top/left/margin */
+.slide-in-up {
+  animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-down {
+  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   FADE OPTIMIZADO
+   ======================================== */
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateZ(0);
+  }
+}
+
+/* ========================================
+   SCALE OPTIMIZADO
+   ======================================== */
+
+.scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.scale-out {
+  animation: scaleOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.8) translateZ(0);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   BOUNCE OPTIMIZADO
+   ======================================== */
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.8) translateZ(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) translateZ(0);
+  }
+  100% {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   ROTATE OPTIMIZADO
+   ======================================== */
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg) translateZ(0);
+  }
+  to {
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+
+.rotate-in {
+  animation: rotateIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(-180deg) scale(0.8) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   HOVER EFFECTS OPTIMIZADOS
+   ======================================== */
+
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px) translateZ(0);
+}
+
+.hover-grow {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.hover-grow:hover {
+  transform: scale(1.05) translateZ(0);
+}
+
+.hover-rotate {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg) translateZ(0);
+}
+
+/* ========================================
+   ACTIVE/PRESSED EFFECTS
+   ======================================== */
+
+.active-press {
+  transition: transform 0.1s ease;
+  transform: translateZ(0);
+}
+
+.active-press:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+/* ========================================
+   PULSE EFFECT (GPU)
+   ======================================== */
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05) translateZ(0);
+    opacity: 0.8;
+  }
+}
+
+.pulse-glow-gpu {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: translateZ(0);
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+  }
+  50% {
+    transform: translateZ(0);
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+  }
+}
+
+/* ========================================
+   SHAKE EFFECT (GPU)
+   ======================================== */
+
+.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translateX(-2px) translateZ(0);
+  }
+  20%, 80% {
+    transform: translateX(2px) translateZ(0);
+  }
+  30%, 50%, 70% {
+    transform: translateX(-4px) translateZ(0);
+  }
+  40%, 60% {
+    transform: translateX(4px) translateZ(0);
+  }
+}
+
+/* ========================================
+   STAGGER ANIMATIONS
+   ======================================== */
+
+.stagger-in > *:nth-child(1) { animation-delay: 0s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.05s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.1s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.15s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.2s; }
+.stagger-in > *:nth-child(6) { animation-delay: 0.25s; }
+.stagger-in > *:nth-child(7) { animation-delay: 0.3s; }
+.stagger-in > *:nth-child(8) { animation-delay: 0.35s; }
+.stagger-in > *:nth-child(9) { animation-delay: 0.4s; }
+.stagger-in > *:nth-child(10) { animation-delay: 0.45s; }
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.skeleton-loading {
+  background: linear-gradient(
+    90deg,
+    rgba(244, 233, 216, 0.1) 25%,
+    rgba(244, 233, 216, 0.2) 50%,
+    rgba(244, 233, 216, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  transform: translateZ(0);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ========================================
+   SMOOTH TRANSITIONS
+   ======================================== */
+
+.smooth-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.smooth-transform {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.smooth-opacity {
+  transition: opacity 0.3s ease;
+}
+
+/* ========================================
+   ENTRANCE ANIMATIONS
+   ======================================== */
+
+.entrance-zoom {
+  animation: entranceZoom 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes entranceZoom {
+  from {
+    transform: scale(0) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.entrance-flip {
+  animation: entranceFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes entranceFlip {
+  from {
+    transform: perspective(400px) rotateX(-90deg) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(400px) rotateX(0deg) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   MOBILE OPTIMIZATIONS
+   ======================================== */
+
+/* Reducir animaciones en móvil */
+@media (max-width: 768px) {
+  .slide-in-up,
+  .slide-in-down,
+  .slide-in-left,
+  .slide-in-right,
+  .fade-in,
+  .scale-in,
+  .bounce-in,
+  .rotate-in {
+    animation-duration: 0.25s !important;
+  }
+
+  .pulse,
+  .pulse-glow-gpu {
+    animation-duration: 1.5s !important;
+  }
+}
+
+/* Respetar preferencias del usuario */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pulse,
+  .pulse-glow-gpu,
+  .spin,
+  .shake {
+    animation: none !important;
+  }
+}
+
+/* ========================================
+   PERFORMANCE HINTS
+   ======================================== */
+
+/* Aplicar a elementos que se animan frecuentemente */
+.frequently-animated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Limpiar will-change después de animar */
+.animated-done {
+  will-change: auto;
+}
+
+/* ========================================
+   MODAL ANIMATIONS
+   ======================================== */
+
+.modal-fade-in {
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes modalFadeIn {
+  from {
+    transform: scale(0.95) translateZ(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+.modal-slide-up {
+  animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(100%) translateZ(0);
+  }
+  to {
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* ========================================
+   BOTTOM SHEET ANIMATIONS
+   ======================================== */
+
+.bottom-sheet-enter {
+  animation: bottomSheetEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes bottomSheetEnter {
+  from {
+    transform: translateY(100%) translateZ(0);
+  }
+  to {
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+.bottom-sheet-exit {
+  animation: bottomSheetExit 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes bottomSheetExit {
+  from {
+    transform: translateY(0) translateZ(0);
+  }
+  to {
+    transform: translateY(100%) translateZ(0);
+  }
+}
+
+/* ========================================
+   CARD ANIMATIONS
+   ======================================== */
+
+.card-flip {
+  animation: cardFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cardFlip {
+  0% {
+    transform: perspective(600px) rotateY(0deg) translateZ(0);
+  }
+  50% {
+    transform: perspective(600px) rotateY(90deg) translateZ(0);
+  }
+  100% {
+    transform: perspective(600px) rotateY(0deg) translateZ(0);
+  }
+}
+
+/* ========================================
+   UTILITY ANIMATIONS
+   ======================================== */
+
+.wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  25% {
+    transform: rotate(-5deg) translateZ(0);
+  }
+  75% {
+    transform: rotate(5deg) translateZ(0);
+  }
+}
+
+.jello {
+  animation: jello 0.9s;
+}
+
+@keyframes jello {
+  0%, 100% {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+}

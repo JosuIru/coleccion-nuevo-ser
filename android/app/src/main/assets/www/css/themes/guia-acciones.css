@@ -1,0 +1,102 @@
+/* ============================================================================
+   TEMA: GUÍA DE ACCIONES TRANSFORMADORAS
+   ============================================================================
+   Tema activista con energía vibrante (violet/pink)
+   ============================================================================ */
+
+/* VARIABLES CSS - DARK MODE */
+body.theme-dark.theme-guia-acciones {
+  --color-primary: #8b5cf6;         /* violet-500 */
+  --color-secondary: #ec4899;       /* pink-500 */
+  --color-accent: #fbbf24;          /* amber-400 */
+  --color-background: #1e1b4b;      /* indigo-950 */
+  --color-background-secondary: #2e1065; /* purple-950 */
+  --color-text: #f3e8ff;            /* purple-100 */
+  --color-text-secondary: #e9d5ff;  /* purple-200 */
+  --color-border: #7c3aed;          /* violet-600 */
+}
+
+/* VARIABLES CSS - LIGHT MODE */
+body.theme-light.theme-guia-acciones {
+  --color-primary: #7c3aed;         /* violet-600 */
+  --color-secondary: #db2777;       /* pink-600 */
+  --color-accent: #d97706;          /* amber-600 */
+  --color-background: #faf5ff;      /* purple-50 */
+  --color-background-secondary: #f3e8ff; /* purple-100 */
+  --color-text: #581c87;            /* purple-900 */
+  --color-text-secondary: #6b21a8;  /* purple-800 */
+  --color-border: #c084fc;          /* violet-400 */
+}
+
+/* FONDO CON PATRÓN DE ACCIÓN - DARK MODE */
+body.theme-dark.theme-guia-acciones {
+  background: #1e1b4b;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-dark.theme-guia-acciones::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(45deg, #8b5cf610 25%, transparent 25%),
+    linear-gradient(-45deg, #8b5cf610 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ec489910 75%),
+    linear-gradient(-45deg, transparent 75%, #ec489910 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0;
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+  animation: actionPulse 120s linear infinite;
+}
+
+/* FONDO CLARO - LIGHT MODE */
+body.theme-light.theme-guia-acciones {
+  background: #faf5ff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ANIMACIONES */
+@keyframes actionPulse {
+  0% { background-position: 0 0, 0 20px, 20px -20px, -20px 0; }
+  100% { background-position: 40px 40px, 40px 60px, 60px 20px, 20px 40px; }
+}
+
+/* TARJETAS DE ACCIÓN */
+.theme-dark.theme-guia-acciones .card:hover {
+  box-shadow: 0 10px 40px -10px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.theme-dark.theme-guia-acciones .btn-primary {
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  border-color: #8b5cf6;
+}
+
+.theme-dark.theme-guia-acciones .btn-primary:hover {
+  background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* ENLACES */
+.theme-dark.theme-guia-acciones a {
+  color: #d8b4fe;
+}
+
+.theme-dark.theme-guia-acciones a:hover {
+  color: #f0abfc;
+}
+
+/* HEADINGS */
+.theme-dark.theme-guia-acciones h1,
+.theme-dark.theme-guia-acciones h2,
+.theme-dark.theme-guia-acciones h3 {
+  color: #f3e8ff;
+  text-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+}

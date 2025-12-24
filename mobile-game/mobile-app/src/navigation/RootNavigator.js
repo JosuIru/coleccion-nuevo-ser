@@ -21,7 +21,6 @@ import {
   BeingsScreen,
   CrisisDetailScreen,
   ProfileScreen,
-  LibraryScreen,
   TutorialScreen,
   ActiveMissionsScreen,
   DailyMissionsScreen,
@@ -36,11 +35,23 @@ import {
 import CommandCenterScreen from '../screens/CommandCenterScreen';
 import LeagueScreen from '../screens/LeagueScreen';
 
+// Biblioteca - Webapp embebida de Colección Nuevo Ser
+import BibliotecaScreen from '../screens/BibliotecaScreen';
+
 import { COLORS } from '../config/constants';
+import { isTrascendencia } from '../config/appVariant';
 import useGameStore from '../stores/gameStore';
 import logger from '../utils/logger';
 import deepLinkService from '../services/DeepLinkService';
-import webBridgeService from '../services/WebBridgeService';
+import serviceManager from '../services/ServiceManager';
+
+import {
+  TrascendenciaHomeScreen,
+  TrascendenciaRitualScreen,
+  TrascendenciaMissionScreen,
+  TrascendenciaBeingScreen,
+  TrascendenciaProfileScreen
+} from '../trascendencia';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -226,30 +237,21 @@ const CommandStack = () => (
 );
 
 /**
- * STACK: Navegación de biblioteca
+ * STACK: Navegación de biblioteca (Webapp embebida)
+ * Carga la webapp completa de Colección Nuevo Ser desde assets locales
  */
 const LibraryStack = () => (
   <Stack.Navigator
     screenOptions={{
-      headerShown: true,
-      headerTintColor: COLORS.text.primary,
-      headerStyle: {
-        backgroundColor: COLORS.bg.elevated,
-        borderBottomColor: COLORS.bg.card,
-        borderBottomWidth: 1
-      },
-      headerTitleStyle: {
-        color: COLORS.text.primary,
-        fontSize: 20,
-        fontWeight: 'bold'
-      },
+      headerShown: false, // BibliotecaScreen tiene su propio header
+      animationEnabled: true,
       cardStyle: { backgroundColor: COLORS.bg.primary }
     }}
   >
     <Stack.Screen
       name="LibraryFlow"
-      component={LibraryScreen}
-      options={{ title: 'Biblioteca Digital' }}
+      component={BibliotecaScreen}
+      options={{ gestureEnabled: false }}
     />
   </Stack.Navigator>
 );
@@ -339,6 +341,9 @@ const TabNavigator = () => (
           case 'Beings':
             iconName = 'dna';
             break;
+          case 'Library':
+            iconName = 'book-open-page-variant'; // Icono de Biblioteca
+            break;
           case 'Lab':
             iconName = 'flask'; // Icono del Laboratorio
             break;
@@ -411,6 +416,80 @@ const TabNavigator = () => (
 );
 
 /**
+ * TAB NAVIGATOR: Trascendencia (MVP)
+ */
+const TrascendenciaTabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      tabBarShowLabel: true,
+      tabBarActiveTintColor: COLORS.accent.success,
+      tabBarInactiveTintColor: COLORS.text.secondary,
+      tabBarStyle: {
+        backgroundColor: COLORS.bg.elevated,
+        borderTopColor: COLORS.bg.card,
+        borderTopWidth: 1,
+        paddingBottom: 5,
+        paddingTop: 5
+      },
+      tabBarIcon: ({ color, size }) => {
+        let iconName;
+
+        switch (route.name) {
+          case 'TrascendenciaHome':
+            iconName = 'leaf';
+            break;
+          case 'TrascendenciaRitual':
+            iconName = 'meditation';
+            break;
+          case 'TrascendenciaMission':
+            iconName = 'map-marker-check';
+            break;
+          case 'TrascendenciaBeing':
+            iconName = 'dna';
+            break;
+          case 'TrascendenciaProfile':
+            iconName = 'account-circle';
+            break;
+          default:
+            iconName = 'help-circle';
+        }
+
+        return (
+          <MaterialCommunityIcons name={iconName} size={size} color={color} />
+        );
+      }
+    })}
+  >
+    <Tab.Screen
+      name="TrascendenciaHome"
+      component={TrascendenciaHomeScreen}
+      options={{ title: 'Inicio', tabBarLabel: 'Inicio' }}
+    />
+    <Tab.Screen
+      name="TrascendenciaRitual"
+      component={TrascendenciaRitualScreen}
+      options={{ title: 'Ritual', tabBarLabel: 'Ritual' }}
+    />
+    <Tab.Screen
+      name="TrascendenciaMission"
+      component={TrascendenciaMissionScreen}
+      options={{ title: 'Misiones', tabBarLabel: 'Misiones' }}
+    />
+    <Tab.Screen
+      name="TrascendenciaBeing"
+      component={TrascendenciaBeingScreen}
+      options={{ title: 'Ser', tabBarLabel: 'Ser' }}
+    />
+    <Tab.Screen
+      name="TrascendenciaProfile"
+      component={TrascendenciaProfileScreen}
+      options={{ title: 'Perfil', tabBarLabel: 'Perfil' }}
+    />
+  </Tab.Navigator>
+);
+
+/**
  * ROOT NAVIGATOR
  * Determina si mostrar tutorial o app principal
  */
@@ -429,28 +508,27 @@ export default function RootNavigator() {
       // Cargar estado del juego desde storage
       const gameStateLoaded = await loadFromStorage();
 
-      // Inicializar WebBridgeService para sincronización con webapp
+      // Configurar ServiceManager con credenciales de Supabase
       // NOTA: Configurar con las credenciales de Supabase reales
       const supabaseConfig = {
         url: 'https://YOUR_SUPABASE_URL.supabase.co',
         anonKey: 'YOUR_SUPABASE_ANON_KEY'
       };
 
-      try {
-        await webBridgeService.init(supabaseConfig);
-        logger.info('RootNavigator', '✓ WebBridgeService initialized');
+      serviceManager.configure(supabaseConfig);
 
-        // Opcional: Iniciar auto-sync si hay usuario autenticado
-        const user = useGameStore.getState().user;
-        if (user && user.id) {
-          // Sincronizar al iniciar
-          await webBridgeService.sync();
-          // Activar auto-sync cada 10 minutos
-          webBridgeService.startAutoSync(10);
-        }
-      } catch (bridgeError) {
-        logger.warn('RootNavigator', 'WebBridge init failed, continuing without sync', bridgeError);
+      // Inicializar solo servicios críticos (muy rápido, <100ms)
+      // Los demás servicios se cargarán cuando se necesiten
+      await serviceManager.initCritical();
+
+      // Opcional: Activar auto-sync y realtime si hay usuario autenticado
+      const user = useGameStore.getState().user;
+      if (user && user.id) {
+        serviceManager.setAutoSyncEnabled(true);
+        // Realtime se activará automáticamente cuando se acceda por primera vez
       }
+
+      logger.info('RootNavigator', '✓ App initialized with lazy loading');
 
       // Verificar si es la primera vez (con fallback si AsyncStorage no existe)
       let tutorialCompleted = null;
@@ -530,7 +608,7 @@ export default function RootNavigator() {
         {/* App Principal */}
         <Stack.Screen
           name="Main"
-          component={TabNavigator}
+          component={isTrascendencia ? TrascendenciaTabNavigator : TabNavigator}
           options={{ gestureEnabled: false }}
         />
       </Stack.Navigator>

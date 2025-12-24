@@ -11,6 +11,10 @@ export const API_BASE_URL = __DEV__
   ? 'http://localhost/coleccion-nuevo-ser/mobile-game/api/mobile-bridge.php'
   : 'https://tudominio.com/mobile-game/api/mobile-bridge.php';
 
+export const AI_PROXY_URL = __DEV__
+  ? 'http://localhost/coleccion-nuevo-ser/api/ai-proxy.php'
+  : 'https://tudominio.com/api/ai-proxy.php';
+
 // ═══════════════════════════════════════════════════════════
 // RECURSOS DEL JUEGO
 // ═══════════════════════════════════════════════════════════
@@ -19,12 +23,12 @@ export const RESOURCES = {
   ENERGY: {
     DEFAULT: 100,
     MAX_BASE: 100,
-    REGEN_PER_MINUTE: 1,
+    REGEN_PER_MINUTE: 5, // Aumentado de 1 a 5 para mejor experiencia de juego
     COST_DEPLOY_BEING: 10
   },
 
   CONSCIOUSNESS: {
-    DEFAULT: 0
+    DEFAULT: 200 // Consciencia inicial para nuevos jugadores
   }
 };
 
@@ -33,15 +37,23 @@ export const RESOURCES = {
 // ═══════════════════════════════════════════════════════════
 
 export const LEVELS = {
-  1: { name: 'Despertar', xpRequired: 0, maxBeings: 3, maxEnergy: 100 },
-  2: { name: 'Aprendiz Inicial', xpRequired: 100, maxBeings: 4, maxEnergy: 120 },
-  3: { name: 'Aprendiz', xpRequired: 250, maxBeings: 5, maxEnergy: 150 },
-  5: { name: 'Practicante', xpRequired: 1000, maxBeings: 8, maxEnergy: 200 },
-  10: { name: 'Transformador', xpRequired: 5000, maxBeings: 15, maxEnergy: 300 },
-  15: { name: 'Guía', xpRequired: 12000, maxBeings: 20, maxEnergy: 400 },
-  20: { name: 'Arquitecto', xpRequired: 20000, maxBeings: 30, maxEnergy: 500 },
-  30: { name: 'Maestro', xpRequired: 50000, maxBeings: 50, maxEnergy: 700 },
-  50: { name: 'Nuevo Ser', xpRequired: 100000, maxBeings: 100, maxEnergy: 1000 }
+  1: { name: 'Despertar', xpRequired: 0, maxBeings: 5, maxEnergy: 100 },
+  2: { name: 'Aprendiz Inicial', xpRequired: 100, maxBeings: 7, maxEnergy: 120 },
+  3: { name: 'Aprendiz', xpRequired: 250, maxBeings: 10, maxEnergy: 150 },
+  4: { name: 'Explorador', xpRequired: 500, maxBeings: 12, maxEnergy: 170 },
+  5: { name: 'Practicante', xpRequired: 850, maxBeings: 15, maxEnergy: 200 },
+  6: { name: 'Activista', xpRequired: 1300, maxBeings: 18, maxEnergy: 230 },
+  7: { name: 'Facilitador', xpRequired: 1900, maxBeings: 20, maxEnergy: 260 },
+  8: { name: 'Catalizador', xpRequired: 2600, maxBeings: 23, maxEnergy: 290 },
+  10: { name: 'Transformador', xpRequired: 4200, maxBeings: 28, maxEnergy: 350 },
+  12: { name: 'Visionario', xpRequired: 6500, maxBeings: 33, maxEnergy: 400 },
+  15: { name: 'Guía', xpRequired: 10000, maxBeings: 40, maxEnergy: 480 },
+  18: { name: 'Mentor', xpRequired: 15000, maxBeings: 48, maxEnergy: 560 },
+  20: { name: 'Arquitecto', xpRequired: 20000, maxBeings: 55, maxEnergy: 620 },
+  25: { name: 'Pionero', xpRequired: 32000, maxBeings: 70, maxEnergy: 750 },
+  30: { name: 'Maestro', xpRequired: 48000, maxBeings: 85, maxEnergy: 880 },
+  40: { name: 'Sabio', xpRequired: 75000, maxBeings: 110, maxEnergy: 1100 },
+  50: { name: 'Nuevo Ser', xpRequired: 100000, maxBeings: 150, maxEnergy: 1500 }
 };
 
 // ═══════════════════════════════════════════════════════════

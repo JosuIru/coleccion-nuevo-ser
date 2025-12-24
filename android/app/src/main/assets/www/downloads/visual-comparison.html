@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparación Visual: Light Mode - Antes vs Después</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 2rem;
+      background: #f0f0f0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .version {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .version h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .version.before h2 {
+      color: #d97706;
+    }
+
+    .version.after h2 {
+      color: #059669;
+    }
+
+    .mockup {
+      background: var(--bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .mockup h3 {
+      color: var(--text);
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .mockup p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .mockup a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .mockup .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+
+    .mockup .card {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .mockup button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .color-swatches {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .swatch {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+    }
+
+    .swatch-color {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      font-size: 0.875rem;
+    }
+
+    .swatch-info {
+      padding: 0.75rem;
+      background: white;
+      font-size: 0.75rem;
+    }
+
+    .swatch-info .name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #1e293b;
+    }
+
+    .swatch-info .hex {
+      color: #64748b;
+      font-family: 'Courier New', monospace;
+    }
+
+    .changed {
+      background: #fef3c7;
+      border-color: #d97706;
+    }
+
+    .changed .swatch-info .name::after {
+      content: " ✨";
+    }
+
+    .ratios {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+
+    .ratio-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .ratio-item:last-child {
+      border-bottom: none;
+    }
+
+    .ratio-pass {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .ratio-fail {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .summary {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+      color: white;
+      border-radius: 12px;
+    }
+
+    .summary h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary ul {
+      list-style: none;
+      line-height: 2;
+    }
+
+    .summary li::before {
+      content: "✓ ";
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Auditoría de Accesibilidad: Light Mode</h1>
+    <p class="subtitle">Comparación antes/después de correcciones WCAG 2.1 AA</p>
+
+    <div class="comparison">
+      <!-- ANTES -->
+      <div class="version before">
+        <h2>❌ ANTES (3 fallos)</h2>
+
+        <div class="mockup" style="--bg: #f8fafc; --bg-secondary: #e2e8f0; --text: #1e293b; --text-secondary: #475569; --primary: #0284c7; --accent: #d97706; --border: #cbd5e1;">
+          <h3>Título de Sección</h3>
+          <p>Este es un ejemplo de texto secundario que aparece en la aplicación. Los enlaces son <a href="#">azules y clicables</a>.</p>
+
+          <div>
+            <span class="badge">NUEVO</span>
+            <span class="badge">DESTACADO</span>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1rem;">Tarjeta con borde</h3>
+            <p style="margin: 0; font-size: 0.875rem;">Los bordes tienen muy poco contraste</p>
+          </div>
+
+          <button>Acción Principal</button>
+        </div>
+
+        <div class="color-swatches">
+          <div class="swatch">
+            <div class="swatch-color" style="background: #d97706;">#d97706</div>
+            <div class="swatch-info">
+              <div class="name">accent</div>
+              <div class="hex">Naranja/ámbar</div>
+            </div>
+          </div>
+
+          <div class="swatch">
+            <div class="swatch-color" style="background: #cbd5e1;">#cbd5e1</div>
+            <div class="swatch-info">
+              <div class="name">border</div>
+              <div class="hex">Gris claro</div>
+            </div>
+          </div>
+
+          <div class="swatch">
+            <div class="swatch-color" style="background: #0284c7;">#0284c7</div>
+            <div class="swatch-info">
+              <div class="name">primary</div>
+              <div class="hex">Azul</div>
+            </div>
+          </div>
+
+          <div class="swatch">
+            <div class="swatch-color" style="background: #1e293b;">#1e293b</div>
+            <div class="swatch-info">
+              <div class="name">text</div>
+              <div class="hex">Gris oscuro</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ratios">
+          <strong>Ratios de Contraste:</strong>
+          <div class="ratio-item">
+            <span>Accent/Fondo secundario</span>
+            <span class="ratio-fail">2.58:1 ❌</span>
+          </div>
+          <div class="ratio-item">
+            <span>Border/Fondo</span>
+            <span class="ratio-fail">1.42:1 ❌</span>
+          </div>
+          <div class="ratio-item">
+            <span>Border/Fondo secundario</span>
+            <span class="ratio-fail">1.20:1 ❌</span>
+          </div>
+          <div class="ratio-item">
+            <span>Text/Fondo</span>
+            <span class="ratio-pass">13.98:1 ✅</span>
+          </div>
+          <div class="ratio-item">
+            <span>Primary/Fondo</span>
+            <span class="ratio-pass">3.91:1 ✅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESPUÉS -->
+      <div class="version after">
+        <h2>✅ DESPUÉS (0 fallos)</h2>
+
+        <div class="mockup" style="--bg: #f8fafc; --bg-secondary: #e2e8f0; --text: #1e293b; --text-secondary: #475569; --primary: #0284c7; --accent: #985304; --border: #848a92;">
+          <h3>Título de Sección</h3>
+          <p>Este es un ejemplo de texto secundario que aparece en la aplicación. Los enlaces son <a href="#">azules y clicables</a>.</p>
+
+          <div>
+            <span class="badge">NUEVO</span>
+            <span class="badge">DESTACADO</span>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 1rem;">Tarjeta con borde</h3>
+            <p style="margin: 0; font-size: 0.875rem;">Ahora los bordes son visibles</p>
+          </div>
+
+          <button>Acción Principal</button>
+        </div>
+
+        <div class="color-swatches">
+          <div class="swatch changed">
+            <div class="swatch-color" style="background: #985304;">#985304</div>
+            <div class="swatch-info">
+              <div class="name">accent</div>
+              <div class="hex">Naranja oscuro</div>
+            </div>
+          </div>
+
+          <div class="swatch changed">
+            <div class="swatch-color" style="background: #848a92;">#848a92</div>
+            <div class="swatch-info">
+              <div class="name">border</div>
+              <div class="hex">Gris medio</div>
+            </div>
+          </div>
+
+          <div class="swatch">
+            <div class="swatch-color" style="background: #0284c7;">#0284c7</div>
+            <div class="swatch-info">
+              <div class="name">primary</div>
+              <div class="hex">Azul (sin cambios)</div>
+            </div>
+          </div>
+
+          <div class="swatch">
+            <div class="swatch-color" style="background: #1e293b;">#1e293b</div>
+            <div class="swatch-info">
+              <div class="name">text</div>
+              <div class="hex">Gris oscuro (sin cambios)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ratios">
+          <strong>Ratios de Contraste:</strong>
+          <div class="ratio-item">
+            <span>Accent/Fondo secundario</span>
+            <span class="ratio-pass">4.77:1 ✅</span>
+          </div>
+          <div class="ratio-item">
+            <span>Border/Fondo</span>
+            <span class="ratio-pass">3.33:1 ✅</span>
+          </div>
+          <div class="ratio-item">
+            <span>Border/Fondo secundario</span>
+            <span class="ratio-pass">3.24:1 ✅</span>
+          </div>
+          <div class="ratio-item">
+            <span>Text/Fondo</span>
+            <span class="ratio-pass">13.98:1 ✅</span>
+          </div>
+          <div class="ratio-item">
+            <span>Primary/Fondo</span>
+            <span class="ratio-pass">3.91:1 ✅</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>📊 Resumen de la Auditoría</h3>
+      <ul>
+        <li><strong>Tasa de aprobación:</strong> 75% → 100% (mejora del 25%)</li>
+        <li><strong>Fallos corregidos:</strong> 3 de 3 (100%)</li>
+        <li><strong>Colores modificados:</strong> 2 de 8 (accent y border)</li>
+        <li><strong>Estándar:</strong> WCAG 2.1 AA cumplido completamente</li>
+        <li><strong>Dark Mode:</strong> No afectado (8.5/10 mantenido)</li>
+        <li><strong>Compatibilidad:</strong> Mejora la accesibilidad sin romper el diseño</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

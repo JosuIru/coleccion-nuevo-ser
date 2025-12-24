@@ -1,0 +1,100 @@
+{
+  "introduccion": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 15,
+    "tags": ["introducción", "filosofía", "nuevo-paradigma"],
+    "practicalUses": []
+  },
+  "cap1": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["ontología", "ser", "realidad"],
+    "practicalUses": ["filosofía", "contemplación"]
+  },
+  "cap2": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 28,
+    "tags": ["epistemología", "conocimiento", "verdad"],
+    "practicalUses": ["reflexión", "cuestionamiento"]
+  },
+  "cap3": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 30,
+    "tags": ["fenomenología", "experiencia", "percepción"],
+    "practicalUses": ["observación", "fenomenología"]
+  },
+  "cap4": {
+    "type": "teoría-práctica",
+    "difficulty": "avanzado",
+    "readingTime": 26,
+    "tags": ["no-dualidad", "advaita", "unidad"],
+    "practicalUses": ["meditación", "indagación"]
+  },
+  "cap5": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 22,
+    "tags": ["ética", "moral", "valores"],
+    "practicalUses": ["ética", "decisiones"]
+  },
+  "cap6": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 24,
+    "tags": ["estética", "belleza", "arte"],
+    "practicalUses": ["apreciar", "crear"]
+  },
+  "cap7": {
+    "type": "teoría-práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["política", "poder", "organización-social"],
+    "practicalUses": ["acción-política", "análisis"]
+  },
+  "cap8": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 28,
+    "tags": ["cosmología", "universo", "totalidad"],
+    "practicalUses": ["visión", "perspectiva"]
+  },
+  "cap9": {
+    "type": "teoría-práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["antropología-filosófica", "ser-humano", "identidad"],
+    "practicalUses": ["autoconocimiento", "indagación"]
+  },
+  "cap10": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 22,
+    "tags": ["tiempo", "devenir", "permanencia"],
+    "practicalUses": ["reflexión", "temporalidad"]
+  },
+  "cap11": {
+    "type": "teoría-práctica",
+    "difficulty": "avanzado",
+    "readingTime": 26,
+    "tags": ["libertad", "determinismo", "voluntad"],
+    "practicalUses": ["responsabilidad", "acción"]
+  },
+  "cap12": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 30,
+    "tags": ["lenguaje", "significado", "comunicación"],
+    "practicalUses": ["diálogo", "expresión"]
+  },
+  "conclusion": {
+    "type": "teoría-práctica",
+    "difficulty": "intermedio",
+    "readingTime": 18,
+    "tags": ["síntesis", "filosofía-como-vida", "praxis"],
+    "practicalUses": ["integración", "vivir-filosóficamente"]
+  }
+}

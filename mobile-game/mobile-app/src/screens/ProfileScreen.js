@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import useGameStore from '../stores/gameStore';
 import { COLORS, LEVELS, APP_VERSION } from '../config/constants';
+import EnergyIndicator from '../components/EnergyIndicator';
 
 const { width } = Dimensions.get('window');
 
@@ -251,6 +252,13 @@ const ProfileScreen = ({ navigation }) => {
               Siguiente: {nextLevelData.name}
             </Text>
           )}
+        </View>
+
+        {/* INDICADOR DE ENERGÍA */}
+        <View style={styles.energySection}>
+          <EnergyIndicator
+            onPress={() => navigation.navigate('Command', { screen: 'Shop' })}
+          />
         </View>
 
         {/* ESTADÍSTICAS */}
@@ -623,6 +631,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.text.dim,
     textAlign: 'center'
+  },
+
+  // Energía
+  energySection: {
+    paddingHorizontal: 16,
+    marginBottom: 8
   },
 
   // Estadísticas

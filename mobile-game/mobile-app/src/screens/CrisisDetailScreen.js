@@ -109,6 +109,49 @@ const CrisisDetailScreen = ({ route, navigation }) => {
     return probability;
   };
 
+  // Calcular probabilidad individual de un ser
+  const calculateIndividualProbability = (being) => {
+    if (!crisis || !being) return 0;
+
+    let totalMatch = 0;
+    let totalRequired = 0;
+
+    if (crisis.requiredAttributes) {
+      Object.entries(crisis.requiredAttributes).forEach(([attr, required]) => {
+        totalRequired += required;
+        const beingValue = being.attributes?.[attr] || 0;
+        totalMatch += Math.min(beingValue, required);
+      });
+    }
+
+    if (totalRequired === 0) return 50;
+    return Math.min(95, Math.round((totalMatch / totalRequired) * 100));
+  };
+
+  // Calcular tiempo estimado de misión
+  const calculateMissionDuration = () => {
+    if (!crisis) return 30; // default 30 minutos
+
+    // Duración base según escala
+    const baseDuration = {
+      'local': 15,
+      'regional': 30,
+      'nacional': 60,
+      'global': 120
+    };
+
+    const duration = baseDuration[crisis.scale] || 30;
+
+    // Ajustar según urgencia
+    const urgencyMultiplier = {
+      'low': 1.5,
+      'medium': 1.0,
+      'high': 0.7
+    };
+
+    return Math.round(duration * (urgencyMultiplier[crisis.urgency] || 1.0));
+  };
+
   const calculateEnergyCost = () => {
     return selectedBeings.length * RESOURCES.ENERGY.COST_DEPLOY_BEING;
   };
@@ -142,10 +185,16 @@ const CrisisDetailScreen = ({ route, navigation }) => {
       return;
     }
 
+    const estimatedDuration = calculateMissionDuration();
+
     // Confirmación
     Alert.alert(
       'Confirmar despliegue',
-      `¿Desplegar ${selectedBeings.length} ser(es) en esta crisis?\n\nProbabilidad de éxito: ${successProbability}%\nCosto de energía: ${energyCost}`,
+      `¿Desplegar ${selectedBeings.length} ser(es) en esta crisis?\n\n` +
+      `⏱️ Duración estimada: ${estimatedDuration} minutos\n` +
+      `🎲 Probabilidad de éxito: ${successProbability}%\n` +
+      `⚡ Costo de energía: ${energyCost}\n\n` +
+      `Durante la misión, tus seres estarán ocupados y no podrás usarlos en otras misiones.`,
       [
         {
           text: 'Cancelar',
@@ -183,14 +232,22 @@ const CrisisDetailScreen = ({ route, navigation }) => {
           `${selectedBeings.length} ser(es) han sido desplegados.\n\n` +
           `⏱️ Duración: ${duracionMinutos} minutos\n` +
           `🎲 Probabilidad: ${(probabilidad * 100).toFixed(0)}%\n\n` +
-          `La misión se resolverá automáticamente. Puedes ver el progreso en "Misiones Activas".`,
+          `📋 ¿Qué hacer ahora?\n` +
+          `• Ve a "Misiones Activas" (Tab 3) para ver el progreso\n` +
+          `• La misión se resolverá automáticamente cuando termine el tiempo\n` +
+          `• Tus seres recuperarán energía gradualmente\n` +
+          `• Puedes desplegar otros seres en nuevas misiones mientras esperas\n\n` +
+          `Mientras tanto, puedes:\n` +
+          `• Crear nuevos seres en "Seres" (Tab 2)\n` +
+          `• Explorar el mapa para encontrar más crisis\n` +
+          `• Gestionar tu microsociedad`,
           [
             {
               text: 'Ver Misiones',
               onPress: () => navigation.navigate('ActiveMissions')
             },
             {
-              text: 'OK',
+              text: 'Explorar Mapa',
               onPress: () => navigation.goBack()
             }
           ]
@@ -229,6 +286,16 @@ const CrisisDetailScreen = ({ route, navigation }) => {
 
   const renderBeingSelector = ({ item: being }) => {
     const isSelected = selectedBeings.find(b => b.id === being.id);
+    const individualProbability = calculateIndividualProbability(being);
+    const beingEnergy = being.energy || 100;
+    const beingEnergyPercent = Math.round((beingEnergy / (being.maxEnergy || 100)) * 100);
+
+    // Determinar color de probabilidad
+    const probabilityColor = individualProbability >= 70
+      ? COLORS.accent.success
+      : individualProbability >= 40
+      ? COLORS.accent.warning
+      : COLORS.accent.critical;
 
     return (
       <TouchableOpacity
@@ -239,6 +306,7 @@ const CrisisDetailScreen = ({ route, navigation }) => {
         onPress={() => toggleBeingSelection(being)}
         activeOpacity={0.7}
       >
+        {/* Header: Avatar + Nombre + Nivel */}
         <View style={styles.beingSelectorHeader}>
           <Text style={styles.beingSelectorAvatar}>{being.avatar || '🧬'}</Text>
           <View style={styles.beingSelectorInfo}>
@@ -254,19 +322,76 @@ const CrisisDetailScreen = ({ route, navigation }) => {
           )}
         </View>
 
-        {/* Atributos relevantes */}
+        {/* Barra de Energía */}
+        <View style={styles.beingEnergyContainer}>
+          <View style={styles.beingEnergyHeader}>
+            <Text style={styles.beingEnergyLabel}>⚡ Energía</Text>
+            <Text style={[
+              styles.beingEnergyValue,
+              { color: beingEnergyPercent >= 60 ? COLORS.accent.success : beingEnergyPercent >= 30 ? COLORS.accent.warning : COLORS.accent.critical }
+            ]}>
+              {beingEnergy}/{being.maxEnergy || 100}
+            </Text>
+          </View>
+          <View style={styles.beingEnergyBar}>
+            <View
+              style={[
+                styles.beingEnergyBarFill,
+                {
+                  width: `${beingEnergyPercent}%`,
+                  backgroundColor: beingEnergyPercent >= 60 ? COLORS.accent.success : beingEnergyPercent >= 30 ? COLORS.accent.warning : COLORS.accent.critical
+                }
+              ]}
+            />
+          </View>
+        </View>
+
+        {/* Probabilidad Individual de Éxito */}
+        <View style={styles.beingProbabilityContainer}>
+          <Text style={styles.beingProbabilityLabel}>Probabilidad de éxito:</Text>
+          <Text style={[styles.beingProbabilityValue, { color: probabilityColor }]}>
+            {individualProbability}%
+          </Text>
+        </View>
+
+        {/* Atributos Requeridos por la Crisis */}
         {crisis?.requiredAttributes && (
-          <View style={styles.beingAttributesPreview}>
-            {Object.keys(crisis.requiredAttributes).slice(0, 2).map(attr => {
+          <View style={styles.beingAttributesList}>
+            <Text style={styles.beingAttributesTitle}>Atributos:</Text>
+            {Object.entries(crisis.requiredAttributes).map(([attr, required]) => {
               const attrConfig = ATTRIBUTES[attr];
               const value = being.attributes?.[attr] || 0;
+              const percentage = Math.min(100, (value / required) * 100);
 
               if (!attrConfig) return null;
 
               return (
-                <View key={attr} style={styles.miniAttrRow}>
-                  <Text style={styles.miniAttrIcon}>{attrConfig.icon}</Text>
-                  <Text style={styles.miniAttrValue}>{value}</Text>
+                <View key={attr} style={styles.beingAttrRow}>
+                  <View style={styles.beingAttrLabel}>
+                    <Text style={styles.beingAttrIcon}>{attrConfig.icon}</Text>
+                    <Text style={styles.beingAttrName} numberOfLines={1}>
+                      {attrConfig.name}
+                    </Text>
+                  </View>
+                  <View style={styles.beingAttrValueContainer}>
+                    <View style={[styles.beingAttrBarBg, { width: 40 }]}>
+                      <View
+                        style={[
+                          styles.beingAttrBarFill,
+                          {
+                            width: `${percentage}%`,
+                            backgroundColor: percentage >= 100 ? COLORS.accent.success : attrConfig.color
+                          }
+                        ]}
+                      />
+                    </View>
+                    <Text style={[
+                      styles.beingAttrValue,
+                      { color: percentage >= 100 ? COLORS.accent.success : COLORS.text.secondary }
+                    ]}>
+                      {value}/{required}
+                    </Text>
+                  </View>
                 </View>
               );
             })}
@@ -764,7 +889,7 @@ const styles = StyleSheet.create({
   },
 
   beingSelectorCard: {
-    width: 140,
+    width: 200,
     padding: 12,
     backgroundColor: COLORS.bg.elevated,
     borderRadius: 12,
@@ -842,6 +967,127 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: COLORS.text.secondary
+  },
+
+  // Nuevos estilos para la tarjeta mejorada de ser
+  beingEnergyContainer: {
+    marginTop: 8,
+    marginBottom: 8
+  },
+
+  beingEnergyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4
+  },
+
+  beingEnergyLabel: {
+    fontSize: 11,
+    color: COLORS.text.dim,
+    fontWeight: '600'
+  },
+
+  beingEnergyValue: {
+    fontSize: 11,
+    fontWeight: '700'
+  },
+
+  beingEnergyBar: {
+    height: 4,
+    backgroundColor: COLORS.bg.primary,
+    borderRadius: 2,
+    overflow: 'hidden'
+  },
+
+  beingEnergyBarFill: {
+    height: '100%',
+    borderRadius: 2
+  },
+
+  beingProbabilityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    backgroundColor: COLORS.bg.primary,
+    borderRadius: 6
+  },
+
+  beingProbabilityLabel: {
+    fontSize: 11,
+    color: COLORS.text.dim,
+    flex: 1
+  },
+
+  beingProbabilityValue: {
+    fontSize: 14,
+    fontWeight: '700'
+  },
+
+  beingAttributesList: {
+    marginTop: 4
+  },
+
+  beingAttributesTitle: {
+    fontSize: 10,
+    color: COLORS.text.dim,
+    fontWeight: '600',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5
+  },
+
+  beingAttrRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4
+  },
+
+  beingAttrLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    flex: 1
+  },
+
+  beingAttrIcon: {
+    fontSize: 12
+  },
+
+  beingAttrName: {
+    fontSize: 10,
+    color: COLORS.text.secondary,
+    flex: 1
+  },
+
+  beingAttrValueContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+
+  beingAttrBarBg: {
+    height: 4,
+    backgroundColor: COLORS.bg.primary,
+    borderRadius: 2,
+    overflow: 'hidden'
+  },
+
+  beingAttrBarFill: {
+    height: '100%',
+    borderRadius: 2
+  },
+
+  beingAttrValue: {
+    fontSize: 10,
+    fontWeight: '600',
+    minWidth: 35,
+    textAlign: 'right'
   },
 
   noBeingsContainer: {

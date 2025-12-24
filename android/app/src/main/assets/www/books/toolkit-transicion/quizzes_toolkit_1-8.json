@@ -1,0 +1,594 @@
+{
+  "toolkit-1": [
+    {
+      "question": "¿Cuál es el propósito principal del ejercicio 'Inventario de Transiciones Personales'?",
+      "difficulty": "principiante",
+      "options": [
+        "Crear un currículum detallado de tus experiencias laborales",
+        "Reconocer que ya has atravesado múltiples transiciones y puedes aplicar esas capacidades a cambios futuros",
+        "Planificar únicamente las transiciones que quieres hacer en el futuro",
+        "Comparar tus transiciones con las de otras personas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio busca que reconozcas tu capacidad personal de transformación a través de transiciones ya vividas, desarrollando capacidades aplicables a cambios actuales y futuros. No se trata de planificar el futuro ni de comparaciones, sino de extraer sabiduría de tu propia experiencia."
+    },
+    {
+      "question": "En la Fase 2 del ejercicio, ¿cuántas preguntas se deben responder para cada transición significativa?",
+      "difficulty": "principiante",
+      "options": [
+        "3 preguntas",
+        "5 preguntas",
+        "7 preguntas",
+        "10 preguntas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio propone 5 preguntas clave para analizar cada transición: qué perdiste, qué ganaste inesperadamente, qué recursos descubriste, quién te ayudó, y cuánto tiempo pasó entre el fin de lo viejo y el inicio de lo nuevo."
+    },
+    {
+      "question": "Según el ejercicio, ¿qué tres tipos de transiciones se deben marcar en la línea de tiempo con diferentes colores?",
+      "difficulty": "iniciado",
+      "options": [
+        "Transiciones rápidas, lentas y medianas",
+        "Transiciones elegidas, impuestas y graduales",
+        "Transiciones personales, profesionales y relacionales",
+        "Transiciones exitosas, fallidas y en proceso"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio distingue tres tipos de transiciones: las elegidas (que iniciaste tú), las impuestas (que te llegaron), y las graduales (transformaciones lentas que solo reconoces en retrospectiva). Esta categorización ayuda a identificar patrones en cómo navegas diferentes tipos de cambio."
+    },
+    {
+      "question": "¿Qué recurso complementario relacionado con transiciones se menciona específicamente en el ejercicio?",
+      "difficulty": "iniciado",
+      "options": [
+        "El libro 'El poder del ahora' de Eckhart Tolle",
+        "El libro 'Transitions: Making Sense of Life's Changes' de William Bridges",
+        "El libro 'Mindset' de Carol Dweck",
+        "El libro 'Atomic Habits' de James Clear"
+      ],
+      "correctAnswer": 1,
+      "explanation": "William Bridges es citado como recurso adicional por su trabajo específico sobre las transiciones vitales, siendo una referencia fundamental en el estudio de cómo las personas atraviesan y dan sentido a los cambios importantes de la vida."
+    },
+    {
+      "question": "¿Por qué el ejercicio recomienda usar diferentes colores al crear la línea de tiempo?",
+      "difficulty": "experto",
+      "options": [
+        "Únicamente por razones estéticas",
+        "Para diferenciar visualmente los tres tipos de transiciones y facilitar la identificación de patrones",
+        "Porque es obligatorio en todos los ejercicios de mapeo",
+        "Para imprimir el resultado en color"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El uso de colores tiene un propósito metodológico: permite diferenciar visualmente entre transiciones elegidas, impuestas y graduales, facilitando así la detección de patrones en tu forma de navegar diferentes tipos de cambios. Esta diferenciación visual ayuda en el análisis posterior."
+    },
+    {
+      "question": "¿Qué concepto del Manual de Transición se relaciona directamente con este ejercicio sobre transiciones personales?",
+      "difficulty": "experto",
+      "options": [
+        "La teoría del cambio sistémico",
+        "La paradoja de la transición",
+        "El poder prefigurativo",
+        "La gobernanza emergente"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio complementa específicamente el capítulo 'La paradoja de la transición' del Manual, que explora cómo los cambios sistémicos requieren primero reconocer nuestra capacidad personal de transformación. Este reconocimiento personal es el punto de partida para participar en transiciones más amplias."
+    }
+  ],
+  "toolkit-2": [
+    {
+      "question": "¿Cuál es el objetivo principal del ejercicio 'Análisis de una Transición Histórica'?",
+      "difficulty": "principiante",
+      "options": [
+        "Memorizar fechas históricas importantes",
+        "Aprender a identificar elementos estructurales de transiciones para reconocer patrones aplicables al presente",
+        "Comparar diferentes revoluciones políticas",
+        "Estudiar únicamente transiciones tecnológicas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio busca que aprendas a identificar los elementos estructurales de las transiciones históricas para reconocer patrones aplicables al momento actual. No se trata de memorización, sino de extraer lecciones prácticas de la historia."
+    },
+    {
+      "question": "¿Cuántas fases de transición se identifican en la Fase 2 del ejercicio?",
+      "difficulty": "principiante",
+      "options": [
+        "3 fases",
+        "5 fases",
+        "7 fases",
+        "10 fases"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio identifica 5 fases: incubación (ideas previas), crisis (momento de ruptura), contestación (lucha entre lo viejo y lo nuevo), institucionalización (consolidación del nuevo orden), y normalización (lo nuevo se vuelve 'sentido común')."
+    },
+    {
+      "question": "Según la tabla de transiciones recomendadas, ¿cuál es la transición que tiene menor duración?",
+      "difficulty": "iniciado",
+      "options": [
+        "La Revolución Industrial (~100 años)",
+        "La transición española (~7 años)",
+        "El fin del apartheid (~45 años)",
+        "El sufragio femenino (~70 años)"
+      ],
+      "correctAnswer": 1,
+      "explanation": "La transición española a la democracia es la más corta mencionada con aproximadamente 7 años, demostrando que no todas las transiciones requieren décadas. Este ejemplo es útil para entender procesos políticos relativamente rápidos."
+    },
+    {
+      "question": "En la Fase 1 del ejercicio, ¿qué tres aspectos principales se deben investigar sobre la transición elegida?",
+      "difficulty": "iniciado",
+      "options": [
+        "Fechas, lugares y personas importantes",
+        "Contexto previo, catalizadores y actores involucrados",
+        "Causas económicas, políticas y sociales",
+        "Victorias, derrotas y empates"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio estructura la investigación en tres elementos clave: el contexto previo (qué sistema estaba en crisis), los catalizadores (qué precipitó el cambio), y los actores (quiénes lo impulsaron, resistieron o cambiaron de bando). Esta estructura permite un análisis sistemático."
+    },
+    {
+      "question": "¿Por qué el ejercicio incluye transiciones de diferentes tipos (tecnológica-económica, social-moral, política)?",
+      "difficulty": "experto",
+      "options": [
+        "Para cubrir todos los períodos históricos",
+        "Para demostrar que las transiciones siguen patrones similares independientemente del tipo",
+        "Porque solo las transiciones políticas son importantes",
+        "Para hacer el ejercicio más largo"
+      ],
+      "correctAnswer": 1,
+      "explanation": "La diversidad de tipos de transiciones permite reconocer que, aunque los contextos sean diferentes, existen patrones estructurales comunes. La Revolución Industrial (tecnológica), la abolición de la esclavitud (social-moral) y las transiciones políticas comparten dinámicas similares de cambio sistémico."
+    },
+    {
+      "question": "¿Qué significa que la cita de Mark Twain 'La historia no se repite, pero rima' en el contexto de este ejercicio?",
+      "difficulty": "experto",
+      "options": [
+        "Que la historia es cíclica y se repite exactamente",
+        "Que aunque cada transición es única, hay patrones y dinámicas similares que podemos reconocer y aplicar",
+        "Que solo debemos estudiar transiciones recientes",
+        "Que la historia no tiene utilidad práctica"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El epígrafe sugiere que aunque las transiciones históricas son únicas en sus circunstancias específicas, comparten patrones estructurales ('rimas'). Reconocer estos patrones nos permite aprender del pasado sin caer en determinismos simplistas, aplicando lecciones al contexto actual."
+    }
+  ],
+  "toolkit-3": [
+    {
+      "question": "¿Quién desarrolló el modelo de los 12 lugares para intervenir en un sistema que utiliza este ejercicio?",
+      "difficulty": "principiante",
+      "options": [
+        "Peter Drucker",
+        "Donella Meadows",
+        "Margaret Mead",
+        "William Bridges"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Donella Meadows, científica de sistemas, identificó 12 lugares de apalancamiento para intervenir en sistemas, ordenados de menor a mayor efectividad. Este marco es fundamental en teoría del cambio sistémico."
+    },
+    {
+      "question": "En el modelo de Meadows, ¿qué nivel tiene mayor efectividad para cambiar un sistema?",
+      "difficulty": "principiante",
+      "options": [
+        "Nivel 12: Constantes, parámetros, números",
+        "Nivel 6: Estructura de los flujos de información",
+        "Nivel 1: Poder de trascender paradigmas",
+        "Nivel 9: Duración de los retardos"
+      ],
+      "correctAnswer": 2,
+      "explanation": "El Nivel 1, el poder de trascender paradigmas, es el punto de apalancamiento más efectivo. Cambiar los marcos mentales fundamentales tiene mayor impacto que ajustar parámetros o incluso que cambiar reglas del sistema."
+    },
+    {
+      "question": "¿Qué duración estimada tiene este ejercicio de mapeo de puntos de apalancamiento?",
+      "difficulty": "iniciado",
+      "options": [
+        "45 minutos",
+        "90 minutos",
+        "120 minutos",
+        "180 minutos"
+      ],
+      "correctAnswer": 2,
+      "explanation": "El ejercicio tiene una duración estimada de 120 minutos (2 horas), distribuidos en 4 fases: definir el sistema (20 min), mapear intervenciones actuales (30 min), identificar oportunidades (40 min) y diseñar estrategia (30 min)."
+    },
+    {
+      "question": "Según el ejercicio, ¿qué rango de niveles corresponde a cambios en 'Estructura' del sistema?",
+      "difficulty": "iniciado",
+      "options": [
+        "Nivel 12-10",
+        "Nivel 9-7",
+        "Nivel 6-4",
+        "Nivel 3-1"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Los niveles 6-4 corresponden a cambios estructurales: modificar reglas, flujos de información y distribución de poder. Estos tienen un efecto significativo, mayor que ajustar parámetros pero menor que cambiar paradigmas."
+    },
+    {
+      "question": "¿Por qué intervenir en 'constantes, parámetros y números' (nivel 12-10) tiene poco efecto duradero?",
+      "difficulty": "experto",
+      "options": [
+        "Porque es muy difícil cambiar números",
+        "Porque cambiar cantidades sin modificar la estructura del sistema no altera las dinámicas fundamentales que lo rigen",
+        "Porque los números no son importantes",
+        "Porque solo los expertos pueden cambiar parámetros"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Cambiar parámetros (como subsidios, impuestos o límites) sin modificar la estructura del sistema es como tratar síntomas sin abordar causas. El sistema tiende a volver a su estado anterior porque las dinámicas fundamentales (retroalimentaciones, reglas, paradigmas) siguen intactas."
+    },
+    {
+      "question": "¿Qué relación tiene este ejercicio con el concepto de la palanca de Arquímedes mencionado en el epígrafe?",
+      "difficulty": "experto",
+      "options": [
+        "Ninguna relación, es solo una frase inspiradora",
+        "Representa que con el punto de apalancamiento correcto, se puede generar cambio sistémico con menor esfuerzo y mayor impacto",
+        "Significa que solo la fuerza física puede cambiar sistemas",
+        "Sugiere que todos los puntos de intervención tienen el mismo efecto"
+      ],
+      "correctAnswer": 1,
+      "explanation": "La metáfora de Arquímedes ilustra el concepto central del ejercicio: identificar los puntos de apalancamiento correctos (niveles más altos como paradigmas y reglas) permite generar transformaciones sistémicas profundas con menos resistencia que intentar cambiar el sistema desde niveles superficiales como parámetros."
+    }
+  ],
+  "toolkit-4": [
+    {
+      "question": "¿Cuál es el propósito principal del ejercicio 'Mapeo del Ecosistema de Cambio Local'?",
+      "difficulty": "principiante",
+      "options": [
+        "Crear una lista de contactos personales",
+        "Crear un mapa visual de organizaciones, iniciativas y personas trabajando por el cambio, identificando oportunidades de colaboración",
+        "Criticar a las organizaciones existentes",
+        "Competir con otras iniciativas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio busca mapear visualmente el ecosistema de cambio en tu territorio para identificar actores, conexiones existentes y oportunidades de colaboración, no para criticar o competir."
+    },
+    {
+      "question": "¿Cuántas fases principales tiene este ejercicio de mapeo?",
+      "difficulty": "principiante",
+      "options": [
+        "2 fases",
+        "3 fases",
+        "4 fases",
+        "5 fases"
+      ],
+      "correctAnswer": 2,
+      "explanation": "El ejercicio tiene 4 fases: Lluvia de actores (30 min), Investigación (45 min), Mapeo visual (45 min), y Análisis de brechas (30 min), sumando 2-3 horas en total."
+    },
+    {
+      "question": "En la Fase 1, ¿qué dos criterios principales se usan para organizar las iniciativas identificadas?",
+      "difficulty": "iniciado",
+      "options": [
+        "Por tamaño y por antigüedad",
+        "Por tipo de organización y por enfoque de acción",
+        "Por ubicación y por presupuesto",
+        "Por ideología y por estructura legal"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio propone organizar las iniciativas por tipo (ONGs, cooperativas, colectivos informales, etc.) y por enfoque (acción directa, incidencia política, educación, investigación, articulación). Esta doble clasificación facilita un mapeo completo."
+    },
+    {
+      "question": "¿Qué sistema de codificación se sugiere para el mapeo visual en la Fase 3?",
+      "difficulty": "iniciado",
+      "options": [
+        "Solo colores por tipo de organización",
+        "Tamaño del post-it = tamaño de organización, Color = tipo, Líneas = conexiones",
+        "Únicamente líneas entre organizaciones",
+        "Solo ubicación geográfica en el mapa"
+      ],
+      "correctAnswer": 1,
+      "explanation": "La codificación visual propuesta es multi-dimensional: el tamaño del post-it indica el tamaño de la organización, el color representa el tipo, y las líneas muestran las conexiones conocidas entre actores. Esto crea un mapa rico en información."
+    },
+    {
+      "question": "¿Por qué el análisis de brechas (Fase 4) incluye la pregunta 'dónde hay duplicación de esfuerzos'?",
+      "difficulty": "experto",
+      "options": [
+        "Para criticar el trabajo de otras organizaciones",
+        "Para identificar oportunidades de colaboración y eficiencia, ya que la duplicación puede indicar donde varias organizaciones trabajan aisladamente en lo mismo",
+        "Para eliminar organizaciones redundantes",
+        "No tiene ningún propósito específico"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Identificar duplicación no es para criticar sino para reconocer oportunidades de sinergia. Cuando múltiples actores trabajan aisladamente en lo mismo, hay potencial para colaborar, compartir recursos y aumentar el impacto colectivo."
+    },
+    {
+      "question": "¿Cómo se relaciona la cita de Ken Blanchard 'Ninguno de nosotros es tan inteligente como todos nosotros juntos' con este ejercicio?",
+      "difficulty": "experto",
+      "options": [
+        "Sugiere que debemos unirnos en una sola organización",
+        "Enfatiza que la inteligencia colectiva del ecosistema supera la de cada actor individual, y que mapear y conectar este ecosistema multiplica el potencial transformador",
+        "Significa que trabajar solo es inútil",
+        "Implica que todas las organizaciones deben pensar igual"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El epígrafe subraya el valor de la inteligencia distribuida: el ecosistema completo, con su diversidad de enfoques y capacidades, tiene más potencial que cualquier actor individual. Mapear este ecosistema permite activar esta inteligencia colectiva a través de la conexión y colaboración."
+    }
+  ],
+  "toolkit-5": [
+    {
+      "question": "¿Qué advertencia importante incluye el ejercicio 'Auditoría de Impacto de tu Trabajo'?",
+      "difficulty": "principiante",
+      "options": [
+        "Que puede llevar mucho tiempo completarlo",
+        "Que puede generar incomodidad si descubres impactos negativos, pero el objetivo es la claridad, no la culpa",
+        "Que necesitas permisos legales para hacerlo",
+        "Que solo funciona para trabajadores autónomos"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio incluye una 'Advertencia Compasiva' reconociendo que puede generar incomodidad al descubrir impactos negativos no considerados. Enfatiza que el objetivo es la claridad para poder actuar, no generar culpa."
+    },
+    {
+      "question": "¿Cuántas dimensiones se evalúan en la tabla de puntuación del ejercicio (Fase 3)?",
+      "difficulty": "principiante",
+      "options": [
+        "4 dimensiones",
+        "6 dimensiones",
+        "8 dimensiones",
+        "10 dimensiones"
+      ],
+      "correctAnswer": 2,
+      "explanation": "La Fase 3 evalúa 8 dimensiones: impacto ambiental, condiciones laborales propias, condiciones en la cadena, utilidad social del producto, distribución de beneficios, gobernanza y participación, contribución fiscal, e impacto comunitario local."
+    },
+    {
+      "question": "En la Fase 2, ¿qué dos direcciones se deben analizar en la cadena de valor?",
+      "difficulty": "iniciado",
+      "options": [
+        "Arriba y abajo",
+        "Hacia atrás (proveedores) y hacia adelante (clientes/usuarios)",
+        "Entrada y salida",
+        "Interno y externo"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El análisis de cadena de valor se hace en dos direcciones: hacia atrás (proveedores - de dónde vienen materias primas, condiciones laborales, impacto ambiental) y hacia adelante (clientes/usuarios - mejora vidas, crea dependencia, qué pasa al final de vida útil)."
+    },
+    {
+      "question": "¿Cuál de estas NO es una opción de acción propuesta tras la auditoría?",
+      "difficulty": "iniciado",
+      "options": [
+        "Transformar desde dentro tu organización actual",
+        "Migrar a organizaciones más alineadas",
+        "Renunciar inmediatamente sin plan",
+        "Complementar el trabajo actual mientras construyes alternativas"
+      ],
+      "correctAnswer": 2,
+      "explanation": "El ejercicio propone cuatro opciones de acción constructivas: transformar desde dentro, migrar, crear tu propio proyecto, o complementar. No propone renuncias impulsivas sin plan, sino acciones estratégicas basadas en claridad."
+    },
+    {
+      "question": "¿Por qué la pregunta 'Si desapareciera tu empresa mañana, ¿el mundo estaría mejor o peor?' es tan potente?",
+      "difficulty": "experto",
+      "options": [
+        "Porque es fácil de responder",
+        "Porque obliga a confrontar directamente la utilidad social real de tu trabajo, más allá de la narrativa corporativa",
+        "Porque todas las empresas son malas",
+        "Porque es una pregunta retórica sin importancia"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Esta pregunta (incluida en la versión express) corta a través de justificaciones y narrativas corporativas para confrontar la utilidad social real del trabajo. Es una prueba de fuego que revela si el trabajo genera valor genuino o si principalmente extrae valor de la sociedad."
+    },
+    {
+      "question": "¿Qué relación tiene este ejercicio con el Manifiesto de la Conciencia Compartida, específicamente 'La Economía de la Escasez Artificial'?",
+      "difficulty": "experto",
+      "options": [
+        "No tiene ninguna relación",
+        "Conecta la auditoría personal con la crítica sistémica del modelo económico actual, mostrando cómo nuestro trabajo individual participa en estructuras más amplias",
+        "Solo se enfoca en economía personal",
+        "Es una contradicción con el Manifiesto"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio conecta el análisis personal con el sistémico: al auditar tu trabajo, comprendes cómo participas (consciente o inconscientemente) en el modelo económico extractivo. Esta conciencia es el primer paso para transformarlo, alineando tu vida laboral con la economía que quieres construir."
+    }
+  ],
+  "toolkit-6": [
+    {
+      "question": "¿Cuál es la duración estimada del ejercicio 'Diseño de una Cooperativa'?",
+      "difficulty": "principiante",
+      "options": [
+        "60 minutos",
+        "90 minutos",
+        "2 horas",
+        "3-4 horas dividido en sesiones"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Este ejercicio avanzado requiere 3-4 horas divididas en 4 sesiones de 60 minutos cada una, abordando: la idea, la estructura, los números, y el plan de acción. Es uno de los ejercicios más extensos del toolkit."
+    },
+    {
+      "question": "¿Cuántos tipos de cooperativas se mencionan en el ejercicio?",
+      "difficulty": "principiante",
+      "options": [
+        "2 tipos",
+        "3 tipos",
+        "5 tipos",
+        "7 tipos"
+      ],
+      "correctAnswer": 2,
+      "explanation": "El ejercicio menciona 5 tipos: cooperativa de trabajo (socios = trabajadores), de consumidores (socios = clientes), de servicios (profesionales comparten recursos), mixta o integral (combina varios tipos), y de plataforma (versión digital/tecnológica)."
+    },
+    {
+      "question": "En la Sesión 3 sobre 'Los Números', ¿cuál NO es uno de los aspectos que se deben calcular?",
+      "difficulty": "iniciado",
+      "options": [
+        "Inversión inicial necesaria",
+        "Modelo de ingresos y precio",
+        "Salario del CEO",
+        "Distribución de excedentes"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Las cooperativas no tienen CEO tradicional, y la sesión se enfoca en inversión inicial, modelo de ingresos y distribución democrática de excedentes (a reservas, retornos y fondo de educación). El concepto de CEO es ajeno al modelo cooperativo."
+    },
+    {
+      "question": "¿Qué recursos específicos para España se mencionan en el ejercicio?",
+      "difficulty": "iniciado",
+      "options": [
+        "Solo la Alianza Cooperativa Internacional",
+        "COCETA y Fiare Banca Ética",
+        "Únicamente el Platform Cooperativism Consortium",
+        "No se mencionan recursos específicos"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Para el contexto español se menciona COCETA (Confederación de cooperativas de trabajo) y Fiare Banca Ética para financiación cooperativa, además de recursos internacionales como la Alianza Cooperativa Internacional."
+    },
+    {
+      "question": "¿Por qué el Canvas Cooperativo incluye 'SOCIOS' como un elemento diferenciado en lugar de solo 'CLIENTES'?",
+      "difficulty": "experto",
+      "options": [
+        "Es un error de diseño",
+        "Porque en las cooperativas los socios son propietarios democráticos, no solo clientes o trabajadores, lo que requiere analizar quiénes pueden ser socios y cómo participan en la gobernanza",
+        "Solo para cooperativas de consumo",
+        "Porque los clientes no son importantes"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El Canvas Cooperativo diferencia 'SOCIOS' porque es un elemento estructural distintivo: los socios son propietarios democráticos de la cooperativa, con derechos de gobernanza. Esta relación es fundamentalmente diferente a la de cliente o empleado en una empresa tradicional."
+    },
+    {
+      "question": "¿Cómo se relaciona el proverbio cooperativista 'Solo no puedes, con amigos sí' con el diseño de cooperativas?",
+      "difficulty": "experto",
+      "options": [
+        "Es solo un eslogan motivacional",
+        "Captura la esencia del cooperativismo: resolver problemas colectivamente que serían imposibles individualmente, mediante propiedad y gestión compartida",
+        "Significa que las cooperativas solo funcionan entre amigos",
+        "Contradice el modelo de negocio cooperativo"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El epígrafe sintetiza la filosofía cooperativa: mediante la asociación voluntaria y la acción colectiva, se pueden resolver necesidades (vivienda, trabajo, consumo) que individualmente serían inaccesibles o explotadoras. La cooperativa es la institucionalización de esta sabiduría popular."
+    }
+  ],
+  "toolkit-7": [
+    {
+      "question": "¿Cuál es la duración del ejercicio 'Experimento de Auto-organización'?",
+      "difficulty": "principiante",
+      "options": [
+        "90 minutos",
+        "3 horas",
+        "1 día",
+        "1 semana de práctica"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Este ejercicio requiere 1 semana de práctica real, incluyendo una reunión inicial (Día 1), trabajo durante 5 días (Días 2-6) y una retrospectiva final (Día 7). Es un experimento vivencial, no solo teórico."
+    },
+    {
+      "question": "¿Cuál es el tamaño recomendado del grupo para este experimento?",
+      "difficulty": "principiante",
+      "options": [
+        "2 personas",
+        "3-8 personas",
+        "10-20 personas",
+        "Más de 30 personas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio especifica que se necesita un grupo de 3-8 personas, tamaño óptimo para experimentar con auto-organización sin las complejidades de grupos muy grandes."
+    },
+    {
+      "question": "¿Qué prohibición específica establece el ejercicio en el Día 1 durante la constitución?",
+      "difficulty": "iniciado",
+      "options": [
+        "No usar tecnología",
+        "NO asignar roles fijos ni líder",
+        "No hablar durante 30 minutos",
+        "No tomar notas"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio prohíbe explícitamente asignar roles fijos o líder, que es el punto central del experimento: observar cómo emerge la auto-organización sin estructuras jerárquicas formales predefinidas."
+    },
+    {
+      "question": "¿Cuáles son los tres modelos de organización horizontal que se mencionan para explorar?",
+      "difficulty": "iniciado",
+      "options": [
+        "Capitalismo, Socialismo, Comunismo",
+        "Sociocracia, Holocracia, Organización TEAL",
+        "Monarquía, República, Democracia",
+        "Tradicional, Moderna, Postmoderna"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Los tres modelos específicos mencionados son: Sociocracia (decisiones por consentimiento, círculos interconectados), Holocracia (roles dinámicos, gobernanza distribuida), y Organización TEAL (propósito evolutivo, plenitud, auto-gestión)."
+    },
+    {
+      "question": "¿Por qué el ejercicio pide observar y anotar durante los días 2-6 aspectos como 'quién toma iniciativa' y 'cómo emergen los roles informales'?",
+      "difficulty": "experto",
+      "options": [
+        "Para criticar a los miembros del grupo",
+        "Para reconocer que incluso sin jerarquía formal, emergen patrones de liderazgo y roles, lo cual es natural y no necesariamente problemático",
+        "Para demostrar que la auto-organización no funciona",
+        "Para perder tiempo en observación innecesaria"
+      ],
+      "correctAnswer": 1,
+      "explanation": "La observación busca desmitificar la auto-organización: reconocer que liderazgos y roles emergen naturalmente incluso sin jerarquía formal, y que esto no es malo sino parte de la dinámica grupal. La clave es que estos roles sean fluidos y no impuestos."
+    },
+    {
+      "question": "¿Cómo se relaciona la cita 'La mejor manera de predecir el futuro es crearlo' de Peter Drucker con este ejercicio?",
+      "difficulty": "experto",
+      "options": [
+        "No tiene relación directa",
+        "Enfatiza que la auto-organización no se aprende teóricamente sino experimentando, creando nuevas formas de trabajar juntos",
+        "Contradice el espíritu del ejercicio",
+        "Solo se aplica al mundo empresarial"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El epígrafe conecta con el carácter experimental del ejercicio: no puedes entender la auto-organización solo leyendo sobre ella, debes crearla mediante la práctica. 'Crear el futuro' significa experimentar con nuevas formas de organizarse, aprendiendo de la experiencia directa."
+    }
+  ],
+  "toolkit-8": [
+    {
+      "question": "¿Qué son los 'commons' o bienes comunes según el ejercicio?",
+      "difficulty": "principiante",
+      "options": [
+        "Propiedades del gobierno",
+        "Recursos gestionados colectivamente por una comunidad según reglas que ella misma establece",
+        "Propiedades privadas compartidas",
+        "Solo recursos naturales"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Los commons son recursos gestionados colectivamente por una comunidad, según reglas que ella misma establece. No son ni propiedad privada ni estatal, sino una tercera forma de gestión basada en el auto-gobierno comunitario."
+    },
+    {
+      "question": "¿Cuántos principios de Elinor Ostrom se mencionan para que un común funcione?",
+      "difficulty": "principiante",
+      "options": [
+        "5 principios",
+        "8 principios",
+        "10 principios",
+        "12 principios"
+      ],
+      "correctAnswer": 1,
+      "explanation": "El ejercicio menciona los 8 principios de Elinor Ostrom (Premio Nobel de Economía) para la gestión exitosa de bienes comunes, basados en su investigación de commons tradicionales que han perdurado durante siglos."
+    },
+    {
+      "question": "En la Fase 1 del ejercicio, ¿cuántos tipos de commons se identifican?",
+      "difficulty": "iniciado",
+      "options": [
+        "2 tipos: naturales y digitales",
+        "3 tipos: naturales, sociales y culturales",
+        "4 tipos: naturales, digitales, urbanos y de conocimiento",
+        "5 tipos: naturales, digitales, económicos, políticos y culturales"
+      ],
+      "correctAnswer": 2,
+      "explanation": "La Fase 1 pide inventariar 4 tipos de commons: naturales (parques, ríos, huertos), digitales (software libre, Wikipedia), urbanos (centros sociales, bibliotecas, espacios comunitarios), y de conocimiento (grupos de aprendizaje, saberes colectivos)."
+    },
+    {
+      "question": "¿Cuál de estos NO es uno de los 8 principios de Ostrom mencionados en el ejercicio?",
+      "difficulty": "iniciado",
+      "options": [
+        "Límites claramente definidos",
+        "Participación en la toma de decisiones",
+        "Maximización del beneficio individual",
+        "Mecanismos de resolución de conflictos"
+      ],
+      "correctAnswer": 2,
+      "explanation": "La maximización del beneficio individual contradice la lógica de los commons. Los 8 principios de Ostrom incluyen límites claros, participación, monitoreo, sanciones graduales, resolución de conflictos, reconocimiento del derecho a organizarse, y anidamiento en sistemas amplios."
+    },
+    {
+      "question": "¿Por qué la Fase 2 pide analizar no solo el recurso y la comunidad, sino también 'las amenazas' al común?",
+      "difficulty": "experto",
+      "options": [
+        "Para generar miedo innecesario",
+        "Porque los commons son frágiles y enfrentan amenazas como privatización, sobreexplotación o abandono; reconocerlas permite protegerlos",
+        "Solo por completar el ejercicio",
+        "Porque todos los commons están condenados a desaparecer"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Los commons históricos han enfrentado amenazas constantes (cercamientos, privatización, 'tragedia de los comunes'). Identificar amenazas no es pesimismo sino realismo estratégico: permite desarrollar mecanismos de protección y fortalecimiento del común."
+    },
+    {
+      "question": "¿Cómo se relaciona la cita de David Bollier 'El aire que respiramos, el agua que bebemos y el conocimiento que compartimos son bienes comunes' con el ejercicio?",
+      "difficulty": "experto",
+      "options": [
+        "Es una frase poética sin contenido práctico",
+        "Señala que los commons no son una utopía futura sino que ya dependemos de ellos para nuestra supervivencia básica, y que debemos reconocerlos y protegerlos",
+        "Sugiere que todo debe ser común",
+        "Contradice el concepto de propiedad privada legítima"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bollier enfatiza que los commons no son una fantasía ideológica sino realidades de las que ya dependemos (aire, agua, conocimiento). El ejercicio busca hacer visible esta dependencia invisible y expandir la conciencia sobre qué otros recursos podrían gestionarse como commons, multiplicando el bienestar colectivo."
+    }
+  ]
+}

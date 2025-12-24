@@ -1,0 +1,316 @@
+{
+  "quizzes": [
+    {
+      "chapterId": "cap1",
+      "title": "Quiz: La Arquitectura Invisible",
+      "description": "Verifica tu comprensión sobre las premisas ocultas del sistema actual",
+      "questions": [
+        {
+          "question": "Si hay comida suficiente en el mundo para todos, ¿por qué hay gente que pasa hambre?",
+          "difficulty": "ninos",
+          "options": [
+            "Porque no se produce suficiente comida",
+            "Porque la comida no llega a todos por cómo está organizado el mundo",
+            "Porque algunas personas no quieren comer",
+            "Porque la comida se echa a perder muy rápido"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Hay comida suficiente para todos, pero la forma en que organizamos el mundo hace que no llegue a quienes la necesitan. Es un problema de organización, no de cantidad.",
+          "hint": "Piensa en si el problema es que falta comida o que no se reparte bien"
+        },
+        {
+          "question": "¿Los seres humanos somos naturalmente más competidores o más cooperadores?",
+          "difficulty": "ninos",
+          "options": [
+            "Solo competidores, como los animales salvajes",
+            "Podemos ser las dos cosas: competir Y cooperar",
+            "Solo cooperadores, nunca competimos",
+            "Ninguna de las dos, somos egoístas"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Los humanos podemos competir Y cooperar. Muchos de nuestros grandes logros (ciudades, ciencia, arte) nacieron de trabajar juntos, no de pelear.",
+          "hint": "¿Cómo construyeron las pirámides o los cohetes espaciales?"
+        },
+        {
+          "question": "Según el capítulo, ¿qué significa que el sistema 'no está roto'?",
+          "difficulty": "iniciado",
+          "context": "Reflexiona sobre la relación entre premisas y resultados",
+          "options": [
+            "Que funciona perfectamente para todos por igual",
+            "Que produce exactamente los resultados que sus premisas predicen",
+            "Que no necesita cambios ni reformas",
+            "Que está diseñado de manera óptima"
+          ],
+          "correctAnswer": 1,
+          "explanation": "El sistema funciona perfectamente según sus premisas fundacionales. Si el resultado parece disfuncional, no es porque el sistema falle, sino porque las premisas son falsas o problemáticas.",
+          "hint": "El capítulo distingue entre el funcionamiento del sistema y la validez de sus premisas"
+        },
+        {
+          "question": "¿Cuál es la primera premisa oculta que identifica el capítulo?",
+          "difficulty": "principiante",
+          "options": [
+            "La competencia es la naturaleza humana",
+            "La escasez es la condición fundamental",
+            "La separación es real",
+            "El progreso es lineal"
+          ],
+          "correctAnswer": 1,
+          "explanation": "La primera premisa es que 'la escasez es la condición fundamental'. Esta premisa se presenta como descripción neutral de la realidad, pero es una elección metafísica disfrazada de hecho empírico."
+        },
+        {
+          "question": "Según el capítulo, ¿qué demuestra Lynn Margulis sobre la evolución?",
+          "difficulty": "iniciado",
+          "options": [
+            "Que la competencia es el único motor evolutivo",
+            "Que la evolución avanza tanto por simbiogénesis (fusión cooperativa) como por competencia",
+            "Que los humanos son naturalmente cooperativos",
+            "Que la selección natural es una teoría incorrecta"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Lynn Margulis demostró que la evolución avanza tanto por simbiogénesis (fusión cooperativa) como por competencia. Las mitocondrias son ejemplo de organismos que se integraron cooperativamente."
+        },
+        {
+          "question": "¿Qué implica la 'ontología de la fragmentación' según el texto?",
+          "difficulty": "experto",
+          "options": [
+            "Que todo está naturalmente separado",
+            "Que dividimos artificialmente lo que está interconectado (individuo/comunidad, humanidad/naturaleza, mente/cuerpo)",
+            "Que la ciencia debe dividir para analizar",
+            "Que cada persona es completamente independiente"
+          ],
+          "correctAnswer": 1,
+          "explanation": "La ontología de la fragmentación es la división artificial de lo que está interconectado: individuo/comunidad, humanidad/naturaleza, mente/cuerpo, sujeto/objeto. Esta separación es funcional al sistema pero no refleja la realidad."
+        },
+        {
+          "question": "¿Qué dice el capítulo sobre el crecimiento económico infinito?",
+          "difficulty": "iniciado",
+          "options": [
+            "Que es necesario para el progreso",
+            "Que es posible mediante innovación tecnológica",
+            "Que es patología (como el cáncer) en un planeta finito",
+            "Que debe acelerarse para resolver los problemas"
+          ],
+          "correctAnswer": 2,
+          "explanation": "El capítulo compara el crecimiento indefinido con el cáncer: los organismos sanos crecen hasta un punto y luego maduran, se transforman. El crecimiento perpetuo en un sistema finito es patología, no salud.",
+          "hint": "Piensa en cómo crecen los sistemas vivos naturales"
+        },
+        {
+          "question": "¿Por qué las reformas son absorbidas por el sistema según el capítulo?",
+          "difficulty": "experto",
+          "options": [
+            "Porque las reformas siempre son superficiales",
+            "Porque el sistema procesa cualquier input según sus premisas operantes, sin cambiar las premisas",
+            "Porque los reformistas no son suficientemente radicales",
+            "Porque el sistema es demasiado poderoso para cambiar"
+          ],
+          "correctAnswer": 1,
+          "explanation": "El sistema absorbe reformas procesándolas según sus premisas operantes. El ambientalismo se convierte en 'capitalismo verde', la crítica a la desigualdad en 'capitalismo inclusivo', etc. Si las premisas no cambian, el output permanece estructuralmente igual."
+        },
+        {
+          "question": "¿Qué son las 'grietas' del sistema según el capítulo?",
+          "difficulty": "principiante",
+          "options": [
+            "Problemas que hay que eliminar",
+            "Errores de diseño del sistema",
+            "Oportunidades donde entra luz y que fuerzan repensar las premisas (crisis ecológica, de sentido, salud mental, IA)",
+            "Debilidades que los enemigos pueden explotar"
+          ],
+          "correctAnswer": 2,
+          "explanation": "Las grietas (crisis ecológica, de sentido, salud mental, emergencia de IA) no son el problema sino la oportunidad. Por ellas entra luz. Fuerzan preguntas que el sistema no puede responder sin cambiar sus premisas."
+        },
+        {
+          "question": "¿Cuál es la quinta premisa oculta (y la más profunda)?",
+          "difficulty": "principiante",
+          "options": [
+            "Que el progreso es inevitable",
+            "Que la competencia es natural",
+            "Que la conciencia es un epifenómeno de la materia",
+            "Que el crecimiento debe ser infinito"
+          ],
+          "correctAnswer": 2,
+          "explanation": "La quinta premisa es que 'la conciencia es un epifenómeno de la materia'. Esta premisa materialista es el suelo sobre el que se construyen las otras, y determina que la experiencia subjetiva no tenga valor ontológico real.",
+          "hint": "Es la premisa sobre la naturaleza de la conciencia misma"
+        },
+        {
+          "question": "Si las premisas del sistema determinan sus resultados, ¿qué estrategia de cambio propone implícitamente el capítulo?",
+          "difficulty": "experto",
+          "options": [
+            "Reformar las instituciones existentes",
+            "Cambiar las premisas fundacionales antes que las estructuras",
+            "Acelerar el colapso del sistema actual",
+            "Crear nuevas leyes y regulaciones"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Si el sistema procesa todo según sus premisas, cualquier reforma será absorbida mientras las premisas permanezcan. La estrategia debe ser epistémica: cambiar primero las premisas (escasez, separación, competencia, materialismo) para que un sistema diferente emerja orgánicamente."
+        },
+        {
+          "question": "¿Cuántas premisas ocultas identifica el capítulo como base del sistema actual?",
+          "difficulty": "principiante",
+          "options": [
+            "Tres premisas",
+            "Cuatro premisas",
+            "Cinco premisas",
+            "Seis premisas"
+          ],
+          "correctAnswer": 2,
+          "explanation": "El capítulo identifica cinco premisas ocultas: 1) La escasez es fundamental, 2) La competencia es la naturaleza humana, 3) La separación es real, 4) El crecimiento debe ser infinito, 5) La conciencia es epifenómeno de la materia."
+        }
+      ]
+    },
+    {
+      "chapterId": "cap2",
+      "title": "Quiz: La Economía de la Escasez Artificial",
+      "description": "Evalúa tu comprensión sobre cómo se fabrica la escasez y sus alternativas",
+      "questions": [
+        {
+          "question": "Si le enseñas un truco de magia a tu amigo, ¿tú pierdes el truco?",
+          "difficulty": "ninos",
+          "options": [
+            "Sí, solo uno puede saber el truco",
+            "No, ahora los dos saben el truco y pueden disfrutarlo",
+            "Depende del truco",
+            "Sí, porque los trucos son secretos"
+          ],
+          "correctAnswer": 1,
+          "explanation": "El conocimiento es especial: cuando lo compartes, no lo pierdes. Ahora dos personas saben el truco en vez de una. El conocimiento se multiplica al compartirse.",
+          "hint": "¿Desaparece algo de tu cabeza cuando le enseñas a alguien?"
+        },
+        {
+          "question": "¿Por qué a veces se tira comida buena mientras hay personas con hambre?",
+          "difficulty": "ninos",
+          "options": [
+            "Porque la comida está mala",
+            "Porque es más importante ganar dinero que dar de comer a todos",
+            "Porque no hay forma de llevarla a quienes la necesitan",
+            "Porque la gente con hambre no quiere esa comida"
+          ],
+          "correctAnswer": 1,
+          "explanation": "A veces se tira comida buena porque no es 'rentable' repartirla. El sistema actual valora más el dinero que asegurar que todos coman. Esto es un ejemplo de 'escasez artificial'.",
+          "hint": "¿Es un problema de cantidad de comida o de cómo decidimos repartirla?"
+        },
+        {
+          "question": "Según el capítulo, ¿qué cruzó la humanidad en el siglo XX sin notarlo?",
+          "difficulty": "principiante",
+          "options": [
+            "El umbral de la superpoblación",
+            "El umbral de capacidad de producir suficiente para todos",
+            "El límite del crecimiento económico",
+            "La frontera de la sostenibilidad ecológica"
+          ],
+          "correctAnswer": 1,
+          "explanation": "La humanidad cruzó el umbral de poder producir suficiente para todos: suficiente alimento, vivienda potencial, capacidad energética. La escasez que experimentamos no es física sino arquitectónica.",
+          "hint": "Piensa en la capacidad productiva vs. la distribución real"
+        },
+        {
+          "question": "¿Qué son los 'bienes no-rivales'?",
+          "difficulty": "principiante",
+          "options": [
+            "Bienes que no generan competencia en el mercado",
+            "Bienes cuyo uso por una persona no impide su uso por otras (como el conocimiento)",
+            "Bienes que no tienen valor económico",
+            "Bienes que no pueden venderse"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Los bienes no-rivales pueden ser usados por muchos simultáneamente sin agotarse. El conocimiento es el ejemplo paradigmático: si te enseño una idea, yo no la pierdo. El conocimiento compartido se multiplica."
+        },
+        {
+          "question": "¿Qué demostró Amartya Sen sobre las hambrunas?",
+          "difficulty": "iniciado",
+          "options": [
+            "Que siempre son causadas por sequías o desastres naturales",
+            "Que rara vez ocurren por falta absoluta de alimentos, sino por colapso de 'titularidades' (derecho efectivo a acceder a comida)",
+            "Que son inevitables en países pobres",
+            "Que la superpoblación es la causa principal"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Sen demostró que las hambrunas rara vez ocurren por falta absoluta de alimentos; ocurren por colapso de 'titularidades'. Puedes morir de hambre rodeado de comida si no tienes dinero para comprarla. El hambre es decisión política, no problema técnico."
+        },
+        {
+          "question": "Según el capítulo, ¿cómo funcionan las patentes en relación a la escasez?",
+          "difficulty": "iniciado",
+          "options": [
+            "Incentivan la innovación eliminando la escasez",
+            "Protegen justamente a los inventores",
+            "Cercenan bienes naturalmente abundantes para convertirlos en escasos y vendibles",
+            "Son necesarias para financiar la investigación"
+          ],
+          "correctAnswer": 2,
+          "explanation": "Las patentes cercenan bienes naturalmente abundantes (conocimiento, ideas) para convertirlos en escasos. Esto permite venderlos, pero bloquea la circulación natural de lo que podría enriquecer a todos. Las patentes farmacéuticas y de semillas son ejemplos claros."
+        },
+        {
+          "question": "¿Qué significa que la deuda 'transforma el tiempo en escasez'?",
+          "difficulty": "experto",
+          "options": [
+            "Que no tienes tiempo para pagar",
+            "Que el futuro ya no te pertenece: tu trabajo de mañana está comprometido para pagar lo de ayer",
+            "Que el tiempo es dinero",
+            "Que debes trabajar más horas"
+          ],
+          "correctAnswer": 1,
+          "explanation": "La deuda transforma el tiempo en escasez porque el futuro ya no te pertenece: tu trabajo de mañana está comprometido para pagar lo de ayer. Siempre debes más de lo que tienes, siempre corres para alcanzar lo que se aleja."
+        },
+        {
+          "question": "¿Por qué el movimiento cooperativo global es significativo según el capítulo?",
+          "difficulty": "iniciado",
+          "options": [
+            "Porque es una alternativa caritativa",
+            "Porque emplea a más personas que todas las multinacionales juntas, demostrando que lógicas no-competitivas funcionan a escala",
+            "Porque es más eficiente que las empresas privadas",
+            "Porque recibe apoyo gubernamental"
+          ],
+          "correctAnswer": 1,
+          "explanation": "El movimiento cooperativo global emplea a más personas que todas las multinacionales juntas. Esto demuestra que es posible operar con lógicas distintas a la acumulación competitiva, y no son marginales sino masivas.",
+          "hint": "Piensa en la escala del movimiento cooperativo"
+        },
+        {
+          "question": "Según el capítulo, ¿qué cambiaría si abandonamos la premisa de escasez fundamental?",
+          "difficulty": "experto",
+          "options": [
+            "Nada práctico, sería solo un cambio filosófico",
+            "La pregunta central pasa de '¿cómo asignamos recursos escasos?' a '¿cómo facilitamos el flujo de lo que hay?'",
+            "Tendríamos que producir menos",
+            "El precio se volvería más importante"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Si asumimos que la abundancia es posible mediante organización inteligente, la pregunta central se transforma: de 'cómo asignamos recursos escasos' a 'cómo facilitamos el flujo de lo que hay'. De gestión de carencia a diseño de circulación."
+        },
+        {
+          "question": "¿Qué relación existe entre escasez física y escasez arquitectónica según el capítulo?",
+          "difficulty": "experto",
+          "options": [
+            "Son lo mismo, solo cambia el nombre",
+            "La escasez arquitectónica (cómo organizamos la distribución) puede crear escasez artificial incluso cuando hay abundancia física",
+            "La escasez física determina siempre la arquitectónica",
+            "La escasez arquitectónica es menos importante"
+          ],
+          "correctAnswer": 1,
+          "explanation": "La escasez que experimentamos hoy es mayormente arquitectónica, no física. Tenemos capacidad de producir suficiente, pero nuestros sistemas de distribución, propiedad y acceso crean escasez artificial. El problema no es la cantidad sino el diseño del sistema."
+        },
+        {
+          "question": "¿Cuál es un ejemplo de bien no-rival mencionado en el capítulo?",
+          "difficulty": "principiante",
+          "options": [
+            "El petróleo",
+            "El dinero",
+            "El conocimiento",
+            "La tierra"
+          ],
+          "correctAnswer": 2,
+          "explanation": "El conocimiento es el ejemplo paradigmático de bien no-rival: puede ser usado por muchas personas simultáneamente sin agotarse. Cuando compartes conocimiento, tú no lo pierdes y la otra persona lo gana."
+        },
+        {
+          "question": "Si la escasez que vivimos es mayormente arquitectónica (no física), ¿qué tipo de soluciones serían más efectivas?",
+          "difficulty": "experto",
+          "options": [
+            "Producir más de todo",
+            "Rediseñar sistemas de distribución, acceso y propiedad",
+            "Reducir el consumo individual",
+            "Innovar tecnológicamente más rápido"
+          ],
+          "correctAnswer": 1,
+          "explanation": "Si la escasez es arquitectónica, las soluciones deben ser sistémicas: rediseñar cómo distribuimos, a qué tenemos acceso, cómo entendemos la propiedad. No se trata de producir más sino de organizar mejor el flujo de lo que ya existe."
+        }
+      ]
+    }
+  ]
+}

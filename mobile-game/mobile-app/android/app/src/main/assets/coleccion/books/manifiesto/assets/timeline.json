@@ -1,0 +1,403 @@
+{
+  "timeline": {
+    "title": "Movimientos de Transformación Social y Sistémica",
+    "description": "Una línea temporal de movimientos, revoluciones y experimentos que han intentado reimaginar la organización social",
+    "categories": [
+      "revoluciones",
+      "movimientos_sociales",
+      "experimentos_económicos",
+      "movimientos_ambientales",
+      "tecnología_social",
+      "filosofía_política"
+    ]
+  },
+
+  "events": [
+    {
+      "id": "evt-001",
+      "year": 1789,
+      "title": "Revolución Francesa",
+      "category": "revoluciones",
+      "description": "Derrocamiento del Antiguo Régimen. Declaración de los Derechos del Hombre y del Ciudadano. Cuestionamiento radical de la monarquía absoluta y los privilegios aristocráticos.",
+      "impact": "Estableció las bases del pensamiento republicano moderno y la soberanía popular",
+      "lessons": "Las revoluciones pueden cambiar estructuras de poder, pero reproducen violencia si no transforman las premisas subyacentes",
+      "relatedChapters": ["cap3", "cap10"]
+    },
+    {
+      "id": "evt-002",
+      "year": 1848,
+      "title": "Primavera de los Pueblos",
+      "category": "revoluciones",
+      "description": "Ola revolucionaria en Europa demandando reformas liberales, constituciones y derechos sociales. Emergencia del pensamiento socialista.",
+      "impact": "Expandió la idea de derechos más allá de lo político hacia lo social y económico",
+      "lessons": "Los movimientos transnacionales simultáneos muestran problemas sistémicos compartidos",
+      "relatedChapters": ["cap3", "cap13"]
+    },
+    {
+      "id": "evt-003",
+      "year": 1871,
+      "title": "Comuna de París",
+      "category": "revoluciones",
+      "description": "Gobierno autónomo revolucionario de París durante 72 días. Experimento de democracia directa, separación Iglesia-Estado, educación laica gratuita, autogestión obrera.",
+      "impact": "Primer intento histórico de aplicar principios socialistas en el gobierno de una ciudad",
+      "lessons": "La autogestión es posible pero vulnerable sin apoyo sistémico más amplio",
+      "relatedChapters": ["cap10", "cap12"]
+    },
+    {
+      "id": "evt-004",
+      "year": 1917,
+      "title": "Revolución Rusa",
+      "category": "revoluciones",
+      "description": "Derrocamiento del zarismo. Intento de construir socialismo de estado. Colectivización de medios de producción.",
+      "impact": "Demostró posibilidad de transformación radical del sistema económico",
+      "lessons": "Centralización del poder reproduce estructuras de dominación incluso con ideales igualitarios",
+      "relatedChapters": ["cap3", "cap9", "cap10"]
+    },
+    {
+      "id": "evt-005",
+      "year": 1936,
+      "title": "Colectivizaciones en España",
+      "category": "experimentos_económicos",
+      "description": "Durante la Guerra Civil española, millones de personas organizaron colectividades agrarias e industriales autogestadas. Experimento masivo de anarco-sindicalismo.",
+      "impact": "Demostró viabilidad de producción sin jerarquías capitalistas en escala considerable",
+      "lessons": "La autoorganización puede funcionar en crisis, pero requiere coordinación y defensa ante amenazas externas",
+      "relatedChapters": ["cap9", "cap10", "cap12"]
+    },
+    {
+      "id": "evt-006",
+      "year": 1944,
+      "title": "Acuerdos de Bretton Woods",
+      "category": "experimentos_económicos",
+      "description": "Establecimiento del sistema monetario internacional post-WWII. Creación del FMI y Banco Mundial.",
+      "impact": "Configuró arquitectura financiera global que persiste hasta hoy",
+      "lessons": "Las instituciones económicas globales responden a intereses de poder, no a principios democráticos",
+      "relatedChapters": ["cap2", "cap3"]
+    },
+    {
+      "id": "evt-006b",
+      "year": 1952,
+      "title": "Revolución de los Claveles (Egipto)",
+      "category": "revoluciones",
+      "description": "Golpe de Estado liderado por Nasser. Nacionalización del Canal de Suez. Movimiento panárabe y no alineación en la Guerra Fría.",
+      "impact": "Inspiró movimientos de liberación nacional en África y Medio Oriente. Desafío al colonialismo occidental",
+      "lessons": "La autodeterminación de los pueblos puede desafiar el orden geopolítico establecido",
+      "relatedChapters": ["cap3", "cap10"]
+    },
+    {
+      "id": "evt-007",
+      "year": 1956,
+      "title": "Cooperativa Mondragón (España)",
+      "category": "experimentos_económicos",
+      "description": "Fundación de la corporación cooperativa Mondragón. Modelo de empresa propiedad de trabajadores que se convirtió en la 7ª empresa de España.",
+      "impact": "Prueba empírica de que empresas sin accionistas pueden ser competitivas y sostenibles",
+      "lessons": "La propiedad cooperativa funciona a escala, pero enfrenta presiones del mercado capitalista circundante",
+      "relatedChapters": ["cap9", "cap12"]
+    },
+    {
+      "id": "evt-007b",
+      "year": 1957,
+      "title": "Independencia de Ghana",
+      "category": "revoluciones",
+      "description": "Primera nación del África subsahariana en independizarse del colonialismo. Kwame Nkrumah lidera movimiento panafricanista.",
+      "impact": "Catalizó ola de independencias africanas. Inspiró pensamiento de liberación del Sur Global",
+      "lessons": "La descolonización política no garantiza independencia económica sin transformación de estructuras",
+      "relatedChapters": ["cap3", "cap10"]
+    },
+    {
+      "id": "evt-007c",
+      "year": 1959,
+      "title": "Revolución Cubana",
+      "category": "revoluciones",
+      "description": "Derrocamiento de dictadura de Batista. Experimento socialista en el Caribe. Alfabetización masiva, salud universal, resistencia al embargo.",
+      "impact": "Desafió hegemonía estadounidense en América Latina. Inspiró movimientos de liberación",
+      "lessons": "Los experimentos alternativos enfrentan hostilidad sistémica del orden global dominante",
+      "relatedChapters": ["cap3", "cap9", "cap10"]
+    },
+    {
+      "id": "evt-008",
+      "year": 1962,
+      "title": "Primavera Silenciosa (Rachel Carson)",
+      "category": "movimientos_ambientales",
+      "description": "Publicación del libro que lanzó el movimiento ecologista moderno. Denuncia del impacto de pesticidas en ecosistemas.",
+      "impact": "Inició conciencia masiva sobre crisis ambiental y límites del crecimiento",
+      "lessons": "La ciencia puede catalizar cambios culturales cuando se comunica al público",
+      "relatedChapters": ["cap4", "cap7"]
+    },
+    {
+      "id": "evt-008b",
+      "year": 1964,
+      "title": "Malcolm X y Nation of Islam",
+      "category": "movimientos_sociales",
+      "description": "Malcolm X rompe con Nation of Islam. Discurso sobre autodeterminación negra, orgullo racial, crítica al racismo sistémico y colonialismo interno.",
+      "impact": "Radicalizó movimiento por derechos civiles. Conectó lucha racial con antiimperialismo global",
+      "lessons": "La liberación requiere más que reformas legales; exige transformación de conciencia y estructuras de poder",
+      "relatedChapters": ["cap3", "cap10", "cap11"]
+    },
+    {
+      "id": "evt-008c",
+      "year": 1966,
+      "title": "Black Panther Party (Panteras Negras)",
+      "category": "movimientos_sociales",
+      "description": "Fundación del partido en Oakland. Programas comunitarios: desayunos gratuitos, clínicas de salud, educación. Autodefensa armada contra brutalidad policial.",
+      "impact": "Modelo de organización comunitaria autónoma y programa político radical desde la comunidad negra",
+      "lessons": "El poder se construye desde la base con servicios concretos, no solo con retórica",
+      "relatedChapters": ["cap10", "cap12", "cap13"]
+    },
+    {
+      "id": "evt-009",
+      "year": 1968,
+      "title": "Mayo Francés",
+      "category": "movimientos_sociales",
+      "description": "Protestas estudiantiles y huelgas obreras masivas en Francia. Cuestionamiento de autoridad, consumismo, jerarquías universitarias y laborales.",
+      "impact": "Expandió la crítica del capitalismo más allá de lo económico hacia cultura, educación y vida cotidiana",
+      "lessons": "El cambio cultural puede preceder al cambio estructural, pero sin institucionalización se diluye",
+      "relatedChapters": ["cap3", "cap11"]
+    },
+    {
+      "id": "evt-009b",
+      "year": 1970,
+      "title": "Gobierno de Salvador Allende (Chile)",
+      "category": "revoluciones",
+      "description": "Primera vía democrática al socialismo. Nacionalización del cobre, reforma agraria, educación y salud gratuitas. Experimento Cybersyn de planificación cibernética.",
+      "impact": "Demostró posibilidad de transformación socialista por vía electoral. Anticipó uso de tecnología para democracia económica",
+      "lessons": "Los experimentos democráticos de izquierda enfrentan sabotaje interno y externo (golpe de Pinochet 1973)",
+      "relatedChapters": ["cap3", "cap9", "cap10", "cap14"]
+    },
+    {
+      "id": "evt-010",
+      "year": 1972,
+      "title": "Los Límites del Crecimiento",
+      "category": "filosofía_política",
+      "description": "Informe del Club de Roma modelando colapso civilizatorio si el crecimiento continúa en recursos finitos.",
+      "impact": "Primera advertencia sistémica sobre insostenibilidad del modelo de crecimiento infinito",
+      "lessons": "Conocer el problema no garantiza acción si las estructuras de incentivo no cambian",
+      "relatedChapters": ["cap2", "cap4", "cap7"]
+    },
+    {
+      "id": "evt-010b",
+      "year": 1977,
+      "title": "Movimiento Chipko (India)",
+      "category": "movimientos_ambientales",
+      "description": "Mujeres campesinas abrazando árboles para impedir tala comercial. Ecofeminismo, defensa de bosques comunales, conocimiento tradicional.",
+      "impact": "Conectó ecología, feminismo y resistencia al desarrollo extractivista. Inspiró movimientos ambientales del Sur Global",
+      "lessons": "Las comunidades locales son guardianes efectivos de ecosistemas cuando tienen autonomía",
+      "relatedChapters": ["cap4", "cap7", "cap12"]
+    },
+    {
+      "id": "evt-010c",
+      "year": 1988,
+      "title": "Asesinato de Chico Mendes (Brasil)",
+      "category": "movimientos_ambientales",
+      "description": "Líder seringueiro asesinado por defender Amazonía. Unió derechos laborales, conservación ambiental y derechos indígenas.",
+      "impact": "Visibilizó internacionalmente destrucción amazónica y conflictos socioambientales",
+      "lessons": "La defensa ambiental es peligrosa cuando amenaza intereses económicos poderosos",
+      "relatedChapters": ["cap4", "cap7", "cap10"]
+    },
+    {
+      "id": "evt-010d",
+      "year": 1990,
+      "title": "Liberación de Nelson Mandela",
+      "category": "movimientos_sociales",
+      "description": "Fin del apartheid en Sudáfrica tras décadas de lucha. Transición negociada, comisión de verdad y reconciliación.",
+      "impact": "Victoria sobre régimen de segregación racial institucionalizado. Modelo de justicia transicional",
+      "lessons": "La resistencia sostenida puede derrotar sistemas de opresión racial, pero las desigualdades económicas persisten",
+      "relatedChapters": ["cap3", "cap10", "cap13"]
+    },
+    {
+      "id": "evt-011",
+      "year": 1994,
+      "title": "Levantamiento Zapatista (México)",
+      "category": "movimientos_sociales",
+      "description": "Insurrección indígena en Chiapas. \"Mandar obedeciendo\", autonomía, democracia horizontal. Crítica al neoliberalismo y TLCAN.",
+      "impact": "Modelo de resistencia que combina tradición indígena con crítica anticapitalista global",
+      "lessons": "Los pueblos pueden recuperar autonomía si organizan poder desde abajo",
+      "relatedChapters": ["cap10", "cap12", "cap15"]
+    },
+    {
+      "id": "evt-012",
+      "year": 1999,
+      "title": "Batalla de Seattle (Anti-OMC)",
+      "category": "movimientos_sociales",
+      "description": "Protestas masivas contra la globalización neoliberal y la Organización Mundial del Comercio.",
+      "impact": "Nacimiento del movimiento altermundista: \"otro mundo es posible\"",
+      "lessons": "La resistencia global puede coordinar acciones pero necesita propuestas concretas de alternativa",
+      "relatedChapters": ["cap2", "cap9"]
+    },
+    {
+      "id": "evt-013",
+      "year": 2001,
+      "title": "Foro Social Mundial",
+      "category": "movimientos_sociales",
+      "description": "Encuentro anual de movimientos sociales de todo el mundo. Espacio de convergencia de luchas y experimentación de alternativas.",
+      "impact": "Creó red global de resistencia al neoliberalismo y laboratorio de ideas",
+      "lessons": "Los espacios de encuentro horizontal permiten emergencia de inteligencia colectiva",
+      "relatedChapters": ["cap6", "cap8", "cap10"]
+    },
+    {
+      "id": "evt-014",
+      "year": 2008,
+      "title": "Crisis Financiera Global",
+      "category": "revoluciones",
+      "description": "Colapso de Lehman Brothers. Crisis de hipotecas subprime. Rescates bancarios masivos con dinero público.",
+      "impact": "Reveló fragilidad del sistema financiero y privatización de ganancias/socialización de pérdidas",
+      "lessons": "Las crisis sistémicas son oportunidades desperdiciadas si no hay alternativa articulada",
+      "relatedChapters": ["cap2", "cap4"]
+    },
+    {
+      "id": "evt-015",
+      "year": 2011,
+      "title": "Primavera Árabe",
+      "category": "revoluciones",
+      "description": "Ola de protestas y revoluciones en el mundo árabe contra regímenes autoritarios. Uso de redes sociales para coordinación.",
+      "impact": "Demostró poder de movilización horizontal y rol de tecnología en organización",
+      "lessons": "Derrocar dictaduras es más fácil que construir alternativas democráticas estables",
+      "relatedChapters": ["cap10", "cap14"]
+    },
+    {
+      "id": "evt-016",
+      "year": 2011,
+      "title": "Occupy Wall Street",
+      "category": "movimientos_sociales",
+      "description": "Ocupación del parque Zuccotti en NY. Denuncia del \"1% vs 99%\". Asambleas horizontales, democracia directa.",
+      "impact": "Cambió discurso público sobre desigualdad en EEUU. Experimentó con formas horizontales de organización",
+      "lessons": "Los movimientos pueden cambiar narrativas sin tomar el poder, pero necesitan estrategias de largo plazo",
+      "relatedChapters": ["cap2", "cap10", "cap13"]
+    },
+    {
+      "id": "evt-016b",
+      "year": 2013,
+      "title": "Black Lives Matter",
+      "category": "movimientos_sociales",
+      "description": "Movimiento descentralizado contra violencia policial y racismo sistémico. Hashtag que se convierte en red global tras asesinatos de Trayvon Martin, Michael Brown, George Floyd.",
+      "impact": "Renovó conciencia sobre racismo estructural. Conectó brutalidad policial con capitalismo racial y encarcelamiento masivo",
+      "lessons": "Las redes sociales permiten organización descentralizada, pero requieren estructuras para sostenibilidad",
+      "relatedChapters": ["cap3", "cap10", "cap14"]
+    },
+    {
+      "id": "evt-017",
+      "year": 2015,
+      "title": "Acuerdo de París sobre Clima",
+      "category": "movimientos_ambientales",
+      "description": "Tratado internacional para limitar calentamiento global a menos de 2°C. Primer acuerdo climático casi universal.",
+      "impact": "Reconocimiento político global de la crisis climática",
+      "lessons": "Los acuerdos sin mecanismos vinculantes y sin cambio del modelo económico son insuficientes",
+      "relatedChapters": ["cap4", "cap7"]
+    },
+    {
+      "id": "evt-018",
+      "year": 2016,
+      "title": "Experimento de Renta Básica (Finlandia)",
+      "category": "experimentos_económicos",
+      "description": "Prueba piloto de renta básica universal incondicional durante 2 años con 2000 personas.",
+      "impact": "Datos empíricos sobre efectos de desacoplar ingresos del empleo",
+      "lessons": "La renta básica mejora bienestar sin reducir empleo, pero requiere transformación fiscal",
+      "relatedChapters": ["cap9", "cap13"]
+    },
+    {
+      "id": "evt-019",
+      "year": 2018,
+      "title": "Huelga Escolar por el Clima (Greta Thunberg)",
+      "category": "movimientos_ambientales",
+      "description": "Inicio del movimiento Fridays for Future. Millones de jóvenes en huelga global exigiendo acción climática.",
+      "impact": "Nueva generación asume protagonismo político desde urgencia existencial",
+      "lessons": "La juventud puede romper el status quo cuando su futuro está en juego",
+      "relatedChapters": ["cap4", "cap7", "cap11"]
+    },
+    {
+      "id": "evt-020",
+      "year": 2019,
+      "title": "Protestas Globales Simultáneas",
+      "category": "movimientos_sociales",
+      "description": "Estallidos sociales simultáneos en Chile, Hong Kong, Líbano, Ecuador, Francia (Chalecos Amarillos), Catalunya, etc.",
+      "impact": "Patrón global de rechazo a desigualdad y sistemas políticos no representativos",
+      "lessons": "El malestar es sistémico y global, pero fragmentado en luchas nacionales sin coordinación",
+      "relatedChapters": ["cap3", "cap4", "cap13"]
+    },
+    {
+      "id": "evt-021",
+      "year": 2020,
+      "title": "Pandemia COVID-19",
+      "category": "revoluciones",
+      "description": "Pandemia global. Confinamientos. Colapso de cadenas de suministro. Experimentos masivos de teletrabajo. Visibilización de trabajos esenciales.",
+      "impact": "Reveló fragilidad de sistema globalizado, posibilidad de cambios rápidos y falsa dicotomía economía-salud",
+      "lessons": "El sistema puede cambiar en semanas si hay voluntad política, pero las estructuras de poder se adaptan rápido",
+      "relatedChapters": ["cap2", "cap4", "cap9"]
+    },
+    {
+      "id": "evt-022",
+      "year": 2022,
+      "title": "Guerra en Ucrania",
+      "category": "revoluciones",
+      "description": "Conflicto armado en Ucrania. Crisis energética global. Ruptura de cadenas de suministro. Nuevo alineamiento geopolítico.",
+      "impact": "Aceleró transición energética europea y cuestionó dependencias sistémicas",
+      "lessons": "Las crisis revelan interdependencias ocultas y fuerzan reconfiguración de sistemas",
+      "relatedChapters": ["cap2", "cap3"]
+    },
+    {
+      "id": "evt-023",
+      "year": 2022,
+      "title": "Emergencia de IA Generativa (ChatGPT)",
+      "category": "tecnología_social",
+      "description": "Lanzamiento público de ChatGPT. Acceso masivo a inteligencia artificial. Inicio de debate sobre futuro del trabajo, creatividad y cognición.",
+      "impact": "Punto de inflexión en relación humano-máquina y automatización del trabajo cognitivo",
+      "lessons": "La tecnología avanza más rápido que nuestra capacidad de regular sus implicaciones sociales",
+      "relatedChapters": ["cap8", "cap14", "cap17"]
+    },
+    {
+      "id": "evt-024",
+      "year": 2023,
+      "title": "Récords Climáticos Globales",
+      "category": "movimientos_ambientales",
+      "description": "Año más caliente registrado. Incendios masivos, inundaciones, sequías. Cruce de puntos de no retorno climáticos.",
+      "impact": "La crisis climática dejó de ser proyección futura para ser realidad presente",
+      "lessons": "El tiempo de prevención se acabó; estamos en fase de adaptación y mitigación de daños",
+      "relatedChapters": ["cap4", "cap7"]
+    },
+    {
+      "id": "evt-025",
+      "year": 2024,
+      "title": "Experimentos de Democracia Digital",
+      "category": "tecnología_social",
+      "description": "Uso de plataformas de participación ciudadana (Decidim, Consul, etc.) en decenas de ciudades. Presupuestos participativos digitales.",
+      "impact": "Tecnología permite escalamiento de democracia directa antes imposible",
+      "lessons": "Las herramientas existen, pero requieren voluntad política de ceder poder real",
+      "relatedChapters": ["cap10", "cap14"]
+    }
+  ],
+
+  "patterns": {
+    "title": "Patrones Recurrentes en la Historia",
+    "observations": [
+      {
+        "pattern": "Crisis como catalizadores",
+        "description": "Las transformaciones profundas suelen ocurrir en contextos de crisis (económica, política, ambiental). Las crisis abren ventanas de posibilidad.",
+        "examples": ["evt-014", "evt-021", "evt-022"]
+      },
+      {
+        "pattern": "Reproducción de estructuras de poder",
+        "description": "Revoluciones que derriban viejas estructuras a menudo reproducen nuevas jerarquías si no transforman premisas profundas.",
+        "examples": ["evt-001", "evt-004", "evt-015"]
+      },
+      {
+        "pattern": "Horizontalidad vs Sostenibilidad",
+        "description": "Movimientos horizontales y asamblearios muestran vitalidad inicial pero dificultad para sostenerse sin institucionalización.",
+        "examples": ["evt-003", "evt-009", "evt-016"]
+      },
+      {
+        "pattern": "Lo local y lo global",
+        "description": "Los experimentos exitosos suelen ser locales (Mondragón, cooperativas), pero los problemas son globales (clima, finanzas). Falta escalamiento.",
+        "examples": ["evt-007", "evt-011", "evt-025"]
+      },
+      {
+        "pattern": "Tecnología como doble filo",
+        "description": "La tecnología puede empoderar movimientos (redes sociales en Primavera Árabe) o concentrar poder (vigilancia, automatización).",
+        "examples": ["evt-015", "evt-023", "evt-025"]
+      },
+      {
+        "pattern": "Retraso institucional",
+        "description": "Las instituciones cambian más lento que las crisis y las tecnologías, creando vacíos peligrosos.",
+        "examples": ["evt-017", "evt-023", "evt-024"]
+      }
+    ]
+  }
+}

@@ -27,8 +27,16 @@ class AudioReader {
 
     // ⭐ TTS Manager (para voces premium OpenAI y Hugging Face)
     this.ttsManager = window.TTSManager ? new window.TTSManager() : null;
-    // Provider: 'browser' | 'openai' | 'huggingface'
-    this.ttsProvider = localStorage.getItem('tts-provider') || 'browser';
+    // Provider: 'browser' | 'native' | 'openai' | 'huggingface'
+    // SIEMPRE usar 'browser' (voces de Google) por defecto
+    const savedProvider = localStorage.getItem('tts-provider');
+    this.ttsProvider = savedProvider || 'browser';
+
+    // Si no hay provider guardado, guardar 'browser' como predeterminado
+    if (!savedProvider) {
+      localStorage.setItem('tts-provider', 'browser');
+      console.log('🔊 Configurando Google Web Speech API como motor de voz predeterminado');
+    }
 
     // Wake Lock para mantener pantalla activa durante audio
     this.wakeLock = null;
@@ -58,6 +66,10 @@ class AudioReader {
     this.sleepTimerMinutes = 0;
     this.sleepTimerStartTime = null;
 
+    // 🔧 FIX #56: Variables para pausar sleep timer al minimizar app
+    this.sleepTimerPaused = false;
+    this.sleepTimerRemainingTime = 0;
+
     // Bookmarks de audio
     this.audioBookmarks = this.loadBookmarks();
 
@@ -67,6 +79,10 @@ class AudioReader {
 
     // Keyboard listeners
     this.keyboardListenerAttached = false;
+
+    // 🧹 MEMORY LEAK FIX #51: Handler para visibilitychange (liberar wake lock en background)
+    this.visibilityChangeHandler = null;
+    this.attachVisibilityHandler();
 
     // Inicializar TTS según plataforma
     this.initTTS();
@@ -93,11 +109,9 @@ class AudioReader {
             logger.log('✅ Español disponible en TTS nativo');
           }
 
-          // ⭐ Si no hay provider configurado o es 'browser', usar nativo por defecto
-          if (!localStorage.getItem('tts-provider') || this.ttsProvider === 'browser') {
-            this.ttsProvider = 'native';
-            logger.log('✅ TTS nativo configurado como provider por defecto');
-          }
+          // ⭐ Cargar voces de Google/Web Speech API por defecto
+          this.loadVoices();
+          logger.log('✅ TTS nativo disponible, pero usando Google Web Speech API por defecto');
 
           // ⭐ Inicialización "dummy" para asegurar que el TTS esté listo
           try {
@@ -120,11 +134,9 @@ class AudioReader {
           const languages = result?.languages || [];
           logger.log('✅ TTS nativo inicializado (fallback). Idiomas:', languages.length);
 
-          // ⭐ Si no hay provider configurado o es 'browser', usar nativo por defecto
-          if (!localStorage.getItem('tts-provider') || this.ttsProvider === 'browser') {
-            this.ttsProvider = 'native';
-            logger.log('✅ TTS nativo configurado como provider por defecto');
-          }
+          // ⭐ Cargar voces de Google/Web Speech API por defecto
+          this.loadVoices();
+          logger.log('✅ TTS nativo disponible (fallback), pero usando Google Web Speech API por defecto');
 
           // ⭐ Inicialización "dummy" para asegurar que el TTS esté listo
           try {
@@ -1609,6 +1621,9 @@ class AudioReader {
                             ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
                             : 'bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white'
                       }">
+                ${this.nativeTTS ? `
+                  <option value="native" ${this.ttsProvider === 'native' ? 'selected' : ''}>Sistema (Android)</option>
+                ` : ''}
                 <option value="browser" ${this.ttsProvider === 'browser' ? 'selected' : ''}>Navegador</option>
                 ${localStorage.getItem('openai-tts-key') ? `
                   <option value="openai" ${this.ttsProvider === 'openai' ? 'selected' : ''}>OpenAI</option>
@@ -2889,30 +2904,11 @@ class AudioReader {
       logger.log(`💾 Posición guardada: Párrafo ${this.currentParagraphIndex + 1}/${this.paragraphs.length}`);
     }
 
-    // 🧹 CLEANUP COMPLETO para evitar memory leaks
+    // Detener reproducción sin resetear posición
     this.stop(false); // false = no resetear posición guardada
-    this.clearSleepTimer();
-    this.detachKeyboardListeners();
-    this.detachDragListeners(); // 🔧 Remover drag listeners
-    this.detachMinimizedPlayerGestures(); // 🔧 Remover gesture listeners del FAB
 
-    // 🔧 Limpiar caché de TTS (liberar blob URLs)
-    if (this.ttsManager && this.ttsManager.providers && this.ttsManager.providers.openai) {
-      try {
-        this.ttsManager.providers.openai.clearCache();
-        logger.log('🗑️ Caché TTS limpiado');
-      } catch (err) {
-        console.warn('Error limpiando caché TTS:', err);
-      }
-    }
-
-    // Liberar Wake Lock si está activo
-    if (this.wakeLock) {
-      this.wakeLock.release().catch(err => {
-        console.warn('Error liberando wake lock:', err);
-      });
-      this.wakeLock = null;
-    }
+    // 🧹 CLEANUP COMPLETO para evitar memory leaks (#50, #51, #52)
+    this.cleanup();
 
     // Remover UI
     const controls = document.getElementById('audioreader-controls');
@@ -2926,7 +2922,7 @@ class AudioReader {
     if (bottomSheet) bottomSheet.remove();
     if (overlay) overlay.remove();
 
-    logger.log('🧹 Audioreader cleanup completado');
+    logger.log('🧹 Audioreader cerrado y limpiado');
   }
 
   async toggle() {
@@ -2982,6 +2978,45 @@ class AudioReader {
     const transcurrido = (Date.now() - this.sleepTimerStartTime) / 1000 / 60;
     const restante = Math.max(0, this.sleepTimerMinutes - transcurrido);
     return Math.ceil(restante);
+  }
+
+  /**
+   * 🔧 FIX #56: Pausar sleep timer al minimizar app
+   */
+  pauseSleepTimer() {
+    if (!this.sleepTimer || this.sleepTimerPaused) return;
+
+    // Calcular tiempo restante
+    const transcurrido = (Date.now() - this.sleepTimerStartTime) / 1000 / 60;
+    this.sleepTimerRemainingTime = Math.max(0, this.sleepTimerMinutes - transcurrido);
+
+    // Cancelar timer actual
+    clearTimeout(this.sleepTimer);
+    this.sleepTimer = null;
+    this.sleepTimerPaused = true;
+
+    logger.log(`😴 Sleep timer pausado - ${Math.ceil(this.sleepTimerRemainingTime)}m restantes`);
+  }
+
+  /**
+   * 🔧 FIX #56: Resumir sleep timer al volver a la app
+   */
+  resumeSleepTimer() {
+    if (!this.sleepTimerPaused || this.sleepTimerRemainingTime <= 0) return;
+
+    // Crear nuevo timer con el tiempo restante
+    this.sleepTimer = setTimeout(() => {
+      logger.log('😴 Sleep timer finalizado - deteniendo reproducción');
+      this.stop();
+    }, this.sleepTimerRemainingTime * 60 * 1000);
+
+    // Actualizar tiempo de inicio para reflejar el tiempo restante
+    this.sleepTimerStartTime = Date.now();
+    this.sleepTimerMinutes = this.sleepTimerRemainingTime;
+    this.sleepTimerPaused = false;
+    this.sleepTimerRemainingTime = 0;
+
+    logger.log(`😴 Sleep timer resumido - ${Math.ceil(this.sleepTimerMinutes)}m restantes`);
   }
 
   async fadeOutAndStop() {
@@ -3139,7 +3174,13 @@ class AudioReader {
       timestamp: Date.now()
     };
 
-    localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
+    // 🔧 FIX #55: Wrap en try-catch para evitar crashes por QuotaExceededError
+    try {
+      localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando posición:', error);
+      // No mostrar error al usuario, es funcionalidad secundaria
+    }
   }
 
   loadLastPosition() {
@@ -3286,6 +3327,12 @@ class AudioReader {
     if (this.keyboardListenerAttached) return;
 
     this.keyboardHandler = (evento) => {
+      // 🔧 FIX #57: Verificar que el audioReader esté visible antes de ejecutar shortcuts
+      const container = document.getElementById('audioreader-container');
+      if (!container || container.classList.contains('hidden')) {
+        return;
+      }
+
       const controlsVisible = document.getElementById('audioreader-controls');
       if (!controlsVisible) return;
 
@@ -3383,6 +3430,128 @@ class AudioReader {
       this.keyboardListenerAttached = false;
       logger.log('⌨️ Atajos de teclado desactivados');
     }
+  }
+
+  // 🧹 MEMORY LEAK FIX #51: Visibilitychange handler para liberar wake lock
+  attachVisibilityHandler() {
+    this.visibilityChangeHandler = async () => {
+      if (document.hidden) {
+        // Liberar wake lock en background
+        if (this.wakeLock && !this.wakeLock.released) {
+          logger.log('📱 App en background - liberando wake lock');
+          await this.releaseWakeLock();
+        }
+
+        // 🔧 FIX #56: Pausar sleep timer al minimizar app
+        if (this.sleepTimer && !this.sleepTimerPaused) {
+          this.pauseSleepTimer();
+        }
+      } else {
+        // 🔧 FIX #56: Resumir sleep timer al volver a la app
+        if (this.sleepTimerPaused && this.sleepTimerRemainingTime > 0) {
+          this.resumeSleepTimer();
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', this.visibilityChangeHandler);
+    logger.log('👁️ Handler de visibilidad adjuntado');
+  }
+
+  detachVisibilityHandler() {
+    if (this.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+      this.visibilityChangeHandler = null;
+      logger.log('👁️ Handler de visibilidad removido');
+    }
+  }
+
+  // 🧹 MEMORY LEAK FIX #52: Limpiar handlers de Media Session API
+  clearMediaSession() {
+    if ('mediaSession' in navigator) {
+      try {
+        // Limpiar metadata
+        navigator.mediaSession.metadata = null;
+
+        // Limpiar todos los action handlers
+        const actions = ['play', 'pause', 'previoustrack', 'nexttrack', 'stop', 'seekbackward', 'seekforward'];
+        actions.forEach(action => {
+          try {
+            navigator.mediaSession.setActionHandler(action, null);
+          } catch (e) {
+            // Ignorar errores (algunos actions pueden no estar soportados)
+          }
+        });
+
+        logger.log('🎵 Media Session limpiada');
+      } catch (error) {
+        console.warn('⚠️ Error limpiando Media Session:', error);
+      }
+    }
+  }
+
+  // 🧹 CLEANUP COMPLETO: Método centralizado para liberar todos los recursos
+  cleanup() {
+    logger.log('[AudioReader] Iniciando cleanup completo...');
+
+    // 1. Detener reproducción y cancelar speech (#50)
+    if (this.synthesis) {
+      try {
+        this.synthesis.cancel();
+        logger.log('🔊 Web Speech API cancelado');
+      } catch (e) {
+        console.warn('Error cancelando speech:', e);
+      }
+    }
+
+    if (this.nativeTTS) {
+      try {
+        this.nativeTTS.stop();
+        logger.log('🔊 TTS nativo detenido');
+      } catch (e) {
+        console.warn('Error deteniendo TTS nativo:', e);
+      }
+    }
+
+    // 2. Liberar wake lock (#51)
+    if (this.wakeLock && !this.wakeLock.released) {
+      this.wakeLock.release().catch(err => {
+        console.warn('Error liberando wake lock:', err);
+      });
+      this.wakeLock = null;
+      logger.log('🔓 Wake lock liberado');
+    }
+
+    // 3. Limpiar Media Session (#52)
+    this.clearMediaSession();
+
+    // 4. Limpiar timers
+    this.clearSleepTimer();
+
+    // 5. Remover event listeners
+    this.detachKeyboardListeners();
+    this.detachDragListeners();
+    this.detachMinimizedPlayerGestures();
+    this.detachVisibilityHandler();
+
+    // 6. Limpiar caché de TTS
+    if (this.ttsManager && this.ttsManager.providers && this.ttsManager.providers.openai) {
+      try {
+        this.ttsManager.providers.openai.clearCache();
+        logger.log('🗑️ Caché TTS limpiado');
+      } catch (err) {
+        console.warn('Error limpiando caché TTS:', err);
+      }
+    }
+
+    // 7. Detener Background Audio Helper
+    if (window.backgroundAudio) {
+      window.backgroundAudio.stop().catch(err => {
+        console.warn('Error deteniendo background audio:', err);
+      });
+    }
+
+    logger.log('[AudioReader] Cleanup completado ✅');
   }
 
   // ==========================================================================

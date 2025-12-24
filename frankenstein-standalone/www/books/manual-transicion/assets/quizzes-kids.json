@@ -1,0 +1,1377 @@
+{
+  "bookId": "manual-transicion",
+  "bookTitle": "Manual de Transición",
+  "subtitle": " (versión niños)",
+  "chapters": {
+    "prologo": {
+      "chapterTitle": "La paradoja de la transición",
+      "questions": [
+        {
+          "id": "q_ninos_1",
+          "question": "¿Qué es una 'transición' o cambio grande en la vida?",
+          "type": "multiple",
+          "options": [
+            "¿Solo cuando te mudas a otra ciudad?",
+            "¿Cualquier momento importante donde algo termina y algo nuevo empieza?",
+            "¿Solo cosas tristes?",
+            "¿Cambiar de ropa?"
+          ],
+          "correct": 1,
+          "explanation": "¿Una transición es cuando algo importante cambia en tu vida: pasar de primaria a secundaria, aprender algo nuevo, hacer nuevos amigos. Son momentos do...",
+          "bookQuote": ""
+        },
+        {
+          "id": "q_ninos_2",
+          "question": "¿Cuando queremos cambiar algo que no funciona bien, ¿qué es mejor hacer?",
+          "type": "multiple",
+          "options": [
+            "¿Esperar a que alguien más lo arregle?",
+            "¿Empezar con pequeños pasos, aunque sean pequeños?",
+            "¿Quejarse mucho pero no hacer nada?",
+            "¿Romper todo y empezar de cero?"
+          ],
+          "correct": 1,
+          "explanation": "¿Los grandes cambios empiezan con pequeños pasos. Como dice Einstein: 'No podemos resolver problemas pensando igual que antes'. ¡Cada pequeño paso cue...",
+          "bookQuote": ""
+        },
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'La paradoja de la transición'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap1": {
+      "chapterTitle": "Anatomía de las transiciones históricas",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Anatomía de las transiciones históricas'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap2": {
+      "chapterTitle": "Teoría del cambio sistémico",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Teoría del cambio sistémico'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap3": {
+      "chapterTitle": "El mapa del ecosistema de cambio",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'El mapa del ecosistema de cambio'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap4": {
+      "chapterTitle": "El fin del modelo empresarial como lo conocemos",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'El fin del modelo empresarial como lo conocemos'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap5": {
+      "chapterTitle": "Cooperativismo 2.0",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Cooperativismo 2.0'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap6": {
+      "chapterTitle": "Organizaciones sin jefes",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Organizaciones sin jefes'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap7": {
+      "chapterTitle": "Commons y procomún",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Commons y procomún'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap8": {
+      "chapterTitle": "DAOs y nuevas formas de coordinación digital",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'DAOs y nuevas formas de coordinación digital'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap9": {
+      "chapterTitle": "Herramientas económicas",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Herramientas económicas'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap10": {
+      "chapterTitle": "Herramientas de gobernanza",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Herramientas de gobernanza'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap11": {
+      "chapterTitle": "Herramientas digitales",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Herramientas digitales'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap12": {
+      "chapterTitle": "Herramientas relacionales",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Herramientas relacionales'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap13": {
+      "chapterTitle": "Herramientas interiores",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Herramientas interiores'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap14": {
+      "chapterTitle": "Transición personal",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Transición personal'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap15": {
+      "chapterTitle": "Transición comunitaria",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Transición comunitaria'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap16": {
+      "chapterTitle": "Transición organizacional",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Transición organizacional'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap17": {
+      "chapterTitle": "Transición política",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Transición política'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap18": {
+      "chapterTitle": "Estrategias de supervivencia digna",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Estrategias de supervivencia digna'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap19": {
+      "chapterTitle": "Construir poder sin tomarlo",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Construir poder sin tomarlo'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "cap20": {
+      "chapterTitle": "Proteger lo que se construye",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'Proteger lo que se construye'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    },
+    "epilogo": {
+      "chapterTitle": "La invitación continúa",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿[PENDIENTE] Pregunta sobre concepto clave de 'La invitación continúa'?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Opción A - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción B - CORRECTA?",
+            "¿[PENDIENTE] Opción C - incorrecta pero plausible?",
+            "¿[PENDIENTE] Opción D - incorrecta pero plausible?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación educativa?",
+          "bookQuote": "¿[PENDIENTE] Cita textual del capítulo?"
+        },
+        {
+          "id": "q2",
+          "question": "¿[PENDIENTE] Pregunta sobre aplicación práctica?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Aplicación A?",
+            "¿[PENDIENTE] Aplicación B - CORRECTA?",
+            "¿[PENDIENTE] Aplicación C?",
+            "¿[PENDIENTE] Aplicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de aplicación?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre práctica?"
+        },
+        {
+          "id": "q3",
+          "question": "¿[PENDIENTE] Pregunta sobre implicaciones filosóficas/teóricas?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Implicación A?",
+            "¿[PENDIENTE] Implicación B - CORRECTA?",
+            "¿[PENDIENTE] Implicación C?",
+            "¿[PENDIENTE] Implicación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación profunda?",
+          "bookQuote": "¿[PENDIENTE] Cita filosófica?"
+        },
+        {
+          "id": "q4",
+          "question": "¿[PENDIENTE] Pregunta sobre relaciones entre conceptos?",
+          "type": "multiple",
+          "options": [
+            "¿[PENDIENTE] Relación A?",
+            "¿[PENDIENTE] Relación B - CORRECTA?",
+            "¿[PENDIENTE] Relación C?",
+            "¿[PENDIENTE] Relación D?"
+          ],
+          "correct": 1,
+          "explanation": "¿[PENDIENTE] Explicación de conexiones?",
+          "bookQuote": "¿[PENDIENTE] Cita sobre relaciones?"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,329 @@
+/**
+ * MOBILE SCROLL FIX - Solución definitiva para scroll móvil
+ * Implementa arquitectura "Single Scroll Container"
+ *
+ * @version 1.0.0
+ * @priority HIGH
+ */
+
+/* ========================================
+   NIVEL 1: CONTENEDOR PRINCIPAL
+   ======================================== */
+
+/* Bloquear scroll en el contenedor principal */
+.frankenstein-laboratory,
+.organism-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden !important; /* ← NO scroll aquí */
+  touch-action: pan-y pinch-zoom;
+}
+
+/* ========================================
+   NIVEL 2: WORKSPACE - ÚNICO SCROLL
+   ======================================== */
+
+/* Este es el ÚNICO contenedor con scroll */
+.lab-workspace {
+  height: 100vh;
+  height: 100dvh; /* ← Dynamic Viewport Height (móviles modernos) */
+  overflow-y: auto !important; /* ← ÚNICO punto de scroll */
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch; /* ← iOS smooth scrolling */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain; /* ← Prevenir bounce no deseado */
+  touch-action: pan-y; /* ← Solo scroll vertical */
+}
+
+/* ========================================
+   NIVEL 3: PANELES INTERNOS - SIN SCROLL
+   ======================================== */
+
+/* Eliminar scroll anidado de todos los paneles */
+.being-display,
+.pieces-deck,
+.mission-selector {
+  overflow: visible !important; /* ← Dejar fluir naturalmente */
+  max-height: none !important; /* ← No limitar altura */
+  height: auto !important;
+}
+
+/* Vitruvio - dejar que crezca */
+.vitruvian-container {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+}
+
+/* ========================================
+   LIBROS EXPANDIDOS - MODAL LIMPIO
+   ======================================== */
+
+/* Estado normal */
+.book-tree-item {
+  position: relative;
+  overflow: visible;
+}
+
+/* Estado expandido = Modal full-screen */
+.book-tree-item.expanded {
+  position: fixed !important; /* ← No absolute */
+  inset: 0 !important;
+  z-index: 9999;
+  background: rgba(15, 15, 25, 0.98);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Header fijo en libros expandidos */
+.book-tree-item.expanded .book-tree-header {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  background: linear-gradient(135deg, rgba(30, 30, 45, 0.98), rgba(20, 20, 35, 0.98));
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--franken-brass);
+  flex-shrink: 0;
+  padding: 1rem;
+}
+
+/* Contenido con scroll independiente */
+.book-tree-item.expanded .book-tree-content,
+.book-tree-item.expanded .book-chapters {
+  flex: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem;
+  scroll-padding-top: 80px;
+}
+
+/* Bloquear scroll del workspace cuando hay libro expandido */
+body.book-expanded .lab-workspace {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* ========================================
+   CAPÍTULOS - CONTENEDORES ANIDADOS
+   ======================================== */
+
+/* Los capítulos NO deben tener scroll propio */
+.chapter-tree-item {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.chapter-tree-content {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Solo si hay MUCHOS capítulos, permitir scroll */
+.book-chapters {
+  max-height: none; /* ← Dejar crecer */
+  overflow: visible;
+}
+
+/* En caso de lista muy larga (>15 capítulos) */
+.book-tree-item.expanded .book-chapters.many-chapters {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ========================================
+   PIEZAS DECK - SCROLL OPTIMIZADO
+   ======================================== */
+
+/* Desktop: Sin scroll (usa lab-workspace) */
+.pieces-deck {
+  overflow: visible !important;
+}
+
+.pieces-container {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.pieces-grid {
+  overflow: visible !important;
+}
+
+/* Móvil: Usar bottom sheet con scroll interno */
+@media (max-width: 768px) {
+  /* El bottom sheet tiene su propio scroll */
+  #pieces-bottom-sheet {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  #pieces-bottom-sheet .bottom-sheet-content {
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+  }
+}
+
+/* ========================================
+   MODALES - SCROLL INDEPENDIENTE
+   ======================================== */
+
+/* Modales siempre tienen scroll propio */
+#saved-beings-modal,
+#mission-selection-modal,
+[id$="-modal"] {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenido del modal con scroll */
+.saved-beings-body,
+.mission-modal-body,
+.modal-body {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-height: 70vh;
+}
+
+/* Bloquear scroll del body cuando modal está abierto */
+body.modal-open .lab-workspace {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* ========================================
+   MÓVIL - OPTIMIZACIONES ESPECÍFICAS
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Asegurar que workspace usa toda la altura */
+  .lab-workspace {
+    height: 100vh;
+    height: 100dvh; /* ← Compensar barra de navegación móvil */
+    min-height: -webkit-fill-available;
+  }
+
+  /* Modales ocupan toda la pantalla */
+  #saved-beings-modal,
+  [id$="-modal"] {
+    align-items: stretch;
+  }
+
+  .saved-beings-body,
+  .modal-body {
+    max-height: calc(100vh - 60px); /* ← Espacio para header */
+  }
+
+  /* Bottom sheet styles */
+  #pieces-bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    will-change: transform;
+    transform: translateZ(0); /* GPU acceleration */
+  }
+}
+
+/* ========================================
+   IOS - SAFARI FIXES
+   ======================================== */
+
+/* Safari tiene problemas con 100vh */
+@supports (-webkit-touch-callout: none) {
+  .lab-workspace {
+    min-height: -webkit-fill-available;
+  }
+
+  .book-tree-item.expanded {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* ========================================
+   SCROLLBARS PERSONALIZADOS
+   ======================================== */
+
+/* Scrollbar del workspace */
+.lab-workspace::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lab-workspace::-webkit-scrollbar-track {
+  background: rgba(10, 10, 15, 0.5);
+  border-radius: 4px;
+}
+
+.lab-workspace::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--franken-brass), var(--franken-copper));
+  border-radius: 4px;
+}
+
+.lab-workspace::-webkit-scrollbar-thumb:hover {
+  background: var(--franken-brass);
+}
+
+/* Scrollbar de libro expandido */
+.book-tree-item.expanded .book-tree-content::-webkit-scrollbar,
+.book-tree-item.expanded .book-chapters::-webkit-scrollbar {
+  width: 6px;
+}
+
+.book-tree-item.expanded .book-tree-content::-webkit-scrollbar-thumb,
+.book-tree-item.expanded .book-chapters::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.6);
+  border-radius: 3px;
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Activar aceleración GPU en elementos scrollables */
+.lab-workspace,
+.book-tree-item.expanded .book-tree-content,
+#pieces-bottom-sheet {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+/* Smooth scroll momentum */
+.lab-workspace,
+.book-tree-item.expanded .book-tree-content,
+.saved-beings-body {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ========================================
+   DEBUGGING (COMENTAR EN PRODUCCIÓN)
+   ======================================== */
+
+/* Uncomment para debug
+.lab-workspace {
+  outline: 3px solid red !important;
+}
+
+.book-tree-item.expanded .book-tree-content {
+  outline: 3px solid blue !important;
+}
+
+[style*="overflow-y: auto"],
+[style*="overflow: auto"] {
+  outline: 2px dashed yellow !important;
+}
+*/

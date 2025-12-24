@@ -268,29 +268,64 @@ const FrankensteinLabScreen = ({ navigation }) => {
     // Seleccionar avatar
     const avatar = selectAvatar(normalizedAttributes);
 
-    // Crear el ser para el juego
+    // Crear el ser para el juego con sistema de progresión mejorado
     const newBeing = {
-      id: `lab_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      id: beingData.id || `lab_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
       name: beingData.name || 'Ser del Laboratorio',
       avatar: avatar,
       status: 'available',
       currentMission: null,
-      level: 1,
-      experience: 0,
-      createdAt: new Date().toISOString(),
+
+      // Sistema de progresión
+      level: beingData.level || 1,
+      experience: beingData.xp || 0,
+      xpToNextLevel: beingData.xpToNextLevel || 100,
+
+      // Sistema de energía por ser
+      energy: beingData.energy || 100,
+      maxEnergy: beingData.maxEnergy || 100,
+      lastEnergyUpdate: Date.now(),
+
+      // Turnos de misión
+      turnsRemaining: 0,
+      turnsTotal: 0,
+
+      // Estadísticas
+      stats: beingData.stats || {
+        missionsCompleted: 0,
+        missionsSuccess: 0,
+        missionsFailed: 0,
+        totalTurnsPlayed: 0,
+        challengesCompleted: 0,
+        totalXpEarned: 0
+      },
+
+      // Rasgos desbloqueables
+      traits: beingData.traits || [],
+
+      // Generación (para híbridos)
+      generation: beingData.generation || 1,
+
+      createdAt: beingData.createdAt || new Date().toISOString(),
       attributes: normalizedAttributes,
+      baseAttributes: beingData.baseAttributes || normalizedAttributes,
       sourceApp: 'frankenstein-lab-embedded',
       totalPower: beingData.totalPower || 0,
+      balance: beingData.balance || {},
       missionName: beingData.missionName || null
     };
 
     // Agregar al store
     addBeing(newBeing);
 
-    // Mostrar confirmación
+    // Mostrar confirmación con info de nivel
     Alert.alert(
       '¡Ser Creado!',
-      `"${newBeing.name}" ${avatar} ha sido agregado a tu colección.\n\nPoder: ${newBeing.totalPower}\n\n¡Ya puedes usarlo en misiones!`,
+      `"${newBeing.name}" ${avatar} ha sido agregado a tu colección.\n\n` +
+      `⚡ Poder: ${newBeing.totalPower}\n` +
+      `📊 Nivel: ${newBeing.level}\n` +
+      `🔋 Energía: ${newBeing.energy}/${newBeing.maxEnergy}\n\n` +
+      `¡Ya puedes usarlo en misiones!`,
       [
         {
           text: 'Ver Mis Seres',

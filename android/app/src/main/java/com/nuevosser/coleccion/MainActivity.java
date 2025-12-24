@@ -1,6 +1,7 @@
 package com.nuevosser.coleccion;
 
 import android.os.Bundle;
+import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -8,6 +9,9 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Habilitar debugging de WebView para ver console.log en logcat
+        WebView.setWebContentsDebuggingEnabled(true);
 
         // Registrar plugins personalizados
         registerPlugin(WidgetBridgePlugin.class);

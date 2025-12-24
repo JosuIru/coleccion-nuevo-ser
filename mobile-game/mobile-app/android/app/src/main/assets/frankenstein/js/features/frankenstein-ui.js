@@ -20,6 +20,305 @@ class FrankensteinLabUI {
     this.avatarSystem = null; // Sistema de avatares procedurales
     this.isInitialized = false;
     this.labStarted = false; // Track si ya se inició el lab
+    this.pendingRequirementsUpdate = false;
+    this.mobileBooksData = {};
+    this.mobileSheetFilter = 'all';
+    this.mobileSheetSearch = '';
+    this.experimentLog = [];
+    this.lastRequirementState = {};
+    this.missionProgress = { fulfilled: 0, total: 0 };
+    this.activeMiniChallenge = null;
+    this.miniChallengeHistory = [];
+    this.activeDemoScenario = null;
+    this.microSocietySnapshot = null;
+    this.skipQuizForSpecialReward = false;
+    this.vintageBackgrounds = [
+      'assets/backgrounds/vitruvio.jpg',
+      'assets/backgrounds/leonardo-skull.jpg',
+      'assets/backgrounds/frankenstein-1931.jpg',
+      'assets/backgrounds/turtle-anatomy.jpg',
+      'assets/backgrounds/cheselden-skeleton.jpg',
+      'assets/backgrounds/galvanism-aldini.jpg',
+      'assets/backgrounds/spiralist-anatomy.jpg',
+      'assets/backgrounds/spiralist-bones.jpg',
+      'assets/backgrounds/spiralist-heart.jpg'
+    ];
+    this.backgroundRotationTimer = null;
+    this.previousBackgroundIndex = -1;
+    this.microSocietyEvents = [
+      {
+        id: 'research',
+        label: 'Explorar piezas',
+        description: 'Investigar nuevas piezas y compartir aprendizajes.',
+        deltas: { knowledge: 8, action: 3 }
+      },
+      {
+        id: 'care',
+        label: 'Círculo de cuidado',
+        description: 'Activar redes de apoyo y fortalecer la cohesión.',
+        deltas: { cohesion: 10, health: 4 }
+      },
+      {
+        id: 'respond',
+        label: 'Responder crisis',
+        description: 'Actuar rápido ante desafíos y demostrar resiliencia.',
+        deltas: { action: 7, resilience: 5, health: -2 }
+      }
+    ];
+    this.microEventHistory = [];
+    this.hasRestoredLabState = false;
+    this.labStateKey = 'frankenstein-lab-state';
+    this.vitruvianPopupTimeout = null;
+
+    // Cache de referencias DOM frecuentes (optimización de rendimiento)
+    this.domCache = {
+      // Contenedores principales
+      organismContainer: null,
+      piecesGrid: null,
+      missionsGrid: null,
+
+      // Modales
+      missionModal: null,
+      requirementsModal: null,
+      piecesModal: null,
+      vitruvianPopup: null,
+
+      // Botones de acción
+      btnExportBeing: null,
+      btnValidateBeing: null,
+      btnTalkToBeing: null,
+
+      // FABs
+      fabRequirements: null,
+      fabPieces: null,
+      fabRequirementsBadge: null,
+      fabPiecesBadge: null,
+
+      // Información del ser
+      beingName: null,
+      beingMission: null,
+      beingPower: null,
+      beingPieces: null,
+      beingStatus: null,
+      beingAvatar: null,
+      beingAttributes: null,
+      beingBalance: null,
+      beingComponentsList: null,
+
+      // Requisitos de misión
+      requirementsChecklist: null,
+      currentMissionName: null,
+      currentPower: null,
+      requiredPower: null,
+      progressFill: null,
+      progressText: null,
+
+      // Mini-vista de requisitos
+      progressFillMini: null,
+      progressLabelMini: null,
+      requirementsListMini: null,
+      requirementsSummaryLabel: null,
+
+      // Sticky header
+      stickyRequirementsHeader: null,
+      stickyProgressFill: null,
+      stickyProgressText: null,
+
+      // Quick view
+      quickViewList: null,
+      quickViewStatus: null,
+      quickView: null,
+
+      // Piezas seleccionadas
+      piecesSelectedCount: null,
+      piecesSelectedPower: null,
+
+      // Vitruvian
+      vitruvianHud: null,
+      vitruvianEnergyBadge: null,
+      vitruvianSlotLegend: null,
+      vitruvianBeingContainer: null,
+
+      // Modal de misión
+      modalMissionName: null,
+      modalMissionDescription: null,
+      modalMissionDifficulty: null,
+      modalMissionPower: null,
+      modalMissionProgress: null,
+      modalMissionHints: null,
+
+      // Progress ring
+      missionProgressRing: null,
+      missionProgressPercent: null,
+      missionProgressStatus: null,
+      missionProgressFillRing: null,
+      missionProgressHint: null,
+
+      // Mini challenge
+      miniChallengeBody: null,
+      miniChallengeTitle: null,
+
+      // Validación
+      validationResults: null,
+
+      // Experiment log
+      experimentLogList: null,
+      experimentLogMeta: null,
+
+      // Bottom sheet
+      piecesBottomSheet: null,
+      bottomSheetHandle: null,
+
+      // Menú
+      labSideMenu: null,
+
+      // Otros
+      piecesSearch: null,
+      biblioteca: null
+    };
+  }
+
+  /**
+   * Inicializar cache de referencias DOM
+   * Optimiza el rendimiento al evitar llamadas repetidas a querySelector/getElementById
+   */
+  initDomCache() {
+    const cache = this.domCache;
+
+    // Contenedores principales
+    cache.organismContainer = document.getElementById('organism-container');
+    cache.piecesGrid = document.getElementById('pieces-grid');
+    cache.missionsGrid = document.getElementById('missions-grid');
+
+    // Modales
+    cache.missionModal = document.getElementById('mission-modal');
+    cache.requirementsModal = document.getElementById('requirements-modal');
+    cache.piecesModal = document.getElementById('pieces-modal');
+    cache.vitruvianPopup = document.getElementById('vitruvian-popup');
+
+    // Botones de acción
+    cache.btnExportBeing = document.getElementById('btn-export-being');
+    cache.btnValidateBeing = document.getElementById('btn-validate-being');
+    cache.btnTalkToBeing = document.getElementById('btn-talk-to-being');
+
+    // FABs
+    cache.fabRequirements = document.getElementById('fab-requirements');
+    cache.fabPieces = document.getElementById('fab-pieces');
+    cache.fabRequirementsBadge = document.getElementById('fab-requirements-badge');
+    cache.fabPiecesBadge = document.getElementById('fab-pieces-badge');
+
+    // Información del ser
+    cache.beingName = document.getElementById('being-name');
+    cache.beingMission = document.getElementById('being-mission');
+    cache.beingPower = document.getElementById('being-power');
+    cache.beingPieces = document.getElementById('being-pieces');
+    cache.beingStatus = document.getElementById('being-status');
+    cache.beingAvatar = document.getElementById('being-avatar-display');
+    cache.beingAttributes = document.getElementById('being-attributes');
+    cache.beingBalance = document.getElementById('being-balance');
+    cache.beingComponentsList = document.getElementById('being-components-list');
+
+    // Requisitos de misión
+    cache.requirementsChecklist = document.getElementById('requirements-checklist');
+    cache.currentMissionName = document.getElementById('current-mission-name');
+    cache.currentPower = document.getElementById('current-power');
+    cache.requiredPower = document.getElementById('required-power');
+    cache.progressFill = document.getElementById('progress-fill');
+    cache.progressText = document.getElementById('progress-text');
+
+    // Mini-vista de requisitos
+    cache.progressFillMini = document.getElementById('progress-fill-mini');
+    cache.progressLabelMini = document.getElementById('progress-label-mini');
+    cache.requirementsListMini = document.getElementById('requirements-list-mini');
+    cache.requirementsSummaryLabel = document.getElementById('requirements-summary-label');
+
+    // Sticky header
+    cache.stickyRequirementsHeader = document.getElementById('requirements-sticky-header');
+    cache.stickyProgressFill = document.getElementById('sticky-progress-fill');
+    cache.stickyProgressText = document.getElementById('sticky-progress-text');
+
+    // Quick view
+    cache.quickViewList = document.getElementById('quick-view-list');
+    cache.quickViewStatus = document.getElementById('quick-view-status');
+    cache.quickView = document.getElementById('missing-requirements-quick-view');
+
+    // Piezas seleccionadas
+    cache.piecesSelectedCount = document.getElementById('pieces-selected-count');
+    cache.piecesSelectedPower = document.getElementById('pieces-selected-power');
+
+    // Vitruvian
+    cache.vitruvianHud = document.getElementById('vitruvian-hud');
+    cache.vitruvianEnergyBadge = document.getElementById('vitruvian-energy-badge');
+    cache.vitruvianSlotLegend = document.getElementById('vitruvian-slot-legend');
+    cache.vitruvianBeingContainer = document.getElementById('vitruvian-being-container');
+
+    // Modal de misión
+    cache.modalMissionName = document.getElementById('modal-mission-name');
+    cache.modalMissionDescription = document.getElementById('modal-mission-description');
+    cache.modalMissionDifficulty = document.getElementById('modal-mission-difficulty');
+    cache.modalMissionPower = document.getElementById('modal-mission-power');
+    cache.modalMissionProgress = document.getElementById('modal-mission-progress');
+    cache.modalMissionHints = document.getElementById('modal-mission-hints');
+
+    // Progress ring
+    cache.missionProgressRing = document.getElementById('mission-progress-ring');
+    cache.missionProgressPercent = document.getElementById('mission-progress-percent');
+    cache.missionProgressStatus = document.getElementById('mission-progress-status');
+    cache.missionProgressFillRing = document.getElementById('mission-progress-fill');
+    cache.missionProgressHint = document.getElementById('mission-progress-hint');
+
+    // Mini challenge
+    cache.miniChallengeBody = document.getElementById('mini-challenge-body');
+    cache.miniChallengeTitle = document.getElementById('mini-challenge-title');
+
+    // Validación
+    cache.validationResults = document.getElementById('validation-results');
+
+    // Experiment log
+    cache.experimentLogList = document.getElementById('experiment-log-list');
+    cache.experimentLogMeta = document.getElementById('experiment-log-meta');
+
+    // Bottom sheet
+    cache.piecesBottomSheet = document.getElementById('pieces-bottom-sheet');
+    cache.bottomSheetHandle = document.getElementById('bottom-sheet-handle');
+
+    // Menú
+    cache.labSideMenu = document.getElementById('lab-side-menu');
+
+    // Otros
+    cache.piecesSearch = document.getElementById('pieces-search');
+    cache.biblioteca = document.getElementById('biblioteca-view');
+  }
+
+  /**
+   * Limpiar cache DOM (útil cuando se recrea la UI)
+   */
+  clearDomCache() {
+    Object.keys(this.domCache).forEach(key => {
+      this.domCache[key] = null;
+    });
+  }
+
+  /**
+   * Sincronizar estado de botones de acción
+   */
+  updateActionButtons() {
+    const hasBeing = !!(this.currentBeing && (this.selectedPieces.length > 0 || (this.currentBeing.pieces && this.currentBeing.pieces.length > 0)));
+    const exportBtn = this.domCache.btnExportBeing || document.getElementById('btn-export-being');
+    const validateBtn = this.domCache.btnValidateBeing || document.getElementById('btn-validate-being');
+    const talkBtn = this.domCache.btnTalkToBeing || document.getElementById('btn-talk-to-being');
+
+    if (exportBtn) {
+      exportBtn.disabled = !hasBeing;
+    }
+
+    if (talkBtn) {
+      talkBtn.disabled = !hasBeing;
+    }
+
+    if (validateBtn) {
+      validateBtn.disabled = !(hasBeing && this.selectedMission);
+    }
   }
 
   /**
@@ -73,7 +372,98 @@ class FrankensteinLabUI {
     }
 
     this.isInitialized = true;
+    this.loadExperimentLog();
+
+    // Inicializar sistema de recompensas
+    this.initRewardsSystem();
+
     console.log('✅ FrankensteinLabUI inicializado completamente');
+  }
+
+  /**
+   * Inicializar sistema de recompensas
+   */
+  initRewardsSystem() {
+    if (typeof FrankensteinRewards === 'undefined') {
+      console.warn('⚠️ FrankensteinRewards no disponible');
+      return;
+    }
+
+    if (!window.frankensteinRewards) {
+      window.frankensteinRewards = new FrankensteinRewards();
+    }
+
+    // Verificar login diario y mostrar recompensa si aplica
+    const dailyReward = window.frankensteinRewards.checkDailyLogin();
+    if (dailyReward) {
+      setTimeout(() => {
+        this.showDailyLoginReward(dailyReward);
+      }, 1500);
+    }
+
+    console.log('✅ Sistema de recompensas inicializado');
+  }
+
+  /**
+   * Mostrar recompensa de login diario
+   */
+  showDailyLoginReward(reward) {
+    const modal = document.createElement('div');
+    modal.className = 'daily-reward-modal';
+    modal.innerHTML = `
+      <div class="daily-reward-content">
+        <div class="daily-reward-icon">${reward.streak >= 7 ? '🔥' : '☀️'}</div>
+        <h2>¡Bienvenido de nuevo!</h2>
+        <p class="daily-streak">Racha: ${reward.streak} día${reward.streak !== 1 ? 's' : ''}</p>
+        ${reward.isNewRecord ? '<p class="new-record">🏆 ¡Nuevo récord!</p>' : ''}
+        <div class="daily-rewards">
+          <span class="daily-xp">+${reward.xp} ⭐ XP</span>
+          <span class="daily-coins">+${reward.coins} 🪙</span>
+        </div>
+        <button class="lab-button primary" onclick="this.closest('.daily-reward-modal').remove()">
+          ¡Genial!
+        </button>
+      </div>
+    `;
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10005;
+      animation: frFadeIn 0.3s ease-out;
+    `;
+
+    const content = modal.querySelector('.daily-reward-content');
+    content.style.cssText = `
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      color: white;
+      max-width: 320px;
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+    `;
+
+    modal.querySelector('.daily-reward-icon').style.cssText = 'font-size: 64px; margin-bottom: 16px;';
+    modal.querySelector('h2').style.cssText = 'margin: 0 0 8px; font-size: 24px;';
+    modal.querySelector('.daily-streak').style.cssText = 'color: #fbbf24; font-size: 18px; margin: 8px 0;';
+    modal.querySelector('.daily-rewards').style.cssText = 'display: flex; justify-content: center; gap: 20px; margin: 16px 0; font-size: 20px;';
+
+    const newRecord = modal.querySelector('.new-record');
+    if (newRecord) newRecord.style.cssText = 'color: #22c55e; font-size: 14px; margin: 4px 0;';
+
+    // Aplicar recompensas
+    window.frankensteinRewards.addXP(reward.xp, 'dailyLogin');
+    window.frankensteinRewards.addCoins(reward.coins, 'dailyLogin');
+
+    document.body.appendChild(modal);
   }
 
   /**
@@ -253,6 +643,11 @@ class FrankensteinLabUI {
     return this.ensureMissionRequirements(this.selectedMission) || [];
   }
 
+  isMobileViewport() {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 768px)').matches;
+  }
+
   /**
    * Obtener icono de ejercicio según categoría
    */
@@ -277,8 +672,8 @@ class FrankensteinLabUI {
       return;
     }
 
-    // Establecer fondo vintage aleatorio
-    this.setRandomDaVinciBackground();
+    // Establecer fondo vintage aleatorio y mantenerlo rotando
+    this.startBackgroundRotation();
 
     console.log('✅ Creando pantalla de inicio en:', container);
 
@@ -287,85 +682,199 @@ class FrankensteinLabUI {
 
     console.log('📊 Modo actual:', currentMode, 'Dificultad:', currentDifficulty);
 
+    const modeLabels = {
+      investigacion: 'Exploración Libre',
+      juego: 'Aprendizaje Guiado',
+      demo: 'Demo Cinemática'
+    };
+
+    const difficultyLabels = {
+      ninos: 'Niños',
+      principiante: 'Principiante',
+      iniciado: 'Iniciado',
+      experto: 'Experto'
+    };
+
     const startScreen = document.createElement('div');
     startScreen.id = 'frankenstein-start-screen';
     startScreen.className = 'frankenstein-start-screen';
     startScreen.innerHTML = `
       <div class="start-screen-content">
-        <div class="start-screen-header">
-          <h1 class="start-screen-title">
-            <span class="title-icon">⚡</span>
-            Frankenstein Lab
-          </h1>
-          <p class="start-screen-subtitle">
-            Crea seres conscientes combinando conocimiento de los libros
-          </p>
+        <div class="start-hero">
+          <div class="hero-info">
+            <p class="hero-label">Temporada 3.1 · Laboratorio Vivo</p>
+            <h1 class="hero-title">
+              Ensambla seres. Activa misiones.
+            </h1>
+            <p class="hero-description">
+              Selecciona tu modo, ajusta la dificultad y entra a un laboratorio inspirado en RPGs tácticos. Cada sesión desbloquea nuevas combinaciones de conocimiento.
+            </p>
+
+            <div class="hero-actions">
+              <button class="start-button" id="frankenstein-start-button">
+                <span>Entrar al Laboratorio</span>
+                <span class="start-button-arrow">→</span>
+              </button>
+              <button class="ghost-button" id="frankenstein-close-button">
+                Volver a la Colección
+              </button>
+            </div>
+
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <span class="hero-stat-label">Modo activo</span>
+                <span class="hero-stat-value">${modeLabels[currentMode] || 'Selecciona modo'}</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-label">Dificultad</span>
+                <span class="hero-stat-value">${difficultyLabels[currentDifficulty] || 'Principiante'}</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-label">Piezas disponibles</span>
+                <span class="hero-stat-value">${this.availablePieces.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="hero-holo">
+              <div class="hero-holo-ring ring-1"></div>
+              <div class="hero-holo-ring ring-2"></div>
+              <div class="hero-holo-ring ring-3"></div>
+              <div class="hero-holo-core">🧬</div>
+            </div>
+            <div class="hero-visual-meta">
+              <div>
+                <p class="meta-label">Briefing</p>
+                <p class="meta-value">Selecciona un modo y pulsa “Entrar” para desbloquear el tablero completo.</p>
+              </div>
+              <div class="meta-divider"></div>
+              <div class="meta-grid">
+                <div>
+                  <p class="meta-label">Misiones disponibles</p>
+                  <p class="meta-number">12</p>
+                </div>
+                <div>
+                  <p class="meta-label">Microsistemas</p>
+                  <p class="meta-number">5</p>
+                </div>
+                <div>
+                  <p class="meta-label">Seres demo</p>
+                  <p class="meta-number">3</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="start-screen-config">
-          <div class="config-section">
-            <div class="config-header">
-              <span class="config-icon">🎮</span>
-              <h3>Modo de Juego</h3>
+        <div class="hero-tabs">
+          <button class="hero-tab active" data-panel-target="panel-modes">🎮 Modos</button>
+          <button class="hero-tab" data-panel-target="panel-difficulty">⚙️ Dificultad</button>
+          <button class="hero-tab" data-panel-target="panel-briefing">📜 Briefing</button>
+        </div>
+
+        <div class="start-panels">
+          <section class="start-panel active" id="panel-modes">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-label">Paso 1</p>
+                <h2>Elige cómo quieres jugar</h2>
+              </div>
+              <p class="panel-description">Cada modo ajusta el comportamiento del laboratorio y la forma en que se calculan los atributos.</p>
             </div>
-            <div class="mode-options">
+            <div class="mode-grid">
               <button class="mode-card ${currentMode === 'investigacion' ? 'selected' : ''}" data-mode="investigacion">
                 <div class="mode-card-icon">🔍</div>
-                <div class="mode-card-title">Investigación</div>
-                <div class="mode-card-description">Explora libremente sin evaluaciones. Ideal para familiarizarte con el sistema.</div>
+                <div>
+                  <h3 class="mode-card-title">Investigación</h3>
+                  <p class="mode-card-description">Explora libremente sin evaluaciones ni presión. Perfecto para crear prototipos.</p>
+                </div>
               </button>
               <button class="mode-card ${currentMode === 'juego' ? 'selected' : ''}" data-mode="juego">
                 <div class="mode-card-icon">🧠</div>
-                <div class="mode-card-title">Aprendizaje</div>
-                <div class="mode-card-description">Responde quizzes adaptados a tu nivel. El poder de las piezas depende de tu comprensión.</div>
+                <div>
+                  <h3 class="mode-card-title">Aprendizaje</h3>
+                  <p class="mode-card-description">Completa quizzes para potenciar tus piezas. Ideal para progresión narrativa.</p>
+                </div>
               </button>
               <button class="mode-card ${currentMode === 'demo' ? 'selected' : ''}" data-mode="demo">
                 <div class="mode-card-icon">✨</div>
-                <div class="mode-card-title">Demo</div>
-                <div class="mode-card-description">Explora seres y microsociedades de ejemplo. Sin quizzes, poder moderado.</div>
+                <div>
+                  <h3 class="mode-card-title">Demo</h3>
+                  <p class="mode-card-description">Carga seres y microsociedades de ejemplo para inspirarte rápidamente.</p>
+                </div>
               </button>
             </div>
-          </div>
+          </section>
 
-          <div class="config-section">
-            <div class="config-header">
-              <span class="config-icon">⚡</span>
-              <h3>Dificultad Quiz</h3>
+          <section class="start-panel" id="panel-difficulty">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-label">Paso 2</p>
+                <h2>Ajusta la dificultad del quiz</h2>
+              </div>
+              <p class="panel-description">Solo aplica en modo Aprendizaje. A mayor dificultad, mayor impacto en el poder de cada pieza.</p>
             </div>
-            <p class="config-note">Solo aplica en modo Aprendizaje</p>
-            <div class="difficulty-options">
+            <div class="difficulty-grid">
               <button class="difficulty-card ${currentDifficulty === 'ninos' ? 'selected' : ''}" data-difficulty="ninos">
                 <div class="difficulty-card-icon">🎈</div>
-                <div class="difficulty-card-title">Niños</div>
-                <div class="difficulty-card-description">Preguntas fáciles con lenguaje sencillo</div>
+                <div>
+                  <h3 class="difficulty-card-title">Niños</h3>
+                  <p class="difficulty-card-description">Lenguaje sencillo, feedback amable y retos cortos.</p>
+                </div>
               </button>
               <button class="difficulty-card ${currentDifficulty === 'principiante' ? 'selected' : ''}" data-difficulty="principiante">
                 <div class="difficulty-card-icon">🌱</div>
-                <div class="difficulty-card-title">Principiante</div>
-                <div class="difficulty-card-description">Preguntas sencillas sobre conceptos básicos</div>
+                <div>
+                  <h3 class="difficulty-card-title">Principiante</h3>
+                  <p class="difficulty-card-description">Introduce conceptos clave de cada libro sin saturar.</p>
+                </div>
               </button>
               <button class="difficulty-card ${currentDifficulty === 'iniciado' ? 'selected' : ''}" data-difficulty="iniciado">
                 <div class="difficulty-card-icon">📚</div>
-                <div class="difficulty-card-title">Iniciado</div>
-                <div class="difficulty-card-description">Preguntas de complejidad media</div>
+                <div>
+                  <h3 class="difficulty-card-title">Iniciado</h3>
+                  <p class="difficulty-card-description">Preguntas situacionales y conexiones entre piezas.</p>
+                </div>
               </button>
               <button class="difficulty-card ${currentDifficulty === 'experto' ? 'selected' : ''}" data-difficulty="experto">
                 <div class="difficulty-card-icon">🔥</div>
-                <div class="difficulty-card-title">Experto</div>
-                <div class="difficulty-card-description">Preguntas avanzadas que requieren comprensión profunda</div>
+                <div>
+                  <h3 class="difficulty-card-title">Experto</h3>
+                  <p class="difficulty-card-description">Desafíos profundos que exigen síntesis y visión estratégica.</p>
+                </div>
               </button>
             </div>
-          </div>
-        </div>
+          </section>
 
-        <div class="start-screen-footer">
-          <button class="start-button" id="frankenstein-start-button">
-            <span>Comenzar</span>
-            <span class="start-button-arrow">→</span>
-          </button>
-          <button class="close-button" id="frankenstein-close-button">
-            Cerrar
-          </button>
+          <section class="start-panel" id="panel-briefing">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-label">Resumen</p>
+                <h2>Antes de entrar</h2>
+              </div>
+              <p class="panel-description">Este laboratorio mezcla UI de videojuegos con contenidos reales de la colección. Usa este briefing para orientarte.</p>
+            </div>
+            <div class="briefing-grid">
+              <article class="briefing-card">
+                <h3>🔧 Micro UX</h3>
+                <p>Gestos, tarjetas y paneles flotantes pensados para móvil y escritorio.</p>
+              </article>
+              <article class="briefing-card">
+                <h3>🕹️ Flujo modular</h3>
+                <p>Activa o desactiva módulos: misiones, piezas, chat IA, microsistemas.</p>
+              </article>
+              <article class="briefing-card">
+                <h3>🌌 Ambientación</h3>
+                <p>Fondos dinámicos inspirados en bocetos de Da Vinci y laboratorio gótico.</p>
+              </article>
+            </div>
+            <ul class="briefing-list">
+              <li>⚡ Selecciona un modo y una dificultad antes de entrar.</li>
+              <li>🧬 En modo Demo cargamos seres automáticamente para que puedas experimentar.</li>
+              <li>🎯 Puedes cambiar de misión en cualquier momento desde el laboratorio.</li>
+            </ul>
+          </section>
         </div>
       </div>
     `;
@@ -406,6 +915,22 @@ class FrankensteinLabUI {
       });
     });
 
+    // Tab panels
+    const heroTabs = startScreen.querySelectorAll('[data-panel-target]');
+    const panels = startScreen.querySelectorAll('.start-panel');
+    heroTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.panelTarget;
+        heroTabs.forEach(btn => btn.classList.remove('active'));
+        panels.forEach(panel => panel.classList.remove('active'));
+        tab.classList.add('active');
+        const targetPanel = startScreen.querySelector(`#${targetId}`);
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+        }
+      });
+    });
+
     // Event listener para botón comenzar
     const startButton = startScreen.querySelector('#frankenstein-start-button');
     if (startButton) {
@@ -435,44 +960,68 @@ class FrankensteinLabUI {
   /**
    * Set random vintage scientific/technical background image
    */
-  setRandomDaVinciBackground() {
-    // Array de imágenes vintage descargadas localmente (dominio público)
-    // Rutas relativas al directorio www/ para compatibilidad con APK y web
-    const vintageImages = [
-      // Leonardo da Vinci - Hombre de Vitrubio
-      'assets/backgrounds/vitruvio.jpg',
+  setRandomDaVinciBackground(preferredImage = null) {
+    const fallbackImage = 'assets/backgrounds/vitruvio.jpg';
+    const available = this.vintageBackgrounds?.length ? this.vintageBackgrounds : [fallbackImage];
 
-      // Leonardo da Vinci - Estudios del cráneo
-      'assets/backgrounds/leonardo-skull.jpg',
+    let selectedImage = preferredImage;
+    if (!selectedImage) {
+      if (available.length === 1) {
+        selectedImage = available[0];
+      } else {
+        let nextIndex = this.previousBackgroundIndex;
+        let safety = 0;
+        while (nextIndex === this.previousBackgroundIndex && safety < 10) {
+          nextIndex = Math.floor(Math.random() * available.length);
+          safety += 1;
+        }
+        this.previousBackgroundIndex = nextIndex;
+        selectedImage = available[nextIndex];
+      }
+    }
 
-      // Frankenstein - Imagen clásica de 1931
-      'assets/backgrounds/frankenstein-1931.jpg',
+    const resolvedUrl = this.resolveAssetUrl(selectedImage);
+    const fallbackUrl = this.resolveAssetUrl(fallbackImage);
 
-      // Anatomía de tortuga - Ilustración vintage 1821
-      'assets/backgrounds/turtle-anatomy.jpg',
+    const applyBackground = (url) => {
+      document.documentElement.style.setProperty('--da-vinci-bg', `url('${url}')`);
+    };
 
-      // William Cheselden - Osteographia 1733 (esqueleto humano)
-      'assets/backgrounds/cheselden-skeleton.jpg',
+    const preview = new Image();
+    preview.onload = () => applyBackground(resolvedUrl);
+    preview.onerror = () => applyBackground(fallbackUrl || resolvedUrl);
+    preview.src = resolvedUrl;
+  }
 
-      // Giovanni Aldini - Experimentos de galvanismo (electrificación de cadáveres)
-      'assets/backgrounds/galvanism-aldini.jpg',
+  resolveAssetUrl(assetPath) {
+    if (!assetPath) return '';
+    if (/^https?:\/\//.test(assetPath)) {
+      return assetPath;
+    }
 
-      // Pettigrew - Anatomía espiralista (patrones helicoidales en anatomía)
-      'assets/backgrounds/spiralist-anatomy.jpg',
+    try {
+      return new URL(assetPath, window.location.href).href;
+    } catch (error) {
+      try {
+        const basePath = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}`;
+        return new URL(assetPath, basePath).href;
+      } catch {
+        return assetPath;
+      }
+    }
+  }
 
-      // Pettigrew - Huesos espiralistas (estructuras óseas helicoidales)
-      'assets/backgrounds/spiralist-bones.jpg',
+  startBackgroundRotation(forceImage = null) {
+    if (this.backgroundRotationTimer) {
+      clearInterval(this.backgroundRotationTimer);
+      this.backgroundRotationTimer = null;
+    }
 
-      // Pettigrew - Corazón espiralista (estructura helicoidal del músculo cardíaco)
-      'assets/backgrounds/spiralist-heart.jpg'
-    ];
+    this.setRandomDaVinciBackground(forceImage);
 
-    // Seleccionar imagen aleatoria
-    const randomIndex = Math.floor(Math.random() * vintageImages.length);
-    const selectedImage = vintageImages[randomIndex];
-
-    // Aplicar como variable CSS
-    document.documentElement.style.setProperty('--da-vinci-bg', `url('${selectedImage}')`);
+    this.backgroundRotationTimer = window.setInterval(() => {
+      this.setRandomDaVinciBackground();
+    }, 45000);
   }
 
   /**
@@ -492,12 +1041,12 @@ class FrankensteinLabUI {
     if (loading) loading.remove();
 
     // Alternar imagen de fondo de Leonardo da Vinci aleatoriamente
-    this.setRandomDaVinciBackground();
+    this.startBackgroundRotation();
 
     container.innerHTML = `
       <div class="frankenstein-laboratory awakening-theme">
-        <!-- Header Estilo Awakening -->
-        <header class="awakening-header">
+        <!-- Header Mejorado -->
+        <header class="lab-header lab-header-enhanced">
           <div class="lab-header-content">
             <!-- Lado izquierdo: Menú hamburguesa -->
             <div class="lab-header-left">
@@ -516,7 +1065,7 @@ class FrankensteinLabUI {
 
             <!-- Lado derecho: Acciones -->
             <div class="lab-header-actions">
-              <button class="lab-header-icon-btn" id="btn-saved-beings" onclick="window.frankensteinLabUI.showSavedBeingsModal()" title="Seres Guardados">
+              <button class="lab-header-icon-btn" id="btn-saved-beings" title="Seres Guardados">
                 <span>🗂️</span>
                 <span class="header-btn-badge" id="saved-beings-count" style="display:none;">0</span>
               </button>
@@ -617,67 +1166,166 @@ class FrankensteinLabUI {
                     <span class="stat-value" id="being-status">Sin misión</span>
                   </div>
                 </div>
+                <div class="mission-progress-card">
+                  <div class="progress-ring" id="mission-progress-ring">
+                    <div class="progress-ring-inner">
+                      <span class="progress-ring-percent" id="mission-progress-percent">0%</span>
+                      <small id="mission-progress-label">objetivos</small>
+                    </div>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-track-header">
+                      <p>Ruta de misión</p>
+                      <span id="mission-progress-status">0/0</span>
+                    </div>
+                    <div class="progress-reward-bar">
+                      <div class="progress-reward-fill" id="mission-progress-fill"></div>
+                      <span class="mission-reward-icon" data-threshold="25" style="left:25%">⭐</span>
+                      <span class="mission-reward-icon" data-threshold="60" style="left:60%">⚡</span>
+                      <span class="mission-reward-icon" data-threshold="100" style="left:100%">🏆</span>
+                    </div>
+                    <p class="progress-track-hint" id="mission-progress-hint">Selecciona una misión para desbloquear recompensas.</p>
+                  </div>
+                </div>
               </div>
 
               <div class="being-visual-grid">
-                <div class="data-card">
+                <div class="vitruvian-stage" id="vitruvian-stage">
+                  <div class="vitruvian-stage-inner">
+                    <div class="vitruvian-stage-header">
+                      <div>
+                        <p class="label-chip">Vitruvio</p>
+                        <h4>Mapa energético del ser</h4>
+                      </div>
+                      <span class="vitruvian-energy-badge" id="vitruvian-energy-badge">⚡ 0</span>
+                    </div>
+                    <div class="vitruvian-stage-body">
+                      <div class="vitruvian-hud" id="vitruvian-hud">
+                        <p class="vitruvian-hud-empty">Añade capítulos y ejercicios para activar este radar.</p>
+                      </div>
+                      <div id="vitruvian-being-container" class="vitruvian-container vitruvian-container-expanded">
+                        <!-- El Hombre de Vitrubio se renderiza aquí -->
+                      </div>
+                    </div>
+                    <div class="vitruvian-composition" id="vitruvian-slot-legend">
+                      <p class="vitruvian-composition-empty">Selecciona piezas para ver qué partes del cuerpo se energizan.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="data-card identity-card">
                   <div class="card-header">
                     <h4>Identidad visual</h4>
                   </div>
                   <div id="being-avatar-display" class="being-avatar-display"></div>
-                </div>
-                <div class="data-card vitruvian-card">
-                  <div class="card-header">
-                    <h4>Vitruvian analyzer</h4>
-                  </div>
-                  <div id="vitruvian-being-container" class="vitruvian-container">
-                    <!-- El Hombre de Vitrubio se renderiza aquí -->
+                  <div class="identity-components">
+                    <div class="identity-components-header">
+                      <span>ADN narrativo</span>
+                      <small id="being-components-count">0 piezas</small>
+                    </div>
+                    <ul id="being-components-list">
+                      <li>Selecciona capítulos y ejercicios para componer este ser.</li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="being-panels">
-              <details class="data-card collapsible-card" open>
+              <details class="data-card collapsible-card attributes-requirements-card">
                 <summary>
-                  <span>📊 Atributos del Ser</span>
+                  <span>📊 Atributos &amp; Requisitos</span>
                   <small id="attributes-summary-meta">Selecciona piezas para ver atributos</small>
                 </summary>
-                <div class="card-body" id="being-attributes">
-                  <!-- Barras de atributos se generan dinámicamente -->
-                </div>
-              </details>
-
-              <details class="data-card collapsible-card" open>
-                <summary>
-                  <span>🎯 Requisitos de la misión</span>
-                  <small id="requirements-summary-label">0/0</small>
-                </summary>
                 <div class="card-body">
-                  <div class="mission-requirements-summary" id="mission-requirements-summary" hidden>
-                    <div class="requirements-summary-progress">
-                      <div class="progress-bar-mini">
-                        <div class="progress-fill-mini" id="progress-fill-mini" style="width: 0%"></div>
+                  <div class="attributes-requirements-grid">
+                    <div id="being-attributes">
+                      <!-- Barras de atributos se generan dinámicamente -->
+                    </div>
+
+                    <div class="requirements-mini-card">
+                      <div class="requirements-mini-header">
+                        <span>🎯 Requisitos de la misión</span>
+                        <small id="requirements-summary-label">--</small>
                       </div>
-                      <span class="progress-label-mini" id="progress-label-mini">0/0 cumplidos</span>
+                      <div class="mission-requirements-summary" id="mission-requirements-summary">
+                        <div class="requirements-summary-progress">
+                          <div class="progress-bar-mini">
+                            <div class="progress-fill-mini" id="progress-fill-mini" style="width: 0%"></div>
+                          </div>
+                          <span class="progress-label-mini" id="progress-label-mini">Selecciona una misión</span>
+                        </div>
+                        <div class="requirements-list-mini" id="requirements-list-mini">
+                          <!-- Lista de requisitos se genera aquí -->
+                        </div>
+                        <button class="view-all-requirements" id="requirements-mini-view-all" onclick="document.getElementById('fab-requirements').click()">
+                          Ver panel completo
+                        </button>
+                      </div>
                     </div>
-                    <div class="requirements-list-mini" id="requirements-list-mini">
-                      <!-- Lista de requisitos se genera aquí -->
-                    </div>
-                    <button class="view-all-requirements" onclick="document.getElementById('fab-requirements').click()">
-                      Ver panel completo
-                    </button>
                   </div>
                 </div>
               </details>
 
-              <details class="data-card collapsible-card" open>
+              <details class="data-card collapsible-card">
                 <summary>
                   <span>⚖️ Balance integral</span>
                   <small id="balance-summary-meta">0%</small>
                 </summary>
                 <div class="card-body being-balance" id="being-balance">
                   <!-- Balance se muestra aquí -->
+                </div>
+              </details>
+
+              <div class="data-card mini-challenge-card">
+                <div class="mini-challenge-header">
+                  <div>
+                    <p class="mini-challenge-label">⚡ Evento relámpago</p>
+                    <h4 class="mini-challenge-title" id="mini-challenge-title">Sin evento activo</h4>
+                  </div>
+                  <button class="mini-challenge-refresh" id="mini-challenge-refresh" title="Generar nuevo evento">
+                    🔄
+                  </button>
+                </div>
+                <div class="mini-challenge-body" id="mini-challenge-body">
+                  <p class="empty-card-message">Selecciona una misión para recibir eventos dinámicos durante el ensamblaje.</p>
+                </div>
+              </div>
+
+              <div class="data-card demo-scenario-card" id="demo-scenario-card">
+                <div class="demo-scenario-header">
+                  <div>
+                    <p class="demo-scenario-label">🎓 Ruta educativa</p>
+                    <h4 class="demo-scenario-title" id="demo-scenario-title">Modo demo no activo</h4>
+                  </div>
+                </div>
+                <div class="demo-scenario-body" id="demo-scenario-body">
+                  <p class="empty-card-message">Activa el modo demo y carga un ser de ejemplo para recibir guías educativas.</p>
+                </div>
+              </div>
+
+              <div class="data-card microsociety-card" id="microsociety-card">
+                <div class="microsociety-header">
+                  <div>
+                    <p class="microsociety-label">🏛️ Microsociedad</p>
+                    <h4 class="microsociety-title" id="microsociety-title">Sin simulación</h4>
+                  </div>
+                  <div class="microsociety-actions">
+                    <button class="micro-action" id="btn-create-microsociety-card">Crear</button>
+                    <button class="micro-action secondary" id="btn-open-microsociety-card">Simular</button>
+                  </div>
+                </div>
+                <div class="microsociety-body" id="microsociety-body">
+                  <p class="empty-card-message">Crea una microsociedad con tu ser o explora una demo para ver métricas colectivas.</p>
+                </div>
+              </div>
+
+              <details class="data-card collapsible-card experiment-log-card">
+                <summary>
+                  <span>📒 Bitácora de experimentos</span>
+                  <small id="experiment-log-meta">Sin registros</small>
+                </summary>
+                <div class="card-body experiment-log-body" id="experiment-log-list">
+                  <p class="empty-card-message">Valida un ser para registrar sus resultados y compararlos.</p>
                 </div>
               </details>
 
@@ -738,33 +1386,67 @@ class FrankensteinLabUI {
               </button>
             </div>
             <div class="requirements-modal-body">
-              <!-- Requirements Panel -->
-              <div class="requirements-panel" id="requirements-panel">
-                <!-- Progress Bar -->
-                <div class="mission-progress-bar">
-                  <div class="mission-name" id="mission-name-display">
-                    🎯 <span id="current-mission-name">Sin Misión</span>
-                  </div>
-                  <div class="progress-track">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%">
-                      <span class="progress-text" id="progress-text">0/0</span>
+              <div class="requirements-layout">
+                <div class="requirements-main">
+                  <!-- Requirements Panel -->
+                  <div class="requirements-panel" id="requirements-panel">
+                    <!-- Progress Bar -->
+                    <div class="mission-progress-bar">
+                      <div class="mission-name" id="mission-name-display">
+                        🎯 <span id="current-mission-name">Sin Misión</span>
+                      </div>
+                      <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%">
+                          <span class="progress-text" id="progress-text">0/0</span>
+                        </div>
+                      </div>
+                      <div class="power-indicator" id="power-indicator">
+                        ⚡ <span id="current-power">0</span> / <span id="required-power">0</span>
+                      </div>
+                    </div>
+
+                    <!-- Toggle Requirements Button -->
+                    <button class="toggle-requirements" id="toggle-requirements">
+                      <span>Ver Requisitos</span>
+                      <span class="expand-indicator">▼</span>
+                    </button>
+
+                    <!-- Requirements Checklist -->
+                    <div class="requirements-checklist" id="requirements-checklist">
+                      <!-- Requirements se generan dinámicamente -->
                     </div>
                   </div>
-                  <div class="power-indicator" id="power-indicator">
-                    ⚡ <span id="current-power">0</span> / <span id="required-power">0</span>
+                </div>
+                <aside class="requirements-side">
+                  <div class="mission-brief-card">
+                    <p class="brief-label">Briefing</p>
+                    <h3 id="modal-mission-name">Selecciona una misión</h3>
+                    <p id="modal-mission-description">Elige una misión para ver objetivos concretos y requisitos clave.</p>
                   </div>
-                </div>
-
-                <!-- Toggle Requirements Button -->
-                <button class="toggle-requirements" id="toggle-requirements">
-                  <span>Ver Requisitos</span>
-                  <span class="expand-indicator">▼</span>
-                </button>
-
-                <!-- Requirements Checklist -->
-                <div class="requirements-checklist" id="requirements-checklist">
-                  <!-- Requirements se generan dinámicamente -->
-                </div>
+                  <div class="mission-meta-card">
+                    <div class="meta-row">
+                      <span>Dificultad</span>
+                      <strong id="modal-mission-difficulty">--</strong>
+                    </div>
+                    <div class="meta-row">
+                      <span>Poder mínimo</span>
+                      <strong id="modal-mission-power">0</strong>
+                    </div>
+                    <div class="meta-row">
+                      <span>Progreso</span>
+                      <strong id="modal-mission-progress">0/0</strong>
+                    </div>
+                    <button class="lab-button secondary" id="modal-open-pieces">Buscar piezas</button>
+                  </div>
+                  <div class="mission-hints-card">
+                    <div class="hints-header">
+                      <span>Recomendaciones</span>
+                    </div>
+                    <ul class="mission-hints-list" id="modal-mission-hints">
+                      <li>Selecciona una misión para recibir sugerencias.</li>
+                    </ul>
+                  </div>
+                </aside>
               </div>
             </div>
           </div>
@@ -783,51 +1465,78 @@ class FrankensteinLabUI {
               </button>
             </div>
             <div class="pieces-modal-body">
-              <!-- Sticky Header con Requisitos Reducidos -->
-              <div class="requirements-sticky-header" id="requirements-sticky-header">
-                <div class="sticky-requirements-compact" id="sticky-requirements-compact">
-                  <!-- Se genera dinámicamente -->
-                </div>
-                <div class="sticky-progress-indicator">
-                  <div class="sticky-progress-bar">
-                    <div class="sticky-progress-fill" id="sticky-progress-fill" style="width: 0%"></div>
+              <div class="pieces-layout">
+                <div class="pieces-main">
+                  <!-- Sticky Header con Requisitos Reducidos -->
+                  <div class="requirements-sticky-header" id="requirements-sticky-header">
+                    <div class="sticky-requirements-compact" id="sticky-requirements-compact">
+                      <!-- Se genera dinámicamente -->
+                    </div>
+                    <div class="sticky-progress-indicator">
+                      <div class="sticky-progress-bar">
+                        <div class="sticky-progress-fill" id="sticky-progress-fill" style="width: 0%"></div>
+                      </div>
+                      <span class="sticky-progress-text" id="sticky-progress-text">0/0</span>
+                    </div>
                   </div>
-                  <span class="sticky-progress-text" id="sticky-progress-text">0/0</span>
-                </div>
-              </div>
 
-              <!-- Missing Requirements Quick View -->
-              <div class="missing-requirements-quick-view" id="missing-requirements-quick-view">
-                <div class="quick-view-header">
-                  <span class="quick-view-icon">🎯</span>
-                  <h3 class="quick-view-title">Requisitos Faltantes</h3>
-                  <span class="quick-view-status" id="quick-view-status">0/0</span>
-                </div>
-                <div class="quick-view-list" id="quick-view-list">
-                  <!-- Se genera dinámicamente -->
-                </div>
-              </div>
+                  <div class="pieces-filters">
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                      <input
+                        type="text"
+                        class="search-box"
+                        id="pieces-search"
+                        placeholder="🔍 Buscar piezas..."
+                      />
+                      <div class="filter-pills">
+                        <button class="filter-pill active" data-filter="all">Todas</button>
+                        <button class="filter-pill" data-filter="chapter">💚 Capítulos</button>
+                        <button class="filter-pill" data-filter="exercise">💜 Ejercicios</button>
+                        <button class="filter-pill" data-filter="resource">💛 Recursos</button>
+                        <button class="filter-pill" data-filter="compatible">⚡ Compatibles</button>
+                      </div>
+                    </div>
 
-              <!-- Filters Bar -->
-              <div class="filters-bar">
-                <input
-                  type="text"
-                  class="search-box"
-                  id="pieces-search"
-                  placeholder="🔍 Buscar piezas..."
-                />
-                <div class="filter-pills">
-                  <button class="filter-pill active" data-filter="all">Todas</button>
-                  <button class="filter-pill" data-filter="chapter">💚 Capítulos</button>
-                  <button class="filter-pill" data-filter="exercise">💜 Ejercicios</button>
-                  <button class="filter-pill" data-filter="resource">💛 Recursos</button>
-                  <button class="filter-pill" data-filter="compatible">⚡ Compatibles</button>
+                    <!-- Pieces Grid -->
+                    <div class="pieces-grid" id="pieces-grid">
+                      <!-- Fichas de piezas se generan dinámicamente -->
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <aside class="pieces-side">
+                  <div class="pieces-meta-card">
+                    <h3>Estado actual</h3>
+                    <div class="pieces-meta-stat">
+                      <span>Seleccionadas</span>
+                      <strong id="pieces-selected-count">0</strong>
+                    </div>
+                    <div class="pieces-meta-stat">
+                      <span>Poder estimado</span>
+                      <strong id="pieces-selected-power">0</strong>
+                    </div>
+                    <button class="lab-button secondary" id="pieces-open-requirements">Ver requisitos</button>
+                  </div>
 
-              <!-- Pieces Grid -->
-              <div class="pieces-grid" id="pieces-grid">
-                <!-- Fichas de piezas se generan dinámicamente -->
+                  <!-- Missing Requirements Quick View -->
+                  <div class="missing-requirements-quick-view" id="missing-requirements-quick-view">
+                    <div class="quick-view-header">
+                      <span class="quick-view-icon">🎯</span>
+                      <h3 class="quick-view-title">Requisitos Faltantes</h3>
+                      <span class="quick-view-status" id="quick-view-status">0/0</span>
+                    </div>
+                    <div class="quick-view-list" id="quick-view-list">
+                      <!-- Se genera dinámicamente -->
+                    </div>
+                  </div>
+
+                  <div class="pieces-tips-card">
+                    <h4>Micro estrategias</h4>
+                    <ul id="pieces-tips-list">
+                      <li>Selecciona una misión para recibir sugerencias específicas.</li>
+                    </ul>
+                  </div>
+                </aside>
               </div>
             </div>
           </div>
@@ -857,7 +1566,7 @@ class FrankensteinLabUI {
         <div class="vitruvian-popup" id="vitruvian-popup">
           <div class="vitruvian-popup-header">
             <span class="vitruvian-popup-title">⚡ Ser en Formación</span>
-            <button class="vitruvian-popup-close" id="vitruvian-popup-close">×</button>
+            <button class="vitruvian-popup-close" id="vitruvian-popup-close" aria-label="Cerrar popup de Vitruvio"><span aria-hidden="true">×</span></button>
           </div>
           <div class="vitruvian-popup-being" id="vitruvian-popup-being">
             <!-- SVG de Vitruvio se clona aquí -->
@@ -905,11 +1614,86 @@ class FrankensteinLabUI {
     this.populateMissions();
     this.populatePiecesGrid();
     this.updateBeingDisplay();
+    this.updateMissionProgressUI({
+      fulfilled: this.selectedMission ? this.countFulfilledRequirements(this.selectedMission.requirements || []) : 0,
+      total: this.selectedMission?.requirements?.length || 0
+    });
+    this.renderMiniChallenge();
+    this.renderDemoScenarioCard();
+    this.renderMicrosocietyCard();
+
+    if (this.pendingRequirementsUpdate && this.selectedMission) {
+      this.updateRequirementsPanel();
+    }
 
     // Inicializar visualización del Hombre de Vitrubio
     if (window.VitruvianBeing) {
       this.vitruvianBeing = new VitruvianBeing();
       this.vitruvianBeing.init('vitruvian-being-container');
+    }
+
+    // Inicializar cache de referencias DOM para optimizar rendimiento
+    this.initDomCache();
+
+    // Inicializar HUD de recompensas
+    this.initRewardsHUD();
+
+    // Iniciar onboarding si es primera vez
+    this.checkOnboarding();
+  }
+
+  /**
+   * Verificar y mostrar onboarding si aplica
+   */
+  checkOnboarding() {
+    if (typeof FrankensteinOnboarding === 'undefined') {
+      console.warn('⚠️ FrankensteinOnboarding no disponible');
+      return;
+    }
+
+    if (!window.frankensteinOnboarding) {
+      window.frankensteinOnboarding = new FrankensteinOnboarding();
+    }
+
+    // Esperar a que la UI esté lista
+    setTimeout(() => {
+      if (window.frankensteinOnboarding.shouldShow()) {
+        window.frankensteinOnboarding.start();
+      }
+    }, 1000);
+  }
+
+  /**
+   * Inicializar HUD de recompensas en la UI
+   */
+  initRewardsHUD() {
+    if (!window.frankensteinRewards) return;
+
+    // Remover HUD existente si hay
+    const existingHUD = document.getElementById('fr-rewards-hud');
+    if (existingHUD) existingHUD.remove();
+
+    // Crear nuevo HUD
+    const hud = window.frankensteinRewards.createRewardsHUD();
+    document.body.appendChild(hud);
+
+    // Agregar botón de logros al header si existe
+    const headerActions = document.querySelector('.lab-header-actions');
+    if (headerActions) {
+      const achievementsBtn = document.createElement('button');
+      achievementsBtn.className = 'lab-header-icon-btn';
+      achievementsBtn.id = 'btn-achievements';
+      achievementsBtn.title = 'Logros';
+      achievementsBtn.innerHTML = '<span>🏆</span>';
+      achievementsBtn.onclick = () => window.frankensteinRewards.showAchievementsPanel();
+
+      // Insertar antes del botón de ajustes
+      const settingsBtn = document.getElementById('btn-settings');
+      if (settingsBtn) {
+        headerActions.insertBefore(achievementsBtn, settingsBtn);
+      } else {
+        headerActions.appendChild(achievementsBtn);
+      }
     }
   }
 
@@ -917,7 +1701,7 @@ class FrankensteinLabUI {
    * Poblar grid de misiones
    */
   populateMissions() {
-    const grid = document.getElementById('missions-grid');
+    const grid = this.domCache.missionsGrid || document.getElementById('missions-grid');
     if (!grid || !this.missionsSystem) return;
 
     // Detectar si es móvil
@@ -1049,7 +1833,155 @@ class FrankensteinLabUI {
     }
   }
 
-  selectMission(mission, card) {
+  /**
+   * Cambiar tab de navegación (Bottom Navigation)
+   */
+  switchTab(tabName) {
+    console.log('🔄 Cambiando a tab:', tabName);
+
+    // Actualizar estado visual de tabs
+    document.querySelectorAll('.awakening-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.dataset.tab === tabName) {
+        tab.classList.add('active');
+      }
+    });
+
+    // Manejar cambio de contenido según tab
+    switch (tabName) {
+      case 'laboratorio':
+        // Ya está visible por defecto
+        this.showSection('lab-workspace');
+        break;
+      case 'seres':
+        this.showSavedBeingsModal();
+        break;
+      case 'misiones':
+        this.openMissionModal();
+        break;
+      case 'piezas':
+        // Abrir panel de piezas
+        const piecesPanel = document.getElementById('pieces-panel');
+        if (piecesPanel) {
+          piecesPanel.classList.add('expanded');
+        }
+        break;
+      case 'perfil':
+        this.showProfileSection();
+        break;
+    }
+  }
+
+  /**
+   * Mostrar sección de perfil/estadísticas
+   */
+  showProfileSection() {
+    // Crear modal de perfil si no existe
+    let profileModal = document.getElementById('profile-modal');
+
+    if (!profileModal) {
+      profileModal = document.createElement('div');
+      profileModal.id = 'profile-modal';
+      profileModal.className = 'awakening-modal-overlay';
+      profileModal.innerHTML = `
+        <div class="awakening-modal" style="width: 90%; max-width: 500px;">
+          <div class="awakening-modal-header">
+            <h2 class="awakening-modal-title">👤 Perfil</h2>
+            <button class="awakening-modal-close" onclick="document.getElementById('profile-modal').classList.remove('active')" aria-label="Cerrar perfil"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="awakening-modal-body">
+            <div class="awakening-stats" style="margin-bottom: 24px;">
+              <div class="awakening-stat-box">
+                <span class="awakening-stat-icon">🧬</span>
+                <div class="awakening-stat-value">${this.getSavedBeingsCount()}</div>
+                <div class="awakening-stat-label">Seres Creados</div>
+              </div>
+              <div class="awakening-stat-box">
+                <span class="awakening-stat-icon">🎯</span>
+                <div class="awakening-stat-value">${this.getCompletedMissionsCount()}</div>
+                <div class="awakening-stat-label">Misiones</div>
+              </div>
+              <div class="awakening-stat-box">
+                <span class="awakening-stat-icon">🧩</span>
+                <div class="awakening-stat-value">${this.availablePieces.length}</div>
+                <div class="awakening-stat-label">Piezas</div>
+              </div>
+            </div>
+
+            <div class="awakening-section">
+              <h3 class="awakening-section-title">⚙️ Configuración</h3>
+              <div class="awakening-list">
+                <div class="awakening-list-item" onclick="window.frankensteinLabUI.openSettings()">
+                  <span class="awakening-list-icon">🎨</span>
+                  <span class="awakening-list-text">Personalización</span>
+                  <span class="awakening-list-arrow">›</span>
+                </div>
+                <div class="awakening-list-item" onclick="window.frankensteinLabUI.openSettings()">
+                  <span class="awakening-list-icon">🔊</span>
+                  <span class="awakening-list-text">Sonido y Vibración</span>
+                  <span class="awakening-list-arrow">›</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="awakening-btn awakening-btn-primary" style="width: 100%;" onclick="window.frankensteinLabUI.openSettings()">
+              Abrir Configuración Completa
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(profileModal);
+    }
+
+    profileModal.classList.add('active');
+  }
+
+  /**
+   * Abrir configuración
+   */
+  openSettings() {
+    if (window.FrankensteinSettings) {
+      window.FrankensteinSettings.open();
+    } else {
+      console.warn('FrankensteinSettings no disponible');
+      if (window.showToast) {
+        window.showToast('Configuración no disponible', 'warning');
+      }
+    }
+  }
+
+  /**
+   * Obtener conteo de seres guardados
+   */
+  getSavedBeingsCount() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('frankenstein-saved-beings') || '[]');
+      return saved.length;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /**
+   * Obtener conteo de misiones completadas
+   */
+  getCompletedMissionsCount() {
+    try {
+      const stats = JSON.parse(localStorage.getItem('frankenstein-stats') || '{}');
+      return stats.missionsCompleted || 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /**
+   * Mostrar sección específica
+   */
+  showSection(sectionId) {
+    console.log('📱 Mostrando sección:', sectionId);
+  }
+
+  selectMission(mission, card, { silent = false } = {}) {
     // Deseleccionar anterior (soporta tanto cards como tabs)
     document.querySelectorAll('.mission-card.selected, .mission-tab.selected').forEach(c => {
       c.classList.remove('selected');
@@ -1059,6 +1991,12 @@ class FrankensteinLabUI {
     card.classList.add('selected');
     this.selectedMission = mission;
     this.ensureMissionRequirements(this.selectedMission);
+    this.lastRequirementState = {};
+    this.updateMissionProgressUI({
+      fulfilled: 0,
+      total: mission.requirements ? mission.requirements.length : 0
+    });
+    this.generateMiniChallenge(true);
     this.hasShownConfetti = false; // Reset confetti flag
 
     // Actualizar UI
@@ -1066,10 +2004,15 @@ class FrankensteinLabUI {
     this.updateBeingDisplay();
     this.updateRequirementsPanel(); // Update requirements panel
 
-    this.showNotification(`🎯 Misión seleccionada: ${mission.name}`, 'info');
+    if (!silent) {
+      this.showNotification(`🎯 Misión seleccionada: ${mission.name}`, 'info');
+    }
 
     // Close modal after selection
     this.closeMissionModal();
+    this.updateDemoScenarioProgress();
+
+    this.saveLabState();
   }
 
   /**
@@ -1143,6 +2086,7 @@ class FrankensteinLabUI {
       modal.classList.remove('active');
       document.body.style.overflow = '';
     }
+    this.closeBookBottomSheet();
   }
 
   /**
@@ -1154,7 +2098,7 @@ class FrankensteinLabUI {
       const requirements = this.getCurrentMissionRequirements();
       const fulfilled = this.countFulfilledRequirements(requirements);
       const total = requirements.length;
-      const requirementsBadge = document.getElementById('fab-requirements-badge');
+      const requirementsBadge = this.domCache.fabRequirementsBadge || document.getElementById('fab-requirements-badge');
       if (requirementsBadge) {
         requirementsBadge.textContent = `${fulfilled}/${total}`;
         requirementsBadge.style.backgroundColor = fulfilled === total ? '#4CAF50' : '#FF9800';
@@ -1162,7 +2106,7 @@ class FrankensteinLabUI {
     }
 
     // Update pieces badge
-    const piecesBadge = document.getElementById('fab-pieces-badge');
+    const piecesBadge = this.domCache.fabPiecesBadge || document.getElementById('fab-pieces-badge');
     if (piecesBadge) {
       piecesBadge.textContent = this.selectedPieces.length;
       piecesBadge.style.backgroundColor = this.selectedPieces.length > 0 ? '#2196F3' : '#757575';
@@ -1173,9 +2117,9 @@ class FrankensteinLabUI {
    * Update Missing Requirements Quick View
    */
   updateMissingRequirementsQuickView() {
-    const quickViewList = document.getElementById('quick-view-list');
-    const quickViewStatus = document.getElementById('quick-view-status');
-    const quickView = document.getElementById('missing-requirements-quick-view');
+    const quickViewList = this.domCache.quickViewList || document.getElementById('quick-view-list');
+    const quickViewStatus = this.domCache.quickViewStatus || document.getElementById('quick-view-status');
+    const quickView = this.domCache.quickView || document.getElementById('missing-requirements-quick-view');
 
     if (!quickViewList || !quickViewStatus || !quickView) return;
 
@@ -1192,6 +2136,7 @@ class FrankensteinLabUI {
           </button>
         </div>
       `;
+      this.updatePiecesTipsPanel();
       return;
     }
 
@@ -1209,6 +2154,7 @@ class FrankensteinLabUI {
           <span class="no-mission-text">Esta misión no tiene requisitos definidos</span>
         </div>
       `;
+      this.updatePiecesTipsPanel();
       return;
     }
 
@@ -1231,16 +2177,18 @@ class FrankensteinLabUI {
     } else {
       quickViewList.innerHTML = missing.map(req => {
         const icon = this.getRequirementIcon(req.type);
-        const currentCount = this.selectedPieces.filter(p => p.type === req.type).length;
-        const neededCount = req.count || 1;
-        const remaining = neededCount - currentCount;
+        const attrData = this.missionsSystem?.attributes?.[req.type];
+        const label = attrData ? `${attrData.icon} ${attrData.name}` : (req.description || req.type);
+        const targetValue = this.getRequirementTarget(req) || 0;
+        const currentValue = Math.round(this.getRequirementCurrentValue(req));
+        const remaining = Math.max(0, targetValue - currentValue);
 
         return `
           <div class="quick-view-item" data-type="${req.type}">
             <span class="quick-view-item-icon">${icon}</span>
             <div class="quick-view-item-content">
-              <span class="quick-view-item-text">${req.description || req.type}</span>
-              <span class="quick-view-item-count">Faltan: ${remaining}</span>
+              <span class="quick-view-item-text">${label}</span>
+              <span class="quick-view-item-count">${targetValue ? `${currentValue}/${targetValue}` : currentValue} • Faltan: ${remaining}</span>
             </div>
             <button class="quick-view-filter-btn" data-filter="${req.type}" title="Filtrar por este tipo">
               <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -1295,16 +2243,21 @@ class FrankensteinLabUI {
         });
       }, 100);
     }
+
+    this.updatePiecesTipsPanel(missing, requirements);
   }
 
   /**
    * Poblar grid de piezas (ahora como árbol)
    */
   populatePiecesGrid(filter = 'all') {
-    const grid = document.getElementById('pieces-grid');
+    const grid = this.domCache.piecesGrid || document.getElementById('pieces-grid');
     if (!grid) return;
 
     grid.innerHTML = '';
+    if (this.isMobileViewport()) {
+      this.mobileBooksData = {};
+    }
 
     // Organizar piezas por libro
     const piecesByBook = this.organizePiecesByBook(filter);
@@ -1322,6 +2275,15 @@ class FrankensteinLabUI {
     setTimeout(() => {
       this.initDragAndDropEnhanced();
     }, 100);
+  }
+
+  /**
+   * Exposed helper para que datos de demo puedan refrescar la UI
+   */
+  renderPiecesTree(filter = 'all') {
+    this.populatePiecesGrid(filter);
+    this.updateMissingRequirementsQuickView();
+    this.handlePiecesModalScroll();
   }
 
   /**
@@ -1362,20 +2324,15 @@ class FrankensteinLabUI {
    * Obtener título del capítulo de una pieza
    */
   getChapterTitle(piece) {
-    // Primero: usar el título de la pieza si ya existe
-    if (piece.title && piece.title !== piece.chapterId) {
-      return piece.title;
-    }
-
     // Buscar el capítulo original
     const catalog = this.organism.bookEngine?.catalog;
     if (!catalog) {
-      return piece.title || `Capítulo ${piece.chapterId}`;
+      return `Capítulo ${piece.chapterId}`;
     }
 
     const book = catalog.books.find(b => b.id === piece.bookId);
     if (!book) {
-      return piece.title || `Capítulo ${piece.chapterId}`;
+      return `Capítulo ${piece.chapterId}`;
     }
 
     // Intentar obtener capítulos usando el método del organism
@@ -1411,8 +2368,312 @@ class FrankensteinLabUI {
       }
     }
 
-    // Último fallback: usar título de la pieza o el ID del capítulo
-    return piece.title || `Capítulo ${piece.chapterId}`;
+    return `Capítulo ${piece.chapterId}`;
+  }
+
+  getStatsSummaryHtml(totalPower, totalPieces) {
+    return `
+      <div class="book-card-stats">
+        <div class="book-card-stat">
+          <span>Poder</span>
+          <strong>${totalPower}</strong>
+        </div>
+        <div class="book-card-stat">
+          <span>Piezas</span>
+          <strong>${totalPieces}</strong>
+        </div>
+      </div>
+    `;
+
+    // Estado inicial de paneles visuales
+    this.updateVitruvianHud();
+    this.updateBeingCompositionSummary();
+  }
+
+  createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes) {
+    this.mobileBooksData[bookId] = bookData;
+    const attributesPreview = Object.entries(aggregatedAttributes)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([attr, value]) => {
+        const attrData = this.missionsSystem.attributes[attr];
+        if (!attrData) return '';
+        return `<span class="book-card-attr">${attrData.icon} ${Math.round(value)}</span>`;
+      })
+      .join('');
+
+    const card = document.createElement('div');
+    card.className = 'book-card-mobile';
+    card.dataset.bookId = bookId;
+
+    card.innerHTML = `
+      <div class="book-card-top">
+        <div class="book-card-icon">📚</div>
+        <div class="book-card-info">
+          <h4>${bookData.bookTitle}</h4>
+          <p>${subtitleText}</p>
+        </div>
+        <button class="book-card-open" type="button" data-book-id="${bookId}">
+          Ver piezas
+        </button>
+      </div>
+      ${this.getStatsSummaryHtml(totalPower, totalPieces)}
+      <div class="book-card-attributes-scroll">
+        ${attributesPreview || '<span class="book-card-attr muted">Añade piezas para ver atributos</span>'}
+      </div>
+    `;
+
+    const openBtn = card.querySelector('.book-card-open');
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.openBookBottomSheet(bookId);
+    });
+
+    return card;
+  }
+
+  openBookBottomSheet(bookId) {
+    const bookData = this.mobileBooksData?.[bookId];
+    if (!bookData) return;
+
+    this.closeBookBottomSheet();
+    this.mobileSheetFilter = 'all';
+    this.mobileSheetSearch = '';
+
+    const sheet = document.createElement('div');
+    sheet.id = 'book-bottom-sheet';
+    sheet.className = 'book-bottom-sheet';
+    sheet.innerHTML = `
+      <div class="book-bottom-sheet-overlay"></div>
+      <div class="book-bottom-sheet-content">
+        <div class="book-bottom-sheet-header">
+          <div>
+            <p class="sheet-label">Libro</p>
+            <h3>${bookData.bookTitle}</h3>
+          </div>
+          <button class="sheet-close" aria-label="Cerrar menú de libro"><span aria-hidden="true">✕</span></button>
+        </div>
+        <div class="book-bottom-sheet-toolbar">
+          <div class="mobile-filter-chips" role="tablist">
+            <button class="mobile-filter-chip active" data-filter="all">Todos</button>
+            <button class="mobile-filter-chip" data-filter="chapter">Capítulos</button>
+            <button class="mobile-filter-chip" data-filter="exercise">Ejercicios</button>
+            <button class="mobile-filter-chip" data-filter="resource">Recursos</button>
+          </div>
+          <div class="mobile-search-wrapper">
+            <input type="search" id="mobile-book-search" placeholder="Buscar pieza o capítulo..." autocomplete="off">
+            <span class="mobile-search-icon">🔍</span>
+          </div>
+        </div>
+        <div class="book-bottom-sheet-body"></div>
+      </div>
+    `;
+
+    document.body.appendChild(sheet);
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(() => sheet.classList.add('open'));
+
+    sheet.querySelector('.sheet-close').addEventListener('click', () => this.closeBookBottomSheet());
+    sheet.querySelector('.book-bottom-sheet-overlay').addEventListener('click', () => this.closeBookBottomSheet());
+
+    const body = sheet.querySelector('.book-bottom-sheet-body');
+    this.renderMobileBookChapters(body, bookId, bookData);
+    this.setupBookBottomSheetControls(sheet, bookId, bookData);
+
+    this.bookSheetKeyHandler = (event) => {
+      if (event.key === 'Escape') {
+        this.closeBookBottomSheet();
+      }
+    };
+    document.addEventListener('keydown', this.bookSheetKeyHandler);
+  }
+
+  setupBookBottomSheetControls(sheet, bookId, bookData) {
+    const body = sheet.querySelector('.book-bottom-sheet-body');
+    if (!body) return;
+
+    const filterButtons = sheet.querySelectorAll('.mobile-filter-chip');
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.mobileSheetFilter = btn.dataset.filter || 'all';
+        this.renderMobileBookChapters(body, bookId, bookData);
+      });
+    });
+
+    const searchInput = sheet.querySelector('#mobile-book-search');
+    if (searchInput) {
+      searchInput.value = '';
+      let searchDebounce;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => {
+          this.mobileSheetSearch = searchInput.value.trim().toLowerCase();
+          this.renderMobileBookChapters(body, bookId, bookData);
+        }, 120);
+      });
+    }
+  }
+
+  closeBookBottomSheet() {
+    const sheet = document.getElementById('book-bottom-sheet');
+    if (!sheet) return;
+    sheet.classList.remove('open');
+    setTimeout(() => sheet.remove(), 250);
+    document.body.classList.remove('modal-open');
+    if (this.bookSheetKeyHandler) {
+      document.removeEventListener('keydown', this.bookSheetKeyHandler);
+      this.bookSheetKeyHandler = null;
+    }
+  }
+
+  renderMobileBookChapters(container, bookId, bookData) {
+    container.innerHTML = '';
+    const chapters = Object.entries(bookData.chapters || {});
+
+    if (chapters.length === 0) {
+      container.innerHTML = '<p class="mobile-chapter-empty">No hay piezas registradas para este libro.</p>';
+      return;
+    }
+
+    chapters.forEach(([chapterId, chapterData]) => {
+      const details = document.createElement('details');
+      details.className = 'mobile-chapter-block';
+
+      const chapterTitle = chapterData.chapterTitle || `Capítulo ${chapterId}`;
+      const chapterPower = this.calculateChapterPower(chapterData.pieces || []);
+      const piecesCount = chapterData.pieces?.length || 0;
+      const chapterMatchesSearch = this.mobileSheetSearch
+        ? chapterTitle.toLowerCase().includes(this.mobileSheetSearch)
+        : true;
+
+      const filteredPieces = (chapterData.pieces || []).filter(piece => {
+        const typeMatch = this.mobileSheetFilter === 'all' || piece.type === this.mobileSheetFilter;
+        const text = `${piece.title || ''} ${piece.bookTitle || ''}`.toLowerCase();
+        const pieceMatchesSearch = this.mobileSheetSearch ? text.includes(this.mobileSheetSearch) : true;
+        return typeMatch && pieceMatchesSearch;
+      });
+
+      if (!chapterMatchesSearch && filteredPieces.length === 0) {
+        return;
+      }
+
+      details.innerHTML = `
+        <summary>
+          <div>
+            <p class="mobile-chapter-title">${chapterTitle}</p>
+            <span class="mobile-chapter-meta">${piecesCount} piezas • ⚡ ${chapterPower}</span>
+          </div>
+          <span class="mobile-chapter-chevron">⌄</span>
+        </summary>
+      `;
+
+      const piecesWrapper = document.createElement('div');
+      piecesWrapper.className = 'mobile-chapter-pieces';
+
+      if (filteredPieces.length === 0) {
+        piecesWrapper.innerHTML = `
+          <div class="mobile-empty-state">
+            <span>Sin piezas que coincidan con el filtro.</span>
+          </div>
+        `;
+      }
+
+      filteredPieces.forEach(piece => {
+        const card = this.createMobilePieceCard(piece);
+        piecesWrapper.appendChild(card);
+      });
+
+      details.appendChild(piecesWrapper);
+      container.appendChild(details);
+      details.open = chapters.length <= 3 || details.open;
+      details.addEventListener('toggle', () => {
+        if (details.open) {
+          container.querySelectorAll('.mobile-chapter-block').forEach(block => {
+            if (block !== details) block.removeAttribute('open');
+          });
+        }
+      });
+    });
+
+    if (!container.children.length) {
+      container.innerHTML = `
+        <div class="mobile-empty-state">
+          <span>No se encontraron piezas con ese filtro.</span>
+        </div>
+      `;
+    }
+  }
+
+  createMobilePieceCard(piece) {
+    const card = document.createElement('div');
+    card.className = 'mobile-piece-card';
+    card.dataset.pieceId = piece.id;
+    card.dataset.type = piece.type;
+
+    const analysis = this.missionsSystem?.analyzePiece(piece) || { attributes: {} };
+    const attrsPreview = Object.entries(analysis.attributes)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([attr, value]) => {
+        const attrData = this.missionsSystem.attributes[attr];
+        return `<span class="mobile-piece-attr">${attrData?.icon || '📊'} ${Math.round(value)}</span>`;
+      })
+      .join('');
+
+    card.innerHTML = `
+      <div class="mobile-piece-main">
+        <div class="mobile-piece-icon">${piece.icon}</div>
+        <div class="mobile-piece-info">
+          <h5>${piece.title}</h5>
+          <p>${this.getTypeLabel(piece.type)} • ⚡ ${Math.round(analysis.totalPower)}</p>
+          <div class="mobile-piece-attrs">${attrsPreview}</div>
+        </div>
+        <button class="lab-button mobile-piece-action" type="button">${this.isPieceSelected(piece.id) ? 'Quitar' : 'Agregar'}</button>
+      </div>
+    `;
+
+    const actionBtn = card.querySelector('.mobile-piece-action');
+    const handleToggle = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.togglePieceSelectionEnhanced(piece, card);
+      this.updateMobilePieceActionState(actionBtn, card);
+    };
+
+    card.addEventListener('click', handleToggle);
+    actionBtn.addEventListener('click', handleToggle);
+
+    if (this.isPieceSelected(piece.id)) {
+      card.classList.add('selected');
+    }
+
+    return card;
+  }
+
+  updateMobilePieceActionState(button, card) {
+    if (!button || !card) return;
+    if (card.classList.contains('selected')) {
+      button.textContent = 'Quitar';
+      button.classList.add('secondary');
+    } else {
+      button.textContent = 'Agregar';
+      button.classList.remove('secondary');
+    }
+  }
+
+  isPieceSelected(pieceId) {
+    return this.selectedPieces.some(p => p.id === pieceId);
+  }
+
+  calculateChapterPower(pieces = []) {
+    return pieces.reduce((sum, piece) => {
+      const analysis = this.missionsSystem.analyzePiece(piece);
+      return sum + (analysis.totalPower || 0);
+    }, 0);
   }
 
   /**
@@ -1458,15 +2719,24 @@ class FrankensteinLabUI {
 
     const chapterCount = Object.keys(bookData.chapters).length;
 
+    const isCompactView = window.innerWidth <= 768;
+    const subtitleText = isCompactView
+      ? `${chapterCount} caps • ${totalPieces} piezas`
+      : `${chapterCount} capítulos • ${totalPieces} piezas de conocimiento`;
+
+    if (this.isMobileViewport()) {
+      return this.createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes);
+    }
+
     bookItem.innerHTML = `
       <div class="book-tree-header">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="book-tree-leading">
           <span class="book-tree-toggle" title="Abrir/Cerrar libro">▶</span>
           <span class="book-tree-icon">📚</span>
         </div>
         <div class="book-tree-title">
           <div class="book-tree-title-text">${bookData.bookTitle}</div>
-          <div class="book-tree-subtitle">${chapterCount} capítulos • ${totalPieces} piezas de conocimiento</div>
+          <div class="book-tree-subtitle">${subtitleText}</div>
         </div>
         <div class="book-tree-stats">
           <span class="book-tree-power" title="Poder total">⚡ ${totalPower}</span>
@@ -1663,7 +2933,7 @@ class FrankensteinLabUI {
 
     // Analizar atributos que aporta esta pieza
     const analysis = this.missionsSystem.analyzePiece(piece);
-    const attributesHTML = Object.entries(analysis.attributes)
+    const attributesHTML = Object.entries(analysis.attributes || {})
       .map(([attr, value]) => {
         const attrData = this.missionsSystem.attributes[attr];
         // Validar que attrData existe antes de acceder a sus propiedades
@@ -1818,9 +3088,7 @@ class FrankensteinLabUI {
     }
 
     // Habilitar botones
-    document.getElementById('btn-export-being').disabled = false;
-    document.getElementById('btn-validate-being').disabled = !this.selectedMission;
-    document.getElementById('btn-talk-to-being').disabled = false;
+    this.updateActionButtons();
   }
 
   /**
@@ -1834,31 +3102,49 @@ class FrankensteinLabUI {
       missionDifficultyPill.dataset.level = difficulty;
     }
 
-    const powerValue = Math.max(0, Math.round(this.currentBeing?.totalPower || this.calculateCurrentPower() || 0));
-    const powerEl = document.getElementById('being-power');
+    const nameEl = this.domCache.beingName || document.getElementById('being-name');
+    if (nameEl) {
+      nameEl.textContent = this.currentBeing?.name || 'Ser sin nombre';
+    }
+
+    const missionLabel = this.domCache.beingMission || document.getElementById('being-mission');
+    if (missionLabel) {
+      missionLabel.textContent = this.selectedMission
+        ? `Misión: ${this.selectedMission.name}`
+        : 'No hay misión seleccionada';
+    }
+
+    const powerValue = Math.max(
+      0,
+      Math.round(this.currentBeing?.totalPower || this.calculateCurrentPower() || 0)
+    );
+    const powerEl = this.domCache.beingPower || document.getElementById('being-power');
     if (powerEl) {
       powerEl.textContent = powerValue.toLocaleString('es-ES');
     }
 
-    const piecesEl = document.getElementById('being-pieces');
+    const piecesEl = this.domCache.beingPieces || document.getElementById('being-pieces');
     if (piecesEl) {
       piecesEl.textContent = this.selectedPieces.length;
     }
 
-    const statusEl = document.getElementById('being-status');
+    const statusEl = this.domCache.beingStatus || document.getElementById('being-status');
     if (statusEl) {
-      let status = 'Sin misión';
+      let status = this.selectedMission ? 'Selecciona piezas' : 'Sin misión';
+
       if (this.selectedMission) {
         if (this.lastValidationResults?.viable) {
           status = 'Validado';
-        } else if (this.selectedPieces.length === 0) {
-          status = 'Agrega piezas';
-        } else {
+        } else if (this.selectedPieces.length > 0) {
           status = 'En progreso';
         }
       }
+
       statusEl.textContent = status;
     }
+
+    this.updateVitruvianHud();
+    this.updateBeingCompositionSummary();
 
     this.updateAttributeBars();
     this.updateBalance();
@@ -1871,13 +3157,23 @@ class FrankensteinLabUI {
       // Si no hay ser, resetear
       this.vitruvianBeing.reset();
     }
+
+    this.updatePiecesSidebarMeta();
+
+    if (window.labAIEngineProxy?.updateContext) {
+      window.labAIEngineProxy.updateContext(this.currentBeing, this.selectedMission);
+    }
+
+    this.updateMiniChallengeProgress();
+    this.updateDemoScenarioProgress();
+    this.updateActionButtons();
   }
 
   /**
    * Actualizar display del avatar
    */
   updateAvatarDisplay() {
-    const container = document.getElementById('being-avatar-display');
+    const container = this.domCache.beingAvatar || document.getElementById('being-avatar-display');
     if (!container) return;
 
     // Si no hay sistema de avatares o no hay ser, ocultar
@@ -1924,7 +3220,7 @@ class FrankensteinLabUI {
    * Actualizar barras de atributos
    */
   updateAttributeBars() {
-    const container = document.getElementById('being-attributes');
+    const container = this.domCache.beingAttributes || document.getElementById('being-attributes');
     const summaryMeta = document.getElementById('attributes-summary-meta');
     if (!container || !this.missionsSystem) return;
 
@@ -2016,7 +3312,7 @@ class FrankensteinLabUI {
    * Actualizar balance
    */
   updateBalance() {
-    const container = document.getElementById('being-balance');
+    const container = this.domCache.beingBalance || document.getElementById('being-balance');
     const summaryMeta = document.getElementById('balance-summary-meta');
     if (!container) return;
 
@@ -2026,7 +3322,10 @@ class FrankensteinLabUI {
       return;
     }
 
-    const balance = this.currentBeing.balance;
+    let balance = this.currentBeing.balance;
+    if (!balance || typeof balance !== 'object') {
+      balance = this.missionsSystem?.calculateBalance(this.currentBeing.attributes || {}) || {};
+    }
 
     if (summaryMeta) {
       summaryMeta.textContent = `${Math.round(balance.harmony || 0)}%`;
@@ -2036,23 +3335,23 @@ class FrankensteinLabUI {
       <div class="balance-grid">
         <div class="balance-item">
           <span class="balance-label">🧠 Intelectual</span>
-          <span class="balance-value">${Math.round(balance.intellectual)}</span>
+          <span class="balance-value">${Math.round(balance.intellectual || 0)}</span>
         </div>
         <div class="balance-item">
           <span class="balance-label">❤️ Emocional</span>
-          <span class="balance-value">${Math.round(balance.emotional)}</span>
+          <span class="balance-value">${Math.round(balance.emotional || 0)}</span>
         </div>
         <div class="balance-item">
           <span class="balance-label">⚡ Acción</span>
-          <span class="balance-value">${Math.round(balance.action)}</span>
+          <span class="balance-value">${Math.round(balance.action || 0)}</span>
         </div>
         <div class="balance-item">
           <span class="balance-label">🌟 Espiritual</span>
-          <span class="balance-value">${Math.round(balance.spiritual)}</span>
+          <span class="balance-value">${Math.round(balance.spiritual || 0)}</span>
         </div>
         <div class="balance-item">
           <span class="balance-label">🔧 Práctico</span>
-          <span class="balance-value">${Math.round(balance.practical)}</span>
+          <span class="balance-value">${Math.round(balance.practical || 0)}</span>
         </div>
       </div>
       <div class="harmony-meter">
@@ -2081,6 +3380,11 @@ class FrankensteinLabUI {
       this.playLightningEffect();
       setTimeout(() => this.playLightningEffect(), 300);
       setTimeout(() => this.playLightningEffect(), 600);
+
+      // Recompensas por validar ser viable
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.giveReward('validateBeing');
+      }
     }
   }
 
@@ -2088,7 +3392,7 @@ class FrankensteinLabUI {
    * Mostrar resultados de validación
    */
   showValidationResults(results) {
-    const container = document.getElementById('validation-results');
+    const container = this.domCache.validationResults || document.getElementById('validation-results');
     if (!container) return;
 
     let html = `
@@ -2129,9 +3433,6 @@ class FrankensteinLabUI {
           <button class="lab-button primary" onclick="window.frankensteinLabUI.saveBeingWithPrompt()">
             💾 Guardar Ser
           </button>
-          <button class="lab-button accent" onclick="window.frankensteinLabUI.exportToMobile()" title="Enviar a Awakening Protocol">
-            📱 Enviar a App Móvil
-          </button>
           <button class="lab-button secondary" onclick="window.frankensteinLabUI.exportBeingAsPrompt()">
             🌟 Exportar Prompt
           </button>
@@ -2153,7 +3454,7 @@ class FrankensteinLabUI {
    * Exportar ser como prompt para IA
    */
   exportBeingAsPrompt() {
-    if (!this.currentBeing || !this.selectedMission) {
+    if (!this.currentBeing) {
       this.showNotification('No hay ser para exportar', 'warning');
       return;
     }
@@ -2172,217 +3473,260 @@ class FrankensteinLabUI {
   }
 
   /**
-   * Exportar ser a la app móvil Awakening Protocol
-   */
-  exportToMobile() {
-    if (!this.currentBeing || !this.selectedMission) {
-      this.showNotification('No hay ser para exportar', 'warning');
-      return;
-    }
-
-    const being = this.currentBeing;
-    const mission = this.selectedMission;
-
-    // Preparar datos del ser para la app móvil
-    const beingData = {
-      id: Date.now(),
-      name: being.name || mission.name,
-      attributes: being.attributes,
-      totalPower: being.totalPower,
-      balance: being.balance,
-      missionId: mission.id,
-      mission: {
-        id: mission.id,
-        name: mission.name,
-        description: mission.description
-      },
-      pieces: being.pieces.map(p => ({
-        title: p.piece.title,
-        bookTitle: p.piece.bookTitle
-      })),
-      createdAt: new Date().toISOString(),
-      sourceApp: 'frankenstein-lab'
-    };
-
-    // Codificar en base64
-    const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(beingData))));
-
-    // Generar deep link
-    const deepLink = `awakeningprotocol://receive-being?data=${encodeURIComponent(encodedData)}`;
-
-    // Mostrar modal con opciones
-    this.showExportToMobileModal(beingData, deepLink, encodedData);
-  }
-
-  /**
-   * Mostrar modal de exportación a móvil
-   */
-  showExportToMobileModal(beingData, deepLink, encodedData) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
-    modal.id = 'export-mobile-modal';
-    modal.innerHTML = `
-      <div class="bg-slate-900 rounded-xl border-2 border-emerald-500 p-6 max-w-lg w-full">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xl font-bold text-emerald-400">📱 Enviar a Awakening Protocol</h3>
-          <button onclick="document.getElementById('export-mobile-modal').remove()" class="text-slate-400 hover:text-white text-2xl">&times;</button>
-        </div>
-
-        <div class="text-center mb-6">
-          <div class="text-6xl mb-3">${this.selectAvatarForExport(beingData.attributes)}</div>
-          <h4 class="text-lg font-bold text-white">${beingData.name}</h4>
-          <p class="text-slate-400 text-sm">${beingData.mission.name}</p>
-          <p class="text-emerald-400 mt-2">⚡ Poder: ${beingData.totalPower}</p>
-        </div>
-
-        <div class="space-y-3">
-          <p class="text-slate-300 text-sm text-center mb-4">
-            Elige cómo enviar el ser a tu dispositivo móvil:
-          </p>
-
-          <button onclick="window.frankensteinLabUI.openDeepLink('${deepLink}')"
-                  class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-lg font-bold transition-colors">
-            📲 Abrir en App (si está instalada)
-          </button>
-
-          <button onclick="window.frankensteinLabUI.copyToClipboard('${encodedData}', 'Código copiado')"
-                  class="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg transition-colors">
-            📋 Copiar Código de Importación
-          </button>
-
-          <button onclick="window.frankensteinLabUI.showQRCode('${deepLink}')"
-                  class="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg transition-colors">
-            📷 Mostrar Código QR
-          </button>
-        </div>
-
-        <div class="mt-4 p-3 bg-slate-800 rounded-lg">
-          <p class="text-xs text-slate-400 text-center">
-            💡 Si no tienes la app, descárgala desde la sección de descargas
-          </p>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  /**
-   * Seleccionar avatar basado en atributos dominantes
-   */
-  selectAvatarForExport(attributes) {
-    const sorted = Object.entries(attributes)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 1);
-
-    const top = sorted[0]?.[0];
-
-    const avatarMap = {
-      consciousness: '🌟',
-      wisdom: '🦉',
-      empathy: '💜',
-      creativity: '🎨',
-      leadership: '👑',
-      action: '⚡',
-      resilience: '💪',
-      analysis: '🔬',
-      reflection: '🧠',
-      communication: '🗣️',
-      connection: '🌍',
-      strategy: '♟️',
-      organization: '📋',
-      collaboration: '🤝',
-      technical: '⚙️'
-    };
-
-    return avatarMap[top] || '🧬';
-  }
-
-  /**
-   * Abrir deep link
-   */
-  openDeepLink(url) {
-    window.location.href = url;
-    this.showNotification('Abriendo Awakening Protocol...', 'info', 3000);
-  }
-
-  /**
-   * Copiar al portapapeles
-   */
-  copyToClipboard(text, message = 'Copiado') {
-    navigator.clipboard.writeText(text).then(() => {
-      this.showNotification(`📋 ${message}`, 'success', 3000);
-    }).catch(err => {
-      console.error('Error copiando:', err);
-      this.showNotification('Error al copiar', 'error');
-    });
-  }
-
-  /**
-   * Mostrar código QR (usando API externa)
-   */
-  showQRCode(data) {
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data)}`;
-
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
-    modal.id = 'qr-modal';
-    modal.innerHTML = `
-      <div class="bg-slate-900 rounded-xl border-2 border-cyan-500 p-6 text-center">
-        <h3 class="text-xl font-bold text-cyan-400 mb-4">📷 Escanea con tu móvil</h3>
-        <div class="bg-white p-4 rounded-lg inline-block mb-4">
-          <img src="${qrUrl}" alt="QR Code" class="w-48 h-48" />
-        </div>
-        <p class="text-slate-400 text-sm mb-4">Escanea este código con la app Awakening Protocol</p>
-        <button onclick="document.getElementById('qr-modal').remove()"
-                class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-6 rounded-lg">
-          Cerrar
-        </button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  /**
    * Generar prompt del ser
    */
   generateBeingPrompt() {
     const being = this.currentBeing;
-    const mission = this.selectedMission;
+    if (!being) {
+      return 'No hay un ser activo en este momento. Construye o carga un ser para generar su prompt.';
+    }
+
+    const fallbackMission = {
+      name: 'Exploración Libre',
+      description: 'Explorar el laboratorio sin un encargo específico, definiendo el propósito durante la conversación.',
+      longDescription: 'Este ser todavía no tiene una misión asignada. Úsalo para prototipar ideas y definir objetivos durante la sesión.'
+    };
+
+    const mission = this.selectedMission || fallbackMission;
+
+    // Asegurar que tenemos atributos acumulados
+    let collectedAttributes = { ...(being.attributes || {}) };
+    if ((!collectedAttributes || Object.keys(collectedAttributes).length === 0) && this.missionsSystem) {
+      collectedAttributes = {};
+      const piecesSource = (being.pieces && being.pieces.length > 0 ? being.pieces : this.selectedPieces) || [];
+      piecesSource.forEach(entry => {
+        const pieceData = entry?.piece || entry;
+        if (!pieceData) return;
+        const analysis = this.missionsSystem.analyzePiece(pieceData);
+        if (!analysis || !analysis.attributes) return;
+        Object.entries(analysis.attributes).forEach(([attr, value]) => {
+          if (value > 0) {
+            collectedAttributes[attr] = (collectedAttributes[attr] || 0) + value;
+          }
+        });
+      });
+    }
+
+    const balanceData =
+      being.balance ||
+      (this.missionsSystem?.calculateBalance(collectedAttributes) ?? {
+        intellectual: 0,
+        emotional: 0,
+        action: 0,
+        spiritual: 0,
+        practical: 0,
+        harmony: 0
+      });
+
+    const compositionPieces = this.getCanonicalBeingPieces(being).filter(Boolean);
+    const attributeEntries = Object.entries(collectedAttributes || {});
+    const dnaEntries = attributeEntries
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([key, value]) => {
+        const attrData = this.missionsSystem?.attributes?.[key];
+        return `- ${attrData?.icon || '📊'} ${attrData?.name || key}: ${Math.round(value)}`;
+      })
+      .join('\n') || '- Aún no hay atributos dominantes.';
+
+    const knowledgeSection = compositionPieces.length
+      ? compositionPieces.map(piece => {
+          const safeAttrs = (piece.attributes || [])
+            .map(attr => {
+              if (!attr) return null;
+              const label = attr.name || attr.key;
+              const icon = attr.icon || '📊';
+              const value = Math.round(attr.value || 0);
+              return `${icon} ${label}: ${value}`;
+            })
+            .filter(Boolean)
+            .join(', ');
+          const pieceIcon = piece.icon || '🧩';
+          const pieceTypeLabel = piece.typeLabel || piece.type || 'Pieza';
+          const bookTitle = piece.bookTitle || this.getBookTitle(piece.bookId) || 'Libro desconocido';
+          return `- ${pieceIcon} ${pieceTypeLabel}: "${piece.title || 'Sin título'}" (${bookTitle}) → ${safeAttrs || 'sin atributos detectados'}`;
+        }).join('\n')
+      : '- Agrega piezas para definir el conocimiento base del ser.';
 
     let prompt = `Eres un Ser Transformador creado en el Laboratorio Frankenstein de la Colección Nuevo Ser.
 
 MISIÓN: ${mission.name}
-${mission.longDescription}
+${mission.longDescription || mission.description || 'Explora, aprende y define tu propósito durante la conversación.'}
 
-ATRIBUTOS:
-`;
+ATRIBUTOS NUCLEARES:
+${dnaEntries}
 
-    Object.entries(being.attributes).forEach(([key, value]) => {
-      const attrData = this.missionsSystem.attributes[key];
-      prompt += `- ${attrData.icon} ${attrData.name}: ${value}\n`;
-    });
-
-    prompt += `
 BALANCE:
-- 🧠 Intelectual: ${being.balance.intellectual}
-- ❤️ Emocional: ${being.balance.emotional}
-- ⚡ Acción: ${being.balance.action}
-- 🌟 Espiritual: ${being.balance.spiritual}
-- 🔧 Práctico: ${being.balance.practical}
-- Armonía: ${Math.round(being.balance.harmony)}%
+- 🧠 Intelectual: ${Math.round(balanceData.intellectual || 0)}
+- ❤️ Emocional: ${Math.round(balanceData.emotional || 0)}
+- ⚡ Acción: ${Math.round(balanceData.action || 0)}
+- 🌟 Espiritual: ${Math.round(balanceData.spiritual || 0)}
+- 🔧 Práctico: ${Math.round(balanceData.practical || 0)}
+- Armonía: ${Math.round(balanceData.harmony || 0)}%
 
-CONOCIMIENTO BASE:
-${being.pieces.map(p => `- ${p.piece.title} (${p.piece.bookTitle})`).join('\n')}
+CONOCIMIENTO BASE (capítulos y ejercicios seleccionados):
+${knowledgeSection}
 
 Como este ser, debes:
 1. Actuar según tus atributos y balance específicos
 2. Usar el conocimiento de las piezas que te componen
-3. Cumplir tu misión: ${mission.description}
+3. Cumplir tu misión: ${mission.description || 'Clarificar el propósito de la sesión junto a la persona que te invoca'}
 4. Mantener coherencia con tu propósito transformador
 
 Cuando interactúes, habla desde tu identidad única como este ser, no como una IA genérica.`;
 
     return prompt;
+  }
+
+  getCanonicalBeingPieces(beingOverride = null) {
+    if (!this.missionsSystem) return [];
+    const targetBeing = beingOverride || this.currentBeing;
+    const analyzedPieces = [];
+    const typeMeta = {
+      chapter: { icon: '📖', label: 'Capítulo' },
+      exercise: { icon: '🧪', label: 'Ejercicio' },
+      resource: { icon: '🧰', label: 'Recurso' },
+      special: { icon: '✨', label: 'Fragmento' }
+    };
+
+    const pushAnalysis = (analysis) => {
+      if (!analysis) return;
+      const pieceData = analysis.piece || analysis;
+      if (!pieceData) return;
+      const attrEntries = Object.entries(analysis.attributes || {})
+        .filter(([, value]) => value > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([key, value]) => {
+          const attr = this.missionsSystem?.attributes?.[key];
+          return {
+            key,
+            value: Math.round(value),
+            icon: attr?.icon || '📊',
+            name: attr?.name || key
+          };
+        });
+
+      const typeInfo = typeMeta[pieceData.type] || { icon: '🧩', label: 'Pieza' };
+      analyzedPieces.push({
+        id: pieceData.id || `piece-${analyzedPieces.length}`,
+        title: pieceData.title || 'Pieza sin título',
+        type: pieceData.type || 'piece',
+        icon: pieceData.icon || typeInfo.icon,
+        typeLabel: typeInfo.label,
+        bookId: pieceData.bookId || '',
+        bookTitle: pieceData.bookTitle || this.getBookTitle(pieceData.bookId),
+        attributes: attrEntries,
+        totalPower: Math.round(analysis.totalPower || 0)
+      });
+    };
+
+    if (targetBeing?.pieces?.length) {
+      targetBeing.pieces.forEach(pushAnalysis);
+    } else if (this.selectedPieces.length && this.missionsSystem) {
+      this.selectedPieces.forEach(piece => {
+        const analysis = this.missionsSystem.analyzePiece(piece);
+        pushAnalysis(analysis);
+      });
+    }
+
+    return analyzedPieces;
+  }
+
+  updateVitruvianHud() {
+    const hud = this.domCache.vitruvianHud || document.getElementById('vitruvian-hud');
+    const badge = this.domCache.vitruvianEnergyBadge || document.getElementById('vitruvian-energy-badge');
+    const legend = this.domCache.vitruvianSlotLegend || document.getElementById('vitruvian-slot-legend');
+    if (!hud) return;
+
+    if (badge) {
+      const totalPower = Math.max(0, Math.round(this.currentBeing?.totalPower || this.calculateCurrentPower() || 0));
+      badge.textContent = `⚡ ${totalPower}`;
+    }
+
+    if (!this.currentBeing || !this.currentBeing.attributes) {
+      hud.innerHTML = '<p class="vitruvian-hud-empty">Añade capítulos y ejercicios para activar este radar.</p>';
+      if (legend) {
+        legend.innerHTML = '<p class="vitruvian-composition-empty">Selecciona piezas para ver qué partes del cuerpo se energizan.</p>';
+      }
+      return;
+    }
+
+    const attrEntries = Object.entries(this.currentBeing.attributes || {})
+      .filter(([, value]) => value > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+
+    if (!attrEntries.length) {
+      hud.innerHTML = '<p class="vitruvian-hud-empty">Aún no hay atributos dominantes para mostrar.</p>';
+    } else {
+      hud.innerHTML = attrEntries.map(([key, value]) => {
+        const attr = this.missionsSystem?.attributes?.[key];
+        const percent = Math.min(100, Math.round((value / 120) * 100));
+        return `
+          <div class="vitruvian-hud-item">
+            <div class="vitruvian-hud-icon">${attr?.icon || '📊'}</div>
+            <div class="vitruvian-hud-details">
+              <p>${attr?.name || key}</p>
+              <span>${Math.round(value)}</span>
+              <div class="vitruvian-hud-meter">
+                <span style="width:${percent}%"></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    if (legend) {
+      const pieces = this.getCanonicalBeingPieces().slice(0, 3);
+      if (!pieces.length) {
+        legend.innerHTML = '<p class="vitruvian-composition-empty">Selecciona piezas para ver cómo se distribuye la energía.</p>';
+      } else {
+        legend.innerHTML = `
+          <p class="vitruvian-composition-title">Componentes clave</p>
+          <ul class="vitruvian-composition-list">
+            ${pieces.map(piece => `
+              <li>
+                <span class="composition-icon">${piece.icon}</span>
+                <div>
+                  <p>${piece.title}</p>
+                  <small>${piece.typeLabel} · ${piece.bookTitle}</small>
+                </div>
+                <span class="composition-power">⚡ ${piece.totalPower}</span>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      }
+    }
+  }
+
+  updateBeingCompositionSummary() {
+    const list = this.domCache.beingComponentsList || document.getElementById('being-components-list');
+    const countLabel = document.getElementById('being-components-count');
+    if (!list) return;
+
+    const pieces = this.getCanonicalBeingPieces();
+    if (countLabel) {
+      countLabel.textContent = `${pieces.length} pieza${pieces.length === 1 ? '' : 's'}`;
+    }
+
+    if (!pieces.length) {
+      list.innerHTML = '<li>Selecciona capítulos y ejercicios para componer este ser.</li>';
+      return;
+    }
+
+    list.innerHTML = pieces.slice(0, 4).map(piece => `
+      <li>
+        <span class="component-icon">${piece.icon}</span>
+        <div>
+          <p>${piece.title}</p>
+          <small>${piece.typeLabel} · ${piece.bookTitle}</small>
+        </div>
+        <span class="component-power">⚡ ${piece.totalPower}</span>
+      </li>
+    `).join('');
   }
 
   /**
@@ -2391,11 +3735,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   showPromptModal(prompt) {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
+    modal.style.zIndex = '9999';
     modal.innerHTML = `
       <div class="bg-slate-900 rounded-xl border-2 border-cyan-500 p-6 max-w-2xl w-full max-h-[80vh] overflow-auto">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-xl font-bold text-cyan-300">Prompt del Ser</h3>
-          <button class="text-white hover:text-red-400" onclick="this.closest('.fixed').remove()">✕</button>
+          <button class="text-white hover:text-red-400" onclick="this.closest('.fixed').remove()" aria-label="Cerrar modal"><span aria-hidden="true">✕</span></button>
         </div>
         <pre class="bg-slate-800 p-4 rounded text-sm text-gray-300 overflow-auto">${prompt}</pre>
         <div class="mt-4 flex gap-2">
@@ -2422,24 +3767,33 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     const prompt = this.generateBeingPrompt();
 
-    // Cerrar modal si está abierto
-    const modal = document.querySelector('.fixed.inset-0');
-    if (modal) modal.remove();
+    if (!window.aiChatModal) {
+      this.showPromptModal(prompt);
+      this.showNotification('Configura la IA en Ajustes para hablar con el ser dentro del laboratorio.', 'info', 5000);
+      return;
+    }
+
+    // Cerrar instancias anteriores del chat
+    const existingModal = document.getElementById('ai-chat-modal');
+    if (existingModal) {
+      existingModal.remove();
+    }
+
+    if (window.labAIEngineProxy?.updateContext) {
+      window.labAIEngineProxy.updateContext(this.currentBeing, this.selectedMission);
+    }
 
     // Abrir chat de IA con el prompt
-    if (window.aiChatModal) {
-      window.aiChatModal.open();
+    window.aiChatModal.open();
 
-      setTimeout(() => {
-        const input = document.getElementById('ai-chat-input');
-        if (input) {
-          input.value = `${prompt}\n\n---\n\nHola, comencemos a trabajar juntos en tu misión.`;
-          input.focus();
-        }
-      }, 200);
-    } else {
-      this.showNotification('Chat de IA no disponible', 'error');
-    }
+    setTimeout(() => {
+      const input = document.getElementById('ai-chat-input');
+      if (input) {
+        input.value = '';
+        input.placeholder = 'Describe tu siguiente paso o pregúntale algo a tu ser...';
+        input.focus();
+      }
+    }, 200);
   }
 
   /**
@@ -2452,6 +3806,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     });
     this.selectedPieces = [];
     this.currentBeing = null;
+    this.lastValidationResults = null;
 
     // Resetear indicador de poder si está disponible
     if (window.powerIndicator) {
@@ -2459,15 +3814,151 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     }
 
     // Ocultar resultados
-    document.getElementById('validation-results').style.display = 'none';
+    const validationResults = document.getElementById('validation-results');
+    if (validationResults) {
+      validationResults.style.display = 'none';
+    }
 
     // Desactivar botones
-    document.getElementById('btn-export-being').disabled = true;
-    document.getElementById('btn-validate-being').disabled = true;
-    document.getElementById('btn-talk-to-being').disabled = true;
+    this.updateActionButtons();
 
     this.updateBeingDisplay();
+
+    if (this.selectedMission) {
+      this.updateRequirementsPanel();
+    } else {
+      this.clearRequirementsPanel();
+    }
+
+    this.saveLabState();
     this.showNotification('Selección limpiada', 'info');
+  }
+
+  /**
+   * Guardar el estado actual del laboratorio en localStorage
+   */
+  saveLabState() {
+    if (!window?.localStorage) return;
+    const record = {
+      missionId: this.selectedMission?.id || null,
+      selectedPieces: this.selectedPieces.map(piece => this.serializePieceState(piece))
+    };
+    try {
+      localStorage.setItem(this.labStateKey, JSON.stringify(record));
+    } catch (error) {
+      console.warn('[FrankensteinUI] No se pudo guardar el estado del laboratorio:', error);
+    }
+  }
+
+  serializePieceState(piece) {
+    if (!piece) return null;
+    const overrides = {};
+    const fields = [
+      'title', 'bookTitle', 'bookId', 'chapterId', 'exerciseId', 'icon',
+      'type', 'description', 'dominantAttribute', 'totalPower', 'powerMultiplier',
+      'quizScore', 'quizTotal', 'syntheticAttributes', 'isSpecialReward', 'color', 'tags'
+    ];
+    fields.forEach(key => {
+      if (piece[key] !== undefined) {
+        overrides[key] = piece[key];
+      }
+    });
+    return {
+      id: piece.id || `piece-${Date.now()}`,
+      overrides
+    };
+  }
+
+  /**
+   * Restaurar el estado del laboratorio desde localStorage
+   */
+  restoreLabState() {
+    if (this.hasRestoredLabState) return;
+    this.hasRestoredLabState = true;
+    if (!window?.localStorage) return;
+    const raw = localStorage.getItem(this.labStateKey);
+    if (!raw) return;
+    let state;
+    try {
+      state = JSON.parse(raw);
+    } catch (error) {
+      console.warn('[FrankensteinUI] Estado del laboratorio corrupto:', error);
+      return;
+    }
+
+    if (state?.missionId) {
+      this.applyMissionFromState(state.missionId);
+    }
+
+    if (Array.isArray(state?.selectedPieces) && state.selectedPieces.length) {
+      document.querySelectorAll('.piece-card.selected, .mobile-piece-card.selected').forEach(card => {
+        card.classList.remove('selected');
+      });
+
+      this.selectedPieces = this.rehydratePiecesFromState(state.selectedPieces);
+      this.selectedPieces.forEach(piece => this.markSelectedPieceCards(piece.id));
+      if (this.selectedPieces.length) {
+        this.updateBeingFromPieces();
+      } else {
+        this.currentBeing = null;
+        this.updateBeingDisplay();
+      }
+    } else {
+      this.updateBeingDisplay();
+    }
+
+    this.updateRequirementsPanel();
+    this.updateDemoScenarioProgress();
+    this.updateMiniChallengeProgress();
+    this.updatePiecesSidebarMeta();
+    this.saveLabState();
+  }
+
+  rehydratePiecesFromState(records = []) {
+    const piecesById = new Map(this.availablePieces.map(piece => [piece.id, piece]));
+    const rehydrated = [];
+    records.forEach(record => {
+      if (!record?.id) return;
+      const overrides = record.overrides || {};
+      const base = piecesById.get(record.id);
+      if (base) {
+        rehydrated.push({ ...base, ...overrides });
+      } else {
+        rehydrated.push({ id: record.id, ...overrides });
+      }
+    });
+    return rehydrated;
+  }
+
+  markSelectedPieceCards(pieceId) {
+    if (!pieceId) return;
+    ['.piece-card', '.mobile-piece-card'].forEach(selector => {
+      const card = document.querySelector(`${selector}[data-piece-id="${pieceId}"]`);
+      if (card) {
+        card.classList.add('selected');
+      }
+    });
+  }
+
+  applyMissionFromState(missionId) {
+    if (!missionId || !this.missionsSystem) return false;
+    const mission = this.missionsSystem.missions.find(m => m.id === missionId);
+    if (!mission) return false;
+    const card = document.querySelector(`[data-mission-id="${mission.id}"]`);
+    if (card) {
+      this.selectMission(mission, card, { silent: true });
+      return true;
+    }
+
+    this.selectedMission = mission;
+    this.ensureMissionRequirements(mission);
+    this.updateMissionProgressUI({
+      fulfilled: 0,
+      total: mission.requirements ? mission.requirements.length : 0
+    });
+    this.updateBeingDisplay();
+    this.updateRequirementsPanel();
+    return true;
   }
 
   /**
@@ -2525,761 +4016,6 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       html += `<div class="floating-particle" style="left: ${x}%; top: ${y}%; animation-delay: ${delay}s;"></div>`;
     }
     return html;
-  }
-
-  /**
-   * Cambiar tab de navegación (Bottom Navigation)
-   * En móvil usa pantallas completas, en desktop usa modales
-   */
-  switchTab(tabName) {
-    console.log('🔄 Cambiando a tab:', tabName);
-
-    // Actualizar estado visual de tabs
-    document.querySelectorAll('.awakening-tab').forEach(tab => {
-      tab.classList.remove('active');
-      if (tab.dataset.tab === tabName) {
-        tab.classList.add('active');
-      }
-    });
-
-    // Cerrar cualquier pantalla móvil abierta
-    this.closeMobileScreen();
-
-    // Detectar si es móvil
-    const isMobile = window.innerWidth <= 768;
-
-    // Manejar cambio de contenido según tab
-    switch (tabName) {
-      case 'laboratorio':
-        // Mostrar workspace principal
-        const workspace = document.querySelector('.lab-workspace');
-        if (workspace) workspace.style.display = '';
-        break;
-      case 'seres':
-        if (isMobile) {
-          this.showMobileSeresScreen();
-        } else {
-          this.showSavedBeingsModal();
-        }
-        break;
-      case 'misiones':
-        if (isMobile) {
-          this.showMobileMisionesScreen();
-        } else {
-          this.openMissionModal();
-        }
-        break;
-      case 'piezas':
-        if (isMobile) {
-          this.showMobilePiezasScreen();
-        } else {
-          this.openPiecesModal();
-        }
-        break;
-      case 'perfil':
-        if (isMobile) {
-          this.showMobilePerfilScreen();
-        } else {
-          this.showProfileSection();
-        }
-        break;
-    }
-  }
-
-  /**
-   * Cerrar pantalla móvil activa
-   */
-  closeMobileScreen() {
-    const screen = document.getElementById('mobile-screen');
-    if (screen) {
-      screen.remove();
-    }
-    // Restaurar workspace
-    const workspace = document.querySelector('.lab-workspace');
-    if (workspace) workspace.style.display = '';
-    // Restaurar tab laboratorio
-    document.querySelectorAll('.awakening-tab').forEach(tab => {
-      tab.classList.remove('active');
-      if (tab.dataset.tab === 'laboratorio') {
-        tab.classList.add('active');
-      }
-    });
-  }
-
-  /**
-   * Pantalla móvil: Seres guardados
-   */
-  showMobileSeresScreen() {
-    const savedBeings = this.loadBeings();
-
-    const screen = document.createElement('div');
-    screen.id = 'mobile-screen';
-    screen.className = 'mobile-screen active';
-
-    screen.innerHTML = `
-      <div class="mobile-screen-header">
-        <button class="mobile-screen-back" onclick="window.frankensteinLabUI.closeMobileScreen()">←</button>
-        <h2 class="mobile-screen-title">🧬 Mis Seres</h2>
-      </div>
-      <div class="mobile-screen-content">
-        ${savedBeings.length === 0 ? `
-          <div class="empty-state">
-            <div class="empty-state-icon">🧬</div>
-            <h3 class="empty-state-title">Sin seres guardados</h3>
-            <p class="empty-state-text">Crea tu primer ser en el laboratorio</p>
-            <button class="empty-state-btn" onclick="window.frankensteinLabUI.closeMobileScreen()">Ir al Lab</button>
-          </div>
-        ` : `
-          <div class="beings-list">
-            ${savedBeings.map(saved => {
-              const totalPower = saved.totalPower || saved.being?.totalPower || 0;
-              const missionName = saved.mission?.name || 'Sin misión';
-              const beingEmoji = this.avatarSystem ? this.avatarSystem.getBeingEmoji(saved.being) : '🧬';
-              return `
-                <div class="being-list-item" onclick="window.frankensteinLabUI.loadBeing('${saved.id}'); window.frankensteinLabUI.closeMobileScreen();">
-                  <div class="being-list-avatar">${beingEmoji}</div>
-                  <div class="being-list-info">
-                    <h4 class="being-list-name">${saved.name || 'Ser sin nombre'}</h4>
-                    <p class="being-list-mission">🎯 ${missionName}</p>
-                  </div>
-                  <span class="being-list-power">⚡${Math.round(totalPower)}</span>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `}
-      </div>
-    `;
-
-    // Ocultar workspace
-    const workspace = document.querySelector('.lab-workspace');
-    if (workspace) workspace.style.display = 'none';
-
-    document.querySelector('.frankenstein-laboratory').appendChild(screen);
-  }
-
-  /**
-   * Pantalla móvil: Misiones
-   */
-  showMobileMisionesScreen() {
-    const missions = this.missionsSystem?.missions || [];
-    const difficulties = ['principiante', 'intermedio', 'avanzado', 'maestro'];
-
-    const screen = document.createElement('div');
-    screen.id = 'mobile-screen';
-    screen.className = 'mobile-screen active';
-
-    // Agrupar misiones por dificultad
-    const groupedMissions = {};
-    difficulties.forEach(d => groupedMissions[d] = []);
-    missions.forEach(m => {
-      if (groupedMissions[m.difficulty]) {
-        groupedMissions[m.difficulty].push(m);
-      }
-    });
-
-    screen.innerHTML = `
-      <div class="mobile-screen-header">
-        <button class="mobile-screen-back" onclick="window.frankensteinLabUI.closeMobileScreen()">←</button>
-        <h2 class="mobile-screen-title">🎯 Elige tu Misión</h2>
-      </div>
-      <div class="mobile-screen-content">
-        <p style="color: #94a3b8; font-size: 14px; margin: 0 0 20px 0; text-align: center;">
-          Cada misión requiere atributos específicos. Combina las piezas correctas para cumplirla.
-        </p>
-
-        ${difficulties.map(difficulty => {
-          const missionList = groupedMissions[difficulty];
-          if (missionList.length === 0) return '';
-
-          const diffColors = {
-            principiante: '#34d399',
-            intermedio: '#60a5fa',
-            avanzado: '#fbbf24',
-            maestro: '#ef4444'
-          };
-
-          return `
-            <div class="mission-difficulty-group">
-              <h3 style="color: ${diffColors[difficulty]}; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
-                <span style="width: 8px; height: 8px; background: ${diffColors[difficulty]}; border-radius: 50%;"></span>
-                ${difficulty}
-              </h3>
-              <div class="missions-list" style="margin-bottom: 24px;">
-                ${missionList.map(mission => {
-                  const reqAttrs = Object.entries(mission.requiredAttributes || {}).slice(0, 3);
-                  return `
-                    <div class="mission-list-item ${this.selectedMission?.id === mission.id ? 'selected' : ''}"
-                         onclick="window.frankensteinLabUI.selectMissionFromMobile('${mission.id}')">
-                      <div class="mission-list-icon">${mission.icon}</div>
-                      <div class="mission-list-info">
-                        <h4 class="mission-list-name">${mission.name}</h4>
-                        <p class="mission-list-desc">${mission.description}</p>
-                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
-                          ${reqAttrs.map(([attr, value]) => {
-                            const attrData = this.missionsSystem?.attributes?.[attr];
-                            return `<span style="font-size: 11px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px;">${attrData?.icon || '📊'} ${value}+</span>`;
-                          }).join('')}
-                        </div>
-                      </div>
-                      ${this.selectedMission?.id === mission.id ? '<span style="color: #34d399; font-size: 20px;">✓</span>' : ''}
-                    </div>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-
-    const workspace = document.querySelector('.lab-workspace');
-    if (workspace) workspace.style.display = 'none';
-
-    document.querySelector('.frankenstein-laboratory').appendChild(screen);
-  }
-
-  /**
-   * Seleccionar misión desde pantalla móvil
-   */
-  selectMissionFromMobile(missionId) {
-    const mission = this.missionsSystem?.missions.find(m => m.id === missionId);
-    if (mission) {
-      this.selectedMission = mission;
-      this.updateBeingDisplay();
-      window.showToast(`Misión: ${mission.name}`, 'success');
-    }
-    this.closeMobileScreen();
-  }
-
-  /**
-   * Pantalla móvil: Piezas
-   */
-  showMobilePiezasScreen() {
-    const pieces = this.availablePieces || [];
-    const currentMode = window.FrankensteinQuiz?.getMode() || 'demo';
-
-    const screen = document.createElement('div');
-    screen.id = 'mobile-screen';
-    screen.className = 'mobile-screen active';
-
-    // Organizar piezas por libro
-    const piecesByBook = this.organizePiecesByBook('all');
-
-    screen.innerHTML = `
-      <div class="mobile-screen-header">
-        <button class="mobile-screen-back" onclick="window.frankensteinLabUI.closeMobileScreen()">←</button>
-        <h2 class="mobile-screen-title">📚 Biblioteca</h2>
-        <span style="color: var(--awakening-accent-primary); font-weight: 600;">${this.selectedPieces.length} sel.</span>
-      </div>
-      <div class="mobile-screen-content" style="padding-top: 8px;">
-        <div class="mobile-mode-indicator" style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(96, 165, 250, 0.1); border-radius: 10px; margin-bottom: 12px; font-size: 13px;">
-          <span>${currentMode === 'juego' ? '🧠' : currentMode === 'demo' ? '✨' : '🔬'}</span>
-          <span style="color: #94a3b8;">Modo:</span>
-          <span style="color: #60a5fa; font-weight: 600;">${currentMode === 'juego' ? 'Aprendizaje (Quiz)' : currentMode === 'demo' ? 'Demo' : 'Investigación'}</span>
-        </div>
-        <div class="mobile-books-list" id="mobile-books-list">
-          ${this.renderMobileBooksList(piecesByBook)}
-        </div>
-      </div>
-    `;
-
-    const workspace = document.querySelector('.lab-workspace');
-    if (workspace) workspace.style.display = 'none';
-
-    document.querySelector('.frankenstein-laboratory').appendChild(screen);
-  }
-
-  /**
-   * Renderizar lista de libros para móvil con sus atributos
-   */
-  renderMobileBooksList(piecesByBook) {
-    if (Object.keys(piecesByBook).length === 0) {
-      return `
-        <div class="empty-state">
-          <div class="empty-state-icon">📚</div>
-          <h3 class="empty-state-title">Sin libros</h3>
-          <p class="empty-state-text">No hay libros disponibles</p>
-        </div>
-      `;
-    }
-
-    return Object.entries(piecesByBook).map(([bookId, bookData]) => {
-      // Calcular atributos agregados del libro
-      let totalPower = 0;
-      const aggregatedAttributes = {};
-      let totalPieces = 0;
-
-      Object.values(bookData.chapters).forEach(ch => {
-        totalPieces += ch.pieces.length;
-        ch.pieces.forEach(piece => {
-          const analysis = this.missionsSystem?.analyzePiece(piece);
-          if (analysis) {
-            totalPower += analysis.totalPower || 0;
-            Object.entries(analysis.attributes || {}).forEach(([attr, value]) => {
-              aggregatedAttributes[attr] = (aggregatedAttributes[attr] || 0) + value;
-            });
-          }
-        });
-      });
-
-      // Top 4 atributos
-      const topAttrs = Object.entries(aggregatedAttributes)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 4)
-        .map(([attr, value]) => {
-          const attrData = this.missionsSystem?.attributes?.[attr];
-          return attrData ? `<span style="display: inline-flex; align-items: center; gap: 2px; font-size: 12px;">${attrData.icon}${Math.round(value)}</span>` : '';
-        })
-        .filter(Boolean)
-        .join(' ');
-
-      const bgColor = bookData.color || '#64748b';
-      const chapterCount = Object.keys(bookData.chapters).length;
-
-      return `
-        <div class="mobile-book-item" data-book-id="${bookId}">
-          <div class="mobile-book-header" onclick="window.frankensteinLabUI.toggleMobileBook('${bookId}')">
-            <div class="mobile-book-icon" style="background: ${bgColor}20; color: ${bgColor};">📚</div>
-            <div class="mobile-book-info">
-              <h4 class="mobile-book-title">${bookData.bookTitle}</h4>
-              <div class="mobile-book-meta">
-                <span>${chapterCount} caps</span>
-                <span>•</span>
-                <span>⚡${totalPower}</span>
-              </div>
-              <div class="mobile-book-attrs">${topAttrs}</div>
-            </div>
-            <span class="mobile-book-toggle">▶</span>
-          </div>
-          <div class="mobile-book-chapters" id="mobile-chapters-${bookId}" style="display: none;">
-            ${this.renderMobileChaptersList(bookId, bookData.chapters)}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  /**
-   * Renderizar lista de capítulos dentro de un libro
-   */
-  renderMobileChaptersList(bookId, chapters) {
-    return Object.entries(chapters).map(([chapterId, chapterData]) => {
-      // Calcular atributos del capítulo
-      let chapterPower = 0;
-      const chapterAttrs = {};
-
-      chapterData.pieces.forEach(piece => {
-        const analysis = this.missionsSystem?.analyzePiece(piece);
-        if (analysis) {
-          chapterPower += analysis.totalPower || 0;
-          Object.entries(analysis.attributes || {}).forEach(([attr, value]) => {
-            chapterAttrs[attr] = (chapterAttrs[attr] || 0) + value;
-          });
-        }
-      });
-
-      // Top 3 atributos del capítulo
-      const topAttrs = Object.entries(chapterAttrs)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([attr, value]) => {
-          const attrData = this.missionsSystem?.attributes?.[attr];
-          return attrData ? `<span title="${attrData.name}" style="font-size: 11px;">${attrData.icon}${Math.round(value)}</span>` : '';
-        })
-        .filter(Boolean)
-        .join(' ');
-
-      // Verificar si ya está seleccionado
-      const mainPiece = chapterData.pieces.find(p => p.type === 'chapter');
-      const isSelected = mainPiece && this.selectedPieces.some(p => p.id === mainPiece.id);
-
-      return `
-        <div class="mobile-chapter-item ${isSelected ? 'selected' : ''}"
-             data-chapter-id="${chapterId}"
-             data-book-id="${bookId}"
-             onclick="window.frankensteinLabUI.selectMobileChapter('${bookId}', '${chapterId}')">
-          <div class="mobile-chapter-icon">${isSelected ? '✓' : '📖'}</div>
-          <div class="mobile-chapter-info">
-            <h5 class="mobile-chapter-title">${chapterData.chapterTitle || `Capítulo ${chapterId}`}</h5>
-            <div class="mobile-chapter-meta">
-              <span>⚡${chapterPower}</span>
-              <span class="mobile-chapter-attrs">${topAttrs}</span>
-            </div>
-          </div>
-          ${isSelected ? '<span style="color: #34d399; font-weight: bold;">✓</span>' : ''}
-        </div>
-      `;
-    }).join('');
-  }
-
-  /**
-   * Toggle expandir/colapsar libro en móvil
-   */
-  toggleMobileBook(bookId) {
-    const chapters = document.getElementById(`mobile-chapters-${bookId}`);
-    const header = document.querySelector(`.mobile-book-item[data-book-id="${bookId}"] .mobile-book-header`);
-    const toggle = header?.querySelector('.mobile-book-toggle');
-
-    if (!chapters) return;
-
-    const isOpen = chapters.style.display !== 'none';
-
-    // Cerrar todos los demás
-    document.querySelectorAll('.mobile-book-chapters').forEach(el => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.mobile-book-toggle').forEach(el => {
-      el.textContent = '▶';
-      el.style.transform = 'rotate(0deg)';
-    });
-
-    if (!isOpen) {
-      chapters.style.display = 'block';
-      if (toggle) {
-        toggle.textContent = '▼';
-        toggle.style.transform = 'rotate(0deg)';
-      }
-    }
-  }
-
-  /**
-   * Seleccionar capítulo desde móvil (con quiz si aplica)
-   */
-  async selectMobileChapter(bookId, chapterId) {
-    // Encontrar la pieza del capítulo
-    const piece = this.availablePieces.find(p =>
-      p.bookId === bookId && p.chapterId === chapterId && p.type === 'chapter'
-    );
-
-    if (!piece) {
-      window.showToast('Capítulo no encontrado', 'error');
-      return;
-    }
-
-    const isSelected = this.selectedPieces.some(p => p.id === piece.id);
-
-    if (isSelected) {
-      // Deseleccionar
-      const index = this.selectedPieces.findIndex(p => p.id === piece.id);
-      if (index >= 0) {
-        this.selectedPieces.splice(index, 1);
-        window.showToast('Capítulo removido', 'info');
-      }
-    } else {
-      // MODO JUEGO: Mostrar quiz antes de añadir
-      if (window.FrankensteinQuiz) {
-        const currentMode = window.FrankensteinQuiz.getMode();
-        console.log(`[Mobile] Quiz mode: ${currentMode}, piece: ${piece.title}`);
-
-        if (currentMode === 'juego') {
-          try {
-            console.log(`[Mobile] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
-            const quizResult = await window.FrankensteinQuiz.showQuizModal(
-              piece,
-              piece.bookId,
-              piece.chapterId
-            );
-
-            console.log(`[Mobile] Quiz result:`, quizResult);
-
-            if (quizResult.cancelled) {
-              console.log(`[Mobile] Quiz cancelled`);
-              return;
-            }
-
-            if (!quizResult.skipped) {
-              piece.powerMultiplier = quizResult.powerMultiplier;
-              piece.quizScore = quizResult.correctCount;
-              piece.quizTotal = quizResult.totalQuestions;
-            }
-          } catch (error) {
-            console.error('[Mobile] Quiz error:', error);
-            return;
-          }
-        }
-      }
-
-      this.selectedPieces.push(piece);
-      window.showToast(`${piece.title} añadido`, 'success');
-    }
-
-    // Actualizar displays
-    this.updateBeingDisplay();
-
-    // Actualizar UI móvil
-    const header = document.querySelector('.mobile-screen-header span:last-child');
-    if (header) header.textContent = `${this.selectedPieces.length} sel.`;
-
-    // Re-renderizar lista de capítulos
-    const bookItem = document.querySelector(`.mobile-book-item[data-book-id="${bookId}"]`);
-    if (bookItem) {
-      const chaptersContainer = bookItem.querySelector('.mobile-book-chapters');
-      const piecesByBook = this.organizePiecesByBook('all');
-      if (chaptersContainer && piecesByBook[bookId]) {
-        chaptersContainer.innerHTML = this.renderMobileChaptersList(bookId, piecesByBook[bookId].chapters);
-      }
-    }
-  }
-
-  /**
-   * Renderizar lista de piezas para móvil
-   */
-  renderMobilePiecesList(pieces, filter = 'all') {
-    const filteredPieces = filter === 'all' ? pieces : pieces.filter(p => p.type === filter);
-
-    if (filteredPieces.length === 0) {
-      return `
-        <div class="empty-state">
-          <div class="empty-state-icon">🧩</div>
-          <h3 class="empty-state-title">Sin piezas</h3>
-          <p class="empty-state-text">No hay piezas disponibles</p>
-        </div>
-      `;
-    }
-
-    return filteredPieces.slice(0, 50).map(piece => {
-      const isSelected = this.selectedPieces.some(p => p.id === piece.id);
-      const bgColor = piece.color || '#64748b';
-      return `
-        <div class="piece-list-item ${isSelected ? 'selected' : ''}"
-             onclick="window.frankensteinLabUI.toggleMobilePiece('${piece.id}')">
-          <div class="piece-list-icon" style="background: ${bgColor}20; color: ${bgColor};">
-            ${piece.icon || '📄'}
-          </div>
-          <div class="piece-list-info">
-            <h4 class="piece-list-title">${piece.title}</h4>
-            <p class="piece-list-book">${piece.bookTitle || ''}</p>
-          </div>
-          <div class="piece-list-check">✓</div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  /**
-   * Filtrar piezas en móvil
-   */
-  filterMobilePieces(filter) {
-    // Actualizar botones
-    document.querySelectorAll('.piece-filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === filter);
-    });
-    // Renderizar lista filtrada
-    const list = document.getElementById('mobile-pieces-list');
-    if (list) {
-      list.innerHTML = this.renderMobilePiecesList(this.availablePieces, filter);
-    }
-  }
-
-  /**
-   * Toggle pieza desde móvil
-   */
-  toggleMobilePiece(pieceId) {
-    const piece = this.availablePieces.find(p => p.id === pieceId);
-    if (!piece) return;
-
-    const index = this.selectedPieces.findIndex(p => p.id === pieceId);
-    if (index >= 0) {
-      this.selectedPieces.splice(index, 1);
-      window.showToast('Pieza removida', 'info');
-    } else {
-      this.selectedPieces.push(piece);
-      window.showToast('Pieza añadida', 'success');
-    }
-
-    // Actualizar UI
-    this.updateBeingDisplay();
-
-    // Actualizar contador en header
-    const header = document.querySelector('.mobile-screen-header span');
-    if (header) header.textContent = `${this.selectedPieces.length} sel.`;
-
-    // Actualizar item visual
-    const item = document.querySelector(`.piece-list-item[onclick*="${pieceId}"]`);
-    if (item) item.classList.toggle('selected');
-  }
-
-  /**
-   * Pantalla móvil: Perfil
-   */
-  showMobilePerfilScreen() {
-    const savedBeings = this.loadBeings();
-    const currentMode = window.FrankensteinQuiz?.getMode() || 'demo';
-    const currentDifficulty = window.FrankensteinQuiz?.getDifficulty() || 'iniciado';
-
-    const screen = document.createElement('div');
-    screen.id = 'mobile-screen';
-    screen.className = 'mobile-screen active';
-
-    screen.innerHTML = `
-      <div class="mobile-screen-header">
-        <button class="mobile-screen-back" onclick="window.frankensteinLabUI.closeMobileScreen()">←</button>
-        <h2 class="mobile-screen-title">👤 Perfil</h2>
-      </div>
-      <div class="mobile-screen-content">
-        <div class="profile-stats-grid">
-          <div class="profile-stat-card">
-            <span class="profile-stat-icon">🧬</span>
-            <span class="profile-stat-value">${savedBeings.length}</span>
-            <span class="profile-stat-label">Seres</span>
-          </div>
-          <div class="profile-stat-card">
-            <span class="profile-stat-icon">🧩</span>
-            <span class="profile-stat-value">${this.availablePieces?.length || 0}</span>
-            <span class="profile-stat-label">Piezas</span>
-          </div>
-          <div class="profile-stat-card">
-            <span class="profile-stat-icon">🎯</span>
-            <span class="profile-stat-value">${this.missionsSystem?.missions?.length || 0}</span>
-            <span class="profile-stat-label">Misiones</span>
-          </div>
-        </div>
-
-        <div class="profile-section">
-          <h3 class="profile-section-title">⚙️ Configuración</h3>
-          <div class="profile-option" onclick="window.FrankensteinSettings?.open(); window.frankensteinLabUI.closeMobileScreen();">
-            <span class="profile-option-icon">🎮</span>
-            <div class="profile-option-info">
-              <p class="profile-option-label">Modo de juego</p>
-              <p class="profile-option-value">${currentMode}</p>
-            </div>
-            <span class="profile-option-arrow">→</span>
-          </div>
-          <div class="profile-option" onclick="window.FrankensteinSettings?.open(); window.frankensteinLabUI.closeMobileScreen();">
-            <span class="profile-option-icon">📊</span>
-            <div class="profile-option-info">
-              <p class="profile-option-label">Dificultad</p>
-              <p class="profile-option-value">${currentDifficulty}</p>
-            </div>
-            <span class="profile-option-arrow">→</span>
-          </div>
-        </div>
-
-        <div class="profile-section">
-          <h3 class="profile-section-title">📱 Aplicación</h3>
-          <div class="profile-option">
-            <span class="profile-option-icon">ℹ️</span>
-            <div class="profile-option-info">
-              <p class="profile-option-label">Versión</p>
-              <p class="profile-option-value">v1.3.2</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const workspace = document.querySelector('.lab-workspace');
-    if (workspace) workspace.style.display = 'none';
-
-    document.querySelector('.frankenstein-laboratory').appendChild(screen);
-  }
-
-  /**
-   * Mostrar sección de perfil/estadísticas
-   */
-  showProfileSection() {
-    // Crear modal de perfil si no existe
-    let profileModal = document.getElementById('profile-modal');
-
-    if (!profileModal) {
-      profileModal = document.createElement('div');
-      profileModal.id = 'profile-modal';
-      profileModal.className = 'awakening-modal-overlay';
-      profileModal.innerHTML = `
-        <div class="awakening-modal" style="width: 90%; max-width: 500px;">
-          <div class="awakening-modal-header">
-            <h2 class="awakening-modal-title">👤 Perfil</h2>
-            <button class="awakening-modal-close" onclick="document.getElementById('profile-modal').classList.remove('active')">×</button>
-          </div>
-          <div class="awakening-modal-body">
-            <div class="awakening-stats" style="margin-bottom: 24px;">
-              <div class="awakening-stat-box">
-                <span class="awakening-stat-icon">🧬</span>
-                <span class="awakening-stat-value" id="profile-beings-count">0</span>
-                <span class="awakening-stat-label">Seres</span>
-              </div>
-              <div class="awakening-stat-box">
-                <span class="awakening-stat-icon">🧩</span>
-                <span class="awakening-stat-value" id="profile-pieces-count">0</span>
-                <span class="awakening-stat-label">Piezas</span>
-              </div>
-              <div class="awakening-stat-box">
-                <span class="awakening-stat-icon">🎯</span>
-                <span class="awakening-stat-value" id="profile-missions-count">0</span>
-                <span class="awakening-stat-label">Misiones</span>
-              </div>
-            </div>
-
-            <div style="background: var(--awakening-bg-card); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: 16px;">
-              <h4 style="color: var(--awakening-text-primary); margin: 0 0 12px 0; font-size: 16px;">⚙️ Configuración</h4>
-              <div class="awakening-list">
-                <div class="awakening-list-item" onclick="window.frankensteinLabUI.openSettings()">
-                  <span style="font-size: 20px;">🎮</span>
-                  <div style="flex: 1;">
-                    <div style="color: var(--awakening-text-primary); font-weight: 600;">Modo de Juego</div>
-                    <div style="color: var(--awakening-text-secondary); font-size: 12px;" id="profile-game-mode">Investigación</div>
-                  </div>
-                  <span style="color: var(--awakening-text-dim);">→</span>
-                </div>
-                <div class="awakening-list-item" onclick="window.frankensteinLabUI.openSettings()">
-                  <span style="font-size: 20px;">📊</span>
-                  <div style="flex: 1;">
-                    <div style="color: var(--awakening-text-primary); font-weight: 600;">Dificultad</div>
-                    <div style="color: var(--awakening-text-secondary); font-size: 12px;" id="profile-difficulty">Principiante</div>
-                  </div>
-                  <span style="color: var(--awakening-text-dim);">→</span>
-                </div>
-              </div>
-            </div>
-
-            <button class="awakening-btn awakening-btn-primary" style="width: 100%;" onclick="window.frankensteinLabUI.openSettings()">
-              ⚙️ Abrir Ajustes
-            </button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(profileModal);
-    }
-
-    // Actualizar estadísticas
-    const savedBeings = JSON.parse(localStorage.getItem('frankenstein_saved_beings') || '[]');
-    document.getElementById('profile-beings-count').textContent = savedBeings.length;
-    document.getElementById('profile-pieces-count').textContent = this.selectedPieces.length;
-    document.getElementById('profile-missions-count').textContent = this.missionsSystem?.missions?.length || 8;
-
-    // Obtener modo y dificultad actual
-    const currentMode = window.FrankensteinQuiz?.getMode() || 'investigacion';
-    const currentDifficulty = window.FrankensteinQuiz?.getDifficulty() || 'principiante';
-    document.getElementById('profile-game-mode').textContent = currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
-    document.getElementById('profile-difficulty').textContent = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
-
-    // Mostrar modal
-    profileModal.classList.add('active');
-  }
-
-  /**
-   * Mostrar sección específica
-   */
-  showSection(sectionId) {
-    // Por ahora solo log, se puede expandir
-    console.log('📍 Mostrando sección:', sectionId);
-  }
-
-  /**
-   * Abrir panel de settings
-   */
-  openSettings() {
-    // Cerrar modal de perfil si está abierto
-    const profileModal = document.getElementById('profile-modal');
-    if (profileModal) {
-      profileModal.classList.remove('active');
-    }
-
-    // Abrir settings
-    if (window.FrankensteinSettings) {
-      window.FrankensteinSettings.open();
-    }
   }
 
   /**
@@ -3358,6 +4094,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.talkToBeing();
     });
 
+    document.getElementById('btn-create-microsociety-card')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.createMicroSociety();
+    });
+
+    document.getElementById('btn-open-microsociety-card')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.openMicrosocietiesSimulator();
+    });
+
     // Botón cambiar misión
     document.getElementById('btn-change-mission')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -3389,6 +4137,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         const section = item.dataset.section;
         this.handleMenuNavigation(section);
       });
+    });
+
+    // Botón de seres guardados
+    document.getElementById('btn-saved-beings')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.showSavedBeingsModal();
     });
 
     // Botón de estadísticas
@@ -3441,6 +4196,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.closeMissionModal();
     });
 
+    document.getElementById('modal-open-pieces')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.closeRequirementsModal();
+      this.openPiecesModal();
+    });
+
     // FAB Requirements
     document.getElementById('fab-requirements')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -3481,6 +4243,19 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.closePiecesModal();
     });
 
+    document.getElementById('pieces-open-requirements')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.closePiecesModal();
+      this.openRequirementsModal();
+    });
+
+    document.getElementById('mini-challenge-refresh')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.generateMiniChallenge(true);
+    });
+
     // Vitruvian popup close button
     document.getElementById('vitruvian-popup-close')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -3499,6 +4274,8 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     // Initialize Phase 3 features
     this.initContextualTooltips();
     this.showMiniTutorial();
+
+    this.restoreLabState();
 
     // Open mission modal on first load if no mission selected
     if (!this.selectedMission) {
@@ -3533,11 +4310,6 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       return;
     }
 
-    if (!window.createMicroSocietyFromBeings) {
-      this.showNotification('⚠️ Sistema de Microsociedades no disponible', 'error');
-      return;
-    }
-
     // Preguntar cuántos seres iniciales quiere
     const count = parseInt(prompt(
       '¿Cuántos seres iniciales para la microsociedad?\n(Se crearán variaciones del ser actual)\nRango: 5-12',
@@ -3558,10 +4330,52 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       beings.push(variation);
     }
 
-    // Llamar función global para crear la microsociedad
-    window.createMicroSocietyFromBeings(beings);
+    const name = `${this.currentBeing.name || 'Microsociedad'} (${count} seres)`;
+    const goal = this.selectedMission?.name || 'Explorar cooperación evolutiva';
+    let society = null;
+    let usedLocalFallback = false;
+
+    if (typeof window.createMicroSocietyFromBeings === 'function') {
+      window.createMicroSocietyFromBeings(beings);
+    } else {
+      const manager = this.ensureMicroSocietiesManager();
+      if (manager?.createSociety) {
+        society = manager.createSociety(name, beings, goal);
+      } else {
+        usedLocalFallback = true;
+        society = this.simulateMicroSocietyLocally(beings, { name, goal });
+      }
+    }
+
+    this.microSocietySnapshot = {
+      name,
+      beingsCount: count,
+      metrics: this.estimateMicrosocietyMetrics(beings),
+      updatedAt: new Date().toISOString()
+    };
+    this.renderMicrosocietyCard();
+
+    if (society) {
+      if (!usedLocalFallback && typeof window.openMicroSocietiesModal === 'function') {
+        window.openMicroSocietiesModal(society);
+      } else if (usedLocalFallback) {
+        this.renderBasicMicrosocietyModal(society);
+      }
+    }
 
     this.showNotification(`🌍 Microsociedad creada con ${count} seres`, 'success');
+  }
+
+  ensureMicroSocietiesManager() {
+    if (window.microSocietiesManager) {
+      return window.microSocietiesManager;
+    }
+    const ManagerClass = window.MicroSocietiesManager || window.FrankensteinMicrosocieties;
+    if (ManagerClass) {
+      window.microSocietiesManager = new ManagerClass();
+      return window.microSocietiesManager;
+    }
+    return null;
   }
 
   /**
@@ -3585,6 +4399,34 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     variation.totalPower = original.totalPower * (0.9 + Math.random() * 0.2); // 90%-110%
 
     return variation;
+  }
+
+  simulateMicroSocietyLocally(beings, { name, goal } = {}) {
+    const preparedBeings = beings.map((being, index) => {
+      const clone = JSON.parse(JSON.stringify(being));
+      clone.id = clone.id || `being-${Date.now()}-${index}`;
+      clone.alive = clone.alive ?? true;
+      clone.totalPower = Math.round(
+        clone.totalPower ||
+        Object.values(clone.attributes || {}).reduce((acc, value) => acc + (value || 0), 0)
+      );
+      return clone;
+    });
+
+    const metrics = this.estimateMicrosocietyMetrics(preparedBeings);
+    return {
+      name: name || 'Microsociedad Experimental',
+      goal: goal || 'Explorar cooperación evolutiva',
+      beings: preparedBeings,
+      turn: 0,
+      metrics,
+      metricsHistory: [{ turn: 0, ...metrics }],
+      eventLog: [{
+        turn: 0,
+        icon: '🧪',
+        message: 'Simulación local generada desde el laboratorio'
+      }]
+    };
   }
 
   /**
@@ -3655,6 +4497,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }
 
       this.showNotification(`✅ Ser "${savedBeing.name}" guardado exitosamente`, 'success', 4000);
+
+      // Sonido dramático de trueno al crear ser
+      if (window.frankenAudio && window.frankenAudio.enabled) {
+        window.frankenAudio.playThunder();
+        console.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
+      }
+
+      // Recompensa por crear/guardar ser
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.giveReward('createBeing');
+      }
+
       return true;
     } catch (error) {
       console.error('Error guardando ser:', error);
@@ -3702,17 +4556,21 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       // Mapear piezas guardadas a las disponibles actualmente
       const piecesById = new Map(this.availablePieces.map(piece => [piece.id, piece]));
-      const legacyPieces = savedBeing.pieces?.length
+      const storedPieces = savedBeing.pieces?.length
         ? savedBeing.pieces
         : (savedBeing.being?.pieces?.map(entry => entry.piece || entry) || []);
+
       const missingPieces = [];
-      this.selectedPieces = legacyPieces
+      this.selectedPieces = storedPieces
         .map(piece => {
+          const overrides = piece?.overrides ? piece.overrides : piece;
           const resolved = piecesById.get(piece.id);
+
           if (resolved) {
-            return resolved;
+            return { ...resolved, ...overrides };
           }
-          const fallback = this.hydrateLegacyPiece(piece);
+
+          const fallback = this.hydrateLegacyPiece(overrides);
           if (fallback) {
             missingPieces.push(fallback);
             return fallback;
@@ -3722,29 +4580,48 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         .filter(Boolean);
 
       if (missingPieces.length > 0) {
-        console.warn('[FrankensteinUI] Piezas no disponibles en el catálogo actual:', missingPieces.map(p => p.id));
-        this.showNotification(`⚠️ ${missingPieces.length} piezas de este ser ya no están en el catálogo. Se usaron versiones de respaldo.`, 'warning', 6000);
+        console.warn('[FrankensteinUI] Piezas no encontradas en el catálogo actual:', missingPieces.map(p => p.id));
+        this.showNotification(`⚠️ ${missingPieces.length} piezas no existen en el catálogo actual. Se usaron versiones de respaldo.`, 'warning', 6000);
       }
 
       this.lastValidationResults = savedBeing.validation || null;
 
-      // Reconstruir ser si falta información crítica
-      let restoredBeing = savedBeing.being;
-      if (!restoredBeing || !restoredBeing.attributes) {
-        const analyzedPieces = this.selectedPieces.map(piece =>
-          this.missionsSystem?.analyzePiece(piece) || { attributes: {}, totalPower: 0 }
-        );
-        const shouldUseSnapshot = !this.missionsSystem || analyzedPieces.length === 0 || missingPieces.length > 0;
-        if (this.missionsSystem && analyzedPieces.length > 0 && !shouldUseSnapshot) {
-          restoredBeing = this.missionsSystem.createBeing(analyzedPieces, savedBeing.name || 'Ser guardado');
-        } else {
-          restoredBeing = {
-            name: savedBeing.name || 'Ser guardado',
-            attributes: {},
-            totalPower: savedBeing.totalPower || 0,
-            balance: null
-          };
-        }
+      const analyzedPieces = (this.missionsSystem && this.selectedPieces.length > 0)
+        ? this.selectedPieces.map(piece =>
+            this.missionsSystem.analyzePiece(piece) || { piece, attributes: {}, totalPower: 0 }
+          )
+        : [];
+
+      let restoredBeing = null;
+      const isDemoBeing = Boolean(savedBeing.id && savedBeing.id.startsWith('demo-')) || Boolean(savedBeing.isDemo);
+
+      const shouldUseSnapshot =
+        isDemoBeing ||
+        !this.missionsSystem ||
+        analyzedPieces.length === 0 ||
+        missingPieces.length > 0;
+
+      if (this.missionsSystem && analyzedPieces.length > 0 && !shouldUseSnapshot) {
+        restoredBeing = this.missionsSystem.createBeing(analyzedPieces, savedBeing.name || 'Ser guardado');
+        restoredBeing.pieces = analyzedPieces;
+      } else if (savedBeing.being) {
+        restoredBeing = {
+          ...savedBeing.being,
+          pieces: savedBeing.being.pieces || analyzedPieces
+        };
+      } else {
+        restoredBeing = {
+          name: savedBeing.name || 'Ser guardado',
+          attributes: {},
+          totalPower: savedBeing.totalPower || 0,
+          balance: null,
+          pieces: analyzedPieces
+        };
+      }
+
+      const savedPower = savedBeing.totalPower || savedBeing.being?.totalPower || 0;
+      if (savedPower > (restoredBeing?.totalPower || 0)) {
+        restoredBeing.totalPower = savedPower;
       }
 
       this.currentBeing = {
@@ -3766,13 +4643,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }
       // Actualizar UI del laboratorio
       this.updateBeingDisplay();
+      this.applyDemoScenario(savedBeing);
 
       if (this.selectedMission) {
-        const missionLabel = document.getElementById('being-mission');
-        if (missionLabel) {
-          missionLabel.textContent = `Misión: ${this.selectedMission.name}`;
-        }
         this.updateRequirementsPanel();
+      } else {
+        this.clearRequirementsPanel();
       }
 
       // Marcar piezas como seleccionadas en el grid
@@ -3794,7 +4670,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         }
       }
 
+      this.generateMiniChallenge(true);
       this.showNotification(`✅ Ser "${savedBeing.name}" cargado`, 'success', 3000);
+      this.saveLabState();
       return true;
     } catch (error) {
       console.error('Error cargando ser:', error);
@@ -3866,10 +4744,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     modal.innerHTML = `
       <div class="saved-beings-header">
         <h3>🗂️ Seres Guardados</h3>
-        <button class="saved-beings-close" onclick="this.closest('#saved-beings-modal').remove()">✕</button>
+        <button class="saved-beings-close" onclick="this.closest('#saved-beings-modal').remove()" aria-label="Cerrar seres guardados"><span aria-hidden="true">✕</span></button>
       </div>
 
-      <div class="saved-beings-body">
+      <div class="saved-beings-body scrollable">
         ${savedBeings.length === 0 ? `
           <div class="empty-beings-state" style="text-align: center; padding: 4rem 2rem;">
             <svg width="120" height="120" viewBox="0 0 120 120" style="margin: 0 auto 2rem; opacity: 0.3;">
@@ -3881,7 +4759,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
             <p style="color: rgba(244, 233, 216, 0.6); font-size: 0.9rem;">Crea un ser y usa el botón "Guardar Ser" para preservarlo</p>
           </div>
         ` : `
-          <div class="beings-grid" style="display: grid; gap: 1rem;">
+          <div class="beings-grid responsive">
             ${savedBeings.map(saved => {
               // Manejar tanto estructura antigua como nueva (demo data)
               const totalPower = saved.totalPower || saved.being?.totalPower || 0;
@@ -4178,41 +5056,46 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       return;
     }
 
+    const missionNameEl = this.domCache.currentMissionName || document.getElementById('current-mission-name');
+    const currentPowerEl = this.domCache.currentPower || document.getElementById('current-power');
+    const requiredPowerEl = this.domCache.requiredPower || document.getElementById('required-power');
+    const progressFill = this.domCache.progressFill || document.getElementById('progress-fill');
+    const progressText = this.domCache.progressText || document.getElementById('progress-text');
+    const checklist = this.domCache.requirementsChecklist || document.getElementById('requirements-checklist');
+
+    if (!missionNameEl || !currentPowerEl || !requiredPowerEl || !progressFill || !progressText || !checklist) {
+      this.pendingRequirementsUpdate = true;
+      return;
+    }
+
+    this.pendingRequirementsUpdate = false;
+
     const mission = this.selectedMission;
     const requirements = mission.requirements || [];
+    const missingRequirements = this.getMissingRequirements(requirements);
 
     // Update mission name
-    const missionNameEl = document.getElementById('current-mission-name');
-    if (missionNameEl) {
-      missionNameEl.textContent = mission.name;
-    }
+    missionNameEl.textContent = mission.name;
 
     // Update power indicator
     const currentPower = this.calculateCurrentPower();
     const requiredPower = mission.minPower || 0;
 
-    document.getElementById('current-power').textContent = Math.floor(currentPower);
-    document.getElementById('required-power').textContent = requiredPower;
+    currentPowerEl.textContent = Math.floor(currentPower);
+    requiredPowerEl.textContent = requiredPower;
 
     // Update progress bar
     const fulfilled = this.countFulfilledRequirements(requirements);
     const total = requirements.length;
     const percentage = total > 0 ? (fulfilled / total) * 100 : 0;
 
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
-
-    if (progressFill) {
-      progressFill.style.width = `${percentage}%`;
-      if (percentage > this.lastProgressPercentage) {
-        progressFill.classList.add('increased');
-        setTimeout(() => progressFill.classList.remove('increased'), 600);
-      }
+    progressFill.style.width = `${percentage}%`;
+    if (percentage > this.lastProgressPercentage) {
+      progressFill.classList.add('increased');
+      setTimeout(() => progressFill.classList.remove('increased'), 600);
     }
 
-    if (progressText) {
-      progressText.textContent = `${fulfilled}/${total}`;
-    }
+    progressText.textContent = `${fulfilled}/${total}`;
 
     this.lastProgressPercentage = percentage;
 
@@ -4238,27 +5121,44 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     // Update mini summary in workspace
     this.updateRequirementsSummaryMini();
+    this.updateRequirementsBriefing(mission, {
+      requirements,
+      requiredPower,
+      fulfilled,
+      total
+    });
+    this.updatePiecesTipsPanel(missingRequirements, requirements);
+    this.updateMissionProgressUI({ fulfilled, total });
+    this.handleRequirementMilestones(requirements);
+    this.updateStickyRequirementsHeader();
   }
 
   /**
    * Update Requirements Checklist
    */
   updateRequirementsChecklist(requirements) {
-    const checklist = document.getElementById('requirements-checklist');
+    const checklist = this.domCache.requirementsChecklist || document.getElementById('requirements-checklist');
     if (!checklist) return;
 
     checklist.innerHTML = requirements.map(req => {
       const fulfilled = this.isRequirementFulfilled(req);
       const conflict = this.hasRequirementConflict(req);
+       const currentValue = Math.round(this.getRequirementCurrentValue(req));
+       const targetValue = this.getRequirementTarget(req) || 0;
+       const attrData = this.missionsSystem?.attributes?.[req.type];
 
       const className = fulfilled ? 'fulfilled' : (conflict ? 'conflict' : '');
       const icon = this.getRequirementIcon(req.type);
       const status = fulfilled ? '✅' : (conflict ? '🔴' : '⬜');
+      const label = attrData ? `${attrData.icon} ${attrData.name}` : (req.description || req.type);
 
       return `
         <div class="requirement-item ${className}">
           <div class="requirement-icon">${icon}</div>
-          <div class="requirement-text">${req.description || req.type}</div>
+          <div class="requirement-text">
+            <span>${label}</span>
+            <span class="requirement-value">${targetValue ? `${currentValue}/${targetValue}` : currentValue}</span>
+          </div>
           <div class="requirement-status">${status}</div>
         </div>
       `;
@@ -4269,23 +5169,31 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Clear Requirements Panel
    */
   clearRequirementsPanel() {
-    document.getElementById('current-mission-name').textContent = 'Sin Misión';
-    document.getElementById('current-power').textContent = '0';
-    document.getElementById('required-power').textContent = '0';
-    document.getElementById('progress-fill').style.width = '0%';
-    document.getElementById('progress-text').textContent = '0/0';
-    document.getElementById('requirements-checklist').innerHTML = '';
+    const missionNameEl = document.getElementById('current-mission-name');
+    const currentPowerEl = document.getElementById('current-power');
+    const requiredPowerEl = document.getElementById('required-power');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const checklist = document.getElementById('requirements-checklist');
 
-    // Hide mini summary
-    const miniSummary = document.getElementById('mission-requirements-summary');
-    if (miniSummary) {
-      miniSummary.hidden = true;
+    if (!missionNameEl || !currentPowerEl || !requiredPowerEl || !progressFill || !progressText || !checklist) {
+      return;
     }
 
-    const headerLabel = document.getElementById('requirements-summary-label');
-    if (headerLabel) {
-      headerLabel.textContent = '0/0';
-    }
+    missionNameEl.textContent = 'Sin Misión';
+    currentPowerEl.textContent = '0';
+    requiredPowerEl.textContent = '0';
+    progressFill.style.width = '0%';
+    progressText.textContent = '0/0';
+    checklist.innerHTML = '';
+    this.updateRequirementsSummaryMini();
+    this.updateRequirementsBriefing(null);
+    this.updatePiecesTipsPanel();
+    this.lastRequirementState = {};
+    this.updateMissionProgressUI({ fulfilled: 0, total: 0 });
+    this.activeMiniChallenge = null;
+    this.renderMiniChallenge();
+    this.updateStickyRequirementsHeader(true);
   }
 
   /**
@@ -4293,75 +5201,193 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    */
   updateRequirementsSummaryMini() {
     const miniSummary = document.getElementById('mission-requirements-summary');
-    const progressFillMini = document.getElementById('progress-fill-mini');
-    const progressLabelMini = document.getElementById('progress-label-mini');
-    const headerLabel = document.getElementById('requirements-summary-label');
-    const requirementsListMini = document.getElementById('requirements-list-mini');
+    const progressFillMini = this.domCache.progressFillMini || document.getElementById('progress-fill-mini');
+    const progressLabelMini = this.domCache.progressLabelMini || document.getElementById('progress-label-mini');
+    const requirementsListMini = this.domCache.requirementsListMini || document.getElementById('requirements-list-mini');
+    const summaryLabel = this.domCache.requirementsSummaryLabel || document.getElementById('requirements-summary-label');
+    const viewAllBtn = document.getElementById('requirements-mini-view-all');
 
-    if (!miniSummary || !this.selectedMission) {
-      if (miniSummary) miniSummary.hidden = true;
-      if (headerLabel) headerLabel.textContent = '0/0';
+    if (!miniSummary) return;
+
+    if (!this.selectedMission) {
+      miniSummary.hidden = false;
+      if (summaryLabel) summaryLabel.textContent = '--';
+      if (progressFillMini) {
+        progressFillMini.style.width = '0%';
+        progressFillMini.style.backgroundColor = '#555';
+      }
+      if (progressLabelMini) {
+        progressLabelMini.textContent = 'Selecciona una misión';
+      }
+      if (requirementsListMini) {
+        requirementsListMini.innerHTML = '<p class="empty-card-message">Selecciona una misión para ver requisitos.</p>';
+      }
+      if (viewAllBtn) {
+        viewAllBtn.style.display = 'none';
+      }
       return;
     }
 
     const requirements = this.getCurrentMissionRequirements();
-    if (requirements.length === 0) {
-      miniSummary.hidden = true;
-      if (headerLabel) headerLabel.textContent = '0/0';
-      return;
-    }
+    const total = requirements.length;
+    const fulfilled = this.countFulfilledRequirements(requirements);
+    const percentage = total > 0 ? (fulfilled / total) * 100 : 0;
 
-    // Show panel
     miniSummary.hidden = false;
 
-    // Update progress
-    const fulfilled = this.countFulfilledRequirements(requirements);
-    const total = requirements.length;
-    const percentage = total > 0 ? (fulfilled / total) * 100 : 0;
+    if (summaryLabel) {
+      summaryLabel.textContent = total > 0 ? `${fulfilled}/${total}` : '--';
+    }
 
     if (progressFillMini) {
       progressFillMini.style.width = `${percentage}%`;
-      progressFillMini.style.backgroundColor = percentage === 100 ? '#4CAF50' : '#FF9800';
+      progressFillMini.style.backgroundColor = percentage >= 100 ? '#4CAF50' : '#FF9800';
     }
 
     if (progressLabelMini) {
-      progressLabelMini.textContent = `${fulfilled}/${total} cumplidos`;
-    }
-    if (headerLabel) {
-      headerLabel.textContent = `${fulfilled}/${total}`;
+      progressLabelMini.textContent = total > 0 ? `${fulfilled}/${total} cumplidos` : 'Sin requisitos';
     }
 
-    // Update requirements list (show only top 5)
     if (requirementsListMini) {
-      const topRequirements = requirements.slice(0, 5);
-      requirementsListMini.innerHTML = topRequirements.map(req => {
-        const isFulfilled = this.isRequirementFulfilled(req);
-        const icon = isFulfilled ? '✅' : '⬜';
-        return `
-          <div class="requirement-mini-item ${isFulfilled ? 'fulfilled' : ''}">
-            <span class="requirement-mini-icon">${icon}</span>
-            <span class="requirement-mini-text">${req.description}</span>
-          </div>
-        `;
-      }).join('');
+      if (requirements.length === 0) {
+        requirementsListMini.innerHTML = '<p class="empty-card-message">Esta misión no tiene requisitos definidos.</p>';
+      } else {
+        const topRequirements = requirements.slice(0, 5);
+        requirementsListMini.innerHTML = topRequirements.map(req => {
+          const isFulfilled = this.isRequirementFulfilled(req);
+          const icon = isFulfilled ? '✅' : '⬜';
+          const attrData = this.missionsSystem?.attributes?.[req.type];
+          const label = attrData ? `${attrData.icon} ${attrData.name}` : (req.description || req.type);
+          const targetValue = this.getRequirementTarget(req) || 0;
+          const currentValue = Math.round(this.getRequirementCurrentValue(req));
 
-      if (requirements.length > 5) {
-        requirementsListMini.innerHTML += `
-          <div class="requirement-mini-more">
-            +${requirements.length - 5} más...
-            <button class="view-all-requirements" onclick="document.getElementById('fab-requirements').click()">
-              Ver todos
-            </button>
-          </div>
-        `;
+          return `
+            <div class="requirement-mini-item ${isFulfilled ? 'fulfilled' : ''}">
+              <span class="requirement-mini-icon">${icon}</span>
+              <div class="requirement-mini-text">
+                <span>${label}</span>
+                <small>${targetValue ? `${currentValue}/${targetValue}` : currentValue}</small>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (requirements.length > 5) {
+          requirementsListMini.innerHTML += `
+            <div class="requirement-mini-more">
+              +${requirements.length - 5} más...
+              <button class="view-all-requirements" onclick="document.getElementById('fab-requirements').click()">
+                Ver todos
+              </button>
+            </div>
+          `;
+        }
       }
     }
+
+    if (viewAllBtn) {
+      viewAllBtn.style.display = requirements.length > 0 ? 'inline-flex' : 'none';
+    }
+  }
+
+  /**
+   * Update briefing sidebar inside requirements modal
+   */
+  updateRequirementsBriefing(mission, { requirements = [], requiredPower = 0, fulfilled = 0, total = 0 } = {}) {
+    const nameEl = this.domCache.modalMissionName || document.getElementById('modal-mission-name');
+    const descEl = this.domCache.modalMissionDescription || document.getElementById('modal-mission-description');
+    const difficultyEl = this.domCache.modalMissionDifficulty || document.getElementById('modal-mission-difficulty');
+    const powerEl = this.domCache.modalMissionPower || document.getElementById('modal-mission-power');
+    const progressEl = this.domCache.modalMissionProgress || document.getElementById('modal-mission-progress');
+    const hintsList = this.domCache.modalMissionHints || document.getElementById('modal-mission-hints');
+
+    if (!nameEl || !descEl || !difficultyEl || !powerEl || !progressEl || !hintsList) {
+      return;
+    }
+
+    if (!mission) {
+      nameEl.textContent = 'Selecciona una misión';
+      descEl.textContent = 'Elige una misión para conocer sus requisitos, objetivos y sugerencias.';
+      difficultyEl.textContent = '--';
+      difficultyEl.dataset.level = '';
+      powerEl.textContent = '0';
+      progressEl.textContent = '0/0';
+      hintsList.innerHTML = '<li>Selecciona una misión para recibir sugerencias estratégicas.</li>';
+      return;
+    }
+
+    nameEl.textContent = mission.name;
+    descEl.textContent = mission.longDescription || mission.description || 'Misión sin descripción.';
+    difficultyEl.textContent = mission.difficulty || '--';
+    difficultyEl.dataset.level = mission.difficulty || '';
+    powerEl.textContent = Math.max(requiredPower, mission.minPower || 0).toLocaleString('es-ES');
+    progressEl.textContent = total > 0 ? `${fulfilled}/${total}` : '--';
+
+    const missing = this.getMissingRequirements(requirements);
+    if (missing.length === 0) {
+      hintsList.innerHTML = '<li>¡Todos los requisitos están cubiertos! Puedes validar el ser.</li>';
+      return;
+    }
+
+    hintsList.innerHTML = missing.slice(0, 4).map(req => {
+      const attrData = this.missionsSystem?.attributes?.[req.type];
+      const label = attrData ? `${attrData.icon} ${attrData.name}` : (req.description || req.type);
+      const targetValue = this.getRequirementTarget(req) || 0;
+      const currentValue = Math.round(this.getRequirementCurrentValue(req));
+      return `<li><strong>${label}:</strong> ${currentValue}/${targetValue}. Añade piezas que mejoren este atributo.</li>`;
+    }).join('');
+  }
+
+  /**
+   * Update extra stats on pieces sidebar
+   */
+  updatePiecesSidebarMeta() {
+    const selectedCountEl = this.domCache.piecesSelectedCount || document.getElementById('pieces-selected-count');
+    const powerEl = this.domCache.piecesSelectedPower || document.getElementById('pieces-selected-power');
+    if (selectedCountEl) {
+      selectedCountEl.textContent = this.selectedPieces.length.toString();
+    }
+    if (powerEl) {
+      powerEl.textContent = Math.max(0, Math.round(this.calculateCurrentPower())).toLocaleString('es-ES');
+    }
+  }
+
+  /**
+   * Update tips card within pieces modal
+   */
+  updatePiecesTipsPanel(missing = [], requirements = []) {
+    const tipsList = document.getElementById('pieces-tips-list');
+    if (!tipsList) return;
+
+    if (!this.selectedMission) {
+      tipsList.innerHTML = '<li>Selecciona una misión para recibir recomendaciones de piezas.</li>';
+      return;
+    }
+
+    if (!missing || missing.length === 0) {
+      tipsList.innerHTML = '<li>¡Requisitos completos! Usa esta vista para refinar o validar tu ser.</li>';
+      return;
+    }
+
+    tipsList.innerHTML = missing.slice(0, 3).map(req => {
+      const attrData = this.missionsSystem?.attributes?.[req.type];
+      const label = attrData ? `${attrData.icon} ${attrData.name}` : (req.description || req.type);
+      const targetValue = this.getRequirementTarget(req) || 0;
+      const currentValue = Math.round(this.getRequirementCurrentValue(req));
+      const remaining = Math.max(0, targetValue - currentValue);
+      return `<li>${label}: agrega piezas que aporten al menos ${remaining} puntos.</li>`;
+    }).join('');
   }
 
   /**
    * Get Requirement Icon
    */
   getRequirementIcon(type) {
+    const attribute = this.missionsSystem?.attributes?.[type];
+    if (attribute) {
+      return attribute.icon || '📊';
+    }
+
     const icons = {
       chapter: '📖',
       exercise: '⚡',
@@ -4374,19 +5400,663 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   }
 
   /**
+   * Obtener valor objetivo de un requisito
+   */
+  getRequirementTarget(requirement) {
+    if (!requirement) return 0;
+    if (typeof requirement.count === 'number') return requirement.count;
+    if (typeof requirement.min === 'number') return requirement.min;
+    if (typeof requirement.value === 'number') return requirement.value;
+    return 0;
+  }
+
+  /**
+   * Obtener progreso actual de un requisito
+   */
+  getRequirementCurrentValue(requirement) {
+    if (!requirement) return 0;
+
+    if (requirement.type === 'power') {
+      return Math.round(this.currentBeing?.totalPower || this.calculateCurrentPower());
+    }
+
+    if (this.missionsSystem?.attributes?.[requirement.type]) {
+      if (this.currentBeing?.attributes?.[requirement.type] != null) {
+        return Math.round(this.currentBeing.attributes[requirement.type]);
+      }
+
+      if (this.selectedPieces.length > 0) {
+        return this.selectedPieces.reduce((sum, piece) => {
+          const analysis = this.missionsSystem.analyzePiece(piece);
+          return sum + (analysis.attributes[requirement.type] || 0);
+        }, 0);
+      }
+
+      return 0;
+    }
+
+    return this.selectedPieces.filter(p => p.type === requirement.type).length;
+  }
+
+  getRequirementKey(requirement) {
+    if (!requirement) return '';
+    return requirement.id ||
+      `${requirement.type || 'req'}-${requirement.description || ''}-${requirement.count || requirement.min || requirement.value || ''}`;
+  }
+
+  handleRequirementMilestones(requirements = []) {
+    if (!requirements || requirements.length === 0) {
+      this.lastRequirementState = {};
+      return;
+    }
+
+    if (!this.lastRequirementState) {
+      this.lastRequirementState = {};
+    }
+
+    const newlyFulfilled = [];
+    requirements.forEach(req => {
+      const key = this.getRequirementKey(req);
+      const isFulfilled = this.isRequirementFulfilled(req);
+      if (isFulfilled && !this.lastRequirementState[key]) {
+        newlyFulfilled.push(req);
+      }
+      this.lastRequirementState[key] = isFulfilled;
+    });
+
+    if (newlyFulfilled.length > 0) {
+      const fulfilled = this.countFulfilledRequirements(requirements);
+      const total = requirements.length;
+      const percent = total > 0 ? (fulfilled / total) * 100 : 0;
+      newlyFulfilled.forEach(req => this.triggerRequirementCelebration(req, percent, fulfilled, total));
+    }
+  }
+
+  triggerRequirementCelebration(requirement, percent, fulfilled, total) {
+    const attrData = this.missionsSystem?.attributes?.[requirement.type];
+    const label = attrData
+      ? `${attrData.icon || '🎯'} ${attrData.name}`
+      : (requirement.description || 'Requisito de misión');
+    this.spawnProgressReward(percent || 0, label);
+    this.showNotification(`✅ Objetivo completado: ${label}`, 'success', 2400);
+
+    if (fulfilled === total && total > 0) {
+      this.showNotification('🏆 ¡Todos los objetivos de la misión están listos! Valida tu ser.', 'success', 3500);
+    }
+  }
+
+  spawnProgressReward(percent, label) {
+    const card = document.querySelector('.mission-progress-card');
+    if (!card) return;
+
+    const celebration = document.createElement('div');
+    celebration.className = 'progress-celebration';
+    celebration.textContent = `+ ${label}`;
+    const clampPercent = Math.max(10, Math.min(90, percent || 0));
+    celebration.style.left = `${clampPercent}%`;
+    celebration.style.top = '10px';
+    card.appendChild(celebration);
+    setTimeout(() => celebration.remove(), 1200);
+  }
+
+  generateMiniChallenge(force = false) {
+    if (!this.selectedMission) {
+      this.activeMiniChallenge = null;
+      this.renderMiniChallenge();
+      return;
+    }
+
+    if (this.activeMiniChallenge && !force && !this.activeMiniChallenge.completed) {
+      return;
+    }
+
+    const requirements = this.getCurrentMissionRequirements();
+    const missing = this.getMissingRequirements(requirements);
+    let attrKey = null;
+    let baseRequirement = null;
+
+    if (missing.length > 0) {
+      baseRequirement = missing.find(req => this.missionsSystem?.attributes?.[req.type]);
+      attrKey = baseRequirement?.type || null;
+    }
+
+    const attributeKeys = Object.keys(this.missionsSystem?.attributes || {});
+    if (!attrKey && attributeKeys.length > 0) {
+      attrKey = attributeKeys[Math.floor(Math.random() * attributeKeys.length)];
+    }
+
+    if (!attrKey) {
+      this.activeMiniChallenge = null;
+      this.renderMiniChallenge();
+      return;
+    }
+
+    const currentValue = Math.round(this.currentBeing?.attributes?.[attrKey] || 0);
+    const baseTarget = baseRequirement ? this.getRequirementTarget(baseRequirement) : currentValue + 20;
+    const randomBoost = 15 + Math.round(Math.random() * 25);
+    const target = Math.max(baseTarget, currentValue + randomBoost);
+
+    this.activeMiniChallenge = {
+      id: Date.now(),
+      attribute: attrKey,
+      target,
+      createdAt: new Date().toISOString(),
+      completed: false
+    };
+
+    this.renderMiniChallenge();
+    this.updateMiniChallengeProgress();
+  }
+
+  renderMiniChallenge() {
+    const body = this.domCache.miniChallengeBody || document.getElementById('mini-challenge-body');
+    const titleEl = this.domCache.miniChallengeTitle || document.getElementById('mini-challenge-title');
+    if (!body) return;
+
+    if (!this.selectedMission) {
+      if (titleEl) titleEl.textContent = 'Sin misión activa';
+      body.innerHTML = '<p class="empty-card-message">Selecciona una misión para recibir eventos dinámicos.</p>';
+      return;
+    }
+
+    if (!this.activeMiniChallenge) {
+      if (titleEl) titleEl.textContent = 'Sin evento activo';
+      body.innerHTML = '<p class="empty-card-message">Pulsa el botón ↻ para generar un evento relámpago.</p>';
+      return;
+    }
+
+    const challenge = this.activeMiniChallenge;
+    const attrData = this.missionsSystem?.attributes?.[challenge.attribute];
+    const value = Math.round(this.currentBeing?.attributes?.[challenge.attribute] || 0);
+    const percent = Math.min(100, Math.round((value / challenge.target) * 100));
+    const status = challenge.completed ? 'Completado' : `${value}/${challenge.target}`;
+
+    if (titleEl) {
+      titleEl.textContent = challenge.completed
+        ? 'Evento completado'
+        : `${attrData?.icon || '🎯'} ${attrData?.name || 'Evento activo'}`;
+    }
+
+    body.innerHTML = `
+      <div class="mini-challenge-meta">
+        <span class="mini-challenge-attr">${attrData?.icon || '🎯'} ${attrData?.name || 'Atributo'}</span>
+        <span class="mini-challenge-status">${status}</span>
+      </div>
+      <p class="mini-challenge-description">
+        ${challenge.completed
+          ? 'Evento superado. Se generará un nuevo reto en breve.'
+          : 'Impulsa este atributo hasta la meta para desbloquear recompensas del laboratorio.'}
+      </p>
+      <div class="mini-challenge-progress-track">
+        <div class="mini-challenge-progress-fill" style="width:${percent}%"></div>
+      </div>
+      <small class="mini-challenge-progress-hint">${percent >= 100 ? 'Listo para celebrar.' : `Progreso: ${percent}%`}</small>
+      ${this.getMiniChallengeHistoryMarkup()}
+    `;
+  }
+
+  getMiniChallengeHistoryMarkup() {
+    if (!this.miniChallengeHistory.length) {
+      return '<div class="mini-challenge-history"><h5>Registro</h5><p class="mini-challenge-history-empty">Sin eventos completados.</p></div>';
+    }
+
+    const items = this.miniChallengeHistory.slice(0, 3).map(entry => {
+      const date = new Date(entry.timestamp);
+      const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      const rewardTag = entry.reward ? `<span class="mini-challenge-reward">🎁 ${entry.reward}</span>` : '';
+      return `<li><span>${entry.label}${rewardTag}</span><span>${time}</span></li>`;
+    }).join('');
+
+    return `<div class="mini-challenge-history"><h5>Registro</h5><ul>${items}</ul></div>`;
+  }
+
+  updateMiniChallengeProgress() {
+    if (!this.activeMiniChallenge || !this.selectedMission) {
+      this.renderMiniChallenge();
+      return;
+    }
+
+    const value = Math.round(this.currentBeing?.attributes?.[this.activeMiniChallenge.attribute] || 0);
+    if (!this.activeMiniChallenge.completed && value >= this.activeMiniChallenge.target) {
+      this.completeMiniChallenge();
+    } else {
+      this.renderMiniChallenge();
+    }
+  }
+
+  completeMiniChallenge() {
+    if (!this.activeMiniChallenge || this.activeMiniChallenge.completed) return;
+
+    const attrData = this.missionsSystem?.attributes?.[this.activeMiniChallenge.attribute];
+    const label = attrData?.name || 'Evento';
+
+    this.activeMiniChallenge.completed = true;
+    this.miniChallengeHistory.unshift({
+      id: this.activeMiniChallenge.id,
+      label,
+      timestamp: new Date().toISOString()
+    });
+
+    this.renderMiniChallenge();
+    this.showNotification(`⚡ Evento relámpago completado: ${label}`, 'success', 3200);
+    this.spawnProgressReward(100, 'Evento');
+
+    if (this.activeMiniChallenge?.attribute) {
+      this.rewardSpecialPiece(this.activeMiniChallenge.attribute);
+    }
+
+    setTimeout(() => this.generateMiniChallenge(true), 3500);
+  }
+
+  rewardSpecialPiece(attributeKey) {
+    const attrData = this.missionsSystem?.attributes?.[attributeKey];
+    if (!attrData) return;
+
+    if (this.selectedPieces.length >= 12) {
+      this.showNotification('Inventario lleno: no puedes recibir la pieza especial. Libera un espacio.', 'warning', 4200);
+      return;
+    }
+
+    const rewardValue = 30 + Math.round(Math.random() * 25);
+    const supportAttribute = this.getSupportAttributeForReward(attributeKey);
+    const syntheticAttributes = { [attributeKey]: rewardValue };
+
+    if (supportAttribute && this.missionsSystem?.attributes?.[supportAttribute]) {
+      syntheticAttributes[supportAttribute] = Math.round(rewardValue * 0.5);
+    }
+
+    const rewardPiece = {
+      id: `lab-reward-${attributeKey}-${Date.now()}`,
+      title: `${attrData.icon || '✨'} Fragmento ${attrData.name}`,
+      description: `Pieza especial desbloqueada al completar un evento relámpago centrado en ${attrData.name}.`,
+      type: 'special',
+      category: 'lab-reward',
+      bookId: 'lab-reward',
+      chapterId: `evento-${attributeKey}`,
+      icon: attrData.icon || '✨',
+      dominantAttribute: attributeKey,
+      syntheticAttributes,
+      rarity: 'legendary',
+      source: 'mini-challenge',
+      tags: ['recompensa', 'evento'],
+      isSpecialReward: true
+    };
+
+    this.skipQuizForSpecialReward = true;
+    this.togglePieceSelectionEnhanced(rewardPiece);
+    this.showNotification(`🎁 Has obtenido ${rewardPiece.title}`, 'success', 3800);
+
+    if (this.miniChallengeHistory.length > 0) {
+      this.miniChallengeHistory[0].reward = rewardPiece.title;
+      this.renderMiniChallenge();
+    }
+  }
+
+  getSupportAttributeForReward(attributeKey) {
+    const supportMap = {
+      empathy: 'communication',
+      communication: 'empathy',
+      action: 'strategy',
+      strategy: 'action',
+      reflection: 'analysis',
+      analysis: 'reflection',
+      resilience: 'organization',
+      organization: 'technical',
+      creativity: 'collaboration',
+      collaboration: 'creativity',
+      wisdom: 'consciousness',
+      consciousness: 'wisdom',
+      connection: 'empathy',
+      leadership: 'collaboration',
+      technical: 'action'
+    };
+    return supportMap[attributeKey] || null;
+  }
+
+  applyDemoScenario(savedBeing) {
+    if (!savedBeing) {
+      this.activeDemoScenario = null;
+      this.renderDemoScenarioCard();
+      return;
+    }
+
+    const scenario = window.FrankensteinDemoData?.getDemoScenario?.(savedBeing.id);
+    const isDemoMode = typeof window.FrankensteinQuiz?.getMode === 'function'
+      ? window.FrankensteinQuiz.getMode() === 'demo'
+      : false;
+
+    if (scenario && (isDemoMode || (savedBeing.id && savedBeing.id.toString().startsWith('demo-')))) {
+      this.activeDemoScenario = {
+        ...scenario,
+        beingId: savedBeing.id
+      };
+    } else {
+      this.activeDemoScenario = null;
+    }
+
+    this.renderDemoScenarioCard();
+  }
+
+  renderDemoScenarioCard() {
+    const body = document.getElementById('demo-scenario-body');
+    const titleEl = document.getElementById('demo-scenario-title');
+    if (!body) return;
+
+    const isDemoMode = typeof window.FrankensteinQuiz?.getMode === 'function'
+      ? window.FrankensteinQuiz.getMode() === 'demo'
+      : false;
+
+    if (!this.activeDemoScenario) {
+      if (titleEl) titleEl.textContent = 'Ruta educativa';
+      body.innerHTML = `<p class="empty-card-message">${isDemoMode
+        ? 'Carga un ser demo desde la sección “Seres Guardados” para recibir guía educativa.'
+        : 'Activa el modo demo para desbloquear rutas educativas con narrativas guiadas.'}</p>`;
+      return;
+    }
+
+    const scenario = this.activeDemoScenario;
+    if (titleEl) {
+      titleEl.textContent = scenario.title || 'Recorrido demo';
+    }
+
+    const objectives = (scenario.objectives || []).map(obj => {
+      const status = this.evaluateScenarioObjective(obj);
+      const label = obj.label || status.label || 'Objetivo';
+      return `
+        <div class="scenario-objective ${status.fulfilled ? 'fulfilled' : ''}">
+          <div class="scenario-objective-icon">${status.fulfilled ? '✅' : '⬜'}</div>
+          <div>
+            <p>${label}</p>
+            <small>${status.progressText || ''}</small>
+          </div>
+        </div>
+      `;
+    }).join('') || '<p class="empty-card-message">Configura objetivos en FrankensteinDemoData para esta guía.</p>';
+
+    const tips = scenario.tips?.length
+      ? `<div class="scenario-tips"><h5>Recomendado</h5><ul>${scenario.tips.map(tip => `<li>${tip}</li>`).join('')}</ul></div>`
+      : '';
+
+    body.innerHTML = `
+      <p class="scenario-intro">${scenario.intro || 'Explora este ser demo para aprender a ensamblar combinaciones efectivas.'}</p>
+      <div class="scenario-objectives">${objectives}</div>
+      ${scenario.callToAction ? `<div class="scenario-cta">${scenario.callToAction}</div>` : ''}
+      ${tips}
+    `;
+  }
+
+  evaluateScenarioObjective(objective) {
+    if (!objective) {
+      return { fulfilled: false, progressText: '', label: 'Objetivo' };
+    }
+
+    const type = objective.type || 'attribute';
+
+    if (type === 'attribute') {
+      const attrKey = objective.attribute;
+      const target = objective.target || objective.value || 0;
+      const current = Math.round(this.currentBeing?.attributes?.[attrKey] || 0);
+      return {
+        fulfilled: current >= target,
+        progressText: `${current}/${target}`,
+        label: objective.label
+      };
+    }
+
+    if (type === 'mission') {
+      const missionId = objective.missionId || objective.targetMissionId;
+      const fulfilled = !!missionId && this.selectedMission?.id === missionId;
+      return {
+        fulfilled,
+        progressText: fulfilled ? 'Misión activa' : 'Activa la misión sugerida',
+        label: objective.label
+      };
+    }
+
+    if (type === 'validation') {
+      const fulfilled = !!this.lastValidationResults?.viable;
+      return {
+        fulfilled,
+        progressText: fulfilled ? 'Ser validado' : 'Pendiente de validación',
+        label: objective.label
+      };
+    }
+
+    return {
+      fulfilled: false,
+      progressText: '',
+      label: objective.label
+    };
+  }
+
+  updateDemoScenarioProgress() {
+    if (!this.activeDemoScenario) return;
+    this.renderDemoScenarioCard();
+  }
+
+  renderMicrosocietyCard() {
+    const body = document.getElementById('microsociety-body');
+    const titleEl = document.getElementById('microsociety-title');
+    if (!body) return;
+
+    if (this.microSocietySnapshot) {
+      const snap = this.microSocietySnapshot;
+      if (titleEl) titleEl.textContent = snap.name || 'Microsociedad';
+      const metrics = snap.metrics || {};
+      const eventsMarkup = this.microSocietyEvents.map(event => `
+        <button class="micro-event-btn" data-event="${event.id}">
+          <span>${event.label}</span>
+          <small>${event.description}</small>
+        </button>
+      `).join('');
+      const historyMarkup = this.microEventHistory.length
+        ? this.microEventHistory.slice(0, 3).map(entry => `
+            <div class="micro-event-history-item">
+              <strong>${entry.label}</strong>
+              <p>${entry.description}</p>
+              <small>${new Date(entry.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</small>
+            </div>
+          `).join('')
+        : '<p class="micro-event-empty">Aún no hay eventos dinámicos.</p>';
+
+      body.innerHTML = `
+        <div class="microsociety-meta">
+          <div class="microsociety-meta-item">
+            <span>Seres</span>
+            <strong>${snap.beingsCount || snap.beings?.length || 0}</strong>
+          </div>
+          <div class="microsociety-meta-item">
+            <span>Última actualización</span>
+            <strong>${new Date(snap.updatedAt || Date.now()).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</strong>
+          </div>
+        </div>
+        <div class="microsociety-metrics">
+          <div class="micro-metric"><span>❤️ Salud</span><strong>${metrics.health ?? '--'}</strong></div>
+          <div class="micro-metric"><span>📚 Conocimiento</span><strong>${metrics.knowledge ?? '--'}</strong></div>
+          <div class="micro-metric"><span>⚡ Acción</span><strong>${metrics.action ?? '--'}</strong></div>
+          <div class="micro-metric"><span>🤝 Cohesión</span><strong>${metrics.cohesion ?? '--'}</strong></div>
+        </div>
+        <div class="micro-event-panel">
+          <h4>Eventos rápidos</h4>
+          <div class="micro-event-buttons">
+            ${eventsMarkup}
+          </div>
+          <div class="micro-event-history">
+            ${historyMarkup}
+          </div>
+        </div>
+        <p class="microsociety-hint">Pulsa “Simular” para abrir el gestor completo o “Crear” para generar otra variante con este ser.</p>
+      `;
+      this.wireMicroEventButtons();
+      return;
+    }
+
+    const demoAvailable = window.FrankensteinDemoData?.getDemoMicrosocieties;
+    if (titleEl) titleEl.textContent = 'Sin simulación';
+    body.innerHTML = `
+      <p class="empty-card-message">Crea una microsociedad con tu ser (botón “Crear”) y revisa cómo responden sus atributos a eventos.</p>
+      ${demoAvailable ? `<button class="micro-action secondary" id="btn-demo-microsociety">Ver demo</button>` : ''}
+    `;
+
+    const demoBtn = document.getElementById('btn-demo-microsociety');
+    if (demoBtn) {
+      demoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.previewDemoMicrosociety();
+      });
+    }
+  }
+
+  wireMicroEventButtons() {
+    const body = document.getElementById('microsociety-body');
+    if (!body) return;
+
+    body.querySelectorAll('.micro-event-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.triggerMicroEvent(btn.dataset.event);
+      });
+    });
+  }
+
+  triggerMicroEvent(eventId) {
+    if (!this.microSocietySnapshot) return;
+    const event = this.microSocietyEvents.find(evt => evt.id === eventId);
+    if (!event) return;
+
+    const metrics = this.microSocietySnapshot.metrics || {};
+    Object.entries(event.deltas || {}).forEach(([key, delta]) => {
+      const current = metrics[key] ?? 50;
+      metrics[key] = Math.min(100, Math.max(0, current + delta));
+    });
+    this.microSocietySnapshot.metrics = metrics;
+    this.microSocietySnapshot.updatedAt = new Date().toISOString();
+
+    this.microEventHistory.unshift({
+      label: event.label,
+      description: event.description,
+      timestamp: Date.now()
+    });
+    if (this.microEventHistory.length > 5) {
+      this.microEventHistory.pop();
+    }
+
+    this.showNotification(`🎯 Evento: ${event.label}`, 'success', 2500);
+    this.renderMicrosocietyCard();
+  }
+
+  previewDemoMicrosociety() {
+    const demoSocieties = window.FrankensteinDemoData?.getDemoMicrosocieties?.();
+    if (!demoSocieties || demoSocieties.length === 0) {
+      this.showNotification('⚠️ No hay microsociedades demo disponibles.', 'warning');
+      return;
+    }
+    const random = demoSocieties[Math.floor(Math.random() * demoSocieties.length)];
+    this.microSocietySnapshot = {
+      name: random.name || 'Microsociedad Demo',
+      metrics: this.estimateMicrosocietyMetrics(random.beings || []),
+      beingsCount: random.beings?.length || 0,
+      updatedAt: new Date().toISOString()
+    };
+    this.renderMicrosocietyCard();
+    this.showNotification('✨ Mostrando microsociedad demo. Usa “Simular” para explorar más.', 'info', 4000);
+  }
+
+  estimateMicrosocietyMetrics(beings = []) {
+    const safeBeings = (beings && beings.length > 0) ? beings : (this.currentBeing ? [this.currentBeing] : []);
+    if (safeBeings.length === 0) {
+      return { health: '--', knowledge: '--', action: '--', cohesion: '--' };
+    }
+
+    const averageAttr = (attr) => {
+      const sum = safeBeings.reduce((acc, being) => acc + (being.attributes?.[attr] || being[attr] || 0), 0);
+      return sum / safeBeings.length;
+    };
+
+    return {
+      health: Math.round((averageAttr('resilience') + averageAttr('organization')) / 2 || 60),
+      knowledge: Math.round((averageAttr('wisdom') + averageAttr('analysis')) / 2 || 50),
+      action: Math.round((averageAttr('action') + averageAttr('strategy')) / 2 || 50),
+      cohesion: Math.round((averageAttr('empathy') + averageAttr('communication')) / 2 || 60)
+    };
+  }
+
+  updateMissionProgressUI({ fulfilled = 0, total = 0 } = {}) {
+    this.missionProgress = { fulfilled, total };
+    const percent = total > 0 ? Math.round((fulfilled / total) * 100) : 0;
+
+    const ring = this.domCache.missionProgressRing || document.getElementById('mission-progress-ring');
+    if (ring) {
+      ring.style.setProperty('--progress', percent);
+    }
+
+    const percentEl = this.domCache.missionProgressPercent || document.getElementById('mission-progress-percent');
+    if (percentEl) {
+      percentEl.textContent = `${percent}%`;
+    }
+
+    const statusEl = this.domCache.missionProgressStatus || document.getElementById('mission-progress-status');
+    if (statusEl) {
+      statusEl.textContent = total > 0 ? `${fulfilled}/${total}` : '--';
+    }
+
+    const fillEl = this.domCache.missionProgressFillRing || document.getElementById('mission-progress-fill');
+    if (fillEl) {
+      fillEl.style.width = `${percent}%`;
+    }
+
+    const hintEl = this.domCache.missionProgressHint || document.getElementById('mission-progress-hint');
+    if (hintEl) {
+      if (!this.selectedMission) {
+        hintEl.textContent = 'Selecciona una misión para desbloquear recompensas.';
+      } else if (total === 0) {
+        hintEl.textContent = 'Esta misión no tiene requisitos definidos.';
+      } else if (percent >= 100) {
+        hintEl.textContent = 'Valida el ser para reclamar esta misión.';
+      } else {
+        hintEl.textContent = `Completa ${total - fulfilled} objetivo(s) más para avanzar.`;
+      }
+    }
+
+    const rewardIcons = document.querySelectorAll('.mission-reward-icon');
+    rewardIcons.forEach(icon => {
+      const threshold = Number(icon.dataset.threshold || 0);
+      if (percent >= threshold) {
+        icon.classList.add('active');
+      } else {
+        icon.classList.remove('active');
+      }
+    });
+  }
+
+  /**
    * Check if requirement is fulfilled
    */
   isRequirementFulfilled(req) {
-    // Implementación básica - extender según necesidades
+    if (!req) return false;
+
+    const target = this.getRequirementTarget(req) || 1;
+
+    if (req.type === 'power') {
+      return this.getRequirementCurrentValue(req) >= target;
+    }
+
+    if (this.missionsSystem?.attributes?.[req.type]) {
+      return this.getRequirementCurrentValue(req) >= target;
+    }
+
     const selectedByType = this.selectedPieces.filter(p => p.type === req.type);
-    const count = req.count || 1;
-    return selectedByType.length >= count;
+    return selectedByType.length >= target;
   }
 
   /**
    * Check if requirement has conflict
    */
   hasRequirementConflict(req) {
+    if (this.missionsSystem?.attributes?.[req.type] || req.type === 'power') {
+      return false;
+    }
+
     // Detectar conflictos (ej: demasiadas piezas de un tipo)
     const selectedByType = this.selectedPieces.filter(p => p.type === req.type);
     const maxCount = req.maxCount || Infinity;
@@ -4404,9 +6074,20 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Calculate current power
    */
   calculateCurrentPower() {
+    if (this.currentBeing?.totalPower) {
+      return this.currentBeing.totalPower;
+    }
+
+    if (!this.missionsSystem) {
+      return this.selectedPieces.reduce((total, piece) => {
+        const power = piece.power || this.getPiecePower(piece.type);
+        return total + power;
+      }, 0);
+    }
+
     return this.selectedPieces.reduce((total, piece) => {
-      const power = piece.power || this.getPiecePower(piece.type);
-      return total + power;
+      const analysis = this.missionsSystem.analyzePiece(piece);
+      return total + (analysis.totalPower || this.getPiecePower(piece.type));
     }, 0);
   }
 
@@ -4838,7 +6519,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Play selection sound
    */
   playSelectionSound() {
-    // Create audio context if needed
+    // Usar FrankensteinAudioSystem si está disponible y habilitado
+    if (window.frankenAudio && window.frankenAudio.enabled) {
+      window.frankenAudio.playElectricity();
+      return;
+    }
+
+    // Fallback: usar el ping básico si FrankensteinAudioSystem no está disponible
     if (!window.AudioContext && !window.webkitAudioContext) return;
 
     try {
@@ -4868,7 +6555,8 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Enhanced toggle piece selection with animations
    */
   async togglePieceSelectionEnhanced(piece, card) {
-    const isSelecting = !card.classList.contains('selected');
+    const targetCard = card || document.querySelector(`.piece-card[data-piece-id="${piece.id}"]`) || document.querySelector(`.mobile-piece-card[data-piece-id="${piece.id}"]`);
+    const isSelecting = targetCard ? !targetCard.classList.contains('selected') : !this.isPieceSelected(piece.id);
 
     if (isSelecting) {
       // Máximo 12 piezas
@@ -4877,55 +6565,75 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         return;
       }
 
+      const bypassQuiz = this.skipQuizForSpecialReward;
+      this.skipQuizForSpecialReward = false;
+
       // EN MODO JUEGO: Mostrar quiz antes de añadir pieza
-      if (window.FrankensteinQuiz) {
-        const currentMode = window.FrankensteinQuiz.getMode();
-        console.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
+      if (!bypassQuiz) {
+        if (window.FrankensteinQuiz) {
+          const currentMode = window.FrankensteinQuiz.getMode();
+          console.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
 
-        if (currentMode === 'juego') {
-          try {
-            console.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
-            const quizResult = await window.FrankensteinQuiz.showQuizModal(
-              piece,
-              piece.bookId,
-              piece.chapterId
-            );
+          if (currentMode === 'juego') {
+            try {
+              console.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
+              const quizResult = await window.FrankensteinQuiz.showQuizModal(
+                piece,
+                piece.bookId,
+                piece.chapterId
+              );
 
-            console.log(`[FrankensteinUI] Quiz result:`, quizResult);
+              console.log(`[FrankensteinUI] Quiz result:`, quizResult);
 
-            // Si el usuario canceló el quiz, no añadir la pieza
-            if (quizResult.cancelled) {
-              console.log(`[FrankensteinUI] Quiz cancelled, not adding piece`);
+              // Si el usuario canceló el quiz, no añadir la pieza
+              if (quizResult.cancelled) {
+                console.log(`[FrankensteinUI] Quiz cancelled, not adding piece`);
+                return;
+              }
+
+              if (!quizResult.skipped) {
+                // Aplicar multiplicador de poder a la pieza
+                piece.powerMultiplier = quizResult.powerMultiplier;
+
+                // Guardar resultado del quiz
+                piece.quizScore = quizResult.correctCount;
+                piece.quizTotal = quizResult.totalQuestions;
+
+                // Dar recompensas por completar quiz
+                if (window.frankensteinRewards) {
+                  const isPerfect = quizResult.correctCount === quizResult.totalQuestions;
+                  if (isPerfect) {
+                    window.frankensteinRewards.giveReward('perfectQuiz', quizResult.powerMultiplier);
+                  } else {
+                    window.frankensteinRewards.giveReward('completeQuiz', quizResult.powerMultiplier);
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('[FrankensteinUI] Error en quiz:', error);
+              // Si hay error, no añadir la pieza
               return;
             }
-
-            if (!quizResult.skipped) {
-              // Aplicar multiplicador de poder a la pieza
-              piece.powerMultiplier = quizResult.powerMultiplier;
-
-              // Guardar resultado del quiz
-              piece.quizScore = quizResult.correctCount;
-              piece.quizTotal = quizResult.totalQuestions;
-            }
-          } catch (error) {
-            console.error('[FrankensteinUI] Error en quiz:', error);
-            // Si hay error, no añadir la pieza
-            return;
+          } else {
+            console.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
           }
         } else {
-          console.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
+          console.warn('[FrankensteinUI] FrankensteinQuiz not available');
         }
       } else {
-        console.warn('[FrankensteinUI] FrankensteinQuiz not available');
+        console.log('[FrankensteinUI] Añadiendo pieza especial sin quiz.');
       }
 
       // Solo ejecutar animaciones si el quiz fue exitoso o no hay quiz
       // Create ripple effect
-      this.createSelectionRipple(card);
+      if (targetCard) {
+        this.createSelectionRipple(targetCard);
+      }
 
       // Particle burst
       setTimeout(() => {
-        this.createParticleBurst(card, {
+        if (!targetCard) return;
+        this.createParticleBurst(targetCard, {
           particleCount: 12,
           types: ['circle', 'energy'],
           duration: 800
@@ -4936,7 +6644,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       const vitruvianContainer = document.getElementById('vitruvian-being-container');
       if (vitruvianContainer) {
         setTimeout(() => {
-          this.animatePieceToTarget(card, vitruvianContainer);
+          if (targetCard) {
+            this.animatePieceToTarget(targetCard, vitruvianContainer);
+          }
         }, 200);
       }
 
@@ -4946,12 +6656,19 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }, 800);
 
       // Añadir pieza
-      card.classList.add('selected');
+      if (targetCard) {
+        targetCard.classList.add('selected');
+      }
       this.selectedPieces.push(piece);
 
+      // Trackear pieza para estadísticas de recompensas
+      if (window.frankensteinRewards) {
+        window.frankensteinRewards.trackPieceUsed();
+      }
+
       // Disparar partículas de energía si el sistema está disponible
-      if (window.energyParticles) {
-        window.energyParticles.createSelectionEffect(card);
+      if (window.energyParticles && targetCard) {
+        window.energyParticles.createSelectionEffect(targetCard);
       }
 
       // Pulso de energía en el Hombre de Vitrubio
@@ -4964,19 +6681,24 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       // Update requirements panel
       this.updateRequirementsPanel();
+
+      this.saveLabState();
     } else {
       // Deselección
       this.triggerHaptic('light');
-      card.classList.add('shake');
-      setTimeout(() => card.classList.remove('shake'), 500);
-
-      card.classList.remove('selected');
+      if (targetCard) {
+        targetCard.classList.add('shake');
+        setTimeout(() => targetCard.classList.remove('shake'), 500);
+        targetCard.classList.remove('selected');
+      }
       this.selectedPieces = this.selectedPieces.filter(p => p.id !== piece.id);
 
       // Actualizar display del ser
       this.updateBeingFromPieces();
       // Update requirements panel
       this.updateRequirementsPanel();
+
+      this.saveLabState();
     }
   }
 
@@ -5142,21 +6864,31 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Get compatible pieces based on requirements
    */
   getCompatiblePieces(requirements) {
+    if (!this.missionsSystem) return [];
+
     const needed = this.getMissingRequirements(requirements);
+    if (needed.length === 0) return [];
 
     return this.availablePieces.filter(piece => {
-      // Check if piece type is needed
-      const typeNeeded = needed.find(req => req.type === piece.type);
-      if (!typeNeeded) return false;
-
       // Check if already selected
       const alreadySelected = this.selectedPieces.find(p => p.id === piece.id);
       if (alreadySelected) return false;
 
+      const analysis = this.missionsSystem.analyzePiece(piece);
+
+      const helpsRequirement = needed.some(req => {
+        if (this.missionsSystem.attributes[req.type]) {
+          return (analysis.attributes[req.type] || 0) > 0;
+        }
+        return req.type === piece.type;
+      });
+
+      if (!helpsRequirement) return false;
+
       // Check power threshold
-      const piecePower = piece.power || this.getPiecePower(piece.type);
+      const piecePower = analysis.totalPower || piece.power || this.getPiecePower(piece.type);
       const currentPower = this.calculateCurrentPower();
-      const requiredPower = this.selectedMission.minPower || 0;
+      const requiredPower = this.selectedMission?.minPower || 0;
 
       // Prefer pieces that help reach power goal
       const powerNeeded = requiredPower - currentPower;
@@ -5237,33 +6969,38 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Get top suggestions based on requirements and strategy
    */
   getTopSuggestions(compatiblePieces, requirements) {
+    if (!this.missionsSystem) return [];
+
     const suggestions = [];
     const missing = this.getMissingRequirements(requirements);
+    const analyzedPieces = compatiblePieces.map(piece => ({
+      piece,
+      analysis: this.missionsSystem.analyzePiece(piece)
+    }));
 
-    // Group pieces by type
-    const byType = {};
-    compatiblePieces.forEach(piece => {
-      if (!byType[piece.type]) byType[piece.type] = [];
-      byType[piece.type].push(piece);
-    });
+    const getEntryPower = (entry) =>
+      entry.analysis.totalPower || entry.piece.power || this.getPiecePower(entry.piece.type);
 
-    // For each missing requirement, suggest best piece
     missing.forEach(req => {
-      const piecesOfType = byType[req.type] || [];
-      if (piecesOfType.length === 0) return;
+      let candidates = [];
 
-      // Sort by power (highest first)
-      const sorted = piecesOfType.sort((a, b) => {
-        const powerA = a.power || this.getPiecePower(a.type);
-        const powerB = b.power || this.getPiecePower(b.type);
-        return powerB - powerA;
-      });
+      if (this.missionsSystem.attributes[req.type]) {
+        candidates = analyzedPieces
+          .filter(entry => (entry.analysis.attributes[req.type] || 0) > 0)
+          .sort((a, b) => (b.analysis.attributes[req.type] || 0) - (a.analysis.attributes[req.type] || 0));
+      } else {
+        candidates = analyzedPieces
+          .filter(entry => entry.piece.type === req.type)
+          .sort((a, b) => getEntryPower(b) - getEntryPower(a));
+      }
 
-      const best = sorted[0];
+      if (candidates.length === 0) return;
+
+      const best = candidates[0];
       suggestions.push({
-        piece: best,
-        reason: this.getSuggestionReason(best, req),
-        priority: this.getSuggestionPriority(best, req)
+        piece: best.piece,
+        reason: this.getSuggestionReason(best.piece, req, best.analysis),
+        priority: this.getSuggestionPriority(best.piece, req, best.analysis)
       });
     });
 
@@ -5276,12 +7013,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   /**
    * Get suggestion reason text
    */
-  getSuggestionReason(piece, requirement) {
-    const typeLabels = {
-      chapter: 'Añade conocimiento fundamental',
-      exercise: 'Fortalece práctica',
-      resource: 'Proporciona herramientas'
-    };
+  getSuggestionReason(piece, requirement, analysis) {
+    if (this.missionsSystem?.attributes?.[requirement.type] && analysis) {
+      const attrData = this.missionsSystem.attributes[requirement.type];
+      const boost = Math.round(analysis.attributes[requirement.type] || 0);
+      return `${attrData.icon} +${boost} ${attrData.name}`;
+    }
 
     return `${piece.title.substring(0, 40)}${piece.title.length > 40 ? '...' : ''}`;
   }
@@ -5289,15 +7026,28 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   /**
    * Get suggestion priority score
    */
-  getSuggestionPriority(piece, requirement) {
+  getSuggestionPriority(piece, requirement, analysis) {
     let score = 0;
 
     // Higher power = higher priority
-    const power = piece.power || this.getPiecePower(piece.type);
+    const power = (analysis?.totalPower) || piece.power || this.getPiecePower(piece.type);
     score += power;
 
-    // Needed type = bonus
-    score += 50;
+    if (this.missionsSystem?.attributes?.[requirement.type] && analysis) {
+      const target = this.getRequirementTarget(requirement) || 0;
+      const current = this.getRequirementCurrentValue(requirement);
+      const boost = analysis.attributes[requirement.type] || 0;
+      const deficit = Math.max(0, target - current);
+      score += boost * 2;
+
+      if (deficit > 0) {
+        const coverage = Math.min(1, boost / deficit);
+        score += coverage * 150;
+      }
+    } else {
+      // Needed type = bonus
+      score += 50;
+    }
 
     // Current power deficit
     const currentPower = this.calculateCurrentPower();
@@ -5393,17 +7143,29 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   /**
    * Update sticky requirements header content
    */
-  updateStickyRequirementsHeader() {
-    if (!this.selectedMission) return;
-
-    const requirements = this.getCurrentMissionRequirements();
-    if (requirements.length === 0) return;
-
+  updateStickyRequirementsHeader(forceReset = false) {
     const compactContainer = document.getElementById('sticky-requirements-compact');
-    const progressFill = document.getElementById('sticky-progress-fill');
-    const progressText = document.getElementById('sticky-progress-text');
+    const progressFill = this.domCache.stickyProgressFill || document.getElementById('sticky-progress-fill');
+    const progressText = this.domCache.stickyProgressText || document.getElementById('sticky-progress-text');
 
     if (!compactContainer || !progressFill || !progressText) return;
+
+    if (forceReset || !this.selectedMission) {
+      compactContainer.innerHTML = '';
+      progressFill.style.width = '0%';
+      progressFill.classList.remove('complete');
+      progressText.textContent = '0/0';
+      return;
+    }
+
+    const requirements = this.getCurrentMissionRequirements();
+    if (requirements.length === 0) {
+      compactContainer.innerHTML = '';
+      progressFill.style.width = '0%';
+      progressFill.classList.remove('complete');
+      progressText.textContent = '0/0';
+      return;
+    }
 
     // Calculate fulfillment
     const fulfilled = this.countFulfilledRequirements(requirements);
@@ -5442,20 +7204,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Get requirement fulfillment percentage
    */
   getRequirementFulfillmentPercentage(requirement) {
-    const currentValue = this.selectedPieces
-      .map(p => this.missionsSystem.analyzePiece(p))
-      .reduce((sum, analysis) => sum + (analysis.attributes[requirement.type] || 0), 0);
+    const target = this.getRequirementTarget(requirement) || 0;
+    if (target === 0) return 0;
 
-    const needed = requirement.count || 1;
-    const percentage = Math.min(100, Math.round((currentValue / needed) * 100));
-    return percentage;
+    const currentValue = this.getRequirementCurrentValue(requirement);
+    return Math.min(100, Math.round((currentValue / target) * 100));
   }
 
   /**
    * Show Vitruvian popup when piece is added
    */
   showVitruvianPopup(piece) {
-    const popup = document.getElementById('vitruvian-popup');
+    const popup = this.domCache.vitruvianPopup || document.getElementById('vitruvian-popup');
     const beingContainer = document.getElementById('vitruvian-popup-being');
     const pieceInfo = document.getElementById('vitruvian-popup-piece');
     const attributesContainer = document.getElementById('vitruvian-popup-attributes');
@@ -5463,9 +7223,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     if (!popup || !beingContainer || !pieceInfo || !attributesContainer) return;
 
     // Clone current Vitruvian SVG
-    const mainVitruvian = document.querySelector('#vitruvian-being-container svg');
+    const mainVitruvian = document.querySelector('#vitruvian-being-container svg') || this.vitruvianBeing?.svg;
+    beingContainer.innerHTML = '';
     if (mainVitruvian) {
-      beingContainer.innerHTML = '';
       const clonedSVG = mainVitruvian.cloneNode(true);
       beingContainer.appendChild(clonedSVG);
 
@@ -5474,6 +7234,8 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       setTimeout(() => {
         beingContainer.classList.remove('piece-added');
       }, 600);
+    } else {
+      beingContainer.innerHTML = '<p class="vitruvian-popup-empty">Añade piezas para visualizar el ser</p>';
     }
 
     // Update piece info
@@ -5484,7 +7246,11 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     `;
 
     // Update attributes
-    const attributesHTML = Object.entries(analysis.attributes)
+    const attributeEntries = analysis?.attributes
+      ? Object.entries(analysis.attributes).filter(([, value]) => value > 0)
+      : [];
+
+    const attributesHTML = attributeEntries.length
       .filter(([_, value]) => value > 0)
       .map(([attr, value]) => {
         const attrData = this.missionsSystem.attributes[attr];
@@ -5496,15 +7262,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         `;
       })
       .join('');
-
-    attributesContainer.innerHTML = attributesHTML;
+    attributesContainer.innerHTML = attributesHTML || '<p class="vitruvian-popup-empty">Aún no hay atributos para mostrar.</p>';
 
     // Show popup
     popup.classList.add('visible');
 
     // Auto-hide after 4 seconds
-    setTimeout(() => {
+    if (this.vitruvianPopupTimeout) {
+      clearTimeout(this.vitruvianPopupTimeout);
+    }
+    this.vitruvianPopupTimeout = window.setTimeout(() => {
       this.hideVitruvianPopup();
+      this.vitruvianPopupTimeout = null;
     }, 4000);
   }
 
@@ -5512,10 +7281,99 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Hide Vitruvian popup
    */
   hideVitruvianPopup() {
-    const popup = document.getElementById('vitruvian-popup');
+    const popup = this.domCache.vitruvianPopup || document.getElementById('vitruvian-popup');
     if (popup) {
       popup.classList.remove('visible');
     }
+    if (this.vitruvianPopupTimeout) {
+      clearTimeout(this.vitruvianPopupTimeout);
+      this.vitruvianPopupTimeout = null;
+    }
+  }
+
+  /**
+   * =============================
+   * Experiments Log
+   * =============================
+   */
+  loadExperimentLog() {
+    try {
+      const stored = localStorage.getItem('frankenstein-experiments');
+      this.experimentLog = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.warn('[FrankensteinUI] No se pudo leer la bitácora:', error);
+      this.experimentLog = [];
+    }
+    this.renderExperimentLog();
+  }
+
+  recordExperimentEntry(results) {
+    if (!this.currentBeing) return;
+    const missionName = this.selectedMission?.name || 'Sin misión';
+    const requirements = this.getCurrentMissionRequirements();
+    const entry = {
+      id: Date.now(),
+      timestamp: new Date().toISOString(),
+      mission: missionName,
+      viable: !!results.viable,
+      score: results.percentage || 0,
+      fulfilled: this.countFulfilledRequirements(requirements),
+      totalReqs: requirements.length,
+      attributes: Object.entries(this.currentBeing.attributes || {})
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([key, value]) => {
+          const attrData = this.missionsSystem.attributes[key];
+          return `${attrData?.icon || '📊'} ${attrData?.name || key}: ${Math.round(value)}`;
+        }),
+      pieces: this.selectedPieces.map(piece => piece.title || piece.id).slice(0, 4),
+      insight: results.viable
+        ? (results.strengths?.[0]?.message || this.selectedMission?.successMessage || 'Ser viable.')
+        : (results.missingAttributes?.[0]?.message || results.balanceIssues?.[0]?.message || 'Ajusta los atributos faltantes.')
+    };
+
+    this.experimentLog = [entry, ...this.experimentLog].slice(0, 20);
+    try {
+      localStorage.setItem('frankenstein-experiments', JSON.stringify(this.experimentLog));
+    } catch (error) {
+      console.warn('[FrankensteinUI] No se pudo guardar la bitácora:', error);
+    }
+  }
+
+  renderExperimentLog() {
+    const list = this.domCache.experimentLogList || document.getElementById('experiment-log-list');
+    const meta = this.domCache.experimentLogMeta || document.getElementById('experiment-log-meta');
+    if (!list) return;
+
+    if (!this.experimentLog.length) {
+      list.innerHTML = '<p class="empty-card-message">Valida un ser para registrar sus resultados.</p>';
+      if (meta) meta.textContent = 'Sin registros';
+      return;
+    }
+
+    if (meta) {
+      meta.textContent = `${this.experimentLog.length} registro${this.experimentLog.length !== 1 ? 's' : ''}`;
+    }
+
+    list.innerHTML = this.experimentLog.map(entry => `
+      <div class="experiment-log-item ${entry.viable ? 'viable' : 'inviable'}">
+        <div class="experiment-log-header">
+          <div>
+            <p class="experiment-log-date">${new Date(entry.timestamp).toLocaleString('es-ES')}</p>
+            <h4>${entry.mission}</h4>
+          </div>
+          <span class="experiment-log-score">${entry.score}%</span>
+        </div>
+        <p class="experiment-log-highlight">${entry.insight}</p>
+        <div class="experiment-log-meta">
+          <span>🎯 ${entry.fulfilled}/${entry.totalReqs} requisitos</span>
+          <span>🧩 ${entry.pieces.join(', ') || 'Sin piezas registradas'}</span>
+        </div>
+        <div class="experiment-log-attributes">
+          ${entry.attributes.map(attr => `<span>${attr}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
   }
 
   /**
@@ -5997,10 +7855,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         break;
 
       case 'retos':
-        if (window.FrankensteinChallenges) {
-          window.FrankensteinChallenges.openChallengesModal();
+        if (window.frankensteinChallengesModal && this.currentBeing && this.currentMission) {
+          window.frankensteinChallengesModal.open(this.currentBeing, this.currentMission);
+        } else if (!this.currentBeing || !this.currentMission) {
+          this.showNotification('Primero crea y valida un ser con una misión', 'warning');
         } else {
-          this.showNotification('Retos en desarrollo', 'info');
+          this.showNotification('Sistema de retos no disponible', 'info');
         }
         break;
 
@@ -6076,23 +7936,22 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Intentar abrir la experiencia de microsociedades con fallbacks
    */
   openMicrosocietiesSimulator() {
-    // Preferir la nueva galería si está disponible
+    // Preferir el nuevo panel de microsociedades
+    if (window.microsocietiesInit && typeof window.microsocietiesInit.open === 'function') {
+      window.microsocietiesInit.open();
+      return;
+    }
+
+    // Fallback: galería si está disponible
     if (window.microsocietiesGallery && typeof window.microsocietiesGallery.open === 'function') {
       window.microsocietiesGallery.open();
       return;
     }
 
     // Asegurar que exista un manager de microsociedades
-    if (!window.microSocietiesManager) {
-      const ManagerClass = window.MicroSocietiesManager || window.FrankensteinMicrosocieties;
-      if (ManagerClass) {
-        window.microSocietiesManager = new ManagerClass();
-      }
-    }
-
-    const manager = window.microSocietiesManager;
+    const manager = this.ensureMicroSocietiesManager();
     if (!manager) {
-      this.showNotification('Microsociedades en desarrollo', 'info');
+      this.showNotification('Sistema de microsociedades no disponible', 'info');
       return;
     }
 
@@ -6116,11 +7975,29 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     // Usar modal nativo del sistema completo si existe
     if (typeof window.openMicroSocietiesModal === 'function') {
+      if (society) {
+        this.microSocietySnapshot = {
+          name: society.name,
+          beingsCount: society.beings?.length || 0,
+          metrics: this.estimateMicrosocietyMetrics(society.beings || []),
+          updatedAt: new Date().toISOString()
+        };
+        this.renderMicrosocietyCard();
+      }
       window.openMicroSocietiesModal(society);
       return;
     }
 
     // Fallback a un modal resumido propio
+    if (society) {
+      this.microSocietySnapshot = {
+        name: society.name,
+        beingsCount: society.beings?.length || 0,
+        metrics: this.estimateMicrosocietyMetrics(society.beings || []),
+        updatedAt: new Date().toISOString()
+      };
+      this.renderMicrosocietyCard();
+    }
     this.renderBasicMicrosocietyModal(society);
   }
 
@@ -6128,6 +8005,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Renderizar modal simple con el estado actual de la microsociedad
    */
   renderBasicMicrosocietyModal(society) {
+    if (!society) {
+      this.showNotification('⚠️ No hay datos de microsociedad para mostrar.', 'warning');
+      return;
+    }
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay modal-overlay-enhanced active';
 

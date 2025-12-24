@@ -31,12 +31,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Deep links para recibir seres desde Colección Nuevo Ser -->
+            <!-- Deep links para recibir seres -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="awakeningprotocol" />
+                <data android:scheme="${DEEPLINK_SCHEME}" />
             </intent-filter>
 
             <!-- Deep links HTTPS para web -->
@@ -44,7 +44,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="awakeningprotocol.nuevosser.com" />
+                <data android:scheme="https" android:host="${DEEPLINK_HOST}" />
             </intent-filter>
         </activity>
 

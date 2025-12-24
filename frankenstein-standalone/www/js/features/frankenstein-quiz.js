@@ -579,7 +579,7 @@ class FrankensteinQuizSystem {
 
       // Estilos inline para el modal
       const content = modal.querySelector('.quiz-auto-pass-modal');
-      content.style.cssText = \`
+      content.style.cssText = `
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
         border-radius: 20px;
         padding: 32px;
@@ -591,7 +591,7 @@ class FrankensteinQuizSystem {
         top: 50%;
         transform: translateY(-50%);
         border: 1px solid rgba(255, 255, 255, 0.1);
-      \`;
+      `;
 
       modal.querySelector('.quiz-auto-pass-icon').style.cssText = 'font-size: 48px; margin-bottom: 16px;';
       modal.querySelector('h3').style.cssText = 'margin: 0 0 8px; font-size: 20px;';

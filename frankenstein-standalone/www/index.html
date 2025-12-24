@@ -2,27 +2,37 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0e1f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Laboratorio Frankenstein - Crea Seres Transformadores con Propósito">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
 
     <title>Laboratorio Frankenstein</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
 
-    <!-- Tailwind CSS (pre-compilado para máximo rendimiento) -->
-    <link rel="stylesheet" href="css/tailwind.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"
+            crossorigin="anonymous"
+            onerror="document.head.appendChild(Object.assign(document.createElement('link'),{rel:'stylesheet',href:'css/tailwind-fallback.css'}))"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lab-dark': '#0a0e1f',
+                        'lab-accent': '#00d4ff',
+                        'lab-gold': '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- Lucide Icons (local para funcionar offline) -->
-    <script src="js/vendor/lucide.min.js"></script>
-
-    <!-- Android Native CSS (primero para base) -->
-    <link rel="stylesheet" href="css/android-native.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
     <!-- Frankenstein CSS -->
     <link rel="stylesheet" href="css/frankenstein-base.css">
@@ -31,33 +41,19 @@
     <link rel="stylesheet" href="css/frankenstein-quiz.css">
     <link rel="stylesheet" href="css/frankenstein-vitruvian.css">
     <link rel="stylesheet" href="css/frankenstein-animations.css">
-    <link rel="stylesheet" href="css/frankenstein-settings.css">
+    <!-- UX Improvements v1.0 -->
     <link rel="stylesheet" href="css/frankenstein-ux-improvements.css">
-
-    <!-- Mobile Enhancements CSS -->
-    <link rel="stylesheet" href="css/mobile-scroll-fix.css">
-    <link rel="stylesheet" href="css/mobile-enhancements.css">
-    <link rel="stylesheet" href="css/glassmorphism-effects.css">
-    <link rel="stylesheet" href="css/gpu-animations.css">
-
+    <!-- Settings & UI Components -->
+    <link rel="stylesheet" href="css/frankenstein-settings.css">
     <!-- Awakening Protocol Theme (nuevo diseño) -->
     <link rel="stylesheet" href="css/awakening-theme.css">
 
-    <!-- Mobile Simple UI (optimizado para Android) -->
-    <link rel="stylesheet" href="css/mobile-simple.css">
-
     <style>
-        /* App Shell Styles */
         :root {
             --safe-area-top: env(safe-area-inset-top, 0px);
             --safe-area-bottom: env(safe-area-inset-bottom, 0px);
         }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body {
             margin: 0;
             padding: 0;
@@ -66,9 +62,7 @@
             overflow: hidden;
             background: #0a0e1f;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overscroll-behavior: none;
         }
-
         #app {
             width: 100%;
             height: 100%;
@@ -76,286 +70,408 @@
             padding-bottom: var(--safe-area-bottom);
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* Loading Screen Optimizado */
+        #organism-container { margin-top: var(--safe-area-top); }
+
+        /* Loading */
         #loading-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: linear-gradient(135deg, #0a0e1f 0%, #1a1f3a 50%, #0a0e1f 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transition: opacity 0.5s;
         }
+        #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+        .loading-icon { font-size: 80px; animation: pulse 2s ease-in-out infinite; }
+        .loading-title { color: #f59e0b; font-size: 24px; font-weight: bold; margin-top: 20px; }
+        .loading-subtitle { color: #94a3b8; font-size: 14px; margin-top: 8px; }
+        .loading-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 30px; overflow: hidden; }
+        .loading-progress { height: 100%; background: linear-gradient(90deg, #00d4ff, #f59e0b); animation: loading 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes loading { 0% { width: 0; } 50% { width: 70%; } 100% { width: 100%; } }
 
-        #loading-screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .loading-icon {
-            font-size: 80px;
-            animation: pulse 2s ease-in-out infinite;
-            will-change: transform;
-        }
-
-        .loading-title {
-            color: #f59e0b;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .loading-subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .loading-bar {
-            width: 200px;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 30px;
-            overflow: hidden;
-        }
-
-        .loading-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #00d4ff, #f59e0b);
-            border-radius: 2px;
-            animation: loading 1.5s ease-in-out infinite;
-            will-change: width;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes loading {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-
-        /* Version indicator */
-        .version-indicator {
+        /* Toast */
+        .toast {
             position: fixed;
-            bottom: calc(8px + var(--safe-area-bottom));
-            right: 8px;
-            font-size: 10px;
-            color: rgba(255,255,255,0.3);
-            z-index: 1;
+            bottom: calc(20px + var(--safe-area-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 10000;
+            animation: slideUp 0.3s ease-out;
+        }
+        .toast.success { background: rgba(16, 185, 129, 0.95); }
+        .toast.error { background: rgba(239, 68, 68, 0.95); }
+        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+        /* Android download banner */
+        .android-banner {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-top: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 12px 16px;
+            padding-bottom: calc(12px + var(--safe-area-bottom));
+            z-index: 999;
+        }
+        .android-banner.show { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .android-banner-text { color: #94a3b8; font-size: 13px; flex: 1; }
+        .android-banner-text strong { color: white; }
+        .android-banner-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .android-banner-close {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
         }
     </style>
 </head>
 <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-amber-400 focus:text-black focus:rounded-lg focus:font-semibold">
+        Saltar al contenido principal
+    </a>
+
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-icon">🧬</div>
         <div class="loading-title">Laboratorio Frankenstein</div>
-        <div class="loading-subtitle">Creación de Seres Transformadores</div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
+        <div class="loading-subtitle">Cargando sistema de creación...</div>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
     </div>
 
-    <!-- Main App Container -->
-    <div id="app">
+    <!-- Main Content -->
+    <main id="main-content" role="main">
         <div id="organism-container"></div>
-    </div>
+    </main>
 
-    <!-- Version indicator -->
-    <div class="version-indicator">v1.3.4</div>
+    <!-- Android Download Banner -->
+    <div class="android-banner" id="android-banner">
+        <button class="android-banner-close" onclick="document.getElementById('android-banner').classList.remove('show')">×</button>
+        <div class="android-banner-text">
+            <strong>📱 Mejor experiencia</strong><br>
+            Descarga la app nativa (3.8MB)
+        </div>
+        <a href="downloads/frankenstein-lab-v1.2.7.apk" class="android-banner-btn" download>Descargar</a>
+    </div>
 
     <!-- Core Scripts -->
     <script src="js/core/logger.js"></script>
     <script src="js/core/icons.js"></script>
     <script src="js/core/i18n.js"></script>
-    <script src="js/core/native-bridge.js"></script>
-    <script src="js/core/mobile-gestures.js"></script>
+
+    <!-- Enhanced UI System (Toasts, Tooltips, Bottom Sheets) -->
+    <script src="js/core/enhanced-ui-system.js"></script>
+
+    <!-- AI Chat System -->
+    <script src="js/ai/ai-config.js"></script>
+    <script src="js/ai/ai-adapter.js"></script>
+    <script src="js/features/ai-chat-modal.js"></script>
+
+    <!-- Settings, Header & Stats -->
+    <script src="js/features/frankenstein-settings.js"></script>
 
     <!-- Frankenstein Lab Scripts -->
     <script src="js/features/frankenstein-missions.js"></script>
+    <script src="js/features/frankenstein-being-card.js"></script>
     <script src="js/features/frankenstein-quiz.js"></script>
     <script src="js/features/frankenstein-audio.js"></script>
     <script src="js/features/frankenstein-avatar-system.js"></script>
     <script src="js/features/frankenstein-tooltips.js"></script>
+    <script src="js/features/vitruvian-being.js"></script>
     <script src="js/features/frankenstein-demo-data.js"></script>
     <script src="js/features/frankenstein-microsocieties.js"></script>
+    <!-- Microsocieties Extended System -->
+    <script src="js/features/microsocieties-avatars.js"></script>
+    <script src="js/features/microsocieties-events.js"></script>
+    <script src="js/features/microsocieties-events-modal.js"></script>
+    <script src="js/features/microsocieties-save-system.js"></script>
+    <script src="js/features/microsocieties-progression.js"></script>
+    <script src="js/features/microsocieties-story-mode.js"></script>
+    <script src="js/features/microsocieties-sandbox.js"></script>
+    <script src="js/features/microsocieties-interventions.js"></script>
+    <script src="js/features/microsocieties-init.js"></script>
     <script src="js/features/frankenstein-challenges.js"></script>
-    <script src="js/features/frankenstein-settings.js"></script>
+    <script src="js/features/frankenstein-challenges-modal.js"></script>
     <script src="js/features/frankenstein-rewards.js"></script>
     <script src="js/features/frankenstein-onboarding.js"></script>
     <script src="js/features/frankenstein-ui.js"></script>
 
-    <!-- Initialization -->
     <script>
-        // Global toast function con haptic feedback
-        window.showToast = function(message, type = 'info') {
-            // Haptic feedback según tipo
-            if (window.NativeBridge && window.NativeBridge.initialized) {
-                switch(type) {
-                    case 'success':
-                        window.NativeBridge.hapticSuccess();
-                        break;
-                    case 'error':
-                        window.NativeBridge.hapticError();
-                        break;
-                    default:
-                        window.NativeBridge.hapticLight();
-                }
-            }
+        // Device detection
+        const isAndroid = /Android/i.test(navigator.userAgent);
 
+        // Show Android-specific UI
+        if (isAndroid) {
+            // Show banner after 3 seconds
+            setTimeout(() => {
+                document.getElementById('android-banner').classList.add('show');
+            }, 3000);
+        }
+
+        // Toast
+        window.showToast = function(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => {
-                toast.style.animation = 'toastIn 0.25s cubic-bezier(0.4, 0.0, 0.2, 1) reverse';
-                setTimeout(() => toast.remove(), 250);
+                toast.style.animation = 'slideUp 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         };
 
-        // Initialize Lucide icons
-        if (window.lucide) {
-            lucide.createIcons();
-        }
-
-        // Initialize Frankenstein Lab
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🧬 Inicializando Laboratorio Frankenstein v1.3.4...');
-
+        // Load book catalog and chapters
+        async function loadBookCatalog() {
             try {
-                // Inicializar NativeBridge primero
-                if (window.NativeBridge) {
-                    await window.NativeBridge.init();
-                }
+                const catalogRes = await fetch('books/catalog.json');
+                const catalogData = await catalogRes.json();
 
-                // Esperar un poco para que carguen todos los scripts
-                await new Promise(resolve => setTimeout(resolve, 300));
-
-                // Initialize Quiz System
-                if (typeof FrankensteinQuizSystem !== 'undefined') {
-                    window.FrankensteinQuiz = new FrankensteinQuizSystem();
-                    console.log('✅ FrankensteinQuiz inicializado');
-                }
-
-                // Mock organism knowledge for standalone mode
-                const mockOrganismKnowledge = {
-                    getAvailablePieces: () => [],
-                    getCurrentBook: () => null,
-                    getProgress: () => ({ completedChapters: [], totalChapters: 0 })
-                };
-
-                // Initialize Lab UI
-                if (typeof FrankensteinLabUI !== 'undefined') {
-                    window.FrankensteinLabUI = new FrankensteinLabUI(mockOrganismKnowledge);
-                    // Alias para compatibilidad con onclick handlers (minúscula)
-                    window.frankensteinLabUI = window.FrankensteinLabUI;
-
-                    // Check container exists
-                    const container = document.getElementById('organism-container');
-                    if (container) {
-                        // Enable demo mode by default for standalone
-                        if (window.FrankensteinQuiz) {
-                            window.FrankensteinQuiz.setMode('demo');
+                // Load each book's full data
+                const booksWithChapters = [];
+                for (const book of catalogData.books) {
+                    try {
+                        const bookRes = await fetch(`books/${book.id}/book.json`);
+                        if (bookRes.ok) {
+                            const bookData = await bookRes.json();
+                            booksWithChapters.push({
+                                ...book,
+                                fullData: bookData
+                            });
+                        } else {
+                            booksWithChapters.push(book);
                         }
-
-                        await window.FrankensteinLabUI.init();
-                        console.log('✅ FrankensteinLabUI inicializado');
-                    } else {
-                        console.error('❌ organism-container no encontrado');
+                    } catch (e) {
+                        booksWithChapters.push(book);
                     }
                 }
 
-                // Hide loading screen con transición suave
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen) {
-                    loadingScreen.classList.add('fade-out');
-                    setTimeout(() => loadingScreen.remove(), 400);
+                return { ...catalogData, books: booksWithChapters };
+            } catch (error) {
+                console.error('Error loading catalog:', error);
+                return null;
+            }
+        }
+
+        class LabAIEngineProxy {
+            constructor() {
+                this.currentBook = 'laboratorio-frankenstein';
+                this.currentChapter = 'ser-activo';
+                this.currentBookData = {
+                    id: 'laboratorio-frankenstein',
+                    title: 'Laboratorio Frankenstein',
+                    authors: ['Colección Nuevo Ser']
+                };
+                const basePrompt = this.buildPrompt(null, null);
+                this.currentBookConfig = {
+                    features: {
+                        aiChat: {
+                            systemPrompt: basePrompt,
+                            modes: {
+                                default: { name: 'Ser Activo', systemPrompt: basePrompt },
+                                mentor: { name: 'Mentor', systemPrompt: 'Actúa como guía del laboratorio y ofrece orientación estratégica.' }
+                            }
+                        }
+                    }
+                };
+            }
+
+            buildPrompt(being, mission) {
+                if (!being) {
+                    return 'Eres un guía del Laboratorio Frankenstein. Responde con lenguaje claro, enfocado en misiones y piezas de conocimiento de la colección.';
                 }
 
-                // Haptic feedback de éxito
-                if (window.NativeBridge) {
-                    window.NativeBridge.hapticSuccess();
+                const attrMap = window.frankensteinLabUI?.missionsSystem?.attributes || {};
+                const attributeEntries = Object.entries(being.attributes || {}).sort((a, b) => b[1] - a[1]);
+                const attributeLines = attributeEntries.map(([key, value]) => {
+                    const attr = attrMap[key];
+                    return `- ${attr?.icon || '📊'} ${attr?.name || key}: ${Math.round(value)}`;
+                }).join('\n');
+
+                const balance = being.balance ? `
+Balance:
+- Intelectual: ${Math.round(being.balance.intellectual || 0)}
+- Emocional: ${Math.round(being.balance.emotional || 0)}
+- Acción: ${Math.round(being.balance.action || 0)}
+- Espiritual: ${Math.round(being.balance.spiritual || 0)}
+- Práctico: ${Math.round(being.balance.practical || 0)}
+- Armonía: ${Math.round(being.balance.harmony || 0)}%` : '';
+
+                const typeLabels = { chapter: 'Capítulo', exercise: 'Ejercicio', resource: 'Recurso', special: 'Fragmento' };
+                const composition = window.frankensteinLabUI?.getCanonicalBeingPieces
+                    ? window.frankensteinLabUI.getCanonicalBeingPieces(being)
+                    : (being.pieces || []).map(p => ({
+                        title: p.title || p.piece?.title || 'Pieza',
+                        bookTitle: p.bookTitle || p.piece?.bookTitle || 'Colección',
+                        typeLabel: typeLabels[p.type] || 'Pieza',
+                        icon: p.icon || '🧩',
+                        totalPower: Math.round(p.totalPower || 0)
+                    }));
+                const pieces = composition.map(piece => {
+                    return `- ${piece.icon || '🧩'} ${piece.title} (${piece.typeLabel} · ${piece.bookTitle}) · ⚡ ${piece.totalPower || 0}`;
+                }).join('\n');
+
+                let prompt = `Eres el Ser "${being.name || 'sin nombre'}" creado en el Laboratorio Frankenstein.`;
+                if (mission) {
+                    prompt += ` Tu misión es "${mission.name}": ${mission.description}.`;
+                }
+
+                prompt += `
+
+Atributos clave:
+${attributeLines || '- Sin atributos cargados'}
+${balance}
+
+Conocimiento base:
+${pieces || '- Aún no se han seleccionado piezas.'}
+
+Habla como este ser, manteniendo coherencia con su misión y atributos.`;
+
+                return prompt;
+            }
+
+            updateContext(being, mission) {
+                this.currentBeing = being || null;
+                this.currentMission = mission || null;
+                this.currentBookData.title = being?.name ? `${being.name} · Laboratorio Frankenstein` : 'Laboratorio Frankenstein';
+                this.currentChapter = mission?.id || 'ser-activo';
+                const prompt = this.buildPrompt(being, mission);
+                this.currentBookConfig.features.aiChat.systemPrompt = prompt;
+                if (this.currentBookConfig.features.aiChat.modes?.default) {
+                    this.currentBookConfig.features.aiChat.modes.default.systemPrompt = prompt;
+                }
+            }
+
+            getCurrentBook() {
+                return this.currentBook;
+            }
+
+            getCurrentBookData() {
+                return this.currentBookData;
+            }
+
+            getCurrentBookConfig() {
+                return this.currentBookConfig;
+            }
+
+            getChapter() {
+                return null;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🧬 Inicializando Laboratorio Frankenstein...');
+
+            try {
+                // Initialize Audio System
+                if (typeof FrankensteinAudioSystem !== 'undefined') {
+                    console.log('[FrankenAudio] 🔊 Inicializando sistema de audio...');
+                    window.frankenAudio = new FrankensteinAudioSystem();
+
+                    await window.frankenAudio.init();
+
+                    if (window.frankenAudio.enabled) {
+                        window.frankenAudio.start();
+                        console.log('[FrankenAudio] ✅ Sistema de audio iniciado (enabled=true)');
+                    } else {
+                        console.log('[FrankenAudio] ℹ️ Sistema de audio listo pero deshabilitado (enabled=false)');
+                    }
+
+                    console.log(`[FrankenAudio] 🔊 Volumen maestro: ${Math.round(window.frankenAudio.masterVolume * 100)}%`);
+                }
+
+                // Load real book catalog
+                const catalog = await loadBookCatalog();
+                console.log('📚 Catálogo cargado:', catalog?.books?.length || 0, 'libros');
+
+                // Quiz System
+                if (typeof FrankensteinQuizSystem !== 'undefined') {
+                    window.FrankensteinQuiz = new FrankensteinQuizSystem();
+                    window.FrankensteinQuiz.setMode('juego');
+                }
+
+                // AI Chat para el laboratorio
+                if (typeof AIConfig !== 'undefined' && typeof AIAdapter !== 'undefined' && typeof AIChatModal !== 'undefined') {
+                    window.labAIEngineProxy = new LabAIEngineProxy();
+                    window.aiConfig = new AIConfig();
+                    window.aiAdapter = new AIAdapter(window.aiConfig);
+                    window.aiChatModal = new AIChatModal(window.labAIEngineProxy, window.aiAdapter);
+                } else {
+                    console.warn('AI chat system not available en esta build.');
+                }
+
+                // Create organism with real book data
+                const organism = {
+                    bookEngine: { catalog },
+                    getAvailablePieces: () => [],
+                    getCurrentBook: () => null,
+                    getProgress: () => ({ completedChapters: [], totalChapters: 0 }),
+                    getBookChapters: (book) => {
+                        if (book.fullData?.sections) {
+                            const chapters = [];
+                            book.fullData.sections.forEach(s => {
+                                if (s.chapters) chapters.push(...s.chapters);
+                            });
+                            return chapters;
+                        }
+                        return book.fullData?.chapters || [];
+                    },
+                    loadChapterMetadata: async (bookId) => {
+                        try {
+                            const res = await fetch(`books/${bookId}/assets/chapter-metadata.json`);
+                            return res.ok ? await res.json() : {};
+                        } catch { return {}; }
+                    }
+                };
+
+                // Lab UI
+                if (typeof FrankensteinLabUI !== 'undefined') {
+                    window.frankensteinLabUI = new FrankensteinLabUI(organism);
+                    await window.frankensteinLabUI.init();
+                }
+
+                // Hide loading
+                const loading = document.getElementById('loading-screen');
+                if (loading) {
+                    loading.classList.add('fade-out');
+                    setTimeout(() => loading.remove(), 500);
                 }
 
                 showToast('¡Laboratorio listo!', 'success');
 
             } catch (error) {
-                console.error('❌ Error inicializando:', error);
-
-                if (window.NativeBridge) {
-                    window.NativeBridge.hapticError();
-                }
-
+                console.error('Error:', error);
                 showToast('Error al cargar', 'error');
-
-                // Show error in loading screen
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen) {
-                    loadingScreen.innerHTML = `
-                        <div style="color: #ef4444; font-size: 60px;">⚠️</div>
-                        <div style="color: white; margin-top: 20px; font-size: 18px;">Error al cargar</div>
-                        <div style="color: #94a3b8; margin-top: 10px; font-size: 12px; max-width: 280px; text-align: center;">${error.message}</div>
-                        <button onclick="location.reload()" style="margin-top: 24px; padding: 14px 32px; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; min-height: 48px;">
-                            Reintentar
-                        </button>
-                    `;
-                }
             }
         });
 
-        // Agregar haptic feedback a todos los botones y elementos clickables
-        document.addEventListener('click', function(e) {
-            const clickable = e.target.closest('button, .btn, .clickable, .mode-option, .difficulty-option, .piece-item, [role="button"]');
-            if (clickable && window.NativeBridge) {
-                window.NativeBridge.hapticLight();
-            }
-        }, true);
-
-        // Agregar clase ripple a elementos interactivos
-        document.addEventListener('DOMContentLoaded', function() {
-            const addRipple = () => {
-                const elements = document.querySelectorAll('button:not(.ripple), .btn:not(.ripple), .mode-option:not(.ripple), .difficulty-option:not(.ripple)');
-                elements.forEach(el => el.classList.add('ripple'));
-            };
-
-            // Observar cambios en el DOM para nuevos elementos
-            const observer = new MutationObserver(addRipple);
-            observer.observe(document.body, { childList: true, subtree: true });
-            addRipple();
-        });
-
-        // Prevenir pull-to-refresh en móvil
-        let touchStartY = 0;
-        document.addEventListener('touchstart', function(e) {
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        document.addEventListener('touchmove', function(e) {
-            const touchY = e.touches[0].clientY;
-            const scrollTop = document.scrollingElement.scrollTop;
-
-            // Si estamos en la parte superior y deslizamos hacia abajo, prevenir
-            if (scrollTop === 0 && touchY > touchStartY) {
-                const target = e.target.closest('#app, .native-scroll, .modal-content');
-                if (!target || target.scrollTop === 0) {
-                    e.preventDefault();
-                }
-            }
-        }, { passive: false });
+        // Lucide icons
+        if (window.lucide) lucide.createIcons();
     </script>
 </body>
 </html>

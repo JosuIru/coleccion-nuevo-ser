@@ -1,0 +1,423 @@
+{
+  "bookId": null,
+  "bookTitle": null,
+  "subtitle": " (versión niños)",
+  "quizzes": [
+    {
+      "chapterId": "accion-1",
+      "chapterTitle": null,
+      "questions": [
+        {
+          "id": null,
+          "question": "¿Qué pasa si cierras los ojos y prestas atención a tu respiración por unos minutos?",
+          "type": "multiple",
+          "options": [
+            "¿Nada especial, es aburrido?",
+            "¿Te sientes más tranquilo y notas cómo te sientes por dentro?",
+            "¿Te duermes inmediatamente?",
+            "¿Es malo para la salud?"
+          ],
+          "correct": 0,
+          "explanation": "¿Prestar atención a tu respiración es una forma simple de meditación. Te ayuda a calmarte y a darte cuenta de cómo te sientes.?",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Es mejor meditar 5 minutos todos los días o 1 hora de vez en cuando?",
+          "type": "multiple",
+          "options": [
+            "¿1 hora de vez en cuando es mejor porque es más tiempo?",
+            "¿5 minutos cada día es mejor porque el cerebro aprende con la práctica diaria?",
+            "¿Da igual, la meditación no sirve para nada?",
+            "¿Solo los adultos pueden meditar?"
+          ],
+          "correct": 0,
+          "explanation": "¿Como aprender a tocar un instrumento, practicar un poquito cada día es mejor que practicar mucho solo a veces. Tu mente se entrena con la repetición....",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es el beneficio principal de la meditación diaria según la guía?",
+          "type": "multiple",
+          "options": [
+            "¿Relajarse y escapar de los problemas?",
+            "¿Desarrollar conciencia plena y desidentificación de patrones mentales?",
+            "¿Alcanzar estados místicos elevados?",
+            "¿Mejorar la productividad en el trabajo?"
+          ],
+          "correct": 0,
+          "explanation": "¿La meditación desarrolla conciencia plena (awareness) y capacidad de observar pensamientos/emociones sin identificarse con ellos, base para transform...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Por qué es importante meditar 'todos los días' en lugar de ocasionalmente?",
+          "type": "multiple",
+          "options": [
+            "¿Porque es una obligación moral?",
+            "¿La regularidad construye el 'músculo' de la atención y hace que los beneficios se acumulen?",
+            "¿Para impresionar a otros?",
+            "¿Meditar ocasionalmente funciona igual de bien?"
+          ],
+          "correct": 0,
+          "explanation": "¿Como el ejercicio físico, la meditación diaria entrena la mente de forma acumulativa. Sesiones esporádicas tienen beneficios limitados comparado con...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuánto tiempo mínimo recomienda la guía para empezar?",
+          "type": "multiple",
+          "options": [
+            "¿2 horas al día?",
+            "¿5-10 minutos diarios?",
+            "¿Solo fines de semana?",
+            "¿30 minutos o nada?"
+          ],
+          "correct": 0,
+          "explanation": "¿La guía recomienda empezar con sesiones cortas (5-10 min) pero diarias. Es mejor 10 minutos cada día que una hora esporádicamente.?",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué hacer cuando surgen pensamientos durante la meditación?",
+          "type": "multiple",
+          "options": [
+            "¿Reprimir los pensamientos con fuerza?",
+            "¿Sentirse mal por no poder concentrarse?",
+            "¿Observarlos sin juzgar y volver suavemente al ancla (respiración, etc.)?",
+            "¿Dejar de meditar porque 'no funciona'?"
+          ],
+          "correct": 0,
+          "explanation": "¿Los pensamientos son naturales. La práctica consiste en notarlos sin juzgar, sin engancharse, y volver al objeto de meditación (respiración, sensacio...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es la relación entre meditación y activismo según la guía?",
+          "type": "multiple",
+          "options": [
+            "¿Son opuestos: o meditas o actúas?",
+            "¿La meditación es escapismo que te aleja del activismo?",
+            "¿Meditación provee claridad, ecuanimidad y energía sostenible para el activismo?",
+            "¿El activismo es más importante, la meditación es opcional?"
+          ],
+          "correct": 0,
+          "explanation": "¿La meditación no es escapismo sino entrenamiento para actuar desde claridad en lugar de reactividad, previniendo burnout y permitiendo activismo sost...",
+          "bookQuote": ""
+        }
+      ]
+    },
+    {
+      "chapterId": "accion-5",
+      "chapterTitle": null,
+      "questions": [
+        {
+          "id": null,
+          "question": "¿Para producir una hamburguesa se usan muchos recursos (agua, tierra, comida para la vaca). ¿Qué pasa si comemos menos carne?",
+          "type": "multiple",
+          "options": [
+            "¿Nada, no afecta al planeta?",
+            "¿Ayudamos a cuidar el planeta porque se usan menos recursos?",
+            "¿Es malo porque necesitamos carne para vivir?",
+            "¿Solo los adultos pueden decidir esto?"
+          ],
+          "correct": 0,
+          "explanation": "¿Producir carne usa mucha agua, tierra y comida para los animales. Si comemos menos carne, ayudamos a que alcance para más personas y cuidamos el plan...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Podemos comer rico y nutritivo sin comer carne todos los días?",
+          "type": "multiple",
+          "options": [
+            "¿No, sin carne nos enfermamos?",
+            "¿Sí, hay muchos alimentos deliciosos como frijoles, lentejas, huevos y frutos secos?",
+            "¿Solo si tomamos medicinas?",
+            "¿Es imposible?"
+          ],
+          "correct": 0,
+          "explanation": "¿Hay muchas formas de comer rico y sano sin carne: lentejas, garbanzos, huevos, queso, frutos secos... Todos tienen proteínas que nuestro cuerpo neces...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es el principal impacto ambiental de la ganadería industrial?",
+          "type": "multiple",
+          "options": [
+            "¿Contaminación de ríos solamente?",
+            "¿Emisiones de gases de efecto invernadero, deforestación y uso masivo de agua?",
+            "¿Solo afecta al bienestar animal?",
+            "¿No tiene impacto significativo?"
+          ],
+          "correct": 0,
+          "explanation": "¿La ganadería industrial es responsable de ~14-18% de emisiones GEI, principal causa de deforestación (Amazonía), y consume enormes cantidades de agua...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué significa 'reducir' en lugar de 'eliminar' la carne?",
+          "type": "multiple",
+          "options": [
+            "¿Es un enfoque no todo-o-nada: menos carne ya tiene impacto positivo?",
+            "¿Es una postura débil sin efecto real?",
+            "¿Solo es válido eliminar 100% la carne?",
+            "¿Es lo mismo que no hacer nada?"
+          ],
+          "correct": 0,
+          "explanation": "¿Reducir consumo (ej: 2-3 días vegetarianos/semana) es realista para más personas y tiene impacto significativo si muchos lo hacen, sin requerir conve...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es la relación entre producción de carne y uso de cereales?",
+          "type": "multiple",
+          "options": [
+            "¿El ganado no consume cereales, solo pasto?",
+            "¿Se necesitan ~7kg de cereales para producir 1kg de carne de res?",
+            "¿La carne se produce sin usar recursos agrícolas?",
+            "¿Los cereales para ganado no sirven para consumo humano?"
+          ],
+          "correct": 0,
+          "explanation": "¿Producir carne de res requiere ~7kg de cereales por 1kg de carne (varía según animal y sistema). Esos cereales podrían alimentar directamente a human...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué son las 'proteínas alternativas' mencionadas en la guía?",
+          "type": "multiple",
+          "options": [
+            "¿Solo suplementos de proteína en polvo?",
+            "¿Legumbres, frutos secos, tofu, tempeh, seitán, etc.?",
+            "¿Carne sintética de laboratorio exclusivamente?",
+            "¿No existen alternativas reales a la carne?"
+          ],
+          "correct": 0,
+          "explanation": "¿Proteínas vegetales (legumbres, frutos secos, soja, quinoa, etc.) proveen aminoácidos necesarios, siendo opciones deliciosas, nutritivas y de menor i...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Por qué la guía enfatiza '1 o 2 días sin carne a la semana' como punto de partida?",
+          "type": "multiple",
+          "options": [
+            "¿Porque es insuficiente y deberías ser vegano inmediatamente?",
+            "¿Es un objetivo alcanzable que construye hábito gradualmente?",
+            "¿No tiene ningún beneficio real?",
+            "¿Solo es para sentirte bien sin hacer diferencia?"
+          ],
+          "correct": 0,
+          "explanation": "¿Empezar con metas pequeñas aumenta probabilidad de éxito y sostenibilidad. Un cambio gradual que se mantiene es más valioso que un cambio radical que...",
+          "bookQuote": ""
+        }
+      ]
+    },
+    {
+      "chapterId": "accion-10",
+      "chapterTitle": null,
+      "questions": [
+        {
+          "id": null,
+          "question": "¿Quién decide cosas como los parques, calles y bibliotecas de tu barrio?",
+          "type": "multiple",
+          "options": [
+            "¿Nadie, aparecen solos?",
+            "¿El gobierno de tu ciudad (el ayuntamiento) y los vecinos pueden opinar?",
+            "¿Solo el presidente del país?",
+            "¿Las empresas grandes?"
+          ],
+          "correct": 0,
+          "explanation": "¿El gobierno local (ayuntamiento) decide muchas cosas de tu barrio: parques, calles, bibliotecas... Y los vecinos pueden participar opinando y votando...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Si quieres que pongan un parque nuevo en tu barrio, ¿qué puedes hacer?",
+          "type": "multiple",
+          "options": [
+            "¿Nada, los niños no pueden opinar?",
+            "¿Hablar con tu familia para que vayan a reuniones del barrio y lo pidan?",
+            "¿Esperar a ser adulto?",
+            "¿Quejarte pero sin hacer nada?"
+          ],
+          "correct": 0,
+          "explanation": "¿Aunque seas joven, puedes hablar con tu familia sobre lo que te gustaría mejorar en tu barrio. Juntos pueden ir a reuniones o escribir al ayuntamient...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Por qué es estratégico enfocarse en el gobierno local en lugar del nacional?",
+          "type": "multiple",
+          "options": [
+            "¿El gobierno local no es importante?",
+            "¿Es más accesible, influenciable y tiene impacto directo en la vida cotidiana?",
+            "¿Solo porque el gobierno nacional es inaccesible?",
+            "¿No hay diferencia real entre niveles?"
+          ],
+          "correct": 0,
+          "explanation": "¿El gobierno local (municipio/ciudad) es más accesible a ciudadanos comunes, más sensible a presión local, y controla decisiones que afectan directame...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué es un 'pleno municipal' o sesión del consejo/ayuntamiento?",
+          "type": "multiple",
+          "options": [
+            "¿Reunión privada de políticos?",
+            "¿Reunión pública donde se toman decisiones municipales, abierta a ciudadanos?",
+            "¿Solo para funcionarios electos?",
+            "¿Evento ceremonial sin poder real?"
+          ],
+          "correct": 0,
+          "explanation": "¿Los plenos/sesiones municipales son reuniones públicas donde se debate y vota sobre ordenanzas, presupuestos, etc. Ciudadanos pueden asistir, hablar...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es una forma efectiva de influir en decisiones locales?",
+          "type": "multiple",
+          "options": [
+            "¿Quejarse en redes sociales solamente?",
+            "¿Asistir a plenos, hablar en período de intervención, organizar a vecinos?",
+            "¿Esperar que otros actúen?",
+            "¿Votar cada 4 años y olvidarse?"
+          ],
+          "correct": 0,
+          "explanation": "¿Democracia activa requiere más que votar: asistir a plenos, hablar públicamente, organizarse con vecinos, presentar propuestas y crear presión visibl...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué son los 'presupuestos participativos'?",
+          "type": "multiple",
+          "options": [
+            "¿Presupuestos que solo políticos deciden?",
+            "¿Proceso donde ciudadanos votan directamente cómo gastar parte del presupuesto municipal?",
+            "¿Presupuestos publicados online?",
+            "¿Donaciones voluntarias al municipio?"
+          ],
+          "correct": 0,
+          "explanation": "¿Presupuestos participativos permiten a ciudadanos proponer y votar proyectos locales (parques, bibliotecas, carriles bici, etc.) que se financian con...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Por qué es importante 'construir relaciones' con concejales/consejeros locales?",
+          "type": "multiple",
+          "options": [
+            "¿Para obtener favores personales?",
+            "¿Porque son enemigos que hay que vigilar?",
+            "¿Relaciones constructivas facilitan diálogo, acceso a datos y colaboración en temas comunes?",
+            "¿No es importante, los políticos son todos corruptos?"
+          ],
+          "correct": 0,
+          "explanation": "¿Aunque mantengamos espíritu crítico, construir relaciones respetuosas con representantes locales (incluso de otros partidos) facilita acceso, diálogo...",
+          "bookQuote": ""
+        }
+      ]
+    },
+    {
+      "chapterId": "accion-15",
+      "chapterTitle": null,
+      "questions": [
+        {
+          "id": null,
+          "question": "¿Por qué es más divertido y útil estudiar o leer con amigos que solo?",
+          "type": "multiple",
+          "options": [
+            "¿No es más útil, es igual?",
+            "¿Porque cada uno entiende cosas diferentes y pueden ayudarse?",
+            "¿Solo sirve para distraerse?",
+            "¿Estudiar solo siempre es mejor?"
+          ],
+          "correct": 0,
+          "explanation": "¿Cuando estudias con amigos, cada uno entiende cosas diferentes. Pueden explicarse mutuamente y aprender más juntos que solos.?",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿En un grupo de estudio, ¿es bueno que todos piensen exactamente igual?",
+          "type": "multiple",
+          "options": [
+            "¿Sí, así no hay peleas?",
+            "¿No, es mejor que cada uno aporte sus ideas diferentes?",
+            "¿Sí, porque así se avanza más rápido?",
+            "¿Da igual lo que piensen?"
+          ],
+          "correct": 0,
+          "explanation": "¿Cuando cada persona tiene ideas diferentes, el grupo aprende más porque ve las cosas desde muchos ángulos. Las diferencias nos enriquecen.?",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es el principal beneficio de un grupo de estudio vs. leer solo?",
+          "type": "multiple",
+          "options": [
+            "¿Es más rápido leer en grupo?",
+            "¿Diversidad de perspectivas, accountability y construcción de comunidad?",
+            "¿Solo sirve para socializar, no para aprender?",
+            "¿No hay beneficios reales?"
+          ],
+          "correct": 0,
+          "explanation": "¿Grupos de estudio aportan múltiples perspectivas (enriquecen comprensión), accountability mutuo (te motiva a continuar) y construyen comunidad de per...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cuál es un tamaño ideal para un grupo de estudio según la guía?",
+          "type": "multiple",
+          "options": [
+            "¿2 personas?",
+            "¿4-8 personas?",
+            "¿20+ personas?",
+            "¿El tamaño no importa?"
+          ],
+          "correct": 0,
+          "explanation": "¿4-8 personas es ideal: suficiente diversidad de perspectivas, pero pequeño para que todos participen activamente. Grupos muy grandes dificultan conve...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué rol cumple un 'facilitador' en un grupo de estudio?",
+          "type": "multiple",
+          "options": [
+            "¿El experto que enseña a los demás?",
+            "¿Quien asegura que todos participen, se respete el tiempo y se cumplan acuerdos?",
+            "¿El líder autoritario del grupo?",
+            "¿No se necesita facilitador?"
+          ],
+          "correct": 0,
+          "explanation": "¿El facilitador no es un maestro sino quien cuida el proceso: asegura que todos hablen, que se respeten tiempos, que conversación sea productiva. El r...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Qué significa estudiar 'texto en común' vs. 'compartir lecturas individuales'?",
+          "type": "multiple",
+          "options": [
+            "¿No hay diferencia?",
+            "¿Texto común (todos leen lo mismo) permite conversación profunda vs. solo compartir resúmenes?",
+            "¿Compartir lecturas individuales es siempre mejor?",
+            "¿Texto común es aburrido?"
+          ],
+          "correct": 0,
+          "explanation": "¿Cuando todos leen el mismo texto/capítulo, pueden discutir pasajes específicos, comparar interpretaciones y construir comprensión colectiva profunda,...",
+          "bookQuote": ""
+        },
+        {
+          "id": null,
+          "question": "¿Cómo evitar que el grupo se disuelva después de 2-3 sesiones?",
+          "type": "multiple",
+          "options": [
+            "¿Obligar a la gente a asistir?",
+            "¿Fecha/hora fija, compromiso inicial claro y duración definida (ej: 8 semanas)?",
+            "¿No importa, si se disuelve es porque no valía la pena?",
+            "¿Hacer reuniones improvisadas cuando la gente pueda?"
+          ],
+          "correct": 0,
+          "explanation": "¿Estructura (horario fijo), compromiso explícito al inicio y duración definida (con opción de renovar) dan previsibilidad y seriedad al grupo, reducie...",
+          "bookQuote": ""
+        }
+      ]
+    }
+  ]
+}

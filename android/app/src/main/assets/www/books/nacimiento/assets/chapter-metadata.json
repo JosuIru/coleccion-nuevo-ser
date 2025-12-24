@@ -1,0 +1,211 @@
+{
+  "chapters": [
+    {
+      "id": "cap1",
+      "estimatedReadTime": "20 min",
+      "difficulty": "intermedio",
+      "keywords": ["cinco premisas", "separación", "escasez", "materialismo", "progreso lineal", "valor instrumental"],
+      "relatedChapters": ["cap2", "cap5", "cap12"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap2",
+      "estimatedReadTime": "35 min",
+      "difficulty": "intermedio",
+      "keywords": ["siete estructuras", "capitalismo", "religión", "Estado-nación", "consumismo", "educación", "estética", "redes sociales"],
+      "relatedChapters": ["cap1", "cap3", "cap4"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap3",
+      "estimatedReadTime": "25 min",
+      "difficulty": "intermedio",
+      "keywords": ["crisis ecológica", "crisis psicosomática", "crisis de sentido", "crisis de legitimidad"],
+      "relatedChapters": ["cap2", "cap4", "cap18"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap4",
+      "estimatedReadTime": "18 min",
+      "difficulty": "principiante",
+      "keywords": ["corporaciones", "gobiernos capturados", "clase media", "intelectualidad"],
+      "relatedChapters": ["cap2", "cap3", "cap6"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap5",
+      "estimatedReadTime": "22 min",
+      "difficulty": "avanzado",
+      "keywords": ["reforma vs revolución", "absorción de la crítica", "capitalismo verde", "premisas fundamentales"],
+      "relatedChapters": ["cap1", "cap2", "cap10"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap6",
+      "estimatedReadTime": "16 min",
+      "difficulty": "intermedio",
+      "keywords": ["extrema derecha", "pánico civilizacional", "fascismo", "autoritarismo"],
+      "relatedChapters": ["cap4", "cap7", "cap18"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap7",
+      "estimatedReadTime": "12 min",
+      "difficulty": "principiante",
+      "keywords": ["tradicionalismo", "nostalgia", "fundamentalismo", "resistencia al cambio"],
+      "relatedChapters": ["cap6", "cap8"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap8",
+      "estimatedReadTime": "10 min",
+      "difficulty": "principiante",
+      "keywords": ["consumismo", "aceleración", "ansiedad", "colapso ecológico"],
+      "relatedChapters": ["cap2", "cap7", "cap9"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap9",
+      "estimatedReadTime": "12 min",
+      "difficulty": "principiante",
+      "keywords": ["negacionismo", "desinformación", "defensa perceptual"],
+      "relatedChapters": ["cap8", "cap10", "cap19"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap10",
+      "estimatedReadTime": "14 min",
+      "difficulty": "intermedio",
+      "keywords": ["militarismo", "captura corporativa", "wellness corporativo", "absorción"],
+      "relatedChapters": ["cap5", "cap9"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap11",
+      "estimatedReadTime": "20 min",
+      "difficulty": "principiante",
+      "keywords": ["comunidades indígenas", "economías cooperativas", "gobernanza participativa", "conocimiento abierto"],
+      "relatedChapters": ["cap12", "cap13", "cap14"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap12",
+      "estimatedReadTime": "18 min",
+      "difficulty": "intermedio",
+      "keywords": ["cinco premisas del nuevo ser", "conciencia fundamental", "abundancia", "interdependencia", "madurez cíclica", "valor intrínseco"],
+      "relatedChapters": ["cap1", "cap11", "cap13"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap13",
+      "estimatedReadTime": "15 min",
+      "difficulty": "principiante",
+      "keywords": ["salud mental", "territorio", "educación", "trabajo con sentido"],
+      "relatedChapters": ["cap11", "cap12", "cap14"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap14",
+      "estimatedReadTime": "25 min",
+      "difficulty": "intermedio",
+      "keywords": ["economía regenerativa", "gobernanza distribuida", "educación transformadora", "tecnología consciente"],
+      "relatedChapters": ["cap11", "cap12", "cap13", "cap21"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap18",
+      "estimatedReadTime": "20 min",
+      "difficulty": "avanzado",
+      "keywords": ["2025-2035", "tres escenarios", "La Fortaleza", "Colapso Caótico", "El Nacimiento"],
+      "relatedChapters": ["cap3", "cap19", "cap20", "cap21"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap19",
+      "estimatedReadTime": "14 min",
+      "difficulty": "intermedio",
+      "keywords": ["batalla narrativa", "historia", "medios", "cultura"],
+      "relatedChapters": ["cap9", "cap18", "cap20"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap20",
+      "estimatedReadTime": "18 min",
+      "difficulty": "avanzado",
+      "keywords": ["inteligencia artificial", "IA extractiva", "IA regenerativa", "punto de decisión"],
+      "relatedChapters": ["cap18", "cap19", "cap21"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap21",
+      "estimatedReadTime": "22 min",
+      "difficulty": "intermedio",
+      "keywords": ["acción", "reconocimiento", "boicot pasivo", "construcción activa", "bloqueo"],
+      "relatedChapters": ["cap14", "cap18", "cap20", "cap22"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "cap22",
+      "estimatedReadTime": "16 min",
+      "difficulty": "intermedio",
+      "keywords": ["soberanía cognitiva", "soberanía económica", "soberanía tecnológica", "soberanía espiritual", "soberanía territorial"],
+      "relatedChapters": ["cap21", "epilogo"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": true
+    },
+    {
+      "id": "epilogo",
+      "estimatedReadTime": "12 min",
+      "difficulty": "principiante",
+      "keywords": ["transición", "reconocimiento", "acción", "década decisiva"],
+      "relatedChapters": ["cap18", "cap21", "cap22"],
+      "hasExercises": false,
+      "hasMeditations": false,
+      "hasQuiz": false
+    }
+  ],
+  "metadata": {
+    "totalChapters": 20,
+    "averageReadTime": "18 min",
+    "completionTime": "6-7 horas",
+    "lastUpdated": "2025-12-19",
+    "totalReadTime": "360 min"
+  }
+}

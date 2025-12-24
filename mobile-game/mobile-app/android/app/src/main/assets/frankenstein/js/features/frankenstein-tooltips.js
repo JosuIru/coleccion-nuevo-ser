@@ -13,6 +13,16 @@ class FrankensteinTooltips {
     this.isTouchDevice = false;
   }
 
+  escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   init() {
     // Detectar dispositivo táctil
     this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -183,17 +193,17 @@ class FrankensteinTooltips {
     this.currentTarget = target;
     this.isVisible = true;
 
-    // Obtener datos del tooltip
-    const tooltipData = target.dataset.tooltip;
+    // Obtener datos del tooltip (sanitizados para prevenir XSS)
+    const tooltipData = this.escapeHtml(target.dataset.tooltip);
     const tooltipType = target.dataset.tooltipType || 'text';
 
     let content = '';
 
     if (tooltipType === 'attribute') {
-      const attrName = target.dataset.tooltipName || '';
-      const attrIcon = target.dataset.tooltipIcon || '✨';
-      const attrValue = target.dataset.tooltipValue || '0';
-      const attrDesc = target.dataset.tooltipDesc || '';
+      const attrName = this.escapeHtml(target.dataset.tooltipName || '');
+      const attrIcon = this.escapeHtml(target.dataset.tooltipIcon || '✨');
+      const attrValue = this.escapeHtml(target.dataset.tooltipValue || '0');
+      const attrDesc = this.escapeHtml(target.dataset.tooltipDesc || '');
 
       content = `
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: #d4af37;">
@@ -204,8 +214,8 @@ class FrankensteinTooltips {
         <div style="color: #10b981; font-weight: 600;">+${attrValue} puntos</div>
       `;
     } else if (tooltipType === 'mission') {
-      const missionName = target.dataset.tooltipName || '';
-      const missionDesc = target.dataset.tooltipDesc || '';
+      const missionName = this.escapeHtml(target.dataset.tooltipName || '');
+      const missionDesc = this.escapeHtml(target.dataset.tooltipDesc || '');
 
       content = `
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: #d4af37;">
@@ -215,7 +225,7 @@ class FrankensteinTooltips {
         <div style="color: #c4b89b; line-height: 1.4;">${missionDesc}</div>
       `;
     } else if (tooltipType === 'help') {
-      const helpTitle = target.dataset.tooltipTitle || 'Ayuda';
+      const helpTitle = this.escapeHtml(target.dataset.tooltipTitle || 'Ayuda');
       content = `
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: #60a5fa;">
           <span style="font-size: 1.2em;">💡</span>

@@ -10,6 +10,10 @@ class NotesModal {
     this.isOpen = false;
     this.currentChapterId = null;
     this.notes = this.loadNotes();
+    this.previousActiveElement = null; // For accessibility focus restoration
+
+    // 🔧 FIX #86: Usar EventManager para prevenir memory leaks
+    this.eventManager = new EventManager();
   }
 
   // ==========================================================================
@@ -23,6 +27,20 @@ class NotesModal {
 
   saveNotes() {
     localStorage.setItem('coleccion_notes', JSON.stringify(this.notes));
+
+    // 🔧 FIX #18: Logging cuando supabaseSyncHelper no está disponible
+    if (window.authHelper && window.authHelper.user) {
+      if (window.supabaseSyncHelper) {
+        try {
+          window.supabaseSyncHelper.syncPreference('coleccion_notes', this.notes);
+          console.log('[Notes] ✅ Notas sincronizadas con Supabase');
+        } catch (error) {
+          console.warn('[Notes] No se pudo sincronizar notas con Supabase:', error);
+        }
+      } else {
+        console.warn('[Notes] Supabase sync helper not available');
+      }
+    }
   }
 
   getChapterNotes(chapterId) {
@@ -106,19 +124,36 @@ class NotesModal {
   open(chapterId = null) {
     if (this.isOpen) return;
 
+    // Registrar uso de feature para hints contextuales
+    if (window.contextualHints) {
+      window.contextualHints.markFeatureUsed('notes');
+    }
+
+    // Guardar elemento activo para restaurar después
+    this.previousActiveElement = document.activeElement;
+
     this.currentChapterId = chapterId;
     this.isOpen = true;
     this.render();
     this.attachEventListeners();
 
-    // Focus en textarea si está creando nueva nota
+    // Focus en textarea si está creando nueva nota, o en primer elemento focusable
     setTimeout(() => {
       const textarea = document.getElementById('note-input');
-      if (textarea) textarea.focus();
+      if (textarea) {
+        textarea.focus();
+      } else {
+        const modal = document.getElementById('notes-modal');
+        const firstFocusable = modal?.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) firstFocusable.focus();
+      }
     }, 100);
   }
 
   close() {
+    // 🔧 FIX #86: Limpiar todos los event listeners con EventManager
+    this.eventManager.cleanup();
+
     const modal = document.getElementById('notes-modal');
     if (modal) {
       modal.classList.add('opacity-0');
@@ -126,6 +161,12 @@ class NotesModal {
         modal.remove();
         this.isOpen = false;
       }, 200);
+    }
+
+    // Restaurar foco al elemento previo para accesibilidad
+    if (this.previousActiveElement && typeof this.previousActiveElement.focus === 'function') {
+      this.previousActiveElement.focus();
+      this.previousActiveElement = null;
     }
   }
 
@@ -141,14 +182,17 @@ class NotesModal {
 
     const html = `
       <div id="notes-modal"
-           class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-200">
-        <div class="bg-slate-900/95 rounded-2xl border border-slate-700 shadow-2xl max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden">
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="notes-modal-title"
+           class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] flex items-center justify-center p-2 sm:p-4 transition-opacity duration-200">
+        <div class="bg-slate-900/95 rounded-xl sm:rounded-2xl border border-slate-700 shadow-2xl max-w-4xl w-full h-[90vh] sm:h-[85vh] flex flex-col overflow-hidden">
 
           <!-- Header -->
           ${this.renderHeader(bookData, chapter)}
 
           <!-- Content -->
-          <div class="flex-1 overflow-y-auto p-6">
+          <div class="flex-1 overflow-y-auto p-3 sm:p-6">
             ${this.currentChapterId
               ? this.renderChapterNotes()
               : this.renderAllNotes()
@@ -173,34 +217,34 @@ class NotesModal {
 
   renderHeader(bookData, chapter) {
     return `
-      <div class="border-b border-slate-700 p-6 flex items-center justify-between bg-slate-800/50">
-        <div class="flex-1">
-          <h2 class="text-2xl font-bold mb-1 flex items-center gap-3">
-            ${Icons.note(24)} ${this.i18n.t('notes.title')}
+      <div class="border-b border-slate-700 p-3 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 bg-slate-800/50">
+        <div class="flex-1 min-w-0 w-full sm:w-auto">
+          <h2 id="notes-modal-title" class="text-lg sm:text-2xl font-bold mb-1 flex items-center gap-2 sm:gap-3">
+            ${Icons.note(20)} <span class="truncate">${this.i18n.t('notes.title')}</span>
           </h2>
-          <p class="text-sm opacity-70 flex items-center gap-1">
+          <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1 truncate">
             ${chapter
-              ? `${bookData.title} ${Icons.chevronRight(14)} ${chapter.title}`
-              : `Todas las notas de ${bookData.title}`
+              ? `<span class="truncate">${bookData.title}</span> ${Icons.chevronRight(14)} <span class="truncate">${chapter.title}</span>`
+              : `<span class="truncate">Todas las notas de ${bookData.title}</span>`
             }
           </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
           ${this.currentChapterId ? `
             <button id="view-all-notes-btn"
-                    class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-sm">
+                    class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-xs sm:text-sm whitespace-nowrap">
               ${this.i18n.t('notes.viewAll')}
             </button>
           ` : ''}
           <button id="export-notes-btn"
-                  class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition text-sm flex items-center gap-2">
-            ${Icons.download(16)} ${this.i18n.t('btn.export')}
+                  class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition text-xs sm:text-sm flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+            ${Icons.download(16)} <span class="hidden sm:inline">${this.i18n.t('btn.export')}</span>
           </button>
           <button id="close-notes-btn"
-                  class="w-10 h-10 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-700 hover:bg-gray-200 transition flex items-center justify-center text-gray-900 dark:text-white"
+                  class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center"
                   aria-label="Cerrar notas">
-            ${Icons.close(24)}
+            ${Icons.close(20)}
           </button>
         </div>
       </div>
@@ -371,25 +415,26 @@ class NotesModal {
   // ==========================================================================
 
   attachEventListeners() {
+    // 🔧 FIX #86: Usar EventManager para todos los listeners
+
     // Close button
     const closeBtn = document.getElementById('close-notes-btn');
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.close());
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.close());
     }
 
     // Close on ESC
     const escHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    this.eventManager.addEventListener(document, 'keydown', escHandler);
 
     // Close on click outside
     const modal = document.getElementById('notes-modal');
     if (modal) {
-      modal.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(modal, 'click', (e) => {
         if (e.target === modal) {
           this.close();
         }
@@ -399,13 +444,13 @@ class NotesModal {
     // Save note button
     const saveBtn = document.getElementById('save-note-btn');
     if (saveBtn) {
-      saveBtn.addEventListener('click', () => this.handleSaveNote());
+      this.eventManager.addEventListener(saveBtn, 'click', () => this.handleSaveNote());
     }
 
     // Enter con Ctrl para guardar
     const textarea = document.getElementById('note-input');
     if (textarea) {
-      textarea.addEventListener('keydown', (e) => {
+      this.eventManager.addEventListener(textarea, 'keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           this.handleSaveNote();
         }
@@ -415,7 +460,7 @@ class NotesModal {
     // Edit buttons
     const editBtns = document.querySelectorAll('.edit-note-btn');
     editBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      this.eventManager.addEventListener(btn, 'click', () => {
         const noteId = btn.getAttribute('data-note-id');
         this.handleEditNote(noteId);
       });
@@ -424,7 +469,7 @@ class NotesModal {
     // Delete buttons
     const deleteBtns = document.querySelectorAll('.delete-note-btn');
     deleteBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      this.eventManager.addEventListener(btn, 'click', () => {
         const noteId = btn.getAttribute('data-note-id');
         this.handleDeleteNote(noteId);
       });
@@ -433,7 +478,7 @@ class NotesModal {
     // View all notes button
     const viewAllBtn = document.getElementById('view-all-notes-btn');
     if (viewAllBtn) {
-      viewAllBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(viewAllBtn, 'click', () => {
         this.currentChapterId = null;
         this.render();
         this.attachEventListeners();
@@ -443,7 +488,7 @@ class NotesModal {
     // Export button
     const exportBtn = document.getElementById('export-notes-btn');
     if (exportBtn) {
-      exportBtn.addEventListener('click', () => this.exportNotes());
+      this.eventManager.addEventListener(exportBtn, 'click', () => this.exportNotes());
     }
   }
 
@@ -476,21 +521,21 @@ class NotesModal {
 
     if (!targetNote) return;
 
-    // Prompt para editar
-    const newContent = prompt('Editar nota:', targetNote.content);
-    if (newContent !== null && newContent.trim()) {
-      this.updateNote(noteId, newContent);
-      this.render();
-      this.attachEventListeners();
-    }
+    // 🔧 FIX #19: Modal inline en lugar de prompt()
+    this.showEditModal(targetNote);
   }
 
   handleDeleteNote(noteId) {
-    if (!confirm('¿Borrar esta nota?')) return;
-
-    this.deleteNote(noteId);
-    this.render();
-    this.attachEventListeners();
+    // 🔧 FIX #20: Modal custom en lugar de confirm()
+    this.showConfirmModal(
+      '¿Borrar esta nota?',
+      'Esta acción no se puede deshacer.',
+      () => {
+        this.deleteNote(noteId);
+        this.render();
+        this.attachEventListeners();
+      }
+    );
   }
 
   exportNotes() {
@@ -536,6 +581,142 @@ class NotesModal {
     a.download = `notas_${bookId}_${Date.now()}.md`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ==========================================================================
+  // 🔧 FIX #19 & #20: MODALES INLINE
+  // ==========================================================================
+
+  /**
+   * 🔧 FIX #19: Modal inline para editar notas (reemplaza prompt())
+   */
+  showEditModal(note) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 animate-fade-in';
+    modal.innerHTML = `
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full mx-4 p-6 animate-scale-in">
+        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Editar Nota</h3>
+        <textarea
+          id="edit-note-textarea"
+          class="w-full h-40 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          placeholder="Escribe tu nota aquí..."
+        >${this.escapeHtml(note.content)}</textarea>
+        <div class="flex gap-3 justify-end mt-6">
+          <button class="edit-note-cancel px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition">
+            Cancelar
+          </button>
+          <button class="edit-note-save px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-bold transition">
+            Guardar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const textarea = modal.querySelector('#edit-note-textarea');
+    const saveBtn = modal.querySelector('.edit-note-save');
+    const cancelBtn = modal.querySelector('.edit-note-cancel');
+
+    // Focus y seleccionar al final
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(note.content.length, note.content.length);
+    }, 50);
+
+    // Guardar
+    const save = () => {
+      const newContent = textarea.value.trim();
+      if (newContent) {
+        this.updateNote(note.id, newContent);
+        this.render();
+        this.attachEventListeners();
+      }
+      modal.remove();
+    };
+
+    // Eventos
+    saveBtn.addEventListener('click', save);
+    cancelBtn.addEventListener('click', () => modal.remove());
+
+    // ESC para cerrar
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    // Ctrl+Enter para guardar
+    textarea.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        save();
+      }
+    });
+
+    // Click fuera para cerrar
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
+  }
+
+  /**
+   * 🔧 FIX #20: Modal custom de confirmación (reemplaza confirm())
+   */
+  showConfirmModal(title, message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 animate-fade-in';
+    modal.innerHTML = `
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 animate-scale-in">
+        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">${title}</h3>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">${message}</p>
+        <div class="flex gap-3 justify-end">
+          <button class="confirm-cancel px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition">
+            Cancelar
+          </button>
+          <button class="confirm-ok px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition">
+            Borrar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const okBtn = modal.querySelector('.confirm-ok');
+    const cancelBtn = modal.querySelector('.confirm-cancel');
+
+    // Focus en botón de cancelar por seguridad
+    setTimeout(() => cancelBtn.focus(), 50);
+
+    // Confirmar
+    okBtn.addEventListener('click', () => {
+      modal.remove();
+      if (onConfirm) onConfirm();
+    });
+
+    // Cancelar
+    cancelBtn.addEventListener('click', () => modal.remove());
+
+    // ESC para cerrar
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    // Click fuera para cerrar
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
   }
 
   // ==========================================================================

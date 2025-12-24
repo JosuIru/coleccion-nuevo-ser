@@ -1,0 +1,351 @@
+{
+  "metadata": {
+    "title": "Metadatos Extendidos de Capítulos",
+    "description": "Información adicional sobre cada capítulo: temas clave, dificultad emocional, prácticas recomendadas"
+  },
+
+  "chapters": [
+    {
+      "id": "prologo",
+      "emotionalIntensity": "media",
+      "keyThemes": ["co-autoría humano-IA", "paradoja tecnológica", "introducción personal"],
+      "recommendedPace": "contemplativo",
+      "estimatedReadTime": "15-20 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Al comenzar, con mente abierta a la colaboración inusual"
+    },
+    {
+      "id": "cap1",
+      "emotionalIntensity": "media-alta",
+      "keyThemes": ["historia de la separación", "revolución científica", "colonización", "pérdida cultural"],
+      "recommendedPace": "lento",
+      "estimatedReadTime": "30-40 min",
+      "contentWarnings": ["Menciona violencia colonial"],
+      "prerequisites": [],
+      "bestReadWhen": "Cuando estés preparado/a para cuestionar premisas culturales profundas",
+      "practiceTime": "45-60 min (Arqueología personal de la separación)"
+    },
+    {
+      "id": "cap2",
+      "emotionalIntensity": "alta",
+      "keyThemes": ["sexta extinción", "cambio climático", "solastalgia", "datos del colapso"],
+      "recommendedPace": "muy lento, con pausas",
+      "estimatedReadTime": "25-35 min",
+      "contentWarnings": ["Información sobre colapso ecológico que puede generar ansiedad"],
+      "prerequisites": ["Haber leído Cap. 1"],
+      "bestReadWhen": "En un día en que tengas espacio emocional. NO leer antes de dormir",
+      "practiceTime": "30-40 min (Inventario de pérdidas)",
+      "supportNote": "Si este capítulo genera mucha angustia, salta al Cap. 9 (El Dolor del Mundo) para herramientas de procesamiento"
+    },
+    {
+      "id": "cap3",
+      "emotionalIntensity": "media",
+      "keyThemes": ["disociación moderna", "tecnología", "velocidad", "anestesia"],
+      "recommendedPace": "reflexivo",
+      "estimatedReadTime": "20-30 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 1 y 2"],
+      "bestReadWhen": "Cuando notes que estás viviendo en piloto automático",
+      "practiceTime": "24 horas (Un día sin mediación)"
+    },
+    {
+      "id": "cap4",
+      "emotionalIntensity": "baja",
+      "keyThemes": ["Arne Naess", "8 principios", "yo ecológico", "valor intrínseco"],
+      "recommendedPace": "estudiado",
+      "estimatedReadTime": "35-45 min",
+      "contentWarnings": [],
+      "prerequisites": ["Partes I (caps 1-3)"],
+      "bestReadWhen": "Con cuaderno para tomar notas. Es un capítulo conceptual denso",
+      "practiceTime": "30-40 min (Reflexión sobre los 8 principios)"
+    },
+    {
+      "id": "cap5",
+      "emotionalIntensity": "baja-media",
+      "keyThemes": ["hipótesis Gaia", "Lovelock", "Margulis", "Tierra como organismo"],
+      "recommendedPace": "contemplativo",
+      "estimatedReadTime": "30-40 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 4 recomendado"],
+      "bestReadWhen": "Cuando quieras un cambio de perspectiva radical sobre el planeta",
+      "practiceTime": "25-35 min (Meditación Gaia)"
+    },
+    {
+      "id": "cap6",
+      "emotionalIntensity": "media",
+      "keyThemes": ["Thomas Berry", "Gran Historia", "era ecozoica", "sueño de la Tierra"],
+      "recommendedPace": "contemplativo",
+      "estimatedReadTime": "25-35 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 5 recomendado"],
+      "bestReadWhen": "Cuando necesites visión de largo plazo y propósito histórico",
+      "practiceTime": "20-30 min (Localizar tu lugar en la Gran Historia)"
+    },
+    {
+      "id": "cap7",
+      "emotionalIntensity": "baja",
+      "keyThemes": ["biomimética", "permacultura", "diseño regenerativo", "aprendizaje de la naturaleza"],
+      "recommendedPace": "práctico",
+      "estimatedReadTime": "25-30 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Cuando quieras pasar de filosofía a aplicaciones concretas",
+      "practiceTime": "60-90 min (Observación profunda de ecosistema local)"
+    },
+    {
+      "id": "cap8",
+      "emotionalIntensity": "media",
+      "keyThemes": ["Ubuntu", "Sumak Kawsay", "física cuántica", "enactivismo", "relacionalidad"],
+      "recommendedPace": "reflexivo",
+      "estimatedReadTime": "30-40 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 4-7 recomendados"],
+      "bestReadWhen": "Cuando quieras integrar diferentes tradiciones de pensamiento relacional",
+      "practiceTime": "40-50 min (Cartografía de interdependencias)"
+    },
+    {
+      "id": "cap9",
+      "emotionalIntensity": "muy alta",
+      "keyThemes": ["dolor del mundo", "Joanna Macy", "entumecimiento", "permitir sentir"],
+      "recommendedPace": "muy lento, con apoyo",
+      "estimatedReadTime": "25-35 min",
+      "contentWarnings": ["Trabaja con emociones difíciles: dolor, duelo, angustia ecológica"],
+      "prerequisites": ["Haber leído Partes I y II recomendado"],
+      "bestReadWhen": "En un espacio seguro, con tiempo después para procesar. Idealmente con compañía",
+      "practiceTime": "60-90 min (El Cairn del Duelo - mejor en grupo)",
+      "supportNote": "Este capítulo es el corazón emocional del libro. Ve despacio. Busca apoyo si lo necesitas"
+    },
+    {
+      "id": "cap10",
+      "emotionalIntensity": "alta",
+      "keyThemes": ["duelo ecológico", "solastalgia", "rituales de despedida", "honrar pérdidas"],
+      "recommendedPace": "muy lento",
+      "estimatedReadTime": "20-30 min",
+      "contentWarnings": ["Trabajo profundo con duelo. Puede activar pena intensa"],
+      "prerequisites": ["Cap. 9 esencial"],
+      "bestReadWhen": "Después de haber procesado Cap. 9. Con pañuelos a mano",
+      "practiceTime": "45-60 min (Carta a una especie extinta)",
+      "supportNote": "Si el duelo se vuelve abrumador, está bien parar. Este trabajo no tiene prisa"
+    },
+    {
+      "id": "cap11",
+      "emotionalIntensity": "media",
+      "keyThemes": ["esperanza activa", "actuar sin garantías", "sentido en la acción", "bodhisattva ecológico"],
+      "recommendedPace": "inspirador",
+      "estimatedReadTime": "20-30 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 9-10 esenciales"],
+      "bestReadWhen": "Después del trabajo con el duelo, cuando estés listo/a para moverte hacia la acción",
+      "practiceTime": "30-40 min (Identificar tu contribución al Gran Giro)",
+      "supportNote": "Este capítulo es la salida del túnel del duelo. Permite que la esperanza emerja naturalmente"
+    },
+    {
+      "id": "cap12",
+      "emotionalIntensity": "alta",
+      "keyThemes": ["rabia sagrada", "indignación moral", "fuego protector", "canalizar rabia"],
+      "recommendedPace": "cuidadoso",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": ["Trabajo con rabia. Puede activar emociones intensas"],
+      "prerequisites": ["Cap. 9-11"],
+      "bestReadWhen": "Cuando sientas rabia por la destrucción ecológica y quieras trabajar con ella conscientemente",
+      "practiceTime": "30-40 min (Ritual de la Rabia Consciente)",
+      "supportNote": "La rabia es energía. Este capítulo enseña a no reprimirla ni desbordarla, sino canalizarla"
+    },
+    {
+      "id": "cap13",
+      "emotionalIntensity": "baja",
+      "keyThemes": ["shinrin-yoku", "sit spot", "caminar", "presencia sensorial"],
+      "recommendedPace": "experiencial",
+      "estimatedReadTime": "25-30 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Antes de salir a la naturaleza. Con intención de practicar después",
+      "practiceTime": "30 días × 15-30 min (Sit spot diario)",
+      "supportNote": "Este es uno de los capítulos más prácticos. Requiere salir afuera. El libro continúa allí"
+    },
+    {
+      "id": "cap14",
+      "emotionalIntensity": "media-alta",
+      "keyThemes": ["Trabajo que Reconecta", "espiral", "ejercicios de Joanna Macy"],
+      "recommendedPace": "práctico, detallado",
+      "estimatedReadTime": "40-50 min",
+      "contentWarnings": ["Descripción de ejercicios que trabajan con duelo"],
+      "prerequisites": ["Cap. 9-11 esenciales"],
+      "bestReadWhen": "Cuando quieras profundizar en las prácticas de Joanna Macy",
+      "practiceTime": "3-6 horas (Taller completo - mejor en grupo)",
+      "supportNote": "Idealmente, hacer estos ejercicios con facilitador formado"
+    },
+    {
+      "id": "cap15",
+      "emotionalIntensity": "media",
+      "keyThemes": ["rituales", "solsticios", "honrar lugar", "crear ceremonias"],
+      "recommendedPace": "inspiracional",
+      "estimatedReadTime": "25-30 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Cerca de un solsticio o equinoccio, o cuando quieras crear un ritual",
+      "practiceTime": "1-2 horas (Diseñar y realizar ritual)"
+    },
+    {
+      "id": "cap16",
+      "emotionalIntensity": "baja",
+      "keyThemes": ["escritura contemplativa", "diario", "observación", "reflexión"],
+      "recommendedPace": "práctico",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Al comenzar una práctica de diario",
+      "practiceTime": "21 días × 10-20 min (Diario con prompts)"
+    },
+    {
+      "id": "cap17",
+      "emotionalIntensity": "media",
+      "keyThemes": ["escucha profunda", "comunicación interespecies", "leer paisaje", "humildad epistémica"],
+      "recommendedPace": "contemplativo",
+      "estimatedReadTime": "25-30 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 13 recomendado"],
+      "bestReadWhen": "Cuando tu práctica de sit spot esté establecida y quieras profundizar",
+      "practiceTime": "60 min (Una hora de escucha sin interpretación)"
+    },
+    {
+      "id": "cap18",
+      "emotionalIntensity": "media",
+      "keyThemes": ["activismo sostenible", "no quemarse", "práctica espiritual", "Thich Nhat Hanh"],
+      "recommendedPace": "reflexivo",
+      "estimatedReadTime": "25-30 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 11-12 recomendados"],
+      "bestReadWhen": "Si estás en activismo o considerando entrar en él",
+      "practiceTime": "30-40 min (Revisión de relación con la acción)"
+    },
+    {
+      "id": "cap19",
+      "emotionalIntensity": "baja",
+      "keyThemes": ["permacultura social", "diseño regenerativo", "zonas de influencia"],
+      "recommendedPace": "práctico",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 7 recomendado"],
+      "bestReadWhen": "Cuando quieras diseñar tu vida como ecosistema",
+      "practiceTime": "60-90 min (Diseñar zona 00)"
+    },
+    {
+      "id": "cap20",
+      "emotionalIntensity": "baja-media",
+      "keyThemes": ["comunidad", "círculos", "facilitación", "práctica grupal"],
+      "recommendedPace": "práctico",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": [],
+      "prerequisites": [],
+      "bestReadWhen": "Cuando quieras crear o unirte a un grupo de práctica",
+      "practiceTime": "Variable (Facilitar círculo de ecología profunda)"
+    },
+    {
+      "id": "cap21",
+      "emotionalIntensity": "media",
+      "keyThemes": ["biorregión", "rewilding", "restauración", "custodiar lugar"],
+      "recommendedPace": "exploratorio",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": [],
+      "prerequisites": ["Cap. 13 recomendado"],
+      "bestReadWhen": "Cuando quieras profundizar conexión con tu territorio específico",
+      "practiceTime": "Variable (Investigación de biorregión)"
+    },
+    {
+      "id": "cap22",
+      "emotionalIntensity": "media-alta",
+      "keyThemes": ["límites", "crítica honesta", "privilegio", "humildad"],
+      "recommendedPace": "crítico",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": ["Autocrítica del movimiento"],
+      "prerequisites": ["Haber leído el resto del libro"],
+      "bestReadWhen": "Cuando estés listo/a para mirar las sombras y límites del camino"
+    },
+    {
+      "id": "cap23",
+      "emotionalIntensity": "media-alta",
+      "keyThemes": ["sombras del movimiento", "misantropía", "purismo", "autocrítica"],
+      "recommendedPace": "muy reflexivo",
+      "estimatedReadTime": "20-25 min",
+      "contentWarnings": ["Cuestiona idealizaciones del movimiento ecológico"],
+      "prerequisites": ["Cap. 22"],
+      "bestReadWhen": "Con apertura a cuestionar tus propias certezas",
+      "practiceTime": "30-40 min (Examinar propias sombras ecológicas)"
+    },
+    {
+      "id": "cap24",
+      "emotionalIntensity": "media",
+      "keyThemes": ["invitación", "co-creación", "Gran Obra", "tu lugar"],
+      "recommendedPace": "contemplativo",
+      "estimatedReadTime": "15-20 min",
+      "contentWarnings": [],
+      "prerequisites": ["Todo el libro"],
+      "bestReadWhen": "Al final, como cierre e invitación a continuar"
+    },
+    {
+      "id": "epilogo",
+      "emotionalIntensity": "alta",
+      "keyThemes": ["carta a la Tierra", "amor", "compromiso", "no-saber"],
+      "recommendedPace": "muy lento",
+      "estimatedReadTime": "15-20 min",
+      "contentWarnings": ["Emocionalmente intenso"],
+      "prerequisites": ["Todo el libro"],
+      "bestReadWhen": "Como cierre ritual del libro. Mejor al aire libre si es posible"
+    }
+  ],
+
+  "readingPaths": [
+    {
+      "name": "Camino Completo",
+      "description": "Lectura secuencial del libro completo",
+      "chapters": ["prologo", "cap1", "cap2", "cap3", "cap4", "cap5", "cap6", "cap7", "cap8", "cap9", "cap10", "cap11", "cap12", "cap13", "cap14", "cap15", "cap16", "cap17", "cap18", "cap19", "cap20", "cap21", "cap22", "cap23", "cap24", "epilogo"],
+      "estimatedTime": "12-15 horas de lectura + prácticas",
+      "difficulty": "Completa",
+      "bestFor": "Quienes quieren la experiencia completa de reconexión"
+    },
+    {
+      "name": "Introducción a la Ecología Profunda",
+      "description": "Para conocer los fundamentos filosóficos",
+      "chapters": ["prologo", "cap1", "cap4", "cap5", "cap6", "cap8", "cap24"],
+      "estimatedTime": "4-5 horas",
+      "difficulty": "Intermedia",
+      "bestFor": "Quienes buscan fundamento conceptual sin tanto trabajo emocional"
+    },
+    {
+      "name": "Trabajo con el Duelo Ecológico",
+      "description": "Enfocado en procesar el dolor del mundo",
+      "chapters": ["prologo", "cap1", "cap2", "cap9", "cap10", "cap11", "cap14", "epilogo"],
+      "estimatedTime": "5-6 horas + prácticas intensas",
+      "difficulty": "Alta (emocionalmente exigente)",
+      "bestFor": "Quienes sienten ansiedad climática y necesitan herramientas para procesarla",
+      "warning": "Idealmente hacer con acompañamiento o en grupo"
+    },
+    {
+      "name": "Prácticas de Reconexión",
+      "description": "Para quienes quieren herramientas concretas",
+      "chapters": ["prologo", "cap4", "cap13", "cap14", "cap15", "cap16", "cap17", "cap21"],
+      "estimatedTime": "4-5 horas + semanas de práctica",
+      "difficulty": "Media",
+      "bestFor": "Quienes prefieren la práctica sobre la teoría"
+    },
+    {
+      "name": "Del Dolor a la Acción",
+      "description": "Para activistas y quienes quieren actuar",
+      "chapters": ["cap2", "cap9", "cap10", "cap11", "cap12", "cap18", "cap19", "cap20"],
+      "estimatedTime": "5-6 horas",
+      "difficulty": "Media-Alta",
+      "bestFor": "Activistas que quieren enraizar su acción en conexión profunda"
+    },
+    {
+      "name": "Camino de Emergencia",
+      "description": "Para crisis ecológica personal aguda",
+      "chapters": ["cap9", "cap10", "cap11", "cap14"],
+      "estimatedTime": "2-3 horas + prácticas",
+      "difficulty": "Alta",
+      "bestFor": "Quienes están atravesando duelo ecológico intenso AHORA",
+      "warning": "Si el duelo es paralizante, busca también apoyo profesional"
+    }
+  ]
+}

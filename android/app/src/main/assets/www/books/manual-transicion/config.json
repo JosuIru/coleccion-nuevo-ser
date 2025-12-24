@@ -1,0 +1,112 @@
+{
+  "id": "manual-transicion",
+  "version": "1.0.0",
+  "lastUpdate": "2025-11-29",
+
+  "theme": {
+    "name": "Activism & Hope",
+    "primary": "#10b981",
+    "secondary": "#f97316",
+    "accent": "#fbbf24",
+    "background": "#1a1a1a",
+    "backgroundSecondary": "#262626",
+    "text": "#e5e7eb",
+    "textSecondary": "#d1d5db",
+    "border": "#404040",
+    "gradient": "from-gray-900 via-emerald-900 to-orange-900"
+  },
+
+  "ui": {
+    "showStarfield": false,
+    "animationType": "minimal",
+    "animationSpeed": "normal",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+
+  "features": {
+    "meditations": {
+      "enabled": false
+    },
+    "exercises": {
+      "enabled": false
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": true
+    },
+    "aiChat": {
+      "enabled": true,
+      "contextFile": "ai/contexts/manual-transicion.txt",
+      "systemPrompt": "Eres un asistente activista especializado en 'Manual de Transición'. Tu función es ayudar al usuario a aplicar las herramientas del libro para construir alternativas al sistema actual. Mantén un tono crítico pero constructivo, práctico y esperanzador.",
+      "modes": {
+        "default": {
+          "name": "Mentor Activista",
+          "tone": "constructive",
+          "focus": "practical-application"
+        }
+      },
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": false
+    },
+    "actionTracker": {
+      "enabled": true,
+      "allowCustomActions": true,
+      "categories": ["personal", "community", "organizational", "political"],
+      "trackProgress": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/manual-transicion/assets/resources.json"
+    },
+    "externalResources": {
+      "enabled": true,
+      "allowLinks": true,
+      "categories": ["organizations", "tools", "platforms", "reading"]
+    },
+    "toolkit": {
+      "enabled": true,
+      "categories": ["economic", "governance", "digital", "relational", "inner"],
+      "searchable": true
+    }
+  },
+
+  "content": {
+    "sourceFile": "books/manual-transicion/book.json",
+    "dataStructure": "legacy",
+    "migrationNeeded": false
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "intermediate",
+    "recommendedPace": "moderate",
+    "complementaryBooks": ["manifiesto"]
+  }
+}

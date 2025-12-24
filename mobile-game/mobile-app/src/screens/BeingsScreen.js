@@ -493,7 +493,7 @@ const BeingsScreen = ({ navigation }) => {
                     </View>
                     <View style={styles.statItem}>
                       <Text style={styles.statLabel}>XP</Text>
-                      <Text style={styles.statValue}>{selectedBeing.xp || 0}</Text>
+                      <Text style={styles.statValue}>{selectedBeing.experience || 0}</Text>
                     </View>
                   </View>
 
@@ -570,7 +570,7 @@ const BeingsScreen = ({ navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>⚗️ Hibridación de Seres</Text>
+              <Text style={styles.modalTitle}>⚗️ Laboratorio de Fusión</Text>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setShowFusionModal(false)}
@@ -580,15 +580,34 @@ const BeingsScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.modalBody}>
-              <Text style={styles.fusionDescription}>
-                Fusiona dos seres para crear uno más poderoso. Los atributos se combinan y mejoran.
-              </Text>
-
-              <View style={styles.comingSoonContainer}>
-                <Text style={styles.comingSoonIcon}>🔮</Text>
-                <Text style={styles.comingSoonText}>
-                  Función en desarrollo
+              {/* Opción disponible: Fusión de Piezas */}
+              <View style={styles.fusionOptionAvailable}>
+                <Text style={styles.fusionOptionIcon}>🧩</Text>
+                <Text style={styles.fusionOptionTitle}>Fusión de Fragmentos</Text>
+                <Text style={styles.fusionOptionDesc}>
+                  Combina 3 fragmentos del mismo atributo para crear uno más poderoso
                 </Text>
+                <TouchableOpacity
+                  style={styles.fusionOptionButton}
+                  onPress={() => {
+                    setShowFusionModal(false);
+                    navigation.navigate('Command', { screen: 'PieceFusion' });
+                  }}
+                >
+                  <Text style={styles.fusionOptionButtonText}>Ir a Fusión de Fragmentos</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Opción próximamente: Hibridación de Seres */}
+              <View style={styles.fusionOptionComingSoon}>
+                <Text style={styles.fusionOptionIcon}>🧬</Text>
+                <Text style={styles.fusionOptionTitle}>Hibridación de Seres</Text>
+                <Text style={styles.fusionOptionDesc}>
+                  Fusiona dos seres para crear uno con atributos combinados
+                </Text>
+                <View style={styles.comingSoonBadge}>
+                  <Text style={styles.comingSoonBadgeText}>Próximamente</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -1008,28 +1027,69 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
 
-  // Fusión modal
-  fusionDescription: {
+  // Fusión modal - Opciones
+  fusionOptionAvailable: {
+    backgroundColor: COLORS.bg.elevated,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: COLORS.accent.primary,
+    alignItems: 'center'
+  },
+
+  fusionOptionComingSoon: {
+    backgroundColor: COLORS.bg.elevated,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    opacity: 0.6
+  },
+
+  fusionOptionIcon: {
+    fontSize: 48,
+    marginBottom: 12
+  },
+
+  fusionOptionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.text.primary,
+    marginBottom: 8
+  },
+
+  fusionOptionDesc: {
     fontSize: 14,
     color: COLORS.text.secondary,
     textAlign: 'center',
-    marginBottom: 24
-  },
-
-  comingSoonContainer: {
-    alignItems: 'center',
-    paddingVertical: 40
-  },
-
-  comingSoonIcon: {
-    fontSize: 64,
     marginBottom: 16,
-    opacity: 0.5
+    lineHeight: 20
   },
 
-  comingSoonText: {
-    fontSize: 16,
-    color: COLORS.text.secondary
+  fusionOptionButton: {
+    backgroundColor: COLORS.accent.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12
+  },
+
+  fusionOptionButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600'
+  },
+
+  comingSoonBadge: {
+    backgroundColor: COLORS.bg.card,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 12
+  },
+
+  comingSoonBadgeText: {
+    fontSize: 13,
+    color: COLORS.text.dim,
+    fontWeight: '600'
   },
 
   // Tabs

@@ -50,7 +50,8 @@ const ACHIEVEMENTS = {
     xpReward: 1000
   },
 
-  // Logros de lecturaReader: {
+  // Logros de lectura
+  reader_1: {
     id: 'reader_1',
     title: 'Primer Página',
     description: 'Lee tu primer capítulo',

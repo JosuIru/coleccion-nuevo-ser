@@ -93,6 +93,54 @@ class OnboardingTutorial {
       },
       {
         target: null,
+        title: '🧪 Frankenstein Lab - Experiencia Única',
+        content: `
+          <p class="mb-3">Nuestro laboratorio de IA te permite experimentar con conceptos del libro de forma interactiva:</p>
+          <ul class="space-y-2 text-sm">
+            <li>🤖 <strong>Construye tu Ser:</strong> Crea un avatar IA personalizado</li>
+            <li>🎯 <strong>Misiones Filosóficas:</strong> Resuelve dilemas éticos y profundiza conceptos</li>
+            <li>🏆 <strong>Sistema de Progreso:</strong> XP, niveles y atributos de conciencia</li>
+            <li>⚡ <strong>Único en su tipo:</strong> No encontrarás nada igual en el mercado</li>
+          </ul>
+          <p class="mt-3 text-amber-400 text-sm">📱 Accede desde el menú principal o descarga la app móvil</p>
+        `,
+        position: 'center',
+        highlightClass: null,
+        buttons: ['skip', 'next']
+      },
+      {
+        target: null,
+        title: '✨ Planes Premium y Pro',
+        content: `
+          <p class="mb-3">Desbloquea todo el potencial de la colección:</p>
+          <div class="space-y-3 text-sm">
+            <div class="bg-slate-800/50 rounded-lg p-3 border border-cyan-500/30">
+              <div class="font-bold text-cyan-400 mb-1">🌟 Premium (9.99€/mes)</div>
+              <ul class="space-y-1 text-xs text-gray-300">
+                <li>✓ Acceso a todos los libros premium</li>
+                <li>✓ Chat IA ilimitado con modelos avanzados</li>
+                <li>✓ Audio de alta calidad (ElevenLabs)</li>
+                <li>✓ Sin anuncios</li>
+              </ul>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3 border border-purple-500/30">
+              <div class="font-bold text-purple-400 mb-1">🚀 Pro (19.99€/mes)</div>
+              <ul class="space-y-1 text-xs text-gray-300">
+                <li>✓ Todo lo de Premium +</li>
+                <li>✓ Acceso anticipado a nuevos contenidos</li>
+                <li>✓ Sesiones de grupo mensuales</li>
+                <li>✓ Frankenstein Lab completo</li>
+              </ul>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-gray-400 text-center">Puedes empezar gratis y actualizar cuando quieras</p>
+        `,
+        position: 'center',
+        highlightClass: null,
+        buttons: ['skip', 'next']
+      },
+      {
+        target: null,
         title: '🎓 ¡Listo para Empezar!',
         content: `
           <p class="mb-3">Ya conoces las funciones principales. Recuerda:</p>
@@ -100,6 +148,7 @@ class OnboardingTutorial {
             <li>❓ <strong>Centro de Ayuda:</strong> Accede desde el menú si necesitas más info</li>
             <li>⌨️ <strong>Atajos de teclado:</strong> Presiona <kbd>?</kbd> para verlos todos</li>
             <li>☁️ <strong>Sincronización:</strong> Tus datos se guardan automáticamente</li>
+            <li>💎 <strong>Comienza gratis:</strong> Explora y actualiza cuando estés listo</li>
           </ul>
           <p class="mt-4 text-cyan-400 font-semibold">¡Disfruta tu viaje de transformación! 🚀</p>
         `,
@@ -127,6 +176,11 @@ class OnboardingTutorial {
       window.textSelectionHelper.hideMenu();
     }
 
+    // Track inicio del tutorial
+    if (window.analyticsHelper) {
+      window.analyticsHelper.trackTutorialStart();
+    }
+
     this.isActive = true;
     this.currentStep = 0;
     this.showStep(this.currentStep);
@@ -137,33 +191,65 @@ class OnboardingTutorial {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
-    this.markAsCompleted();
-    this.close();
+    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+    try {
+      // Track skip del tutorial
+      if (window.analyticsHelper) {
+        window.analyticsHelper.trackTutorialSkip(this.currentStep);
+      }
 
-    setTimeout(() => {
-      this.isTransitioning = false;
-    }, 300);
+      this.markAsCompleted();
+      this.close();
+    } finally {
+      setTimeout(() => {
+        this.isTransitioning = false;
+      }, 300);
+    }
   }
 
   finish() {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
-    this.markAsCompleted();
-    this.close();
+    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+    try {
+      // Track completado del tutorial
+      if (window.analyticsHelper) {
+        window.analyticsHelper.trackTutorialComplete();
+      }
 
-    // Mostrar mensaje de felicitación
-    if (window.toast) {
-      window.toast.success('🎉 ¡Tutorial completado! Ya estás listo para explorar.');
+      this.markAsCompleted();
+      this.close();
+
+      // Mostrar mensaje de felicitación
+      if (window.toast) {
+        window.toast.success('🎉 ¡Tutorial completado! Ya estás listo para explorar.');
+      }
+    } finally {
+      setTimeout(() => {
+        this.isTransitioning = false;
+      }, 300);
     }
-
-    setTimeout(() => {
-      this.isTransitioning = false;
-    }, 300);
   }
 
   markAsCompleted() {
+    // Guardar en localStorage
     localStorage.setItem('has_seen_tutorial', 'true');
+
+    // Guardar timestamp para debugging
+    localStorage.setItem('has_seen_tutorial_timestamp', new Date().toISOString());
+
+    // Si el usuario está autenticado, sincronizar con Supabase
+    if (window.authHelper && window.authHelper.user) {
+      try {
+        window.supabaseSyncHelper?.syncPreference('has_seen_tutorial', true);
+        console.log('[Tutorial] ✅ Tutorial marcado como completado y sincronizado con Supabase');
+      } catch (error) {
+        console.warn('[Tutorial] No se pudo sincronizar con Supabase:', error);
+      }
+    }
+
+    console.log('[Tutorial] ✅ Tutorial marcado como completado permanentemente');
   }
 
   close() {
@@ -176,11 +262,16 @@ class OnboardingTutorial {
     if (this.isTransitioning) return;
     if (this.currentStep < this.steps.length - 1) {
       this.isTransitioning = true;
-      this.currentStep++;
-      this.showStep(this.currentStep);
-      setTimeout(() => {
-        this.isTransitioning = false;
-      }, 300);
+
+      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+      try {
+        this.currentStep++;
+        this.showStep(this.currentStep);
+      } finally {
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 300);
+      }
     }
   }
 
@@ -188,11 +279,16 @@ class OnboardingTutorial {
     if (this.isTransitioning) return;
     if (this.currentStep > 0) {
       this.isTransitioning = true;
-      this.currentStep--;
-      this.showStep(this.currentStep);
-      setTimeout(() => {
-        this.isTransitioning = false;
-      }, 300);
+
+      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+      try {
+        this.currentStep--;
+        this.showStep(this.currentStep);
+      } finally {
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 300);
+      }
     }
   }
 
@@ -497,7 +593,29 @@ class OnboardingTutorial {
     return bookReader && !bookReader.classList.contains('hidden');
   }
 
-  openExampleBook(callback) {
+  // 🔧 FIX #66: Método auxiliar para esperar que el reader esté listo
+  async waitForReader(maxAttempts = 20) {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+      const pollInterval = 150; // Check cada 150ms
+
+      const checkReader = () => {
+        attempts++;
+
+        if (this.isBookReaderVisible()) {
+          resolve(true);
+        } else if (attempts >= maxAttempts) {
+          reject(new Error('Timeout esperando book reader'));
+        } else {
+          setTimeout(checkReader, pollInterval);
+        }
+      };
+
+      checkReader();
+    });
+  }
+
+  async openExampleBook(callback) {
     // Primero verificar si ya hay un libro abierto
     if (this.isBookReaderVisible()) {
       if (callback) callback();
@@ -509,20 +627,17 @@ class OnboardingTutorial {
     if (firstBookCard) {
       firstBookCard.click();
 
-      // Esperar a que el libro se abra
-      setTimeout(() => {
-        if (this.isBookReaderVisible()) {
-          if (callback) callback();
-        } else {
-          // console.warn('[Tutorial] El libro no se abrió correctamente, reintentando...');
-          // Reintentar una vez más
-          setTimeout(() => {
-            if (callback) callback();
-          }, 500);
-        }
-      }, 1000);
+      // 🔧 FIX #66: Esperar con polling robusto en lugar de setTimeout hardcoded
+      try {
+        await this.waitForReader(20); // Máximo 3 segundos (20 * 150ms)
+        if (callback) callback();
+      } catch (error) {
+        logger.warn('[Tutorial] El libro no se abrió correctamente:', error.message);
+        // Continuar el tutorial de todos modos
+        if (callback) callback();
+      }
     } else {
-      // console.warn('[Tutorial] No se encontró ninguna tarjeta de libro, saltando paso...');
+      logger.warn('[Tutorial] No se encontró ninguna tarjeta de libro, saltando paso...');
       // Si no hay libros, saltar este paso
       this.next();
     }
@@ -557,13 +672,45 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     window.onboardingTutorial = new OnboardingTutorial();
 
-    // Mostrar automáticamente en primera visita
-    // DESHABILITADO por defecto - el usuario debe activarlo manualmente
-    // if (OnboardingTutorial.shouldShowOnFirstVisit()) {
-    //   setTimeout(() => {
-    //     window.onboardingTutorial.start();
-    //   }, 1000);
-    // }
+    // Mostrar automáticamente SOLO después de completar el Welcome Flow
+    if (OnboardingTutorial.shouldShowOnFirstVisit()) {
+      let intentos = 0;
+      const MAX_INTENTOS = 60; // 30 segundos máximo
+
+      const checkReadyToShow = () => {
+        intentos++;
+
+        // 1. Verificar que el Welcome Flow ya se completó o no existe
+        const welcomeFlowCompleted = !window.welcomeFlow || !window.welcomeFlow.shouldShow();
+        const welcomeFlowNotActive = !window.welcomeFlow || !window.welcomeFlow.isActive;
+
+        // 2. Verificar que los libros están visibles
+        const bibliotecaView = document.getElementById('biblioteca-view');
+        const bookCards = bibliotecaView?.querySelectorAll('.book-card');
+        const hasVisibleBooks = bookCards && Array.from(bookCards).some(card => {
+          const rect = card.getBoundingClientRect();
+          return rect.height > 0 && rect.width > 0;
+        });
+
+        // Mostrar tutorial solo si:
+        // - Welcome Flow completado o no activo
+        // - Y hay libros visibles
+        if (welcomeFlowCompleted && welcomeFlowNotActive && hasVisibleBooks) {
+          setTimeout(() => {
+            window.onboardingTutorial.start();
+          }, 800);
+          return;
+        }
+
+        // Reintentar
+        if (intentos < MAX_INTENTOS) {
+          setTimeout(checkReadyToShow, 500);
+        }
+      };
+
+      // Empezar a verificar después de 3 segundos
+      setTimeout(checkReadyToShow, 3000);
+    }
   });
 } else {
   window.onboardingTutorial = new OnboardingTutorial();

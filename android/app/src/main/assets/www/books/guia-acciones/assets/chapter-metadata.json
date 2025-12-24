@@ -1,0 +1,58 @@
+{
+  "introduccion": {
+    "type": "teoría",
+    "difficulty": "básico",
+    "readingTime": 10,
+    "tags": ["introducción", "activismo", "acción-transformadora"],
+    "practicalUses": []
+  },
+  "cap1": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 15,
+    "tags": ["puntos-apalancamiento", "estrategia", "impacto"],
+    "practicalUses": ["análisis", "planificación"]
+  },
+  "cap2": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 15,
+    "tags": ["acción-individual", "cotidianidad", "cambio-personal"],
+    "practicalUses": ["hábitos", "vida-diaria"]
+  },
+  "cap3": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["acción-colectiva", "organización", "comunidad"],
+    "practicalUses": ["crear-comunidad", "organizar"]
+  },
+  "cap4": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["desobediencia-civil", "resistencia", "confrontación"],
+    "practicalUses": ["activismo", "protesta"]
+  },
+  "cap5": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["construcción-alternativas", "prefiguración", "utopía"],
+    "practicalUses": ["crear-instituciones", "experimentación-social"]
+  },
+  "cap6": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 15,
+    "tags": ["sostenibilidad-activista", "autocuidado", "burnout"],
+    "practicalUses": ["bienestar", "resiliencia"]
+  },
+  "conclusion": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["síntesis", "llamado-acción", "futuro"],
+    "practicalUses": []
+  }
+}

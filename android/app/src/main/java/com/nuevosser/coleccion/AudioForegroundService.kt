@@ -5,8 +5,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -25,6 +30,8 @@ class AudioForegroundService : Service() {
         const val NOTIFICATION_ID = 1001
         const val ACTION_START = "com.nuevosser.coleccion.action.START_AUDIO_SERVICE"
         const val ACTION_STOP = "com.nuevosser.coleccion.action.STOP_AUDIO_SERVICE"
+        const val ACTION_EVENT = "com.nuevosser.coleccion.action.BACKGROUND_AUDIO_EVENT"
+        const val EXTRA_EVENT = "event"
 
         private var isRunning = false
 
@@ -32,10 +39,31 @@ class AudioForegroundService : Service() {
     }
 
     private var wakeLock: PowerManager.WakeLock? = null
+    private var audioManager: AudioManager? = null
+    private var audioFocusRequest: AudioFocusRequest? = null
+    private var noisyReceiverRegistered = false
+
+    private val audioFocusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_GAIN -> sendEvent("focus-gain")
+            AudioManager.AUDIOFOCUS_LOSS -> sendEvent("focus-loss")
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> sendEvent("focus-loss-transient")
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> sendEvent("focus-duck")
+        }
+    }
+
+    private val noisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                sendEvent("noisy")
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -49,18 +77,18 @@ class AudioForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun startForegroundService() {
-        if (isRunning) return
+        if (isRunning) {
+            refreshWakeLock()
+            updateNotification()
+            return
+        }
 
         isRunning = true
 
-        // Adquirir WakeLock para mantener CPU activo
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            "NuevoSer:AudioWakeLock"
-        ).apply {
-            acquire(60 * 60 * 1000L) // Máximo 1 hora
-        }
+        // Adquirir WakeLock para mantener CPU activo durante la reproducción
+        refreshWakeLock()
+        requestAudioFocus()
+        registerNoisyReceiver()
 
         // Crear la notificación
         val notification = createNotification()
@@ -88,9 +116,90 @@ class AudioForegroundService : Service() {
         }
         wakeLock = null
 
+        abandonAudioFocus()
+        unregisterNoisyReceiver()
+
         // Detener el servicio
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
+    }
+
+    private fun refreshWakeLock() {
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (wakeLock?.isHeld == true) {
+            try {
+                wakeLock?.release()
+            } catch (_: Exception) {
+                // ignore release errors
+            }
+        }
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "NuevoSer:AudioWakeLock"
+        ).apply {
+            acquire()
+        }
+    }
+
+    private fun updateNotification() {
+        val notification = createNotification()
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun requestAudioFocus() {
+        val manager = audioManager ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val attributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build()
+
+            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(attributes)
+                .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                .build()
+
+            manager.requestAudioFocus(audioFocusRequest!!)
+        } else {
+            manager.requestAudioFocus(
+                audioFocusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+        }
+    }
+
+    private fun abandonAudioFocus() {
+        val manager = audioManager ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest?.let { manager.abandonAudioFocusRequest(it) }
+        } else {
+            manager.abandonAudioFocus(audioFocusChangeListener)
+        }
+    }
+
+    private fun registerNoisyReceiver() {
+        if (noisyReceiverRegistered) return
+        registerReceiver(noisyReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+        noisyReceiverRegistered = true
+    }
+
+    private fun unregisterNoisyReceiver() {
+        if (!noisyReceiverRegistered) return
+        try {
+            unregisterReceiver(noisyReceiver)
+        } catch (_: Exception) {
+            // ignore unregister errors
+        }
+        noisyReceiverRegistered = false
+    }
+
+    private fun sendEvent(event: String) {
+        val intent = Intent(ACTION_EVENT).apply {
+            putExtra(EXTRA_EVENT, event)
+        }
+        sendBroadcast(intent)
     }
 
     private fun createNotificationChannel() {
@@ -152,6 +261,8 @@ class AudioForegroundService : Service() {
                 it.release()
             }
         }
+        abandonAudioFocus()
+        unregisterNoisyReceiver()
         super.onDestroy()
     }
 }

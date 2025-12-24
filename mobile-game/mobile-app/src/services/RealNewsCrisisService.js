@@ -23,19 +23,13 @@ const TRANSLATION_ENABLED = true; // Activar/desactivar traducción automática
 // ============================================================================
 
 const RSS_SOURCES = {
+  // ========== FUENTES OFICIALES ==========
   un_news: {
     name: 'Naciones Unidas',
     url: 'https://news.un.org/feed/subscribe/en/news/all/rss.xml',
     icon: '🇺🇳',
     reliability: 'high',
     focus: ['humanitarian', 'social', 'environmental']
-  },
-  reuters_world: {
-    name: 'Reuters',
-    url: 'https://www.reutersagency.com/feed/?taxonomy=best-sectors&post_type=best',
-    icon: '📰',
-    reliability: 'high',
-    focus: ['economic', 'social', 'infrastructure']
   },
   bbc_world: {
     name: 'BBC World',
@@ -44,19 +38,159 @@ const RSS_SOURCES = {
     reliability: 'high',
     focus: ['social', 'humanitarian', 'health']
   },
-  guardian_environment: {
-    name: 'The Guardian - Environment',
-    url: 'https://www.theguardian.com/environment/rss',
-    icon: '🌱',
-    reliability: 'high',
-    focus: ['environmental']
+
+  // ========== FUENTES ALTERNATIVAS / INDEPENDIENTES ==========
+
+  // Medio ambiente y activismo
+  grist: {
+    name: 'Grist',
+    url: 'https://grist.org/feed/',
+    icon: '🌿',
+    reliability: 'medium',
+    focus: ['environmental', 'social'],
+    description: 'Periodismo climático independiente'
   },
+  mongabay: {
+    name: 'Mongabay',
+    url: 'https://news.mongabay.com/feed/',
+    icon: '🌳',
+    reliability: 'high',
+    focus: ['environmental'],
+    description: 'Noticias de conservación y medio ambiente'
+  },
+  commondreams: {
+    name: 'Common Dreams',
+    url: 'https://www.commondreams.org/rss.xml',
+    icon: '✊',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian', 'economic'],
+    description: 'Noticias progresistas independientes'
+  },
+
+  // Tecnología y sociedad
+  techdirt: {
+    name: 'Techdirt',
+    url: 'https://www.techdirt.com/feed/',
+    icon: '💻',
+    reliability: 'medium',
+    focus: ['infrastructure', 'social'],
+    description: 'Tecnología, privacidad y derechos digitales'
+  },
+  eff: {
+    name: 'EFF Deeplinks',
+    url: 'https://www.eff.org/rss/updates.xml',
+    icon: '🔐',
+    reliability: 'high',
+    focus: ['social', 'infrastructure'],
+    description: 'Derechos digitales y libertad en internet'
+  },
+  restofworld: {
+    name: 'Rest of World',
+    url: 'https://restofworld.org/feed/',
+    icon: '🌐',
+    reliability: 'medium',
+    focus: ['social', 'infrastructure', 'economic'],
+    description: 'Tecnología fuera del mundo occidental'
+  },
+
+  // Justicia social y derechos humanos
+  democracynow: {
+    name: 'Democracy Now',
+    url: 'https://www.democracynow.org/democracynow.rss',
+    icon: '📢',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian'],
+    description: 'Noticias independientes de movimientos sociales'
+  },
+  theintercept: {
+    name: 'The Intercept',
+    url: 'https://theintercept.com/feed/?rss',
+    icon: '🔍',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian'],
+    description: 'Periodismo de investigación'
+  },
+  opendemocracy: {
+    name: 'OpenDemocracy',
+    url: 'https://www.opendemocracy.net/en/rss/',
+    icon: '🗳️',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian'],
+    description: 'Democracia y derechos humanos globales'
+  },
+
+  // Economía alternativa y cooperativismo
+  shareable: {
+    name: 'Shareable',
+    url: 'https://www.shareable.net/feed/',
+    icon: '🤝',
+    reliability: 'medium',
+    focus: ['economic', 'social'],
+    description: 'Economía colaborativa y compartida'
+  },
+  yesmagazine: {
+    name: 'YES! Magazine',
+    url: 'https://www.yesmagazine.org/feed',
+    icon: '💚',
+    reliability: 'medium',
+    focus: ['social', 'environmental', 'economic'],
+    description: 'Soluciones para un mundo justo y sostenible'
+  },
+
+  // Ciencia y tecnología
+  arstechnica: {
+    name: 'Ars Technica',
+    url: 'https://feeds.arstechnica.com/arstechnica/index',
+    icon: '🔬',
+    reliability: 'high',
+    focus: ['infrastructure', 'health'],
+    description: 'Tecnología y ciencia'
+  },
+
+  // Noticias regionales / Sur Global
   aljazeera: {
     name: 'Al Jazeera',
     url: 'https://www.aljazeera.com/xml/rss/all.xml',
     icon: '📺',
     reliability: 'medium',
     focus: ['humanitarian', 'social']
+  },
+  guardian_global_dev: {
+    name: 'Guardian Global Development',
+    url: 'https://www.theguardian.com/global-development/rss',
+    icon: '🌍',
+    reliability: 'high',
+    focus: ['humanitarian', 'economic', 'health'],
+    description: 'Desarrollo global y pobreza'
+  },
+
+  // Fuentes en español
+  eldiario: {
+    name: 'elDiario.es',
+    url: 'https://www.eldiario.es/rss/',
+    icon: '🇪🇸',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian'],
+    description: 'Noticias en español',
+    language: 'es'
+  },
+  lamarea: {
+    name: 'La Marea',
+    url: 'https://www.lamarea.com/feed/',
+    icon: '🌊',
+    reliability: 'medium',
+    focus: ['social', 'economic', 'humanitarian'],
+    description: 'Periodismo independiente en español',
+    language: 'es'
+  },
+  veinteminutos: {
+    name: '20 Minutos',
+    url: 'https://www.20minutos.es/rss/',
+    icon: '📰',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian'],
+    description: 'Noticias generales en español',
+    language: 'es'
   }
 };
 
@@ -379,7 +513,13 @@ class RealNewsCrisisService {
     const fetchPromises = Object.entries(RSS_SOURCES).map(async ([sourceId, source]) => {
       try {
         const articles = await this.fetchRSSFeed(source.url, sourceId);
-        return articles.map(article => ({ ...article, sourceId, sourceName: source.name }));
+        return articles.map(article => ({
+          ...article,
+          sourceId,
+          sourceName: source.name,
+          sourceLanguage: source.language || 'en', // Por defecto inglés
+          sourceIcon: source.icon
+        }));
       } catch (error) {
         console.warn(`Error fetching ${sourceId}:`, error);
         return [];
@@ -395,11 +535,23 @@ class RealNewsCrisisService {
     // Convertir a crisis
     let crises = deduplicated.map(article => this.articleToCrisis(article));
 
-    // Traducir al español si está habilitado
+    // Traducir al español solo las que no están ya en español
     if (TRANSLATION_ENABLED) {
       try {
-        console.log('[RealNewsCrisisService] Traduciendo', crises.length, 'crisis al español...');
-        crises = await translationService.translateCrises(crises);
+        // Separar crisis por idioma
+        const crisesEnIngles = crises.filter(c => c.sourceLanguage !== 'es');
+        const crisesEnEspanol = crises.filter(c => c.sourceLanguage === 'es');
+
+        console.log(`[RealNewsCrisisService] ${crisesEnEspanol.length} crisis ya en español, ${crisesEnIngles.length} para traducir`);
+
+        // Solo traducir las que están en inglés
+        if (crisesEnIngles.length > 0) {
+          const traducidas = await translationService.translateCrises(crisesEnIngles);
+          crises = [...traducidas, ...crisesEnEspanol.map(c => ({ ...c, translated: true }))];
+        } else {
+          crises = crisesEnEspanol.map(c => ({ ...c, translated: true }));
+        }
+
         console.log('[RealNewsCrisisService] Traducción completada');
       } catch (translationError) {
         console.warn('[RealNewsCrisisService] Error en traducción:', translationError);
@@ -532,7 +684,9 @@ class RealNewsCrisisService {
       title: article.title,
       description: article.description.substring(0, 300),
       source: article.sourceName,
+      sourceIcon: article.sourceIcon || '📰',
       sourceUrl: article.link,
+      sourceLanguage: article.sourceLanguage || 'en',
       publishedAt: article.pubDate,
 
       // Clasificación del juego

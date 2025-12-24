@@ -369,6 +369,50 @@ const FrankensteinDemoData = {
     }
   ],
 
+  demoScenarios: {
+    'demo-eco-activist-001': {
+      title: 'Ruta Eco-Guardiana',
+      intro: 'Este ser demuestra cómo combinar piezas ecológicas con acción directa. Úsalo para explorar la misión Defensor de la Tierra.',
+      objectives: [
+        { id: 'mission-earth', type: 'mission', missionId: 'earth-defender', label: 'Activa la misión Defensor de la Tierra' },
+        { id: 'attr-connection', type: 'attribute', attribute: 'connection', target: 95, label: '🌍 Conexión ≥ 95' },
+        { id: 'attr-resilience', type: 'attribute', attribute: 'resilience', target: 90, label: '💪 Resiliencia ≥ 90' }
+      ],
+      tips: [
+        'Arrastra piezas de "Prácticas Radicales" y "Toolkit de Transición" para subir Conexión.',
+        'Abre la sección de microsociedades y prueba “Comunidad Regenerativa” para ver cómo responde.'
+      ],
+      callToAction: 'Objetivo educativo: comprender cómo los atributos ecológicos afectan las misiones defensivas.'
+    },
+    'demo-philosopher-002': {
+      title: 'Ruta del Sabio Contemplativo',
+      intro: 'Explora el puente entre conciencia y tecnología usando las piezas filosóficas del catálogo.',
+      objectives: [
+        { id: 'mission-conscious', type: 'mission', missionId: 'consciousness-awakener', label: 'Activa la misión Despertador de Consciencia' },
+        { id: 'attr-wisdom', type: 'attribute', attribute: 'wisdom', target: 100, label: '🧠 Sabiduría ≥ 100' }
+      ],
+      tips: [
+        'Refuerza Sabiduría con piezas de "Código del Despertar" y ejercicios contemplativos.',
+        'Valida el ser para registrar en la bitácora en qué afecta el equilibrio intelectual vs emocional.'
+      ],
+      callToAction: 'Objetivo educativo: analizar cómo las piezas filosóficas alteran el balance espiritual.'
+    },
+    'demo-community-builder-003': {
+      title: 'Ruta del Tejedor',
+      intro: 'Aprende a equilibrar empatía, colaboración y acción para crear comunidades resilientes.',
+      objectives: [
+        { id: 'mission-community', type: 'mission', missionId: 'community-weaver', label: 'Activa la misión Tejedor de Comunidad' },
+        { id: 'attr-collaboration', type: 'attribute', attribute: 'collaboration', target: 80, label: '🤝 Colaboración ≥ 80' },
+        { id: 'attr-communication', type: 'attribute', attribute: 'communication', target: 90, label: '🗣️ Comunicación ≥ 90' }
+      ],
+      tips: [
+        'Combina capítulos del Manual de Transición con ejercicios dialógicos para potenciar Comunicación.',
+        'Revisa la bitácora tras cada validación para comparar estrategias comunitarias.'
+      ],
+      callToAction: 'Objetivo educativo: experimentar con atributos sociales antes de pasar a microsistemas.'
+    }
+  },
+
   /**
    * Microsociedades de ejemplo
    */
@@ -519,6 +563,14 @@ const FrankensteinDemoData = {
   },
 
   /**
+   * Obtener narrativa guiada para un ser demo
+   */
+  getDemoScenario(beingId) {
+    if (!beingId || !this.demoScenarios[beingId]) return null;
+    return JSON.parse(JSON.stringify(this.demoScenarios[beingId]));
+  },
+
+  /**
    * Obtener un ser aleatorio de demo
    */
   getRandomDemoBeing() {
@@ -544,11 +596,11 @@ const FrankensteinDemoData = {
     }
 
     try {
-      // Cargar piezas de demo sin sobrescribir el catálogo base
+      // Referenciar piezas del catálogo real (sin sobreescribir la colección principal)
       const demoPieces = this.getDemoPieces();
       if (!Array.isArray(frankensteinUI.availablePieces) || frankensteinUI.availablePieces.length === 0) {
         frankensteinUI.availablePieces = [...demoPieces];
-        console.warn('⚠️ Catálogo base no disponible. Usando piezas demo como fallback.');
+        console.warn('⚠️ Catálogo real no disponible. Usando piezas demo como respaldo.');
       } else {
         const catalogMap = new Map(frankensteinUI.availablePieces.map(piece => [piece.id, piece]));
         const missingIds = [];
@@ -558,7 +610,7 @@ const FrankensteinDemoData = {
             missingIds.push(piece.id);
           }
         });
-        console.log(`✅ Modo demo listo. ${demoPieces.length - missingIds.length} piezas encontradas en el catálogo y ${missingIds.length} añadidas como respaldo.`);
+        console.log(`✅ Modo demo listo. ${demoPieces.length - missingIds.length} piezas referencian el catálogo real${missingIds.length ? `, ${missingIds.length} añadidas como respaldo` : ''}.`);
       }
 
       // Cargar seres de demo en localStorage con prefijo 'demo-'
@@ -586,7 +638,19 @@ const FrankensteinDemoData = {
       if ((!frankensteinUI.currentBeing || frankensteinUI.selectedPieces.length === 0) && demoBeings.length > 0) {
         const defaultDemo = demoBeings[0];
         setTimeout(() => {
-          frankensteinUI.loadBeing(defaultDemo.id);
+          if (!frankensteinUI.labStarted) {
+            frankensteinUI.startLab();
+          }
+
+          const waitForLabUI = () => {
+            if (document.getElementById('requirements-checklist')) {
+              frankensteinUI.loadBeing(defaultDemo.id);
+            } else {
+              setTimeout(waitForLabUI, 100);
+            }
+          };
+
+          waitForLabUI();
         }, 200);
       }
 

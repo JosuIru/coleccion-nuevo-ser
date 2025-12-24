@@ -1,0 +1,467 @@
+{
+  "resources": {
+    "title": "Recursos para la Práctica Contemplativa",
+    "description": "Libros, teachers, apps, retiros, comunidades y herramientas para profundizar tu práctica de meditación y despertar de la consciencia"
+  },
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "The Mind Illuminated",
+      "author": "Culadasa (John Yates)",
+      "year": 2015,
+      "description": "Manual completo de meditación samatha-vipassana desde neurociencia y tradición budista",
+      "why": "Mapa detallado de las 10 etapas de meditación con instrucciones precisas",
+      "relatedChapters": ["seccion1", "seccion2", "seccion3"]
+    },
+    {
+      "id": "book-002",
+      "title": "Mastering the Core Teachings of the Buddha",
+      "author": "Daniel Ingram",
+      "year": 2018,
+      "description": "Guía pragmática no-sentimental del despertar según tradiciones Theravada",
+      "why": "Instrucciones técnicas sin misticismo para alcanzar insights profundos",
+      "relatedChapters": ["seccion3", "seccion5"]
+    },
+    {
+      "id": "book-003",
+      "title": "The Experience of Insight",
+      "author": "Joseph Goldstein",
+      "year": 1976,
+      "description": "Manual clásico de vipassana del fundador de Insight Meditation Society",
+      "why": "Enseñanzas esenciales de meditación insight de fuente autorizada",
+      "relatedChapters": ["seccion1", "seccion3"]
+    },
+    {
+      "id": "book-004",
+      "title": "Peace Is Every Step",
+      "author": "Thich Nhat Hanh",
+      "year": 1991,
+      "description": "Mindfulness en la vida cotidiana: caminar, comer, lavar platos",
+      "why": "Llevar práctica formal a cada momento del día",
+      "relatedChapters": ["seccion4"]
+    },
+    {
+      "id": "book-005",
+      "title": "Radical Acceptance",
+      "author": "Tara Brach",
+      "year": 2003,
+      "description": "Aceptación radical y auto-compasión desde budismo y psicología occidental",
+      "why": "Trabajo con resistencia, vergüenza y auto-juicio",
+      "relatedChapters": ["seccion6"]
+    },
+    {
+      "id": "book-006",
+      "title": "Loving-Kindness: The Revolutionary Art of Happiness",
+      "author": "Sharon Salzberg",
+      "year": 1995,
+      "description": "Guía completa de metta (amor bondadoso) de maestra senior de IMS",
+      "why": "Práctica de compasión desde tradición Theravada",
+      "relatedChapters": ["seccion6"]
+    },
+    {
+      "id": "book-007",
+      "title": "The Way of Zen",
+      "author": "Alan Watts",
+      "year": 1957,
+      "description": "Introducción accesible al Zen: historia, práctica, filosofía",
+      "why": "Perspectiva zen sobre no-mente y espontaneidad",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "book-008",
+      "title": "Turning the Mind Into an Ally",
+      "author": "Sakyong Mipham",
+      "year": 2003,
+      "description": "Shamatha desde tradición tibetana Shambhala",
+      "why": "Cultivar estabilidad atencional según linaje tibetano",
+      "relatedChapters": ["seccion1"]
+    },
+    {
+      "id": "book-009",
+      "title": "Mindfulness in Plain English",
+      "author": "Bhante Gunaratana",
+      "year": 1992,
+      "description": "Manual clásico de vipassana, claro y directo, sin romanticismo",
+      "why": "Instrucciones simples y precisas de meditación insight",
+      "relatedChapters": ["seccion1", "seccion3"]
+    },
+    {
+      "id": "book-010",
+      "title": "The Trauma of Everyday Life",
+      "author": "Mark Epstein",
+      "year": 2013,
+      "description": "Budismo y psicología del trauma: cómo la práctica trabaja con dolor",
+      "why": "Perspectiva psicológica budista sobre sufrimiento y sanación",
+      "relatedChapters": ["seccion3", "seccion6"]
+    },
+    {
+      "id": "book-011",
+      "title": "After the Ecstasy, the Laundry",
+      "author": "Jack Kornfield",
+      "year": 2000,
+      "description": "Cómo integrar insights profundos en la vida ordinaria post-retiro",
+      "why": "Realismo sobre despertar: los insights no resuelven la vida por sí solos",
+      "relatedChapters": ["seccion4", "seccion5"]
+    },
+    {
+      "id": "book-012",
+      "title": "The Attention Revolution",
+      "author": "Alan Wallace",
+      "year": 2006,
+      "description": "Shamatha intensivo: alcanzar concentración profunda (jhanas)",
+      "why": "Guía rigurosa de práctica de concentración contemplativa",
+      "relatedChapters": ["seccion1", "seccion5"]
+    },
+    {
+      "id": "book-013",
+      "title": "Seeing That Frees",
+      "author": "Rob Burbea",
+      "year": 2014,
+      "description": "Prácticas avanzadas de vacuidad (emptiness) y fabricación de experiencia",
+      "why": "Exploración profunda de constructivismo perceptual",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "book-014",
+      "title": "The Spectrum of Ecstasy",
+      "author": "Ngakpa Chögyam",
+      "year": 1997,
+      "description": "Tantra tibetano: trabajar directamente con emociones como energía",
+      "why": "Perspectiva no-dual sobre emociones aflictivas",
+      "relatedChapters": ["seccion3", "seccion5"]
+    },
+    {
+      "id": "book-015",
+      "title": "Zen Mind, Beginner's Mind",
+      "author": "Shunryu Suzuki",
+      "year": 1970,
+      "description": "Clásico zen: charlas sobre zazen y mente de principiante",
+      "why": "Espíritu esencial del zen: frescura, apertura, no-saber",
+      "relatedChapters": ["seccion5"]
+    }
+  ],
+
+  "teachers": [
+    {
+      "id": "teacher-001",
+      "name": "Joseph Goldstein",
+      "tradition": "Vipassana / Theravada",
+      "description": "Cofundador de Insight Meditation Society. 50+ años de práctica y enseñanza",
+      "resources": "Dharma Seed (talks gratuitas), libros, retiros IMS",
+      "website": "https://www.dharma.org/joseph-goldstein",
+      "why": "Maestro senior de vipassana con enseñanzas claras y accesibles",
+      "relatedChapters": ["seccion1", "seccion3", "seccion5"]
+    },
+    {
+      "id": "teacher-002",
+      "name": "Jack Kornfield",
+      "tradition": "Vipassana / Psicología Occidental",
+      "description": "Cofundador de IMS y Spirit Rock. Psicólogo clínico y maestro de meditación",
+      "resources": "Libros, podcasts, cursos online en Sounds True",
+      "website": "https://jackkornfield.com",
+      "why": "Puente entre budismo y psicología, compasión y sabiduría",
+      "relatedChapters": ["seccion3", "seccion4", "seccion6"]
+    },
+    {
+      "id": "teacher-003",
+      "name": "Sharon Salzberg",
+      "tradition": "Vipassana / Metta",
+      "description": "Cofundadora de IMS. Especialista en práctica de metta (amor bondadoso)",
+      "resources": "Libros, app Real Happiness, retiros",
+      "website": "https://www.sharonsalzberg.com",
+      "why": "Maestra principal de prácticas de compasión",
+      "relatedChapters": ["seccion6"]
+    },
+    {
+      "id": "teacher-004",
+      "name": "Tara Brach",
+      "tradition": "Vipassana / RAIN / Compasión",
+      "description": "Fundadora de Insight Meditation Community of Washington. Psicóloga clínica",
+      "resources": "Podcast semanal, meditaciones guiadas, libros",
+      "website": "https://www.tarabrach.com",
+      "why": "Enseñanzas sobre aceptación radical y auto-compasión",
+      "relatedChapters": ["seccion3", "seccion6"]
+    },
+    {
+      "id": "teacher-005",
+      "name": "Rob Burbea",
+      "tradition": "Vipassana / Vacuidad / Imaginal",
+      "description": "Maestro de Gaia House (UK). Profundo explorador de vacuidad (fallecido 2020)",
+      "resources": "Dharma Seed (200+ talks), libro 'Seeing That Frees'",
+      "website": "https://www.dharmaseed.org/teacher/210/",
+      "why": "Enseñanzas avanzadas de vacuidad y práctica imaginal",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "teacher-006",
+      "name": "Culadasa (John Yates)",
+      "tradition": "Tibetano / Neurociencia",
+      "description": "Neurocientífico y maestro budista. Autor de 'The Mind Illuminated' (fallecido 2021)",
+      "resources": "Libro TMI, comunidad r/TheMindIlluminated",
+      "why": "Puente entre neurociencia y práctica de concentración",
+      "relatedChapters": ["seccion1", "seccion2"]
+    },
+    {
+      "id": "teacher-007",
+      "name": "Adyashanti",
+      "tradition": "Zen / Advaita",
+      "description": "Maestro americano de despertar no-dual desde tradición zen",
+      "resources": "Libros, retiros, curso 'The Way of Liberation'",
+      "website": "https://adyashanti.org",
+      "why": "Enseñanzas directas sobre despertar y vacío desde claridad contemporánea",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "teacher-008",
+      "name": "Shinzen Young",
+      "tradition": "Vipassana / Shingon / Zen",
+      "description": "Maestro que integra vipassana, zen y tantra japonés. Desarrolló técnica 'Unified Mindfulness'",
+      "resources": "App Unified Mindfulness, YouTube, libros",
+      "website": "https://www.shinzen.org",
+      "why": "Sistema algorítmico de mindfulness con precisión técnica",
+      "relatedChapters": ["seccion1", "seccion3", "seccion4"]
+    },
+    {
+      "id": "teacher-009",
+      "name": "Reggie Ray",
+      "tradition": "Tibetano / Somático",
+      "description": "Maestro de Dharma Ocean. Enfoque somático del budismo tibetano",
+      "resources": "Programas online, libros, meditaciones guiadas",
+      "website": "https://dharmaocean.org",
+      "why": "Práctica budista encarnada y somática",
+      "relatedChapters": ["seccion2"]
+    },
+    {
+      "id": "teacher-010",
+      "name": "Pema Chödrön",
+      "tradition": "Tibetano / Shambhala",
+      "description": "Monja budista americana. Maestra senior de tradición Shambhala",
+      "resources": "Libros ('When Things Fall Apart', 'The Places That Scare You')",
+      "website": "https://pemachodronfoundation.org",
+      "why": "Trabajo con dificultad, miedo y compasión desde tradición tibetana",
+      "relatedChapters": ["seccion3", "seccion6"]
+    }
+  ],
+
+  "apps": [
+    {
+      "id": "app-001",
+      "name": "Waking Up (Sam Harris)",
+      "type": "curso_meditación",
+      "description": "Curso de meditación no-dual + charlas con maestros de múltiples tradiciones",
+      "platform": "iOS / Android",
+      "cost": "Suscripción ($99/año) - becas disponibles",
+      "why": "Curso riguroso de no-dualidad sin misticismo new age",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "app-002",
+      "name": "Insight Timer",
+      "type": "biblioteca_meditación",
+      "description": "45,000+ meditaciones guiadas gratuitas de maestros globales",
+      "platform": "iOS / Android / Web",
+      "cost": "Gratuito (premium opcional)",
+      "why": "Mayor biblioteca gratuita de meditaciones de todas las tradiciones",
+      "relatedChapters": ["seccion1", "seccion2", "seccion3", "seccion4", "seccion6"]
+    },
+    {
+      "id": "app-003",
+      "name": "Ten Percent Happier",
+      "type": "curso_meditación",
+      "description": "Cursos de maestros como Joseph Goldstein, Sharon Salzberg, Tara Brach",
+      "platform": "iOS / Android",
+      "cost": "Suscripción ($99/año)",
+      "why": "Enseñanzas de maestros senior en formato accesible",
+      "relatedChapters": ["seccion1", "seccion3", "seccion6"]
+    },
+    {
+      "id": "app-004",
+      "name": "Plum Village (Thich Nhat Hanh)",
+      "type": "meditación_guiada",
+      "description": "Meditaciones y enseñanzas de Thich Nhat Hanh y comunidad Plum Village",
+      "platform": "iOS / Android",
+      "cost": "Gratuito",
+      "why": "Mindfulness en vida cotidiana desde maestro zen vietnamita",
+      "relatedChapters": ["seccion4", "seccion6"]
+    },
+    {
+      "id": "app-005",
+      "name": "Brightmind",
+      "type": "meditación_técnica",
+      "description": "App de Shinzen Young con sistema Unified Mindfulness",
+      "platform": "iOS / Android",
+      "cost": "Suscripción",
+      "why": "Sistema algorítmico de mindfulness con precisión técnica",
+      "relatedChapters": ["seccion1", "seccion3", "seccion4"]
+    }
+  ],
+
+  "retreat_centers": [
+    {
+      "id": "center-001",
+      "name": "Insight Meditation Society (IMS)",
+      "location": "Barre, Massachusetts, USA",
+      "tradition": "Vipassana / Theravada",
+      "description": "Centro pionero de meditación vipassana en Occidente. Retiros de 1 día a 3 meses",
+      "website": "https://dharma.org",
+      "teachers": ["Joseph Goldstein", "Sharon Salzberg", "maestros visitantes"],
+      "why": "El centro más influyente de vipassana en Occidente",
+      "relatedChapters": ["seccion1", "seccion3", "seccion5"]
+    },
+    {
+      "id": "center-002",
+      "name": "Spirit Rock Meditation Center",
+      "location": "Woodacre, California, USA",
+      "tradition": "Vipassana / Compasión",
+      "description": "Centro cofundado por Jack Kornfield. Retiros de todos los niveles",
+      "website": "https://spiritrock.org",
+      "teachers": ["Jack Kornfield", "Tara Brach", "maestros senior"],
+      "why": "Centro principal de vipassana en Costa Oeste USA",
+      "relatedChapters": ["seccion1", "seccion3", "seccion6"]
+    },
+    {
+      "id": "center-003",
+      "name": "Gaia House",
+      "location": "Devon, Inglaterra",
+      "tradition": "Vipassana / Vacuidad",
+      "description": "Centro europeo de retiros de meditación insight. Tradición de enseñanza de vacuidad",
+      "website": "https://gaiahouse.co.uk",
+      "teachers": ["Rob Burbea (hasta 2020)", "maestros europeos"],
+      "why": "Centro europeo con tradición de enseñanzas profundas de vacuidad",
+      "relatedChapters": ["seccion3", "seccion5"]
+    },
+    {
+      "id": "center-004",
+      "name": "Plum Village",
+      "location": "Dordogne, Francia (+ monasterios USA)",
+      "tradition": "Zen / Engaged Buddhism",
+      "description": "Monasterio de Thich Nhat Hanh. Mindfulness en comunidad",
+      "website": "https://plumvillage.org",
+      "teachers": ["Comunidad monástica Plum Village"],
+      "why": "Práctica zen en comunidad, mindfulness aplicado",
+      "relatedChapters": ["seccion4", "seccion6"]
+    },
+    {
+      "id": "center-005",
+      "name": "Shambhala Mountain Center",
+      "location": "Red Feather Lakes, Colorado, USA",
+      "tradition": "Tibetano / Shambhala",
+      "description": "Centro de retiros de tradición Shambhala (budismo tibetano)",
+      "website": "https://shambhalamountain.org",
+      "teachers": ["Maestros linaje Shambhala"],
+      "why": "Retiros de shamatha y compasión desde tradición tibetana",
+      "relatedChapters": ["seccion1", "seccion6"]
+    },
+    {
+      "id": "center-006",
+      "name": "Dharma Ocean",
+      "location": "Crestone, Colorado, USA (+ online)",
+      "tradition": "Tibetano / Somático",
+      "description": "Centro de Reggie Ray. Meditación somática y tibetana",
+      "website": "https://dharmaocean.org",
+      "teachers": ["Reggie Ray", "maestros Dharma Ocean"],
+      "why": "Práctica somática desde budismo tibetano",
+      "relatedChapters": ["seccion2"]
+    }
+  ],
+
+  "online_courses": [
+    {
+      "id": "course-001",
+      "name": "The Way of Liberation",
+      "teacher": "Adyashanti",
+      "description": "Curso gratuito de despertar no-dual en 3 partes: 1) Quietud, 2) Amor, 3) Verdad",
+      "link": "https://www.adyashanti.org/index.php?file=writings_inner&writingid=30",
+      "cost": "Gratuito",
+      "why": "Mapa completo de despertar desde claridad contemporánea",
+      "relatedChapters": ["seccion5"]
+    },
+    {
+      "id": "course-002",
+      "name": "The Mind Illuminated Online Course",
+      "teacher": "Culadasa (John Yates)",
+      "description": "Curso online basado en libro TMI con guía de etapas de meditación",
+      "cost": "Pago único",
+      "why": "Acompañamiento estructurado del mapa TMI",
+      "relatedChapters": ["seccion1", "seccion2"]
+    },
+    {
+      "id": "course-003",
+      "name": "Tara Brach's Online Courses",
+      "teacher": "Tara Brach",
+      "description": "Cursos sobre RAIN, aceptación radical, trauma y compasión",
+      "link": "https://www.tarabrach.com/online-programs/",
+      "cost": "Variable",
+      "why": "Profundización en prácticas de auto-compasión",
+      "relatedChapters": ["seccion6"]
+    },
+    {
+      "id": "course-004",
+      "name": "DharmaSeed Audio Teachings",
+      "teacher": "Múltiples maestros",
+      "description": "Biblioteca de 30,000+ charlas de dharma gratuitas de maestros globales",
+      "link": "https://dharmaseed.org",
+      "cost": "Gratuito (donaciones)",
+      "why": "Archivo histórico de enseñanzas de maestros senior",
+      "relatedChapters": ["seccion1", "seccion3", "seccion4", "seccion5", "seccion6"]
+    }
+  ],
+
+  "communities": [
+    {
+      "id": "community-001",
+      "name": "r/streamentry (Reddit)",
+      "description": "Comunidad online de practicantes serios de meditación budista",
+      "link": "https://reddit.com/r/streamentry",
+      "focus": "Práctica intensiva, progreso en el camino, discusión técnica",
+      "why": "Comunidad de practicantes comprometidos compartiendo experiencias",
+      "relatedChapters": ["seccion3", "seccion5"]
+    },
+    {
+      "id": "community-002",
+      "name": "Dharma Overground",
+      "description": "Foro de práctica pragmática budista (asociado a Daniel Ingram)",
+      "link": "https://www.dharmaoverground.org",
+      "focus": "Mapas de progreso, jhanas, insights, problemas de práctica",
+      "why": "Comunidad que habla explícitamente de logros meditativos",
+      "relatedChapters": ["seccion3", "seccion5"]
+    },
+    {
+      "id": "community-003",
+      "name": "Insight Meditation Community of Washington",
+      "description": "Sangha de Tara Brach con charlas semanales gratuitas y grupos locales",
+      "link": "https://www.imcw.org",
+      "focus": "Vipassana, compasión, práctica en comunidad",
+      "why": "Acceso a enseñanzas regulares de Tara Brach y sangha activa",
+      "relatedChapters": ["seccion1", "seccion6"]
+    }
+  ],
+
+  "by_chapter": {
+    "seccion1": {
+      "title": "Fundamentos de la Presencia",
+      "recommended": ["book-001", "book-003", "book-008", "book-009", "book-012", "teacher-001", "teacher-006", "teacher-008", "app-002", "app-003", "app-005", "center-001", "center-002", "center-005", "course-002", "course-004"]
+    },
+    "seccion2": {
+      "title": "Exploración del Cuerpo",
+      "recommended": ["teacher-009", "center-006", "course-002"]
+    },
+    "seccion3": {
+      "title": "Trabajo con la Mente",
+      "recommended": ["book-001", "book-002", "book-003", "book-009", "book-010", "book-014", "teacher-001", "teacher-002", "teacher-004", "teacher-008", "app-002", "app-003", "app-005", "center-001", "center-002", "center-003", "community-001", "community-002", "course-004"]
+    },
+    "seccion4": {
+      "title": "Prácticas de Integración",
+      "recommended": ["book-004", "book-011", "teacher-002", "teacher-008", "app-002", "app-004", "app-005", "center-004", "course-004"]
+    },
+    "seccion5": {
+      "title": "Meditaciones Avanzadas",
+      "recommended": ["book-002", "book-007", "book-012", "book-013", "book-015", "teacher-001", "teacher-005", "teacher-007", "app-001", "center-001", "center-003", "course-001", "community-001", "community-002"]
+    },
+    "seccion6": {
+      "title": "Prácticas de Compasión",
+      "recommended": ["book-005", "book-006", "book-010", "teacher-002", "teacher-003", "teacher-004", "teacher-010", "app-002", "app-003", "app-004", "center-002", "center-004", "center-005", "course-003", "course-004", "community-003"]
+    }
+  }
+}

@@ -14,18 +14,43 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Tabla de versiones y actualizaciones disponibles
 $VERSION_DATABASE = [
     // Versión actual en producción
-    'latest' => '2.9.37',
+    'latest' => '2.9.48',
 
     // Información de cada versión
     'versions' => [
-        '2.9.32' => [
-            'release_date' => '2025-12-15',
+        '2.9.48' => [
+            'release_date' => '2025-12-19',
+            'platform' => 'all',
+            'security' => false,
+            'critical' => true,
+            'features' => [
+                'Revertidos cambios que rompían el lector',
+                'Restaurado funcionamiento del menú lateral',
+                'Restaurados estilos del reproductor'
+            ]
+        ],
+        '2.9.47' => [
+            'release_date' => '2025-12-19',
             'platform' => 'all',
             'security' => false,
             'critical' => false,
             'features' => [
-                'Audio en segundo plano',
-                'Foreground Service Android'
+                'Corrección de z-index del lector de libros',
+                'Menú principal no tapa el lector',
+                'Mejoras en navegación móvil'
+            ]
+        ],
+        '2.9.46' => [
+            'release_date' => '2025-12-19',
+            'platform' => 'all',
+            'security' => false,
+            'critical' => false,
+            'features' => [
+                'Corrección del modo claro/oscuro',
+                'Mejoras en el lector de libros',
+                'Optimización de navegación',
+                'Limpieza de archivos obsoletos',
+                'Consolidación del sistema de autenticación'
             ]
         ],
         '2.9.37' => [
@@ -36,10 +61,7 @@ $VERSION_DATABASE = [
             'features' => [
                 'Event Bus para comunicación entre módulos',
                 'Lazy-load CSS de temas',
-                'DOM Cache optimizado',
                 'Service Layer (Base/Book/UserService)',
-                'Sync Bridge web↔mobile',
-                'Sistema Learning Paths',
                 'Correcciones de seguridad XSS'
             ]
         ]
@@ -47,15 +69,25 @@ $VERSION_DATABASE = [
 
     // URLs de descarga por versión y plataforma
     'downloads' => [
+        '2.9.48' => [
+            'web' => '/index.html',
+            'android' => '/downloads/coleccion-nuevo-ser-v2.9.48.apk',
+            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser'
+        ],
+        '2.9.47' => [
+            'web' => '/index.html',
+            'android' => '/downloads/coleccion-nuevo-ser-v2.9.47.apk',
+            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser'
+        ],
+        '2.9.46' => [
+            'web' => '/index.html',
+            'android' => '/downloads/coleccion-nuevo-ser-v2.9.46.apk',
+            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser',
+            'release_notes' => '/downloads/RELEASE-2.9.46.md'
+        ],
         '2.9.37' => [
             'web' => '/index.html',
             'android' => '/downloads/coleccion-nuevo-ser-v2.9.37.apk',
-            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser',
-            'release_notes' => '/downloads/RELEASE-2.9.37.md'
-        ],
-        '2.9.32' => [
-            'web' => '/index.html',
-            'android' => '/downloads/coleccion-nuevo-ser-v2.9.32.apk',
             'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser'
         ]
     ],

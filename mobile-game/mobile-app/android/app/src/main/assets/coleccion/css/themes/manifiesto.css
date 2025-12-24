@@ -1,0 +1,509 @@
+/* ============================================================================
+   TEMA: MANIFIESTO DE LA CONCIENCIA COMPARTIDA
+   ============================================================================
+   Tema revolucionario con patrones geométricos y energía activista
+   ============================================================================ */
+
+/* Fondo con patrones geométricos */
+body.theme-manifiesto {
+  background: #171717;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-manifiesto::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 35px,
+      rgba(220, 38, 38, 0.03) 35px,
+      rgba(220, 38, 38, 0.03) 70px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 35px,
+      rgba(249, 115, 22, 0.03) 35px,
+      rgba(249, 115, 22, 0.03) 70px
+    );
+  z-index: -1;
+  pointer-events: none;
+  animation: geometricMove 30s linear infinite;
+}
+
+@keyframes geometricMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(70px, 70px);
+  }
+}
+
+/* Gradiente revolucionario para fondos */
+.theme-manifiesto .biblioteca-container,
+.theme-manifiesto .book-reader-container {
+  background: linear-gradient(180deg,
+    #171717 0%,
+    #262626 50%,
+    #171717 100%
+  );
+}
+
+/* Colores específicos del tema */
+.theme-manifiesto {
+  --color-primary: #dc2626;
+  --color-secondary: #f97316;
+  --color-accent: #fbbf24;
+  --color-background: #171717;
+  --color-background-secondary: #262626;
+  --color-text: #fafafa;
+  --color-text-secondary: #e5e5e5;
+  --color-border: #404040;
+}
+
+/* Efectos de energía en tarjetas */
+.theme-manifiesto .book-card:hover {
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.4);
+  transform: scale(1.05) rotate(0.5deg);
+}
+
+/* Reflexiones críticas con borde intenso - Dark mode */
+.theme-dark.theme-manifiesto .critical-reflections .reflection {
+  background: linear-gradient(135deg, #262626 0%, #171717 100%);
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
+}
+
+/* Reflexiones críticas con borde intenso - Light mode */
+.theme-light.theme-manifiesto .critical-reflections .reflection {
+  background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.15);
+}
+
+.theme-light.theme-manifiesto .critical-reflections .reflection p {
+  color: #171717;
+}
+
+.theme-light.theme-manifiesto .critical-reflections textarea {
+  background: #ffffff;
+  border: 1px solid #dc2626;
+  color: #171717;
+}
+
+/* Acciones sugeridas con energía - Dark mode */
+.theme-dark.theme-manifiesto .suggested-actions .action {
+  background: linear-gradient(135deg, #262626 0%, #171717 100%);
+  border-left: 4px solid #f97316;
+  transition: all 0.3s ease;
+}
+
+.theme-dark.theme-manifiesto .suggested-actions .action:hover {
+  transform: translateX(8px);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+/* Acciones sugeridas con energía - Light mode */
+.theme-light.theme-manifiesto .suggested-actions .action {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  border-left: 4px solid #f97316;
+  transition: all 0.3s ease;
+}
+
+.theme-light.theme-manifiesto .suggested-actions .action:hover {
+  transform: translateX(8px);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+  background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+}
+
+.theme-light.theme-manifiesto .suggested-actions .action p {
+  color: #171717;
+}
+
+.theme-light.theme-manifiesto .suggested-actions .action span {
+  color: inherit;
+}
+
+/* Efecto diagonal en epígrafes - Dark mode */
+.theme-dark.theme-manifiesto .epigraph {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.15) 0%,
+    rgba(249, 115, 22, 0.15) 100%
+  );
+  border-left: 6px solid #dc2626;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto diagonal en epígrafes - Light mode */
+.theme-light.theme-manifiesto .epigraph {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.08) 0%,
+    rgba(249, 115, 22, 0.08) 100%
+  );
+  border-left: 6px solid #dc2626;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-light.theme-manifiesto .epigraph p {
+  color: #171717;
+}
+
+.theme-manifiesto .epigraph::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1));
+  transform: skewX(-15deg);
+}
+
+/* Timeline histórico con efecto revolucionario */
+.theme-manifiesto .timeline-container {
+  border-left: 4px solid #dc2626;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.theme-dark.theme-manifiesto .timeline-event {
+  position: relative;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #262626 0%, #171717 100%);
+  border: 1px solid #404040;
+  border-left: 4px solid #f97316;
+  margin-bottom: 2rem;
+  transition: all 0.3s;
+}
+
+.theme-dark.theme-manifiesto .timeline-event:hover {
+  transform: translateX(10px);
+  border-left-width: 8px;
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+}
+
+.theme-light.theme-manifiesto .timeline-event {
+  position: relative;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  border: 1px solid #e5e5e5;
+  border-left: 4px solid #f97316;
+  margin-bottom: 2rem;
+  transition: all 0.3s;
+}
+
+.theme-light.theme-manifiesto .timeline-event:hover {
+  transform: translateX(10px);
+  border-left-width: 8px;
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+}
+
+.theme-light.theme-manifiesto .timeline-event * {
+  color: #171717;
+}
+
+/* Botones con efecto intenso */
+.theme-manifiesto button:hover {
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+  transform: scale(1.05);
+}
+
+/* Sidebar con energía - Dark mode */
+.theme-dark.theme-manifiesto .sidebar {
+  background: linear-gradient(180deg,
+    rgba(23, 23, 23, 0.95) 0%,
+    rgba(38, 38, 38, 0.95) 100%
+  );
+  border-right: 2px solid rgba(220, 38, 38, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar con energía - Light mode */
+.theme-light.theme-manifiesto .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 248, 248, 0.95) 100%
+  );
+  border-right: 2px solid rgba(220, 38, 38, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.theme-light.theme-manifiesto .sidebar * {
+  color: #171717;
+}
+
+/* Capítulos activos con intensidad - Dark mode */
+.theme-dark.theme-manifiesto .chapter-item.bg-cyan-600\/30 {
+  background: rgba(220, 38, 38, 0.3) !important;
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+}
+
+/* Capítulos activos con intensidad - Light mode */
+.theme-light.theme-manifiesto .chapter-item.bg-cyan-600\/30 {
+  background: rgba(220, 38, 38, 0.15) !important;
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
+  color: #171717 !important;
+}
+
+/* Texto con impacto - Dark mode */
+.theme-dark.theme-manifiesto h1,
+.theme-dark.theme-manifiesto h2 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.theme-dark.theme-manifiesto h3 {
+  font-weight: 700;
+  color: #f97316;
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+/* Texto con impacto - Light mode */
+.theme-light.theme-manifiesto h1,
+.theme-light.theme-manifiesto h2 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+  color: #171717;
+}
+
+.theme-light.theme-manifiesto h3 {
+  font-weight: 700;
+  color: #c2410c; /* Naranja más oscuro para mejor contraste en light */
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+
+/* Enlaces con efecto activista - Dark mode */
+.theme-dark.theme-manifiesto a {
+  color: #dc2626;
+  font-weight: 600;
+  position: relative;
+}
+
+.theme-dark.theme-manifiesto a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f97316;
+  transition: width 0.3s;
+}
+
+.theme-dark.theme-manifiesto a:hover::after {
+  width: 100%;
+}
+
+/* Enlaces con efecto activista - Light mode */
+.theme-light.theme-manifiesto a {
+  color: #b91c1c; /* Rojo más oscuro para mejor contraste */
+  font-weight: 600;
+  position: relative;
+}
+
+.theme-light.theme-manifiesto a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #ea580c; /* Naranja más oscuro */
+  transition: width 0.3s;
+}
+
+.theme-light.theme-manifiesto a:hover::after {
+  width: 100%;
+}
+
+/* Estadísticas con impacto - Dark mode */
+.theme-dark.theme-manifiesto .global-stats {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.15) 0%,
+    rgba(249, 115, 22, 0.15) 100%
+  );
+  border: 2px solid rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 30px rgba(220, 38, 38, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estadísticas con impacto - Light mode */
+.theme-light.theme-manifiesto .global-stats {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.08) 0%,
+    rgba(249, 115, 22, 0.08) 100%
+  );
+  border: 2px solid rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 30px rgba(220, 38, 38, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-light.theme-manifiesto .global-stats * {
+  color: #171717;
+}
+
+.theme-manifiesto .global-stats::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.2), transparent);
+  animation: statsShine 3s infinite;
+}
+
+@keyframes statsShine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* Recursos externos con estilo activista - Dark mode */
+.theme-dark.theme-manifiesto .resources-box {
+  background: linear-gradient(135deg, #262626 0%, #171717 100%);
+  border: 2px solid #f97316;
+  padding: 1.5rem;
+  border-radius: 12px;
+  position: relative;
+}
+
+.theme-dark.theme-manifiesto .resources-box::before {
+  content: '⚡';
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 2rem;
+  background: #171717;
+  padding: 0 10px;
+}
+
+/* Recursos externos con estilo activista - Light mode */
+.theme-light.theme-manifiesto .resources-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  border: 2px solid #f97316;
+  padding: 1.5rem;
+  border-radius: 12px;
+  position: relative;
+}
+
+.theme-light.theme-manifiesto .resources-box::before {
+  content: '⚡';
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 2rem;
+  background: #ffffff;
+  padding: 0 10px;
+}
+
+.theme-light.theme-manifiesto .resources-box * {
+  color: #171717;
+}
+
+/* Referencias cruzadas con urgencia - Dark mode */
+.theme-dark.theme-manifiesto .cross-references {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.1) 0%,
+    rgba(249, 115, 22, 0.1) 100%
+  );
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+}
+
+.theme-dark.theme-manifiesto .cross-references .reference:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #f97316;
+  transform: translateX(10px);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+/* Referencias cruzadas con urgencia - Light mode */
+.theme-light.theme-manifiesto .cross-references {
+  background: linear-gradient(135deg,
+    rgba(220, 38, 38, 0.05) 0%,
+    rgba(249, 115, 22, 0.05) 100%
+  );
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.1);
+}
+
+.theme-light.theme-manifiesto .cross-references .reference:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #f97316;
+  transform: translateX(10px);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+}
+
+.theme-light.theme-manifiesto .cross-references * {
+  color: #171717;
+}
+
+/* Animación de entrada revolucionaria */
+.theme-manifiesto .fade-in-up {
+  animation: fadeInRevolutionary 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes fadeInRevolutionary {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotate(-2deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Efectos para mobile */
+@media (max-width: 768px) {
+  body.theme-manifiesto::before {
+    animation-duration: 20s;
+  }
+
+  .theme-manifiesto h1,
+  .theme-manifiesto h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Scrollbar revolucionaria */
+.theme-manifiesto::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #dc2626, #f97316);
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+
+/* Progress bars con energía */
+.theme-manifiesto .h-2 {
+  box-shadow: inset 0 0 10px rgba(220, 38, 38, 0.3);
+}
+
+/* Checkbox personalizado */
+.theme-manifiesto input[type="checkbox"]:checked {
+  accent-color: #dc2626;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+
+/* Forte emphasis en Strong */
+.theme-manifiesto strong {
+  color: #f97316;
+  font-weight: 900;
+  text-shadow: 0 0 5px rgba(249, 115, 22, 0.3);
+}

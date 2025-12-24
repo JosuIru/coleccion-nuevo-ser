@@ -1,0 +1,83 @@
+{
+  "id": "manual-practico",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-04",
+
+  "theme": {
+    "name": "Practical Ground",
+    "primary": "#8b5cf6",
+    "secondary": "#7c3aed",
+    "accent": "#fbbf24",
+    "background": "#1f2937",
+    "backgroundSecondary": "#111827",
+    "text": "#f3f4f6",
+    "textSecondary": "#d1d5db",
+    "border": "#4f46e5",
+    "gradient": "from-purple-700 to-indigo-800"
+  },
+
+  "ui": {
+    "showStarfield": true,
+    "animationType": "organic",
+    "animationSpeed": "medium",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+
+  "features": {
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.75, 1.0, 1.25, 1.5],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": false
+    },
+    "aiChat": {
+      "enabled": true,
+      "systemPrompt": "Eres un asistente especializado en prácticas transformadoras. Ayuda al usuario a comprender y aplicar los ejercicios del Manual Práctico.",
+      "modes": {},
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/manual-practico/assets/resources.json"
+    }
+  },
+
+  "content": {
+    "sourceFile": "books/manual-practico/book.json",
+    "dataStructure": "standard"
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "intermediate",
+    "recommendedPace": "normal",
+    "tags": ["prácticas", "ejercicios", "transformación"],
+    "complementaryBooks": ["codigo-despertar"]
+  }
+}

@@ -117,12 +117,46 @@ class Biblioteca {
     this.listenersAttached = false; // Track global listeners
     this.delegatedListenersAttached = false; // Track delegated listeners
     this.menuDropdownOpen = false;
+    this._loadingCosmos = false; // 🔧 FIX #15: Prevenir múltiples cargas de cosmos-3d
+
+    // 🔧 FIX #5: Cache para checkIsAdmin()
+    this._adminCache = null;
+    this._adminCacheTime = 0;
+    this.ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+    // 🔧 FIX #86: EventManager para gestionar listeners
+    this.eventManager = new EventManager(false);
+    this.eventManager.setComponentName('Biblioteca');
+
+    // 🔧 FIX #11: Debounce helper para localStorage writes
+    this.debounceTimers = new Map();
 
     // Combinar botones primarios y secundarios para event delegation
     BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL = [
       ...BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS,
       ...BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS
     ];
+  }
+
+  /**
+   * 🔧 FIX #11: Helper para debounce de operaciones (ej: localStorage writes)
+   * @param {string} key - Identificador único para el debounce
+   * @param {Function} fn - Función a ejecutar
+   * @param {number} delay - Delay en milisegundos
+   */
+  debounce(key, fn, delay = 500) {
+    // Cancelar timer anterior si existe
+    if (this.debounceTimers.has(key)) {
+      clearTimeout(this.debounceTimers.get(key));
+    }
+
+    // Crear nuevo timer
+    const timer = setTimeout(() => {
+      fn();
+      this.debounceTimers.delete(key);
+    }, delay);
+
+    this.debounceTimers.set(key, timer);
   }
 
   // ==========================================================================
@@ -280,21 +314,29 @@ class Biblioteca {
     const contenedorPrincipal = document.getElementById('biblioteca-view');
     if (!contenedorPrincipal) return;
 
-    // Detectar si es móvil para mostrar bottom nav
-    const isMobile = window.innerWidth < 1024;
+    // 🔧 FIX #12: Detectar móvil considerando ancho Y capacidad táctil
+    const isMobile = window.innerWidth < 1024 &&
+                     ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+    // Detectar si el usuario tiene progreso
+    const progresoGlobal = this.bookEngine.getGlobalProgress();
+    const tieneProgreso = progresoGlobal.totalRead > 0;
 
     const htmlCompleto = `
       <div class="biblioteca-container min-h-screen p-4 sm:p-6 ${isMobile ? 'has-bottom-nav' : ''}">
         ${this.renderHeader()}
 
-        <!-- Global Stats -->
-        ${this.renderGlobalStats()}
+        <!-- Secciones Contextuales (Nueva UX) -->
+        ${tieneProgreso ? this.renderCurrentJourney() : ''}
 
-        <!-- Search & Filters -->
-        ${this.renderSearchAndFilters()}
+        <!-- Práctica del Día -->
+        ${this.renderDailyPractice()}
 
-        <!-- Books Grid -->
-        ${this.renderBooksGridHTML()}
+        <!-- Global Stats (solo si tiene progreso) -->
+        ${tieneProgreso ? this.renderGlobalStats() : ''}
+
+        <!-- Explorar Biblioteca (Colapsable) -->
+        ${this.renderExploreLibrary()}
 
         <!-- Tools & Apps Section -->
         ${this.renderToolsSection()}
@@ -316,17 +358,70 @@ class Biblioteca {
       Icons.init();
     }
 
+    // 🔧 FIX #6: Calcular padding dinámicamente basado en la altura del bottom nav
+    if (isMobile) {
+      requestAnimationFrame(() => {
+        const bottomNav = document.getElementById('biblioteca-bottom-nav');
+        const container = document.querySelector('.biblioteca-container');
+        if (bottomNav && container) {
+          const navHeight = bottomNav.offsetHeight;
+          const padding = navHeight + 20; // 20px adicionales de margen
+          container.style.paddingBottom = `${padding}px`;
+        }
+      });
+    }
+
+    // Attach listeners para secciones colapsables
+    this.attachExploreLibraryListeners();
+
     // Renderizar widget de práctica del día (asíncrono)
     this.renderPracticeWidget();
   }
 
-  async renderPracticeWidget(retryCount = 0) {
-    const MAX_RETRIES = 10; // Máximo 5 segundos (10 x 500ms)
+  async renderPracticeWidget(retryCount = 0, startTime = null) {
+    const MAX_RETRIES = 10; // Máximo 10 reintentos
+    const TIMEOUT_MS = 5000; // 🔧 FIX #3: Timeout absoluto de 5 segundos
+
+    // 🔧 FIX #3: Inicializar timestamp en el primer intento
+    if (startTime === null) {
+      startTime = Date.now();
+    }
+
+    // 🔧 FIX #3: Verificar timeout absoluto
+    const elapsed = Date.now() - startTime;
+    if (elapsed > TIMEOUT_MS) {
+      console.warn('[Biblioteca] ⏱️ Practice widget timeout (5s) - sistema no disponible');
+      // 🔧 FIX #14: Mostrar mensaje al usuario cuando el sistema no carga
+      const container = document.getElementById('practice-widget-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center text-gray-500 text-sm py-4">
+            <p>El sistema de prácticas no está disponible temporalmente.</p>
+            <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
+              Recargar página
+            </button>
+          </div>
+        `;
+      }
+      return;
+    }
 
     // Esperar a que el sistema esté listo
     if (!window.practiceLibrary || !window.practiceRecommender) {
       if (retryCount >= MAX_RETRIES) {
-        // console.log('⏭️  Practice system not available - skipping widget');
+        console.warn('[Biblioteca] ⏭️ Practice system not available after', MAX_RETRIES, 'retries - skipping widget');
+        // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla después de reintentos
+        const container = document.getElementById('practice-widget-container');
+        if (container) {
+          container.innerHTML = `
+            <div class="text-center text-gray-500 text-sm py-4">
+              <p>El sistema de prácticas no pudo cargarse.</p>
+              <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
+                Recargar página
+              </button>
+            </div>
+          `;
+        }
         return;
       }
 
@@ -334,7 +429,7 @@ class Biblioteca {
         // console.log('⏳ Waiting for practice system to initialize...');
       }
 
-      setTimeout(() => this.renderPracticeWidget(retryCount + 1), 500);
+      setTimeout(() => this.renderPracticeWidget(retryCount + 1, startTime), 500);
       return;
     }
 
@@ -360,25 +455,33 @@ class Biblioteca {
    * Tabs: Inicio, Libros, Prácticas, Herramientas, Perfil
    */
   renderBottomNav() {
+    // 🔧 FIX #7: Restaurar tab activo desde localStorage
+    let activeTab = 'inicio'; // Default
+    try {
+      activeTab = localStorage.getItem('biblioteca-active-tab') || 'inicio';
+    } catch (e) {
+      console.warn('[Biblioteca] No se pudo leer tab activo:', e);
+    }
+
     return `
       <nav class="app-bottom-nav" id="biblioteca-bottom-nav">
-        <button class="app-bottom-nav-tab active" data-tab="inicio" onclick="window.biblioteca?.scrollToTop()">
+        <button class="app-bottom-nav-tab ${activeTab === 'inicio' ? 'active' : ''}" data-tab="inicio" onclick="window.biblioteca?.scrollToTop()">
           <span class="app-bottom-nav-icon">🏠</span>
           <span class="app-bottom-nav-label">Inicio</span>
         </button>
-        <button class="app-bottom-nav-tab" data-tab="libros" onclick="window.biblioteca?.scrollToBooks()">
+        <button class="app-bottom-nav-tab ${activeTab === 'libros' ? 'active' : ''}" data-tab="libros" onclick="window.biblioteca?.scrollToBooks()">
           <span class="app-bottom-nav-icon">📚</span>
           <span class="app-bottom-nav-label">Libros</span>
         </button>
-        <button class="app-bottom-nav-tab" data-tab="practicas" onclick="window.practiceLibrary?.open()">
+        <button class="app-bottom-nav-tab ${activeTab === 'practicas' ? 'active' : ''}" data-tab="practicas" onclick="window.practiceLibrary?.open()">
           <span class="app-bottom-nav-icon">🧘</span>
           <span class="app-bottom-nav-label">Prácticas</span>
         </button>
-        <button class="app-bottom-nav-tab" data-tab="herramientas" onclick="window.biblioteca?.openToolsMenu()">
+        <button class="app-bottom-nav-tab ${activeTab === 'herramientas' ? 'active' : ''}" data-tab="herramientas" onclick="window.biblioteca?.openToolsMenu()">
           <span class="app-bottom-nav-icon">🛠️</span>
           <span class="app-bottom-nav-label">Herramientas</span>
         </button>
-        <button class="app-bottom-nav-tab" data-tab="perfil" onclick="window.biblioteca?.openProfileMenu()">
+        <button class="app-bottom-nav-tab ${activeTab === 'perfil' ? 'active' : ''}" data-tab="perfil" onclick="window.biblioteca?.openProfileMenu()">
           <span class="app-bottom-nav-icon">👤</span>
           <span class="app-bottom-nav-label">Perfil</span>
         </button>
@@ -432,6 +535,13 @@ class Biblioteca {
    * Actualiza el tab activo en la navegación inferior
    */
   setActiveBottomTab(tabName) {
+    // 🔧 FIX #7: Persistir tab activo en localStorage
+    try {
+      localStorage.setItem('biblioteca-active-tab', tabName);
+    } catch (e) {
+      console.warn('[Biblioteca] No se pudo guardar tab activo:', e);
+    }
+
     document.querySelectorAll('.app-bottom-nav-tab').forEach(tab => {
       tab.classList.remove('active');
       if (tab.dataset.tab === tabName) {
@@ -479,6 +589,286 @@ class Biblioteca {
         </div>
       </div>
     `;
+  }
+
+  // ==========================================================================
+  // SECCIONES CONTEXTUALES (Nueva UX)
+  // ==========================================================================
+
+  /**
+   * Renderiza la sección "Tu Camino Actual" - libro en progreso
+   */
+  renderCurrentJourney() {
+    // Encontrar el libro más recientemente leído que no esté completo
+    const librosEnProgreso = this.bookEngine.catalog.books
+      .filter(libro => {
+        const progreso = this.bookEngine.getProgress(libro.id);
+        return progreso.chaptersRead > 0 && progreso.percentage < 100;
+      })
+      .sort((libroA, libroB) => {
+        // Ordenar por último acceso (si hay timestamp) o por progreso
+        const progresoA = this.bookEngine.getProgress(libroA.id);
+        const progresoB = this.bookEngine.getProgress(libroB.id);
+        return progresoB.percentage - progresoA.percentage;
+      });
+
+    if (librosEnProgreso.length === 0) return '';
+
+    const libroActual = librosEnProgreso[0];
+    const progresoLibro = this.bookEngine.getProgress(libroActual.id);
+
+    // Obtener el próximo capítulo a leer
+    const siguienteCapitulo = this.getSiguienteCapitulo(libroActual.id);
+
+    return `
+      <div class="current-journey-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border border-cyan-700/30">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">📖</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-cyan-300">Tu Camino Actual</h3>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-start gap-4">
+          <!-- Book Info -->
+          <div class="flex-1">
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-12 h-12 flex items-center justify-center rounded-lg" style="background: ${libroActual.color}20; color: ${libroActual.color}">
+                ${Icons.getBookIcon(libroActual.id, 32, libroActual.color)}
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-white">${libroActual.title}</h4>
+                <p class="text-sm text-gray-400">${libroActual.subtitle}</p>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-3">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-400">${progresoLibro.chaptersRead} de ${progresoLibro.totalChapters} capítulos</span>
+                <span class="font-semibold text-cyan-400">${progresoLibro.percentage}%</span>
+              </div>
+              <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-full transition-all duration-500 rounded-full"
+                     style="width: ${progresoLibro.percentage}%; background: linear-gradient(90deg, ${libroActual.color}, ${libroActual.secondaryColor || libroActual.color})"></div>
+              </div>
+            </div>
+
+            ${siguienteCapitulo ? `
+              <p class="text-sm text-gray-400 mb-3">
+                Próximo: <span class="text-gray-200">${siguienteCapitulo.title}</span>
+              </p>
+            ` : ''}
+          </div>
+
+          <!-- CTA Button -->
+          <button onclick="window.biblioteca?.openBook('${libroActual.id}')"
+                  class="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  style="background: linear-gradient(135deg, ${libroActual.color}, ${libroActual.secondaryColor || libroActual.color})">
+            ${Icons.book(18)} Continuar leyendo
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Obtiene el siguiente capítulo no leído de un libro
+   */
+  getSiguienteCapitulo(libroId) {
+    try {
+      const datosLibro = this.bookEngine.getBookData(libroId);
+      if (!datosLibro?.chapters) return null;
+
+      for (const capitulo of datosLibro.chapters) {
+        if (!this.bookEngine.isChapterRead(capitulo.id)) {
+          return capitulo;
+        }
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * Renderiza el widget de racha si está disponible
+   */
+  renderStreakWidget() {
+    if (!window.streakSystem) return '';
+    return window.streakSystem.renderWidget();
+  }
+
+  /**
+   * Renderiza la sección "Práctica del Día"
+   */
+  renderDailyPractice() {
+    // Incluir widget de racha
+    const streakWidget = this.renderStreakWidget();
+
+    // Herramientas diversas: filosofía, comunidad, educación, transformación social
+    const herramientasDelDia = [
+      // Filosofía y teoría
+      { titulo: 'Principio del Reconocimiento', categoria: 'Filosofía', icono: '💡', descripcion: 'Explora cómo el reconocimiento mutuo transforma las relaciones humanas', libroId: 'filosofia-nuevo-ser', accion: 'Leer capítulo' },
+      { titulo: 'Transición Consciente', categoria: 'Teoría', icono: '🔄', descripcion: 'Comprende los mecanismos de cambio sistémico en comunidades', libroId: 'guia-transicion', accion: 'Explorar' },
+      // Comunidad y organización
+      { titulo: 'Estructura de Microsociedad', categoria: 'Comunidad', icono: '🏛️', descripcion: 'Diseña una estructura organizativa basada en el reconocimiento', libroId: 'toolkit-transicion', accion: 'Ver herramienta' },
+      { titulo: 'Resolución de Conflictos', categoria: 'Social', icono: '🤝', descripcion: 'Aplica el diálogo transformativo en situaciones de tensión', libroId: 'guia-acciones', accion: 'Practicar' },
+      // Educación y acción
+      { titulo: 'Herramientas para Educadores', categoria: 'Educación', icono: '🎓', descripcion: 'Integra los principios del Nuevo Ser en contextos educativos', libroId: 'ahora-instituciones', accion: 'Descubrir' },
+      { titulo: 'Diálogo con la Máquina', categoria: 'IA y Ética', icono: '🤖', descripcion: 'Reflexiona sobre la relación humano-IA desde el reconocimiento', libroId: 'dialogos-maquina', accion: 'Leer' },
+      // Práctica contemplativa (balance)
+      { titulo: 'Práctica Radical', categoria: 'Interior', icono: '🌀', descripcion: 'Ejercicio para anclarte en el presente y actuar desde la claridad', libroId: 'practicas-radicales', accion: 'Practicar' },
+      { titulo: 'Conexión con la Tierra', categoria: 'Ecología', icono: '🌍', descripcion: 'Reconecta con los ritmos naturales como base de la transformación', libroId: 'tierra-que-despierta', accion: 'Explorar' }
+    ];
+
+    // Seleccionar herramienta basada en el día
+    const indiceHerramienta = new Date().getDate() % herramientasDelDia.length;
+    const herramientaHoy = herramientasDelDia[indiceHerramienta];
+
+    return `
+      <!-- Widget de Racha (si hay datos) -->
+      ${streakWidget}
+
+      <div class="daily-practice-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-slate-800/50 to-indigo-900/30 border border-indigo-700/30">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">${herramientaHoy.icono}</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-indigo-300">Herramienta del Día</h3>
+          <span class="ml-auto text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${herramientaHoy.categoria}</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-start gap-4">
+          <div class="flex-1">
+            <h4 class="text-lg font-bold text-white mb-1">${herramientaHoy.titulo}</h4>
+            <p class="text-sm text-gray-400 mb-3">${herramientaHoy.descripcion}</p>
+          </div>
+
+          <button onclick="window.biblioteca?.openBook('${herramientaHoy.libroId}')"
+                  class="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+            ${herramientaHoy.accion} →
+          </button>
+        </div>
+
+        <!-- Áreas de aplicación -->
+        <div class="mt-4 pt-4 border-t border-indigo-700/30">
+          <p class="text-xs text-gray-500 mb-2">Áreas de transformación:</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🏛️ Comunidades</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🎓 Educación</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🤝 Conflictos</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🏢 Organizaciones</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Renderiza la sección "Explorar Biblioteca" (colapsable)
+   */
+  renderExploreLibrary() {
+    const progresoGlobal = this.bookEngine.getGlobalProgress();
+    const tieneProgreso = progresoGlobal.totalRead > 0;
+
+    // Si no tiene progreso, mostrar expandido por defecto
+    const expandidoPorDefecto = !tieneProgreso;
+
+    return `
+      <div class="explore-library-section mb-6 sm:mb-8">
+        <!-- Header Colapsable -->
+        <button id="explore-library-toggle"
+                class="explore-library-header w-full ${expandidoPorDefecto ? 'expanded' : ''}"
+                aria-expanded="${expandidoPorDefecto}">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">📚</span>
+            <div class="text-left">
+              <h3 class="text-xl font-bold text-white">Explorar Biblioteca</h3>
+              <p class="text-sm text-gray-400">${this.bookEngine.catalog.books.length} libros disponibles</p>
+            </div>
+          </div>
+          <svg class="chevron w-6 h-6 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Contenido Colapsable -->
+        <div id="explore-library-content" class="explore-library-content ${expandidoPorDefecto ? 'expanded' : ''}">
+          <!-- Quick Filters -->
+          <div class="quick-filter-tabs mb-4">
+            <button class="quick-filter-tab active" data-filter="all">Todos</button>
+            <button class="quick-filter-tab" data-filter="started">En progreso</button>
+            <button class="quick-filter-tab" data-filter="not-started">Sin empezar</button>
+            <button class="quick-filter-tab" data-filter="completed">Completados</button>
+          </div>
+
+          <!-- Search & Filters -->
+          ${this.renderSearchAndFilters()}
+
+          <!-- Books Grid -->
+          ${this.renderBooksGridHTML()}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * 🔧 FIX #86: Attach event listeners usando EventManager
+   */
+  attachExploreLibraryListeners() {
+    const toggleBtn = document.getElementById('explore-library-toggle');
+    const contentDiv = document.getElementById('explore-library-content');
+
+    if (toggleBtn && contentDiv) {
+      this.eventManager.addEventListener(toggleBtn, 'click', () => {
+        const isExpanded = toggleBtn.classList.toggle('expanded');
+        contentDiv.classList.toggle('expanded');
+        toggleBtn.setAttribute('aria-expanded', isExpanded);
+      });
+    }
+
+    // Quick filter tabs usando EventManager
+    const filterTabs = document.querySelectorAll('.quick-filter-tab');
+    filterTabs.forEach(tab => {
+      this.eventManager.addEventListener(tab, 'click', (e) => {
+        // Remover active de todos
+        filterTabs.forEach(t => t.classList.remove('active'));
+        // Añadir active al clickeado
+        e.target.classList.add('active');
+
+        // Aplicar filtro
+        const filtro = e.target.dataset.filter;
+        this.applyQuickFilter(filtro);
+      });
+    });
+  }
+
+  /**
+   * Aplica un filtro rápido a los libros
+   */
+  applyQuickFilter(filtro) {
+    const tarjetasLibro = document.querySelectorAll('.book-card');
+
+    tarjetasLibro.forEach(tarjeta => {
+      const libroId = tarjeta.dataset.bookId;
+      const progreso = this.bookEngine.getProgress(libroId);
+
+      let mostrar = true;
+
+      switch (filtro) {
+        case 'started':
+          mostrar = progreso.chaptersRead > 0 && progreso.percentage < 100;
+          break;
+        case 'not-started':
+          mostrar = progreso.chaptersRead === 0;
+          break;
+        case 'completed':
+          mostrar = progreso.percentage === 100;
+          break;
+        case 'all':
+        default:
+          mostrar = true;
+      }
+
+      tarjeta.style.display = mostrar ? '' : 'none';
+    });
   }
 
   renderSearchAndFilters() {
@@ -539,16 +929,16 @@ class Biblioteca {
     const libroIniciado = progresoLibro.chaptersRead > 0;
 
     return `
-      <div class="book-card group relative rounded-xl border-2 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer hover:border-opacity-60"
+      <div class="book-card group relative rounded-xl border-2 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer hover:border-opacity-80 bg-white dark:bg-slate-900/60 backdrop-blur-sm"
            style="border-color: ${libro.color}40"
            data-book-id="${libro.id}">
 
         <!-- Background Gradient -->
-        <div class="absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity duration-300"
+        <div class="absolute inset-0 bg-gradient-to-br opacity-5 dark:opacity-10 group-hover:opacity-15 dark:group-hover:opacity-20 transition-opacity duration-300"
              style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor})"></div>
 
         <!-- Paper Texture Overlay -->
-        <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
+        <div class="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] pointer-events-none"
              style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOSIgbnVtT2N0YXZlcz0iNCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=='); background-repeat: repeat;"></div>
 
         <div class="relative p-4 sm:p-6">
@@ -559,29 +949,29 @@ class Biblioteca {
             </div>
             <div class="flex flex-col items-end gap-2">
               ${libro.status === 'published' ?
-                `<span class="px-2 py-1 text-xs rounded bg-green-500/20 text-green-300">${this.i18n.t('library.published')}</span>` :
-                `<span class="px-2 py-1 text-xs rounded bg-yellow-500/20 text-yellow-300">${this.i18n.t('library.comingSoon')}</span>`
+                `<span class="px-2 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-500/30">${this.i18n.t('library.published')}</span>` :
+                `<span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-500/30">${this.i18n.t('library.comingSoon')}</span>`
               }
               ${libroIniciado ?
-                `<span class="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-300">${this.i18n.t('library.inProgress')}</span>` :
-                `<span class="px-2 py-1 text-xs rounded bg-red-500/20 text-red-600 dark:text-red-400">${this.i18n.t('library.notStarted')}</span>`
+                `<span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-500/30">${this.i18n.t('library.inProgress')}</span>` :
+                `<span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-500/30">${this.i18n.t('library.notStarted')}</span>`
               }
             </div>
           </div>
 
           <!-- Title -->
-          <h3 class="text-xl sm:text-2xl font-bold mb-2 group-hover:text-[${libro.color}] transition">
+          <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-[${libro.color}] transition">
             ${libro.title}
           </h3>
 
           <!-- Subtitle -->
-          <p class="text-xs sm:text-sm opacity-70 mb-2">
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
             ${libro.subtitle}
           </p>
 
           <!-- Description -->
           ${libro.description ? `
-            <p class="text-sm opacity-80 mb-3 line-clamp-3">
+            <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-3 leading-relaxed">
               ${libro.description}
             </p>
           ` : ''}
@@ -590,7 +980,7 @@ class Biblioteca {
           ${this.renderComplementaryInfo(libro)}
 
           <!-- Info -->
-          <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm opacity-60 mb-3 sm:mb-4">
+          <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
             <span class="flex items-center gap-1">${Icons.book(14)} ${libro.chapters} ${this.i18n.t('library.chapters')}</span>
             <span class="flex items-center gap-1">${Icons.clock(14)} ${libro.estimatedReadTime}</span>
           </div>
@@ -598,13 +988,13 @@ class Biblioteca {
           <!-- Progress Bar -->
           ${libroIniciado ? `
             <div class="mb-3 sm:mb-4">
-              <div class="flex justify-between text-xs mb-1">
+              <div class="flex justify-between text-xs mb-1 text-gray-700 dark:text-gray-300">
                 <span>${progresoLibro.chaptersRead} ${this.i18n.t('progress.of')} ${progresoLibro.totalChapters} ${this.i18n.t('library.chapters')}</span>
-                <span>${progresoLibro.percentage}%</span>
+                <span class="font-semibold">${progresoLibro.percentage}%</span>
               </div>
-              <div class="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div class="h-full transition-all duration-500"
-                     style="width: ${progresoLibro.percentage}%; background-color: ${libro.color}"></div>
+              <div class="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                <div class="h-full transition-all duration-500 rounded-full"
+                     style="width: ${progresoLibro.percentage}%; background: linear-gradient(90deg, ${libro.color}, ${libro.secondaryColor || libro.color})"></div>
               </div>
             </div>
           ` : ''}
@@ -617,15 +1007,15 @@ class Biblioteca {
           </div>
 
           <!-- Action Button -->
-          <button class="w-full py-2.5 sm:py-3 px-4 rounded-lg font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
-                  style="background-color: ${libro.color}; color: white"
+          <button class="w-full py-3 sm:py-4 px-4 rounded-lg font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2 text-white shadow-md min-h-[48px]"
+                  style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor || libro.color})"
                   data-action="open-book"
                   data-book-id="${libro.id}">
             ${libroIniciado ? `${Icons.book(18)} ${this.i18n.t('library.continue')}` : `${Icons.zap(18)} ${this.i18n.t('library.start')}`}
           </button>
 
           <!-- Features Icons -->
-          <div class="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 text-base sm:text-sm opacity-60">
+          <div class="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 text-base sm:text-sm text-gray-600 dark:text-gray-400">
             ${libro.features.meditations ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Meditaciones" aria-label="Meditaciones">${Icons.meditation(18)}</span>` : ''}
             ${libro.features.exercises ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Ejercicios" aria-label="Ejercicios">${Icons.edit(18)}</span>` : ''}
             ${libro.features.aiChat ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Chat IA" aria-label="Chat IA">${Icons.bot(18)}</span>` : ''}
@@ -655,7 +1045,7 @@ class Biblioteca {
 
     if (relacionLibro.type === 'hasGuides') {
       const listaGuias = relacionLibro.guides
-        .map(guia => `<span class="inline-flex items-center gap-1">${guia.icon} ${guia.title}</span>`)
+        .map(guia => `<span class="inline-flex items-center gap-1">${guia.title}</span>`)
         .join(', ');
 
       return `
@@ -674,7 +1064,7 @@ class Biblioteca {
   renderToolsSection() {
     // Cache bust: 2025-12-14T04:50
     const herramientas = BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA;
-    console.log('[Biblioteca] Herramientas a renderizar:', herramientas.length, herramientas.map(h => h?.name || 'SIN NOMBRE'));
+    // 🔧 FIX #4: Eliminar console.log de debug en producción
 
     if (!herramientas || herramientas.length === 0) return '';
 
@@ -810,12 +1200,12 @@ class Biblioteca {
 
       html += `
         <${wrapperTag} ${wrapperAttrs}
-           class="tool-card group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl ${hoverShadow} cursor-pointer block bg-white dark:bg-gray-800/60 backdrop-blur border border-gray-300 dark:border-gray-700/50 ${hoverBorderColor}">
+           class="tool-card group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl ${hoverShadow} cursor-pointer block bg-white dark:bg-slate-800/80 backdrop-blur-sm border-2 border-gray-200 dark:border-slate-700/50 ${hoverBorderColor}">
 
           <div class="relative p-4 sm:p-6">
             <!-- Header con icono y badge -->
             <div class="flex items-start justify-between mb-4">
-              <div class="p-3 rounded-xl bg-gradient-to-br ${gradientFrom} border ${borderColor}">
+              <div class="p-3 rounded-xl bg-gradient-to-br ${gradientFrom} border-2 ${borderColor}">
                 <span class="text-4xl">${herramienta.icon}</span>
               </div>
               <span class="px-3 py-1 text-xs font-semibold rounded-full ${badgeBg} ${badgeText2} border ${badgeBorder}">
@@ -829,7 +1219,7 @@ class Biblioteca {
             </h4>
 
             <!-- Description -->
-            <p class="text-sm opacity-80 mb-4 text-gray-600 dark:text-gray-200">
+            <p class="text-sm mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">
               ${herramienta.description}
             </p>
 
@@ -857,9 +1247,9 @@ class Biblioteca {
                   <span class="tool-web-text">Abrir Lab</span>
                 </a>
               </div>
-              <div class="mt-2 text-xs text-center opacity-60 tool-device-info" id="device-info-${herramienta.id}"></div>
+              <div class="mt-2 text-xs text-center text-gray-600 dark:text-gray-400 tool-device-info" id="device-info-${herramienta.id}"></div>
             ` : `
-              <div class="w-full py-3 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 text-center bg-gradient-to-r ${btnGradient} text-white shadow-lg ${btnShadow}">
+              <div class="w-full py-3 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 text-center bg-gradient-to-r ${btnGradient} text-white shadow-lg hover:shadow-xl ${btnShadow}">
                 ${isInternal ? '🎮 Jugar Ahora' : '🚀 Abrir Aplicación'}
               </div>
             `}
@@ -1066,6 +1456,14 @@ class Biblioteca {
 
   async checkIsAdmin(userId) {
     try {
+      // 🔧 FIX #5: Usar caché para evitar queries repetidas a Supabase
+      const now = Date.now();
+      if (this._adminCache !== null && now - this._adminCacheTime < this.ADMIN_CACHE_TTL) {
+        // 🔧 FIX #4: Usar logger en lugar de console.log
+        logger.debug('[Biblioteca] Usando caché de admin (válido por', Math.floor((this.ADMIN_CACHE_TTL - (now - this._adminCacheTime)) / 1000), 'segundos más)');
+        return this._adminCache;
+      }
+
       const supabase = window.supabaseClient;
       if (!supabase) return false;
 
@@ -1075,11 +1473,29 @@ class Biblioteca {
         .eq('id', userId)
         .single();
 
-      return data?.role === 'admin';
+      const isAdmin = data?.role === 'admin';
+
+      // 🔧 FIX #5: Actualizar caché
+      this._adminCache = isAdmin;
+      this._adminCacheTime = now;
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.debug('[Biblioteca] Caché de admin actualizado:', isAdmin);
+
+      return isAdmin;
     } catch (error) {
       console.error('Error verificando admin:', error);
       return false;
     }
+  }
+
+  /**
+   * 🔧 FIX #5: Limpiar caché de admin (útil al hacer logout)
+   */
+  clearAdminCache() {
+    this._adminCache = null;
+    this._adminCacheTime = 0;
+    // 🔧 FIX #4: Usar logger en lugar de console.log
+    logger.debug('[Biblioteca] Caché de admin limpiado');
   }
 
   showLoginRequiredModal(feature) {
@@ -1113,12 +1529,13 @@ class Biblioteca {
     `;
     document.body.appendChild(modal);
 
-    document.addEventListener('keydown', function escHandler(e) {
+    // 🔧 FIX #86: Usar EventManager para escape handler
+    const escHandler = (e) => {
       if (e.key === 'Escape') {
         modal.remove();
-        document.removeEventListener('keydown', escHandler);
       }
-    });
+    };
+    this.eventManager.addEventListener(document, 'keydown', escHandler);
   }
 
   showAccessDeniedModal() {
@@ -1146,12 +1563,13 @@ class Biblioteca {
     `;
     document.body.appendChild(modal);
 
-    document.addEventListener('keydown', function escHandler(e) {
+    // 🔧 FIX #86: Usar EventManager para escape handler
+    const escHandler = (e) => {
       if (e.key === 'Escape') {
         modal.remove();
-        document.removeEventListener('keydown', escHandler);
       }
-    });
+    };
+    this.eventManager.addEventListener(document, 'keydown', escHandler);
   }
 
   handlePremiumButton(evento) {
@@ -1312,10 +1730,10 @@ class Biblioteca {
 
     document.body.appendChild(modal);
 
-    // Event listeners
-    document.getElementById('premium-info-backdrop').addEventListener('click', () => modal.remove());
-    document.getElementById('premium-info-close').addEventListener('click', () => modal.remove());
-    document.getElementById('open-ai-settings').addEventListener('click', () => {
+    // 🔧 FIX #86: Event listeners usando EventManager
+    this.eventManager.addEventListener(document.getElementById('premium-info-backdrop'), 'click', () => modal.remove());
+    this.eventManager.addEventListener(document.getElementById('premium-info-close'), 'click', () => modal.remove());
+    this.eventManager.addEventListener(document.getElementById('open-ai-settings'), 'click', () => {
       modal.remove();
       if (window.SettingsModal) {
         const settings = new window.SettingsModal();
@@ -1328,14 +1746,13 @@ class Biblioteca {
       }
     });
 
-    // Cerrar con Escape
+    // Cerrar con Escape usando EventManager
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         modal.remove();
-        document.removeEventListener('keydown', handleEscape);
       }
     };
-    document.addEventListener('keydown', handleEscape);
+    this.eventManager.addEventListener(document, 'keydown', handleEscape);
   }
 
   showAboutModal() {
@@ -1472,18 +1889,17 @@ class Biblioteca {
 
     document.body.appendChild(modal);
 
-    // Event listeners
-    document.getElementById('about-modal-backdrop').addEventListener('click', () => modal.remove());
-    document.getElementById('about-modal-close').addEventListener('click', () => modal.remove());
+    // 🔧 FIX #86: Event listeners usando EventManager
+    this.eventManager.addEventListener(document.getElementById('about-modal-backdrop'), 'click', () => modal.remove());
+    this.eventManager.addEventListener(document.getElementById('about-modal-close'), 'click', () => modal.remove());
 
-    // Cerrar con Escape
+    // Cerrar con Escape usando EventManager
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         modal.remove();
-        document.removeEventListener('keydown', handleEscape);
       }
     };
-    document.addEventListener('keydown', handleEscape);
+    this.eventManager.addEventListener(document, 'keydown', handleEscape);
   }
 
   handleProgressButton(evento) {
@@ -1518,6 +1934,13 @@ class Biblioteca {
   async handleCosmosNavigationButton(evento) {
     evento.preventDefault();
 
+    // 🔧 FIX #15: Prevenir múltiples clicks mientras carga
+    if (this._loadingCosmos) {
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.debug('[Biblioteca] Cosmos ya se está cargando, ignorando click');
+      return;
+    }
+
     // Si ya está cargado, mostrarlo directamente
     if (window.cosmosNavigation) {
       window.cosmosNavigation.show();
@@ -1527,6 +1950,8 @@ class Biblioteca {
 
     // Si no está cargado, cargarlo primero con lazy-loader
     if (window.lazyLoader) {
+      this._loadingCosmos = true; // Marcar como cargando
+
       if (window.toast) {
         window.toast.show('📦 Cargando Cosmos del Conocimiento...', 'info', 3000);
       }
@@ -1551,6 +1976,9 @@ class Biblioteca {
         if (window.toast) {
           window.toast.show('❌ Error cargando Cosmos del Conocimiento', 'error', 3000);
         }
+      } finally {
+        // 🔧 FIX #15: Resetear flag siempre, sin importar si cargó correctamente o falló
+        this._loadingCosmos = false;
       }
     } else {
       console.error('LazyLoader no está disponible');
@@ -1800,16 +2228,17 @@ class Biblioteca {
     // Este método se mantiene por si se necesitan otros listeners globales en el futuro
   }
 
+  // 🔧 FIX #86: Usar EventManager para dynamic listeners
   attachDynamicListeners() {
     const campoBusqueda = document.getElementById('search-input');
-    if (campoBusqueda && !campoBusqueda.dataset.listenerAttached) {
-      campoBusqueda.addEventListener('input', (evento) => {
+    if (campoBusqueda) {
+      this.eventManager.addEventListener(campoBusqueda, 'input', (evento) => {
         this.searchQuery = evento.target.value;
         this.renderBooksGrid();
       });
 
       // Presionar Enter abre la búsqueda avanzada en todo el contenido
-      campoBusqueda.addEventListener('keydown', (evento) => {
+      this.eventManager.addEventListener(campoBusqueda, 'keydown', (evento) => {
         if (evento.key === 'Enter' && window.SearchModal && window.bookEngine) {
           evento.preventDefault();
           const modalBusqueda = new window.SearchModal(window.bookEngine);
@@ -1828,17 +2257,14 @@ class Biblioteca {
           }
         }
       });
-
-      campoBusqueda.dataset.listenerAttached = 'true';
     }
 
     const filtroCategorias = document.getElementById('category-filter');
-    if (filtroCategorias && !filtroCategorias.dataset.listenerAttached) {
-      filtroCategorias.addEventListener('change', (evento) => {
+    if (filtroCategorias) {
+      this.eventManager.addEventListener(filtroCategorias, 'change', (evento) => {
         this.filterCategory = evento.target.value;
         this.renderBooksGrid();
       });
-      filtroCategorias.dataset.listenerAttached = 'true';
     }
   }
 
@@ -1863,6 +2289,7 @@ class Biblioteca {
     }
   }
 
+  // 🔧 FIX #86: Usar EventManager para event delegation
   attachDelegatedListeners() {
     if (this.delegatedListenersAttached) return;
 
@@ -1874,7 +2301,8 @@ class Biblioteca {
       mapaHandlers[boton.id] = this[boton.handler].bind(this);
     });
 
-    contenedorBiblioteca.addEventListener('click', (evento) => {
+    // 🔧 FIX #86: Usar EventManager en lugar de addEventListener directo
+    this.eventManager.addEventListener(contenedorBiblioteca, 'click', (evento) => {
       // Dropdown toggle button
       const botonDropdown = evento.target.closest('#more-options-btn-bib');
       if (botonDropdown) {
@@ -1923,8 +2351,8 @@ class Biblioteca {
       }
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (evento) => {
+    // 🔧 FIX #86: Usar EventManager para click outside listener
+    this.eventManager.addEventListener(document, 'click', (evento) => {
       const dropdown = document.getElementById('more-options-menu-bib');
       const botonDropdown = document.getElementById('more-options-btn-bib');
 
@@ -1950,8 +2378,10 @@ class Biblioteca {
       await this.bookEngine.loadBook(idLibro);
       await this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
 
-      // Guardar último libro leído para cargar su tema al inicio
-      localStorage.setItem('lastReadBook', idLibro);
+      // 🔧 FIX #11: Debounce localStorage writes para reducir I/O
+      this.debounce('lastReadBook', () => {
+        localStorage.setItem('lastReadBook', idLibro);
+      }, 500);
 
       let idCapitulo;
 
@@ -2011,11 +2441,32 @@ class Biblioteca {
     }
   }
 
+  // 🔧 FIX #86: Cleanup method para limpiar listeners
+  cleanup() {
+    // 🔧 FIX #4: Usar logger en lugar de console.log
+    logger.debug('[Biblioteca] Iniciando cleanup...');
+
+    // Limpiar todos los event listeners gestionados por EventManager
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+
+    // Resetear flags para permitir re-adjuntar listeners si se vuelve a abrir
+    this.delegatedListenersAttached = false;
+    this.listenersAttached = false;
+
+    // 🔧 FIX #4: Usar logger en lugar de console.log
+    logger.debug('[Biblioteca] Cleanup completado');
+  }
+
   hide() {
     const container = document.getElementById('biblioteca-view');
     if (container) {
       container.classList.add('hidden');
     }
+
+    // 🔧 FIX #1, #2, #86: Cleanup y resetear flags
+    this.cleanup();
   }
 
   show() {

@@ -1,0 +1,915 @@
+/**
+ * Brújula de Recursos - Estilos
+ * Diseño contemplativo, espacioso y no directivo
+ */
+
+/* ========== MODAL BASE ========== */
+
+.brujula-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Crimson Pro', Georgia, serif;
+}
+
+.brujula-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.90);
+  backdrop-filter: blur(8px);
+}
+
+.brujula-container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  margin: 2rem;
+  background: linear-gradient(160deg, #0a0a0f 0%, #12121a 40%, #1a1a28 100%);
+  border-radius: 2rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.brujula-content {
+  height: 90vh;
+  overflow-y: auto;
+  color: #e4e4e7;
+}
+
+/* Scrollbar personalizada */
+.brujula-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.brujula-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+}
+
+.brujula-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+}
+
+.brujula-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== PANTALLA DE INICIO ========== */
+
+.brujula-inicio {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.brujula-bg-circles::before,
+.brujula-bg-circles::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.brujula-bg-circles::before {
+  top: 20%;
+  left: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+}
+
+.brujula-bg-circles::after {
+  bottom: 10%;
+  right: 15%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.04) 0%, transparent 70%);
+}
+
+.brujula-inicio-content {
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.brujula-symbol {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.brujula-symbol-icon {
+  font-size: 3rem;
+}
+
+.brujula-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  color: #e4e4e7;
+}
+
+.brujula-subtitle {
+  font-size: 1.1rem;
+  color: #71717a;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+}
+
+.brujula-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.brujula-btn {
+  padding: 1.25rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: none;
+}
+
+.brujula-btn-primary {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #e4e4e7;
+}
+
+.brujula-btn-primary:hover {
+  background: rgba(139, 92, 246, 0.25);
+  transform: translateY(-2px);
+}
+
+.brujula-btn-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a1a1aa;
+}
+
+.brujula-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e4e4e7;
+}
+
+.brujula-btn-icon {
+  font-size: 1.25rem;
+}
+
+.brujula-btn-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.brujula-btn-desc {
+  font-size: 0.9rem;
+  color: #71717a;
+}
+
+.brujula-nota {
+  font-size: 0.85rem;
+  color: #52525b;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.brujula-stats {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+  color: #71717a;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ========== MODO DIÁLOGO ========== */
+
+.brujula-dialogo {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.brujula-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brujula-btn-back,
+.brujula-btn-explorar {
+  background: none;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  transition: color 0.2s;
+}
+
+.brujula-btn-back:hover,
+.brujula-btn-explorar:hover {
+  color: #e4e4e7;
+}
+
+.brujula-logo {
+  font-size: 1.5rem;
+  color: #52525b;
+}
+
+.brujula-dialogo-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.brujula-mensajes {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.brujula-mensaje {
+  display: flex;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.brujula-mensaje-sistema,
+.brujula-mensaje-usuario {
+  max-width: 85%;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  line-height: 1.6;
+}
+
+.brujula-mensaje-usuario {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+}
+
+.brujula-mensaje-sistema {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+}
+
+.brujula-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  color: #e4e4e7;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.brujula-textarea:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.brujula-btn-enviar {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 2rem;
+  color: #e4e4e7;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.brujula-btn-enviar:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #52525b;
+  cursor: not-allowed;
+}
+
+.brujula-btn-enviar:not(:disabled):hover {
+  background: rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Dimensiones */
+.brujula-dimensiones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.brujula-dimension {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.brujula-dimension:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.brujula-dimension.selected {
+  transform: scale(1.02);
+}
+
+.brujula-dimension-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.brujula-dimension-pregunta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a1a1aa;
+}
+
+.brujula-btn-continuar {
+  padding: 0.75rem 1.5rem;
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 2rem;
+  color: #e4e4e7;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.brujula-btn-continuar:hover {
+  background: rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Recursos compactos */
+.brujula-recursos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brujula-recurso-compacto {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.brujula-recurso-compacto:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
+}
+
+.brujula-recurso-icono {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.brujula-recurso-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.brujula-recurso-titulo {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.brujula-recurso-meta {
+  font-size: 0.8rem;
+  color: #71717a;
+}
+
+.brujula-opciones-finales {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brujula-btn-opcion {
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.brujula-btn-opcion:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+}
+
+/* ========== MODO EXPLORAR ========== */
+
+.brujula-explorar {
+  min-height: 90vh;
+}
+
+.brujula-explorar-titulo {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.brujula-explorar-content {
+  padding: 1.5rem 2rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brujula-explorar-desc {
+  text-align: center;
+  color: #71717a;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* Filtros */
+.brujula-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.brujula-filtros-grupo {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.brujula-filtro,
+.brujula-filtro-tipo {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  color: #71717a;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.brujula-filtro:hover,
+.brujula-filtro-tipo:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+}
+
+.brujula-filtro.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #e4e4e7;
+}
+
+.brujula-filtro-tipo {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.brujula-filtro-tipo.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #e4e4e7;
+}
+
+/* Grid de recursos */
+.brujula-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.brujula-tarjeta {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.brujula-tarjeta:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.brujula-tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.brujula-tarjeta-icono {
+  font-size: 1.75rem;
+}
+
+.brujula-tarjeta-duracion {
+  font-size: 0.75rem;
+  color: #52525b;
+}
+
+.brujula-tarjeta-titulo {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.brujula-tarjeta-desc {
+  font-size: 0.85rem;
+  color: #71717a;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.brujula-tarjeta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brujula-tarjeta-dimensiones {
+  display: flex;
+  gap: 4px;
+}
+
+.brujula-dimension-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.brujula-btn-favorito {
+  background: none;
+  border: none;
+  color: #52525b;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: all 0.2s;
+}
+
+.brujula-btn-favorito:hover {
+  color: #fbbf24;
+  transform: scale(1.1);
+}
+
+.brujula-btn-favorito.active {
+  color: #fbbf24;
+}
+
+.brujula-vacio {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #71717a;
+}
+
+.brujula-btn-reset {
+  margin-top: 1rem;
+  padding: 0.6rem 1.25rem;
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 2rem;
+  color: #e4e4e7;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ========== MODO SERENDIPITY ========== */
+
+.brujula-serendipity {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.brujula-serendipity-content {
+  max-width: 600px;
+  text-align: center;
+}
+
+.brujula-serendipity-symbol {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.brujula-serendipity-titulo {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.brujula-serendipity-intro {
+  color: #a1a1aa;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.brujula-serendipity-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* ========== MODAL DE RECURSO ========== */
+
+.brujula-modal-recurso {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.brujula-modal-recurso-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.brujula-modal-recurso-contenido {
+  position: relative;
+  background: linear-gradient(160deg, #1a1a28, #12121a);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brujula-detalle-recurso {
+  margin-bottom: 1.5rem;
+}
+
+.brujula-detalle-icono {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.brujula-detalle-titulo {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.brujula-detalle-meta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.brujula-badge {
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  color: #a1a1aa;
+}
+
+.brujula-detalle-descripcion {
+  color: #a1a1aa;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.brujula-detalle-fuente {
+  font-size: 0.85rem;
+  color: #71717a;
+  margin-bottom: 1rem;
+}
+
+.brujula-btn-link,
+.brujula-btn-libro {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 2rem;
+  color: #e4e4e7;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.brujula-btn-link:hover,
+.brujula-btn-libro:hover {
+  background: rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.brujula-detalle-dimensiones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brujula-dimension-tag {
+  padding: 0.4rem 0.8rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.brujula-nota-humildad {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+  color: #52525b;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.brujula-recomendaciones {
+  margin-bottom: 1.5rem;
+}
+
+.brujula-recomendaciones h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #a1a1aa;
+}
+
+.brujula-recomendaciones-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brujula-modal-acciones {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brujula-btn-favorito-grande {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.brujula-btn-favorito-grande.active {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
+.brujula-btn-favorito-grande:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.brujula-btn-cerrar {
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.brujula-btn-cerrar:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #e4e4e7;
+}
+
+/* ========== ANIMACIONES ========== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .brujula-container {
+    margin: 0;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .brujula-content {
+    height: 100vh;
+  }
+
+  .brujula-inicio,
+  .brujula-dialogo,
+  .brujula-explorar,
+  .brujula-serendipity {
+    min-height: 100vh;
+  }
+
+  .brujula-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brujula-modal-recurso-contenido {
+    max-height: 90vh;
+  }
+
+  .brujula-filtros-grupo {
+    justify-content: flex-start;
+  }
+
+  .brujula-opciones-finales {
+    flex-direction: column;
+  }
+
+  .brujula-modal-acciones {
+    flex-direction: column;
+  }
+}

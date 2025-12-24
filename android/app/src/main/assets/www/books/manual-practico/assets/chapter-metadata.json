@@ -1,0 +1,86 @@
+{
+  "introduccion": {
+    "type": "teoría",
+    "difficulty": "básico",
+    "readingTime": 10,
+    "tags": ["introducción", "práctica-transformadora", "manual"],
+    "practicalUses": []
+  },
+  "cap1": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 20,
+    "tags": ["meditación", "atención-plena", "presencia"],
+    "practicalUses": ["meditación", "mindfulness"]
+  },
+  "cap2": {
+    "type": "práctica",
+    "difficulty": "básico",
+    "readingTime": 18,
+    "tags": ["respiración", "pranayama", "calma"],
+    "practicalUses": ["respiración", "relajación"]
+  },
+  "cap3": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 22,
+    "tags": ["body-scan", "conciencia-corporal", "somática"],
+    "practicalUses": ["cuerpo", "sensaciones"]
+  },
+  "cap4": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["movimiento-consciente", "yoga", "tai-chi"],
+    "practicalUses": ["movimiento", "integración"]
+  },
+  "cap5": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 25,
+    "tags": ["indagación", "autoconocimiento", "preguntas-poderosas"],
+    "practicalUses": ["reflexión", "introspección"]
+  },
+  "cap6": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 30,
+    "tags": ["trabajo-sombras", "jung", "integración-psicológica"],
+    "practicalUses": ["psicología", "sanación"]
+  },
+  "cap7": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 18,
+    "tags": ["gratitud", "apreciación", "positividad"],
+    "practicalUses": ["bienestar", "alegría"]
+  },
+  "cap8": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 20,
+    "tags": ["compasión", "metta", "amor-bondadoso"],
+    "practicalUses": ["compasión", "corazón"]
+  },
+  "cap9": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 25,
+    "tags": ["no-dualidad", "vacuidad", "despertar"],
+    "practicalUses": ["contemplación", "insight"]
+  },
+  "cap10": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 15,
+    "tags": ["ritual", "ceremonias", "significado"],
+    "practicalUses": ["ritual", "sacralidad"]
+  },
+  "conclusion": {
+    "type": "teoría-práctica",
+    "difficulty": "intermedio",
+    "readingTime": 12,
+    "tags": ["integración", "vida-diaria", "práctica-continua"],
+    "practicalUses": ["rutina", "hábitos"]
+  }
+}

@@ -1,0 +1,236 @@
+/* ============================================================================
+   TEMA: NACIMIENTO - El Fin de las Estructuras, El Nacimiento del Nuevo Ser
+   ============================================================================
+   Colores: Rosa/Magenta con acentos dorados - Transformación y renacimiento
+   ============================================================================ */
+
+/* VARIABLES CSS - DARK MODE */
+body.theme-dark.theme-nacimiento {
+  --color-primary: #ec4899;
+  --color-secondary: #f472b6;
+  --color-accent: #fbbf24;
+  --color-background: #1f2937;
+  --color-background-secondary: #111827;
+  --color-text: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-border: #ec4899;
+}
+
+/* VARIABLES CSS - LIGHT MODE */
+body.theme-light.theme-nacimiento {
+  --color-primary: #db2777;
+  --color-secondary: #ec4899;
+  --color-accent: #d97706;
+  --color-background: #fdf2f8;
+  --color-background-secondary: #fce7f3;
+  --color-text: #831843;
+  --color-text-secondary: #9d174d;
+  --color-border: #f9a8d4;
+}
+
+/* FONDO ANIMADO - DARK MODE */
+body.theme-dark.theme-nacimiento {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #0f172a 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-dark.theme-nacimiento::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(244, 114, 182, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+  animation: nacimientoGlow 15s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes nacimientoGlow {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+}
+
+/* Particulas flotantes de luz */
+body.theme-dark.theme-nacimiento::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, rgba(236, 72, 153, 0.4) 50%, transparent 50%),
+    radial-gradient(2px 2px at 30% 60%, rgba(244, 114, 182, 0.3) 50%, transparent 50%),
+    radial-gradient(2px 2px at 50% 40%, rgba(251, 191, 36, 0.3) 50%, transparent 50%),
+    radial-gradient(2px 2px at 70% 80%, rgba(236, 72, 153, 0.4) 50%, transparent 50%),
+    radial-gradient(2px 2px at 90% 30%, rgba(244, 114, 182, 0.3) 50%, transparent 50%);
+  animation: nacimientoParticles 20s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes nacimientoParticles {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+/* FONDO - LIGHT MODE */
+body.theme-light.theme-nacimiento {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+}
+
+body.theme-light.theme-nacimiento::before {
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(219, 39, 119, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+}
+
+/* ELEMENTOS INTERACTIVOS */
+.theme-dark.theme-nacimiento .card:hover,
+.theme-light.theme-nacimiento .card:hover {
+  box-shadow: 0 10px 40px -10px rgba(236, 72, 153, 0.4);
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+}
+
+.theme-dark.theme-nacimiento .btn-primary,
+.theme-light.theme-nacimiento .btn-primary {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  border-color: #ec4899;
+}
+
+.theme-dark.theme-nacimiento .btn-primary:hover,
+.theme-light.theme-nacimiento .btn-primary:hover {
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+}
+
+/* ENLACES */
+.theme-dark.theme-nacimiento a {
+  color: #f472b6;
+}
+
+.theme-dark.theme-nacimiento a:hover {
+  color: #ec4899;
+}
+
+.theme-light.theme-nacimiento a {
+  color: #db2777;
+}
+
+.theme-light.theme-nacimiento a:hover {
+  color: #be185d;
+}
+
+/* HEADINGS */
+.theme-dark.theme-nacimiento h1,
+.theme-dark.theme-nacimiento h2,
+.theme-dark.theme-nacimiento h3 {
+  color: var(--color-text);
+  text-shadow: 0 2px 10px rgba(236, 72, 153, 0.3);
+}
+
+.theme-light.theme-nacimiento h1,
+.theme-light.theme-nacimiento h2,
+.theme-light.theme-nacimiento h3 {
+  color: var(--color-text);
+  text-shadow: none;
+}
+
+/* SIDEBAR */
+.theme-dark.theme-nacimiento .sidebar {
+  background: linear-gradient(180deg, rgba(31, 41, 55, 0.98) 0%, rgba(17, 24, 39, 0.98) 100%);
+  border-right: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.theme-dark.theme-nacimiento .sidebar-item:hover {
+  background: rgba(236, 72, 153, 0.1);
+}
+
+.theme-dark.theme-nacimiento .sidebar-item.active {
+  background: rgba(236, 72, 153, 0.2);
+  border-left: 3px solid #ec4899;
+}
+
+/* PROGRESS BAR */
+.theme-dark.theme-nacimiento .progress-bar,
+.theme-light.theme-nacimiento .progress-bar {
+  background: linear-gradient(90deg, #ec4899, #f472b6);
+}
+
+/* BLOCKQUOTES */
+.theme-dark.theme-nacimiento blockquote {
+  border-left: 4px solid #ec4899;
+  background: rgba(236, 72, 153, 0.1);
+}
+
+.theme-light.theme-nacimiento blockquote {
+  border-left: 4px solid #db2777;
+  background: rgba(219, 39, 119, 0.05);
+}
+
+/* BADGES Y TAGS */
+.theme-dark.theme-nacimiento .badge {
+  background: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+.theme-light.theme-nacimiento .badge {
+  background: rgba(219, 39, 119, 0.1);
+  color: #be185d;
+  border: 1px solid rgba(219, 39, 119, 0.2);
+}
+
+/* INPUTS Y FORMS */
+.theme-dark.theme-nacimiento input:focus,
+.theme-dark.theme-nacimiento textarea:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+}
+
+.theme-light.theme-nacimiento input:focus,
+.theme-light.theme-nacimiento textarea:focus {
+  border-color: #db2777;
+  box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.15);
+}
+
+/* SCROLLBAR */
+.theme-dark.theme-nacimiento ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ec4899, #db2777);
+}
+
+.theme-dark.theme-nacimiento ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f472b6, #ec4899);
+}
+
+/* SELECTION */
+.theme-dark.theme-nacimiento ::selection {
+  background: rgba(236, 72, 153, 0.3);
+  color: #ffffff;
+}
+
+.theme-light.theme-nacimiento ::selection {
+  background: rgba(219, 39, 119, 0.2);
+  color: #1f2937;
+}

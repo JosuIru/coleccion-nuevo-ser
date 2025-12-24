@@ -425,7 +425,7 @@ class FrankensteinLabUI {
         </button>
       </div>
     `;
-    modal.style.cssText = \`
+    modal.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -437,10 +437,10 @@ class FrankensteinLabUI {
       justify-content: center;
       z-index: 10005;
       animation: frFadeIn 0.3s ease-out;
-    \`;
+    `;
 
     const content = modal.querySelector('.daily-reward-content');
-    content.style.cssText = \`
+    content.style.cssText = `
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border-radius: 20px;
       padding: 32px;
@@ -449,7 +449,7 @@ class FrankensteinLabUI {
       max-width: 320px;
       border: 2px solid #fbbf24;
       box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
-    \`;
+    `;
 
     modal.querySelector('.daily-reward-icon').style.cssText = 'font-size: 64px; margin-bottom: 16px;';
     modal.querySelector('h2').style.cssText = 'margin: 0 0 8px; font-size: 24px;';
@@ -4498,6 +4498,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       this.showNotification(`✅ Ser "${savedBeing.name}" guardado exitosamente`, 'success', 4000);
 
+      // Sonido dramático de trueno al crear ser
+      if (window.frankenAudio && window.frankenAudio.enabled) {
+        window.frankenAudio.playThunder();
+        console.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
+      }
+
       // Recompensa por crear/guardar ser
       if (window.frankensteinRewards) {
         window.frankensteinRewards.giveReward('createBeing');
@@ -6513,7 +6519,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Play selection sound
    */
   playSelectionSound() {
-    // Create audio context if needed
+    // Usar FrankensteinAudioSystem si está disponible y habilitado
+    if (window.frankenAudio && window.frankenAudio.enabled) {
+      window.frankenAudio.playElectricity();
+      return;
+    }
+
+    // Fallback: usar el ping básico si FrankensteinAudioSystem no está disponible
     if (!window.AudioContext && !window.webkitAudioContext) return;
 
     try {
@@ -7843,10 +7855,12 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         break;
 
       case 'retos':
-        if (window.FrankensteinChallenges) {
-          window.FrankensteinChallenges.openChallengesModal();
+        if (window.frankensteinChallengesModal && this.currentBeing && this.currentMission) {
+          window.frankensteinChallengesModal.open(this.currentBeing, this.currentMission);
+        } else if (!this.currentBeing || !this.currentMission) {
+          this.showNotification('Primero crea y valida un ser con una misión', 'warning');
         } else {
-          this.showNotification('Retos en desarrollo', 'info');
+          this.showNotification('Sistema de retos no disponible', 'info');
         }
         break;
 
@@ -7922,7 +7936,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Intentar abrir la experiencia de microsociedades con fallbacks
    */
   openMicrosocietiesSimulator() {
-    // Preferir la nueva galería si está disponible
+    // Preferir el nuevo panel de microsociedades
+    if (window.microsocietiesInit && typeof window.microsocietiesInit.open === 'function') {
+      window.microsocietiesInit.open();
+      return;
+    }
+
+    // Fallback: galería si está disponible
     if (window.microsocietiesGallery && typeof window.microsocietiesGallery.open === 'function') {
       window.microsocietiesGallery.open();
       return;
@@ -7931,7 +7951,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     // Asegurar que exista un manager de microsociedades
     const manager = this.ensureMicroSocietiesManager();
     if (!manager) {
-      this.showNotification('Microsociedades en desarrollo', 'info');
+      this.showNotification('Sistema de microsociedades no disponible', 'info');
       return;
     }
 

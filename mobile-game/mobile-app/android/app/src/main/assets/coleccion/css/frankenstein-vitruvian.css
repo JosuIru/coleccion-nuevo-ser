@@ -1,0 +1,376 @@
+/**
+ * LABORATORIO FRANKENSTEIN - Sistema Vitruviano
+ * Visualización SVG del Hombre de Vitruvio con atributos del ser
+ */
+/* ========================================
+   VITRUVIAN BEING VISUALIZER
+   ======================================== */
+
+.vitruvian-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  max-height: 50vh; /* Limitar a la mitad de la altura del viewport */
+  flex: 1 1 auto;
+  min-height: 200px;
+  margin: 0.5rem auto;
+  padding: 1rem;
+  background: transparent;
+  border: 2px solid var(--franken-brass);
+  border-radius: 10px;
+  box-shadow: var(--shadow-deep);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.vitruvian-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
+}
+
+/* Scrollbar para vitruvian-container */
+.vitruvian-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.vitruvian-container::-webkit-scrollbar-track {
+  background: rgba(10, 10, 15, 0.5);
+  border-radius: 3px;
+}
+
+.vitruvian-container::-webkit-scrollbar-thumb {
+  background: var(--franken-brass);
+  border-radius: 3px;
+}
+
+.vitruvian-container::-webkit-scrollbar-thumb:hover {
+  background: var(--franken-copper);
+}
+
+/* Animación de pulso de energía */
+.body-part.energy-pulse {
+  animation: energy-pulse-anim 0.6s ease-out;
+}
+
+@keyframes energy-pulse-anim {
+  0% {
+    filter: drop-shadow(0 0 0px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+  100% {
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+}
+
+/* Partes del cuerpo completamente cargadas */
+.body-part.fully-charged {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+}
+
+/* Destello al completar ser */
+.vitruvian-svg.completed-flash {
+  animation: completed-flash-anim 1.5s ease-out;
+}
+
+@keyframes completed-flash-anim {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
+  }
+  25% {
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)) brightness(1.5);
+  }
+  50% {
+    filter: drop-shadow(0 0 40px rgba(255, 215, 0, 1)) brightness(1.8);
+  }
+  75% {
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)) brightness(1.5);
+  }
+}
+
+/* Panel de atributos lateral */
+.vitruvian-attributes {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(244, 233, 216, 0.1);
+  border: 2px solid rgba(139, 115, 85, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.vitruvian-attributes-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--franken-brass);
+  text-align: center;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.attributes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vitruvian-attribute-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.attribute-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attribute-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--franken-parchment);
+}
+
+.attribute-percent {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--franken-brass);
+}
+
+.attribute-mini-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(139, 115, 85, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.attribute-mini-fill {
+  height: 100%;
+  transition: width 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 3px;
+  position: relative;
+}
+
+.attribute-mini-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  animation: shimmer-mini 2s infinite;
+}
+
+@keyframes shimmer-mini {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Hover effects para atributos */
+.vitruvian-attribute-item:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 6px;
+  padding: 0.25rem;
+  margin: -0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .vitruvian-container {
+    max-width: 100%;
+    max-height: 40vh;
+    min-height: 180px;
+    padding: 0.5rem;
+    margin: 0.25rem auto;
+    border-width: 2px;
+  }
+
+  .vitruvian-svg {
+    max-height: 25vh;
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .vitruvian-attributes {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .vitruvian-attributes-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .attributes-list {
+    gap: 0.3rem;
+  }
+
+  .attribute-label {
+    font-size: 0.7rem;
+  }
+
+  .attribute-percent {
+    font-size: 0.65rem;
+  }
+
+  .attribute-mini-bar {
+    height: 3px;
+  }
+}
+
+/* Móvil pequeño */
+@media (max-width: 480px) {
+  .vitruvian-container {
+    max-height: 35vh;
+    min-height: 150px;
+    padding: 0.4rem;
+  }
+
+  .vitruvian-svg {
+    max-height: 20vh;
+  }
+
+  .vitruvian-attributes {
+    padding: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .vitruvian-attributes-title {
+    font-size: 0.75rem;
+  }
+
+  .attribute-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* ========================================
+   EFECTOS VISUALES MEJORADOS
+   ======================================== */
+
+/* Animación de pulso para atributos altos */
+@keyframes vitruvian-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px currentColor);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor);
+    transform: scale(1.05);
+  }
+}
+
+/* Efecto de poder épico (>90%) */
+.epic-power {
+  animation: epic-glow 1.5s ease-in-out infinite !important;
+}
+
+@keyframes epic-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 15px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor) drop-shadow(0 0 25px currentColor);
+  }
+}
+
+/* Efecto de poder medio (40-70%) */
+.medium-power {
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* Partículas épicas */
+.epic-particles circle {
+  pointer-events: none;
+}
+
+/* Mejora del efecto fully-charged */
+.fully-charged {
+  filter: drop-shadow(0 0 10px currentColor) url(#glow);
+}
+
+/* Transiciones suaves para cambios de color */
+.body-part {
+  transition: all 0.8s ease-in-out;
+}
+
+.body-part [stroke] {
+  transition: stroke 1s ease-in-out;
+}
+
+/* Efectos hover para interactividad */
+.vitruvian-svg:hover .body-part {
+  filter: brightness(1.2);
+}
+
+/* Animación de entrada para el Vitruvio */
+@keyframes vitruvian-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.vitruvian-svg {
+  animation: vitruvian-appear 1s ease-out;
+}
+
+/* Efecto de energía flotante para el aura */
+@keyframes aura-energy {
+  0%, 100% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: 20;
+  }
+}
+
+#part-aura {
+  stroke-dasharray: 10, 5;
+  animation: aura-energy 3s linear infinite;
+}
+
+/* Resplandor adicional para seres muy poderosos */
+.vitruvian-container.high-power {
+  box-shadow:
+    var(--shadow-deep),
+    0 0 30px rgba(212, 175, 55, 0.3),
+    inset 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+/* Efecto de chispas para creatividad alta */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+}
+
+.creativity-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+

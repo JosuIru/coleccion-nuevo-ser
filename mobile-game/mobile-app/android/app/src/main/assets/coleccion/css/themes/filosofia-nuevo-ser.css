@@ -1,0 +1,372 @@
+/* ============================================================================
+   TEMA: FILOSOFÍA DEL NUEVO SER
+   ============================================================================
+   Tema filosófico con geometría abstracta y colores purple profundos
+   ============================================================================ */
+
+/* ==========================================================================
+   VARIABLES CSS - DARK MODE
+   ========================================================================== */
+body.theme-dark.theme-filosofia-nuevo-ser {
+  --color-primary: #9333ea;         /* purple-600 */
+  --color-secondary: #a855f7;       /* purple-500 */
+  --color-accent: #fbbf24;          /* amber-400 */
+  --color-background: #1e1b4b;      /* indigo-950 */
+  --color-background-secondary: #312e81; /* indigo-900 */
+  --color-text: #e9d5ff;            /* purple-200 */
+  --color-text-secondary: #d8b4fe;  /* purple-300 */
+  --color-border: #7c3aed;          /* purple-600 */
+}
+
+/* ==========================================================================
+   VARIABLES CSS - LIGHT MODE
+   ========================================================================== */
+body.theme-light.theme-filosofia-nuevo-ser {
+  --color-primary: #7c3aed;         /* purple-600 */
+  --color-secondary: #9333ea;       /* purple-600 */
+  --color-accent: #d97706;          /* amber-600 */
+  --color-background: #faf5ff;      /* purple-50 */
+  --color-background-secondary: #f3e8ff; /* purple-100 */
+  --color-text: #5b21b6;            /* purple-800 */
+  --color-text-secondary: #6b21a8;  /* purple-700 */
+  --color-border: #c084fc;          /* purple-400 */
+}
+
+/* ==========================================================================
+   FONDO CON PATRÓN GEOMÉTRICO - DARK MODE
+   ========================================================================== */
+body.theme-dark.theme-filosofia-nuevo-ser {
+  background: #1e1b4b;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-dark.theme-filosofia-nuevo-ser::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(30deg, #9333ea15 12%, transparent 12.5%, transparent 87%, #9333ea15 87.5%, #9333ea15),
+    linear-gradient(150deg, #9333ea15 12%, transparent 12.5%, transparent 87%, #9333ea15 87.5%, #9333ea15),
+    linear-gradient(30deg, #9333ea15 12%, transparent 12.5%, transparent 87%, #9333ea15 87.5%, #9333ea15),
+    linear-gradient(150deg, #9333ea15 12%, transparent 12.5%, transparent 87%, #9333ea15 87.5%, #9333ea15),
+    linear-gradient(60deg, #a855f710 25%, transparent 25.5%, transparent 75%, #a855f710 75%, #a855f710),
+    linear-gradient(60deg, #a855f710 25%, transparent 25.5%, transparent 75%, #a855f710 75%, #a855f710);
+  background-size:
+    80px 140px,
+    80px 140px,
+    80px 140px,
+    80px 140px,
+    40px 70px,
+    40px 70px;
+  background-position:
+    0 0,
+    40px 70px,
+    40px 70px,
+    0 0,
+    0 0,
+    40px 70px;
+  opacity: 0.4;
+  z-index: -1;
+  pointer-events: none;
+  animation: geometricFlow 120s linear infinite;
+}
+
+/* Fondo claro - LIGHT MODE */
+body.theme-light.theme-filosofia-nuevo-ser {
+  background: #faf5ff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-light.theme-filosofia-nuevo-ser::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(30deg, #9333ea08 12%, transparent 12.5%, transparent 87%, #9333ea08 87.5%, #9333ea08),
+    linear-gradient(150deg, #9333ea08 12%, transparent 12.5%, transparent 87%, #9333ea08 87.5%, #9333ea08),
+    linear-gradient(30deg, #9333ea08 12%, transparent 12.5%, transparent 87%, #9333ea08 87.5%, #9333ea08),
+    linear-gradient(150deg, #9333ea08 12%, transparent 12.5%, transparent 87%, #9333ea08 87.5%, #9333ea08),
+    linear-gradient(60deg, #a855f705 25%, transparent 25.5%, transparent 75%, #a855f705 75%, #a855f705),
+    linear-gradient(60deg, #a855f705 25%, transparent 25.5%, transparent 75%, #a855f705 75%, #a855f705);
+  background-size:
+    80px 140px,
+    80px 140px,
+    80px 140px,
+    80px 140px,
+    40px 70px,
+    40px 70px;
+  background-position:
+    0 0,
+    40px 70px,
+    40px 70px,
+    0 0,
+    0 0,
+    40px 70px;
+  opacity: 0.25;
+  z-index: -1;
+  pointer-events: none;
+  animation: geometricFlow 120s linear infinite;
+}
+
+@keyframes geometricFlow {
+  0% {
+    background-position:
+      0 0,
+      40px 70px,
+      40px 70px,
+      0 0,
+      0 0,
+      40px 70px;
+  }
+  100% {
+    background-position:
+      80px 140px,
+      120px 210px,
+      120px 210px,
+      80px 140px,
+      40px 70px,
+      80px 140px;
+  }
+}
+
+/* Animación para elementos filosóficos */
+@keyframes thoughtPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+/* Efecto de pensamiento profundo en tarjetas */
+.theme-filosofia-nuevo-ser .card,
+.theme-filosofia-nuevo-ser .chapter-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .card:hover,
+.theme-dark.theme-filosofia-nuevo-ser .chapter-card:hover {
+  box-shadow: 0 10px 40px -10px rgba(147, 51, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .card:hover,
+.theme-light.theme-filosofia-nuevo-ser .chapter-card:hover {
+  box-shadow: 0 10px 40px -10px rgba(147, 51, 234, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Estilo para reflexiones críticas - modo oscuro */
+.theme-dark.theme-filosofia-nuevo-ser .critical-reflections {
+  border-left: 4px solid #9333ea;
+  background: linear-gradient(135deg, #9333ea10 0%, #7c3aed10 100%);
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .critical-reflections textarea {
+  background: rgba(30, 27, 75, 0.6);
+  border-color: #7c3aed;
+  color: #e9d5ff;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .critical-reflections textarea:focus {
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+}
+
+/* Estilo para reflexiones críticas - modo claro */
+.theme-light.theme-filosofia-nuevo-ser .critical-reflections {
+  border-left: 4px solid #9333ea;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .critical-reflections textarea {
+  background: white;
+  border-color: #c084fc;
+  color: #1e293b;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .critical-reflections textarea:focus {
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+}
+
+/* Botones con estilo filosófico */
+.theme-dark.theme-filosofia-nuevo-ser .btn-primary {
+  background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+  border-color: #9333ea;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .btn-primary:hover {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.4);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .btn-primary {
+  background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+  border-color: #9333ea;
+  color: white;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .btn-primary:hover {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.3);
+}
+
+/* Enlaces con color purple */
+.theme-dark.theme-filosofia-nuevo-ser a {
+  color: #c084fc;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser a:hover {
+  color: #e9d5ff;
+}
+
+.theme-light.theme-filosofia-nuevo-ser a {
+  color: #7c3aed;
+}
+
+.theme-light.theme-filosofia-nuevo-ser a:hover {
+  color: #9333ea;
+}
+
+/* Headings con estilo filosófico */
+.theme-dark.theme-filosofia-nuevo-ser h1,
+.theme-dark.theme-filosofia-nuevo-ser h2,
+.theme-dark.theme-filosofia-nuevo-ser h3 {
+  color: #e9d5ff;
+  text-shadow: 0 2px 10px rgba(147, 51, 234, 0.3);
+}
+
+.theme-light.theme-filosofia-nuevo-ser h1,
+.theme-light.theme-filosofia-nuevo-ser h2,
+.theme-light.theme-filosofia-nuevo-ser h3 {
+  color: #5b21b6;
+}
+
+/* Badges para dificultad de ejercicios */
+.theme-filosofia-nuevo-ser .badge-principiante {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.theme-filosofia-nuevo-ser .badge-intermedio {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.theme-filosofia-nuevo-ser .badge-avanzado {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Efectos de brillo sutil en bordes */
+.theme-dark.theme-filosofia-nuevo-ser .border-accent {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .border-accent {
+  border-color: #c084fc !important;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
+}
+
+/* Scrollbar personalizada */
+.theme-dark.theme-filosofia-nuevo-ser ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9333ea 0%, #7c3aed 100%);
+}
+
+.theme-light.theme-filosofia-nuevo-ser ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%);
+}
+
+/* Código y bloques de cita */
+.theme-dark.theme-filosofia-nuevo-ser code,
+.theme-dark.theme-filosofia-nuevo-ser pre {
+  background: rgba(147, 51, 234, 0.1);
+  border-color: #7c3aed;
+}
+
+.theme-light.theme-filosofia-nuevo-ser code,
+.theme-light.theme-filosofia-nuevo-ser pre {
+  background: #f3e8ff;
+  border-color: #c084fc;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser blockquote {
+  border-left-color: #9333ea;
+  background: rgba(147, 51, 234, 0.05);
+}
+
+.theme-light.theme-filosofia-nuevo-ser blockquote {
+  border-left-color: #9333ea;
+  background: #faf5ff;
+}
+
+/* Prácticas inline - modo oscuro */
+.theme-dark.theme-filosofia-nuevo-ser .inline-practice {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(124, 58, 237, 0.1) 100%);
+  border-left-color: #9333ea;
+  border-width: 4px;
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .inline-practice:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.15) 100%);
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
+  transform: translateX(2px);
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .inline-practice-title {
+  color: #e9d5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .practice-icon {
+  color: #a855f7;
+  font-size: 1.3em;
+  animation: thoughtPulse 3s ease-in-out infinite;
+}
+
+.theme-dark.theme-filosofia-nuevo-ser .inline-practice-content {
+  color: #d8b4fe;
+}
+
+/* Prácticas inline - modo claro */
+.theme-light.theme-filosofia-nuevo-ser .inline-practice {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-left-color: #9333ea;
+  border-width: 4px;
+  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.15);
+  transition: all 0.3s ease;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .inline-practice:hover {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+  transform: translateX(2px);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .inline-practice-title {
+  color: #5b21b6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .practice-icon {
+  color: #7c3aed;
+  font-size: 1.3em;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .inline-practice-content {
+  color: #6b21a8;
+}

@@ -1,0 +1,137 @@
+{
+  "id": "tierra-que-despierta",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-09",
+
+  "theme": {
+    "name": "Earth Awakening",
+    "primary": "#059669",
+    "secondary": "#84cc16",
+    "accent": "#f59e0b",
+    "background": "#0f172a",
+    "backgroundSecondary": "#1e293b",
+    "text": "#e2e8f0",
+    "textSecondary": "#cbd5e1",
+    "border": "#334155",
+    "gradient": "from-emerald-950 via-green-950 to-lime-950"
+  },
+
+  "ui": {
+    "showStarfield": false,
+    "animationType": "organic",
+    "animationSpeed": "slow",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 32,
+      "paragraph": 16
+    }
+  },
+
+  "features": {
+    "meditations": {
+      "enabled": true,
+      "audioSupport": true,
+      "guidedMode": true,
+      "timerMode": true,
+      "backgroundMusic": true
+    },
+    "exercises": {
+      "enabled": true,
+      "types": ["reflection", "meditation", "observation", "practice", "sit-spot", "walking", "journaling", "ritual"],
+      "trackCompletion": true
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": true
+    },
+    "aiChat": {
+      "enabled": true,
+      "contextFile": "ai/contexts/tierra-que-despierta.txt",
+      "systemPrompt": "Eres un guía de ecología profunda especializado en 'La Tierra que Despierta'. Tu función es acompañar al lector en su proceso de reconexión con la Tierra, integrando filosofía ecológica, prácticas contemplativas y acción transformadora. Mantén un tono profundo pero accesible, compasivo con el dolor ecológico, y orientado hacia la esperanza activa.",
+      "modes": {
+        "default": {
+          "name": "Guía Ecológico",
+          "tone": "compassionate",
+          "focus": "reconnection"
+        },
+        "grief": {
+          "name": "Acompañante en el Duelo",
+          "tone": "gentle",
+          "focus": "emotional-support"
+        },
+        "action": {
+          "name": "Facilitador de Acción",
+          "tone": "empowering",
+          "focus": "practical-guidance"
+        }
+      },
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackExercises": true,
+      "trackSitSpotDays": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/tierra-que-despierta/assets/resources.json"
+    }
+  },
+
+  "content": {
+    "sourceFile": "books/tierra-que-despierta/book.json",
+    "dataStructure": "standard",
+    "migrationNeeded": false
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "intermediate",
+    "recommendedPace": "slow",
+    "category": "ecology",
+    "tags": ["ecología profunda", "reconexión", "crisis climática", "Gaia", "deep ecology", "activismo", "prácticas contemplativas", "duelo ecológico"],
+    "complementaryBooks": ["codigo-despertar"],
+    "practiceOriented": true,
+    "requiresOutdoorAccess": true
+  },
+
+  "specialFeatures": {
+    "sitSpotTracker": {
+      "enabled": true,
+      "goalDays": 30,
+      "reminderTime": "08:00",
+      "allowNotes": true,
+      "allowPhotos": false
+    },
+    "griefWork": {
+      "enabled": true,
+      "safeSpaceDisclaimer": true,
+      "emotionalSupportResources": true
+    },
+    "communityPractices": {
+      "enabled": true,
+      "groupExercises": true,
+      "ritualGuides": true
+    }
+  }
+}

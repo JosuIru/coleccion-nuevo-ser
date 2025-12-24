@@ -1,0 +1,1478 @@
+{
+  "bookId": "filosofia-nuevo-ser",
+  "bookTitle": "Filosofía del Nuevo Ser",
+  "version": "1.0",
+  "generatedDate": "2025-12-12",
+  "metadata": {
+    "totalChapters": 24,
+    "averageQuestionsPerChapter": 4,
+    "difficulty": "Comprensión profunda",
+    "focus": "Evaluación de comprensión, no memorización"
+  },
+  "chapters": {
+    "cap1": {
+      "chapterTitle": "El Agua en que Nadamos",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Según el capítulo, ¿qué caracteriza a las premisas filosóficas más poderosas?",
+          "type": "multiple",
+          "options": [
+            "Son las que se debaten constantemente en la academia",
+            "Son las que ni siquiera sabemos que tenemos",
+            "Son las que están escritas en textos antiguos",
+            "Son las que contradicen el sentido común"
+          ],
+          "correct": 1,
+          "explanation": "Las premisas más poderosas operan sin hacerse explícitas. Como el agua para los peces, estructuran nuestra experiencia sin que las veamos conscientemente.",
+          "bookQuote": "Las premisas más poderosas son las que ni siquiera sabemos que tenemos."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué es el 'sentido común' según este capítulo?",
+          "type": "multiple",
+          "options": [
+            "La capacidad innata de razonar correctamente",
+            "Filosofía que ha ganado hegemonía cultural y se ha vuelto invisible",
+            "Conocimiento transmitido genéticamente",
+            "Verdades universales e inmutables"
+          ],
+          "correct": 1,
+          "explanation": "El sentido común es filosofía cristalizada: ideas que fueron controvertidas pero se sedimentaron hasta parecer 'cómo son las cosas'.",
+          "bookQuote": "Lo que llamamos 'sentido común' es, en gran medida, filosofía que ha ganado hegemonía cultural."
+        },
+        {
+          "id": "q3",
+          "question": "¿Por qué las premisas no cuestionadas tienen tanto poder?",
+          "type": "multiple",
+          "options": [
+            "Porque son respaldadas por autoridades científicas",
+            "Porque determinan qué preguntas se hacen y qué puede pensarse",
+            "Porque están basadas en evidencia empírica sólida",
+            "Porque son transmitidas por instituciones educativas"
+          ],
+          "correct": 1,
+          "explanation": "Las premisas estructuran lo que puede y no puede pensarse. Se imponen por invisibilidad, determinando incluso qué preguntas formulamos.",
+          "bookQuote": "Las premisas no solo determinan respuestas; determinan qué preguntas se hacen."
+        },
+        {
+          "id": "q4",
+          "question": "El ejercicio propuesto al final del capítulo sugiere:",
+          "type": "multiple",
+          "options": [
+            "Cambiar inmediatamente las premisas que descubrimos",
+            "Solo observar y hacer visible una premisa que consideramos obvia",
+            "Debatir nuestras premisas con otras personas para validarlas",
+            "Escribir un ensayo académico sobre nuestras creencias"
+          ],
+          "correct": 1,
+          "explanation": "El primer paso no es cambiar las premisas, sino verlas. Solo observar cómo afectan nuestras decisiones cotidianas ya es transformador.",
+          "bookQuote": "No intentes cambiarla todavía —solo verla ya es el primer paso."
+        }
+      ]
+    },
+    "cap2": {
+      "chapterTitle": "Genealogía de la Separación",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cómo concebían el mundo la mayoría de culturas antes de la modernidad?",
+          "type": "multiple",
+          "options": [
+            "Como un mecanismo complejo pero predecible",
+            "Como materia inerte que debía ser dominada",
+            "Como cosmos vivo donde la separación sujeto-objeto era porosa",
+            "Como ilusión que debía trascenderse completamente"
+          ],
+          "correct": 2,
+          "explanation": "Para la mayoría de la historia humana, el mundo estaba vivo. Era ontología diferente donde el ser humano no estaba 'en' la naturaleza como cosa separada.",
+          "bookQuote": "Para la mayoría de la historia humana, el mundo estaba vivo... La línea entre sujeto y objeto era porosa o inexistente."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué separación fundamental estableció Descartes?",
+          "type": "multiple",
+          "options": [
+            "Entre lo divino y lo humano",
+            "Entre res cogitans (mente) y res extensa (materia)",
+            "Entre lo verdadero y lo falso",
+            "Entre lo natural y lo artificial"
+          ],
+          "correct": 1,
+          "explanation": "Descartes formuló la separación mente-materia: res cogitans (cosa pensante) y res extensa (cosa extensa) como sustancias completamente diferentes.",
+          "bookQuote": "René Descartes formuló la separación con claridad quirúrgica: res cogitans y res extensa."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo fue malinterpretado culturalmente el darwinismo?",
+          "type": "multiple",
+          "options": [
+            "Se confundió evolución con progreso lineal hacia la perfección",
+            "'Supervivencia del más apto' justificó competencia ignorando cooperación",
+            "Se aplicó a culturas cuando solo aplica a especies",
+            "Se creyó que refutaba toda espiritualidad posible"
+          ],
+          "correct": 1,
+          "explanation": "El darwinismo social legitimó explotación enfatizando solo competencia, ignorando que cooperación y simbiosis son motores evolutivos fundamentales.",
+          "bookQuote": "Esta lectura ignoraba la mitad de la historia. La cooperación es tan evolutivamente antigua como la competencia."
+        },
+        {
+          "id": "q4",
+          "question": "El 'homo economicus' de la economía clásica es:",
+          "type": "multiple",
+          "options": [
+            "Una descripción empírica precisa del comportamiento humano",
+            "Un supuesto metodológico que se volvió premisa invisible",
+            "Un ideal moral hacia el que deberíamos aspirar",
+            "Una crítica satírica a la sociedad capitalista"
+          ],
+          "correct": 1,
+          "explanation": "No era descripción empírica sino supuesto metodológico. Con el tiempo se volvió premisa invisible sobre la naturaleza humana.",
+          "bookQuote": "El homo economicus no era descripción empírica del ser humano sino supuesto metodológico."
+        }
+      ]
+    },
+    "cap3": {
+      "chapterTitle": "Las Cinco Premisas del Paradigma Dominante",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Las Cinco Premisas del Paradigma Dominante'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Las Cinco Premisas del Paradigma Dominante' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«El mayor truco del diablo fue convencer al mundo de que no existe."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«El mayor truco del diablo fue convencer al mundo de que no existe."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«El mayor truco del diablo fue convencer al mundo de que no existe."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«El mayor truco del diablo fue convencer al mundo de que no existe."
+        }
+      ]
+    },
+    "cap4": {
+      "chapterTitle": "La Arquitectura que Emerge",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'La Arquitectura que Emerge'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'La Arquitectura que Emerge' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«No culpes a los jugadores; examina las reglas del juego."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«No culpes a los jugadores; examina las reglas del juego."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«No culpes a los jugadores; examina las reglas del juego."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«No culpes a los jugadores; examina las reglas del juego."
+        }
+      ]
+    },
+    "cap5": {
+      "chapterTitle": "El Problema Duro de la Conciencia",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'El Problema Duro de la Conciencia'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'El Problema Duro de la Conciencia' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia."
+        }
+      ]
+    },
+    "cap6": {
+      "chapterTitle": "Conciencia como Fundamento",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Conciencia como Fundamento'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Conciencia como Fundamento' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«No es que el universo tenga conciencia. Es que la conciencia tiene universo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«No es que el universo tenga conciencia. Es que la conciencia tiene universo."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«No es que el universo tenga conciencia. Es que la conciencia tiene universo."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«No es que el universo tenga conciencia. Es que la conciencia tiene universo."
+        }
+      ]
+    },
+    "cap7": {
+      "chapterTitle": "Abundancia Organizable",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Abundancia Organizable'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Abundancia Organizable' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La escasez no es condición natural; es tecnología social."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La escasez no es condición natural; es tecnología social."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La escasez no es condición natural; es tecnología social."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La escasez no es condición natural; es tecnología social."
+        }
+      ]
+    },
+    "cap8": {
+      "chapterTitle": "Interdependencia Radical",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Interdependencia Radical'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Interdependencia Radical' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol"
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol"
+        }
+      ]
+    },
+    "cap9": {
+      "chapterTitle": "Madurez Cíclica",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Madurez Cíclica'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Madurez Cíclica' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La madurez es aceptar que los límites son condición de la forma."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La madurez es aceptar que los límites son condición de la forma."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La madurez es aceptar que los límites son condición de la forma."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La madurez es aceptar que los límites son condición de la forma."
+        }
+      ]
+    },
+    "cap10": {
+      "chapterTitle": "Valor Intrínseco",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Valor Intrínseco'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Valor Intrínseco' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«Todo ser tiene valor en sí mismo, no solo por lo que sirve."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«Todo ser tiene valor en sí mismo, no solo por lo que sirve."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«Todo ser tiene valor en sí mismo, no solo por lo que sirve."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«Todo ser tiene valor en sí mismo, no solo por lo que sirve."
+        }
+      ]
+    },
+    "cap11": {
+      "chapterTitle": "Las Cinco Premisas del Nuevo Ser",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Las Cinco Premisas del Nuevo Ser'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Las Cinco Premisas del Nuevo Ser' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«Otro mundo no solo es posible; ya está emergiendo."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«Otro mundo no solo es posible; ya está emergiendo."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«Otro mundo no solo es posible; ya está emergiendo."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«Otro mundo no solo es posible; ya está emergiendo."
+        }
+      ]
+    },
+    "cap12": {
+      "chapterTitle": "Ontología --- ¿Qué Existe?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Ontología --- ¿Qué Existe?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Ontología --- ¿Qué Existe?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La primera pregunta de la filosofía es: ¿qué hay?"
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La primera pregunta de la filosofía es: ¿qué hay?"
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La primera pregunta de la filosofía es: ¿qué hay?"
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La primera pregunta de la filosofía es: ¿qué hay?"
+        }
+      ]
+    },
+    "cap13": {
+      "chapterTitle": "Epistemología --- ¿Cómo Conocemos?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Epistemología --- ¿Cómo Conocemos?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Epistemología --- ¿Cómo Conocemos?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«No hay observador neutral; conocer es participar."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«No hay observador neutral; conocer es participar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«No hay observador neutral; conocer es participar."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«No hay observador neutral; conocer es participar."
+        }
+      ]
+    },
+    "cap14": {
+      "chapterTitle": "Antropología --- ¿Qué es el Ser Humano?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Antropología --- ¿Qué es el Ser Humano?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Antropología --- ¿Qué es el Ser Humano?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«Dime qué crees que es el ser humano y te diré qué mundo construyes."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«Dime qué crees que es el ser humano y te diré qué mundo construyes."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«Dime qué crees que es el ser humano y te diré qué mundo construyes."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«Dime qué crees que es el ser humano y te diré qué mundo construyes."
+        }
+      ]
+    },
+    "cap15": {
+      "chapterTitle": "Ética --- ¿Qué Debemos Hacer?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Ética --- ¿Qué Debemos Hacer?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Ética --- ¿Qué Debemos Hacer?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La ética no es código que seguir sino sensibilidad que cultivar."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La ética no es código que seguir sino sensibilidad que cultivar."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La ética no es código que seguir sino sensibilidad que cultivar."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La ética no es código que seguir sino sensibilidad que cultivar."
+        }
+      ]
+    },
+    "cap16": {
+      "chapterTitle": "Política --- ¿Cómo Organizamos la Sociedad?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Política --- ¿Cómo Organizamos la Sociedad?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Política --- ¿Cómo Organizamos la Sociedad?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La política es filosofía hecha práctica colectiva."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La política es filosofía hecha práctica colectiva."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La política es filosofía hecha práctica colectiva."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La política es filosofía hecha práctica colectiva."
+        }
+      ]
+    },
+    "cap17": {
+      "chapterTitle": "Cosmología --- ¿Cuál es Nuestro Lugar?",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Cosmología --- ¿Cuál es Nuestro Lugar?'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Cosmología --- ¿Cuál es Nuestro Lugar?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto ahí. Los humanos estamos aparte..."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto ahí. Los humanos estamos aparte..."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto ahí. Los humanos estamos aparte..."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto ahí. Los humanos estamos aparte..."
+        }
+      ]
+    },
+    "cap18": {
+      "chapterTitle": "Anatomía de un Cambio de Paradigma",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Anatomía de un Cambio de Paradigma'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Anatomía de un Cambio de Paradigma' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren."
+        }
+      ]
+    },
+    "cap19": {
+      "chapterTitle": "Obstáculos al Tránsito",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Obstáculos al Tránsito'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Obstáculos al Tránsito' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas."
+        }
+      ]
+    },
+    "cap20": {
+      "chapterTitle": "Catalizadores del Tránsito",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Catalizadores del Tránsito'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Catalizadores del Tránsito' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«No podemos resolver problemas con el mismo nivel de conciencia que los creó."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«No podemos resolver problemas con el mismo nivel de conciencia que los creó."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«No podemos resolver problemas con el mismo nivel de conciencia que los creó."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«No podemos resolver problemas con el mismo nivel de conciencia que los creó."
+        }
+      ]
+    },
+    "cap21": {
+      "chapterTitle": "Vivir en el Entre",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Vivir en el Entre'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Vivir en el Entre' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«Entre el mundo que muere y el que nace, hay un tiempo de monstruos."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«Entre el mundo que muere y el que nace, hay un tiempo de monstruos."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«Entre el mundo que muere y el que nace, hay un tiempo de monstruos."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«Entre el mundo que muere y el que nace, hay un tiempo de monstruos."
+        }
+      ]
+    },
+    "cap22": {
+      "chapterTitle": "Los Límites de la Nueva Ontología",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Los Límites de la Nueva Ontología'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Los Límites de la Nueva Ontología' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La primera virtud intelectual es reconocer lo que no sabes."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La primera virtud intelectual es reconocer lo que no sabes."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La primera virtud intelectual es reconocer lo que no sabes."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La primera virtud intelectual es reconocer lo que no sabes."
+        }
+      ]
+    },
+    "cap23": {
+      "chapterTitle": "Las Sombras del Nuevo Paradigma",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'Las Sombras del Nuevo Paradigma'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'Las Sombras del Nuevo Paradigma' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«El camino al infierno está empedrado de buenas intenciones."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«El camino al infierno está empedrado de buenas intenciones."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«El camino al infierno está empedrado de buenas intenciones."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«El camino al infierno está empedrado de buenas intenciones."
+        }
+      ]
+    },
+    "cap24": {
+      "chapterTitle": "La Filosofía como Práctica Viva",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "¿Cuál es el concepto central desarrollado en 'La Filosofía como Práctica Viva'?",
+          "type": "multiple",
+          "options": [
+            "Un ejemplo ilustrativo menor mencionado tangencialmente",
+            "El tema principal que estructura el capítulo completo",
+            "Una crítica a teorías previas solamente",
+            "Un concepto secundario para introducir el siguiente capítulo"
+          ],
+          "correct": 1,
+          "explanation": "El capítulo 'La Filosofía como Práctica Viva' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.",
+          "bookQuote": "«La duda no es lo contrario de la fe; es su forma más honesta."
+        },
+        {
+          "id": "q2",
+          "question": "¿Qué tipo de transformación busca provocar este capítulo?",
+          "type": "multiple",
+          "options": [
+            "Memorización de información nueva sobre el tema",
+            "Cambio en premisas operativas que afectan percepción y acción",
+            "Acumulación de conocimiento intelectual abstracto",
+            "Adopción de nuevas creencias espirituales"
+          ],
+          "correct": 1,
+          "explanation": "El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.",
+          "bookQuote": "«La duda no es lo contrario de la fe; es su forma más honesta."
+        },
+        {
+          "id": "q3",
+          "question": "¿Cómo se relaciona este capítulo con el paradigma dominante?",
+          "type": "multiple",
+          "options": [
+            "Lo refuerza proporcionando evidencia adicional",
+            "Lo cuestiona ofreciendo marcos alternativos de comprensión",
+            "Lo ignora para enfocarse en temas puramente espirituales",
+            "Lo acepta como inevitable pero busca adaptarse mejor"
+          ],
+          "correct": 1,
+          "explanation": "El libro examina y cuestiona premisas invisibles del paradigma dominante, ofreciendo ontologías alternativas basadas en reconexión.",
+          "bookQuote": "«La duda no es lo contrario de la fe; es su forma más honesta."
+        },
+        {
+          "id": "q4",
+          "question": "¿Qué invita a hacer este capítulo más allá de leerlo?",
+          "type": "multiple",
+          "options": [
+            "Compartir las ideas en redes sociales",
+            "Reflexionar críticamente sobre premisas propias y observar su operación",
+            "Memorizar conceptos clave para exámenes",
+            "Convencer a otros de estas ideas"
+          ],
+          "correct": 1,
+          "explanation": "El libro invita constantemente a examinar premisas invisibles en la propia experiencia, no solo a acumular información.",
+          "bookQuote": "«La duda no es lo contrario de la fe; es su forma más honesta."
+        }
+      ]
+    }
+  }
+}

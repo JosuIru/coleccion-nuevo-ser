@@ -1,0 +1,289 @@
+/* ============================================================================
+   MICROSOCIETIES - Estilos para Leaderboards y Sharing
+   ============================================================================ */
+
+/* Variables de color */
+:root {
+  --micro-primary: #d4af37;
+  --micro-border: #8b7355;
+  --micro-bg-primary: rgba(139, 115, 85, 0.2);
+  --micro-bg-secondary: rgba(0, 0, 0, 0.3);
+  --micro-text: #f4e9d8;
+  --micro-medal-gold: #ffd700;
+  --micro-medal-silver: #c0c0c0;
+  --micro-medal-bronze: #cd7f32;
+}
+
+/* Leaderboards Container */
+.leaderboards-container {
+  background: var(--micro-bg-primary);
+  border: 2px solid var(--micro-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.leaderboards-container > h2 {
+  color: var(--micro-primary);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+  margin-bottom: 2rem;
+}
+
+.leaderboard-section h3 {
+  color: var(--micro-primary);
+  margin-bottom: 1rem;
+}
+
+.leaderboard-entries {
+  background: var(--micro-bg-secondary);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+/* Empty State */
+.leaderboard-empty {
+  color: var(--micro-text);
+  opacity: 0.6;
+  text-align: center;
+}
+
+/* Leaderboard Entry */
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--micro-bg-primary);
+  border-left: 4px solid var(--micro-border);
+  border-radius: 4px;
+}
+
+.leaderboard-entry.rank-1 {
+  border-left-color: var(--micro-medal-gold);
+}
+
+.leaderboard-entry.rank-2 {
+  border-left-color: var(--micro-medal-silver);
+}
+
+.leaderboard-entry.rank-3 {
+  border-left-color: var(--micro-medal-bronze);
+}
+
+.leaderboard-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.leaderboard-rank {
+  color: var(--micro-border);
+  font-weight: 700;
+  font-size: 1.2rem;
+  min-width: 30px;
+}
+
+.leaderboard-entry.rank-1 .leaderboard-rank {
+  color: var(--micro-medal-gold);
+}
+
+.leaderboard-entry.rank-2 .leaderboard-rank {
+  color: var(--micro-medal-silver);
+}
+
+.leaderboard-entry.rank-3 .leaderboard-rank {
+  color: var(--micro-medal-bronze);
+}
+
+.leaderboard-player-name {
+  color: var(--micro-text);
+  font-weight: 600;
+}
+
+.leaderboard-meta {
+  color: var(--micro-text);
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.leaderboard-score {
+  color: var(--micro-primary);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+/* Sharing Panel */
+.sharing-panel {
+  background: var(--micro-bg-primary);
+  border: 2px solid var(--micro-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.sharing-panel h3 {
+  color: var(--micro-primary);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.sharing-panel h4 {
+  color: var(--micro-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Sharing Stats */
+.sharing-stats {
+  background: var(--micro-bg-secondary);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sharing-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  color: var(--micro-text);
+}
+
+/* Sharing Sections */
+.sharing-code-section,
+.sharing-url-section,
+.sharing-qr-section {
+  background: var(--micro-bg-secondary);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sharing-code-display {
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--micro-primary);
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 4px;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+.sharing-url-display {
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--micro-text);
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  word-break: break-all;
+  margin-bottom: 0.5rem;
+}
+
+.sharing-qr-container {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.sharing-qr-image {
+  max-width: 200px;
+  height: auto;
+  border-radius: 4px;
+  background: white;
+  padding: 0.5rem;
+}
+
+/* Sharing Labels */
+.sharing-label {
+  color: var(--micro-text);
+  font-weight: 600;
+}
+
+/* Sharing Buttons */
+.sharing-button {
+  background: var(--micro-primary);
+  color: #1a1410;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.sharing-button:hover {
+  background: #e5c04a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+}
+
+.sharing-button:active {
+  transform: translateY(0);
+}
+
+.sharing-button-copy-code {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #b87333 100%);
+  color: #0a0a0f;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sharing-button-copy-url {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c2e 100%);
+  color: var(--micro-text);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sharing-button-export {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--micro-bg-primary);
+  color: var(--micro-text);
+  border: 2px solid var(--micro-border);
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .leaderboards-container,
+  .sharing-panel {
+    padding: 1rem;
+  }
+
+  .sharing-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leaderboard-entry {
+    padding: 0.5rem;
+  }
+
+  .leaderboard-score {
+    font-size: 1.1rem;
+  }
+
+  .sharing-code-display {
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+  }
+}

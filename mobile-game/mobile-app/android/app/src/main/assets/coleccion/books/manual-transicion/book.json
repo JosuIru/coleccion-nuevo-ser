@@ -1,0 +1,1459 @@
+{
+  "title": "Manual de Transición",
+  "subtitle": "De aquí a allá - Herramientas para construir el mundo que imaginamos",
+  "author": "J. Irurtzun",
+  "coAuthor": "& Claude",
+  "sections": [
+    {
+      "id": "prologo",
+      "title": "Prólogo",
+      "chapters": [
+        {
+          "id": "prologo",
+          "title": "La paradoja de la transición",
+          "epigraph": {
+            "text": "No podemos resolver nuestros problemas con el mismo pensamiento que usamos para crearlos.",
+            "author": "Albert Einstein"
+          },
+          "content": "El Manifiesto de la Conciencia Compartida imaginaba otro mundo posible. Este manual intenta responder la pregunta que el manifiesto dejó abierta: ¿cómo llegamos de aquí a allá?\n\nLa pregunta parece sencilla. No lo es.\n\nVivimos una paradoja fundamental. No podemos esperar a que el sistema actual colapse para construir alternativas --- el colapso puede ser demasiado destructivo, demasiado caótico, demasiado doloroso. Pero tampoco podemos construir lo nuevo desde dentro de lo viejo sin contaminarnos --- las lógicas del sistema actual tienen tendencia a infiltrarse en todo lo que tocamos.\n\nSi esperamos la revolución, morimos esperando. Si intentamos reformar el sistema, el sistema nos reforma a nosotros. ¿Hay salida?\n\nEste manual propone una tercera vía: la prefiguración.\n\n## Prefigurar: vivir ya como si\n\nPrefigurar significa construir, aquí y ahora, las formas de vida que deseamos para el futuro. No esperar a que las condiciones sean perfectas. No pedir permiso al sistema que queremos trascender. Simplemente empezar.\n\nCrear una cooperativa es prefigurar una economía sin patrones. Practicar la toma de decisiones por consenso es prefigurar una democracia sin dominación. Compartir recursos en comunidad es prefigurar una sociedad más allá del individualismo posesivo.\n\nLa prefiguración no es escapismo ni ingenuidad. Es estrategia. Cada experimento prefigurativo es un laboratorio donde aprendemos qué funciona y qué no. Cada comunidad que vive diferente es una demostración de que es posible. Cada herramienta alternativa que creamos expande el espacio de lo imaginable.\n\nY cuando suficientes personas prefiguran suficientes alternativas, algo cambia. No por decreto ni por revolución violenta, sino por acumulación de prácticas que hacen obsoleto lo viejo. Como decía Buckminster Fuller: «Nunca cambias las cosas luchando contra la realidad existente. Para cambiar algo, construye un modelo nuevo que haga obsoleto el modelo existente.»\n\n## Qué encontrarás en este manual\n\nEste no es un libro de teoría. Es una caja de herramientas.\n\nEncontrarás:\n\n**Cartografía del cambio:** cómo ocurren las transiciones sistémicas, dónde intervenir, quiénes ya están construyendo alternativas.\n\n**Nuevas formas de organización:** cooperativas, organizaciones sin jefes, commons, DAOs --- modelos que ya existen y funcionan.\n\n**Herramientas concretas:** económicas, de gobernanza, digitales, relacionales, interiores --- el kit para construir.\n\n**Escalas de intervención:** desde lo personal hasta lo planetario, pasando por comunidad, organización y política.\n\n**La política del mientras tanto:** cómo vivir dignamente en el sistema viejo mientras construyes el nuevo.\n\n## El hilo conductor: Conciencia en Red\n\nA lo largo del manual usaremos como caso de estudio central un proyecto real: Conciencia en Red --- una iniciativa tecnológica para la transformación social que encarna los principios del manifiesto.\n\nNo es el único ejemplo posible, ni el modelo perfecto. Pero es un laboratorio vivo donde se están probando muchas de las ideas que aquí se proponen: arquitectura nodal, economía multi-valor, gobernanza distribuida, tecnología ética, expansión espiral de lo local a lo global.\n\nSu «Código Genético» --- un documento que define los principios inmutables del ecosistema --- ofrece un modelo replicable: suficientemente concreto para ser útil, suficientemente abierto para adaptarse a contextos diversos.\n\nLo usaremos como ejemplo, no como dogma. Toma lo que te sirva, adapta lo que necesites, descarta lo que no resuene.\n\n## Cómo usar este manual\n\nNo tienes que leerlo de principio a fin. Cada capítulo es relativamente autónomo. Puedes:\n\n--- Ir directamente a la escala que te interesa (personal, comunitaria, organizacional, política)\n\n--- Buscar herramientas específicas según tu necesidad (gobernanza, economía, tecnología)\n\n--- Empezar por los casos de estudio que más te inspiren\n\n--- Leer la teoría del cambio (Parte I) para tener marco general\n\nLo importante no es absorber información sino empezar a actuar. Un paso pequeño en la dirección correcta vale más que cien páginas leídas y olvidadas.\n\nBienvenidos a la transición.",
+          "closingQuestion": "¿Qué paso pequeño puedes dar hoy en la dirección del mundo que imaginas?",
+          "exercises": [
+            {
+              "id": "ex-prologo-1",
+              "title": "Inventario de transiciones personales",
+              "duration": "30 minutos",
+              "description": "Reflexiona sobre las transiciones que has vivido en tu vida",
+              "steps": [
+                "Lista 3 transiciones importantes que hayas experimentado (cambio de trabajo, mudanza, cambio de relación, etc.)",
+                "Para cada una, identifica: ¿Qué terminó? ¿Qué comenzó? ¿Qué hubo en medio?",
+                "¿Qué recursos te ayudaron en cada transición?",
+                "¿Qué aprendiste que puedas aplicar a transiciones colectivas?"
+              ],
+              "reflection": "Las transiciones personales nos enseñan sobre las colectivas. La zona de incertidumbre entre lo viejo y lo nuevo es donde ocurre la verdadera transformación."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Transition Network",
+              "url": "https://transitionnetwork.org/",
+              "type": "organización",
+              "description": "Red global de iniciativas de transición local"
+            },
+            {
+              "title": "The Great Transition Initiative",
+              "url": "https://greattransition.org/",
+              "type": "think tank",
+              "description": "Investigación sobre escenarios de transición global"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-1",
+            "title": "Inventario de Transiciones Personales",
+            "duration": "45-60 minutos",
+            "difficulty": "Básico"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap18",
+            "chapterTitle": "La Invitación",
+            "relation": "La invitación al cambio"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parte1",
+      "title": "PARTE I",
+      "subtitle": "Cartografía del Cambio",
+      "chapters": [
+        {
+          "id": "cap1",
+          "title": "Anatomía de las transiciones históricas",
+          "epigraph": {
+            "text": "La historia no se repite, pero rima.",
+            "author": "Mark Twain"
+          },
+          "content": "Antes de intentar una transición, conviene estudiar las que ya ocurrieron. ¿Cómo pasó la humanidad del feudalismo al capitalismo? ¿Cómo se abolió la esclavitud? ¿Por qué algunas revoluciones triunfaron y otras fracasaron?\n\nNo buscamos recetas --- cada momento histórico es único. Buscamos patrones: dinámicas recurrentes que pueden informar nuestra estrategia.\n\n## Del feudalismo al capitalismo: la transición invisible\n\nLa transición del feudalismo al capitalismo no ocurrió por revolución súbita. Ocurrió durante siglos, casi invisiblemente, mientras el viejo sistema seguía funcionando.\n\nLos comerciantes medievales no se propusieron derrocar el feudalismo. Simplemente buscaban formas de hacer negocios que la estructura feudal no permitía. Crearon gremios, bancos, compañías comerciales --- instituciones nuevas que operaban en los intersticios del viejo orden.\n\nPoco a poco, estas instituciones crecieron. El dinero se volvió más importante que la tierra. Las ciudades crecieron como espacios de libertad relativa. Nuevas tecnologías (imprenta, navegación, manufactura) potenciaron las nuevas formas de organización.\n\nCuando finalmente cayeron las monarquías absolutas --- en revoluciones como la francesa --- el capitalismo ya estaba ahí, listo para tomar el relevo. No nació de la revolución; la precedió.\n\n**Patrón 1: Las transiciones exitosas construyen antes de destruir.**\n\nEl nuevo sistema se incuba dentro del viejo, creciendo en los márgenes, aprovechando las grietas. Cuando el viejo colapsa, el nuevo ya tiene masa crítica para ocupar el vacío.\n\n## La abolición de la esclavitud: cambio de conciencia\n\nDurante milenios, la esclavitud fue considerada natural e inevitable. Aristóteles la justificó filosóficamente. La Biblia la reguló sin condenarla. Economías enteras dependían de ella.\n\nY sin embargo, en apenas dos siglos, pasó de ser «sentido común» a ser crimen contra la humanidad. ¿Cómo?\n\nHubo factores económicos --- la industrialización hacía menos necesario el trabajo forzado. Hubo factores políticos --- las revoluciones democráticas contradecían la esclavitud. Pero hubo algo más: un cambio profundo en la conciencia colectiva.\n\nLos abolicionistas no solo lucharon en parlamentos. Contaron historias. Publicaron testimonios de esclavos fugados. Organizaron boicots al azúcar producido con mano esclava. Crearon símbolos (el medallón «¿No soy yo un hombre y un hermano?»). Cambiaron la imaginación moral de su época.\n\n**Patrón 2: El cambio de estructuras requiere cambio de conciencia.**\n\nLas instituciones se sostienen en creencias compartidas. Cambiar lo que la gente cree posible, deseable y justo es tan importante como cambiar leyes y estructuras.\n\n## Revoluciones que reprodujeron lo que combatían\n\nNo todas las transiciones salen bien. Algunas revoluciones terminan reproduciendo las estructuras que pretendían abolir.\n\nLa Revolución Francesa proclamó libertad, igualdad, fraternidad --- y produjo el Terror, y luego Napoleón. La Revolución Rusa prometía poder para los trabajadores --- y produjo el stalinismo. Múltiples revoluciones anticoloniales derrocaron imperios --- y crearon dictaduras locales.\n\n¿Qué falló? En cada caso, los revolucionarios tomaron el poder usando métodos del viejo sistema (violencia, centralización, vanguardia iluminada) y esos métodos contaminaron lo que construyeron. La forma de luchar prefiguró la forma de gobernar.\n\n**Patrón 3: Los medios prefiguran los fines.**\n\nSi queremos un mundo basado en cooperación, debemos practicar cooperación ahora. Si queremos un mundo sin dominación, no podemos construirlo mediante dominación. El camino es el destino.\n\n## Lecciones para hoy\n\nDe estas historias emergen principios que guiarán este manual:\n\n**1. Construir primero:** crear alternativas funcionales antes de que el viejo sistema colapse. No esperar la revolución; sembrar las semillas ahora.\n\n**2. Cambiar conciencia:** trabajar en las narrativas, los imaginarios, las creencias. Las estructuras no cambian si la mente que las habita no cambia.\n\n**3. Prefigurar:** que los medios encarnen los fines. Si queremos democracia, practicar democracia. Si queremos cooperación, cooperar.\n\n**4. Paciencia estratégica:** las transiciones profundas toman tiempo. Generaciones, a veces. Trabajar con horizonte largo sin perder urgencia.\n\n**5. Aprovechar las grietas:** el sistema actual tiene fisuras. Encontrarlas y expandirlas. Crecer en los márgenes hasta que los márgenes se vuelvan centro.",
+          "closingQuestion": "¿Qué grietas del sistema actual puedes aprovechar para construir alternativas?",
+          "exercises": [
+            {
+              "id": "ex-cap1-1",
+              "title": "Análisis de una transición histórica",
+              "duration": "45 minutos",
+              "description": "Estudia en profundidad una transición histórica",
+              "steps": [
+                "Elige una transición histórica que te interese (Revolución Industrial, caída del muro, fin del apartheid, etc.)",
+                "Investiga: ¿Cuánto duró? ¿Quiénes fueron los actores clave?",
+                "Identifica: ¿Qué condiciones previas la hicieron posible?",
+                "¿Hubo momentos de aceleración? ¿Cuáles fueron los catalizadores?",
+                "¿Qué resistencias hubo y cómo se superaron?"
+              ],
+              "reflection": "Las transiciones históricas raramente son lineales. Hay períodos de estancamiento, aceleración, retroceso y consolidación."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Multi-Level Perspective on Transitions",
+              "url": "https://transitionsnetwork.org/",
+              "type": "marco teórico",
+              "description": "Marco académico para entender transiciones socio-técnicas"
+            },
+            {
+              "title": "History of Social Movements (Wikipedia)",
+              "url": "https://en.wikipedia.org/wiki/Social_movement",
+              "type": "referencia",
+              "description": "Contexto histórico de movimientos de cambio social"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-2",
+            "title": "Análisis de una Transición Histórica",
+            "duration": "90-120 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap4",
+            "chapterTitle": "La Crisis como Síntoma",
+            "relation": "Comprender la crisis sistémica"
+          }
+        },
+        {
+          "id": "cap2",
+          "title": "Teoría del cambio sistémico",
+          "epigraph": {
+            "text": "No puedes entender un sistema observando solo sus partes. Las propiedades del sistema emergen de las relaciones.",
+            "author": "Donella Meadows"
+          },
+          "content": "Si queremos cambiar un sistema complejo como la sociedad, necesitamos entender cómo funcionan los sistemas complejos. Las ciencias de la complejidad ofrecen marcos útiles.\n\n## Los puntos de apalancamiento de Meadows\n\nDonella Meadows, pionera del pensamiento sistémico, identificó doce «puntos de apalancamiento» --- lugares donde intervenir en un sistema para producir cambio. Van de los menos a los más efectivos:\n\n**Nivel superficial (menos efectivo):**\n\n> --- Constantes, parámetros, números (cambiar un impuesto, un subsidio)\n>\n> --- Tamaño de buffers y stocks\n>\n> --- Estructura de flujos materiales\n\n**Nivel medio:**\n\n> --- Bucles de retroalimentación negativa (regulación)\n>\n> --- Bucles de retroalimentación positiva (motores de crecimiento)\n>\n> --- Flujos de información\n>\n> --- Reglas del sistema (incentivos, castigos, restricciones)\n\n**Nivel profundo (más efectivo):**\n\n> --- Poder de auto-organización del sistema\n>\n> --- Objetivos del sistema\n>\n> --- Paradigma o cosmovisión que sustenta el sistema\n>\n> --- Poder de trascender paradigmas\n\nLa mayoría de las políticas públicas operan en los niveles superficiales: ajustar un impuesto aquí, un subsidio allá. Producen cambios marginales que el sistema absorbe y neutraliza.\n\nEl cambio profundo ocurre cuando se tocan los niveles más profundos: los objetivos del sistema (¿crecimiento infinito o bienestar?), el paradigma subyacente (¿separación o interconexión?), y la capacidad de cuestionar cualquier paradigma.\n\n**Implicación: Trabajar simultáneamente en múltiples niveles.**\n\nCambiar parámetros (nivel superficial) mientras se cuestionan paradigmas (nivel profundo). Las reformas concretas crean espacio para los cambios de conciencia; los cambios de conciencia dan sentido a las reformas.\n\n## La teoría de los dos bucles\n\nEl Berkana Institute propone un modelo simple pero potente: los dos bucles.\n\nImagina dos curvas. Una desciende: es el sistema viejo, en declive. Otra asciende: es el sistema nuevo, emergiendo. Se cruzan en algún punto.\n\n**En el bucle descendente** (el sistema viejo) hay dos roles cruciales:\n\n> *--- Hospice workers:* quienes acompañan al sistema moribundo con compasión, ayudando a que muera dignamente sin causar más daño del necesario.\n>\n> *--- Illuminators:* quienes señalan lo que ya no funciona, haciendo visible la disfunción para que otros puedan verla.\n\n**En el bucle ascendente** (el sistema nuevo) hay otros roles:\n\n> *--- Pioneers:* quienes experimentan con lo nuevo, prueban alternativas, fallan rápido y aprenden.\n>\n> *--- Networkers:* quienes conectan los experimentos aislados, creando red, compartiendo aprendizajes, construyendo masa crítica.\n\nTodos los roles son necesarios. No todos tenemos que hacer lo mismo.\n\nAlgunas personas están llamadas a acompañar lo que muere (trabajar en instituciones en declive, suavizar las transiciones). Otras a crear lo nuevo (emprender alternativas, experimentar). Otras a conectar (tejer redes, facilitar diálogos). El cambio necesita todos estos roles operando simultáneamente.\n\n## Transiciones socio-técnicas: nichos, régimen, paisaje\n\nLa teoría de transiciones de Frank Geels ofrece otro marco útil, especialmente para cambios que involucran tecnología.\n\nImagina tres niveles:\n\n**Paisaje (landscape):** las grandes tendencias de largo plazo que nadie controla --- cambio climático, demografía, valores culturales profundos. Cambia lentamente pero ejerce presión sobre todo lo demás.\n\n**Régimen (regime):** el sistema dominante establecido --- tecnologías, instituciones, prácticas, normas que se refuerzan mutuamente. Es estable porque todos los elementos encajan entre sí. Difícil de cambiar precisamente por esa coherencia.\n\n**Nichos (niches):** espacios protegidos donde se incuban innovaciones radicales. Laboratorios, comunidades experimentales, proyectos piloto. Son pequeños pero es donde nace lo genuinamente nuevo.\n\nLas transiciones ocurren cuando:\n\n> 1. Presiones del paisaje desestabilizan el régimen (ej: crisis climática)\n>\n> 2. Innovaciones de nicho maduran y están listas para escalar\n>\n> 3. Se abren «ventanas de oportunidad» donde lo nuevo puede reemplazar lo viejo\n\n**Implicación: Cultivar nichos mientras se aprovechan las crisis del régimen.**\n\nNo podemos controlar el paisaje (las macro-tendencias). Pero podemos cultivar nichos robustos y estar listos para cuando el régimen entre en crisis. La preparación es todo.\n\n## ¿Dónde intervenir?\n\nCombinando estos marcos, emerge una estrategia:\n\n**1. Crear y fortalecer nichos:** espacios donde se experimenta con alternativas (cooperativas, comunidades intencionales, tecnologías éticas, monedas locales).\n\n**2. Conectar nichos entre sí:** para que los aprendizajes se compartan, los recursos fluyan, la masa crítica se acumule.\n\n**3. Influir en el régimen donde sea posible:** políticas públicas, regulación, narrativa mediática --- no para salvarlo sino para abrir espacio a las alternativas.\n\n**4. Trabajar en el nivel de paradigma:** educación, cultura, espiritualidad --- cambiar los supuestos profundos que sostienen el régimen.\n\n**5. Estar listos para las ventanas de oportunidad:** cuando las crisis abran brechas, tener alternativas maduras listas para escalar.",
+          "closingQuestion": "¿En qué nivel del sistema estás trabajando? ¿Qué rol de los dos bucles resuena contigo?",
+          "exercises": [
+            {
+              "id": "ex-cap2-1",
+              "title": "Mapeo de puntos de apalancamiento",
+              "duration": "60 minutos",
+              "description": "Identifica puntos de intervención en un sistema que quieras cambiar",
+              "steps": [
+                "Elige un sistema que quieras transformar (tu organización, barrio, sector, etc.)",
+                "Dibuja un diagrama simple de sus elementos y conexiones",
+                "Usando los 12 puntos de apalancamiento de Donella Meadows, identifica al menos 3 puntos donde podrías intervenir",
+                "Para cada punto, evalúa: ¿Qué tan accesible es? ¿Qué impacto tendría?",
+                "Prioriza: ¿Dónde empezarías?"
+              ],
+              "reflection": "Los puntos de mayor apalancamiento suelen estar en los paradigmas y reglas del sistema, no en los parámetros visibles."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Leverage Points (Donella Meadows)",
+              "url": "https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/",
+              "type": "artículo fundacional",
+              "description": "El artículo original sobre puntos de apalancamiento en sistemas"
+            },
+            {
+              "title": "Systems Innovation",
+              "url": "https://www.systemsinnovation.io/",
+              "type": "plataforma educativa",
+              "description": "Cursos y recursos sobre pensamiento sistémico"
+            },
+            {
+              "title": "The Systems Thinker",
+              "url": "https://thesystemsthinker.com/",
+              "type": "publicación",
+              "description": "Artículos y herramientas sobre pensamiento sistémico"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-3",
+            "title": "Mapeo de Puntos de Apalancamiento",
+            "duration": "120 minutos",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap4",
+            "chapterTitle": "La Crisis como Síntoma",
+            "relation": "Teoría del cambio sistémico"
+          }
+        },
+        {
+          "id": "cap3",
+          "title": "El mapa del ecosistema de cambio",
+          "epigraph": {
+            "text": "Solos vamos más rápido; juntos llegamos más lejos.",
+            "author": "Proverbio africano"
+          },
+          "content": "No estamos solos. Miles de iniciativas en todo el mundo ya están construyendo alternativas. El problema no es la falta de experimentos; es la falta de conexión entre ellos.\n\nEste capítulo mapea el ecosistema de cambio: quiénes están haciendo qué, cómo se relacionan, dónde están los huecos.\n\n## Los cuatro cuadrantes del cambio\n\nKen Wilber propuso un marco simple pero potente: cualquier fenómeno puede verse desde cuatro perspectivas, según dos ejes:\n\n> --- Interior / Exterior (subjetivo / objetivo)\n>\n> --- Individual / Colectivo\n\nEsto genera cuatro cuadrantes:\n\n**Interior-Individual (YO):** conciencia, valores, desarrollo personal. Aquí operan prácticas contemplativas, psicoterapia, desarrollo de liderazgo consciente.\n\n**Exterior-Individual (ELLO objetivo):** comportamientos, habilidades, cuerpo. Aquí operan la formación técnica, los hábitos, la salud física.\n\n**Interior-Colectivo (NOSOTROS):** cultura, valores compartidos, narrativas. Aquí operan los movimientos culturales, las religiones, las ideologías.\n\n**Exterior-Colectivo (ELLOS/SISTEMAS):** estructuras, instituciones, tecnología. Aquí operan las reformas legales, las organizaciones, la infraestructura.\n\nEl cambio sostenible requiere trabajar en los cuatro cuadrantes simultáneamente.\n\nUn activista que cambia leyes (exterior-colectivo) pero no su propia conciencia (interior-individual) reproduce patrones de dominación. Una comunidad espiritual (interior-colectivo) que ignora las estructuras económicas (exterior-colectivo) se vuelve escapista. Un emprendedor social (exterior-individual) que no trabaja en cultura (interior-colectivo) crea organizaciones que no escalan.\n\nLa transformación integral toca los cuatro cuadrantes. Y requiere actores especializados en cada uno que sepan colaborar entre sí.\n\n## Quiénes ya están construyendo\n\nUn mapa (inevitablemente incompleto) de actores del cambio:\n\n**Economía alternativa:**\n\n> --- Cooperativas (Mondragón, Emilia-Romagna, cooperativismo de plataforma)\n>\n> --- Economía del bien común (Christian Felber)\n>\n> --- Economía circular (Ellen MacArthur Foundation)\n>\n> --- Monedas locales y complementarias (WIR, Bristol Pound, Sardex)\n>\n> --- Commons digitales (Wikipedia, Linux, Creative Commons)\n\n**Gobernanza alternativa:**\n\n> --- Sociocracia y holocracia (organizaciones sin jefes)\n>\n> --- Democracia participativa (Porto Alegre, Decidim)\n>\n> --- Asambleas ciudadanas (Irlanda, Francia, UK)\n>\n> --- Municipalismo (Barcelona en Comú, Fearless Cities)\n\n**Comunidades intencionales:**\n\n> --- Ecoaldeas (Global Ecovillage Network)\n>\n> --- Transition Towns (movimiento de transición)\n>\n> --- Cohousing y cooperativas de vivienda\n>\n> --- Comunidades de práctica espiritual\n\n**Tecnología ética:**\n\n> --- Software libre y código abierto\n>\n> --- Cooperativismo de plataforma\n>\n> --- Descentralización (blockchain ético, DAOs)\n>\n> --- IA al servicio del bien común\n\n**Movimientos sociales:**\n\n> --- Ecologismo (Fridays for Future, Extinction Rebellion)\n>\n> --- Feminismo y cuidados\n>\n> --- Decrecimiento y post-desarrollo\n>\n> --- Movimientos indígenas y defensa del territorio\n\n**Desarrollo interior:**\n\n> --- Mindfulness y meditación secular\n>\n> --- Psicología integral y transpersonal\n>\n> --- Trabajo que Reconecta (Joanna Macy)\n>\n> --- Comunicación no violenta (Marshall Rosenberg)\n\n## Lo que falta: la conexión\n\nEl ecosistema es rico pero fragmentado. Cada tribu habla su lenguaje, tiene sus prioridades, desconfía de las otras.\n\nLos ecologistas desconfían de los tecnólogos. Los espirituales ignoran la política. Los políticos desprecian lo interior. Los empresarios sociales no hablan con los activistas. Las ecoaldeas no se conectan con el cooperativismo urbano.\n\nLo que falta no son más iniciativas. Es infraestructura de conexión: plataformas para compartir aprendizajes, espacios de encuentro entre mundos, protocolos de colaboración entre diferentes.\n\n**Caso:** Conciencia en Red propone exactamente esto: infraestructura digital que conecte nodos locales en red global. Plataformas interoperables donde diferentes iniciativas puedan colaborar sin perder autonomía. Un «código genético» común que permita coherencia sin control centralizado.\n\nLa próxima frontera no es crear más proyectos aislados. Es tejer la red que los conecte.",
+          "closingQuestion": "¿Qué tribu del ecosistema de cambio es la tuya? ¿Con qué otra tribu podrías conectar?",
+          "exercises": [
+            {
+              "id": "ex-cap3-1",
+              "title": "Mapeo del ecosistema de cambio local",
+              "duration": "90 minutos",
+              "description": "Crea un mapa de las iniciativas de cambio en tu territorio",
+              "steps": [
+                "Define tu territorio (barrio, ciudad, región)",
+                "Lista todas las iniciativas de cambio que conozcas: cooperativas, asociaciones, proyectos comunitarios, etc.",
+                "Clasifícalas: ¿En qué área trabajan? ¿Qué escala tienen?",
+                "Dibuja un mapa visual con conexiones entre ellas",
+                "Identifica: ¿Dónde hay huecos? ¿Dónde hay redundancia? ¿Qué conexiones faltan?"
+              ],
+              "reflection": "El ecosistema de cambio es más rico de lo que parece. Visibilizarlo es el primer paso para fortalecerlo."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Kumu - Relationship Mapping",
+              "url": "https://kumu.io/",
+              "type": "herramienta",
+              "description": "Plataforma para crear mapas de ecosistemas y redes"
+            },
+            {
+              "title": "Mapping Ecosystems (Nesta)",
+              "url": "https://www.nesta.org.uk/toolkit/ecosystem-mapping/",
+              "type": "guía",
+              "description": "Metodología para mapear ecosistemas de innovación"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-4",
+            "title": "Mapeo del Ecosistema de Cambio Local",
+            "duration": "2-3 horas (puede dividirse)",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap8",
+            "chapterTitle": "Inteligencia Distribuida",
+            "relation": "Mapear la inteligencia distribuida"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parte2",
+      "title": "PARTE II",
+      "subtitle": "Nuevas Formas de Organización",
+      "chapters": [
+        {
+          "id": "cap4",
+          "title": "El fin del modelo empresarial como lo conocemos",
+          "epigraph": {
+            "text": "La empresa moderna es una de las instituciones más poderosas jamás creadas por los humanos. También es de las más disfuncionales.",
+            "author": ""
+          },
+          "content": "La empresa con accionistas que maximizan beneficios es una tecnología social: un invento humano para organizar actividad colectiva. Tiene apenas unos siglos de antigüedad. No es natural ni inevitable. Y está mostrando sus límites.\n\n## La empresa como tecnología social\n\nLa empresa moderna nació en el siglo XVII con las compañías comerciales (East India Company, VOC holandesa). Su innovación clave fue la responsabilidad limitada: los inversores solo arriesgan lo que invierten, no su patrimonio personal.\n\nEsta innovación permitió movilizar grandes cantidades de capital para proyectos arriesgados. Financió la revolución industrial, la expansión colonial, la infraestructura moderna. Fue enormemente eficaz para acumular y desplegar recursos.\n\nPero vino con un diseño particular: los accionistas (quienes aportan capital) tienen el poder de decisión. El objetivo legal de la empresa es maximizar el valor para ellos. Los trabajadores, las comunidades, el medio ambiente son «externalidades» --- factores a minimizar, no stakeholders a servir.\n\nEste diseño tiene consecuencias sistémicas: concentración de riqueza, externalización de costos, horizonte cortoplacista, alienación del trabajo. No son «abusos» del modelo; son su funcionamiento normal.\n\n## Por qué el modelo está obsoleto\n\nEl modelo de empresa capitalista fue diseñado para un mundo diferente: recursos abundantes, sumideros infinitos para residuos, trabajo manual que requería supervisión, capital escaso que merecía recompensa especial.\n\nEse mundo ya no existe.\n\n**Los límites planetarios son reales:** una empresa obligada a maximizar beneficios no puede internalizar costos ambientales si sus competidores no lo hacen. La carrera hacia el fondo es inevitable.\n\n**El trabajo ha cambiado:** el conocimiento, la creatividad y la colaboración son más valiosos que la obediencia y el trabajo repetitivo. Pero el modelo de empresa trata a los trabajadores como «recursos humanos» a gestionar, no como personas a empoderar.\n\n**El capital ya no es escaso:** hay más dinero buscando retorno que oportunidades legítimas de inversión. La premisa de que el capital merece control porque es escaso ya no aplica.\n\n**La desigualdad es insostenible:** cuando los CEOs ganan 300 veces lo que sus empleados, cuando el 1% posee más que el 50% inferior, el tejido social se desgarra. La empresa es motor de esta desigualdad.\n\n## Los experimentos que ya existen\n\nLa buena noticia: hay alternativas probadas que funcionan.\n\n**Cooperativas:** empresas propiedad de sus trabajadores o usuarios, gobernadas democráticamente (un miembro = un voto). Mondragón en España tiene 80,000 trabajadores-propietarios. El sector cooperativo global emplea a 280 millones de personas.\n\n**B-Corps:** empresas certificadas que incluyen impacto social y ambiental en sus estatutos legales. Ya hay más de 6,000 B-Corps en 80 países.\n\n**Empresas de propósito (Purpose Companies):** empresas donde la propiedad está ligada al propósito, no se puede vender, y los beneficios se reinvierten. Bosch, Zeiss, Patagonia han adoptado variantes de este modelo.\n\n**Steward-Ownership:** modelo donde la empresa se «posee a sí misma» --- los gestores tienen control pero no pueden venderla ni extraer valor más allá de salarios razonables. Común en Alemania y Dinamarca.\n\nNo falta imaginación. Faltan escala y conexión.\n\nEstos modelos existen, funcionan, en algunos casos prosperan. Pero son minoritarios, aislados, poco conocidos. El siguiente paso es conectarlos, fortalecerlos, hacerlos la norma en vez de la excepción.",
+          "closingQuestion": "Si pudieras rediseñar tu organización desde cero, ¿qué cambiarías?",
+          "exercises": [
+            {
+              "id": "ex-cap4-1",
+              "title": "Auditoría de impacto de tu trabajo",
+              "duration": "45 minutos",
+              "description": "Analiza críticamente el modelo de negocio donde trabajas",
+              "steps": [
+                "Describe el modelo de negocio de tu organización en una frase",
+                "¿Qué valor crea realmente? ¿Para quién?",
+                "¿Qué externalidades negativas tiene? (ambientales, sociales, de salud)",
+                "¿Quién se beneficia de su éxito? ¿Quién pierde?",
+                "Si tuvieras que rediseñarlo para el bien común, ¿qué cambiarías?"
+              ],
+              "reflection": "No se trata de culpa sino de claridad. Entender el modelo actual es prerequisito para cambiarlo."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "B Corporation",
+              "url": "https://www.bcorporation.net/",
+              "type": "certificación",
+              "description": "Empresas certificadas por su impacto social y ambiental"
+            },
+            {
+              "title": "Economy for the Common Good",
+              "url": "https://www.ecogood.org/",
+              "type": "movimiento",
+              "description": "Movimiento para una economía orientada al bien común"
+            },
+            {
+              "title": "Doughnut Economics Action Lab",
+              "url": "https://doughnuteconomics.org/",
+              "type": "think tank",
+              "description": "Herramientas para una economía regenerativa y distributiva"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-5",
+            "title": "Auditoría de Impacto de tu Trabajo",
+            "duration": "60-90 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap2",
+            "chapterTitle": "La Economía de la Escasez Artificial",
+            "relation": "Transformar el modelo económico"
+          }
+        },
+        {
+          "id": "cap5",
+          "title": "Cooperativismo 2.0",
+          "epigraph": {
+            "text": "La cooperación es tan natural como la competencia. Y mucho más generativa.",
+            "author": ""
+          },
+          "content": "Las cooperativas son la forma organizativa más antigua y probada de economía democrática. Pero tienen imagen de antiguas, pequeñas, ineficientes. Es hora de actualizarlas.\n\n## Principios cooperativos (actualizados)\n\nLa Alianza Cooperativa Internacional define siete principios:\n\n**1. Membresía voluntaria y abierta:** cualquiera puede unirse, nadie está forzado.\n\n**2. Control democrático:** un miembro = un voto, independiente del capital aportado.\n\n**3. Participación económica:** los miembros contribuyen equitativamente al capital y comparten beneficios.\n\n**4. Autonomía e independencia:** la cooperativa se gobierna a sí misma.\n\n**5. Educación y formación:** invertir en capacitar a miembros y público.\n\n**6. Cooperación entre cooperativas:** fortalecer el movimiento trabajando juntas.\n\n**7. Interés por la comunidad:** contribuir al desarrollo sostenible del entorno.\n\n## Casos de éxito a escala\n\n**Mondragón (País Vasco):**\n\nLa mayor corporación cooperativa del mundo. 80,000 trabajadores-propietarios. Facturación de 12,000 millones de euros. Industria, retail, finanzas, educación, I+D. Demuestra que el cooperativismo puede operar a gran escala y en sectores avanzados.\n\n**Emilia-Romagna (Italia):**\n\nRegión donde el 30% del PIB viene de cooperativas. Redes de cooperativas que colaboran en vez de competir. Una de las zonas más prósperas de Europa con alta cohesión social.\n\n**Kerala (India):**\n\nEstado indio con modelo de desarrollo alternativo. Cooperativas agrícolas, de crédito, de trabajadores. Indicadores sociales comparables a países ricos con una fracción del PIB per cápita.\n\n**Lección:** El cooperativismo funciona mejor en ecosistemas --- redes de cooperativas que se apoyan mutuamente.\n\n## Cooperativismo de plataforma\n\nLa economía digital está dominada por plataformas extractivas: Uber, Airbnb, Amazon, que capturan valor del trabajo de otros. Pero hay alternativas:\n\n**Stocksy:** plataforma de fotografía propiedad de los fotógrafos. Pagan royalties del 50-75%, versus 15-45% de Getty/Shutterstock.\n\n**Up & Go:** plataforma de limpieza doméstica propiedad de las limpiadoras. Operan en Nueva York.\n\n**Resonate:** streaming musical cooperativo. Los artistas y oyentes son copropietarios.\n\n**Fairmondo:** marketplace cooperativo alternativa a Amazon, nacido en Alemania.\n\nEl Código Genético de Conciencia en Red especifica: «Cooperación sobre competencia. El sistema recompensa colaborar, no competir. Ganar a costa del otro es perder todos.» Y define anti-patrones específicos: ranking competitivo sin componente cooperativo, winner-takes-all, zero-sum games.\n\nEl cooperativismo de plataforma demuestra que la tecnología digital puede diseñarse para la cooperación, no solo para la extracción.\n\n## Federaciones: cómo escalar sin perder esencia\n\nEl problema clásico: las cooperativas pequeñas son democráticas pero débiles; las grandes ganan poder pero pierden participación. ¿Solución? Federación.\n\nUna federación de cooperativas mantiene cada unidad pequeña y autogobernada, mientras crea estructuras de segundo nivel para compartir recursos, coordinar estrategia, ganar escala.\n\nMondragón funciona así: cooperativas individuales autónomas + estructuras sectoriales + corporación paraguas. Cada nivel tiene su gobernanza democrática.\n\nDel Código Genético --- Principio de Expansión Espiral: «Todo empieza pequeño y local, expande en espirales concéntricas, y cada nivel fortalece al anterior. Individuo → Familia/Amigos → Calle/Barrio → Ciudad → Región → País → Mundo. El éxito se mide por profundidad de raíces, no por tamaño de copa.»\n\nEste patrón --- autonomía local + coordinación federal --- aparece una y otra vez en las organizaciones que logran escalar sin perder alma.",
+          "closingQuestion": "¿Qué podrías cooperativizar en tu vida? ¿Herramientas, recursos, conocimiento?",
+          "exercises": [
+            {
+              "id": "ex-cap5-1",
+              "title": "Diseño de una cooperativa",
+              "duration": "60 minutos",
+              "description": "Diseña el esqueleto de una cooperativa para tu sector",
+              "steps": [
+                "Identifica una necesidad en tu sector que podría cubrirse cooperativamente",
+                "¿Quiénes serían los socios? ¿Trabajadores, consumidores, ambos?",
+                "¿Cuál sería el modelo de gobernanza? ¿Cómo se tomarían las decisiones?",
+                "¿Cómo se repartirían los excedentes?",
+                "¿Qué ventajas tendría sobre el modelo convencional? ¿Qué desafíos?"
+              ],
+              "reflection": "Las cooperativas no son utopía; son empresas reales con millones de socios en todo el mundo."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Mondragon Corporation",
+              "url": "https://www.mondragon-corporation.com/",
+              "type": "caso de estudio",
+              "description": "La mayor cooperativa del mundo, en el País Vasco"
+            },
+            {
+              "title": "International Cooperative Alliance",
+              "url": "https://www.ica.coop/",
+              "type": "organización",
+              "description": "Organización global del movimiento cooperativo"
+            },
+            {
+              "title": "Platform Cooperativism Consortium",
+              "url": "https://platform.coop/",
+              "type": "red",
+              "description": "Cooperativismo de plataforma digital"
+            },
+            {
+              "title": "CECOP - Cooperativas de Europa",
+              "url": "https://www.cecop.coop/",
+              "type": "federación",
+              "description": "Confederación europea de cooperativas"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-6",
+            "title": "Diseño de una Cooperativa",
+            "duration": "3-4 horas (dividido en sesiones)",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Construir la economía que respira"
+          }
+        },
+        {
+          "id": "cap6",
+          "title": "Organizaciones sin jefes",
+          "epigraph": {
+            "text": "La jerarquía no es el problema. El problema es jerarquía fija, no ganada, no revocable.",
+            "author": ""
+          },
+          "content": "¿Puede una organización compleja funcionar sin jefes? Miles de empresas lo están demostrando. No es anarquía --- es gobernanza distribuida.\n\n## Holocracia y sociocracia\n\n**Sociocracia:** sistema de gobernanza desarrollado en Holanda desde los años 70. Principios clave:\n\n> --- Decisiones por consentimiento (no consenso): se avanza si no hay objeciones razonadas\n>\n> --- Organización en círculos con autonomía en su dominio\n>\n> --- Doble enlace: cada círculo tiene representantes hacia arriba y hacia abajo\n>\n> --- Elecciones sin candidatos: se elige después de escuchar argumentos\n\n**Holocracia:** versión más formalizada, creada por Brian Robertson. Añade:\n\n> --- Constitución escrita que define las reglas del juego\n>\n> --- Roles claramente definidos (una persona puede tener varios roles)\n>\n> --- Reuniones muy estructuradas: tácticas (operaciones) vs gobernanza (estructura)\n>\n> --- Tensiones como motor: cualquier gap entre lo que es y lo que podría ser\n\n## Casos reales\n\n**Buurtzorg (Holanda):** enfermería domiciliaria. 15,000 enfermeras en equipos autogestionados de 10-12 personas. Sin gerentes intermedios. Solo 50 personas en oficina central para 15,000 en campo. Mejor satisfacción de pacientes y empleados, menores costos que competidores jerárquicos.\n\n**Morning Star (EEUU):** procesadora de tomates, líder mundial. Sin títulos, sin jefes, sin departamentos de RRHH. 400 empleados negocian entre sí compromisos anuales. Productividad doble que la media del sector.\n\n**Haier (China):** electrodomésticos, 80,000 empleados. Reorganizada en 4,000 «micro-empresas» autónomas de 10-15 personas que compiten y cooperan internamente. Pasó de empresa estatal moribunda a líder global.\n\n**Lo que funciona:** estructuras pequeñas autónomas + conexión clara con el todo + reglas del juego transparentes.\n\n## Lo que funciona y lo que no\n\n**Funciona:**\n\n> ✓ Equipos pequeños con autonomía real en su dominio\n>\n> ✓ Transparencia radical: todo visible para todos\n>\n> ✓ Roles claros (aunque flexibles) en vez de títulos fijos\n>\n> ✓ Procesos claros para tomar decisiones y resolver conflictos\n>\n> ✓ Cultura de feedback continuo\n\n**No funciona:**\n\n> ❌ Quitar jefes sin poner estructuras alternativas (caos)\n>\n> ❌ Implementar holocracia de golpe sin transición (choque cultural)\n>\n> ❌ Aplicar mismo modelo a cualquier contexto (no hay talla única)\n>\n> ❌ Ignorar dinámicas de poder informal (el poder no desaparece, se oculta)\n\nDel Código Genético --- Gobernanza Distribuida: «Cada nodo/célula tiene autonomía local pero participa en decisiones globales. Subsidiariedad: decidir al nivel más bajo posible. Delegación líquida: puedes delegar tu voto pero recuperarlo. Rotación: nadie lidera permanentemente.»",
+          "closingQuestion": "Si tu organización no tuviera jefes, ¿cómo se tomarían las decisiones?",
+          "exercises": [
+            {
+              "id": "ex-cap6-1",
+              "title": "Experimento de auto-organización",
+              "duration": "1 semana",
+              "description": "Prueba un elemento de auto-organización en tu equipo",
+              "steps": [
+                "Identifica una decisión que normalmente tome un jefe",
+                "Propón al equipo tomar esa decisión colectivamente durante una semana",
+                "Establece un método: ¿consenso? ¿consentimiento? ¿votación?",
+                "Documenta qué pasa: ¿cómo se sienten? ¿es más lento? ¿mejor?",
+                "Al final, evalúa: ¿qué funcionó? ¿qué no? ¿qué aprendiste?"
+              ],
+              "reflection": "La auto-organización no es caos; es orden emergente basado en reglas claras y confianza."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Reinventing Organizations (Wiki)",
+              "url": "https://reinventingorganizationswiki.com/",
+              "type": "wiki",
+              "description": "Recursos sobre organizaciones Teal y auto-organizadas"
+            },
+            {
+              "title": "Sociocracy 3.0",
+              "url": "https://sociocracy30.org/",
+              "type": "metodología",
+              "description": "Patrones para evolucionar organizaciones"
+            },
+            {
+              "title": "Holacracy",
+              "url": "https://www.holacracy.org/",
+              "type": "sistema",
+              "description": "Sistema de auto-organización para empresas"
+            },
+            {
+              "title": "Corporate Rebels",
+              "url": "https://corporate-rebels.com/",
+              "type": "blog",
+              "description": "Casos de empresas que experimentan con nuevos modelos"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-7",
+            "title": "Experimento de Auto-organización",
+            "duration": "1 semana de práctica",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Implementar gobernanza emergente"
+          }
+        },
+        {
+          "id": "cap7",
+          "title": "Commons y procomún",
+          "epigraph": {
+            "text": "Los commons no son una tragedia. La tragedia es no saber gestionarlos.",
+            "author": ""
+          },
+          "content": "Garrett Hardin proclamó en 1968 «la tragedia de los comunes»: los recursos compartidos se sobreexplotan inevitablemente. Elinor Ostrom demostró que estaba equivocado --- y ganó el Nobel por ello.\n\n## Ostrom y los principios de diseño\n\nElinor Ostrom estudió comunidades reales que gestionan recursos compartidos exitosamente durante siglos: pesquerías, sistemas de riego, bosques comunales, pastizales. Encontró patrones:\n\n**1. Límites claramente definidos:** quién tiene derecho a usar el recurso y quién no.\n\n**2. Reglas adaptadas al contexto local:** no hay solución universal; cada commons diseña sus reglas.\n\n**3. Participación en las decisiones:** quienes usan el recurso participan en definir las reglas.\n\n**4. Monitoreo efectivo:** vigilancia del cumplimiento, idealmente por los propios usuarios.\n\n**5. Sanciones graduales:** consecuencias proporcionales a las violaciones.\n\n**6. Mecanismos de resolución de conflictos:** formas accesibles y baratas de resolver disputas.\n\n**7. Reconocimiento del derecho a organizarse:** autoridades externas no interfieren.\n\n**8. Anidamiento:** para commons grandes, organización en niveles (local → regional → global).\n\n## Commons digitales\n\nLa era digital ha demostrado que los commons pueden funcionar a escala masiva:\n\n**Wikipedia:** la mayor enciclopedia de la historia, creada por voluntarios, sin pagar a nadie, disponible gratis. 60 millones de artículos en 300 idiomas.\n\n**Linux:** sistema operativo que corre en la mayoría de servidores del mundo, desarrollado colaborativamente por miles de programadores.\n\n**Creative Commons:** infraestructura legal para compartir obras. Más de 2,000 millones de obras bajo licencias CC.\n\n**OpenStreetMap:** mapas del mundo creados colaborativamente. En muchas zonas más detallados que Google Maps.\n\nLos commons digitales demuestran que la abundancia es posible cuando el recurso es información y las reglas están bien diseñadas.\n\n## ¿Qué más podría ser commons?\n\nSi los commons funcionan, ¿qué más podría gestionarse así?\n\n> **Conocimiento:** abolir patentes de medicamentos esenciales, ciencia abierta, educación libre.\n>\n> **Datos:** los datos que generamos colectivamente como bien común, no propiedad corporativa.\n>\n> **Espectro electromagnético:** frecuencias de radio como recurso común gestionado democráticamente.\n>\n> **Suelo urbano:** community land trusts que sacan la tierra del mercado especulativo.\n>\n> **Agua y aire:** obviamente deberían ser commons, pero están siendo privatizados.\n>\n> **Algoritmos e IA:** los sistemas que gobiernan nuestras vidas como bien común auditable.\n\nEl ecosistema Conciencia en Red se estructura como commons: código abierto, datos compartidos, gobernanza participativa. El Código Genético especifica: «Transparencia radical --- todo es auditable, trazable y verificable públicamente. Código abierto (MIT, GPL, CC). Transacciones en blockchain público. Decisiones justificadas públicamente.»",
+          "closingQuestion": "¿Qué recursos de tu comunidad podrían gestionarse como commons?",
+          "exercises": [
+            {
+              "id": "ex-cap7-1",
+              "title": "Identificar commons en tu vida",
+              "duration": "30 minutos",
+              "description": "Descubre los bienes comunes que ya usas",
+              "steps": [
+                "Lista recursos que usas que no son ni privados ni estatales",
+                "Ejemplos: Wikipedia, software libre, parques, conocimiento tradicional...",
+                "¿Quién los mantiene? ¿Cómo se gobiernan?",
+                "¿Cuáles están amenazados? ¿Por qué?",
+                "¿Hay algún commons que podrías ayudar a crear o fortalecer?"
+              ],
+              "reflection": "Los commons no son 'de nadie'; son 'de todos los que participan en cuidarlos'."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "P2P Foundation Wiki",
+              "url": "https://wiki.p2pfoundation.net/",
+              "type": "wiki",
+              "description": "Enciclopedia del procomún y la producción entre pares"
+            },
+            {
+              "title": "Creative Commons",
+              "url": "https://creativecommons.org/",
+              "type": "licencias",
+              "description": "Sistema de licencias para compartir obras"
+            },
+            {
+              "title": "Ostrom Workshop",
+              "url": "https://ostromworkshop.indiana.edu/",
+              "type": "investigación",
+              "description": "Centro de investigación sobre gobernanza de commons"
+            },
+            {
+              "title": "Commons Transition",
+              "url": "https://commonstransition.org/",
+              "type": "think tank",
+              "description": "Políticas para una sociedad basada en los comunes"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-8",
+            "title": "Identificar Commons en tu Vida",
+            "duration": "45 minutos",
+            "difficulty": "Básico"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Rescatar los bienes comunes"
+          }
+        },
+        {
+          "id": "cap8",
+          "title": "DAOs y nuevas formas de coordinación digital",
+          "epigraph": {
+            "text": "La tecnología no es neutral. Puede diseñarse para la dominación o para la cooperación.",
+            "author": ""
+          },
+          "content": "Las DAOs (Decentralized Autonomous Organizations) son experimentos de gobernanza digital que intentan coordinar acción colectiva sin autoridad centralizada. Más allá del hype cripto, hay ideas potentes.\n\n## ¿Qué es una DAO?\n\nUna DAO es una organización cuyas reglas están codificadas en software (smart contracts) que se ejecuta automáticamente. En teoría:\n\n> --- Reglas transparentes: cualquiera puede leer el código\n>\n> --- Ejecución automática: no depende de que alguien cumpla su palabra\n>\n> --- Gobernanza por tokens: votación proporcional a participación\n>\n> --- Resistente a censura: ningún actor puede cerrarla unilateralmente\n\nEn la práctica, la mayoría de DAOs reproducen dinámicas plutocráticas: quien más tokens tiene, más poder tiene. Pero hay innovaciones interesantes.\n\n## Innovaciones en gobernanza digital\n\n**Votación cuadrática:** en vez de 1 token = 1 voto (plutocracia) o 1 persona = 1 voto (difícil de verificar online), la votación cuadrática permite expresar intensidad de preferencias mientras limita el poder de los grandes tenedores. Matemáticamente elegante.\n\n**Retroactive Public Goods Funding:** financiar bienes públicos después de que demuestren valor, no antes. Elimina el problema de elegir ganadores. Gitcoin y Optimism experimentan con esto.\n\n**Conviction Voting:** los votos acumulan «convicción» con el tiempo. Favorece propuestas con apoyo sostenido sobre modas pasajeras.\n\n**Delegación líquida:** puedes delegar tu voto en alguien de confianza para temas específicos, pero recuperarlo cuando quieras. Combina eficiencia de representación con posibilidad de participación directa.\n\nDel Código Genético --- Proof-of-Help: «El poder de decisión se gana ayudando, no acumulando capital o tokens. Fórmula: flowPower = (timeDonated * 2 + projectContributions * 5 + generosityScore * 10 + communityEndorsements * 3) / totalCommunityContribution. Máximo: nadie puede tener más de 2-3x el poder del mínimo. Anti-plutocracia: el dinero NO compra votos.»\n\n## Limitaciones y riesgos\n\nLas DAOs no son panacea. Riesgos reales:\n\n> ❌ Plutocracia disfrazada: la mayoría de DAOs dan poder proporcional al capital\n>\n> ❌ Baja participación: votan pocos, deciden menos\n>\n> ❌ Complejidad técnica: excluye a quienes no entienden la tecnología\n>\n> ❌ «Code is law» naive: el código tiene bugs, la ley tiene interpretación\n>\n> ❌ Especulación financiera: muchas DAOs son vehículos de especulación, no de coordinación real\n\nLa tecnología blockchain no es mágica. Puede reproducir las mismas dinámicas de poder que pretende superar. Lo importante es el diseño de gobernanza, no la tecnología subyacente.\n\n## El potencial real\n\nMás allá del hype, las DAOs ofrecen capacidades genuinamente nuevas:\n\n> --- Coordinación global sin institución central\n>\n> --- Transparencia perfecta de reglas y transacciones\n>\n> --- Experimentación rápida con mecanismos de gobernanza\n>\n> --- Financiación colectiva de bienes públicos\n>\n> --- Laboratorio de democracia digital\n\nUsadas con cuidado, estas herramientas pueden complementar (no reemplazar) formas tradicionales de organización comunitaria.",
+          "closingQuestion": "¿Qué mecanismo de gobernanza digital te parece más prometedor?",
+          "exercises": [
+            {
+              "id": "ex-cap8-1",
+              "title": "Explorar una DAO",
+              "duration": "60 minutos",
+              "description": "Investiga una DAO real y cómo funciona",
+              "steps": [
+                "Elige una DAO para investigar (GitcoinDAO, ENS DAO, MakerDAO, etc.)",
+                "¿Cuál es su propósito? ¿Qué decisiones toma?",
+                "¿Cómo se vota? ¿Quién puede participar?",
+                "¿Cuáles son sus fortalezas y debilidades?",
+                "¿Qué aplicación podría tener este modelo fuera de crypto?"
+              ],
+              "reflection": "Las DAOs son experimentos imperfectos pero valiosos en gobernanza digital."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "DeepDAO",
+              "url": "https://deepdao.io/",
+              "type": "directorio",
+              "description": "Directorio y análisis de DAOs"
+            },
+            {
+              "title": "Aragon",
+              "url": "https://aragon.org/",
+              "type": "plataforma",
+              "description": "Plataforma para crear y gestionar DAOs"
+            },
+            {
+              "title": "Snapshot",
+              "url": "https://snapshot.org/",
+              "type": "herramienta",
+              "description": "Sistema de votación para DAOs"
+            },
+            {
+              "title": "DAOhaus",
+              "url": "https://daohaus.club/",
+              "type": "plataforma",
+              "description": "Plataforma para DAOs basadas en Moloch"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-9",
+            "title": "Explorar una DAO",
+            "duration": "90 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap14",
+            "chapterTitle": "La Tecnología que Sirve",
+            "relation": "Usar tecnología que sirve"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parte3",
+      "title": "PARTE III",
+      "subtitle": "Herramientas para la Transición",
+      "chapters": [
+        {
+          "id": "cap9",
+          "title": "Herramientas económicas",
+          "epigraph": {
+            "text": "El dinero es una tecnología social. Podemos rediseñarla.",
+            "author": ""
+          },
+          "content": "La economía no es ley natural --- es conjunto de reglas inventadas por humanos. Podemos inventar otras. Este capítulo presenta herramientas económicas alternativas que ya funcionan.\n\n## Monedas locales y complementarias\n\nEl dinero oficial tiene un problema: se escapa. Gastas en el supermercado de cadena y el dinero se va a la sede central. La riqueza local se drena hacia centros financieros globales.\n\nLas monedas locales son dinero que solo circula en un territorio. No reemplazan al euro; lo complementan. Pero mantienen la riqueza circulando localmente.\n\n**→ WIR (Suiza)**\n\nEl WIR existe desde 1934. 60,000 empresas suizas comercian en esta moneda complementaria. Funciona como crédito mutuo entre empresas: si te compro algo, te debo WIR; si me compras, me debes. Se cancela cuando el círculo se cierra. Ha ayudado a estabilizar la economía suiza durante crisis.\n\n**→ Bristol Pound (UK)**\n\nMoneda local de Bristol. 1 Bristol Pound = 1 Libra esterlina, pero solo se acepta en negocios locales. Incluso puedes pagar impuestos locales con ella. Mantuvo millones circulando en la economía local.\n\n**→ Sardex (Cerdeña)**\n\nRed de crédito mutuo entre empresas sardas. Sin intereses, sin dinero físico --- pura compensación de créditos. Miles de empresas, millones de euros en transacciones anuales. Modelo replicado en otras regiones italianas.\n\nDel Código Genético --- Sistema Híbrido Multi-Valor: «El valor no es solo dinero. Reconocemos múltiples formas de riqueza que coexisten: FIAT (EUR), SOCIAL (SEMILLA/CRD), TIME (horas), REPUTATION (TrustScore), KNOWLEDGE (skills), CARE (trabajo de cuidados). Toda app debe soportar al menos 2 tipos de valor.»\n\n## Bancos de tiempo\n\nEn un banco de tiempo, la moneda es la hora. Una hora de tu trabajo = una hora del mío, sin importar qué hacemos. El abogado y la cuidadora valen lo mismo. Radical igualitarismo económico.\n\n**Cómo funciona:**\n\n1. Te registras en un banco de tiempo local\n\n2. Ofreces tus habilidades (cocina, idiomas, reparaciones, compañía...)\n\n3. Cuando ayudas a alguien, ganas horas\n\n4. Cuando necesitas ayuda, gastas horas\n\n5. El banco facilita los intercambios y lleva las cuentas\n\nHay miles de bancos de tiempo en todo el mundo. Especialmente útiles para personas con poco dinero pero mucho que ofrecer (jubilados, desempleados, cuidadores).\n\nMás allá del valor económico, los bancos de tiempo tejen comunidad. Conoces a tus vecinos, descubres talentos ocultos, creas red de apoyo mutuo.\n\n## Crowdfunding y financiación colectiva\n\nEl crowdfunding democratiza el acceso al capital. En vez de convencer a un banco o un inversor, convences a cientos de pequeños aportantes.\n\n**→ Goteo (España)**\n\nPlataforma de crowdfunding para proyectos de impacto social. Innovación: exige que los proyectos generen «retornos colectivos» (conocimiento abierto, código libre, datos públicos). No solo financiación; construcción de commons.\n\n**→ Kiva**\n\nMicrocréditos peer-to-peer. Prestas 25$ a un emprendedor en otro país. Cuando devuelve, puedes prestar a otro. Tasa de devolución del 96%. Millones prestados, cero beneficio para el prestamista --- pura solidaridad.\n\nEl crowdfunding funciona mejor para proyectos con comunidad existente. No es magia --- requiere comunicación, transparencia, construcción de confianza.\n\n## Economía circular\n\nLa economía lineal extrae recursos, los transforma en productos, los usa y los descarta. La economía circular cierra el ciclo: los residuos de un proceso son insumos de otro.\n\n**Herramientas concretas:**\n\n**→ Diseño cuna a cuna (Cradle to Cradle)**\n\nDiseñar productos pensando en su fin de vida. Materiales biológicos que se compostan. Materiales técnicos que se reciclan indefinidamente. Productos modulares fáciles de reparar y actualizar.\n\n**→ Producto como servicio**\n\nNo compras la lavadora; compras lavados. No compras el coche; compras movilidad. El fabricante mantiene la propiedad y el incentivo de que dure, se repare, se recicle.\n\n**→ Simbiosis industrial**\n\nEmpresas cercanas intercambian residuos. El calor residual de una fábrica calienta invernaderos vecinos. Los residuos orgánicos de restaurantes alimentan granjas. El parque industrial de Kalundborg (Dinamarca) es modelo mundial.\n\nDel Código Genético --- Regeneración sobre Sostenibilidad: «No basta con no hacer daño. Debemos dejar el sistema mejor que lo encontramos. Métricas: CO2 evitado, riqueza redistribuida, capital social creado, conocimiento compartido.»",
+          "closingQuestion": "¿Qué recurso económico podrías compartir o intercambiar en vez de comprar?",
+          "exercises": [
+            {
+              "id": "ex-cap9-1",
+              "title": "Auditoría financiera ética",
+              "duration": "45 minutos",
+              "description": "Revisa dónde está tu dinero y qué financia",
+              "steps": [
+                "¿En qué banco tienes tus ahorros? Investiga qué financia",
+                "¿Tienes inversiones o pensión? ¿En qué están invertidas?",
+                "¿Hay alternativas de banca ética disponibles en tu país?",
+                "¿Existen monedas locales o complementarias en tu zona?",
+                "Define un pequeño paso: ¿qué podrías cambiar este mes?"
+              ],
+              "reflection": "El dinero es un voto diario. Cada transacción apoya un tipo de economía."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Triodos Bank",
+              "url": "https://www.triodos.es/",
+              "type": "banco ético",
+              "description": "Banco ético europeo"
+            },
+            {
+              "title": "Goteo",
+              "url": "https://www.goteo.org/",
+              "type": "crowdfunding",
+              "description": "Plataforma de crowdfunding cívico"
+            },
+            {
+              "title": "Open Food Network",
+              "url": "https://openfoodnetwork.org/",
+              "type": "plataforma",
+              "description": "Infraestructura para sistemas alimentarios locales"
+            },
+            {
+              "title": "Community Exchange System",
+              "url": "https://www.community-exchange.org/",
+              "type": "red",
+              "description": "Red global de sistemas de intercambio comunitario"
+            },
+            {
+              "title": "Timebanking",
+              "url": "https://timebanks.org/",
+              "type": "metodología",
+              "description": "Recursos sobre bancos de tiempo"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-10",
+            "title": "Auditoría Financiera Ética",
+            "duration": "60-90 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap9",
+            "chapterTitle": "La Economía que Respira",
+            "relation": "Herramientas económicas alternativas"
+          }
+        },
+        {
+          "id": "cap10",
+          "title": "Herramientas de gobernanza",
+          "epigraph": {
+            "text": "La democracia no es votar cada cuatro años. Es participar cada día.",
+            "author": ""
+          },
+          "content": "Tomar decisiones colectivas es difícil. Estas herramientas lo hacen más fácil, más justo, más inteligente.\n\n## Sociocracia: manual práctico\n\nLa sociocracia es un sistema de gobernanza diseñado para organizaciones que quieren ser eficaces Y democráticas. Funciona.\n\n**→ Principio 1: Consentimiento**\n\nLas decisiones se toman cuando no hay objeciones razonadas. No es consenso (todos de acuerdo) ni mayoría (gana quien tiene más votos). Es «nadie tiene razones fundamentadas para oponerse». Más rápido que consenso, más inclusivo que mayoría.\n\n**Proceso de decisión por consentimiento:**\n\n1. Se presenta una propuesta\n\n2. Ronda de preguntas aclaratorias (sin opinar)\n\n3. Ronda de reacciones (cada persona opina brevemente)\n\n4. El proponente puede modificar la propuesta\n\n5. Ronda de objeciones: ¿hay razón fundamentada para NO avanzar?\n\n6. Si hay objeción, se integra mejorando la propuesta\n\n7. Cuando no hay objeciones, se aprueba\n\n**→ Principio 2: Círculos**\n\nLa organización se divide en círculos con autonomía en su dominio. Cada círculo tiene propósito claro, autoridad para decidir dentro de su ámbito, y conexión con otros círculos mediante «enlaces».\n\n**→ Principio 3: Doble enlace**\n\nCada círculo tiene dos representantes hacia el círculo superior: el líder operativo (elegido por el círculo superior) y el delegado (elegido por el propio círculo). Información fluye en ambas direcciones.\n\n**→ Principio 4: Elecciones sin candidatos**\n\nPara elegir roles, cada persona propone a quien cree mejor (puede ser a sí misma). Se escuchan los argumentos. Se busca consentimiento sobre quién ocupa el rol. Emerge el candidato, no compite.\n\n## Democracia líquida\n\nLa democracia directa es ideal pero inviable a escala: no puedes votar sobre todo. La democracia representativa es viable pero alienante: votas cada cuatro años y luego no cuentas. La democracia líquida combina ambas.\n\n**Cómo funciona:**\n\n--- Puedes votar directamente en cualquier tema que te interese\n\n--- Puedes delegar tu voto en alguien de confianza (por tema o globalmente)\n\n--- Puedes recuperar tu delegación en cualquier momento\n\n--- Las delegaciones son transitivas: si A delega en B y B delega en C, el voto de A va a C\n\n**→ Plataformas: Decidim, LiquidFeedback, Loomio**\n\n**Decidim** (Barcelona): plataforma de participación ciudadana usada por ciudades de todo el mundo. Código abierto, modular, multilingüe.\n\n**LiquidFeedback** (Alemania): implementación pura de democracia líquida, usada por el Partido Pirata.\n\n**Loomio** (Nueva Zelanda): herramienta de decisión colectiva para grupos. Simple, elegante, efectiva.\n\n## Asambleas ciudadanas\n\nLas asambleas ciudadanas son grupos de personas seleccionadas al azar (como un jurado) que deliberan sobre un tema durante semanas o meses, reciben información de expertos diversos, y producen recomendaciones.\n\n¿Por qué funcionan? Porque la gente normal, cuando tiene tiempo e información de calidad, toma decisiones sorprendentemente buenas. Mejores que los políticos, que están capturados por intereses, ciclos electorales y polarización.\n\nIrlanda usó asambleas ciudadanas para decidir sobre matrimonio igualitario y aborto --- temas que los políticos no se atrevían a tocar. El resultado: recomendaciones progresistas que luego pasaron referéndum. La ciudadanía era más madura que sus representantes.\n\n**Ingredientes de una asamblea ciudadana:**\n\n--- Selección aleatoria estratificada (representativa de la población)\n\n--- Información equilibrada de múltiples perspectivas\n\n--- Facilitación profesional de calidad\n\n--- Tiempo suficiente (mínimo varios fines de semana)\n\n--- Compromiso de que las recomendaciones serán consideradas seriamente\n\n## Presupuestos participativos\n\nLos presupuestos participativos permiten a la ciudadanía decidir directamente cómo gastar parte del presupuesto público.\n\nNacieron en Porto Alegre (Brasil) en 1989. Se expandieron por miles de ciudades. Resultados típicos: mejor distribución hacia barrios pobres, mayor satisfacción ciudadana, menos corrupción.\n\n**Proceso típico:**\n\n1. El ayuntamiento destina X% del presupuesto a participación\n\n2. Los vecinos proponen proyectos\n\n3. Se evalúa viabilidad técnica\n\n4. La ciudadanía vota qué proyectos financiar\n\n5. Se ejecutan y se rinde cuentas\n\nLimitación común: porcentajes pequeños del presupuesto, proyectos de bajo impacto. Para que funcione de verdad, hay que darle dientes.",
+          "closingQuestion": "¿Qué decisiones de tu comunidad u organización podrían tomarse de forma más participativa?",
+          "exercises": [
+            {
+              "id": "ex-cap10-1",
+              "title": "Diseño de proceso participativo",
+              "duration": "60 minutos",
+              "description": "Diseña un proceso de toma de decisiones para tu comunidad",
+              "steps": [
+                "Elige una decisión que tu comunidad/organización deba tomar pronto",
+                "¿Quién debería participar? ¿Quién se ve afectado?",
+                "¿Qué información necesitan los participantes?",
+                "¿Qué método usarías? (Asamblea, World Café, Círculo, etc.)",
+                "¿Cómo garantizarías que todas las voces sean escuchadas?",
+                "Diseña una agenda para el proceso"
+              ],
+              "reflection": "La calidad de las decisiones depende de la calidad del proceso."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Decidim",
+              "url": "https://decidim.org/",
+              "type": "plataforma",
+              "description": "Plataforma de democracia participativa digital"
+            },
+            {
+              "title": "Loomio",
+              "url": "https://www.loomio.org/",
+              "type": "herramienta",
+              "description": "Herramienta para toma de decisiones colaborativa"
+            },
+            {
+              "title": "Participedia",
+              "url": "https://participedia.net/",
+              "type": "base de datos",
+              "description": "Base de datos de procesos participativos"
+            },
+            {
+              "title": "NCDD (National Coalition for Dialogue & Deliberation)",
+              "url": "https://www.ncdd.org/",
+              "type": "red",
+              "description": "Recursos sobre diálogo deliberativo"
+            },
+            {
+              "title": "Art of Hosting",
+              "url": "https://artofhosting.org/",
+              "type": "metodología",
+              "description": "Prácticas de liderazgo participativo"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-11",
+            "title": "Diseño de Proceso Participativo",
+            "duration": "2-3 horas",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Herramientas de gobernanza"
+          }
+        },
+        {
+          "id": "cap11",
+          "title": "Herramientas digitales",
+          "epigraph": {
+            "text": "La tecnología amplifica lo que ya somos. Elijamos bien qué amplificar.",
+            "author": ""
+          },
+          "content": "La tecnología digital no es inherentemente liberadora ni opresora. Depende de quién la diseña, quién la controla, para qué fines. Aquí presentamos herramientas diseñadas para la cooperación.\n\n## Alternativas a las Big Tech\n\nLas plataformas dominantes (Google, Facebook, Amazon) extraen valor y datos. Hay alternativas éticas:\n\n**→ Búsqueda: DuckDuckGo, Ecosia**\n\nDuckDuckGo no te rastrea. Ecosia planta árboles con sus beneficios publicitarios. Funcionan bien para la mayoría de búsquedas.\n\n**→ Email: ProtonMail, Tutanota**\n\nEncriptado de extremo a extremo. Servidores en Suiza. Nadie lee tus correos.\n\n**→ Mensajería: Signal, Element/Matrix**\n\nSignal: mensajería encriptada más fácil de usar. Matrix: protocolo descentralizado, tú controlas tus datos.\n\n**→ Redes sociales: Mastodon, Pixelfed**\n\nMastodon: como Twitter pero federado --- muchos servidores independientes que se comunican. Pixelfed: lo mismo para fotos.\n\n**→ Videoconferencia: Jitsi, BigBlueButton**\n\nCódigo abierto, puedes montar tu propio servidor. Sin rastreo.\n\n**→ Almacenamiento: Nextcloud**\n\nAlternativa a Google Drive/Dropbox. Puedes autohospedarlo o usar proveedores éticos.\n\n## Software libre para organizaciones\n\n**→ Gestión de proyectos: OpenProject, Taiga**\n\nAlternativas a Asana/Monday. Kanban, Gantt, seguimiento de tareas. Código abierto.\n\n**→ CRM: CiviCRM, Odoo**\n\nGestión de relaciones con miembros, donantes, voluntarios. CiviCRM especialmente diseñado para ONGs.\n\n**→ Contabilidad: GnuCash, Odoo**\n\nContabilidad profesional sin pagar licencias.\n\n**→ Web y contenidos: WordPress, Ghost**\n\nWordPress corre el 40% de la web. Ghost es más moderno y ligero. Ambos libres.\n\n## Identidad digital y soberanía de datos\n\nUno de los problemas más profundos de la web actual: no controlas tu identidad digital. Las plataformas te conocen mejor que tú mismo y comercian con ese conocimiento.\n\n**→ Identidad auto-soberana (SSI)**\n\nTecnologías que te permiten controlar tu propia identidad digital. Tú decides qué datos compartes, con quién, para qué. Estándares emergentes: DIDs (Decentralized Identifiers), Verifiable Credentials.\n\nDel Código Genético --- Interoperabilidad: «Identidad Unificada (SpiralIdentity) con DID descentralizado, perfiles en cada app del ecosistema, reputación (proofOfHelp, trustScore, badges). Una identidad, múltiples contextos, tú controlas.»\n\n**→ Data trusts / cooperativas de datos**\n\nOrganizaciones que gestionan datos colectivamente en beneficio de sus miembros. En vez de que cada uno negocie solo con gigantes, la cooperativa negocia colectivamente.\n\n## El stack tecnológico alternativo\n\nUna organización que quiera operar con tecnología ética puede usar:\n\n> **Comunicación:** Signal (mensajes), Element/Matrix (chat grupal), Jitsi (video)\n>\n> **Documentos:** Nextcloud + OnlyOffice/Collabora (documentos colaborativos)\n>\n> **Gestión:** OpenProject o Taiga (proyectos), CiviCRM (relaciones)\n>\n> **Decisiones:** Loomio (deliberación), Decidim (participación amplia)\n>\n> **Finanzas:** GnuCash o Odoo (contabilidad)\n>\n> **Web:** WordPress o Ghost (contenido)\n>\n> **Código:** GitLab o Codeberg (repositorios)\n\nTodo esto es software libre, puedes autohospedarlo o usar proveedores éticos. El coste es comparable o menor que las alternativas propietarias. La diferencia: tú controlas tus datos y no alimentas el capitalismo de vigilancia.",
+          "closingQuestion": "¿Qué herramienta digital propietaria podrías reemplazar con alternativa ética?",
+          "exercises": [
+            {
+              "id": "ex-cap11-1",
+              "title": "Auditoría de soberanía digital",
+              "duration": "45 minutos",
+              "description": "Evalúa tu dependencia de plataformas extractivas",
+              "steps": [
+                "Lista las herramientas digitales que usas a diario",
+                "Para cada una: ¿Es software libre? ¿Dónde están tus datos?",
+                "¿De cuáles dependes críticamente? ¿Hay alternativas éticas?",
+                "Identifica 2-3 cambios factibles que podrías hacer",
+                "Planifica: ¿Cuál harás primero? ¿Cuándo?"
+              ],
+              "reflection": "La soberanía digital no es todo o nada. Cada paso hacia alternativas éticas cuenta."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "switching.software",
+              "url": "https://switching.software/",
+              "type": "directorio",
+              "description": "Alternativas éticas a software propietario"
+            },
+            {
+              "title": "Framasoft",
+              "url": "https://framasoft.org/",
+              "type": "organización",
+              "description": "Colectivo francés con herramientas libres"
+            },
+            {
+              "title": "Nextcloud",
+              "url": "https://nextcloud.com/",
+              "type": "software",
+              "description": "Alternativa libre a Google Drive/Dropbox"
+            },
+            {
+              "title": "Matrix/Element",
+              "url": "https://element.io/",
+              "type": "comunicación",
+              "description": "Alternativa descentralizada a Slack/Discord"
+            },
+            {
+              "title": "Mastodon",
+              "url": "https://joinmastodon.org/",
+              "type": "red social",
+              "description": "Red social federada alternativa a Twitter"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-12",
+            "title": "Auditoría de Soberanía Digital",
+            "duration": "60 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap14",
+            "chapterTitle": "La Tecnología que Sirve",
+            "relation": "Soberanía tecnológica"
+          }
+        },
+        {
+          "id": "cap12",
+          "title": "Herramientas relacionales",
+          "epigraph": {
+            "text": "La calidad de nuestra vida depende de la calidad de nuestras relaciones.",
+            "author": ""
+          },
+          "content": "Las herramientas más poderosas para la transición no son tecnológicas --- son relacionales. Cómo hablamos, cómo escuchamos, cómo resolvemos conflictos.\n\n## Comunicación No Violenta (CNV)\n\nLa Comunicación No Violenta, desarrollada por Marshall Rosenberg, es un método para comunicar de modo que conecte en vez de separar.\n\n**→ Los cuatro componentes**\n\n**1. Observación:** describir lo que ocurre sin evaluar ni juzgar. «Llegaste a las 9:15» (observación) vs «Siempre llegas tarde» (juicio).\n\n**2. Sentimiento:** expresar qué sientes. «Me siento frustrado» --- no «Me siento ignorado» (eso es interpretación de la acción del otro, no sentimiento).\n\n**3. Necesidad:** identificar qué necesidad está detrás del sentimiento. «...porque necesito confiabilidad para planificar mi día».\n\n**4. Petición:** hacer una petición concreta (no exigencia). «¿Podrías avisarme si vas a llegar más de 5 minutos tarde?»\n\n**Plantilla CNV:**\n\n«Cuando [observación], me siento [sentimiento]\n\nporque necesito [necesidad].\n\n¿Estarías dispuesto/a a [petición]?»\n\nParece simple. No lo es. Requiere práctica, especialmente la distinción entre observación y juicio, y entre sentimiento e interpretación. Pero transforma conversaciones.\n\n## Escucha profunda\n\nLa mayoría de las conversaciones no son escucha --- son turnos para hablar mientras preparamos nuestra respuesta. La escucha profunda es diferente.\n\n**Niveles de escucha (Otto Scharmer):**\n\nNivel 1 - Downloading: oigo lo que confirma lo que ya pienso\n\nNivel 2 - Factual: oigo datos nuevos, información\n\nNivel 3 - Empático: siento lo que el otro siente\n\nNivel 4 - Generativo: escucho lo que quiere emerger a través del otro\n\nLa escucha profunda requiere suspender el juicio, vaciar la mente, estar presente. Es práctica contemplativa aplicada a la relación.\n\n**Consejo práctico:** antes de responder, parafrasea lo que escuchaste. «Lo que te oigo decir es...» Valida que entendiste antes de opinar.\n\n## Facilitación de grupos\n\nUn buen facilitador hace que el grupo sea más inteligente que la suma de sus partes. Técnicas esenciales:\n\n**→ Círculo (check-in / check-out)**\n\nComenzar con una ronda donde cada persona habla brevemente (cómo llego, qué traigo). Terminar igual (cómo me voy, qué me llevo). Crea contenedor, iguala voces.\n\n**→ Rondas**\n\nEn vez de debate abierto (donde los más fuertes dominan), usar rondas donde cada persona habla en turno. Después pueden abrirse a diálogo libre.\n\n**→ Parking lot**\n\nCuando surge tema importante pero fuera de agenda, apuntarlo en el «parking lot» para tratarlo después. Mantiene foco sin perder ideas.\n\n**→ Temperatura de grupo**\n\nVerificar regularmente cómo está el grupo: ¿energía alta o baja? ¿tensión? ¿aburrimiento? Ajustar el proceso según lo que se detecta.\n\n**→ Divergencia y convergencia**\n\nDiseñar procesos con fases claras: primero abrir (generar ideas, escuchar perspectivas), luego cerrar (decidir, priorizar). Confundir fases genera frustración.\n\n## Gestión de conflictos\n\nEl conflicto no es el problema --- es señal de que algo importa. El problema es cómo lo manejamos.\n\n**→ Círculos restaurativos**\n\nCuando hay daño, reunir a quien lo causó, quien lo sufrió, y comunidad afectada. Escuchar todas las perspectivas. Buscar qué se necesita para reparar. Acordar acciones concretas. Seguimiento.\n\n**Preguntas del círculo restaurativo:**\n\n--- ¿Qué pasó? (cada perspectiva)\n\n--- ¿Cómo te afectó? ¿A quién más afectó?\n\n--- ¿Qué necesitas para que esto se resuelva?\n\n--- ¿Qué puedes hacer para contribuir a la reparación?\n\nFunciona mejor que el castigo porque aborda las necesidades reales de todos los involucrados.",
+          "closingQuestion": "¿Qué conflicto en tu vida podría abordarse con escucha profunda y CNV?",
+          "exercises": [
+            {
+              "id": "ex-cap12-1",
+              "title": "Práctica de escucha profunda",
+              "duration": "30 minutos",
+              "description": "Practica escucha activa con alguien con quien tengas conflicto",
+              "steps": [
+                "Identifica una persona con quien tengas tensión o desacuerdo",
+                "Invítala a una conversación con reglas claras: turnos de 5 minutos sin interrupción",
+                "Cuando te toque escuchar: solo escucha, sin preparar respuesta",
+                "Al final de cada turno, resume lo que entendiste y pregunta si es correcto",
+                "No busques resolver; solo entender"
+              ],
+              "reflection": "La escucha profunda transforma más que los mejores argumentos."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Comunicación No Violenta (CNV)",
+              "url": "https://www.cnvc.org/",
+              "type": "metodología",
+              "description": "Centro de Comunicación No Violenta de Marshall Rosenberg"
+            },
+            {
+              "title": "Restorative Circles",
+              "url": "https://www.restorativecircles.org/",
+              "type": "metodología",
+              "description": "Sistema de diálogo restaurativo"
+            },
+            {
+              "title": "The Work That Reconnects",
+              "url": "https://workthatreconnects.org/",
+              "type": "metodología",
+              "description": "Prácticas de Joanna Macy para reconexión"
+            },
+            {
+              "title": "Council of All Beings",
+              "url": "https://www.rainforestinfo.org.au/deep-eco/council.htm",
+              "type": "práctica",
+              "description": "Ritual de reconexión con la naturaleza"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-13",
+            "title": "Práctica de Escucha Profunda",
+            "duration": "30-45 minutos por práctica",
+            "difficulty": "Básico"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap6",
+            "chapterTitle": "Unidad en Diversidad",
+            "relation": "Construir unidad en diversidad"
+          }
+        },
+        {
+          "id": "cap13",
+          "title": "Herramientas interiores",
+          "epigraph": {
+            "text": "No podemos cambiar el mundo si no nos cambiamos a nosotros mismos.",
+            "author": ""
+          },
+          "content": "El activismo que ignora lo interior quema a las personas y reproduce patrones de dominación. Estas herramientas cuidan al cuidador.\n\n## Prácticas contemplativas para activistas\n\nLa meditación no es escape del mundo. Es entrenamiento para estar más presente, más consciente, más capaz de responder en vez de reaccionar.\n\n**→ Mindfulness básico**\n\n--- Siéntate cómodo, cierra los ojos\n\n--- Lleva atención a la respiración\n\n--- Cuando la mente divague, nota adónde fue, vuelve a la respiración\n\n--- No hay «hacerlo bien» --- el acto de volver es la práctica\n\n--- 10-20 minutos diarios cambian la vida\n\n**→ Práctica de compasión (Metta)**\n\nEnviar deseos de bienestar: primero a ti mismo, luego a seres queridos, luego a neutros, luego a difíciles, luego a todos los seres. Cultiva la capacidad de querer bien incluso a quien te hace daño.\n\n**→ Cuerpo como ancla**\n\nEscaneo corporal, yoga, movimiento consciente. El cuerpo vive en el presente; la mente viaja al pasado y futuro. Habitar el cuerpo ancla en el aquí y ahora.\n\n## Sostenibilidad del activista\n\nEl burnout activista es epidemia silenciosa. La urgencia de los problemas lleva a sacrificio personal. Pero el mártir agotado no ayuda a nadie.\n\n**→ Principios de sostenibilidad**\n\n> --- Tu bienestar no es egoísmo; es condición de eficacia\n>\n> --- Establece límites claros (horarios, dispositivos, compromisos)\n>\n> --- Cultiva fuentes de alegría no vinculadas a resultados\n>\n> --- Mantén relaciones fuera del «movimiento»\n>\n> --- Acepta que no vas a salvar el mundo tú solo/a\n\n**→ Esperanza activa (Joanna Macy)**\n\nLa esperanza activa no depende de que las cosas vayan bien. Es elegir lo que quieres y trabajar por ello, independientemente de las probabilidades. No es optimismo; es compromiso.\n\n## Shadow work: trabajar la propia sombra\n\nCarl Jung llamó «sombra» a las partes de nosotros que no queremos ver. Pero lo que no vemos nos controla. Los activistas que no trabajan su sombra proyectan su rabia, reproducen dominación, queman comunidades.\n\n**Señales de sombra activa:**\n\n--- Lo que te irrita intensamente en otros suele estar en ti\n\n--- Patrones repetitivos en relaciones y conflictos\n\n--- Reacciones desproporcionadas a estímulos pequeños\n\n--- Rigidez, necesidad de tener razón, incapacidad de escuchar\n\n**→ Trabajo de sombra básico**\n\n> 1. Nota qué te molesta intensamente en otra persona\n>\n> 2. Pregunta: ¿dónde hago yo algo similar?\n>\n> 3. En vez de negar, acepta: «Sí, también tengo eso»\n>\n> 4. Integra: ¿qué necesidad hay debajo? ¿Cómo expresarla sanamente?\n\nEl trabajo de sombra es incómodo pero liberador. Lo que integras deja de controlarte.",
+          "closingQuestion": "¿Qué práctica interior necesitas para sostener tu activismo a largo plazo?",
+          "exercises": [
+            {
+              "id": "ex-cap13-1",
+              "title": "Práctica contemplativa diaria",
+              "duration": "1 semana",
+              "description": "Establece una práctica contemplativa mínima",
+              "steps": [
+                "Elige una práctica: meditación, journaling, caminar consciente, etc.",
+                "Comprométete con 10 minutos diarios durante una semana",
+                "Elige un momento fijo del día (mañana suele funcionar mejor)",
+                "Lleva un registro breve: ¿qué notaste? ¿qué dificultades?",
+                "Al final de la semana: ¿qué efecto tuvo en tu estado general?"
+              ],
+              "reflection": "El activismo sostenible requiere cuidado interior. No es lujo; es necesidad."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Plum Village (Thich Nhat Hanh)",
+              "url": "https://plumvillage.org/",
+              "type": "comunidad",
+              "description": "Mindfulness aplicado al activismo"
+            },
+            {
+              "title": "Insight Timer",
+              "url": "https://insighttimer.com/",
+              "type": "app",
+              "description": "App gratuita de meditación"
+            },
+            {
+              "title": "Focusing Institute",
+              "url": "https://focusing.org/",
+              "type": "metodología",
+              "description": "Práctica de atención somática"
+            },
+            {
+              "title": "Internal Family Systems",
+              "url": "https://ifs-institute.com/",
+              "type": "terapia",
+              "description": "Modelo terapéutico de partes internas"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-14",
+            "title": "Práctica Contemplativa Diaria",
+            "duration": "Programa de 1 semana",
+            "difficulty": "Básico a avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap5",
+            "chapterTitle": "La Conciencia como Fundamento",
+            "relation": "Desarrollar conciencia"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parte4",
+      "title": "PARTE IV",
+      "subtitle": "Escalas de Intervención",
+      "chapters": [
+        {
+          "id": "cap14",
+          "title": "Transición personal",
+          "epigraph": {
+            "text": "Sé el cambio que quieres ver en el mundo.",
+            "author": "Gandhi"
+          },
+          "content": "La transición empieza contigo. No porque lo individual sea suficiente --- claramente no lo es. Sino porque no puedes pedir a otros lo que no practicas, y porque tu vida es el único lugar donde tienes control directo.\n\n## Simplificar: desengancharse del consumismo\n\nEl sistema actual necesita que consumas. Tu insatisfacción es su combustible. Cada momento de deseo insatisfecho es oportunidad de venta.\n\nSimplificar no es privación --- es liberación. Menos cosas que mantener, menos deudas que pagar, menos trabajo para financiar lo innecesario, más tiempo para lo que importa.\n\n**Prácticas de simplificación:**\n\n--- Espera 30 días antes de comprar algo no esencial\n\n--- Por cada cosa nueva, saca una vieja\n\n--- Calcula el «coste en horas de vida» (precio / tu salario por hora)\n\n--- Pregunta: ¿lo necesito o lo deseo? ¿Puedo pedirlo prestado?\n\n--- Reduce exposición a publicidad (bloquea anuncios, evita centros comerciales)\n\nLa frugalidad radical no es para todos. Pero casi todos podemos reducir sin perder calidad de vida --- a menudo ganándola.\n\n## Trabajo: ganarse la vida sin venderse el alma\n\nEl trabajo ocupa la mayoría de nuestras horas despiertas. Si tu trabajo contradice tus valores, vives en disonancia cognitiva permanente.\n\n**Opciones (no excluyentes):**\n\n**1. Transformar desde dentro:** si tu organización no es terrible, quizás puedas empujarla en mejor dirección. Proponer prácticas sostenibles, mejorar cultura, influir en decisiones.\n\n**2. Cambiar de trabajo:** buscar empleadores más alineados. Cooperativas, B-Corps, sector social, empresas de propósito. Existen más de lo que crees.\n\n**3. Crear tu propio trabajo:** emprender algo alineado con valores. Más riesgo, más libertad. Las cooperativas de trabajo asociado son opción.\n\n**4. Reducir dependencia del salario:** vivir con menos, diversificar ingresos, construir red de apoyo. Cuanto menos necesites, más puedes elegir.\n\n**5. Trabajo puente:** mantener trabajo convencional que paga facturas mientras construyes alternativa. No es traición; es estrategia de transición.\n\n## Relaciones: practicar lo que predicas\n\nTus relaciones más cercanas son laboratorio de los valores que promueves. ¿Practicas escucha? ¿Resuelves conflictos sin dominación? ¿Compartes poder y recursos?\n\n**Preguntas de reflexión:**\n\n--- ¿Cómo se toman las decisiones en tu pareja/familia?\n\n--- ¿Quién hace el trabajo invisible de cuidado?\n\n--- ¿Cómo manejas los conflictos? ¿Ganas o resuelves?\n\n--- ¿Tus amistades incluyen diversidad o solo gente como tú?\n\nTransformar relaciones íntimas es difícil y lento. Pero es donde realmente se prueba si tus valores son reales o solo discurso.",
+          "closingQuestion": "¿Qué aspecto de tu vida personal contradice los valores que defiendes públicamente?",
+          "exercises": [
+            {
+              "id": "ex-cap14-1",
+              "title": "Mapa de transición personal",
+              "duration": "60 minutos",
+              "description": "Diseña tu propia transición en las áreas clave de tu vida",
+              "steps": [
+                "Dibuja un círculo dividido en sectores: trabajo, dinero, consumo, relaciones, tiempo, lugar",
+                "Para cada sector: ¿dónde estás ahora? (1-10 en alineamiento con tus valores)",
+                "¿Dónde querrías estar? ¿Qué sería un paso en esa dirección?",
+                "Identifica interdependencias: ¿qué cambios facilitan otros?",
+                "Elige 1-2 áreas para empezar y define acciones concretas"
+              ],
+              "reflection": "La transición personal no es todo o nada. Es un proceso de ajuste continuo."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Ikigai (concepto)",
+              "url": "https://en.wikipedia.org/wiki/Ikigai",
+              "type": "concepto",
+              "description": "El concepto japonés de propósito de vida"
+            },
+            {
+              "title": "Designing Your Life (Stanford)",
+              "url": "https://designingyour.life/",
+              "type": "metodología",
+              "description": "Design thinking aplicado a la vida personal"
+            },
+            {
+              "title": "80,000 Hours",
+              "url": "https://80000hours.org/",
+              "type": "orientación",
+              "description": "Guía para carreras de alto impacto"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-15",
+            "title": "Mapa de Transición Personal",
+            "duration": "90 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap5",
+            "chapterTitle": "La Conciencia como Fundamento",
+            "relation": "Transformación personal consciente"
+          }
+        },
+        {
+          "id": "cap15",
+          "title": "Transición comunitaria",
+          "epigraph": {
+            "text": "Se necesita un pueblo entero para criar a un niño.",
+            "author": "Proverbio africano"
+          },
+          "content": "Entre lo individual y lo sistémico está la comunidad: el vecindario, el pueblo, el grupo de afinidad. Aquí es donde se pueden probar alternativas a escala manejable.\n\n## Transition Towns\n\nEl movimiento de Transition Towns nació en Totnes (UK) en 2006. La idea: comunidades locales preparándose para el pico del petróleo y el cambio climático. Hoy hay más de 1,000 iniciativas en 50 países.\n\n**Elementos típicos de una Transition Town:**\n\n--- Grupos de trabajo temáticos (energía, alimentación, economía local...)\n\n--- Moneda local\n\n--- Huertos comunitarios\n\n--- Bancos de tiempo\n\n--- Reskilling (recuperar habilidades perdidas: reparar, conservar, cultivar)\n\n--- Planificación del descenso energético\n\nNo es necesario crear una Transition Town formal. Pero el modelo ofrece plantilla probada para organizar transición local.\n\n## Ecoaldeas\n\nLas ecoaldeas son comunidades intencionales diseñadas para la sostenibilidad. Varían enormemente: rurales/urbanas, espirituales/seculares, pequeñas/grandes.\n\nEjemplos: Findhorn (Escocia), Auroville (India), Damanhur (Italia), Los Angeles Eco-Village (EEUU), Tamera (Portugal). Cada una con su enfoque, pero compartiendo búsqueda de vida comunitaria sostenible.\n\nNo son utopías perfectas. Tienen conflictos, fracasos, líderes problemáticos. Pero son laboratorios donde se experimenta con alternativas. Los aprendizajes --- positivos y negativos --- son valiosos para todos.\n\n**Qué funciona en ecoaldeas:**\n\n✓ Gobernanza clara y participativa\n\n✓ Proceso de entrada gradual (no te unes el día 1)\n\n✓ Equilibrio entre privacidad y comunidad\n\n✓ Economía mixta (no todo compartido, no todo privado)\n\n✓ Mecanismos de resolución de conflictos\n\n✓ Conexión con el exterior (no aislamiento sectario)\n\n## Cómo empezar un grupo en tu barrio\n\nNo necesitas crear una ecoaldea o una Transition Town. Puedes empezar mucho más pequeño.\n\n**Pasos para iniciar:**\n\n1. Encuentra 3-5 personas interesadas en tu entorno cercano\n\n2. Reúnanse regularmente (café mensual, cena rotativa)\n\n3. Compartan intereses: ¿qué les gustaría hacer juntos?\n\n4. Empiecen con algo pequeño y concreto (huerto, banco de tiempo, grupo de compra)\n\n5. Celebren los éxitos, aprendan de los fracasos\n\n6. Crezcan orgánicamente (no forzar escala)\n\nDel Código Genético --- Tamaño óptimo de nodo: Mínimo 10-20 personas (masa crítica). Óptimo 50-150 personas (Dunbar number). Máximo 300 (antes de subdividir). Los grupos funcionan mejor cuando todos se conocen personalmente.",
+          "closingQuestion": "¿Quiénes en tu entorno cercano podrían formar contigo un grupo de transición?",
+          "exercises": [
+            {
+              "id": "ex-cap15-1",
+              "title": "Mapeo de comunidad",
+              "duration": "90 minutos",
+              "description": "Crea un mapa de tu comunidad y sus recursos",
+              "steps": [
+                "Define tu comunidad (geográfica, de interés, etc.)",
+                "Lista todos los recursos que tiene: personas con habilidades, espacios, herramientas, conocimiento",
+                "Lista las necesidades no cubiertas",
+                "Identifica conexiones posibles: ¿qué recurso podría cubrir qué necesidad?",
+                "¿Qué falta? ¿Qué podrías aportar tú?"
+              ],
+              "reflection": "Las comunidades tienen más recursos de los que reconocen. El mapeo los hace visibles."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Asset-Based Community Development (ABCD)",
+              "url": "https://resources.depaul.edu/abcd-institute/",
+              "type": "metodología",
+              "description": "Desarrollo comunitario basado en activos"
+            },
+            {
+              "title": "Transition Towns",
+              "url": "https://transitionnetwork.org/",
+              "type": "movimiento",
+              "description": "Red global de pueblos en transición"
+            },
+            {
+              "title": "Shareable",
+              "url": "https://www.shareable.net/",
+              "type": "medio",
+              "description": "Noticias sobre economía colaborativa y comunitaria"
+            },
+            {
+              "title": "Community Tool Box",
+              "url": "https://ctb.ku.edu/",
+              "type": "recursos",
+              "description": "Recursos para trabajo comunitario"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-16",
+            "title": "Mapeo de Comunidad",
+            "duration": "2 horas",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap12",
+            "chapterTitle": "El Territorio que Vive",
+            "relation": "Crear territorios vivos"
+          }
+        },
+        {
+          "id": "cap16",
+          "title": "Transición organizacional",
+          "epigraph": {
+            "text": "La cultura se come a la estrategia para desayunar.",
+            "author": "Peter Drucker"
+          },
+          "content": "Las organizaciones --- empresas, asociaciones, instituciones --- son donde pasamos la mayor parte del tiempo. Transformarlas es palanca poderosa.\n\n## Transformar una organización existente\n\nSi trabajas en una organización que no es terrible pero podría ser mejor, puedes intentar transformarla desde dentro.\n\n**Estrategias de transformación interna:**\n\n**Modelar alternativas:** practica en tu equipo lo que quieres para toda la organización. Reuniones participativas, decisiones transparentes, cuidado mutuo. Que vean que funciona.\n\n**Encontrar aliados:** rara vez estás solo/a. Otros comparten la frustración. Conéctalos. La masa crítica cambia lo que es posible.\n\n**Aprovechar crisis:** cuando hay problemas (rotación, conflictos, resultados pobres), propón alternativas. En tiempos normales hay resistencia al cambio; en crisis hay apertura.\n\n**Hablar el lenguaje del poder:** traduce tus propuestas a métricas que importan a quienes deciden. Productividad, retención, innovación. No solo «es lo correcto».\n\n**Saber cuándo irte:** a veces la organización no cambiará. Reconocerlo a tiempo evita años de frustración. Tu energía vale más en otro lugar.\n\n## Crear una organización nueva\n\nSi empiezas de cero, puedes diseñar el ADN organizacional desde el principio.\n\n**Preguntas de diseño fundacional:**\n\n--- ¿Cuál es el propósito (más allá de ganar dinero)?\n\n--- ¿Quién tiene poder? ¿Cómo se distribuye?\n\n--- ¿Qué forma jurídica encaja? (cooperativa, asociación, SL de propósito...)\n\n--- ¿Cómo se toman decisiones?\n\n--- ¿Cómo se reparten beneficios (si los hay)?\n\n--- ¿Qué pasa si crece mucho? ¿Se puede vender?\n\nEl Código Genético de Conciencia en Red ofrece plantilla completa: principios inmutables, patrones arquitectónicos, protocolos de integración, métricas de coherencia. Cualquier organización puede adoptar y adaptar estos elementos.\n\n## Ecosistemas de organizaciones\n\nUna organización sola tiene impacto limitado. El poder está en las redes de organizaciones que colaboran.\n\n**Formas de conectar:**\n\n--- Federaciones sectoriales (cooperativas del mismo sector)\n\n--- Clústeres territoriales (organizaciones de una misma zona)\n\n--- Cadenas de valor alternativas (producción-distribución-consumo ético)\n\n--- Plataformas de intercooperación (recursos compartidos)\n\n--- Fondos de financiación mutua\n\nEl modelo de Emilia-Romagna (Italia) muestra cómo un ecosistema denso de cooperativas crea prosperidad compartida que ninguna organización individual podría.",
+          "closingQuestion": "Si tu organización adoptara un principio del Código Genético, ¿cuál sería?",
+          "exercises": [
+            {
+              "id": "ex-cap16-1",
+              "title": "Análisis de cultura organizacional",
+              "duration": "45 minutos",
+              "description": "Diagnostica la cultura de tu organización",
+              "steps": [
+                "¿Cómo se toman realmente las decisiones? (no oficialmente, sino en la práctica)",
+                "¿Qué comportamientos se premian? ¿Cuáles se castigan?",
+                "¿Qué no se puede decir? ¿Qué temas son tabú?",
+                "¿Quién tiene poder informal? ¿Cómo lo consiguió?",
+                "Si pudieras cambiar una cosa de la cultura, ¿cuál sería? ¿Por qué?"
+              ],
+              "reflection": "La cultura se come a la estrategia para desayunar. Sin cambio cultural, no hay transformación."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Deliberately Developmental Organizations",
+              "url": "https://www.ddo.co/",
+              "type": "modelo",
+              "description": "Organizaciones que priorizan el desarrollo personal"
+            },
+            {
+              "title": "Enspiral",
+              "url": "https://www.enspiral.com/",
+              "type": "red",
+              "description": "Red de emprendedores sociales en Nueva Zelanda"
+            },
+            {
+              "title": "Happy Startups School",
+              "url": "https://www.thehappystartupschool.com/",
+              "type": "comunidad",
+              "description": "Comunidad de emprendimiento con propósito"
+            },
+            {
+              "title": "Greaterthan",
+              "url": "https://www.greaterthan.works/",
+              "type": "consultora",
+              "description": "Consultora especializada en organizaciones participativas"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-17",
+            "title": "Análisis de Cultura Organizacional",
+            "duration": "90 minutos",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap10",
+            "chapterTitle": "La Gobernanza que Emerge",
+            "relation": "Transformar organizaciones"
+          }
+        },
+        {
+          "id": "cap17",
+          "title": "Transición política",
+          "epigraph": {
+            "text": "La política es demasiado importante para dejársela a los políticos.",
+            "author": "Charles de Gaulle"
+          },
+          "content": "Tarde o temprano, las alternativas locales chocan con estructuras políticas. No se puede escalar sin tocar la política.\n\n## Municipalismo: el poder de lo local\n\nEl municipalismo propone que el nivel local --- ayuntamientos, ciudades --- es el más prometedor para el cambio político. Suficientemente cerca para participación real, suficientemente poderoso para hacer cosas.\n\nBarcelona en Comú llegó al gobierno de Barcelona en 2015 con agenda de economía social, vivienda, feminización de la política, democracia participativa. Red Fearless Cities conecta iniciativas municipalistas en todo el mundo.\n\n**Qué puede hacer un ayuntamiento progresista:**\n\n--- Compra pública responsable (priorizar cooperativas, criterios sociales/ambientales)\n\n--- Suelo público para vivienda cooperativa\n\n--- Apoyo a economía social y solidaria\n\n--- Presupuestos participativos\n\n--- Remunicipalización de servicios privatizados\n\n--- Energía comunitaria\n\n--- Moneda local\n\n## Nuevas formas de hacer política\n\nLos partidos tradicionales están en crisis de legitimidad. Emergen formas nuevas:\n\n**→ Partidos-movimiento**\n\nHíbridos entre partido y movimiento social. Primarias abiertas, democracia interna, conexión con base social. Tienen sus problemas (personalismo, conflictos internos) pero intentan algo diferente.\n\n**→ Lobby ciudadano**\n\nOrganizaciones que presionan por leyes específicas sin competir electoralmente. Campañas, peticiones, advocacy. Pueden lograr cambios concretos sin el desgaste de gobernar.\n\n**→ Desobediencia civil**\n\nCuando los canales normales no funcionan, la desobediencia civil no-violenta tiene larga tradición: Gandhi, Luther King, sufragistas. Romper la ley injusta para cambiarla, aceptando las consecuencias.\n\n**→ Hackear las instituciones desde dentro**\n\nFuncionarios, técnicos, asesores que desde dentro empujan cambios. Menos visible, menos glamuroso, a veces muy efectivo. La batalla cultural dentro de las instituciones.",
+          "closingQuestion": "¿Qué forma de acción política resuena más contigo en este momento?",
+          "exercises": [
+            {
+              "id": "ex-cap17-1",
+              "title": "Análisis de poder político",
+              "duration": "60 minutos",
+              "description": "Mapea el poder político en tu contexto",
+              "steps": [
+                "Elige un tema político que te importe (vivienda, clima, educación, etc.)",
+                "¿Quiénes son los actores clave que toman decisiones sobre este tema?",
+                "¿Qué intereses tienen? ¿Qué presiones reciben?",
+                "¿Dónde están los puntos de acceso para la ciudadanía?",
+                "¿Qué estrategias de incidencia podrían ser efectivas?"
+              ],
+              "reflection": "El poder político no es monolítico. Tiene fisuras y puntos de entrada."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Beautiful Trouble",
+              "url": "https://beautifultrouble.org/",
+              "type": "toolkit",
+              "description": "Tácticas para activismo creativo"
+            },
+            {
+              "title": "Civicus",
+              "url": "https://www.civicus.org/",
+              "type": "alianza",
+              "description": "Alianza global de sociedad civil"
+            },
+            {
+              "title": "350.org",
+              "url": "https://350.org/",
+              "type": "movimiento",
+              "description": "Movimiento global por la justicia climática"
+            },
+            {
+              "title": "Open Secrets",
+              "url": "https://www.opensecrets.org/",
+              "type": "transparencia",
+              "description": "Seguimiento del dinero en política (EEUU)"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-18",
+            "title": "Análisis de Poder Político",
+            "duration": "2 horas",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap3",
+            "chapterTitle": "El Poder que se Perpetúa",
+            "relation": "Transformar el poder"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parte5",
+      "title": "PARTE V",
+      "subtitle": "La Política del Mientras Tanto",
+      "chapters": [
+        {
+          "id": "cap18",
+          "title": "Estrategias de supervivencia digna",
+          "epigraph": {
+            "text": "No se puede vivir permanentemente en revolución. Hay que pagar las facturas.",
+            "author": ""
+          },
+          "content": "Mientras construimos el nuevo mundo, tenemos que sobrevivir en el viejo. Esto genera tensiones inevitables. No hay solución perfecta --- solo estrategias más o menos sostenibles.\n\n## Pagar las facturas sin traicionar valores\n\nLa trampa del sistema: necesitas dinero para vivir, para conseguir dinero necesitas trabajar, la mayoría de trabajos disponibles alimentan el sistema que quieres cambiar.\n\n**Estrategias:**\n\n**Reducir necesidades:** cuanto menos necesites, menos dependes de trabajo alienante. Vivienda compartida, transporte sin coche, consumo reducido. Libertad por sustracción.\n\n**Trabajo de media jornada:** si puedes vivir con menos, trabaja menos. El tiempo liberado es para construir alternativas.\n\n**Múltiples fuentes de ingreso:** no dependas de un solo empleador. Combina trabajo por cuenta ajena, proyectos propios, ingresos pasivos, economía del don.\n\n**Trabajos puente:** trabajos convencionales que no son tu vocación pero te dan recursos para lo que sí lo es. El programador que financia su proyecto social. La consultora que ahorra para montar cooperativa.\n\n**Líneas rojas claras:** define qué no harías por dinero. Trabajar para la industria armamentística, tabacalera, de vigilancia... Saber tus límites evita deslizamientos graduales.\n\n## La economía del «suficiente»\n\nEl sistema dice: más es mejor. Siempre. Infinitamente.\n\nLa alternativa: suficiente. Hay un punto donde tienes lo necesario y más no añade bienestar. Identificar ese punto libera de la carrera sin fin.\n\n**Preguntas del «suficiente»:**\n\n--- ¿Cuánto dinero necesitas realmente al mes para vivir bien?\n\n--- ¿Qué gastos podrías eliminar sin perder calidad de vida?\n\n--- ¿Qué poseerías si solo tuvieras lo que usas?\n\n--- ¿Cuánto es «suficiente» ahorro, seguridad, confort?\n\nEl «suficiente» es personal --- no hay número mágico. Pero la pregunta misma transforma la relación con el dinero.\n\n## Redes de apoyo mutuo\n\nLa seguridad en el sistema actual viene de dinero: ahorros, seguros, propiedad. Pero hay otra fuente de seguridad: comunidad.\n\nSi tienes red de confianza, puedes pedir ayuda cuando la necesites y ofrecer cuando puedas. Esto reduce la cantidad de dinero que necesitas acumular individualmente.\n\n**Prácticas de apoyo mutuo:**\n\n--- Fondos comunes de emergencia entre amigos\n\n--- Cuidado compartido de niños/mayores\n\n--- Préstamos sin interés entre conocidos\n\n--- Vivienda compartida o en comunidad\n\n--- Herramientas, coches, espacios compartidos\n\nLa comunidad como seguro social alternativo. No es nostálgico --- es estratégico.",
+          "closingQuestion": "¿Qué red de apoyo mutuo podrías construir o fortalecer?",
+          "exercises": [
+            {
+              "id": "ex-cap18-1",
+              "title": "Plan de resiliencia personal",
+              "duration": "45 minutos",
+              "description": "Diseña tu plan de supervivencia digna",
+              "steps": [
+                "¿Cuáles son tus necesidades básicas? (vivienda, alimentación, salud, comunidad)",
+                "¿Qué tan seguras están cubiertas? ¿Qué dependencias tienes?",
+                "¿Qué habilidades tienes que son útiles en crisis?",
+                "¿Qué redes de apoyo mutuo tienes? ¿Cómo podrías fortalecerlas?",
+                "Define 3 acciones para aumentar tu resiliencia"
+              ],
+              "reflection": "La resiliencia no es supervivencialismo individual. Es interdependencia consciente."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Mutual Aid Hub",
+              "url": "https://www.mutualaidhub.org/",
+              "type": "directorio",
+              "description": "Directorio de grupos de ayuda mutua"
+            },
+            {
+              "title": "Permaculture Principles",
+              "url": "https://permacultureprinciples.com/",
+              "type": "principios",
+              "description": "Principios de permacultura para resiliencia"
+            },
+            {
+              "title": "Low-tech Magazine",
+              "url": "https://www.lowtechmagazine.com/",
+              "type": "medio",
+              "description": "Tecnología apropiada y resiliente"
+            },
+            {
+              "title": "Deep Adaptation Forum",
+              "url": "https://www.deepadaptation.info/",
+              "type": "comunidad",
+              "description": "Comunidad de adaptación profunda al colapso"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-19",
+            "title": "Plan de Resiliencia Personal",
+            "duration": "60 minutos",
+            "difficulty": "Intermedio"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap17",
+            "chapterTitle": "Las Sombras del Nuevo Mundo",
+            "relation": "Navegar las sombras"
+          }
+        },
+        {
+          "id": "cap19",
+          "title": "Construir poder sin tomarlo",
+          "epigraph": {
+            "text": "No queremos tomar el poder; queremos disolverlo.",
+            "author": ""
+          },
+          "content": "¿Cómo se cambia el mundo sin tomar el poder del Estado? Hay tradiciones de pensamiento y práctica que exploran esta pregunta.\n\n## Prefiguración: ser el cambio\n\nYa hablamos de prefiguración en el prólogo. Aquí profundizamos: prefigurar es crear, aquí y ahora, los modos de vida que deseamos.\n\nNo es esperar a que las condiciones sean ideales. No es diseñar el futuro y luego implementarlo. Es vivir ya como si el futuro deseado fuera posible --- y descubrir, en la práctica, qué funciona.\n\nLos zapatistas en Chiapas construyen autonomía sin tomar el Estado mexicano. Las comunidades kurdas en Rojava experimentan con confederalismo democrático mientras luchan por sobrevivir. Las ecoaldeas viven alternativas sin esperar permiso. Cada uno a su modo prefigura.\n\n## Doble poder: estructuras paralelas\n\nEl «doble poder» es estrategia histórica: construir instituciones alternativas que compiten con las oficiales. Soviets frente al Zar. Sindicatos frente a patronales. Cooperativas frente a corporaciones.\n\nLa idea: en vez de (o además de) luchar por el poder existente, crear nuevos centros de poder. Cuando suficientes recursos y legitimidad fluyen hacia las estructuras alternativas, las oficiales se vuelven irrelevantes.\n\n**Ejemplos contemporáneos de doble poder:**\n\n--- Cooperativas de energía vs compañías eléctricas\n\n--- Banca ética vs banca comercial\n\n--- Educación alternativa vs escuela oficial\n\n--- Monedas locales vs moneda nacional\n\n--- Medios comunitarios vs medios corporativos\n\n## Éxodo: vaciar el sistema\n\nPaolo Virno y otros teóricos hablan de «éxodo»: no luchar frontalmente contra el sistema sino abandonarlo. Retirar energía, atención, recursos. Dejar que se vacíe mientras se construye otra cosa.\n\nNo es escapismo individual (mudarse al campo mientras el mundo arde). Es movimiento colectivo que drena legitimidad del sistema existente.\n\n**Formas de éxodo:**\n\n--- Dejar de consumir productos de corporaciones tóxicas\n\n--- Sacar dinero de grandes bancos\n\n--- Desconectar de plataformas de vigilancia\n\n--- Reducir dependencia del empleo asalariado\n\n--- Crear circuitos económicos alternativos\n\nEl éxodo funciona cuando es colectivo y visible. Un individuo que se desconecta es excéntrico; un millón son movimiento.\n\n## ¿Cuándo confrontar?\n\nPrefigurar, construir paralelo, éxodo --- todo esto evita confrontación directa. Pero a veces la confrontación es inevitable.\n\nCuando el sistema ataca lo que construyes. Cuando la injusticia es tan grave que no actuar es complicidad. Cuando hay ventana de oportunidad que exige presión.\n\n**Criterios para confrontar:**\n\n--- ¿Tenemos fuerza suficiente para tener impacto?\n\n--- ¿El costo de confrontar es menor que el de no hacerlo?\n\n--- ¿Podemos mantener integridad de medios (no-violencia, democracia interna)?\n\n--- ¿Fortalecerá o debilitará lo que estamos construyendo?\n\nNo hay respuesta universal. Cada situación requiere discernimiento. Pero la orientación general: construir es más importante que destruir.",
+          "closingQuestion": "¿Cuál es tu estrategia: prefiguración, doble poder, éxodo, confrontación? ¿O una combinación?",
+          "exercises": [
+            {
+              "id": "ex-cap19-1",
+              "title": "Mapeo de poder prefigurativo",
+              "duration": "60 minutos",
+              "description": "Identifica espacios donde ya se ejerce poder alternativo",
+              "steps": [
+                "Lista espacios donde ya se vive de forma diferente (cooperativas, comunidades, proyectos)",
+                "¿Qué tipo de poder ejercen? ¿Poder sobre, poder con, poder desde dentro?",
+                "¿Cómo protegen su autonomía? ¿Qué amenazas enfrentan?",
+                "¿Cómo escalan sin perder su esencia?",
+                "¿En cuál podrías participar o aprender?"
+              ],
+              "reflection": "El poder prefigurativo demuestra que otro mundo es posible... porque ya existe en miniatura."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Zapatistas",
+              "url": "https://enlacezapatista.ezln.org.mx/",
+              "type": "movimiento",
+              "description": "Movimiento zapatista en Chiapas"
+            },
+            {
+              "title": "Rojava Information Center",
+              "url": "https://rojavainformationcenter.com/",
+              "type": "información",
+              "description": "Información sobre el experimento de Rojava"
+            },
+            {
+              "title": "Cooperation Jackson",
+              "url": "https://cooperationjackson.org/",
+              "type": "proyecto",
+              "description": "Proyecto de economía solidaria en Mississippi"
+            },
+            {
+              "title": "Barcelona en Comú",
+              "url": "https://barcelonaencomu.cat/",
+              "type": "partido",
+              "description": "Partido municipalista en Barcelona"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-20",
+            "title": "Mapeo de Poder Prefigurativo",
+            "duration": "90 minutos",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap3",
+            "chapterTitle": "El Poder que se Perpetúa",
+            "relation": "Poder prefigurativo"
+          }
+        },
+        {
+          "id": "cap20",
+          "title": "Proteger lo que se construye",
+          "epigraph": {
+            "text": "Lo que no se defiende se pierde.",
+            "author": ""
+          },
+          "content": "Las alternativas son frágiles. Pueden ser atacadas, cooptadas, olvidadas. Protegerlas requiere estrategia.\n\n## Resiliencia ante represión y cooptación\n\nLos sistemas de poder no ignoran amenazas. Responden con represión (atacar) o cooptación (absorber). Ambas destruyen.\n\n**Contra la represión:**\n\n--- Descentralización (no hay cabeza que cortar)\n\n--- Documentación y visibilidad (que se sepa si atacan)\n\n--- Redes de solidaridad (apoyo cuando hay problemas)\n\n--- Redundancia (si cae un nodo, otros continúan)\n\n**Contra la cooptación:**\n\n--- Claridad de principios (saber qué no es negociable)\n\n--- Gobernanza participativa (difícil que pocos vendan al grupo)\n\n--- Transparencia (maniobras se hacen visibles)\n\n--- Formas jurídicas protectoras (cooperativas, fundaciones)\n\n## Formas jurídicas que protegen el propósito\n\nLa forma legal de una organización determina qué puede pasar con ella. Algunas formas protegen mejor que otras.\n\n**→ Cooperativas**\n\nPropiedad de miembros, un miembro = un voto. Difícil de vender porque los miembros tienen que votar. Pero puede desnaturalizarse si los miembros quieren.\n\n**→ Fundaciones**\n\nPatrimonio dedicado a un fin. No hay propietarios que puedan vender. Pero el control está en el patronato, que puede desviarse.\n\n**→ Steward-ownership**\n\nPropiedad en manos de «custodios» que no pueden vender ni extraer valor. Beneficios se reinvierten. Modelo de Patagonia, Bosch, Zeiss.\n\n**→ Community Land Trusts**\n\nPara suelo y vivienda: la tierra se saca del mercado permanentemente. Los residentes usan pero no especulan.\n\n## Documentar y compartir\n\nLo que no se documenta se pierde. Los aprendizajes de un proyecto mueren con él si nadie los escribe.\n\n**Prácticas de documentación:**\n\n--- Escribir procesos, decisiones, aprendizajes\n\n--- Publicar en formatos abiertos\n\n--- Licencias libres (Creative Commons, copyleft)\n\n--- Mentoring: transmisión persona a persona\n\n--- Comunidades de práctica que comparten entre proyectos\n\nDel Código Genético: «Este documento está bajo Creative Commons BY-SA 4.0: puedes copiarlo, adaptarlo, redistribuirlo. Debes dar crédito, compartir mejoras con misma licencia. No puedes cerrar/privatizar.»\n\nEl conocimiento compartido es más resiliente que el conocimiento propietario. Si tu proyecto muere pero otros aprendieron de él, algo sobrevive.",
+          "closingQuestion": "¿Qué estás construyendo que vale la pena proteger? ¿Cómo lo protegerás?",
+          "exercises": [
+            {
+              "id": "ex-cap20-1",
+              "title": "Análisis de amenazas",
+              "duration": "45 minutos",
+              "description": "Evalúa amenazas a un proyecto de cambio que conozcas",
+              "steps": [
+                "Elige un proyecto de cambio que te importe (tuyo o de otros)",
+                "¿Qué amenazas externas enfrenta? (legales, económicas, de cooptación)",
+                "¿Qué amenazas internas? (burnout, conflictos, pérdida de propósito)",
+                "¿Qué mecanismos de protección tiene? ¿Cuáles le faltan?",
+                "¿Qué podrías aportar para fortalecerlo?"
+              ],
+              "reflection": "Proteger lo construido es tan importante como construirlo."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "Frontline Defenders",
+              "url": "https://www.frontlinedefenders.org/",
+              "type": "protección",
+              "description": "Protección de defensores de derechos humanos"
+            },
+            {
+              "title": "Electronic Frontier Foundation",
+              "url": "https://www.eff.org/",
+              "type": "defensa",
+              "description": "Defensa de derechos digitales"
+            },
+            {
+              "title": "The Whistle",
+              "url": "https://thewhistle.org/",
+              "type": "herramienta",
+              "description": "Herramienta de documentación segura"
+            },
+            {
+              "title": "Holistic Security",
+              "url": "https://holistic-security.tacticaltech.org/",
+              "type": "guía",
+              "description": "Guía de seguridad holística para activistas"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-21",
+            "title": "Análisis de Amenazas",
+            "duration": "60 minutos",
+            "difficulty": "Avanzado"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap17",
+            "chapterTitle": "Las Sombras del Nuevo Mundo",
+            "relation": "Proteger ante las sombras"
+          }
+        }
+      ]
+    },
+    {
+      "id": "epilogo",
+      "title": "Epílogo",
+      "chapters": [
+        {
+          "id": "epilogo",
+          "title": "La invitación continúa",
+          "epigraph": {
+            "text": "Cooperamos localmente para regenerar globalmente, usando tecnología transparente que recompensa ayudar, no acumular.",
+            "author": "Código Genético, Conciencia en Red"
+          },
+          "content": "Este manual no es completo ni definitivo. No puede serlo.\n\nLas herramientas evolucionan. Los contextos cambian. Lo que funciona aquí no funciona allá. Lo que fracasa hoy puede triunfar mañana con pequeños ajustes.\n\nLo que hemos intentado es abrir puertas, no cerrarlas. Mostrar que hay opciones donde parecía no haberlas. Ofrecer puntos de partida, no destinos finales.\n\nEl resto depende de ti.\n\n## Cada lector es co-autor\n\nToma lo que te sirva de este manual. Descarta lo que no. Adapta a tu contexto. Experimenta. Falla. Aprende. Comparte lo que aprendas.\n\nLas herramientas solo cobran vida cuando alguien las usa. Un manual sin práctica es papel muerto. Tu acción es lo que da sentido a estas páginas.\n\nY cuando descubras algo que funciona --- o que no funciona --- cuéntalo. Escríbelo. Compártelo. El conocimiento colectivo crece con cada aportación.\n\n## La red de quienes construyen\n\nNo estás solo/a. Miles de personas en todo el mundo trabajan en la misma dirección, aunque no se conozcan entre sí.\n\nCooperativistas, activistas, hackers éticos, educadores alternativos, practicantes de permacultura, facilitadores, meditadores comprometidos, artistas subversivos, funcionarios rebeldes, emprendedores sociales, cuidadores invisibles...\n\nCada uno en su lugar, con sus herramientas, según sus capacidades. Juntos, sin saberlo del todo, tejemos la red que sostendrá lo que viene.\n\nBúscalos. Conéctate. Comparte. Colabora. La transición no es trabajo solitario.\n\n## El primer paso\n\nNo necesitas esperar a tener todo claro. No necesitas permiso. No necesitas condiciones perfectas.\n\nNecesitas dar un paso. Uno solo. Pequeño está bien. En la dirección que intuyes correcta.\n\nLuego otro. Y otro. Y en algún momento miras atrás y has recorrido un camino que parecía imposible.\n\n¿Cuál es tu primer paso?",
+          "closingQuestion": "¿Cuál es tu primer paso?",
+          "exercises": [
+            {
+              "id": "ex-epilogo-1",
+              "title": "Carta a tu yo futuro",
+              "duration": "30 minutos",
+              "description": "Escribe una carta a ti mismo dentro de un año",
+              "steps": [
+                "Escribe la fecha de dentro de un año",
+                "Describe qué has aprendido con este manual",
+                "¿Qué compromisos haces contigo mismo?",
+                "¿Qué pequeños pasos darás en los próximos 30 días?",
+                "Guarda la carta y pon una alarma para leerla en un año"
+              ],
+              "reflection": "La transición no termina con el libro. Apenas comienza."
+            }
+          ],
+          "externalLinks": [
+            {
+              "title": "FutureMe",
+              "url": "https://www.futureme.org/",
+              "type": "herramienta",
+              "description": "Envía cartas a tu yo futuro"
+            },
+            {
+              "title": "One Small Step",
+              "url": "https://onesmallstep.braverangels.org/",
+              "type": "iniciativa",
+              "description": "Iniciativa para conectar a través de diferencias"
+            }
+          ],
+          "linkedExercise": {
+            "book": "toolkit-transicion",
+            "chapterId": "toolkit-22",
+            "title": "Carta a tu Yo Futuro",
+            "duration": "30-45 minutos",
+            "difficulty": "Básico"
+          },
+          "relatedManifiesto": {
+            "book": "manifiesto",
+            "bookTitle": "Manifiesto de la Conciencia Compartida",
+            "chapterId": "cap18",
+            "chapterTitle": "La Invitación",
+            "relation": "La invitación continúa"
+          }
+        }
+      ]
+    }
+  ]
+}

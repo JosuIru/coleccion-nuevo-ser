@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Licencias Open Source - Colección Nuevo Ser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        h2 {
+            color: #a855f7;
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .license-card {
+            background: rgba(51, 65, 85, 0.5);
+            border-left: 3px solid #8b5cf6;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .license-card h3 {
+            color: #fbbf24;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .license-card p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .license-card .version {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .license-card .license-type {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid #fbbf24;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .icon {
+            margin-right: 0.5rem;
+        }
+
+        a {
+            color: #fbbf24;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Licencias Open Source</h1>
+        <p class="subtitle">Colección Nuevo Ser se construye sobre los hombros de gigantes</p>
+
+        <div class="highlight">
+            <p>Esta aplicación utiliza múltiples bibliotecas y herramientas de código abierto. Agradecemos profundamente a todos los desarrolladores y mantenedores de estos proyectos.</p>
+        </div>
+
+        <h2>Framework Principal</h2>
+
+        <div class="license-card">
+            <h3>Capacitor</h3>
+            <p>Framework para crear aplicaciones nativas usando tecnologías web</p>
+            <p class="version">v6.0.0</p>
+            <span class="license-type">MIT License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://capacitorjs.com" target="_blank">capacitorjs.com</a> |
+                <a href="https://github.com/ionic-team/capacitor" target="_blank">GitHub</a>
+            </p>
+        </div>
+
+        <h2>Plugins de Capacitor</h2>
+
+        <div class="license-card">
+            <h3>@aparajita/capacitor-biometric-auth</h3>
+            <p>Autenticación biométrica (huella dactilar, Face ID)</p>
+            <p class="version">v9.1.2</p>
+            <span class="license-type">MIT License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/aparajita/capacitor-biometric-auth" target="_blank">GitHub</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor-community/text-to-speech</h3>
+            <p>Síntesis de voz para función de audiobook</p>
+            <p class="version">v4.1.1</p>
+            <span class="license-type">MIT License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/capacitor-community/text-to-speech" target="_blank">GitHub</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/filesystem</h3>
+            <p>Acceso al sistema de archivos del dispositivo</p>
+            <p class="version">v6.0.4</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/local-notifications</h3>
+            <p>Notificaciones locales programadas</p>
+            <p class="version">v6.1.3</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/preferences</h3>
+            <p>Almacenamiento persistente de preferencias</p>
+            <p class="version">v6.0.4</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/share</h3>
+            <p>Compartir contenido nativo</p>
+            <p class="version">v6.0.4</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/splash-screen</h3>
+            <p>Pantalla de inicio nativa</p>
+            <p class="version">v6.0.4</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <div class="license-card">
+            <h3>@capacitor/status-bar</h3>
+            <p>Control de la barra de estado del sistema</p>
+            <p class="version">v6.0.3</p>
+            <span class="license-type">MIT License</span>
+        </div>
+
+        <h2>Backend y Servicios</h2>
+
+        <div class="license-card">
+            <h3>Firebase</h3>
+            <p>Autenticación, base de datos en tiempo real, notificaciones push</p>
+            <p class="version">v32.7.0 (BOM)</p>
+            <span class="license-type">Apache License 2.0</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://firebase.google.com" target="_blank">firebase.google.com</a> |
+                <a href="https://github.com/firebase/firebase-android-sdk" target="_blank">GitHub</a>
+            </p>
+        </div>
+
+        <h2>UI y Styling</h2>
+
+        <div class="license-card">
+            <h3>Tailwind CSS</h3>
+            <p>Framework de utilidades CSS</p>
+            <span class="license-type">MIT License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://tailwindcss.com" target="_blank">tailwindcss.com</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>Lucide Icons</h3>
+            <p>Biblioteca de iconos SVG</p>
+            <span class="license-type">ISC License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://lucide.dev" target="_blank">lucide.dev</a>
+            </p>
+        </div>
+
+        <h2>APIs de IA (Opcional)</h2>
+
+        <div class="license-card">
+            <h3>OpenAI API</h3>
+            <p>Chat con GPT para exploración de conceptos</p>
+            <span class="license-type">Propietario - Sujeto a Términos de Uso</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://openai.com/policies/terms-of-use" target="_blank">Términos de Uso</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>Anthropic Claude API</h3>
+            <p>Chat con Claude para exploración de conceptos</p>
+            <span class="license-type">Propietario - Sujeto a Términos de Uso</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://www.anthropic.com/legal/consumer-terms" target="_blank">Términos de Uso</a>
+            </p>
+        </div>
+
+        <h2>Lenguajes y Herramientas</h2>
+
+        <div class="license-card">
+            <h3>Kotlin</h3>
+            <p>Lenguaje para componentes nativos Android</p>
+            <p class="version">v1.9.0</p>
+            <span class="license-type">Apache License 2.0</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://kotlinlang.org" target="_blank">kotlinlang.org</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>Android Gradle Plugin</h3>
+            <p>Sistema de construcción para Android</p>
+            <p class="version">v8.2.1</p>
+            <span class="license-type">Apache License 2.0</span>
+        </div>
+
+        <h2>Contenido</h2>
+
+        <div class="license-card">
+            <h3>Libros de Colección Nuevo Ser</h3>
+            <p>Contenido original de los libros (texto, ejercicios, meditaciones)</p>
+            <span class="license-type">CC BY-NC-SA 4.0</span>
+            <p style="margin-top: 0.5rem;">
+                Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional<br>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank">Ver Licencia</a>
+            </p>
+        </div>
+
+        <div class="license-card">
+            <h3>Código de la Aplicación</h3>
+            <p>Código fuente de Colección Nuevo Ser (JavaScript, Kotlin, HTML, CSS)</p>
+            <span class="license-type">MIT License</span>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/coleccion-nuevo-ser" target="_blank">GitHub</a>
+            </p>
+        </div>
+
+        <h2>Agradecimientos Especiales</h2>
+
+        <div class="highlight">
+            <p><strong>Comunidad Open Source:</strong> Esta aplicación no existiría sin las contribuciones desinteresadas de miles de desarrolladores alrededor del mundo. Gracias por construir herramientas increíbles y compartirlas libremente.</p>
+
+            <p style="margin-top: 1rem;"><strong>Usuarios y Testers:</strong> Gracias por probar, reportar bugs, y dar feedback para mejorar continuamente esta app.</p>
+
+            <p style="margin-top: 1rem;"><strong>Claude (Anthropic):</strong> Co-autor de los libros y asistente en el desarrollo de la aplicación.</p>
+        </div>
+
+        <h2>Licencia Completa</h2>
+        <p>Para ver el texto completo de las licencias mencionadas:</p>
+        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+            <li><a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></li>
+            <li><a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a></li>
+            <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a></li>
+            <li><a href="https://opensource.org/licenses/ISC" target="_blank">ISC License</a></li>
+        </ul>
+
+        <a href="javascript:history.back()" class="back-link">
+            <span class="icon">←</span> Volver a la App
+        </a>
+    </div>
+</body>
+</html>

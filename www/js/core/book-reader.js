@@ -6,9 +6,29 @@
 class BookReader {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
-    this.i18n = window.i18n || new I18n();
-    this.sidebarOpen = true;
+    // 🔧 FIX #87: Usar getDependency en lugar de window directo
+    // (Note: getDependency is called after assignment, so use fallback pattern)
+    this.i18n = null; // Will be set via getDependency in init
+    // Sidebar cerrado por defecto en móvil, abierto en desktop
+    this.sidebarOpen = window.innerWidth >= 768; // Browser API, OK to use window
     this.currentChapter = null;
+    this._eventListenersAttached = false; // Flag para evitar duplicación masiva
+
+    // 🧹 MEMORY LEAK FIX #44: EventManager para gestionar listeners
+    this.eventManager = new EventManager(false); // false = sin debug logs
+    this.eventManager.setComponentName('BookReader');
+
+    // 🔧 FIX #87: Inicializar dependencias de forma segura
+    this.initDependencies();
+  }
+
+  /**
+   * 🔧 FIX #87: Inicializar dependencias opcionales
+   */
+  initDependencies() {
+    // Obtener i18n de forma segura, con fallback
+    const i18nDep = this.getDependency('i18n');
+    this.i18n = i18nDep || new I18n();
   }
 
   // ==========================================================================
@@ -17,6 +37,93 @@ class BookReader {
 
   isCapacitor() {
     return typeof window.Capacitor !== 'undefined';
+  }
+
+  /**
+   * 🔧 FIX #87: Acceso seguro a dependencias globales
+   * @param {string} name - Nombre de la dependencia
+   * @returns {any|null} - Dependencia o null si no está disponible
+   */
+  getDependency(name) {
+    if (window.dependencyInjector) {
+      return window.dependencyInjector.getSafe(name);
+    }
+    return window[name] || null;
+  }
+
+  /**
+   * 🔧 FIX #87: Acceso seguro a múltiples dependencias
+   * @param {string[]} names - Array de nombres de dependencias
+   * @returns {Object} - Objeto con las dependencias disponibles
+   */
+  getDependencies(names) {
+    if (window.dependencyInjector) {
+      return window.dependencyInjector.getMultipleSafe(names);
+    }
+    const result = {};
+    names.forEach(name => {
+      result[name] = window[name] || null;
+    });
+    return result;
+  }
+
+  /**
+   * 🔧 FIX #87: Helper para mostrar toasts de forma segura
+   * @param {string} type - Tipo de toast: 'info', 'success', 'error', 'warning'
+   * @param {string} message - Mensaje a mostrar
+   */
+  showToast(type, message) {
+    const toast = this.getDependency('toast');
+    if (toast && typeof toast[type] === 'function') {
+      toast[type](message);
+    } else {
+      // Fallback a console si toast no está disponible
+      console.log(`[Toast ${type.toUpperCase()}]`, message);
+    }
+  }
+
+  /**
+   * 🔧 FIX #87: Helper para obtener tema de forma segura
+   * @returns {Object} Objeto con icon, label del tema
+   */
+  getThemeInfo() {
+    const themeHelper = this.getDependency('themeHelper');
+    return {
+      icon: themeHelper?.getThemeIcon?.() || '🌙',
+      label: themeHelper?.getThemeLabel?.() || 'Tema'
+    };
+  }
+
+  /**
+   * 🔧 FIX #87: Helper para aplicar tema de libro de forma segura
+   */
+  applyBookTheme() {
+    const themeHelper = this.getDependency('themeHelper');
+    if (themeHelper) {
+      themeHelper.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+    }
+  }
+
+  /**
+   * 🔧 FIX #87: Helper para remover tema de libro de forma segura
+   */
+  removeBookTheme() {
+    const themeHelper = this.getDependency('themeHelper');
+    if (themeHelper) {
+      themeHelper.removeBookTheme();
+    }
+  }
+
+  /**
+   * 🔧 FIX #87: Helper para capturar errores de forma segura
+   */
+  captureError(error, context) {
+    const errorBoundary = this.getDependency('errorBoundary');
+    if (errorBoundary) {
+      errorBoundary.captureError(error, context);
+    } else {
+      console.error('[BookReader] Error:', error, context);
+    }
   }
 
   // ==========================================================================
@@ -31,6 +138,12 @@ class BookReader {
     const container = document.getElementById('book-reader-view');
     if (container) {
       container.classList.remove('hidden');
+    }
+
+    // Ocultar main-nav al abrir el lector
+    const mainNav = document.getElementById('main-nav');
+    if (mainNav) {
+      mainNav.classList.add('hidden');
     }
 
     // Aplicar tamaño de fuente guardado
@@ -52,6 +165,56 @@ class BookReader {
     if (container) {
       container.classList.add('hidden');
     }
+
+    // 🧹 CLEANUP: Liberar todos los event listeners (#44)
+    this.cleanup();
+  }
+
+  // 🧹 MEMORY LEAK FIX #44: Método de cleanup
+  cleanup() {
+    // 🔧 FIX #4: Usar logger en lugar de console.log
+    logger.debug('[BookReader] Iniciando cleanup...');
+
+    // Limpiar todos los event listeners gestionados por EventManager
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+
+    // 🔧 FIX #45: Resetear todos los flags de dropdown y event listeners
+    this._eventListenersAttached = false;
+    this._bottomNavClickOutsideAttached = false;
+    this._moreActionsClickOutsideAttached = false;
+    this._desktopDropdownsClickOutsideAttached = false;
+
+    // 🔧 FIX #4: Usar logger en lugar de console.log
+    logger.debug('[BookReader] Cleanup completado ✅');
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+
+    // Solo actualizar las clases del sidebar sin re-renderizar todo
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      if (this.sidebarOpen) {
+        // Abrir: ancho completo en móvil, 320px en desktop
+        sidebar.className = sidebar.className.replace(/\bw-\S+/g, '');
+        sidebar.classList.add('w-full', 'sm:w-80');
+      } else {
+        // Cerrar: w-0 en todos los breakpoints
+        sidebar.className = sidebar.className.replace(/\bw-\S+/g, '');
+        sidebar.classList.add('w-0', 'sm:w-0', 'md:w-0', 'lg:w-0');
+      }
+    }
+
+    // Actualizar icono del botón toggle
+    const toggleBtn = document.getElementById('toggle-sidebar');
+    const Icons = this.getDependency('Icons'); // 🔧 FIX #87
+    if (toggleBtn && Icons) {
+      toggleBtn.innerHTML = this.sidebarOpen ? Icons.chevronLeft() : Icons.chevronRight();
+      toggleBtn.setAttribute('aria-label', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
+      toggleBtn.setAttribute('title', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
+    }
   }
 
   backToLibrary() {
@@ -64,6 +227,12 @@ class BookReader {
       bibliotecaView.classList.remove('hidden');
     }
 
+    // Mostrar main-nav al volver a biblioteca
+    const mainNav = document.getElementById('main-nav');
+    if (mainNav) {
+      mainNav.classList.remove('hidden');
+    }
+
     // Update URL hash to remove book reference
     if (window.history && window.history.pushState) {
       window.history.pushState(null, '', window.location.pathname);
@@ -74,49 +243,95 @@ class BookReader {
   }
 
   render() {
-    const container = document.getElementById('book-reader-view');
-    if (!container) return;
+    try {
+      const container = document.getElementById('book-reader-view');
+      if (!container) return;
 
-    // Detectar si es móvil para mostrar bottom nav
-    const isMobile = window.innerWidth < 1024;
+      // 🔧 FIX #44: Limpiar event listeners antes de resetear flag y recrear HTML
+      if (this._eventListenersAttached) {
+        this.eventManager.cleanup();
+      }
 
-    let html = `
-      <div class="book-reader-container flex h-screen overflow-x-hidden ${isMobile ? 'has-bottom-nav' : ''}">
-        <!-- Sidebar -->
-        ${this.renderSidebar()}
+      // ⚠️ CRÍTICO: Resetear flag porque vamos a crear elementos HTML completamente nuevos
+      this._eventListenersAttached = false;
 
-        <!-- Main Content -->
-        <div class="main-content flex-1 flex flex-col overflow-x-hidden">
-          <!-- Header -->
-          ${this.renderHeader()}
+      // Detectar si es móvil para mostrar bottom nav
+      const isMobile = window.innerWidth < 1024;
 
-          <!-- Chapter Content -->
-          <div class="chapter-content flex-1 overflow-y-auto overflow-x-hidden p-8">
-            ${this.renderChapterContent()}
-          </div>
+      let html = `
+        <div class="book-reader-container flex h-screen overflow-x-hidden">
+          <!-- Sidebar -->
+          ${this.renderSidebar()}
 
-          <!-- Footer Navigation (prev/next) - oculto en móvil con bottom nav -->
-          <div class="lg:block ${isMobile ? 'hidden' : ''}">
-            ${this.renderFooterNav()}
+          <!-- Main Content -->
+          <div class="main-content flex-1 flex flex-col overflow-x-hidden">
+            <!-- Header -->
+            ${this.renderHeader()}
+
+            <!-- Chapter Content -->
+            <div class="chapter-content flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8">
+              ${this.renderChapterContent()}
+            </div>
+
+            <!-- Footer Navigation (prev/next) - visible en todas las pantallas -->
+            <div class="block">
+              ${this.renderFooterNav()}
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
 
-    // Add mobile menu
-    html += this.renderMobileMenu();
+      // Add mobile menu
+      html += this.renderMobileMenu();
 
-    // Add floating ExplorationHub button
-    html += this.renderExplorationHubButton();
+      // Add floating ExplorationHub button
+      html += this.renderExplorationHubButton();
 
-    // Add bottom navigation (solo móvil)
-    html += this.renderReaderBottomNav();
+      // Nota: Bottom nav eliminado - redundante con header y menú móvil
 
-    container.innerHTML = html;
+      container.innerHTML = html;
 
-    // Initialize Lucide icons
-    if (window.Icons) {
-      Icons.init();
+      // Initialize Lucide icons
+      const Icons = this.getDependency('Icons'); // 🔧 FIX #87
+      if (Icons) {
+        Icons.init();
+      }
+
+      // Notificar al sistema de hints contextuales
+      const contextualHints = this.getDependency('contextualHints'); // 🔧 FIX #87
+      if (contextualHints) {
+        contextualHints.onPageVisit('reader');
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para render completo
+      console.error('[BookReader] Error en render:', error);
+      const errorBoundary = this.getDependency('errorBoundary'); // 🔧 FIX #87
+      if (errorBoundary) {
+        errorBoundary.captureError(error, {
+          context: 'render',
+          filename: 'book-reader.js'
+        });
+      }
+
+      // Mostrar UI de error al usuario
+      const container = document.getElementById('book-reader-view');
+      if (container) {
+        container.innerHTML = `
+          <div class="flex items-center justify-center h-screen bg-slate-900 text-white p-8">
+            <div class="text-center max-w-md">
+              <div class="text-6xl mb-4">⚠️</div>
+              <h2 class="text-2xl font-bold mb-4">Error al cargar el lector</h2>
+              <p class="text-slate-400 mb-6">Ha ocurrido un error al renderizar el contenido.</p>
+              <button
+                onclick="window.location.reload()"
+                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
+              >
+                Recargar Aplicación
+              </button>
+            </div>
+          </div>
+        `;
+      }
     }
   }
 
@@ -125,37 +340,36 @@ class BookReader {
     const bookData = this.bookEngine.getCurrentBookData();
 
     return `
-      <div class="sidebar ${this.sidebarOpen ? 'w-full sm:w-80' : 'w-0'} flex-shrink-0 bg-gray-900/50 border-r border-gray-700 overflow-hidden transition-all duration-300 flex flex-col relative">
+      <!-- Backdrop oscuro en móvil cuando sidebar está abierto -->
+      ${this.sidebarOpen ? '<div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-40 sm:hidden" onclick="window.bookReader?.toggleSidebar()"></div>' : ''}
+
+      <!-- Sidebar: Fixed overlay en móvil, normal en desktop -->
+      <div class="sidebar ${this.sidebarOpen ? 'w-full sm:w-80' : 'w-0'}
+                  fixed sm:relative top-0 left-0 h-full sm:h-auto z-50 sm:z-auto
+                  flex-shrink-0 bg-gray-900/95 sm:bg-gray-900/50 border-r border-gray-700
+                  overflow-hidden transition-all duration-300 flex flex-col">
         <!-- Fixed Header Section -->
-        <div class="flex-shrink-0 p-6 pb-4">
-          <!-- Mobile Close Button (visible only on small screens) -->
-          <button id="close-sidebar-mobile" class="sm:hidden absolute top-4 right-4 text-3xl hover:text-red-400 transition-colors p-2 z-10"
-                  aria-label="${this.i18n.t('menu.close')}"
-                  title="${this.i18n.t('menu.close')}">
+        <div class="flex-shrink-0 p-4 sm:p-6 pb-3 sm:pb-4">
+          <!-- Close Sidebar Button (visible on all screens) -->
+          <button id="close-sidebar-mobile" class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center text-2xl sm:text-3xl font-bold hover:bg-red-500/20 hover:text-red-400 text-white transition-all rounded-lg z-20 border-2 border-gray-500 bg-gray-800 shadow-lg"
+                  aria-label="Cerrar índice"
+                  title="Cerrar índice de capítulos">
             ×
           </button>
 
           <!-- Book Title -->
-          <div class="mb-4">
-            <h2 class="text-2xl font-bold mb-1">${bookData.title}</h2>
-            <p class="text-sm opacity-70">${bookData.subtitle}</p>
+          <div class="mb-3 sm:mb-4 pr-12">
+            <h2 class="text-lg sm:text-2xl font-bold mb-1 leading-tight">${bookData.title}</h2>
+            <p class="text-xs sm:text-sm opacity-70 leading-tight">${bookData.subtitle || ''}</p>
           </div>
-
-          <!-- Back to Library Button -->
-          <button onclick="window.bookReader?.backToLibrary()"
-                  class="w-full mb-4 px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm border border-slate-600/50"
-                  aria-label="Volver a la biblioteca">
-            <span aria-hidden="true">←</span>
-            <span>Volver a Biblioteca</span>
-          </button>
 
           <!-- Progress -->
           ${this.renderSidebarProgress()}
         </div>
 
         <!-- Scrollable Chapters List -->
-        <div class="flex-1 overflow-y-auto px-6 pb-6 sidebar-scroll">
-          <div class="chapters-list space-y-2">
+        <div class="flex-1 overflow-y-auto px-4 sm:px-6 pb-4 sm:pb-6 sidebar-scroll">
+          <div class="chapters-list space-y-1.5 sm:space-y-2">
             ${chapters.map(ch => this.renderChapterItem(ch)).join('')}
           </div>
         </div>
@@ -168,16 +382,16 @@ class BookReader {
     const progress = this.bookEngine.getProgress(bookId);
 
     return `
-      <div class="progress-box p-4 rounded-lg bg-gray-800/50 border border-gray-700">
-        <div class="flex justify-between text-sm mb-2">
+      <div class="progress-box p-3 sm:p-4 rounded-lg bg-gray-800/50 border border-gray-700">
+        <div class="flex justify-between text-xs sm:text-sm mb-2">
           <span>Progreso</span>
           <span class="font-bold">${progress.percentage}%</span>
         </div>
-        <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div class="w-full h-1.5 sm:h-2 bg-gray-700 rounded-full overflow-hidden">
           <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all"
                style="width: ${progress.percentage}%"></div>
         </div>
-        <p class="text-xs opacity-60 mt-2">
+        <p class="text-xs opacity-60 mt-1.5 sm:mt-2">
           ${progress.chaptersRead} de ${progress.totalChapters} capítulos
         </p>
       </div>
@@ -209,12 +423,12 @@ class BookReader {
     }
   }
 
-  // Attach listeners solo para chapter items (para usar en updateSidebar)
+  // 🔧 FIX #44: Attach listeners solo para chapter items usando EventManager
   attachChapterListeners() {
     // Chapter read toggle buttons
     const readToggleBtns = document.querySelectorAll('.chapter-read-toggle');
     readToggleBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         e.stopPropagation();
         const chapterId = btn.getAttribute('data-chapter-id');
         this.bookEngine.toggleChapterRead(chapterId);
@@ -225,13 +439,13 @@ class BookReader {
     // Chapter title areas
     const chapterTitleAreas = document.querySelectorAll('.chapter-title-area');
     chapterTitleAreas.forEach(area => {
-      area.addEventListener('click', () => {
+      this.eventManager.addEventListener(area, 'click', () => {
         const chapterId = area.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
+        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
         if (window.innerWidth < 768) {
           this.sidebarOpen = false;
-          this.render();
-          this.attachEventListeners();
+          this.updateSidebar();
         }
       });
     });
@@ -239,16 +453,16 @@ class BookReader {
     // Chapter items
     const chapterItems = document.querySelectorAll('.chapter-item');
     chapterItems.forEach(item => {
-      item.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(item, 'click', (e) => {
         if (e.target.closest('.chapter-read-toggle') || e.target.closest('.chapter-title-area')) {
           return;
         }
         const chapterId = item.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
+        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
         if (window.innerWidth < 768) {
           this.sidebarOpen = false;
-          this.render();
-          this.attachEventListeners();
+          this.updateSidebar();
         }
       });
     });
@@ -259,23 +473,23 @@ class BookReader {
     const isRead = this.bookEngine.isChapterRead(chapter.id);
 
     return `
-      <div class="chapter-item p-3 rounded-lg cursor-pointer transition-all ${
+      <div class="chapter-item p-2 sm:p-3 rounded-lg cursor-pointer transition-all ${
         isActive ? 'bg-cyan-600/30 border border-cyan-500' : 'hover:bg-gray-800/50'
       }"
            data-chapter-id="${chapter.id}">
-        <div class="flex items-center gap-2">
-          <button class="chapter-read-toggle p-3 rounded hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button class="chapter-read-toggle p-1.5 sm:p-2 rounded hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
                   data-chapter-id="${chapter.id}"
                   aria-label="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}"
                   title="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}">
-            ${isRead ? Icons.checkCircle(18) : Icons.circle(18)}
+            ${isRead ? Icons.checkCircle(16) : Icons.circle(16)}
           </button>
           <div class="flex-1 chapter-title-area" data-chapter-id="${chapter.id}">
-            <div class="text-sm font-semibold ${isActive ? 'text-cyan-300' : ''}">
+            <div class="text-xs sm:text-sm font-semibold ${isActive ? 'text-cyan-300' : ''} leading-snug">
               ${chapter.title}
             </div>
             ${chapter.sectionTitle ? `
-              <div class="text-xs opacity-50 mt-1">${chapter.sectionTitle}</div>
+              <div class="text-xs opacity-50 mt-0.5 sm:mt-1 leading-tight">${chapter.sectionTitle}</div>
             ` : ''}
           </div>
         </div>
@@ -302,44 +516,41 @@ class BookReader {
       <div class="header border-b border-gray-700 p-3 lg:p-4">
         <!-- Primera fila: Navegación + Acciones -->
         <div class="flex items-center justify-between gap-2">
-          <!-- Left: Toggle Sidebar + Back -->
-          <div class="flex items-center gap-1 flex-shrink-0">
+          <!-- Left: Toggle Sidebar -->
+          <div class="flex items-start sm:items-center gap-1 flex-shrink-0">
             <button id="toggle-sidebar"
-                    class="p-3 hover:bg-gray-800 rounded-lg transition"
+                    class="p-2 sm:p-3 hover:bg-gray-800 rounded-lg transition flex items-center justify-center sm:justify-start gap-1.5"
                     aria-label="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}"
                     title="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}">
-              ${this.sidebarOpen ? Icons.chevronLeft() : Icons.chevronRight()}
-            </button>
-            <button id="back-to-biblioteca"
-                    class="p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-1"
-                    aria-label="Volver a la biblioteca"
-                    title="Volver a la biblioteca">
-              ${Icons.library()} <span class="hidden lg:inline text-sm">${this.i18n.t('nav.library')}</span>
+              ${this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18)}
+              <span class="text-xs sm:text-sm">${this.sidebarOpen ? 'Ocultar' : 'Índice'}</span>
             </button>
           </div>
 
-          <!-- Right: Actions (más espacio sin el título en medio) -->
+          <!-- Right: Actions -->
           <div class="flex items-center gap-1 flex-shrink-0">
-            <!-- Mobile/Android view: Main actions + More dropdown -->
+            <!-- Mobile/Android view: Solo acciones no duplicadas en bottom nav -->
             <!-- En Capacitor siempre usar vista móvil, en web solo < md (768px) -->
             <div class="${this.isCapacitor() ? 'flex lg:hidden' : 'flex md:hidden'} items-center gap-1">
-              <button id="ai-chat-btn-mobile"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
-                      aria-label="${this.i18n.t('reader.chat')}"
-                      title="${this.i18n.t('reader.chat')}">
-                ${Icons.chat()}
-              </button>
               <button id="bookmark-btn-mobile"
                       class="p-3 hover:bg-gray-800 rounded-lg transition"
                       aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
                       title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
                 ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
               </button>
+              <!-- Botón Audio mobile: cambia entre 🎧/▶/⏸ -->
               <button id="audioreader-btn-mobile"
                       class="p-3 hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.audio')}"
                       title="${this.i18n.t('reader.audio')}">
-                ${Icons.audio()}
+                <span id="audio-icon-mobile">${Icons.audio()}</span>
+              </button>
+              <!-- Botón Desplegar reproductor (oculto hasta activar audio) -->
+              <button id="audio-expand-btn-mobile"
+                      class="p-3 hover:bg-gray-800 rounded-lg transition hidden"
+                      aria-label="Ver reproductor"
+                      title="Ver reproductor">
+                ${Icons.chevronDown ? Icons.chevronDown(20) : '▼'}
               </button>
               <!-- Botón Apoyar mobile -->
               <button id="support-btn-mobile"
@@ -572,9 +783,22 @@ class BookReader {
           </div>
         </div>
 
-        <!-- Segunda fila: Título del capítulo (siempre visible) -->
+        <!-- Segunda fila: Libro y Capítulo (siempre visible) -->
         <div class="mt-2 text-center border-t border-gray-300 dark:border-gray-700/50 pt-2">
-          <h3 class="text-sm lg:text-base font-bold text-gray-900 dark:text-gray-100 truncate px-2" style="color: inherit;">${this.currentChapter?.title || ''}</h3>
+          <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-500 truncate px-2">${bookData.title}</div>
+          <h3 class="text-sm lg:text-base font-bold text-gray-900 dark:text-gray-100 truncate px-2 mt-0.5" style="color: inherit;">${this.currentChapter?.title || ''}</h3>
+        </div>
+
+        <!-- Barra de progreso de audio (oculta hasta activar audio) -->
+        <div id="audio-progress-bar-container" class="hidden mt-2">
+          <div class="h-1 bg-gray-700 rounded-full overflow-hidden">
+            <div id="audio-progress-bar" class="h-full bg-cyan-500 transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-400 mt-1 px-1">
+            <span id="audio-current-time">0:00</span>
+            <span id="audio-paragraph-info">--</span>
+            <span id="audio-total-time">0:00</span>
+          </div>
         </div>
       </div>
     `;
@@ -607,6 +831,9 @@ class BookReader {
     html += `<div class="content prose prose-invert max-w-none overflow-x-hidden break-words">`;
     html += this.bookEngine.renderContent(this.currentChapter.content);
     html += `</div>`;
+
+    // Banner contextual de práctica (si hay ejercicios)
+    html += this.renderContextualPracticeBanner();
 
     // Pregunta de cierre
     if (this.currentChapter.closingQuestion) {
@@ -645,9 +872,10 @@ class BookReader {
     }
 
     // Sugerencias de IA (para profundizar)
-    if (window.aiSuggestions) {
+    const aiSuggestions = this.getDependency('aiSuggestions'); // 🔧 FIX #87
+    if (aiSuggestions) {
       const bookId = this.bookEngine.getCurrentBook();
-      html += window.aiSuggestions.render(bookId, this.currentChapter.id);
+      html += aiSuggestions.render(bookId, this.currentChapter.id);
     }
 
     // Botón de marcar capítulo como leído
@@ -661,6 +889,84 @@ class BookReader {
     return html;
   }
 
+  /**
+   * Renderiza un banner contextual de práctica
+   * Aparece sutilmente cuando el capítulo tiene ejercicios o práctica asociada
+   */
+  renderContextualPracticeBanner() {
+    // Verificar si hay ejercicios en el capítulo
+    const tieneEjercicios = this.currentChapter?.exercises?.length > 0;
+    const tieneLinkedExercise = this.currentChapter?.linkedExercise;
+    const currentBookId = this.bookEngine.getCurrentBook();
+
+    // Para libros de ejercicios (Manual Práctico, Toolkit), no mostrar banner adicional
+    const librosDeEjercicios = ['manual-practico', 'practicas-radicales', 'toolkit-transicion'];
+    if (librosDeEjercicios.includes(currentBookId)) {
+      return '';
+    }
+
+    // Verificar si el libro de referencia tiene ejercicios relacionados
+    const librosConPracticas = {
+      'codigo-despertar': { practicaLibroId: 'manual-practico', practicaNombre: 'Manual Práctico' },
+      'tierra-que-despierta': { practicaLibroId: 'manual-practico', practicaNombre: 'Manual Práctico' },
+      'manifiesto': { practicaLibroId: 'guia-acciones', practicaNombre: 'Guía de Acciones' },
+      'manual-transicion': { practicaLibroId: 'toolkit-transicion', practicaNombre: 'Toolkit de Transición' }
+    };
+
+    const practicaRelacionada = librosConPracticas[currentBookId];
+
+    if (!tieneEjercicios && !tieneLinkedExercise && !practicaRelacionada) {
+      return '';
+    }
+
+    // Determinar qué tipo de banner mostrar
+    let bannerContent = '';
+
+    if (tieneEjercicios) {
+      const primerEjercicio = this.currentChapter.exercises[0];
+      bannerContent = `
+        <div class="chapter-practice-banner">
+          <div class="icon">🧘</div>
+          <div class="content">
+            <div class="title">Este capítulo incluye una práctica</div>
+            <div class="description">${primerEjercicio.title || 'Ejercicio de integración'} • ${primerEjercicio.duration || '10 min'}</div>
+          </div>
+          <button class="action-btn" onclick="document.querySelector('.exercises-section')?.scrollIntoView({behavior: 'smooth'})">
+            Ver práctica
+          </button>
+        </div>
+      `;
+    } else if (tieneLinkedExercise) {
+      bannerContent = `
+        <div class="chapter-practice-banner">
+          <div class="icon">⚡</div>
+          <div class="content">
+            <div class="title">Ejercicio práctico disponible</div>
+            <div class="description">${tieneLinkedExercise.title || 'Actividad práctica relacionada'}</div>
+          </div>
+          <button class="action-btn" onclick="document.querySelector('.linked-exercise')?.scrollIntoView({behavior: 'smooth'})">
+            Ver ejercicio
+          </button>
+        </div>
+      `;
+    } else if (practicaRelacionada) {
+      bannerContent = `
+        <div class="chapter-practice-banner" style="opacity: 0.8;">
+          <div class="icon">💡</div>
+          <div class="content">
+            <div class="title">¿Quieres profundizar con prácticas?</div>
+            <div class="description">El ${practicaRelacionada.practicaNombre} tiene ejercicios relacionados</div>
+          </div>
+          <button class="action-btn" onclick="window.biblioteca?.openBook('${practicaRelacionada.practicaLibroId}')">
+            Explorar
+          </button>
+        </div>
+      `;
+    }
+
+    return bannerContent;
+  }
+
   renderActionCards() {
     const bookId = this.bookEngine.getCurrentBook();
     const chapterId = this.currentChapter && this.currentChapter.id;
@@ -668,47 +974,62 @@ class BookReader {
 
     // Verificar qué features están disponibles
     const bookConfig = this.bookEngine.getCurrentBookConfig();
-    const hasQuiz = window.InteractiveQuiz && this.currentChapter && this.currentChapter.quiz;
+    const InteractiveQuiz = this.getDependency('InteractiveQuiz'); // 🔧 FIX #87
+    const hasQuiz = InteractiveQuiz && this.currentChapter && this.currentChapter.quiz;
     const hasResources = bookConfig && bookConfig.features && bookConfig.features.resources && bookConfig.features.resources.enabled;
     const hasReflection = this.currentChapter && this.currentChapter.closingQuestion;
-
-    // Si no hay ninguna acción disponible, no mostrar nada
-    if (!hasQuiz && !hasResources && !hasReflection) {
-      return '';
-    }
+    const nextChapter = this.bookEngine.getNextChapter(chapterId);
 
     return `
-      <div class="action-cards-section mt-12 pt-8 border-t border-gray-700/50">
-        <h3 class="text-xl font-semibold mb-6 text-center">
-          ${this.i18n.t('actions.nextSteps') || 'Próximas Acciones'}
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="chapter-complete-actions">
+        <h4>
+          <span>✅</span>
+          <span>¿Qué quieres hacer ahora?</span>
+        </h4>
+        <p class="subtitle">Elige cómo continuar tu exploración</p>
+
+        <div class="actions-grid">
+          <!-- Siguiente capítulo (siempre visible si hay siguiente) -->
+          ${nextChapter ? `
+            <div class="action-card" onclick="window.bookReader?.navigateToChapter('${nextChapter.id}')">
+              <span class="icon">→</span>
+              <span class="label">Siguiente capítulo</span>
+            </div>
+          ` : ''}
+
+          <!-- Reflexionar con notas -->
+          <div class="action-card" onclick="window.notesModal?.open()">
+            <span class="icon">📝</span>
+            <span class="label">Tomar notas</span>
+          </div>
+
+          <!-- Preguntar a la IA -->
+          <div class="action-card" onclick="window.aiChatModal?.open()">
+            <span class="icon">🤖</span>
+            <span class="label">Preguntar a la IA</span>
+          </div>
+
+          <!-- Quiz si está disponible -->
           ${hasQuiz ? `
-            <div class="action-card bg-gradient-to-br from-blue-900/20 to-blue-800/10 border border-blue-500/30 rounded-xl p-6 hover:border-blue-400/50 transition-all cursor-pointer" data-action="quiz">
-              <div class="text-4xl mb-3">🎯</div>
-              <h4 class="font-semibold text-lg mb-2">${this.i18n.t('actions.takeQuiz') || 'Quiz Interactivo'}</h4>
-              <p class="text-sm text-gray-400 mb-4">${this.i18n.t('actions.quizDescription') || 'Pon a prueba tu comprensión'}</p>
-              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.start') || 'Comenzar'}</button>
+            <div class="action-card" data-action="quiz">
+              <span class="icon">🎯</span>
+              <span class="label">Quiz interactivo</span>
             </div>
           ` : ''}
 
+          <!-- Recursos si está disponible -->
           ${hasResources ? `
-            <div class="action-card bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/30 rounded-xl p-6 hover:border-amber-400/50 transition-all cursor-pointer" data-action="resources">
-              <div class="text-4xl mb-3">📚</div>
-              <h4 class="font-semibold text-lg mb-2">Recursos y Ejercicios</h4>
-              <p class="text-sm text-gray-400 mb-4">Ejercicios prácticos, libros, organizaciones y herramientas</p>
-              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.explore') || 'Explorar'}</button>
+            <div class="action-card" onclick="window.chapterResourcesModal?.open()">
+              <span class="icon">📚</span>
+              <span class="label">Ver recursos</span>
             </div>
           ` : ''}
 
-          ${hasReflection ? `
-            <div class="action-card bg-gradient-to-br from-purple-900/20 to-purple-800/10 border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/50 transition-all cursor-pointer" data-action="reflection">
-              <div class="text-4xl mb-3">💭</div>
-              <h4 class="font-semibold text-lg mb-2">${this.i18n.t('actions.personalReflection') || 'Reflexión Personal'}</h4>
-              <p class="text-sm text-gray-400 mb-4">${this.i18n.t('actions.reflectionDescription') || '¿Cómo aplicarías esto?'}</p>
-              <button class="btn-secondary w-full text-sm py-2">${this.i18n.t('actions.reflect') || 'Reflexionar'}</button>
-            </div>
-          ` : ''}
+          <!-- Escuchar audio -->
+          <div class="action-card" onclick="window.audioReader?.toggle()">
+            <span class="icon">🎧</span>
+            <span class="label">Escuchar audio</span>
+          </div>
         </div>
       </div>
     `;
@@ -742,30 +1063,40 @@ class BookReader {
     const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
 
     return `
-      <div class="footer-nav border-t border-gray-700 p-3 sm:p-4 flex justify-between gap-2 sm:gap-3">
-        <!-- Previous -->
-        ${prevChapter ? `
-          <button id="prev-chapter"
-                  class="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition flex items-center gap-2 text-sm sm:text-base min-w-0 flex-1 sm:flex-initial max-w-[45%] sm:max-w-none"
-                  data-chapter-id="${prevChapter.id}"
-                  title="${prevChapter.title}">
-            ${Icons.chevronLeft(18)}
-            <span class="hidden sm:inline truncate">${prevChapter.title}</span>
-            <span class="sm:hidden truncate">Anterior</span>
-          </button>
-        ` : '<div></div>'}
+      <div class="footer-nav border-t border-slate-700/50 bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm">
+        <div class="max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-row justify-between items-center gap-2 sm:gap-4">
+          <!-- Previous Button -->
+          ${prevChapter ? `
+            <button id="prev-chapter"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 sm:max-w-md"
+                    data-chapter-id="${prevChapter.id}"
+                    title="${prevChapter.title}">
+              <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-slate-700/50 group-hover:bg-cyan-600/20 flex items-center justify-center transition-colors">
+                ${Icons.chevronLeft(16)}
+              </div>
+              <div class="flex-1 text-left min-w-0">
+                <div class="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide hidden sm:block mb-0.5">Anterior</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${prevChapter.title}</div>
+              </div>
+            </button>
+          ` : '<div class="hidden sm:flex flex-1"></div>'}
 
-        <!-- Next -->
-        ${nextChapter ? `
-          <button id="next-chapter"
-                  class="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition flex items-center gap-2 text-sm sm:text-base min-w-0 flex-1 sm:flex-initial max-w-[45%] sm:max-w-none"
-                  data-chapter-id="${nextChapter.id}"
-                  title="${nextChapter.title}">
-            <span class="hidden sm:inline truncate">${nextChapter.title}</span>
-            <span class="sm:hidden truncate">Siguiente</span>
-            ${Icons.chevronRight(18)}
-          </button>
-        ` : '<div></div>'}
+          <!-- Next Button -->
+          ${nextChapter ? `
+            <button id="next-chapter"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-600/90 to-blue-600/90 hover:from-cyan-500/90 hover:to-blue-500/90 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/20 flex-1 sm:max-w-md"
+                    data-chapter-id="${nextChapter.id}"
+                    title="${nextChapter.title}">
+              <div class="flex-1 text-right min-w-0">
+                <div class="text-[10px] sm:text-xs text-cyan-100 uppercase tracking-wide hidden sm:block mb-0.5">Siguiente</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-white truncate leading-tight">${nextChapter.title}</div>
+              </div>
+              <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                ${Icons.chevronRight(16)}
+              </div>
+            </button>
+          ` : '<div class="hidden sm:flex flex-1"></div>'}
+        </div>
       </div>
     `;
   }
@@ -780,26 +1111,63 @@ class BookReader {
 
     return `
       <nav class="app-bottom-nav" id="reader-bottom-nav">
+        <!-- Índice -->
         <button class="app-bottom-nav-tab" data-tab="capitulos" onclick="window.bookReader?.toggleSidebar()">
           <span class="app-bottom-nav-icon">📖</span>
           <span class="app-bottom-nav-label">Índice</span>
         </button>
+
+        <!-- Audio -->
         <button class="app-bottom-nav-tab" data-tab="audio" onclick="window.bookReader?.toggleAudioPlayer()">
           <span class="app-bottom-nav-icon">🎧</span>
           <span class="app-bottom-nav-label">Audio</span>
         </button>
+
+        <!-- Chat IA -->
         <button class="app-bottom-nav-tab" data-tab="chat" onclick="window.bookReader?.openAIChat()">
           <span class="app-bottom-nav-icon">💬</span>
           <span class="app-bottom-nav-label">Chat IA</span>
         </button>
+
+        <!-- Notas -->
         <button class="app-bottom-nav-tab" data-tab="notas" onclick="window.bookReader?.openNotes()">
           <span class="app-bottom-nav-icon">📝</span>
           <span class="app-bottom-nav-label">Notas</span>
         </button>
-        <button class="app-bottom-nav-tab" data-tab="nav" onclick="window.bookReader?.showNavOptions()">
-          <span class="app-bottom-nav-icon">${nextChapter ? '➡️' : (prevChapter ? '⬅️' : '⋯')}</span>
-          <span class="app-bottom-nav-label">${nextChapter ? 'Siguiente' : (prevChapter ? 'Anterior' : 'Más')}</span>
-        </button>
+
+        <!-- Navegación con dropdown -->
+        <div class="relative">
+          <button class="app-bottom-nav-tab" data-tab="nav" id="bottom-nav-more-btn">
+            <span class="app-bottom-nav-icon">⋯</span>
+            <span class="app-bottom-nav-label">Más</span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="bottom-nav-dropdown" class="hidden absolute bottom-full right-0 mb-2 w-56 bg-slate-800/95 backdrop-blur-lg border border-slate-700 rounded-lg shadow-2xl z-[1000] py-1">
+            ${prevChapter ? `
+              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${prevChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-slate-700 flex items-center gap-3 border-b border-slate-700/50">
+                <span class="text-xl">⬅️</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs text-slate-400 uppercase">Anterior</div>
+                  <div class="text-sm font-semibold text-white truncate">${prevChapter.title}</div>
+                </div>
+              </button>
+            ` : ''}
+            ${nextChapter ? `
+              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${nextChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-slate-700 flex items-center gap-3 border-b border-slate-700/50">
+                <span class="text-xl">➡️</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs text-slate-400 uppercase">Siguiente</div>
+                  <div class="text-sm font-semibold text-white truncate">${nextChapter.title}</div>
+                </div>
+              </button>
+            ` : ''}
+            <button onclick="window.bookReader?.toggleMobileMenu()" class="w-full text-left px-4 py-2 hover:bg-slate-700 flex items-center gap-3">
+              <span class="text-lg">⚙️</span>
+              <span class="text-sm">Opciones</span>
+            </button>
+          </div>
+        </div>
       </nav>
     `;
   }
@@ -808,10 +1176,11 @@ class BookReader {
    * Toggle del reproductor de audio
    */
   toggleAudioPlayer() {
-    if (window.audioReader) {
-      window.audioReader.toggle();
+    const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
+    if (audioReader) {
+      audioReader.toggle();
     } else {
-      window.toast?.info('Cargando reproductor de audio...');
+      this.showToast('info', 'Cargando reproductor de audio...');
     }
     this.setReaderActiveTab('audio');
   }
@@ -820,12 +1189,15 @@ class BookReader {
    * Abre el chat de IA
    */
   openAIChat() {
-    if (window.aiBookFeatures) {
-      window.aiBookFeatures.openChat();
-    } else if (window.aiChatModal) {
-      window.aiChatModal.open();
+    const aiBookFeatures = this.getDependency('aiBookFeatures'); // 🔧 FIX #87
+    const aiChatModal = this.getDependency('aiChatModal'); // 🔧 FIX #87
+
+    if (aiBookFeatures) {
+      aiBookFeatures.openChat();
+    } else if (aiChatModal) {
+      aiChatModal.open();
     } else {
-      window.toast?.info('Chat de IA no disponible');
+      this.showToast('info', 'Chat de IA no disponible');
     }
     this.setReaderActiveTab('chat');
   }
@@ -834,10 +1206,11 @@ class BookReader {
    * Abre el modal de notas
    */
   openNotes() {
-    if (window.smartNotes) {
-      window.smartNotes.open();
+    const smartNotes = this.getDependency('smartNotes'); // 🔧 FIX #87
+    if (smartNotes) {
+      smartNotes.open();
     } else {
-      window.toast?.info('Sistema de notas no disponible');
+      this.showToast('info', 'Sistema de notas no disponible');
     }
     this.setReaderActiveTab('notas');
   }
@@ -1046,70 +1419,236 @@ class BookReader {
   // ==========================================================================
 
   attachEventListeners() {
-    // Toggle sidebar
-    const toggleSidebar = document.getElementById('toggle-sidebar');
-    if (toggleSidebar) {
-      toggleSidebar.addEventListener('click', () => {
-        this.sidebarOpen = !this.sidebarOpen;
+    // ⚠️ PROTECCIÓN CRÍTICA: Solo ejecutar una vez para evitar acumulación masiva
+    if (this._eventListenersAttached) {
+      return; // Ya se ejecutó, salir inmediatamente
+    }
+
+    console.log('✅ Ejecutando attachEventListeners por ÚNICA vez');
+    this._eventListenersAttached = true; // Marcar como ejecutado
+
+    // 🔧 FIX #43: Helpers reutilizables para eliminar duplicación (~300 líneas)
+
+    /**
+     * Crea un handler para abrir modales con cierre automático de menús
+     * @param {string} modalPath - Ruta al modal en window (ej: 'notesModal', 'window.notesModal')
+     * @param {Function|null} closeMenu - Función para cerrar menú (null si no aplica)
+     * @param {string} methodName - Nombre del método a llamar (default: 'open')
+     * @param  {...any} args - Argumentos para el método del modal
+     */
+    const createModalHandler = (modalPath, closeMenu = null, methodName = 'open', ...args) => {
+      return () => {
+        if (closeMenu) closeMenu();
+
+        const modal = modalPath.startsWith('window.')
+          ? eval(modalPath)  // Para paths como 'window.notesModal'
+          : window[modalPath]; // Para paths simples como 'notesModal'
+
+        if (modal) {
+          // Evaluar args que sean funciones (ej: () => this.currentChapter?.id)
+          const evaluatedArgs = args.map(arg => typeof arg === 'function' ? arg() : arg);
+          modal[methodName](...evaluatedArgs);
+        } else {
+          const errorKey = `error.${modalPath.replace(/^window\./, '')}NotAvailable`;
+          this.showToast('error', errorKey);
+        }
+      };
+    };
+
+    /**
+     * Crea un handler para cambiar de libro
+     * @param {string} bookId - ID del libro
+     * @param {Function|null} closeMenu - Función para cerrar menú
+     */
+    const createBookSwitchHandler = (bookId, closeMenu = null) => {
+      return async () => {
+        if (closeMenu) closeMenu();
+
+        await this.bookEngine.loadBook(bookId);
+        this.applyBookTheme();
+        const firstChapter = this.bookEngine.getFirstChapter();
+        if (firstChapter) {
+          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
+        }
         this.render();
         this.attachEventListeners();
+      };
+    };
+
+    /**
+     * 🔧 FIX #43: Crea un handler genérico para ejecutar métodos de this
+     * @param {string} methodName - Nombre del método de this a llamar
+     * @param {...any} args - Argumentos para el método
+     * @returns {Function} Handler que ejecuta el método
+     */
+    const createMethodHandler = (methodName, ...args) => {
+      return () => {
+        if (typeof this[methodName] === 'function') {
+          this[methodName](...args);
+        }
+      };
+    };
+
+    /**
+     * 🔧 FIX #44: Registra el mismo handler en múltiples botones usando EventManager
+     * @param {string[]} buttonIds - Array de IDs de botones
+     * @param {Function} handler - Handler a registrar
+     */
+    const attachMultiDevice = (buttonIds, handler) => {
+      buttonIds.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          this.eventManager.addEventListener(btn, 'click', handler);
+        }
       });
+    };
+
+    /**
+     * 🔧 FIX #43: Versión mejorada de attachMultiDevice con cierre automático de menús
+     * Detecta automáticamente si debe cerrar menús basándose en el ID del botón
+     * @param {string[]} buttonIds - Array de IDs de botones
+     * @param {Function} handler - Handler base a ejecutar
+     */
+    const attachMultiDeviceWithMenuClose = (buttonIds, handler) => {
+      buttonIds.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          this.eventManager.addEventListener(btn, 'click', () => {
+            // Cerrar menús según el tipo de botón
+            if (id.includes('-mobile')) {
+              closeMobileMenuDropdown();
+            } else if (id.includes('-dropdown')) {
+              closeDropdownHelper();
+            }
+            // Ejecutar handler principal
+            handler();
+          });
+        }
+      });
+    };
+
+    // Toggle sidebar - usar referencia guardada para evitar duplicación
+    if (!this._toggleSidebarHandler) {
+      this._toggleSidebarHandler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.toggleSidebar();
+      };
+    }
+
+    const toggleSidebar = document.getElementById('toggle-sidebar');
+    if (toggleSidebar) {
+      this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
     }
 
     // Close sidebar (mobile)
+    if (!this._closeSidebarHandler) {
+      this._closeSidebarHandler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (this.sidebarOpen) {
+          this.toggleSidebar();
+        }
+      };
+    }
+
     const closeSidebarMobile = document.getElementById('close-sidebar-mobile');
     if (closeSidebarMobile) {
-      closeSidebarMobile.addEventListener('click', () => {
-        this.sidebarOpen = false;
-        this.render();
-        this.attachEventListeners();
-      });
+      this.eventManager.addEventListener(closeSidebarMobile, 'click', this._closeSidebarHandler);
     }
 
     // Back to biblioteca
+    if (!this._backToBibliotecaHandler) {
+      this._backToBibliotecaHandler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        // Remover tema específico del libro
+        this.removeBookTheme();
+        this.hide();
+        const biblioteca = this.getDependency('biblioteca'); // 🔧 FIX #87
+        if (biblioteca) biblioteca.show();
+      };
+    }
+
     const backBtn = document.getElementById('back-to-biblioteca');
     if (backBtn) {
-      backBtn.addEventListener('click', () => {
-        // Remover tema específico del libro
-        window.themeHelper?.removeBookTheme();
-        this.hide();
-        window.biblioteca.show();
-      });
+      this.eventManager.addEventListener(backBtn, 'click', this._backToBibliotecaHandler);
     }
 
     // Mobile menu toggle
+    if (!this._mobileMenuHandler) {
+      this._mobileMenuHandler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        document.getElementById('mobile-menu')?.classList.remove('hidden');
+      };
+    }
+
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     if (mobileMenuBtn) {
-      mobileMenuBtn.addEventListener('click', () => {
-        document.getElementById('mobile-menu').classList.remove('hidden');
+      this.eventManager.addEventListener(mobileMenuBtn, 'click', this._mobileMenuHandler);
+    }
+
+    // Bottom nav "Más" dropdown toggle
+    const bottomNavMoreBtn = document.getElementById('bottom-nav-more-btn');
+    const bottomNavDropdown = document.getElementById('bottom-nav-dropdown');
+    if (bottomNavMoreBtn && bottomNavDropdown) {
+      if (!this._bottomNavMoreHandler) {
+        this._bottomNavMoreHandler = (e) => {
+          e.stopPropagation();
+          bottomNavDropdown.classList.toggle('hidden');
+        };
+      }
+
+      this.eventManager.addEventListener(bottomNavMoreBtn, 'click', this._bottomNavMoreHandler);
+
+      // Cerrar dropdown al hacer click fuera - SOLO UNA VEZ
+      if (!this._bottomNavClickOutsideAttached) {
+        this._bottomNavClickOutsideHandler = (e) => {
+          if (!bottomNavDropdown.contains(e.target) && e.target !== bottomNavMoreBtn) {
+            bottomNavDropdown.classList.add('hidden');
+          }
+        };
+        this.eventManager.addEventListener(document, 'click', this._bottomNavClickOutsideHandler);
+        this._bottomNavClickOutsideAttached = true;
+      }
+
+      // 🔧 FIX #44: Cerrar dropdown después de seleccionar una opción usando EventManager
+      bottomNavDropdown.querySelectorAll('button').forEach(btn => {
+        this.eventManager.addEventListener(btn, 'click', () => {
+          setTimeout(() => {
+            bottomNavDropdown.classList.add('hidden');
+          }, 100);
+        });
       });
     }
 
-    // Close mobile menu button
+    // 🔧 FIX #44: Close mobile menu button usando EventManager
     const closeMobileMenu = document.getElementById('close-mobile-menu');
     if (closeMobileMenu) {
-      closeMobileMenu.addEventListener('click', () => {
+      this.eventManager.addEventListener(closeMobileMenu, 'click', () => {
         document.getElementById('mobile-menu').classList.add('hidden');
       });
     }
 
-    // Close on backdrop click
+    // 🔧 FIX #44: Close on backdrop click usando EventManager
     const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
     if (mobileMenuBackdrop) {
-      mobileMenuBackdrop.addEventListener('click', () => {
+      this.eventManager.addEventListener(mobileMenuBackdrop, 'click', () => {
         document.getElementById('mobile-menu').classList.add('hidden');
       });
     }
 
-    // Back to biblioteca (mobile)
+    // 🔧 FIX #44: Back to biblioteca (mobile) usando EventManager
     const backToLibMobile = document.getElementById('back-to-biblioteca-mobile');
     if (backToLibMobile) {
-      backToLibMobile.addEventListener('click', () => {
+      this.eventManager.addEventListener(backToLibMobile, 'click', () => {
         document.getElementById('mobile-menu').classList.add('hidden');
         // Remover tema específico del libro
-        window.themeHelper?.removeBookTheme();
+        this.removeBookTheme();
         this.hide();
-        window.biblioteca.show();
+        const biblioteca = this.getDependency('biblioteca'); // 🔧 FIX #87
+        if (biblioteca) biblioteca.show();
       });
     }
 
@@ -1128,25 +1667,28 @@ class BookReader {
       } else {
         this.bookEngine.addBookmark(this.currentChapter.id);
       }
-      this.render();
-      this.attachEventListeners();
+      // 🔧 FIX #49: Solo actualizar header y sidebar, no render completo
+      this.updateHeader();
+      this.updateSidebar();
     };
 
     const bookmarkBtn = document.getElementById('bookmark-btn');
     const bookmarkBtnTablet = document.getElementById('bookmark-btn-tablet');
     const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
 
-    if (bookmarkBtn) bookmarkBtn.addEventListener('click', bookmarkHandler);
-    if (bookmarkBtnTablet) bookmarkBtnTablet.addEventListener('click', bookmarkHandler);
-    if (bookmarkBtnMobile) bookmarkBtnMobile.addEventListener('click', bookmarkHandler);
+    // 🔧 FIX #44: Bookmark buttons usando EventManager
+    if (bookmarkBtn) this.eventManager.addEventListener(bookmarkBtn, 'click', bookmarkHandler);
+    if (bookmarkBtnTablet) this.eventManager.addEventListener(bookmarkBtnTablet, 'click', bookmarkHandler);
+    if (bookmarkBtnMobile) this.eventManager.addEventListener(bookmarkBtnMobile, 'click', bookmarkHandler);
 
     // AI Chat button (desktop lg+, tablet md, and mobile)
     const aiChatHandler = () => {
       closeMobileMenuDropdown();
-      if (window.aiChatModal) {
-        window.aiChatModal.open();
+      const aiChatModal = this.getDependency('aiChatModal'); // 🔧 FIX #87
+      if (aiChatModal) {
+        aiChatModal.open();
       } else {
-        window.toast.error('error.chatNotAvailable');
+        this.showToast('error', 'error.chatNotAvailable');
       }
     };
 
@@ -1154,16 +1696,18 @@ class BookReader {
     const aiChatBtnTablet = document.getElementById('ai-chat-btn-tablet');
     const aiChatBtnMobile = document.getElementById('ai-chat-btn-mobile');
 
-    if (aiChatBtn) aiChatBtn.addEventListener('click', aiChatHandler);
-    if (aiChatBtnTablet) aiChatBtnTablet.addEventListener('click', aiChatHandler);
-    if (aiChatBtnMobile) aiChatBtnMobile.addEventListener('click', aiChatHandler);
+    // 🔧 FIX #44: AI Chat buttons usando EventManager
+    if (aiChatBtn) this.eventManager.addEventListener(aiChatBtn, 'click', aiChatHandler);
+    if (aiChatBtnTablet) this.eventManager.addEventListener(aiChatBtnTablet, 'click', aiChatHandler);
+    if (aiChatBtnMobile) this.eventManager.addEventListener(aiChatBtnMobile, 'click', aiChatHandler);
 
-    // ExplorationHub floating button
+    // 🔧 FIX #44: ExplorationHub floating button usando EventManager
     const explorationHubBtn = document.getElementById('exploration-hub-floating-btn');
     if (explorationHubBtn) {
-      explorationHubBtn.addEventListener('click', () => {
-        if (window.ExplorationHub && window.bookEngine) {
-          const hub = new window.ExplorationHub(window.bookEngine);
+      this.eventManager.addEventListener(explorationHubBtn, 'click', () => {
+        const ExplorationHub = this.getDependency('ExplorationHub'); // 🔧 FIX #87
+        if (ExplorationHub && this.bookEngine) {
+          const hub = new ExplorationHub(this.bookEngine);
           hub.open('search'); // Abrir con tab de búsqueda por defecto
         } else {
           console.error('ExplorationHub no está disponible');
@@ -1171,61 +1715,65 @@ class BookReader {
       });
     }
 
-    // Notes button
+    // 🔧 FIX #44: Notes button usando EventManager
     const notesBtn = document.getElementById('notes-btn');
     if (notesBtn) {
-      notesBtn.addEventListener('click', () => {
-        if (window.notesModal) {
-          window.notesModal.open(this.currentChapter?.id);
+      this.eventManager.addEventListener(notesBtn, 'click', () => {
+        const notesModal = this.getDependency('notesModal'); // 🔧 FIX #87
+        if (notesModal) {
+          notesModal.open(this.currentChapter?.id);
         } else {
-          window.toast.error('error.notesNotAvailable');
+          this.showToast('error', 'error.notesNotAvailable');
         }
       });
     }
 
-    // Voice notes button
+    // 🔧 FIX #44: Voice notes button usando EventManager
     const voiceNotesBtn = document.getElementById('voice-notes-btn');
     if (voiceNotesBtn) {
-      voiceNotesBtn.addEventListener('click', () => {
-        if (window.voiceNotes) {
-          window.voiceNotes.showRecordingModal();
+      this.eventManager.addEventListener(voiceNotesBtn, 'click', () => {
+        const voiceNotes = this.getDependency('voiceNotes'); // 🔧 FIX #87
+        if (voiceNotes) {
+          voiceNotes.showRecordingModal();
         } else {
-          window.toast?.error('Notas de voz no disponibles');
+          this.showToast('error', 'Notas de voz no disponibles');
         }
       });
     }
 
-    // Koan button
+    // 🔧 FIX #44: Koan button usando EventManager
     const koanBtn = document.getElementById('koan-btn');
     if (koanBtn) {
-      koanBtn.addEventListener('click', () => {
-        if (window.koanModal) {
-          window.koanModal.setCurrentChapter(this.currentChapter?.id);
-          window.koanModal.open(this.currentChapter?.id);
+      this.eventManager.addEventListener(koanBtn, 'click', () => {
+        const koanModal = this.getDependency('koanModal'); // 🔧 FIX #87
+        if (koanModal) {
+          koanModal.setCurrentChapter(this.currentChapter?.id);
+          koanModal.open(this.currentChapter?.id);
         } else {
-          window.toast.error('error.koanNotAvailable');
+          this.showToast('error', 'error.koanNotAvailable');
         }
       });
     }
 
-    // Quiz button
+    // 🔧 FIX #44: Quiz button usando EventManager
     const quizBtn = document.getElementById('quiz-btn');
     if (quizBtn) {
-      quizBtn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(quizBtn, 'click', async () => {
         const bookId = this.bookEngine.getCurrentBook();
         const chapterId = this.currentChapter?.id;
 
         if (!chapterId) {
-          window.toast?.info('Selecciona un capítulo primero');
+          this.showToast('info', 'Selecciona un capítulo primero');
           return;
         }
 
-        if (window.interactiveQuiz) {
-          const quiz = await window.interactiveQuiz.loadQuiz(bookId, chapterId);
+        const interactiveQuiz = this.getDependency('interactiveQuiz'); // 🔧 FIX #87
+        if (interactiveQuiz) {
+          const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
           if (quiz) {
-            window.interactiveQuiz.open(bookId, chapterId);
+            interactiveQuiz.open(bookId, chapterId);
           } else {
-            window.toast?.info('No hay quiz disponible para este capítulo');
+            this.showToast('info', 'No hay quiz disponible para este capítulo');
           }
         } else {
           console.error('InteractiveQuiz no está disponible');
@@ -1233,501 +1781,368 @@ class BookReader {
       });
     }
 
-    // Timeline button
+    // 🔧 FIX #44: Timeline button usando EventManager
     const timelineBtn = document.getElementById('timeline-btn');
     if (timelineBtn) {
-      timelineBtn.addEventListener('click', () => {
-        if (window.timelineViewer) {
-          window.timelineViewer.open();
+      this.eventManager.addEventListener(timelineBtn, 'click', () => {
+        const timelineViewer = this.getDependency('timelineViewer'); // 🔧 FIX #87
+        if (timelineViewer) {
+          timelineViewer.open();
         } else {
-          window.toast.error('error.timelineNotAvailable');
+          this.showToast('error', 'error.timelineNotAvailable');
         }
       });
     }
 
     // Resources button - eliminado, ahora se maneja con ChapterResourcesModal más abajo
 
-    // Audioreader button (desktop lg+ and tablet md)
-    const audioreaderHandler = () => {
-      closeMobileMenuDropdown();
-      if (window.audioReader) {
-        window.audioReader.toggle();
-      } else {
-        window.toast.error('error.audioreaderNotAvailable');
+    // Audioreader button - Cambia icono y activa/pausa audio
+    // Usar referencia guardada para evitar duplicación de listeners
+    if (!this._audioreaderHandler) {
+      this._audioreaderHandler = async (e) => {
+        e.stopPropagation(); // Evitar propagación que pueda activar otros handlers
+        e.preventDefault();
+
+        // Cerrar menú móvil si está abierto
+        const menu = document.getElementById('mobile-menu');
+        if (menu) menu.classList.add('hidden');
+
+        const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
+        const reader = audioReader?.baseReader || audioReader;
+        if (!reader) {
+          this.showToast('error', 'Reproductor no disponible');
+          return;
+        }
+
+        // Si no tiene contenido preparado, prepararlo primero
+        if (reader.paragraphs.length === 0) {
+          const chapterContent = document.querySelector('.chapter-content');
+          if (chapterContent) {
+            reader.prepareContent(chapterContent.innerHTML);
+            await reader.updateUI(); // Sincronizar iconos
+          }
+          return;
+        }
+
+        // Ya tiene contenido - toggle play/pause
+        if (reader.isPlaying && !reader.isPaused) {
+          // Pausar
+          await reader.pause();
+        } else {
+          // Reproducir o resumir
+          if (reader.isPaused) {
+            await reader.resume();
+          } else {
+            const chapterContent = document.querySelector('.chapter-content');
+            if (chapterContent) {
+              await reader.play(chapterContent.innerHTML);
+            }
+          }
+        }
+      };
+    }
+
+    // Botón expandir - muestra reproductor completo
+    const audioExpandHandler = () => {
+      const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
+      const reader = audioReader?.baseReader || audioReader;
+      if (reader && reader.showSimplePlayer) {
+        reader.showSimplePlayer();
       }
     };
+
+    // 🔧 FIX #44: Audio expand button usando EventManager
+    const audioExpandBtn = document.getElementById('audio-expand-btn-mobile');
+    if (audioExpandBtn) {
+      this.eventManager.addEventListener(audioExpandBtn, 'click', audioExpandHandler);
+    }
 
     const audioreaderBtn = document.getElementById('audioreader-btn');
     const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
     const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
 
-    if (audioreaderBtn) audioreaderBtn.addEventListener('click', audioreaderHandler);
-    if (audioreaderBtnTablet) audioreaderBtnTablet.addEventListener('click', audioreaderHandler);
-    if (audioreaderBtnMobile) audioreaderBtnMobile.addEventListener('click', audioreaderHandler);
+    console.log('🎧 Attaching audio listeners:', {
+      desktop: !!audioreaderBtn,
+      tablet: !!audioreaderBtnTablet,
+      mobile: !!audioreaderBtnMobile
+    });
 
-    // Support button (desktop, tablet, and mobile)
-    const supportBtnTablet = document.getElementById('support-btn-tablet');
-    const supportBtnMobile = document.getElementById('support-btn-mobile');
-    const supportHandler = () => {
-      if (window.donationsModal) {
-        window.donationsModal.open();
-      }
-    };
-    if (supportBtnTablet) supportBtnTablet.addEventListener('click', supportHandler);
-    if (supportBtnMobile) supportBtnMobile.addEventListener('click', supportHandler);
+    // Usar EventManager para gestionar listeners de audio
+    if (audioreaderBtn) {
+      this.eventManager.addEventListener(audioreaderBtn, 'click', this._audioreaderHandler);
+    }
+    if (audioreaderBtnTablet) {
+      this.eventManager.addEventListener(audioreaderBtnTablet, 'click', this._audioreaderHandler);
+    }
+    if (audioreaderBtnMobile) {
+      this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
+    }
 
-    // Android Download button
+    // 🔧 FIX #43: Support buttons tablet/mobile
+    attachMultiDevice(
+      ['support-btn-tablet', 'support-btn-mobile'],
+      createModalHandler('donationsModal')
+    );
+
+    // 🔧 FIX #44: Android Download button usando EventManager
     const androidBtn = document.getElementById('android-download-btn');
     if (androidBtn) {
-      androidBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(androidBtn, 'click', () => {
         const apkUrl = this.bookEngine.getLatestAPK();
         window.open(apkUrl, '_blank');
       });
     }
 
-    // Achievements button
+    // 🔧 FIX #44: Achievements button usando EventManager
     const achievementsBtn = document.getElementById('achievements-btn');
     if (achievementsBtn) {
-      achievementsBtn.addEventListener('click', () => {
-        if (window.achievementSystem) {
-          window.achievementSystem.showDashboardModal();
+      this.eventManager.addEventListener(achievementsBtn, 'click', () => {
+        const achievementSystem = this.getDependency('achievementSystem'); // 🔧 FIX #87
+        if (achievementSystem) {
+          achievementSystem.showDashboardModal();
         }
       });
     }
 
-    // Content Adapter button
+    // 🔧 FIX #44: Content Adapter button usando EventManager
     const contentAdapterBtn = document.getElementById('content-adapter-btn');
     if (contentAdapterBtn) {
-      contentAdapterBtn.addEventListener('click', () => {
-        if (window.contentAdapter) {
-          window.contentAdapter.toggleSelector();
+      this.eventManager.addEventListener(contentAdapterBtn, 'click', () => {
+        const contentAdapter = this.getDependency('contentAdapter'); // 🔧 FIX #87
+        if (contentAdapter) {
+          contentAdapter.toggleSelector();
         } else {
-          window.toast?.info('Cargando adaptador de contenido...');
+          this.showToast('info', 'Cargando adaptador de contenido...');
           // Intentar cargar el módulo dinámicamente
-          if (window.lazyLoader) {
-            window.lazyLoader.load('contentAdapter').then(() => {
-              if (window.contentAdapter) {
-                window.contentAdapter.toggleSelector();
+          const lazyLoader = this.getDependency('lazyLoader'); // 🔧 FIX #87
+          if (lazyLoader) {
+            lazyLoader.load('contentAdapter').then(() => {
+              const contentAdapterLoaded = this.getDependency('contentAdapter');
+              if (contentAdapterLoaded) {
+                contentAdapterLoaded.toggleSelector();
               }
             }).catch(() => {
-              window.toast?.error('Error al cargar el adaptador de contenido');
+              this.showToast('error', 'Error al cargar el adaptador de contenido');
             });
           }
         }
       });
     }
 
-    // Summary button (Auto-summary with AI)
+    // 🔧 FIX #44: Summary button (Auto-summary with AI) usando EventManager
     const summaryBtn = document.getElementById('summary-btn');
     if (summaryBtn) {
-      summaryBtn.addEventListener('click', () => {
-        if (window.autoSummary && this.currentChapter) {
+      this.eventManager.addEventListener(summaryBtn, 'click', () => {
+        const autoSummary = this.getDependency('autoSummary'); // 🔧 FIX #87
+        if (autoSummary && this.currentChapter) {
           const bookId = this.bookEngine.getCurrentBook();
-          window.autoSummary.showSummaryModal(this.currentChapter, bookId);
+          autoSummary.showSummaryModal(this.currentChapter, bookId);
         } else {
-          window.toast?.info('Configura la IA para generar resúmenes');
+          this.showToast('info', 'Configura la IA para generar resúmenes');
         }
       });
     }
 
-    // Concept Map button
+    // 🔧 FIX #44: Concept Map button usando EventManager
     const conceptMapBtn = document.getElementById('concept-map-btn');
     if (conceptMapBtn) {
-      conceptMapBtn.addEventListener('click', () => {
-        if (window.conceptMaps) {
-          window.conceptMaps.show();
+      this.eventManager.addEventListener(conceptMapBtn, 'click', () => {
+        const conceptMaps = this.getDependency('conceptMaps'); // 🔧 FIX #87
+        if (conceptMaps) {
+          conceptMaps.show();
         }
       });
     }
 
-    // Action Plans button
+    // 🔧 FIX #44: Action Plans button usando EventManager
     const actionPlansBtn = document.getElementById('action-plans-btn');
     if (actionPlansBtn) {
-      actionPlansBtn.addEventListener('click', () => {
-        if (window.actionPlans) {
-          window.actionPlans.show();
+      this.eventManager.addEventListener(actionPlansBtn, 'click', () => {
+        const actionPlans = this.getDependency('actionPlans'); // 🔧 FIX #87
+        if (actionPlans) {
+          actionPlans.show();
         }
       });
     }
 
-    // Chapter Resources button (Recursos del Capítulo)
-    const chapterResourcesBtn = document.getElementById('chapter-resources-btn');
-    if (chapterResourcesBtn) {
-      chapterResourcesBtn.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.chapterResourcesModal) {
-          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
-          window.chapterResourcesModal.open(chapterId);
-        }
-      });
-    }
+    // 🔧 FIX #43: Chapter Resources y Book Resources - versiones desktop/tablet
+    attachMultiDevice(
+      ['chapter-resources-btn'],
+      createModalHandler('chapterResourcesModal', closeDropdownHelper, 'open', () => this.currentChapter?.id)
+    );
 
-    // Book Resources button (Recursos del Libro - resourcesViewer)
-    const bookResourcesBtn = document.getElementById('book-resources-btn');
-    if (bookResourcesBtn) {
-      bookResourcesBtn.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.resourcesViewer) {
-          window.resourcesViewer.open();
-        }
-      });
-    }
+    attachMultiDevice(
+      ['book-resources-btn'],
+      createModalHandler('resourcesViewer', closeDropdownHelper)
+    );
 
-    // Donations button
-    const donationsBtn = document.getElementById('donations-btn');
-    if (donationsBtn) {
-      donationsBtn.addEventListener('click', () => {
-        if (window.donationsModal) {
-          window.donationsModal.open();
-        }
-      });
-    }
+    // 🔧 FIX #43: Donations/Support - versión unificada
+    attachMultiDevice(
+      ['donations-btn', 'support-btn'],
+      createModalHandler('donationsModal')
+    );
 
-    // Support button (visible heart button) - with heartbeat animation
-    const supportBtn = document.getElementById('support-btn');
-    if (supportBtn) {
-      supportBtn.addEventListener('click', () => {
-        if (window.donationsModal) {
-          window.donationsModal.open();
-        }
-      });
-    }
+    // 🔧 FIX #43: Premium Edition button - versión consolidada (3 variantes)
+    attachMultiDeviceWithMenuClose(
+      ['premium-edition-btn', 'premium-edition-btn-mobile', 'premium-edition-btn-dropdown'],
+      createMethodHandler('showPremiumDownloadModal')
+    );
 
-    // Premium Edition button - opens modal
-    const premiumBtn = document.getElementById('premium-edition-btn');
-    if (premiumBtn) {
-      premiumBtn.addEventListener('click', () => {
-        this.showPremiumDownloadModal();
-      });
-    }
-
-    // Open settings modal button (desktop dropdown)
-    const openSettingsModalBtn = document.getElementById('open-settings-modal-btn');
-    if (openSettingsModalBtn) {
-      openSettingsModalBtn.addEventListener('click', () => {
-        if (window.SettingsModal) {
-          const settingsModal = new window.SettingsModal();
-          settingsModal.show();
-        }
-      });
-    }
-
-    // Open settings modal button (mobile menu)
-    const openSettingsModalBtnMobile = document.getElementById('open-settings-modal-btn-mobile');
-    if (openSettingsModalBtnMobile) {
-      openSettingsModalBtnMobile.addEventListener('click', () => {
-        // Cerrar menú móvil primero
+    // 🔧 FIX #43: Settings Modal - versión unificada (antes: 3 versiones duplicadas)
+    attachMultiDevice(
+      ['open-settings-modal-btn', 'open-settings-modal-btn-mobile', 'open-settings-modal-btn-tablet'],
+      () => {
+        // Cerrar menús si existen
         document.getElementById('mobile-menu')?.classList.add('hidden');
-
-        // Abrir modal de configuración
-        if (window.SettingsModal) {
-          const settingsModal = new window.SettingsModal();
-          settingsModal.show();
-        }
-      });
-    }
-
-    // Open settings modal button (tablet dropdown)
-    const openSettingsModalBtnTablet = document.getElementById('open-settings-modal-btn-tablet');
-    if (openSettingsModalBtnTablet) {
-      openSettingsModalBtnTablet.addEventListener('click', () => {
-        // Cerrar dropdown primero
         document.getElementById('more-actions-dropdown')?.classList.add('hidden');
 
-        // Abrir modal de configuración
-        if (window.SettingsModal) {
-          const settingsModal = new window.SettingsModal();
+        const SettingsModal = this.getDependency('SettingsModal'); // 🔧 FIX #87
+        if (SettingsModal) {
+          const settingsModal = new SettingsModal();
           settingsModal.show();
         }
-      });
-    }
+      }
+    );
 
-    // Open help center button (desktop dropdown)
-    const openHelpCenterBtn = document.getElementById('open-help-center-btn');
-    if (openHelpCenterBtn) {
-      openHelpCenterBtn.addEventListener('click', () => {
-        // Cerrar dropdown primero
+    // 🔧 FIX #43: Help Center - versión unificada (antes: 3 versiones duplicadas)
+    attachMultiDevice(
+      ['open-help-center-btn', 'open-help-center-btn-tablet', 'open-help-center-btn-mobile'],
+      createModalHandler('helpCenterModal', () => {
+        document.getElementById('mobile-menu')?.classList.add('hidden');
+        document.getElementById('more-actions-dropdown')?.classList.add('hidden');
         document.getElementById('settings-dropdown')?.classList.add('hidden');
+      })
+    );
 
-        // Abrir centro de ayuda
-        if (window.helpCenterModal) {
-          window.helpCenterModal.open();
+    // 🔧 FIX #43: Language Selector - versión consolidada (3 variantes)
+    attachMultiDeviceWithMenuClose(
+      ['language-selector-btn', 'language-selector-btn-mobile', 'language-selector-btn-dropdown'],
+      createModalHandler('languageSelector')
+    );
+
+    // 🔧 FIX #43: Theme Toggle - versión consolidada (3 variantes)
+    const themeToggleHandler = () => {
+      const themeHelper = this.getDependency('themeHelper'); // 🔧 FIX #87
+      if (themeHelper) {
+        themeHelper.toggle();
+        this.updateThemeIcons();
+        this.showToast('info', `Tema: ${themeHelper.getThemeLabel()}`);
+      }
+    };
+
+    attachMultiDeviceWithMenuClose(
+      ['theme-toggle-btn', 'theme-toggle-btn-mobile', 'theme-toggle-btn-dropdown'],
+      themeToggleHandler
+    );
+
+    // 🔧 FIX #43: Share Chapter - versión consolidada (3 variantes)
+    attachMultiDeviceWithMenuClose(
+      ['share-chapter-btn', 'share-chapter-btn-mobile', 'share-chapter-btn-dropdown'],
+      () => this.shareCurrentChapter()
+    );
+
+    // 🔧 FIX #43: Learning Paths - versión consolidada (3 variantes)
+    attachMultiDeviceWithMenuClose(
+      ['learning-paths-btn-desktop', 'learning-paths-btn-mobile', 'learning-paths-btn-dropdown'],
+      () => {
+        const learningPaths = this.getDependency('learningPaths');
+        if (learningPaths) {
+          const currentBookId = this.bookEngine.getCurrentBook();
+          learningPaths.open(currentBookId);
+        } else {
+          this.showToast('error', 'Learning Paths no disponible');
         }
-      });
-    }
+      }
+    );
 
-    // Open help center button (tablet dropdown)
-    const openHelpCenterBtnTablet = document.getElementById('open-help-center-btn-tablet');
-    if (openHelpCenterBtnTablet) {
-      openHelpCenterBtnTablet.addEventListener('click', () => {
-        // Cerrar dropdown primero
-        document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+    // 🔧 FIX #43: Cambio de libros - handlers unificados
+    attachMultiDevice(
+      ['manual-practico-btn'],
+      createBookSwitchHandler('manual-practico')
+    );
 
-        // Abrir centro de ayuda
-        if (window.helpCenterModal) {
-          window.helpCenterModal.open();
-        }
-      });
-    }
-
-    // Open help center button (mobile menu)
-    const openHelpCenterBtnMobile = document.getElementById('open-help-center-btn-mobile');
-    if (openHelpCenterBtnMobile) {
-      openHelpCenterBtnMobile.addEventListener('click', () => {
-        // Cerrar menú móvil primero
-        document.getElementById('mobile-menu')?.classList.add('hidden');
-
-        // Abrir centro de ayuda
-        if (window.helpCenterModal) {
-          window.helpCenterModal.open();
-        }
-      });
-    }
-
-    // Language selector button
-    const languageSelectorBtn = document.getElementById('language-selector-btn');
-    if (languageSelectorBtn) {
-      languageSelectorBtn.addEventListener('click', () => {
-        if (window.languageSelector) {
-          window.languageSelector.open();
-        }
-      });
-    }
-
-    // Theme toggle button
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    if (themeToggleBtn) {
-      themeToggleBtn.addEventListener('click', () => {
-        if (window.themeHelper) {
-          window.themeHelper.toggle();
-          this.updateThemeIcons();
-          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
-        }
-      });
-    }
-
-    // Share chapter button
-    const shareChapterBtn = document.getElementById('share-chapter-btn');
-    if (shareChapterBtn) {
-      shareChapterBtn.addEventListener('click', () => {
-        this.shareCurrentChapter();
-      });
-    }
-
-    // Manual Práctico button - Navegar al libro en el sistema unificado
-    const manualPracticoBtn = document.getElementById('manual-practico-btn');
-    if (manualPracticoBtn) {
-      manualPracticoBtn.addEventListener('click', async () => {
-        await this.bookEngine.loadBook('manual-practico');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        const firstChapter = this.bookEngine.getFirstChapter();
-        if (firstChapter) {
-          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
-        }
-        this.render();
-        this.attachEventListeners();
-      });
-    }
-
-    // Prácticas Radicales button - Navegar al libro en el sistema unificado
-    const practicasRadicalesBtn = document.getElementById('practicas-radicales-btn');
-    if (practicasRadicalesBtn) {
-      practicasRadicalesBtn.addEventListener('click', async () => {
-        await this.bookEngine.loadBook('practicas-radicales');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        const firstChapter = this.bookEngine.getFirstChapter();
-        if (firstChapter) {
-          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
-        }
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    attachMultiDevice(
+      ['practicas-radicales-btn'],
+      createBookSwitchHandler('practicas-radicales')
+    );
 
     // ========================================================================
     // MOBILE MENU BUTTON LISTENERS
     // ========================================================================
     // Note: closeMobileMenuDropdown() helper is defined earlier in this function
 
-    // Notes button mobile
-    const notesBtnMobile = document.getElementById('notes-btn-mobile');
-    if (notesBtnMobile) {
-      notesBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.notesModal) {
-          window.notesModal.open(this.currentChapter?.id);
-        } else {
-          window.toast.error('error.notesNotAvailable');
-        }
-      });
-    }
+    // 🔧 FIX #43: Notes y Timeline - versiones mobile
+    attachMultiDevice(
+      ['notes-btn-mobile'],
+      createModalHandler('notesModal', closeMobileMenuDropdown, 'open', () => this.currentChapter?.id)
+    );
 
-    // AI Chat button mobile - already has handler from line 840, no need to duplicate
+    attachMultiDevice(
+      ['timeline-btn-mobile'],
+      createModalHandler('timelineViewer', closeMobileMenuDropdown)
+    );
 
-    // Timeline button mobile
-    const timelineBtnMobile = document.getElementById('timeline-btn-mobile');
-    if (timelineBtnMobile) {
-      timelineBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.timelineViewer) {
-          window.timelineViewer.open();
-        } else {
-          window.toast.error('error.timelineNotAvailable');
-        }
-      });
-    }
+    // AI Chat button mobile - already has handler from earlier, no need to duplicate
 
-    // Chapter Resources button mobile
-    const chapterResourcesBtnMobile = document.getElementById('chapter-resources-btn-mobile');
-    if (chapterResourcesBtnMobile) {
-      chapterResourcesBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.chapterResourcesModal) {
-          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
-          window.chapterResourcesModal.open(chapterId);
-        } else {
-          if (window.toast) {
-            window.toast.error('error.resourcesNotAvailable');
-          }
-        }
-      });
-    }
+    // 🔧 FIX #43: Chapter Resources, Learning Paths y Book Resources - versiones mobile
+    attachMultiDevice(
+      ['chapter-resources-btn-mobile'],
+      createModalHandler('chapterResourcesModal', closeMobileMenuDropdown, 'open', () => this.currentChapter?.id)
+    );
 
-    // Learning Paths button mobile
-    const learningPathsBtnMobile = document.getElementById('learning-paths-btn-mobile');
-    if (learningPathsBtnMobile) {
-      learningPathsBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.learningPaths) {
-          const currentBookId = this.bookEngine.getCurrentBook();
-          window.learningPaths.open(currentBookId);
-        } else {
-          if (window.toast) {
-            window.toast.error('Learning Paths no disponible');
-          }
-        }
-      });
-    }
+    // 🔧 FIX #43: Learning Paths mobile ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Book Resources button mobile (resourcesViewer)
-    const bookResourcesBtnMobile = document.getElementById('book-resources-btn-mobile');
-    if (bookResourcesBtnMobile) {
-      bookResourcesBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.resourcesViewer) {
-          window.resourcesViewer.open();
-        } else {
-          if (window.toast) {
-            window.toast.error('error.resourcesNotAvailable');
-          }
-        }
-      });
-    }
+    attachMultiDevice(
+      ['book-resources-btn-mobile'],
+      createModalHandler('resourcesViewer', closeMobileMenuDropdown)
+    );
 
-    // Manual Práctico button mobile - Navegar al libro
-    const manualPracticoBtnMobile = document.getElementById('manual-practico-btn-mobile');
-    if (manualPracticoBtnMobile) {
-      manualPracticoBtnMobile.addEventListener('click', async () => {
-        closeMobileMenuDropdown();
-        await this.bookEngine.loadBook('manual-practico');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    // 🔧 FIX #43: Manual Práctico y Prácticas Radicales - versiones móviles unificadas
+    attachMultiDevice(
+      ['manual-practico-btn-mobile'],
+      createBookSwitchHandler('manual-practico', closeMobileMenuDropdown)
+    );
 
-    // Prácticas Radicales button mobile - Navegar al libro
-    const practicasRadicalesBtnMobile = document.getElementById('practicas-radicales-btn-mobile');
-    if (practicasRadicalesBtnMobile) {
-      practicasRadicalesBtnMobile.addEventListener('click', async () => {
-        closeMobileMenuDropdown();
-        await this.bookEngine.loadBook('practicas-radicales');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    attachMultiDevice(
+      ['practicas-radicales-btn-mobile'],
+      createBookSwitchHandler('practicas-radicales', closeMobileMenuDropdown)
+    );
 
     // Audioreader button mobile - already has handler from line 926, no need to duplicate
 
-    // Koan button mobile
-    const koanBtnMobile = document.getElementById('koan-btn-mobile');
-    if (koanBtnMobile) {
-      koanBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.koanModal) {
-          window.koanModal.setCurrentChapter(this.currentChapter?.id);
-          window.koanModal.open(this.currentChapter?.id);
-        } else {
-          window.toast.error('error.koanNotAvailable');
-        }
-      });
-    }
+    // 🔧 FIX #43: Koan - versión mobile (requiere setCurrentChapter)
+    attachMultiDevice(['koan-btn-mobile'], () => {
+      closeMobileMenuDropdown();
+      const koanModal = this.getDependency('koanModal'); // 🔧 FIX #87
+      if (koanModal) {
+        koanModal.setCurrentChapter(this.currentChapter?.id);
+        koanModal.open(this.currentChapter?.id);
+      } else {
+        this.showToast('error', 'error.koanNotAvailable');
+      }
+    });
 
-    // Android Download button mobile
-    const androidBtnMobile = document.getElementById('android-download-btn-mobile');
-    if (androidBtnMobile) {
-      androidBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        const apkUrl = this.bookEngine.getLatestAPK();
-        window.open(apkUrl, '_blank');
-      });
-    }
+    // 🔧 FIX #43: Android Download - versión mobile
+    attachMultiDevice(['android-download-btn-mobile'], () => {
+      closeMobileMenuDropdown();
+      const apkUrl = this.bookEngine.getLatestAPK();
+      window.open(apkUrl, '_blank');
+    });
 
-    // Donations button mobile
-    const donationsBtnMobile = document.getElementById('donations-btn-mobile');
-    if (donationsBtnMobile) {
-      donationsBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.donationsModal) {
-          window.donationsModal.open();
-        }
-      });
-    }
+    // 🔧 FIX #43: Donations button mobile
+    attachMultiDevice(
+      ['donations-btn-mobile'],
+      createModalHandler('donationsModal', closeMobileMenuDropdown)
+    );
 
-    // Premium Edition button mobile - opens modal
-    const premiumBtnMobile = document.getElementById('premium-edition-btn-mobile');
-    if (premiumBtnMobile) {
-      premiumBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        this.showPremiumDownloadModal();
-      });
-    }
+    // 🔧 FIX #44: Premium Edition button mobile usando EventManager
+    // 🔧 FIX #43: Premium button mobile ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Language selector button mobile
-    const languageSelectorBtnMobile = document.getElementById('language-selector-btn-mobile');
-    if (languageSelectorBtnMobile) {
-      languageSelectorBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.languageSelector) {
-          window.languageSelector.open();
-        }
-      });
-    }
+    // 🔧 FIX #43: Language Selector mobile ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Theme toggle button mobile
-    const themeToggleBtnMobile = document.getElementById('theme-toggle-btn-mobile');
-    if (themeToggleBtnMobile) {
-      themeToggleBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        if (window.themeHelper) {
-          window.themeHelper.toggle();
-          this.updateThemeIcons();
-          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
-        }
-      });
-    }
+    // 🔧 FIX #43: Theme Toggle mobile ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Share chapter button mobile
-    const shareChapterBtnMobile = document.getElementById('share-chapter-btn-mobile');
-    if (shareChapterBtnMobile) {
-      shareChapterBtnMobile.addEventListener('click', () => {
-        closeMobileMenuDropdown();
-        this.shareCurrentChapter();
-      });
-    }
+    // 🔧 FIX #43: Share Chapter mobile ya consolidado arriba con attachMultiDeviceWithMenuClose
 
     // ========================================================================
     // TABLET DROPDOWN MENU (md breakpoint)
@@ -1738,17 +2153,26 @@ class BookReader {
 
     if (moreActionsBtn && moreActionsDropdown) {
       // Toggle dropdown
-      moreActionsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        moreActionsDropdown.classList.toggle('hidden');
-      });
+      if (!this._moreActionsToggleHandler) {
+        this._moreActionsToggleHandler = (e) => {
+          e.stopPropagation();
+          moreActionsDropdown.classList.toggle('hidden');
+        };
+      }
 
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!moreActionsBtn.contains(e.target) && !moreActionsDropdown.contains(e.target)) {
-          moreActionsDropdown.classList.add('hidden');
-        }
-      });
+      // 🔧 FIX #44: More actions button usando EventManager
+      this.eventManager.addEventListener(moreActionsBtn, 'click', this._moreActionsToggleHandler);
+
+      // 🔧 FIX #44: Close dropdown when clicking outside usando EventManager
+      if (!this._moreActionsClickOutsideAttached) {
+        this._moreActionsClickOutsideHandler = (e) => {
+          if (!moreActionsBtn.contains(e.target) && !moreActionsDropdown.contains(e.target)) {
+            moreActionsDropdown.classList.add('hidden');
+          }
+        };
+        this.eventManager.addEventListener(document, 'click', this._moreActionsClickOutsideHandler);
+        this._moreActionsClickOutsideAttached = true;
+      }
     }
 
     const closeDropdownHelper = () => {
@@ -1764,16 +2188,25 @@ class BookReader {
       const btn = document.getElementById(btnId);
       const dropdown = document.getElementById(dropdownId);
       if (btn && dropdown) {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          // Cerrar otros dropdowns
-          ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
-            if (id !== dropdownId) {
-              document.getElementById(id)?.classList.add('hidden');
-            }
-          });
-          dropdown.classList.toggle('hidden');
-        });
+        // Guardar handler para evitar duplicación
+        if (!this._dropdownHandlers) this._dropdownHandlers = {};
+
+        const handlerKey = `${btnId}_${dropdownId}`;
+        if (!this._dropdownHandlers[handlerKey]) {
+          this._dropdownHandlers[handlerKey] = (e) => {
+            e.stopPropagation();
+            // Cerrar otros dropdowns
+            ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+              if (id !== dropdownId) {
+                document.getElementById(id)?.classList.add('hidden');
+              }
+            });
+            dropdown.classList.toggle('hidden');
+          };
+        }
+
+        // 🔧 FIX #44: Dropdown toggle usando EventManager
+        this.eventManager.addEventListener(btn, 'click', this._dropdownHandlers[handlerKey]);
       }
     };
 
@@ -1782,26 +2215,30 @@ class BookReader {
     setupDropdown('book-features-dropdown-btn', 'book-features-dropdown');
     setupDropdown('settings-dropdown-btn', 'settings-dropdown');
 
-    // Cerrar dropdowns al hacer click fuera
-    document.addEventListener('click', (e) => {
-      const dropdowns = ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'];
-      const btns = ['tools-dropdown-btn', 'book-features-dropdown-btn', 'settings-dropdown-btn'];
+    // 🔧 FIX #44: Cerrar dropdowns al hacer click fuera usando EventManager
+    if (!this._desktopDropdownsClickOutsideAttached) {
+      this._desktopDropdownsClickOutsideHandler = (e) => {
+        const dropdowns = ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'];
+        const btns = ['tools-dropdown-btn', 'book-features-dropdown-btn', 'settings-dropdown-btn'];
 
-      let clickedInside = false;
-      btns.forEach((btnId, i) => {
-        const btn = document.getElementById(btnId);
-        const dropdown = document.getElementById(dropdowns[i]);
-        if ((btn && btn.contains(e.target)) || (dropdown && dropdown.contains(e.target))) {
-          clickedInside = true;
-        }
-      });
-
-      if (!clickedInside) {
-        dropdowns.forEach(id => {
-          document.getElementById(id)?.classList.add('hidden');
+        let clickedInside = false;
+        btns.forEach((btnId, i) => {
+          const btn = document.getElementById(btnId);
+          const dropdown = document.getElementById(dropdowns[i]);
+          if ((btn && btn.contains(e.target)) || (dropdown && dropdown.contains(e.target))) {
+            clickedInside = true;
+          }
         });
-      }
-    });
+
+        if (!clickedInside) {
+          dropdowns.forEach(id => {
+            document.getElementById(id)?.classList.add('hidden');
+          });
+        }
+      };
+      this.eventManager.addEventListener(document, 'click', this._desktopDropdownsClickOutsideHandler);
+      this._desktopDropdownsClickOutsideAttached = true;
+    }
 
     // Helper para cerrar todos los dropdowns desktop
     const closeDesktopDropdowns = () => {
@@ -1810,184 +2247,74 @@ class BookReader {
       });
     };
 
-    // Notes button dropdown
-    const notesBtnDropdown = document.getElementById('notes-btn-dropdown');
-    if (notesBtnDropdown) {
-      notesBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.notesModal) {
-          window.notesModal.open(this.currentChapter?.id);
-        }
-      });
-    }
+    // 🔧 FIX #43: Notes y Timeline - versiones dropdown (tablet)
+    attachMultiDevice(
+      ['notes-btn-dropdown'],
+      createModalHandler('notesModal', closeDropdownHelper, 'open', () => this.currentChapter?.id)
+    );
 
-    // Timeline button dropdown
-    const timelineBtnDropdown = document.getElementById('timeline-btn-dropdown');
-    if (timelineBtnDropdown) {
-      timelineBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.timelineViewer) {
-          window.timelineViewer.open();
-        }
-      });
-    }
+    attachMultiDevice(
+      ['timeline-btn-dropdown'],
+      createModalHandler('timelineViewer', closeDropdownHelper)
+    );
 
-    // Chapter Resources button dropdown
-    const chapterResourcesBtnDropdown = document.getElementById('chapter-resources-btn-dropdown');
-    if (chapterResourcesBtnDropdown) {
-      chapterResourcesBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.chapterResourcesModal) {
-          const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
-          window.chapterResourcesModal.open(chapterId);
-        }
-      });
-    }
+    // 🔧 FIX #43: Dropdown (tablet) - handlers unificados
+    attachMultiDevice(
+      ['chapter-resources-btn-dropdown'],
+      createModalHandler('chapterResourcesModal', closeDropdownHelper, 'open', () => this.currentChapter?.id)
+    );
 
-    // Book Resources button dropdown (resourcesViewer)
-    const bookResourcesBtnDropdown = document.getElementById('book-resources-btn-dropdown');
-    if (bookResourcesBtnDropdown) {
-      bookResourcesBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.resourcesViewer) {
-          window.resourcesViewer.open();
-        }
-      });
-    }
+    attachMultiDevice(
+      ['book-resources-btn-dropdown'],
+      createModalHandler('resourcesViewer', closeDropdownHelper)
+    );
 
-    // Manual Práctico button dropdown
-    const manualPracticoBtnDropdown = document.getElementById('manual-practico-btn-dropdown');
-    if (manualPracticoBtnDropdown) {
-      manualPracticoBtnDropdown.addEventListener('click', async () => {
-        closeDropdownHelper();
-        await this.bookEngine.loadBook('manual-practico');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    attachMultiDevice(
+      ['manual-practico-btn-dropdown'],
+      createBookSwitchHandler('manual-practico', closeDropdownHelper)
+    );
 
-    // Prácticas Radicales button dropdown
-    const practicasRadicalesBtnDropdown = document.getElementById('practicas-radicales-btn-dropdown');
-    if (practicasRadicalesBtnDropdown) {
-      practicasRadicalesBtnDropdown.addEventListener('click', async () => {
-        closeDropdownHelper();
-        await this.bookEngine.loadBook('practicas-radicales');
-        window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        this.render();
-        this.attachEventListeners();
-      });
-    }
+    attachMultiDevice(
+      ['practicas-radicales-btn-dropdown'],
+      createBookSwitchHandler('practicas-radicales', closeDropdownHelper)
+    );
 
-    // Koan button dropdown
-    const koanBtnDropdown = document.getElementById('koan-btn-dropdown');
-    if (koanBtnDropdown) {
-      koanBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.koanModal) {
-          window.koanModal.setCurrentChapter(this.currentChapter?.id);
-          window.koanModal.open(this.currentChapter?.id);
-        }
-      });
-    }
+    attachMultiDevice(['koan-btn-dropdown'], () => {
+      closeDropdownHelper();
+      const koanModal = this.getDependency('koanModal'); // 🔧 FIX #87
+      if (koanModal) {
+        koanModal.setCurrentChapter(this.currentChapter?.id);
+        koanModal.open(this.currentChapter?.id);
+      }
+    });
 
-    // Android Download button dropdown
-    const androidBtnDropdown = document.getElementById('android-download-btn-dropdown');
-    if (androidBtnDropdown) {
-      androidBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        const apkUrl = this.bookEngine.getLatestAPK();
-        window.open(apkUrl, '_blank');
-      });
-    }
+    attachMultiDevice(['android-btn-dropdown'], () => {
+      closeDropdownHelper();
+      const apkUrl = this.bookEngine.getLatestAPK();
+      window.open(apkUrl, '_blank');
+    });
 
-    // Donations button dropdown
-    const donationsBtnDropdown = document.getElementById('donations-btn-dropdown');
-    if (donationsBtnDropdown) {
-      donationsBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.donationsModal) {
-          window.donationsModal.open();
-        }
-      });
-    }
+    attachMultiDevice(
+      ['donations-btn-dropdown'],
+      createModalHandler('donationsModal', closeDropdownHelper)
+    );
 
-    // Learning Paths button dropdown
-    const learningPathsBtnDropdown = document.getElementById('learning-paths-btn-dropdown');
-    if (learningPathsBtnDropdown) {
-      learningPathsBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.learningPaths) {
-          const currentBookId = this.bookEngine.getCurrentBook();
-          window.learningPaths.open(currentBookId);
-        } else {
-          window.toast?.error('Learning Paths no disponible');
-        }
-      });
-    }
+    // 🔧 FIX #43: Learning Paths dropdown ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Learning Paths button desktop (tools dropdown)
-    const learningPathsBtnDesktop = document.getElementById('learning-paths-btn-desktop');
-    if (learningPathsBtnDesktop) {
-      learningPathsBtnDesktop.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.learningPaths) {
-          const currentBookId = this.bookEngine.getCurrentBook();
-          window.learningPaths.open(currentBookId);
-        } else {
-          window.toast?.error('Learning Paths no disponible');
-        }
-      });
-    }
+    // 🔧 FIX #43: Learning Paths desktop ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Premium Edition button dropdown
-    const premiumBtnDropdown = document.getElementById('premium-edition-btn-dropdown');
-    if (premiumBtnDropdown) {
-      premiumBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        this.showPremiumDownloadModal();
-      });
-    }
+    // 🔧 FIX #43: Premium button dropdown ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Language selector button dropdown
-    const languageSelectorBtnDropdown = document.getElementById('language-selector-btn-dropdown');
-    if (languageSelectorBtnDropdown) {
-      languageSelectorBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.languageSelector) {
-          window.languageSelector.open();
-        }
-      });
-    }
+    // 🔧 FIX #43: Language Selector dropdown ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Theme toggle button dropdown
-    const themeToggleBtnDropdown = document.getElementById('theme-toggle-btn-dropdown');
-    if (themeToggleBtnDropdown) {
-      themeToggleBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        if (window.themeHelper) {
-          window.themeHelper.toggle();
-          this.updateThemeIcons();
-          window.toast?.info(`Tema: ${window.themeHelper.getThemeLabel()}`);
-        }
-      });
-    }
+    // 🔧 FIX #43: Theme Toggle dropdown ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Share chapter button dropdown
-    const shareChapterBtnDropdown = document.getElementById('share-chapter-btn-dropdown');
-    if (shareChapterBtnDropdown) {
-      shareChapterBtnDropdown.addEventListener('click', () => {
-        closeDropdownHelper();
-        this.shareCurrentChapter();
-      });
-    }
+    // 🔧 FIX #43: Share Chapter dropdown ya consolidado arriba con attachMultiDeviceWithMenuClose
 
-    // Chapter read toggle buttons (click en el icono)
+    // 🔧 FIX #44: Chapter read toggle buttons usando EventManager
     const readToggleBtns = document.querySelectorAll('.chapter-read-toggle');
     readToggleBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         e.stopPropagation(); // Evitar que se propague al chapter-item
         const chapterId = btn.getAttribute('data-chapter-id');
         this.bookEngine.toggleChapterRead(chapterId);
@@ -1996,86 +2323,83 @@ class BookReader {
       });
     });
 
-    // Chapter title areas (click para navegar)
+    // 🔧 FIX #44: Chapter title areas usando EventManager
     const chapterTitleAreas = document.querySelectorAll('.chapter-title-area');
     chapterTitleAreas.forEach(area => {
-      area.addEventListener('click', () => {
+      this.eventManager.addEventListener(area, 'click', () => {
         const chapterId = area.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // En móvil, cerrar el sidebar automáticamente
+        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
         if (window.innerWidth < 768) {
           this.sidebarOpen = false;
-          this.render();
-          this.attachEventListeners();
+          this.updateSidebar();
         }
       });
     });
 
-    // Chapter items (click en cualquier parte excepto el toggle)
+    // 🔧 FIX #44: Chapter items usando EventManager
     const chapterItems = document.querySelectorAll('.chapter-item');
     chapterItems.forEach(item => {
-      item.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(item, 'click', (e) => {
         // Si se hizo click en el toggle o área de título, ya está manejado
         if (e.target.closest('.chapter-read-toggle') || e.target.closest('.chapter-title-area')) {
           return;
         }
         const chapterId = item.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // En móvil, cerrar el sidebar automáticamente
+        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
         if (window.innerWidth < 768) {
           this.sidebarOpen = false;
-          this.render();
-          this.attachEventListeners();
+          this.updateSidebar();
         }
       });
     });
 
-    // Mark chapter as read button
-    const markReadBtn = document.getElementById('mark-chapter-read-btn');
-    if (markReadBtn) {
-      markReadBtn.addEventListener('click', () => {
+    // 🔧 FIX #44: Mark chapter as read button usando EventManager
+    // Note: Este botón se re-renderiza dinámicamente, necesita un handler global
+    if (!this._markReadHandler) {
+      this._markReadHandler = () => {
         if (this.currentChapter?.id) {
           this.bookEngine.toggleChapterRead(this.currentChapter.id);
-          // Re-renderizar el botón y actualizar sidebar
           const markReadSection = document.querySelector('.mark-read-section');
           if (markReadSection) {
             markReadSection.outerHTML = this.renderMarkAsReadButton();
-            // Re-attach listener para el nuevo botón
             const newBtn = document.getElementById('mark-chapter-read-btn');
             if (newBtn) {
-              newBtn.addEventListener('click', () => {
-                this.bookEngine.toggleChapterRead(this.currentChapter.id);
-                this.render();
-                this.attachEventListeners();
-              });
+              this.eventManager.addEventListener(newBtn, 'click', this._markReadHandler);
             }
             Icons.init();
           }
           this.updateSidebar();
         }
-      });
+      };
     }
 
-    // Action cards event listeners
+    const markReadBtn = document.getElementById('mark-chapter-read-btn');
+    if (markReadBtn) {
+      this.eventManager.addEventListener(markReadBtn, 'click', this._markReadHandler);
+    }
+
+    // 🔧 FIX #44: Action cards usando EventManager
     const actionCards = document.querySelectorAll('.action-card');
     actionCards.forEach(card => {
-      card.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(card, 'click', (e) => {
         const action = card.getAttribute('data-action');
         const button = e.target.closest('button');
 
-        // Si se hace click en el botón o en cualquier parte de la card
         if (action === 'quiz') {
-          if (window.InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {
-            const quiz = new window.InteractiveQuiz(this.currentChapter.quiz, this.currentChapter.id);
+          const InteractiveQuiz = this.getDependency('InteractiveQuiz'); // 🔧 FIX #87
+          if (InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {
+            const quiz = new InteractiveQuiz(this.currentChapter.quiz, this.currentChapter.id);
             quiz.start();
           }
         } else if (action === 'resources') {
-          if (window.chapterResourcesModal) {
+          const chapterResourcesModal = this.getDependency('chapterResourcesModal'); // 🔧 FIX #87
+          if (chapterResourcesModal) {
             const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
-            window.chapterResourcesModal.open(chapterId);
+            chapterResourcesModal.open(chapterId);
           }
         } else if (action === 'reflection') {
-          // Hacer scroll hasta la pregunta de cierre
           const closingQuestion = document.querySelector('.closing-question');
           if (closingQuestion) {
             closingQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2084,10 +2408,10 @@ class BookReader {
       });
     });
 
-    // Previous/Next buttons
+    // 🔧 FIX #44: Previous/Next buttons usando EventManager
     const prevBtn = document.getElementById('prev-chapter');
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(prevBtn, 'click', () => {
         const chapterId = prevBtn.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
       });
@@ -2095,37 +2419,66 @@ class BookReader {
 
     const nextBtn = document.getElementById('next-chapter');
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(nextBtn, 'click', () => {
         const chapterId = nextBtn.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
       });
     }
 
-    // Cross-reference clicks
+    // 🔧 FIX #44: Cross-reference clicks usando EventManager
     const crossRefItems = document.querySelectorAll('.reference');
     crossRefItems.forEach(item => {
-      item.addEventListener('click', () => {
+      this.eventManager.addEventListener(item, 'click', async () => {
         const targetBook = item.getAttribute('data-book');
         const targetChapter = item.getAttribute('data-chapter');
-        window.toast.info('feature.crossReference');
-        // TODO: Implementar navegación entre libros
+
+        if (!targetBook) {
+          this.showToast('warning', 'Referencia sin libro destino');
+          return;
+        }
+
+        try {
+          this.showToast('info', `Navegando a ${targetBook}...`);
+          await this.bookEngine.loadBook(targetBook);
+          this.applyBookTheme();
+
+          if (targetChapter) {
+            const chapters = this.bookEngine.getChapters();
+            const chapter = chapters.find(c => c.id === targetChapter || c.slug === targetChapter);
+            if (chapter) {
+              await this.navigateTo(chapter.id);
+            } else {
+              await this.navigateTo(chapters[0]?.id);
+            }
+          } else {
+            const chapters = this.bookEngine.getChapters();
+            if (chapters.length > 0) {
+              await this.navigateTo(chapters[0].id);
+            }
+          }
+
+          this.showToast('success', `Ahora leyendo: ${this.bookEngine.getCurrentBookData()?.title || targetBook}`);
+        } catch (error) {
+          console.error('Error navegando a referencia cruzada:', error);
+          this.showToast('error', 'Error al cargar el libro referenciado');
+        }
       });
     });
 
-    // Premium edition download button - opens modal
+    // 🔧 FIX #44: Premium edition download button usando EventManager
     const downloadPremiumBtn = document.getElementById('download-premium-btn');
     if (downloadPremiumBtn) {
-      downloadPremiumBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(downloadPremiumBtn, 'click', () => {
         this.showPremiumDownloadModal();
       });
     }
 
     // ========================================================================
-    // EXERCISE LINK BUTTONS - Navigate to practice books
+    // 🔧 FIX #44: EXERCISE LINK BUTTONS usando EventManager
     // ========================================================================
     const exerciseLinkBtns = document.querySelectorAll('.exercise-link-btn');
     exerciseLinkBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const exerciseId = btn.getAttribute('data-exercise-id');
         const exerciseTitle = btn.getAttribute('data-exercise-title');
@@ -2133,7 +2486,7 @@ class BookReader {
         try {
           // Cargar el libro de destino
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           // Buscar el capítulo que corresponde al ejercicio
           let targetChapterId = null;
@@ -2153,23 +2506,16 @@ class BookReader {
             targetChapterId = this.bookEngine.findChapterByExerciseTitle(exerciseTitle);
           }
 
-          // Navegar al capítulo o al primero si no se encontró
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (targetChapterId) {
-            this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
+            this.navigateToChapter(targetChapterId);
           } else {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          this.render();
-          this.attachEventListeners();
-
-          // Scroll al inicio
-          const contentArea = document.querySelector('.chapter-content');
-          if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to exercise:', error);
-          window.toast.error('error.navigationFailed');
+          this.showToast('error', 'error.navigationFailed');
         }
       });
     });
@@ -2179,34 +2525,26 @@ class BookReader {
     // ========================================================================
     const crossRefBtns = document.querySelectorAll('.cross-reference-btn');
     crossRefBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const targetChapterId = btn.getAttribute('data-chapter-id');
 
         try {
           // Cargar el libro de destino
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           // Navegar al capítulo específico o al primero si no se especifica
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (targetChapterId) {
-            this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
+            this.navigateToChapter(targetChapterId);
+          } else {
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          if (!this.currentChapter) {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-          }
-
-          this.render();
-          this.attachEventListeners();
-
-          // Scroll al inicio
-          const contentArea = document.querySelector('.chapter-content');
-          if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to cross reference:', error);
-          window.toast.error('error.navigationFailed');
+          this.showToast('error', 'error.navigationFailed');
         }
       });
     });
@@ -2218,26 +2556,20 @@ class BookReader {
     // Botón para abrir el libro completo de Guía de Acciones
     const openActionsBookBtns = document.querySelectorAll('.open-actions-book-btn');
     openActionsBookBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
-          // Navegar al prólogo o primer capítulo
+          // 🔧 FIX #49: Navegar usando método con actualización parcial
           const firstChapter = this.bookEngine.getFirstChapter();
-          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter?.id || 'prologo');
-
-          this.render();
-          this.attachEventListeners();
-
-          const contentArea = document.querySelector('.chapter-content');
-          if (contentArea) contentArea.scrollTop = 0;
+          this.navigateToChapter(firstChapter?.id || 'prologo');
 
         } catch (error) {
           console.error('Error opening actions book:', error);
-          window.toast.error('Error al abrir la Guía de Acciones');
+          this.showToast('error', 'Error al abrir la Guía de Acciones');
         }
       });
     });
@@ -2245,32 +2577,30 @@ class BookReader {
     // Botones para abrir una acción específica
     const openActionDetailBtns = document.querySelectorAll('.open-action-detail-btn');
     openActionDetailBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const targetChapterId = btn.getAttribute('data-chapter');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           // Navegar al capítulo de la acción específica
           if (targetChapterId) {
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (!this.currentChapter) {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          this.render();
-          this.attachEventListeners();
 
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to action detail:', error);
-          window.toast.error('Error al abrir la acción');
+          this.showToast('error', 'Error al abrir la acción');
         }
       });
     });
@@ -2282,32 +2612,30 @@ class BookReader {
     // Botón para abrir un ejercicio específico del Toolkit
     const toolkitExerciseBtns = document.querySelectorAll('.toolkit-exercise-btn');
     toolkitExerciseBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const targetChapterId = btn.getAttribute('data-chapter-id');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           // Navegar al capítulo del ejercicio específico
           if (targetChapterId) {
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (!this.currentChapter) {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          this.render();
-          this.attachEventListeners();
 
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to toolkit exercise:', error);
-          window.toast.error('Error al abrir el ejercicio del Toolkit');
+          this.showToast('error', 'Error al abrir el ejercicio del Toolkit');
         }
       });
     });
@@ -2315,26 +2643,20 @@ class BookReader {
     // Botón para abrir el libro completo del Toolkit
     const openToolkitBookBtns = document.querySelectorAll('.open-toolkit-book-btn');
     openToolkitBookBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
-          // Navegar al primer capítulo
+          // 🔧 FIX #49: Navegar usando método con actualización parcial
           const firstChapter = this.bookEngine.getFirstChapter();
-          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter?.id || 'toolkit-1');
-
-          this.render();
-          this.attachEventListeners();
-
-          const contentArea = document.querySelector('.chapter-content');
-          if (contentArea) contentArea.scrollTop = 0;
+          this.navigateToChapter(firstChapter?.id || 'toolkit-1');
 
         } catch (error) {
           console.error('Error opening toolkit book:', error);
-          window.toast.error('Error al abrir el Toolkit de Transición');
+          this.showToast('error', 'Error al abrir el Toolkit de Transición');
         }
       });
     });
@@ -2344,31 +2666,29 @@ class BookReader {
     // ========================================================================
     const manifiestoLinkBtns = document.querySelectorAll('.manifiesto-link-btn');
     manifiestoLinkBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const targetChapterId = btn.getAttribute('data-chapter-id');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           if (targetChapterId) {
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (!this.currentChapter) {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          this.render();
-          this.attachEventListeners();
 
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to Manifiesto:', error);
-          window.toast.error('Error al abrir el Manifiesto');
+          this.showToast('error', 'Error al abrir el Manifiesto');
         }
       });
     });
@@ -2378,32 +2698,30 @@ class BookReader {
     // ========================================================================
     const parentBookBtns = document.querySelectorAll('.parent-book-btn');
     parentBookBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      this.eventManager.addEventListener(btn, 'click', async () => {
         const targetBook = btn.getAttribute('data-book');
         const targetChapterId = btn.getAttribute('data-chapter-id');
 
         try {
           await this.bookEngine.loadBook(targetBook);
-          window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+          this.applyBookTheme();
 
           // Navegar al capítulo del libro principal
           if (targetChapterId) {
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
+          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (!this.currentChapter) {
-            this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
+            this.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
-
-          this.render();
-          this.attachEventListeners();
 
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
 
         } catch (error) {
           console.error('Error navigating to parent book:', error);
-          window.toast.error('Error al abrir el libro principal');
+          this.showToast('error', 'Error al abrir el libro principal');
         }
       });
     });
@@ -2411,8 +2729,9 @@ class BookReader {
     // ========================================================================
     // AI SUGGESTIONS - Attach click handlers for chapter suggestions
     // ========================================================================
-    if (window.aiSuggestions) {
-      window.aiSuggestions.attachToChapterContent();
+    const aiSuggestions = this.getDependency('aiSuggestions'); // 🔧 FIX #87
+    if (aiSuggestions {
+      aiSuggestions.attachToChapterContent();
     }
   }
 
@@ -2421,13 +2740,201 @@ class BookReader {
   // ==========================================================================
 
   navigateToChapter(chapterId) {
-    const chapter = this.bookEngine.navigateToChapter(chapterId);
-    if (chapter) {
-      this.show(chapter);
-      // Scroll to top
-      const contentArea = document.querySelector('.chapter-content');
-      if (contentArea) {
-        contentArea.scrollTop = 0;
+    try {
+      const chapter = this.bookEngine.navigateToChapter(chapterId);
+      if (chapter) {
+        this.currentChapter = chapter;
+
+        // 🔧 BUGFIX: Verificar si ya existe la estructura DOM
+        // Si no existe, hacer render completo. Si existe, actualización parcial.
+        const contentArea = document.querySelector('.chapter-content');
+        const hasRendered = contentArea !== null;
+
+        if (!hasRendered) {
+          // Primera vez: render completo
+          this.render();
+          this.attachEventListeners();
+        } else {
+          // Ya renderizado: solo actualizar las partes que cambian (Fix #49)
+          this.updateChapterContent();
+          this.updateHeader();
+          this.updateSidebar();
+          this.updateFooterNav();
+        }
+
+        // Scroll to top
+        const finalContentArea = document.querySelector('.chapter-content');
+        if (finalContentArea) {
+          finalContentArea.scrollTop = 0;
+        }
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para navegación de capítulos
+      console.error('[BookReader] Error navegando a capítulo:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+      }
+      this.showToast('error', 'Error al cargar el capítulo');
+    }
+  }
+
+  // 🔧 FIX #49: Métodos de actualización parcial para evitar re-renderizados completos
+
+  /**
+   * Actualiza solo el contenido del capítulo sin reconstruir todo el reader
+   */
+  updateChapterContent() {
+    try {
+      const contentContainer = document.querySelector('.chapter-content');
+      if (contentContainer) {
+        contentContainer.innerHTML = this.renderChapterContent();
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para actualización de contenido
+      console.error('[BookReader] Error actualizando contenido:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+      }
+    }
+  }
+
+  /**
+   * Actualiza solo el header sin reconstruir todo el reader
+   */
+  updateHeader() {
+    try {
+      const headerContainer = document.querySelector('.main-content > .header, .main-content > header');
+      if (headerContainer) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = this.renderHeader();
+        const newHeader = tempDiv.firstElementChild;
+        if (newHeader) {
+          headerContainer.replaceWith(newHeader);
+        }
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para actualización de header
+      console.error('[BookReader] Error actualizando header:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+      }
+    }
+  }
+
+  /**
+   * Actualiza solo el sidebar sin reconstruir todo el reader
+   */
+  updateSidebar() {
+    try {
+      const sidebarContainer = document.querySelector('.sidebar');
+      if (sidebarContainer) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = this.renderSidebar();
+
+        // 🔧 BUGFIX: renderSidebar() puede retornar backdrop + sidebar
+        // Buscar específicamente el elemento con clase .sidebar
+        const newSidebar = tempDiv.querySelector('.sidebar');
+        if (newSidebar) {
+          // Preservar estado de apertura del sidebar
+          if (this.sidebarOpen) {
+            newSidebar.classList.remove('-translate-x-full');
+          } else {
+            newSidebar.classList.add('-translate-x-full');
+          }
+          sidebarContainer.replaceWith(newSidebar);
+        }
+
+        // Actualizar o remover backdrop si existe
+        const oldBackdrop = document.getElementById('sidebar-backdrop');
+        const newBackdrop = tempDiv.querySelector('#sidebar-backdrop');
+        if (newBackdrop && this.sidebarOpen) {
+          if (oldBackdrop) {
+            oldBackdrop.replaceWith(newBackdrop);
+          } else {
+            document.body.appendChild(newBackdrop);
+          }
+        } else if (oldBackdrop) {
+          oldBackdrop.remove();
+        }
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para actualización de sidebar
+      console.error('[BookReader] Error actualizando sidebar:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+      }
+    }
+  }
+
+  /**
+   * Actualiza solo la navegación inferior sin reconstruir todo el reader
+   */
+  updateFooterNav() {
+    try {
+      const footerNavContainer = document.querySelector('.main-content > .block');
+      if (footerNavContainer) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = this.renderFooterNav();
+        footerNavContainer.innerHTML = tempDiv.innerHTML;
+
+        // Re-attach event listeners solo para los botones de navegación
+        this.attachNavigationListeners();
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para actualización de footer nav
+      console.error('[BookReader] Error actualizando footer nav:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+      }
+    }
+  }
+
+  /**
+   * Adjunta event listeners solo para los botones de navegación (prev/next)
+   * Evita re-attachar todos los listeners del reader
+   */
+  attachNavigationListeners() {
+    try {
+      const prevBtn = document.getElementById('prev-chapter-btn');
+      const nextBtn = document.getElementById('next-chapter-btn');
+
+      // 🔧 FIX #44: Usar EventManager para navigation buttons
+      if (prevBtn) {
+        const chapterId = prevBtn.getAttribute('data-chapter-id');
+        if (chapterId) {
+          this.eventManager.addEventListener(prevBtn, 'click', () => this.navigateToChapter(chapterId));
+        }
+      }
+
+      if (nextBtn) {
+        const chapterId = nextBtn.getAttribute('data-chapter-id');
+        if (chapterId) {
+          this.eventManager.addEventListener(nextBtn, 'click', () => this.navigateToChapter(chapterId));
+        }
+      }
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para attach de listeners
+      console.error('[BookReader] Error adjuntando navigation listeners:', error);
+      this.captureError(error, {
+        context: 'navigate_to_chapter',
+        chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
       }
     }
   }
@@ -2597,16 +3104,16 @@ class BookReader {
 
     document.body.appendChild(modal);
 
-    // Event listeners
+    // 🔧 FIX #44: Event listeners usando EventManager
     const closeBtn = modal.querySelector('#close-premium-modal');
-    closeBtn.addEventListener('click', () => modal.remove());
+    this.eventManager.addEventListener(closeBtn, 'click', () => modal.remove());
 
-    modal.addEventListener('click', (e) => {
+    this.eventManager.addEventListener(modal, 'click', (e) => {
       if (e.target === modal) modal.remove();
     });
 
     const downloadFreeBtn = modal.querySelector('#download-free-btn');
-    downloadFreeBtn.addEventListener('click', () => {
+    this.eventManager.addEventListener(downloadFreeBtn, 'click', () => {
       const file = downloadFreeBtn.getAttribute('data-premium-file');
       window.open(file, '_blank');
       modal.remove();
@@ -2618,7 +3125,8 @@ class BookReader {
   // ==========================================================================
 
   shareCurrentChapter() {
-    if (!window.shareHelper || !this.currentChapter) return;
+    const shareHelper = this.getDependency('shareHelper'); // 🔧 FIX #87
+    if (!shareHelper || !this.currentChapter) return;
 
     const bookData = this.bookEngine?.getCurrentBookData();
     const bookTitle = bookData?.title || 'Colección Nuevo Ser';
@@ -2634,7 +3142,7 @@ class BookReader {
     }
 
     if (quote) {
-      window.shareHelper.shareQuote({
+      shareHelper.shareQuote({
         quote: quote.substring(0, 280), // Limit to tweet-like length
         author: this.currentChapter.epigraph?.author || '',
         bookTitle: bookTitle,
@@ -2642,7 +3150,7 @@ class BookReader {
       });
     } else {
       // Share progress instead
-      window.shareHelper.shareProgress({
+      shareHelper.shareProgress({
         bookTitle: bookTitle,
         progress: progress?.percentage || 0,
         chaptersRead: progress?.read || 0,
@@ -2656,10 +3164,11 @@ class BookReader {
   // ==========================================================================
 
   updateThemeIcons() {
-    if (!window.themeHelper) return;
+    const themeHelper = this.getDependency('themeHelper'); // 🔧 FIX #87
+    if (!themeHelper) return;
 
-    const icon = window.themeHelper.getThemeIcon();
-    const label = window.themeHelper.getThemeLabel();
+    const icon = themeHelper.getThemeIcon();
+    const label = themeHelper.getThemeLabel();
 
     // Update all theme icons and labels
     const iconElements = ['theme-icon', 'theme-icon-mobile', 'theme-icon-dropdown', 'theme-icon-bib'];
@@ -2687,35 +3196,29 @@ class BookReader {
   async navigateToExercise(bookId, exerciseId) {
     try {
       // Close chapter resources modal if open
-      if (window.chapterResourcesModal) {
-        window.chapterResourcesModal.close();
+      const chapterResourcesModal = this.getDependency('chapterResourcesModal'); // 🔧 FIX #87
+      if (chapterResourcesModal) {
+        chapterResourcesModal.close();
       }
 
       // Load the target book
       await this.bookEngine.loadBook(bookId);
-      window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+      this.applyBookTheme();
 
-      // Navigate to the exercise chapter
-      this.currentChapter = this.bookEngine.navigateToChapter(exerciseId);
-
-      if (!this.currentChapter) {
-        // Fallback to first chapter if not found
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        window.toast.warning('Ejercicio no encontrado, mostrando primer capítulo');
+      // 🔧 FIX #49: Navigate usando método con actualización parcial
+      const chapter = this.bookEngine.getChapterById(exerciseId);
+      if (chapter) {
+        this.navigateToChapter(exerciseId);
+      } else {
+        this.showToast('warning', 'Ejercicio no encontrado, mostrando primer capítulo');
+        this.navigateToChapter(this.bookEngine.getFirstChapter().id);
       }
 
-      this.render();
-      this.attachEventListeners();
-
-      // Scroll to top
-      const contentArea = document.querySelector('.chapter-content');
-      if (contentArea) contentArea.scrollTop = 0;
-
-      window.toast.success('Navegando al ejercicio...');
+      this.showToast('success', 'Navegando al ejercicio...');
 
     } catch (error) {
       console.error('Error navigating to exercise:', error);
-      window.toast.error('Error al navegar al ejercicio');
+      this.showToast('error', 'Error al navegar al ejercicio');
     }
   }
 
@@ -2726,35 +3229,29 @@ class BookReader {
   async navigateToPractice(bookId, practiceId) {
     try {
       // Close chapter resources modal if open
-      if (window.chapterResourcesModal) {
-        window.chapterResourcesModal.close();
+      const chapterResourcesModal = this.getDependency('chapterResourcesModal'); // 🔧 FIX #87
+      if (chapterResourcesModal) {
+        chapterResourcesModal.close();
       }
 
       // Load the target book
       await this.bookEngine.loadBook(bookId);
-      window.themeHelper?.applyBookTheme(this.bookEngine.getCurrentBookConfig());
+      this.applyBookTheme();
 
-      // Navigate to the practice chapter
-      this.currentChapter = this.bookEngine.navigateToChapter(practiceId);
-
-      if (!this.currentChapter) {
-        // Fallback to first chapter if not found
-        this.currentChapter = this.bookEngine.navigateToChapter(this.bookEngine.getFirstChapter().id);
-        window.toast.warning('Práctica no encontrada, mostrando primer capítulo');
+      // 🔧 FIX #49: Navigate usando método con actualización parcial
+      const chapter = this.bookEngine.getChapterById(practiceId);
+      if (chapter) {
+        this.navigateToChapter(practiceId);
+      } else {
+        this.showToast('warning', 'Práctica no encontrada, mostrando primer capítulo');
+        this.navigateToChapter(this.bookEngine.getFirstChapter().id);
       }
 
-      this.render();
-      this.attachEventListeners();
-
-      // Scroll to top
-      const contentArea = document.querySelector('.chapter-content');
-      if (contentArea) contentArea.scrollTop = 0;
-
-      window.toast.success('Navegando a la práctica...');
+      this.showToast('success', 'Navegando a la práctica...');
 
     } catch (error) {
       console.error('Error navigating to practice:', error);
-      window.toast.error('Error al navegar a la práctica');
+      this.showToast('error', 'Error al navegar a la práctica');
     }
   }
 

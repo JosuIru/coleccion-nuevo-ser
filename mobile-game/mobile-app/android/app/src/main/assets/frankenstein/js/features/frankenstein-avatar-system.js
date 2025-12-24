@@ -63,7 +63,7 @@ class FrankensteinAvatarSystem {
     // Combinar atributos principales en un número único
     const hash = (attrs.wisdom || 0) * 1000 +
                  (attrs.empathy || 0) * 100 +
-                 (attrs.action || 0) * 10 +
+                 (attrs.courage || 0) * 10 +
                  (attrs.creativity || 0);
 
     return hash.toString(36); // Base 36 para hash corto
@@ -83,14 +83,14 @@ class FrankensteinAvatarSystem {
     switch(style) {
       case 'adventurer':
       case 'adventurer-neutral':
-        // Configurar basado en acción y resiliencia
-        if (attrs.action > 70) {
+        // Configurar basado en coraje y acción
+        if (attrs.courage > 70) {
           params.push('eyes=variant26'); // Ojos decididos
         } else if (attrs.wisdom > 70) {
           params.push('eyes=variant04'); // Ojos sabios
         }
 
-        if (attrs.resilience > 60) {
+        if (attrs.action > 60) {
           params.push('mouth=variant26'); // Sonrisa confiada
         }
         break;
@@ -110,12 +110,12 @@ class FrankensteinAvatarSystem {
         break;
 
       case 'bottts':
-        // Configurar basado en organización y técnica
-        if (attrs.organization > 70) {
+        // Configurar basado en disciplina y organización
+        if (attrs.discipline > 70) {
           params.push('eyes=sensor'); // Ojos técnicos
         }
 
-        if (attrs.technical > 60) {
+        if (attrs.organization > 60) {
           params.push('mouth=square'); // Boca estructurada
         }
         break;
@@ -218,13 +218,13 @@ class FrankensteinAvatarSystem {
     // Mapear atributos a colores
     const wisdom = attributes.wisdom || 0;
     const empathy = attributes.empathy || 0;
-    const resilience = attributes.resilience || 0;
+    const courage = attributes.courage || 0;
     const creativity = attributes.creativity || 0;
     const action = attributes.action || 0;
 
     // Azul (sabiduría): 200-240
     // Verde (empatía): 120-160
-    // Rojo (resiliencia): 0-30
+    // Rojo (coraje): 0-30
     // Violeta (creatividad): 270-310
     // Naranja (acción): 30-60
 
@@ -241,9 +241,9 @@ class FrankensteinAvatarSystem {
       totalWeight += empathy;
     }
 
-    if (resilience > 0) {
-      totalHue += 15 * resilience;
-      totalWeight += resilience;
+    if (courage > 0) {
+      totalHue += 15 * courage;
+      totalWeight += courage;
     }
 
     if (creativity > 0) {
@@ -299,9 +299,9 @@ class FrankensteinAvatarSystem {
     const attrs = [
       { name: 'Sabiduría', value: attributes.wisdom || 0 },
       { name: 'Empatía', value: attributes.empathy || 0 },
-      { name: 'Resiliencia', value: attributes.resilience || 0 },
+      { name: 'Coraje', value: attributes.courage || 0 },
       { name: 'Creatividad', value: attributes.creativity || 0 },
-      { name: 'Organización', value: attributes.organization || 0 },
+      { name: 'Disciplina', value: attributes.discipline || 0 },
       { name: 'Acción', value: attributes.action || 0 }
     ];
 

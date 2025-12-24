@@ -115,8 +115,95 @@ class FrankensteinMissions {
       }
     };
 
+    this.difficultyRank = {
+      facil: 0,
+      intermedio: 1,
+      avanzado: 2,
+      experto: 3
+    };
+
+    // Configuración del sistema de progresión
+    this.progressionConfig = {
+      // Turnos base por dificultad de misión
+      turnsPerDifficulty: {
+        facil: 10,
+        intermedio: 15,
+        avanzado: 20,
+        experto: 30
+      },
+      // Energía máxima y costos
+      maxEnergy: 100,
+      energyCostPerMission: {
+        facil: 15,
+        intermedio: 25,
+        avanzado: 40,
+        experto: 60
+      },
+      // Recuperación de energía
+      energyRecoveryPerHour: 10,
+      // XP por dificultad
+      xpPerDifficulty: {
+        facil: 50,
+        intermedio: 100,
+        avanzado: 200,
+        experto: 400
+      },
+      // XP necesaria por nivel (exponencial)
+      xpPerLevel: (level) => Math.floor(100 * Math.pow(1.5, level - 1)),
+      // Bonus de atributos por nivel
+      attributeBonusPerLevel: 2
+    };
+
     // Misiones disponibles
     this.missions = [
+      {
+        id: 'curious-explorer',
+        name: 'Explorador Curioso',
+        icon: '🧭',
+        description: 'Recolecta aprendizajes, observa patrones y experimenta con nuevas combinaciones.',
+        longDescription: 'Un ser dispuesto a probar piezas con curiosidad, validar hipótesis sencillas y compartir descubrimientos con humildad.',
+        difficulty: 'facil',
+        requiredAttributes: {
+          reflection: 25,
+          creativity: 30,
+          action: 30,
+          empathy: 20
+        },
+        balanceRequired: {
+          action: { min: 25 },
+          reflection: { min: 20 }
+        },
+        successMessage: '¡Ser viable! Puedes explorar experiencias sin miedo a equivocarte.',
+        failureReasons: {
+          lowReflection: 'Necesitas pausar y observar antes de actuar.',
+          lowAction: 'Falta coraje para integrar aprendizajes en acción.'
+        }
+      },
+      {
+        id: 'community-starter',
+        name: 'Acompañante de Base',
+        icon: '🤝',
+        description: 'Activa círculos de confianza y escucha a quienes te rodean.',
+        longDescription: 'Un ser que genera seguridad, comparte herramientas prácticas y construye puentes desde lo cotidiano.',
+        difficulty: 'facil',
+        requiredAttributes: {
+          empathy: 40,
+          communication: 40,
+          collaboration: 35,
+          action: 30,
+          resilience: 30
+        },
+        balanceRequired: {
+          'empathy+communication': { min: 120 },
+          action: { min: 30 }
+        },
+        successMessage: '¡Ser viable! Puedes sostener comunidades con presencia y claridad.',
+        failureReasons: {
+          lowEmpathy: 'Necesitas escuchar más allá de lo evidente.',
+          lowCommunication: 'Tus mensajes se pierden. Habla con claridad y calidez.',
+          lowAction: 'La comunidad espera movimiento, no discursos.'
+        }
+      },
       {
         id: 'social-entrepreneur',
         name: 'Emprendedor Social',
@@ -591,8 +678,22 @@ class FrankensteinMissions {
       }
     });
 
+    this.sortMissionsByDifficulty();
+
     this.currentMission = null;
     this.createdBeing = null;
+  }
+
+  sortMissionsByDifficulty() {
+    if (!Array.isArray(this.missions)) return;
+    this.missions.sort((a, b) => {
+      const rankA = this.difficultyRank[a.difficulty] ?? 99;
+      const rankB = this.difficultyRank[b.difficulty] ?? 99;
+      if (rankA !== rankB) {
+        return rankA - rankB;
+      }
+      return (a.name || '').localeCompare(b.name || '');
+    });
   }
 
   /**
@@ -600,6 +701,23 @@ class FrankensteinMissions {
    */
   analyzePiece(piece) {
     // piece puede ser: chapter, exercise, resource
+    if (piece?.syntheticAttributes) {
+      const multiplier = piece.powerMultiplier || 1;
+      const adjustedAttributes = {};
+      Object.entries(piece.syntheticAttributes).forEach(([attr, value]) => {
+        adjustedAttributes[attr] = Math.round(value * multiplier);
+      });
+      const totalPower = Object.values(adjustedAttributes).reduce((sum, val) => sum + val, 0);
+      return {
+        piece,
+        attributes: adjustedAttributes,
+        totalPower,
+        powerMultiplier: multiplier,
+        quizScore: piece.quizScore,
+        quizTotal: piece.quizTotal
+      };
+    }
+
     const attributes = {};
     const title = (piece.title || '').toLowerCase();
 
@@ -905,29 +1023,729 @@ class FrankensteinMissions {
 
   /**
    * Crear ser a partir de piezas seleccionadas
+   * @param {Array} pieces - Piezas analizadas que componen el ser
+   * @param {string} name - Nombre del ser
+   * @param {Object} existingData - Datos existentes para restaurar (opcional)
    */
-  createBeing(pieces, name = 'Ser sin nombre') {
+  createBeing(pieces, name = 'Ser sin nombre', existingData = null) {
+    const config = this.progressionConfig;
+
     const being = {
+      // Identidad
+      id: existingData?.id || `being_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       name: name,
       pieces: pieces,
+      createdAt: existingData?.createdAt || new Date().toISOString(),
+
+      // Atributos base (calculados de piezas)
       attributes: {},
+      baseAttributes: {}, // Atributos sin bonificaciones
       totalPower: 0,
       balance: {},
-      createdAt: new Date()
+
+      // Sistema de Progresión
+      level: existingData?.level || 1,
+      xp: existingData?.xp || 0,
+      xpToNextLevel: config.xpPerLevel(existingData?.level || 1),
+
+      // Sistema de Energía
+      energy: existingData?.energy ?? config.maxEnergy,
+      maxEnergy: config.maxEnergy,
+      lastEnergyUpdate: existingData?.lastEnergyUpdate || Date.now(),
+
+      // Estado actual
+      status: existingData?.status || 'idle', // idle, deployed, recovering, exhausted
+      statusMessage: 'Listo para misión',
+
+      // Misión actual
+      currentMission: existingData?.currentMission || null,
+      missionStartedAt: existingData?.missionStartedAt || null,
+      turnsRemaining: existingData?.turnsRemaining || 0,
+      turnsTotal: existingData?.turnsTotal || 0,
+
+      // Historial básico
+      stats: existingData?.stats || {
+        missionsCompleted: 0,
+        missionsSuccess: 0,
+        missionsFailed: 0,
+        totalTurnsPlayed: 0,
+        challengesCompleted: 0,
+        hybridChildren: 0,
+        totalXpEarned: 0
+      },
+
+      // NUEVO: Estadísticas avanzadas
+      advancedStats: existingData?.advancedStats || {
+        averageTurnsPerMission: 0,
+        fastestMission: null,                    // { id, name, turns, date }
+        slowestMission: null,                    // { id, name, turns, date }
+        longestStreak: 0,                        // Misiones consecutivas exitosas
+        currentStreak: 0,
+        totalPlayTimeMs: 0,                      // Tiempo total en milisegundos
+        lastPlayedAt: null,
+        efficiencyScore: 0,                      // % de turnos aprovechados
+        favoriteTimeOfDay: null,                 // morning, afternoon, evening, night
+        missionHistory: [],                      // Últimas 20 misiones
+        levelUpHistory: []                       // Historial de subidas de nivel
+      },
+
+      // Relaciones (para microsociedades)
+      relationships: existingData?.relationships || {},
+
+      // Rasgos especiales (desbloqueables por nivel/misiones)
+      traits: existingData?.traits || [],
+
+      // NUEVO: Habilidades especiales (desbloqueables por nivel)
+      abilities: existingData?.abilities || [],
+
+      // NUEVO: Afinidades (calculadas de las piezas)
+      affinities: existingData?.affinities || {
+        missions: [],      // Misiones donde tiene bonus
+        pieceTypes: [],    // Tipos de pieza preferidos
+        bookIds: [],       // Libros afines
+        attributes: []     // Atributos dominantes
+      },
+
+      // NUEVO: Especialidad (auto-detectada)
+      specialty: existingData?.specialty || null,
+
+      // NUEVO: Estado emocional/mood
+      mood: existingData?.mood || 'neutral',
+      moodEffects: existingData?.moodEffects || { xpMultiplier: 1.0, energyCost: 1.0 },
+
+      // NUEVO: Logros desbloqueados
+      achievements: existingData?.achievements || [],
+
+      // Generación (para híbridos)
+      generation: existingData?.generation || 1,
+      parentIds: existingData?.parentIds || []
     };
 
     // Sumar atributos de todas las piezas
     pieces.forEach(pieceData => {
       Object.entries(pieceData.attributes).forEach(([attr, value]) => {
+        being.baseAttributes[attr] = (being.baseAttributes[attr] || 0) + value;
         being.attributes[attr] = (being.attributes[attr] || 0) + value;
       });
       being.totalPower += pieceData.totalPower;
     });
 
+    // Aplicar bonificaciones por nivel
+    const levelBonus = (being.level - 1) * config.attributeBonusPerLevel;
+    if (levelBonus > 0) {
+      Object.keys(being.attributes).forEach(attr => {
+        being.attributes[attr] += levelBonus;
+      });
+      being.totalPower += levelBonus * Object.keys(being.attributes).length;
+    }
+
     // Calcular balance
     being.balance = this.calculateBalance(being.attributes);
 
+    // Calcular afinidades basadas en las piezas
+    being.affinities = this.calculateAffinities(pieces, being.attributes);
+
+    // Detectar especialidad
+    being.specialty = this.detectSpecialty(being.balance);
+
+    // Calcular habilidades desbloqueadas por nivel
+    being.abilities = this.calculateAbilities(being.level, being.traits);
+
+    // Actualizar mood basado en energía y stats
+    this.updateMood(being);
+
+    // Actualizar energía basada en tiempo transcurrido
+    this.updateBeingEnergy(being);
+
     return being;
+  }
+
+  /**
+   * Calcular afinidades del ser basadas en sus piezas y atributos
+   */
+  calculateAffinities(pieces, attributes) {
+    const affinities = {
+      missions: [],
+      pieceTypes: [],
+      bookIds: [],
+      attributes: []
+    };
+
+    // Contar tipos de pieza
+    const pieceTypeCounts = { chapter: 0, exercise: 0, resource: 0 };
+    const bookCounts = {};
+
+    pieces.forEach(piece => {
+      const pieceInfo = piece.piece || piece;
+      if (pieceInfo.type) {
+        pieceTypeCounts[pieceInfo.type] = (pieceTypeCounts[pieceInfo.type] || 0) + 1;
+      }
+      if (pieceInfo.bookId) {
+        bookCounts[pieceInfo.bookId] = (bookCounts[pieceInfo.bookId] || 0) + 1;
+      }
+    });
+
+    // Tipos de pieza preferidos (más del 40%)
+    const totalPieces = pieces.length || 1;
+    Object.entries(pieceTypeCounts).forEach(([type, count]) => {
+      if (count / totalPieces >= 0.4) {
+        affinities.pieceTypes.push(type);
+      }
+    });
+
+    // Libros afines (al menos 2 piezas)
+    affinities.bookIds = Object.entries(bookCounts)
+      .filter(([_, count]) => count >= 2)
+      .map(([bookId]) => bookId)
+      .slice(0, 3);
+
+    // Atributos dominantes (top 3)
+    affinities.attributes = Object.entries(attributes)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([attr]) => attr);
+
+    // Misiones afines (basadas en atributos dominantes)
+    affinities.missions = this.findAffineMissions(attributes).slice(0, 5);
+
+    return affinities;
+  }
+
+  /**
+   * Encontrar misiones afines basadas en atributos
+   */
+  findAffineMissions(attributes) {
+    return this.missions
+      .map(mission => {
+        let score = 0;
+        let totalRequired = 0;
+        Object.entries(mission.requiredAttributes).forEach(([attr, required]) => {
+          const current = attributes[attr] || 0;
+          totalRequired += required;
+          score += Math.min(current, required * 1.5);
+        });
+        return { id: mission.id, score: score / totalRequired };
+      })
+      .filter(m => m.score >= 0.7)
+      .sort((a, b) => b.score - a.score)
+      .map(m => m.id);
+  }
+
+  /**
+   * Detectar especialidad del ser
+   */
+  detectSpecialty(balance) {
+    const categories = {
+      intellectual: { name: 'Pensador', icon: '🧠' },
+      emotional: { name: 'Empático', icon: '❤️' },
+      action: { name: 'Activista', icon: '⚡' },
+      spiritual: { name: 'Contemplativo', icon: '🌟' },
+      practical: { name: 'Práctico', icon: '🔧' }
+    };
+
+    // Encontrar dominante
+    let maxKey = 'intellectual';
+    let maxValue = 0;
+    const values = [];
+
+    Object.entries(categories).forEach(([key]) => {
+      const value = balance[key] || 0;
+      values.push(value);
+      if (value > maxValue) {
+        maxValue = value;
+        maxKey = key;
+      }
+    });
+
+    // Verificar si está equilibrado
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const isBalanced = values.every(v => avg > 0 && Math.abs(v - avg) / avg < 0.2);
+
+    if (isBalanced) {
+      return { key: 'balanced', name: 'Equilibrado', icon: '☯️' };
+    }
+
+    return { key: maxKey, ...categories[maxKey] };
+  }
+
+  /**
+   * Calcular habilidades desbloqueadas por nivel
+   */
+  calculateAbilities(level, traits = []) {
+    const allAbilities = [
+      { id: 'quick-learner', name: 'Aprendiz Rápido', effect: '+10% XP', unlockLevel: 3, icon: '📚' },
+      { id: 'energy-efficient', name: 'Eficiente', effect: '-10% energía', unlockLevel: 5, icon: '🔋' },
+      { id: 'turn-saver', name: 'Ahorra Turnos', effect: '-1 turno misión', unlockLevel: 7, icon: '⏱️' },
+      { id: 'resilient', name: 'Resiliente', effect: '+15% recuperación', unlockLevel: 10, icon: '💪' },
+      { id: 'mission-expert', name: 'Experto', effect: '+15% éxito', unlockLevel: 12, icon: '🎯' },
+      { id: 'double-xp', name: 'Doble XP', effect: '2x XP una vez/día', unlockLevel: 15, icon: '✨' },
+      { id: 'master-crafter', name: 'Maestro', effect: '+20% poder piezas', unlockLevel: 20, icon: '👑' }
+    ];
+
+    // Habilidades por nivel
+    const unlockedByLevel = allAbilities
+      .filter(a => level >= a.unlockLevel)
+      .map(a => ({ ...a, unlocked: true, source: 'level' }));
+
+    // Habilidades por rasgos
+    const traitAbilities = [];
+    if (traits.includes('veteran')) {
+      traitAbilities.push({ id: 'veteran-insight', name: 'Visión Veterana', effect: '+5% todos atributos', unlocked: true, source: 'trait', icon: '🏅' });
+    }
+    if (traits.includes('master')) {
+      traitAbilities.push({ id: 'master-touch', name: 'Toque Maestro', effect: 'Misiones experto -15% energía', unlocked: true, source: 'trait', icon: '👑' });
+    }
+
+    return [...unlockedByLevel, ...traitAbilities];
+  }
+
+  /**
+   * Actualizar mood del ser basado en su estado
+   */
+  updateMood(being) {
+    const energyPercent = (being.energy / being.maxEnergy) * 100;
+    const successRate = being.stats.missionsCompleted > 0
+      ? (being.stats.missionsSuccess / being.stats.missionsCompleted) * 100
+      : 100;
+
+    // Determinar mood
+    if (energyPercent < 20) {
+      being.mood = 'exhausted';
+      being.moodEffects = { xpMultiplier: 0.8, energyCost: 1.2 };
+    } else if (energyPercent < 40) {
+      being.mood = 'tired';
+      being.moodEffects = { xpMultiplier: 0.9, energyCost: 1.1 };
+    } else if (successRate >= 90 && being.stats.missionsCompleted >= 3) {
+      being.mood = 'confident';
+      being.moodEffects = { xpMultiplier: 1.15, energyCost: 0.95 };
+    } else if (being.advancedStats?.currentStreak >= 3) {
+      being.mood = 'focused';
+      being.moodEffects = { xpMultiplier: 1.1, energyCost: 0.9 };
+    } else if (energyPercent >= 80) {
+      being.mood = 'energized';
+      being.moodEffects = { xpMultiplier: 1.05, energyCost: 0.95 };
+    } else {
+      being.mood = 'neutral';
+      being.moodEffects = { xpMultiplier: 1.0, energyCost: 1.0 };
+    }
+
+    return being.mood;
+  }
+
+  /**
+   * Actualizar energía del ser basada en tiempo transcurrido
+   */
+  updateBeingEnergy(being) {
+    const now = Date.now();
+    const hoursPassed = (now - being.lastEnergyUpdate) / (1000 * 60 * 60);
+    const energyRecovered = Math.floor(hoursPassed * this.progressionConfig.energyRecoveryPerHour);
+
+    if (energyRecovered > 0) {
+      being.energy = Math.min(being.maxEnergy, being.energy + energyRecovered);
+      being.lastEnergyUpdate = now;
+
+      // Actualizar estado si estaba recuperándose
+      if (being.status === 'recovering' && being.energy >= being.maxEnergy * 0.5) {
+        being.status = 'idle';
+        being.statusMessage = 'Listo para misión';
+      }
+    }
+
+    return being;
+  }
+
+  /**
+   * Iniciar misión para un ser
+   */
+  startMission(being, mission) {
+    const config = this.progressionConfig;
+    const energyCost = config.energyCostPerMission[mission.difficulty] || 25;
+
+    if (being.energy < energyCost) {
+      return {
+        success: false,
+        error: 'insufficient_energy',
+        message: `Energía insuficiente. Necesitas ${energyCost}, tienes ${being.energy}.`,
+        energyNeeded: energyCost,
+        energyCurrent: being.energy
+      };
+    }
+
+    // Consumir energía
+    being.energy -= energyCost;
+    being.lastEnergyUpdate = Date.now();
+
+    // Configurar misión
+    const baseTurns = config.turnsPerDifficulty[mission.difficulty] || 15;
+    being.currentMission = mission.id;
+    being.missionStartedAt = Date.now();
+    being.turnsTotal = baseTurns;
+    being.turnsRemaining = baseTurns;
+    being.status = 'deployed';
+    being.statusMessage = `En misión: ${mission.name}`;
+
+    return {
+      success: true,
+      message: `Misión iniciada. ${baseTurns} turnos para completar.`,
+      turnsTotal: baseTurns,
+      energySpent: energyCost,
+      energyRemaining: being.energy
+    };
+  }
+
+  /**
+   * Procesar un turno de misión
+   */
+  processMissionTurn(being, mission, challengeResult = null) {
+    if (being.status !== 'deployed' || !being.currentMission) {
+      return { success: false, error: 'not_in_mission' };
+    }
+
+    being.turnsRemaining--;
+    being.stats.totalTurnsPlayed++;
+
+    // Procesar resultado del reto si lo hubo
+    if (challengeResult) {
+      if (challengeResult.success) {
+        being.stats.challengesCompleted++;
+      }
+    }
+
+    // Verificar si la misión terminó
+    if (being.turnsRemaining <= 0) {
+      return this.completeMission(being, mission, true);
+    }
+
+    return {
+      success: true,
+      turnsRemaining: being.turnsRemaining,
+      turnsTotal: being.turnsTotal,
+      progress: ((being.turnsTotal - being.turnsRemaining) / being.turnsTotal) * 100
+    };
+  }
+
+  /**
+   * Completar misión con estadísticas avanzadas
+   */
+  completeMission(being, mission, success = true) {
+    const config = this.progressionConfig;
+    const turnsUsed = being.turnsTotal - being.turnsRemaining;
+    const missionDuration = being.missionStartedAt ? Date.now() - being.missionStartedAt : 0;
+
+    being.stats.missionsCompleted++;
+
+    let xpEarned = 0;
+    let rewards = {};
+
+    if (success) {
+      being.stats.missionsSuccess++;
+      xpEarned = config.xpPerDifficulty[mission.difficulty] || 100;
+
+      // Aplicar multiplicador de mood
+      xpEarned = Math.round(xpEarned * (being.moodEffects?.xpMultiplier || 1.0));
+
+      // Bonus por turnos sobrantes
+      if (being.turnsRemaining > 0) {
+        xpEarned += being.turnsRemaining * 5;
+      }
+
+      // Actualizar estadísticas avanzadas
+      this.updateAdvancedStats(being, mission, turnsUsed, missionDuration, true);
+
+      rewards = {
+        xp: xpEarned,
+        trait: this.checkTraitUnlock(being, mission),
+        achievement: this.checkAchievementUnlock(being, mission)
+      };
+    } else {
+      being.stats.missionsFailed++;
+      xpEarned = Math.floor((config.xpPerDifficulty[mission.difficulty] || 100) * 0.25);
+
+      // Actualizar estadísticas avanzadas (fallo)
+      this.updateAdvancedStats(being, mission, turnsUsed, missionDuration, false);
+    }
+
+    // Aplicar XP y verificar level up
+    const levelUpResult = this.addXpToBeing(being, xpEarned);
+
+    // Resetear estado de misión
+    being.currentMission = null;
+    being.missionStartedAt = null;
+    being.turnsRemaining = 0;
+    being.turnsTotal = 0;
+    being.status = being.energy < being.maxEnergy * 0.3 ? 'recovering' : 'idle';
+    being.statusMessage = being.status === 'recovering' ? 'Recuperándose...' : 'Listo para misión';
+
+    // Actualizar mood después de completar misión
+    this.updateMood(being);
+
+    return {
+      success: success,
+      xpEarned: xpEarned,
+      levelUp: levelUpResult.leveledUp,
+      newLevel: being.level,
+      rewards: rewards,
+      advancedStats: being.advancedStats
+    };
+  }
+
+  /**
+   * Actualizar estadísticas avanzadas después de una misión
+   */
+  updateAdvancedStats(being, mission, turnsUsed, durationMs, success) {
+    const stats = being.advancedStats || {};
+
+    // Tiempo de juego
+    stats.totalPlayTimeMs = (stats.totalPlayTimeMs || 0) + durationMs;
+    stats.lastPlayedAt = new Date().toISOString();
+
+    // Determinar hora del día favorita
+    const hour = new Date().getHours();
+    const timeOfDay = hour < 6 ? 'night' : hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+    stats.timeOfDayCounts = stats.timeOfDayCounts || {};
+    stats.timeOfDayCounts[timeOfDay] = (stats.timeOfDayCounts[timeOfDay] || 0) + 1;
+    stats.favoriteTimeOfDay = Object.entries(stats.timeOfDayCounts)
+      .sort((a, b) => b[1] - a[1])[0]?.[0];
+
+    // Promedio de turnos por misión
+    const totalMissions = being.stats.missionsCompleted;
+    stats.averageTurnsPerMission = totalMissions > 0
+      ? ((stats.averageTurnsPerMission || 0) * (totalMissions - 1) + turnsUsed) / totalMissions
+      : turnsUsed;
+
+    // Misión más rápida/lenta
+    if (success) {
+      if (!stats.fastestMission || turnsUsed < stats.fastestMission.turns) {
+        stats.fastestMission = {
+          id: mission.id,
+          name: mission.name,
+          turns: turnsUsed,
+          date: new Date().toISOString()
+        };
+      }
+      if (!stats.slowestMission || turnsUsed > stats.slowestMission.turns) {
+        stats.slowestMission = {
+          id: mission.id,
+          name: mission.name,
+          turns: turnsUsed,
+          date: new Date().toISOString()
+        };
+      }
+    }
+
+    // Racha de misiones exitosas
+    if (success) {
+      stats.currentStreak = (stats.currentStreak || 0) + 1;
+      if (stats.currentStreak > (stats.longestStreak || 0)) {
+        stats.longestStreak = stats.currentStreak;
+      }
+    } else {
+      stats.currentStreak = 0;
+    }
+
+    // Eficiencia (turnos usados vs turnos asignados)
+    const efficiency = turnsUsed > 0 ? (being.turnsTotal / turnsUsed) * 100 : 100;
+    const prevEfficiency = stats.efficiencyScore || 100;
+    stats.efficiencyScore = Math.round((prevEfficiency * (totalMissions - 1) + efficiency) / totalMissions);
+
+    // Historial de misiones (últimas 20)
+    stats.missionHistory = stats.missionHistory || [];
+    stats.missionHistory.unshift({
+      missionId: mission.id,
+      missionName: mission.name,
+      difficulty: mission.difficulty,
+      turnsUsed,
+      success,
+      xpEarned: being.stats.totalXpEarned,
+      date: new Date().toISOString()
+    });
+    if (stats.missionHistory.length > 20) {
+      stats.missionHistory.pop();
+    }
+
+    being.advancedStats = stats;
+    return stats;
+  }
+
+  /**
+   * Verificar si se desbloquea un logro
+   */
+  checkAchievementUnlock(being, mission) {
+    const unlockedAchievements = [];
+    const achievements = being.achievements || [];
+    const stats = being.stats;
+    const advStats = being.advancedStats || {};
+
+    // Definición de logros
+    const achievementDefs = [
+      { id: 'first-mission', name: 'Primer Paso', desc: 'Completa tu primera misión', condition: () => stats.missionsCompleted === 1, icon: '🎯' },
+      { id: 'five-missions', name: 'Constante', desc: 'Completa 5 misiones', condition: () => stats.missionsCompleted >= 5, icon: '⭐' },
+      { id: 'ten-missions', name: 'Comprometido', desc: 'Completa 10 misiones', condition: () => stats.missionsCompleted >= 10, icon: '🏆' },
+      { id: 'perfect-rate', name: 'Perfeccionista', desc: '100% tasa de éxito con 5+ misiones', condition: () => stats.missionsCompleted >= 5 && stats.missionsSuccess === stats.missionsCompleted, icon: '💎' },
+      { id: 'speed-demon', name: 'Veloz', desc: 'Completa misión en 5 turnos o menos', condition: () => advStats.fastestMission?.turns <= 5, icon: '⚡' },
+      { id: 'streak-3', name: 'En Racha', desc: 'Racha de 3 misiones exitosas', condition: () => advStats.currentStreak >= 3, icon: '🔥' },
+      { id: 'streak-5', name: 'Imparable', desc: 'Racha de 5 misiones exitosas', condition: () => advStats.currentStreak >= 5, icon: '🌟' },
+      { id: 'expert-complete', name: 'Experto', desc: 'Completa una misión de dificultad experto', condition: () => mission.difficulty === 'experto', icon: '👑' },
+      { id: 'level-5', name: 'Evolucionando', desc: 'Alcanza nivel 5', condition: () => being.level >= 5, icon: '📈' },
+      { id: 'level-10', name: 'Experimentado', desc: 'Alcanza nivel 10', condition: () => being.level >= 10, icon: '🚀' },
+      { id: 'efficient', name: 'Eficiente', desc: 'Mantén 90%+ eficiencia', condition: () => advStats.efficiencyScore >= 90, icon: '🎖️' }
+    ];
+
+    // Verificar cada logro
+    achievementDefs.forEach(def => {
+      if (!achievements.find(a => a.id === def.id) && def.condition()) {
+        const newAchievement = {
+          id: def.id,
+          name: def.name,
+          description: def.desc,
+          icon: def.icon,
+          unlockedAt: new Date().toISOString()
+        };
+        being.achievements.push(newAchievement);
+        unlockedAchievements.push(newAchievement);
+      }
+    });
+
+    return unlockedAchievements.length > 0 ? unlockedAchievements : null;
+  }
+
+  /**
+   * Añadir XP a un ser y verificar level up
+   */
+  addXpToBeing(being, xpAmount) {
+    being.xp += xpAmount;
+    being.stats.totalXpEarned += xpAmount;
+
+    let leveledUp = false;
+    let levelsGained = 0;
+
+    while (being.xp >= being.xpToNextLevel) {
+      being.xp -= being.xpToNextLevel;
+      being.level++;
+      levelsGained++;
+      being.xpToNextLevel = this.progressionConfig.xpPerLevel(being.level);
+      leveledUp = true;
+
+      // Aplicar bonus de nivel a atributos
+      const bonus = this.progressionConfig.attributeBonusPerLevel;
+      Object.keys(being.attributes).forEach(attr => {
+        being.attributes[attr] += bonus;
+      });
+      being.totalPower += bonus * Object.keys(being.attributes).length;
+
+      // Aumentar energía máxima cada 5 niveles
+      if (being.level % 5 === 0) {
+        being.maxEnergy += 10;
+        being.energy = being.maxEnergy; // Rellenar energía al subir
+      }
+    }
+
+    // Recalcular balance
+    being.balance = this.calculateBalance(being.attributes);
+
+    return {
+      leveledUp,
+      levelsGained,
+      newLevel: being.level,
+      xpCurrent: being.xp,
+      xpToNext: being.xpToNextLevel
+    };
+  }
+
+  /**
+   * Verificar si se desbloquea un rasgo especial
+   */
+  checkTraitUnlock(being, mission) {
+    const unlockedTraits = [];
+
+    // Rasgos por misiones completadas
+    if (being.stats.missionsCompleted === 1 && !being.traits.includes('novice')) {
+      being.traits.push('novice');
+      unlockedTraits.push({ id: 'novice', name: 'Novato', icon: '🌱' });
+    }
+    if (being.stats.missionsCompleted === 5 && !being.traits.includes('experienced')) {
+      being.traits.push('experienced');
+      unlockedTraits.push({ id: 'experienced', name: 'Experimentado', icon: '⭐' });
+    }
+    if (being.stats.missionsCompleted === 10 && !being.traits.includes('veteran')) {
+      being.traits.push('veteran');
+      unlockedTraits.push({ id: 'veteran', name: 'Veterano', icon: '🏅' });
+    }
+
+    // Rasgos por dificultad
+    if (mission.difficulty === 'avanzado' && !being.traits.includes('brave')) {
+      being.traits.push('brave');
+      unlockedTraits.push({ id: 'brave', name: 'Valiente', icon: '🦁' });
+    }
+    if (mission.difficulty === 'experto' && !being.traits.includes('master')) {
+      being.traits.push('master');
+      unlockedTraits.push({ id: 'master', name: 'Maestro', icon: '👑' });
+    }
+
+    // Rasgos por tasa de éxito
+    const successRate = being.stats.missionsSuccess / being.stats.missionsCompleted;
+    if (being.stats.missionsCompleted >= 5 && successRate >= 0.9 && !being.traits.includes('reliable')) {
+      being.traits.push('reliable');
+      unlockedTraits.push({ id: 'reliable', name: 'Confiable', icon: '🎯' });
+    }
+
+    return unlockedTraits.length > 0 ? unlockedTraits : null;
+  }
+
+  /**
+   * Obtener información completa del estado del ser
+   */
+  getBeingStatus(being) {
+    this.updateBeingEnergy(being);
+
+    const successRate = being.stats.missionsCompleted > 0
+      ? Math.round((being.stats.missionsSuccess / being.stats.missionsCompleted) * 100)
+      : 0;
+
+    return {
+      // Identidad
+      id: being.id,
+      name: being.name,
+      generation: being.generation,
+
+      // Progresión
+      level: being.level,
+      xp: being.xp,
+      xpToNextLevel: being.xpToNextLevel,
+      xpProgress: Math.round((being.xp / being.xpToNextLevel) * 100),
+
+      // Energía
+      energy: being.energy,
+      maxEnergy: being.maxEnergy,
+      energyPercent: Math.round((being.energy / being.maxEnergy) * 100),
+
+      // Estado
+      status: being.status,
+      statusMessage: being.statusMessage,
+      canStartMission: being.status === 'idle' && being.energy >= 15,
+
+      // Misión actual
+      inMission: being.status === 'deployed',
+      currentMission: being.currentMission,
+      turnsRemaining: being.turnsRemaining,
+      turnsTotal: being.turnsTotal,
+      missionProgress: being.turnsTotal > 0
+        ? Math.round(((being.turnsTotal - being.turnsRemaining) / being.turnsTotal) * 100)
+        : 0,
+
+      // Estadísticas
+      missionsCompleted: being.stats.missionsCompleted,
+      successRate: successRate,
+      totalXp: being.stats.totalXpEarned,
+
+      // Rasgos
+      traits: being.traits,
+      traitCount: being.traits.length,
+
+      // Poder
+      totalPower: being.totalPower,
+      balance: being.balance
+    };
   }
 
   /**

@@ -3,7 +3,9 @@
  *
  * Supported URLs:
  * - awakeningprotocol://receive-being?data={base64_encoded_being}
+ * - trascendencia://receive-being?data={base64_encoded_being}
  * - awakeningprotocol://open?screen={screenName}
+ * - trascendencia://open?screen={screenName}
  * - nuevosser://lab (outgoing - opens Frankenstein Lab)
  */
 
@@ -12,6 +14,7 @@ import { useGameStore } from '../stores/gameStore';
 
 const COLECCION_DEEP_LINK = 'nuevosser://lab';
 const AWAKENING_SCHEME = 'awakeningprotocol://';
+const TRASCENDENCIA_SCHEME = 'trascendencia://';
 
 class DeepLinkService {
     constructor() {
@@ -95,11 +98,17 @@ class DeepLinkService {
      * Parse deep link URL into action and params
      */
     parseDeepLink(url) {
-        if (!url.startsWith(AWAKENING_SCHEME)) {
+        const scheme = url.startsWith(AWAKENING_SCHEME)
+            ? AWAKENING_SCHEME
+            : url.startsWith(TRASCENDENCIA_SCHEME)
+                ? TRASCENDENCIA_SCHEME
+                : null;
+
+        if (!scheme) {
             return null;
         }
 
-        const withoutScheme = url.replace(AWAKENING_SCHEME, '');
+        const withoutScheme = url.replace(scheme, '');
         const [pathPart, queryPart] = withoutScheme.split('?');
 
         const action = pathPart.split('/')[0];

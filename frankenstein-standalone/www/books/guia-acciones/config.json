@@ -1,0 +1,99 @@
+{
+  "id": "guia-acciones",
+  "version": "1.0.0",
+  "lastUpdate": "2025-12-01",
+
+  "theme": {
+    "name": "Activist Purple",
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#f472b6",
+    "background": "#1e1b4b",
+    "backgroundSecondary": "#312e81",
+    "text": "#fafafa",
+    "textSecondary": "#e5e5e5",
+    "border": "#4c1d95",
+    "gradient": "from-indigo-950 via-purple-950 to-pink-950"
+  },
+
+  "ui": {
+    "showGeometric": false,
+    "animationType": "organic",
+    "animationSpeed": "medium",
+    "fontFamily": "'Inter', 'Segoe UI', sans-serif",
+    "fontSize": {
+      "base": 16,
+      "heading": 24,
+      "title": 32
+    },
+    "spacing": {
+      "section": 28,
+      "paragraph": 14
+    },
+    "effects": {
+      "diagonalLines": false,
+      "geometricPatterns": false,
+      "boldHeaders": true
+    }
+  },
+
+  "features": {
+    "actionGuides": {
+      "enabled": true,
+      "showDifficulty": true,
+      "showDuration": true,
+      "trackProgress": true
+    },
+    "aiChat": {
+      "enabled": true,
+      "systemPrompt": "Eres un coach de transformación personal y social basado en la 'Guía de Acciones Transformadoras'. Ayudas a los usuarios a implementar acciones concretas para cambiar sus vidas y su entorno. Eres práctico, motivador y concreto.",
+      "maxHistoryMessages": 10
+    },
+    "personalNotes": {
+      "enabled": true,
+      "markdown": true,
+      "exportable": true,
+      "tags": ["logro", "obstáculo", "aprendizaje", "próximo paso"]
+    },
+    "bookmarks": {
+      "enabled": true,
+      "allowMultiple": true
+    },
+    "progressTracking": {
+      "enabled": true,
+      "trackTime": true,
+      "trackChapters": true,
+      "trackActions": true
+    },
+    "actionTracker": {
+      "enabled": true,
+      "categories": ["completada", "en_progreso", "planificada"],
+      "showStats": true
+    },
+    "audiobook": {
+      "enabled": true,
+      "voice": "es-ES",
+      "speedControl": true,
+      "speeds": [0.75, 1.0, 1.25, 1.5, 2.0],
+      "highlightCurrentParagraph": true,
+      "autoAdvanceChapter": true
+    },
+    "resources": {
+      "enabled": true,
+      "file": "books/guia-acciones/assets/resources.json"
+    }
+  },
+
+  "content": {
+    "sourceFile": "books/guia-acciones/book.json",
+    "dataStructure": "standard"
+  },
+
+  "metadata": {
+    "locale": "es-ES",
+    "readingLevel": "intermediate",
+    "recommendedPace": "normal",
+    "tags": ["acción", "transformación", "activismo"],
+    "complementaryBooks": ["codigo-despertar", "manifiesto"]
+  }
+}

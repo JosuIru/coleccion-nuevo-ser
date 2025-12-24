@@ -15,7 +15,11 @@ class FrankensteinAudioSystem {
     };
     this.oscillators = [];
     this.gainNodes = [];
-    this.enabled = localStorage.getItem('frankenstein-audio') === 'true' || false;
+
+    // Audio habilitado por defecto si no hay valor en localStorage
+    const storedAudio = localStorage.getItem('frankenstein-audio');
+    this.enabled = storedAudio === null ? true : storedAudio === 'true';
+
     this.masterVolume = parseFloat(localStorage.getItem('frankenstein-volume')) || 0.3;
     this.thunderTimer = null;
   }

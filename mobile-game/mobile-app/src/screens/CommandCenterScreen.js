@@ -26,10 +26,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { realNewsCrisisService } from '../services/RealNewsCrisisService';
 import useGameStore from '../stores/gameStore';
 import { COLORS, CRISIS_TYPES, ATTRIBUTES } from '../config/constants';
+import FirstMissionTutorial from '../components/FirstMissionTutorial';
+import EnergyIndicator from '../components/EnergyIndicator';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -365,30 +368,90 @@ const CrisisDetailModal = ({ crisis, visible, onClose, onDeploy, beings }) => {
                 <Text style={styles.noBeingsHint}>Espera a que terminen sus misiones actuales</Text>
               </View>
             ) : (
-              <View style={styles.beingsGrid}>
+              <View style={styles.beingsGridExpanded}>
                 {beings.map(being => {
                   const isSelected = selectedBeings.find(b => b.id === being.id);
                   const isAvailable = being.status === 'available';
+
+                  // Calcular compatibilidad del ser con la crisis
+                  const calculateBeingMatch = () => {
+                    if (!crisis?.requiredAttributes || !being.attributes) return 0;
+                    let match = 0;
+                    let total = 0;
+                    Object.entries(crisis.requiredAttributes).forEach(([attr, required]) => {
+                      total += required;
+                      match += Math.min(being.attributes[attr] || 0, required);
+                    });
+                    return total > 0 ? Math.round((match / total) * 100) : 0;
+                  };
+
+                  const matchScore = calculateBeingMatch();
+                  const matchColor = matchScore >= 70 ? '#22c55e' : matchScore >= 40 ? '#eab308' : '#ef4444';
+
+                  // Obtener top 3 atributos del ser
+                  const topAttributes = being.attributes
+                    ? Object.entries(being.attributes)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3)
+                    : [];
 
                   return (
                     <TouchableOpacity
                       key={being.id}
                       style={[
-                        styles.beingCard,
+                        styles.beingCardExpanded,
                         isSelected && styles.beingCardSelected,
                         !isAvailable && styles.beingCardDisabled
                       ]}
                       onPress={() => toggleBeingSelection(being)}
                       disabled={!isAvailable}
                     >
-                      <Text style={styles.beingAvatar}>{being.avatar || '🧬'}</Text>
-                      <Text style={styles.beingName} numberOfLines={1}>{being.name}</Text>
-                      <Text style={styles.beingStatus}>
-                        {isAvailable ? 'Disponible' : being.status === 'deployed' ? 'En misión' : 'Descansando'}
-                      </Text>
+                      {/* Header con avatar y match */}
+                      <View style={styles.beingCardHeader}>
+                        <Text style={styles.beingAvatarLarge}>{being.avatar || '🧬'}</Text>
+                        <View style={styles.beingCardInfo}>
+                          <Text style={styles.beingNameExpanded} numberOfLines={1}>{being.name}</Text>
+                          <Text style={[styles.beingStatusExpanded, { color: isAvailable ? '#22c55e' : '#f97316' }]}>
+                            {isAvailable ? '● Disponible' : being.status === 'deployed' ? '● En misión' : '● Descansando'}
+                          </Text>
+                        </View>
+                        {/* Indicador de compatibilidad */}
+                        <View style={[styles.matchBadge, { backgroundColor: matchColor + '20', borderColor: matchColor }]}>
+                          <Text style={[styles.matchText, { color: matchColor }]}>{matchScore}%</Text>
+                        </View>
+                      </View>
+
+                      {/* Atributos principales */}
+                      <View style={styles.beingAttributesRow}>
+                        {topAttributes.map(([attr, value]) => (
+                          <View key={attr} style={styles.beingAttrItem}>
+                            <Text style={styles.beingAttrIcon}>{ATTRIBUTES[attr]?.icon || '📊'}</Text>
+                            <Text style={styles.beingAttrValue}>{value}</Text>
+                          </View>
+                        ))}
+                      </View>
+
+                      {/* Atributos requeridos que tiene este ser */}
+                      {crisis?.requiredAttributes && (
+                        <View style={styles.beingRequiredRow}>
+                          {Object.entries(crisis.requiredAttributes).slice(0, 3).map(([attr, required]) => {
+                            const hasValue = being.attributes?.[attr] || 0;
+                            const isSufficient = hasValue >= required;
+                            return (
+                              <View key={attr} style={styles.beingReqItem}>
+                                <Text style={styles.beingReqIcon}>{ATTRIBUTES[attr]?.icon || '📊'}</Text>
+                                <Text style={[styles.beingReqValue, { color: isSufficient ? '#22c55e' : '#ef4444' }]}>
+                                  {hasValue}/{required}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      )}
+
                       {isSelected && (
                         <View style={styles.selectedBadge}>
-                          <Icon name="check" size={12} color="#fff" />
+                          <Icon name="check" size={14} color="#fff" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -484,6 +547,7 @@ const CommandCenterScreen = ({ navigation }) => {
   const [stats, setStats] = useState({});
   const [viewMode, setViewMode] = useState('map'); // 'map' | 'list'
   const [filterType, setFilterType] = useState(null);
+  const [showFirstMissionTutorial, setShowFirstMissionTutorial] = useState(false);
 
   // Store
   const { user, beings, addXP, addConsciousness, deployBeing } = useGameStore();
@@ -491,7 +555,34 @@ const CommandCenterScreen = ({ navigation }) => {
   // Cargar crisis al montar
   useEffect(() => {
     loadCrises();
+    checkFirstMissionTutorial();
   }, []);
+
+  // Verificar si debe mostrar el tutorial de primera misión
+  const checkFirstMissionTutorial = async () => {
+    try {
+      const tutorialCompleted = await AsyncStorage.getItem('first_mission_tutorial_completed');
+      const hasCompletedMissions = user.missionsCompleted > 0;
+
+      // Mostrar tutorial si no se ha completado Y no tiene misiones completadas
+      if (!tutorialCompleted && !hasCompletedMissions) {
+        // Esperar 2 segundos para que la pantalla cargue
+        setTimeout(() => {
+          setShowFirstMissionTutorial(true);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error checking tutorial status:', error);
+    }
+  };
+
+  const handleTutorialComplete = () => {
+    setShowFirstMissionTutorial(false);
+  };
+
+  const handleTutorialDismiss = () => {
+    setShowFirstMissionTutorial(false);
+  };
 
   const loadCrises = async () => {
     setLoading(true);
@@ -588,6 +679,11 @@ const CommandCenterScreen = ({ navigation }) => {
           <Text style={styles.headerTitle}>Centro de Comando</Text>
         </View>
         <View style={styles.headerRight}>
+          {/* Energy Indicator */}
+          <EnergyIndicator
+            compact
+            onPress={() => navigation.navigate('ConsciousnessShop')}
+          />
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => navigation.navigate('DailyMissions')}
@@ -708,6 +804,13 @@ const CommandCenterScreen = ({ navigation }) => {
         }}
         onDeploy={handleDeploy}
         beings={beings}
+      />
+
+      {/* Tutorial de primera misión */}
+      <FirstMissionTutorial
+        visible={showFirstMissionTutorial}
+        onComplete={handleTutorialComplete}
+        onDismiss={handleTutorialDismiss}
       />
     </SafeAreaView>
   );
@@ -1140,21 +1243,89 @@ const styles = StyleSheet.create({
     color: COLORS.text.secondary
   },
 
-  // Beings Grid
-  beingsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
+  // Beings Grid - Versión expandida con atributos
+  beingsGridExpanded: {
+    gap: 12,
     marginBottom: 16
   },
-  beingCard: {
-    width: (SCREEN_WIDTH - 64) / 3 - 7,
+  beingCardExpanded: {
     backgroundColor: COLORS.bg.elevated,
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
+    borderRadius: 12,
+    padding: 12,
     borderWidth: 2,
-    borderColor: 'transparent'
+    borderColor: COLORS.bg.card,
+    position: 'relative'
+  },
+  beingCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    gap: 10
+  },
+  beingAvatarLarge: {
+    fontSize: 36
+  },
+  beingCardInfo: {
+    flex: 1
+  },
+  beingNameExpanded: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.text.primary,
+    marginBottom: 2
+  },
+  beingStatusExpanded: {
+    fontSize: 11,
+    fontWeight: '500'
+  },
+  matchBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1
+  },
+  matchText: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  beingAttributesRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 16,
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.bg.card
+  },
+  beingAttrItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  beingAttrIcon: {
+    fontSize: 14
+  },
+  beingAttrValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.text.secondary
+  },
+  beingRequiredRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 16
+  },
+  beingReqItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  beingReqIcon: {
+    fontSize: 12
+  },
+  beingReqValue: {
+    fontSize: 12,
+    fontWeight: '600'
   },
   beingCardSelected: {
     borderColor: COLORS.accent.primary,
@@ -1163,29 +1334,14 @@ const styles = StyleSheet.create({
   beingCardDisabled: {
     opacity: 0.5
   },
-  beingAvatar: {
-    fontSize: 28,
-    marginBottom: 4
-  },
-  beingName: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: COLORS.text.primary,
-    textAlign: 'center'
-  },
-  beingStatus: {
-    fontSize: 9,
-    color: COLORS.text.secondary,
-    marginTop: 2
-  },
   selectedBadge: {
     position: 'absolute',
-    top: -4,
-    right: -4,
+    top: -6,
+    right: -6,
     backgroundColor: COLORS.accent.primary,
-    borderRadius: 10,
-    width: 20,
-    height: 20,
+    borderRadius: 12,
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center'
   },

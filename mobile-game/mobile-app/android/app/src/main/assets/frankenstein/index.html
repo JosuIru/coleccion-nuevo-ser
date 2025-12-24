@@ -187,6 +187,7 @@
 
     <!-- Frankenstein Lab Scripts -->
     <script src="js/features/frankenstein-missions.js"></script>
+    <script src="js/features/frankenstein-being-card.js"></script>
     <script src="js/features/frankenstein-quiz.js"></script>
     <script src="js/features/frankenstein-audio.js"></script>
     <script src="js/features/frankenstein-avatar-system.js"></script>
@@ -247,6 +248,23 @@
                 if (typeof FrankensteinQuizSystem !== 'undefined') {
                     window.FrankensteinQuiz = new FrankensteinQuizSystem();
                     console.log('✅ FrankensteinQuiz inicializado');
+                }
+
+                // Initialize Audio System
+                if (typeof FrankensteinAudioSystem !== 'undefined') {
+                    console.log('[FrankenAudio] 🔊 Inicializando sistema de audio...');
+                    window.frankenAudio = new FrankensteinAudioSystem();
+
+                    await window.frankenAudio.init();
+
+                    if (window.frankenAudio.enabled) {
+                        window.frankenAudio.start();
+                        console.log('[FrankenAudio] ✅ Sistema de audio iniciado (enabled=true)');
+                    } else {
+                        console.log('[FrankenAudio] ℹ️ Sistema de audio listo pero deshabilitado (enabled=false)');
+                    }
+
+                    console.log(`[FrankenAudio] 🔊 Volumen maestro: ${Math.round(window.frankenAudio.masterVolume * 100)}%`);
                 }
 
                 // Mock organism knowledge for standalone mode

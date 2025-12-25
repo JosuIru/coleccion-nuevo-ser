@@ -162,13 +162,17 @@ class BookReader {
 
   show(chapter) {
     this.currentChapter = chapter;
-    this.render();
-    this.attachEventListeners();
 
+    // 🔧 HOTFIX v2: Asegurar que el container esté visible ANTES de render
+    // Fix #49 verifica visibilidad, así que debemos hacer visible primero
     const container = document.getElementById('book-reader-view');
     if (container) {
       container.classList.remove('hidden');
     }
+
+    // Ahora sí renderizar (con container visible)
+    this.render();
+    this.attachEventListeners();
 
     // Ocultar main-nav al abrir el lector
     const mainNav = document.getElementById('main-nav');

@@ -147,10 +147,11 @@ class ActionPlans {
       this.savePlans();
 
       // Track para logros
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
       if (window.achievementSystem) {
         window.achievementSystem.stats.plansCreated = (window.achievementSystem.stats.plansCreated || 0) + 1;
         window.achievementSystem.saveStats();
-        window.achievementSystem.checkAndUnlock();
+        window.achievementSystem.checkAndUnlock('planCreated');
       }
     }
 
@@ -177,10 +178,11 @@ class ActionPlans {
       plan.completedAt = new Date().toISOString();
 
       // Track para logros
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
       if (window.achievementSystem) {
         window.achievementSystem.stats.plansCompleted = (window.achievementSystem.stats.plansCompleted || 0) + 1;
         window.achievementSystem.saveStats();
-        window.achievementSystem.checkAndUnlock();
+        window.achievementSystem.checkAndUnlock('planCompleted');
       }
     }
 

@@ -1190,8 +1190,9 @@ class BookEngine {
       }
 
       // Verificar logros
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
       if (window.achievementSystem) {
-        window.achievementSystem.checkAndUnlock(this.currentBook);
+        window.achievementSystem.checkAndUnlock('bookOpened', this.currentBook);
       }
 
       // Disparar evento para sistema de racha y otros listeners

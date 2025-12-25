@@ -53,7 +53,7 @@ class AIChatModal {
       this.eventManager.cleanup();
     }
 
-    // Limpiar escape key handler
+    // 🔧 FIX #21: Limpiar escape key handler y setear a null para evitar handlers huérfanos
     if (this.boundEscHandler) {
       document.removeEventListener('keydown', this.boundEscHandler);
       this.boundEscHandler = null;
@@ -860,7 +860,7 @@ class AIChatModal {
       });
     }
 
-    // 🔧 FIX #21: Limpiar handler anterior antes de crear uno nuevo
+    // 🔧 FIX #21: Remover handler anterior antes de añadir nuevo para evitar sobrescritura
     if (this.boundEscHandler) {
       document.removeEventListener('keydown', this.boundEscHandler);
     }

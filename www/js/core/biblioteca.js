@@ -460,7 +460,15 @@ class Biblioteca {
     } catch (error) {
       // 🔧 FIX #4: Usar logger en lugar de console.log
       logger.error('Error rendering practice widget:', error);
-      // Fallar silenciosamente - el widget es opcional
+      // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla el renderizado
+      container.innerHTML = `
+        <div class="text-center text-gray-500 text-sm py-4">
+          <p>Error al cargar el sistema de prácticas.</p>
+          <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
+            Recargar página
+          </button>
+        </div>
+      `;
     }
   }
 
@@ -534,13 +542,16 @@ class Biblioteca {
   /**
    * Abre la biblioteca de prácticas
    * 🔧 FIX #7: Actualizar estado activo del tab al abrir prácticas
+   * 🔧 FIX #14: Mostrar mensaje al usuario cuando el módulo no está disponible
    */
   openPracticeLibrary() {
     this.setActiveBottomTab('practicas');
     if (window.practiceLibrary) {
       window.practiceLibrary.open();
     } else {
+      // 🔧 FIX #14: Mostrar mensaje al usuario en lugar de fallar silenciosamente
       logger.warn('[Biblioteca] PracticeLibrary not loaded');
+      alert('El sistema de prácticas no está disponible. Por favor, recarga la página e intenta de nuevo.');
     }
   }
 
@@ -1620,8 +1631,24 @@ class Biblioteca {
     const modal = document.createElement('div');
     modal.id = 'login-required-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+
+    // 🔧 FIX #17: Guardar referencia al handler para poder limpiarlo
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        cleanupModal();
+      }
+    };
+
+    const cleanupModal = () => {
+      // 🔧 FIX #17: Remover handler antes de eliminar el modal
+      if (escapeHandler) {
+        this.eventManager.removeEventListener(document, 'keydown', escapeHandler);
+      }
+      modal.remove();
+    };
+
     modal.innerHTML = `
-      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="this.parentElement.remove()"></div>
+      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="login-required-backdrop"></div>
       <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-white/10">
         <div class="text-center">
           <div class="text-5xl mb-4">🔐</div>
@@ -1630,11 +1657,11 @@ class Biblioteca {
             Para acceder a <strong class="text-amber-400">${feature}</strong>, necesitas iniciar sesión o crear una cuenta.
           </p>
           <div class="flex gap-3 justify-center">
-            <button onclick="this.closest('#login-required-modal').remove(); if(window.authModal) window.authModal.show();"
+            <button id="login-required-login-btn"
                     class="px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-xl transition-all">
               Iniciar sesión
             </button>
-            <button onclick="this.closest('#login-required-modal').remove();"
+            <button id="login-required-cancel-btn"
                     class="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors">
               Cancelar
             </button>
@@ -1644,13 +1671,14 @@ class Biblioteca {
     `;
     document.body.appendChild(modal);
 
-    // 🔧 FIX #86: Usar EventManager para escape handler
-    const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-      }
-    };
-    this.eventManager.addEventListener(document, 'keydown', escHandler);
+    // 🔧 FIX #17: Event listeners con cleanup apropiado
+    this.eventManager.addEventListener(document.getElementById('login-required-backdrop'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document.getElementById('login-required-login-btn'), 'click', () => {
+      cleanupModal();
+      if (window.authModal) window.authModal.show();
+    });
+    this.eventManager.addEventListener(document.getElementById('login-required-cancel-btn'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document, 'keydown', escapeHandler);
   }
 
   showAccessDeniedModal() {
@@ -1660,8 +1688,24 @@ class Biblioteca {
     const modal = document.createElement('div');
     modal.id = 'access-denied-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+
+    // 🔧 FIX #17: Guardar referencia al handler para poder limpiarlo
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        cleanupModal();
+      }
+    };
+
+    const cleanupModal = () => {
+      // 🔧 FIX #17: Remover handler antes de eliminar el modal
+      if (escapeHandler) {
+        this.eventManager.removeEventListener(document, 'keydown', escapeHandler);
+      }
+      modal.remove();
+    };
+
     modal.innerHTML = `
-      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="this.parentElement.remove()"></div>
+      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="access-denied-backdrop"></div>
       <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-red-500/30">
         <div class="text-center">
           <div class="text-5xl mb-4">🚫</div>
@@ -1669,7 +1713,7 @@ class Biblioteca {
           <p class="text-slate-400 mb-6">
             No tienes permisos de administrador para acceder a esta sección.
           </p>
-          <button onclick="this.closest('#access-denied-modal').remove();"
+          <button id="access-denied-ok-btn"
                   class="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors">
             Entendido
           </button>
@@ -1678,13 +1722,10 @@ class Biblioteca {
     `;
     document.body.appendChild(modal);
 
-    // 🔧 FIX #86: Usar EventManager para escape handler
-    const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-      }
-    };
-    this.eventManager.addEventListener(document, 'keydown', escHandler);
+    // 🔧 FIX #17: Event listeners con cleanup apropiado
+    this.eventManager.addEventListener(document.getElementById('access-denied-backdrop'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document.getElementById('access-denied-ok-btn'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document, 'keydown', escapeHandler);
   }
 
   handlePremiumButton(evento) {
@@ -1718,6 +1759,22 @@ class Biblioteca {
     const modal = document.createElement('div');
     modal.id = 'premium-info-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+
+    // 🔧 FIX #17: Guardar referencia al handler para poder limpiarlo
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        cleanupModal();
+      }
+    };
+
+    const cleanupModal = () => {
+      // 🔧 FIX #17: Remover handler antes de eliminar el modal
+      if (escapeHandler) {
+        this.eventManager.removeEventListener(document, 'keydown', escapeHandler);
+      }
+      modal.remove();
+    };
+
     modal.innerHTML = `
       <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="premium-info-backdrop"></div>
       <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden shadow-2xl border border-amber-500/30">
@@ -1823,7 +1880,7 @@ class Biblioteca {
                 </svg>
                 PayPal
               </a>
-              <button onclick="if(window.donationsModal) window.donationsModal.open(); document.getElementById('premium-info-modal')?.remove();"
+              <button id="premium-donations-btn"
                       class="flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg text-sm transition-colors">
                 <span>🪙</span>
                 Cripto / Otros
@@ -1845,11 +1902,11 @@ class Biblioteca {
 
     document.body.appendChild(modal);
 
-    // 🔧 FIX #86: Event listeners usando EventManager
-    this.eventManager.addEventListener(document.getElementById('premium-info-backdrop'), 'click', () => modal.remove());
-    this.eventManager.addEventListener(document.getElementById('premium-info-close'), 'click', () => modal.remove());
+    // 🔧 FIX #17: Event listeners con cleanup apropiado
+    this.eventManager.addEventListener(document.getElementById('premium-info-backdrop'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document.getElementById('premium-info-close'), 'click', cleanupModal);
     this.eventManager.addEventListener(document.getElementById('open-ai-settings'), 'click', () => {
-      modal.remove();
+      cleanupModal();
       if (window.SettingsModal) {
         const settings = new window.SettingsModal();
         settings.show();
@@ -1860,14 +1917,11 @@ class Biblioteca {
         }, 300);
       }
     });
-
-    // Cerrar con Escape usando EventManager
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-      }
-    };
-    this.eventManager.addEventListener(document, 'keydown', handleEscape);
+    this.eventManager.addEventListener(document.getElementById('premium-donations-btn'), 'click', () => {
+      cleanupModal();
+      if (window.donationsModal) window.donationsModal.open();
+    });
+    this.eventManager.addEventListener(document, 'keydown', escapeHandler);
   }
 
   showAboutModal() {
@@ -1881,6 +1935,22 @@ class Biblioteca {
     const modal = document.createElement('div');
     modal.id = 'about-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+
+    // 🔧 FIX #17: Guardar referencia al handler para poder limpiarlo
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        cleanupModal();
+      }
+    };
+
+    const cleanupModal = () => {
+      // 🔧 FIX #17: Remover handler antes de eliminar el modal
+      if (escapeHandler) {
+        this.eventManager.removeEventListener(document, 'keydown', escapeHandler);
+      }
+      modal.remove();
+    };
+
     modal.innerHTML = `
       <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="about-modal-backdrop"></div>
       <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-white/10">
@@ -2004,17 +2074,10 @@ class Biblioteca {
 
     document.body.appendChild(modal);
 
-    // 🔧 FIX #86: Event listeners usando EventManager
-    this.eventManager.addEventListener(document.getElementById('about-modal-backdrop'), 'click', () => modal.remove());
-    this.eventManager.addEventListener(document.getElementById('about-modal-close'), 'click', () => modal.remove());
-
-    // Cerrar con Escape usando EventManager
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-      }
-    };
-    this.eventManager.addEventListener(document, 'keydown', handleEscape);
+    // 🔧 FIX #17: Event listeners con cleanup apropiado
+    this.eventManager.addEventListener(document.getElementById('about-modal-backdrop'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document.getElementById('about-modal-close'), 'click', cleanupModal);
+    this.eventManager.addEventListener(document, 'keydown', escapeHandler);
   }
 
   handleProgressButton(evento) {

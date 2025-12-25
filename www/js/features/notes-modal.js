@@ -28,17 +28,24 @@ class NotesModal {
   saveNotes() {
     localStorage.setItem('coleccion_notes', JSON.stringify(this.notes));
 
-    // 🔧 FIX #18: Logging cuando supabaseSyncHelper no está disponible
+    // 🔧 FIX #18: Verificación explícita de window.supabaseSyncHelper con logging
     if (window.authHelper && window.authHelper.user) {
       if (window.supabaseSyncHelper) {
         try {
           window.supabaseSyncHelper.syncPreference('coleccion_notes', this.notes);
-          console.log('[Notes] ✅ Notas sincronizadas con Supabase');
+          if (window.logger) {
+            window.logger.info('[Notes] Notas sincronizadas con Supabase');
+          }
         } catch (error) {
-          console.warn('[Notes] No se pudo sincronizar notas con Supabase:', error);
+          if (window.logger) {
+            window.logger.warn('[Notes] No se pudo sincronizar notas con Supabase:', error);
+          }
         }
       } else {
-        console.warn('[Notes] Supabase sync helper not available');
+        // 🔧 FIX #18: Warning explícito cuando supabaseSyncHelper no está disponible
+        if (window.logger) {
+          window.logger.warn('[Notes] Supabase sync helper not available');
+        }
       }
     }
   }

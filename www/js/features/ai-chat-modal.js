@@ -16,6 +16,9 @@ class AIChatModal {
     this.showConfig = false;
     this.boundEscHandler = null; // Bound escape key handler
 
+    // 🔧 FIX #27: Hacer configurable el tamaño del historial de mensajes
+    this.maxHistoryLength = parseInt(localStorage.getItem('ai-max-history') || '10', 10);
+
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
     this.eventManager = new EventManager();
     this.eventManager.setComponentName('AIChatModal');
@@ -1268,9 +1271,9 @@ class AIChatModal {
     // Construir contexto del sistema
     const systemContext = this.buildSystemContext();
 
-    // Preparar historial de conversación
+    // 🔧 FIX #27: Usar tamaño de historial configurable
     const history = this.conversationHistory
-      .slice(-10) // Últimos 10 mensajes
+      .slice(-this.maxHistoryLength)
       .map(msg => ({
         role: msg.role,
         content: msg.content

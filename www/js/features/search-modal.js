@@ -401,12 +401,22 @@ class SearchModal {
 
   renderFilters() {
     const selectClass = "px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white";
+
+    // 🔧 FIX #31: Cargar libros dinámicamente desde el catálogo
+    let booksOptions = '<option value="all">Todos los libros</option>';
+    if (this.bookEngine && this.bookEngine.catalog && this.bookEngine.catalog.books) {
+      this.bookEngine.catalog.books.forEach(book => {
+        if (book.status === 'published') {
+          booksOptions += `<option value="${book.id}">${book.title}</option>`;
+        }
+      });
+    }
+
     return `
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Filtro por libro -->
         <select id="filter-book" class="${selectClass}">
-          <option value="all">Todos los libros</option>
-          <option value="manual-transicion">Manual de Transición</option>
+          ${booksOptions}
         </select>
 
         <!-- Filtro por tipo -->

@@ -104,7 +104,7 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    window.__APP_VERSION__ = '2.9.126'; // Cambiar con cada release
+    window.__APP_VERSION__ = '2.9.127'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

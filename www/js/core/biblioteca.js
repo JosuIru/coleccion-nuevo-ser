@@ -2370,14 +2370,24 @@ class Biblioteca {
       return;
     }
 
-    // Caso normal: actualizar solo el contenido del grid existente
+    // 🔧 FIX #9: Usar DocumentFragment para mejor performance
     const libros = this.getFilteredBooks();
-    let htmlLibros = '';
+
+    // Limpiar grid actual
+    contenedorGrid.innerHTML = '';
+
+    // Crear fragment para inserción eficiente
+    const fragment = document.createDocumentFragment();
+
     libros.forEach(libro => {
-      htmlLibros += this.renderBookCard(libro);
+      const cardHTML = this.renderBookCard(libro);
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = cardHTML;
+      const cardElement = tempDiv.firstElementChild;
+      fragment.appendChild(cardElement);
     });
 
-    contenedorGrid.innerHTML = htmlLibros;
+    contenedorGrid.appendChild(fragment);
 
     if (window.Icons) {
       Icons.init();

@@ -1328,16 +1328,75 @@ class AIChatModal {
 
         // Añadir contenido del capítulo (limitado para no exceder tokens)
         if (chapter.content) {
-          // Limpiar HTML y limitar a ~4000 caracteres
+          // 🔧 FIX #26: Truncado inteligente que prioriza contenido importante
           const cleanContent = chapter.content
             .replace(/<[^>]*>/g, '') // Quitar tags HTML
             .replace(/\s+/g, ' ')     // Normalizar espacios
             .trim();
 
           const maxLength = 4000;
-          const truncatedContent = cleanContent.length > maxLength
-            ? cleanContent.substring(0, maxLength) + '...[contenido truncado]'
-            : cleanContent;
+          let truncatedContent;
+
+          if (cleanContent.length <= maxLength) {
+            // Si cabe todo, incluir todo
+            truncatedContent = cleanContent;
+          } else {
+            // Truncado inteligente: priorizar párrafos importantes
+            const paragraphs = cleanContent.split(/(?:\. |\n\n)/); // Split por punto+espacio o doble salto
+
+            // Calcular prioridad de cada párrafo
+            const scoredParagraphs = paragraphs.map((p, index) => {
+              let score = 0;
+
+              // Mayor prioridad para primeros y últimos párrafos
+              if (index === 0) score += 10;
+              if (index === paragraphs.length - 1) score += 5;
+
+              // Priorizar párrafos con encabezados
+              if (p.match(/^##\s+/)) score += 8;
+
+              // Priorizar párrafos con negritas (contenido enfatizado)
+              const boldCount = (p.match(/\*\*[^*]+\*\*/g) || []).length;
+              score += boldCount * 3;
+
+              // Priorizar párrafos con listas
+              if (p.match(/^[-•*]\s+/) || p.match(/^\d+\.\s+/)) score += 4;
+
+              // Priorizar párrafos con palabras clave importantes
+              const keywords = ['importante', 'clave', 'fundamental', 'esencial', 'crucial', 'ejemplo', 'práctica'];
+              keywords.forEach(kw => {
+                if (p.toLowerCase().includes(kw)) score += 2;
+              });
+
+              return { text: p, score, length: p.length };
+            });
+
+            // Ordenar por prioridad descendente
+            scoredParagraphs.sort((a, b) => b.score - a.score);
+
+            // Construir contenido truncado con los párrafos más importantes
+            const selectedParagraphs = [];
+            let currentLength = 0;
+
+            for (const para of scoredParagraphs) {
+              if (currentLength + para.length + 2 <= maxLength) { // +2 por ". "
+                selectedParagraphs.push(para);
+                currentLength += para.length + 2;
+              }
+            }
+
+            // Reordenar párrafos seleccionados según orden original (para coherencia)
+            selectedParagraphs.sort((a, b) => {
+              return paragraphs.indexOf(a.text) - paragraphs.indexOf(b.text);
+            });
+
+            truncatedContent = selectedParagraphs.map(p => p.text).join('. ');
+
+            // Añadir indicador de truncado solo si efectivamente se truncó
+            if (truncatedContent.length < cleanContent.length) {
+              truncatedContent += '... [contenido resumido inteligentemente]';
+            }
+          }
 
           context += `Contenido del capítulo:\n${truncatedContent}\n\n`;
         }

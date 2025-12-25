@@ -8,6 +8,24 @@ class AchievementSystem {
     this.unlockedAchievements = this.loadUnlocked();
     this.stats = this.loadStats();
     this.i18n = window.i18n || { t: (key) => key };
+
+    // MEMORY LEAK FIX #61: Reutilizar AudioContext
+    this.audioContext = null;
+
+    // 🔧 FIX #60: Trackear timeouts de notificaciones para prevenir memory leaks
+    this.notificationTimeouts = new Set();
+
+    // 🔧 FIX #62: Caché para getTotalCount() (evita iteración en cada llamada)
+    this._totalCountCache = null;
+
+    // 🔧 OPTIMIZACIÓN: Cachear window.ACHIEVEMENTS para reducir accesos a window
+    this.achievements = window.ACHIEVEMENTS || {};
+
+    // 🔧 FIX #58: Indexar logros por tipo de acción para evaluación eficiente
+    this.achievementIndex = this.buildAchievementIndex();
+
+    // 🔧 FIX #63: Handler de escape como propiedad de instancia
+    this.escapeHandler = null;
   }
 
   // ==========================================================================
@@ -24,6 +42,15 @@ class AchievementSystem {
 
   saveUnlocked() {
     localStorage.setItem('achievements-unlocked', JSON.stringify(this.unlockedAchievements));
+
+    // Sincronizar con Supabase si está logeado
+    if (window.authHelper && window.authHelper.user) {
+      try {
+        window.supabaseSyncHelper?.syncPreference('achievements-unlocked', this.unlockedAchievements);
+      } catch (error) {
+        console.warn('[Achievements] No se pudo sincronizar achievements con Supabase:', error);
+      }
+    }
   }
 
   loadStats() {
@@ -36,6 +63,15 @@ class AchievementSystem {
 
   saveStats() {
     localStorage.setItem('achievements-stats', JSON.stringify(this.stats));
+
+    // Sincronizar con Supabase si está logeado
+    if (window.authHelper && window.authHelper.user) {
+      try {
+        window.supabaseSyncHelper?.syncPreference('achievements-stats', this.stats);
+      } catch (error) {
+        console.warn('[Achievements] No se pudo sincronizar stats con Supabase:', error);
+      }
+    }
   }
 
   getDefaultStats() {
@@ -58,6 +94,91 @@ class AchievementSystem {
   }
 
   // ==========================================================================
+  // 🔧 FIX #58: INDEXACIÓN DE LOGROS PARA EVALUACIÓN EFICIENTE
+  // ==========================================================================
+
+  /**
+   * Construye un índice de logros por tipo de acción
+   * Esto permite evaluar solo los logros relevantes en checkAndUnlock()
+   */
+  buildAchievementIndex() {
+    const actionTypeIndex = new Map();
+
+    // Iterar sobre todas las categorías de logros
+    if (this.achievements) {
+      Object.values(this.achievements).forEach(categoryAchievements => {
+        if (!Array.isArray(categoryAchievements)) return;
+
+        categoryAchievements.forEach(achievement => {
+          // Extraer tipo(s) de acción que este logro puede desbloquear
+          const actionTypes = this.extractActionTypes(achievement);
+
+          actionTypes.forEach(actionType => {
+            if (!actionTypeIndex.has(actionType)) {
+              actionTypeIndex.set(actionType, []);
+            }
+            actionTypeIndex.get(actionType).push(achievement);
+          });
+        });
+      });
+    }
+
+    return actionTypeIndex;
+  }
+
+  /**
+   * Extrae los tipos de acción relevantes de la condición de un logro
+   * Analiza el código de la función condition para determinar qué stats o progress verifica
+   */
+  extractActionTypes(achievement) {
+    const actionTypes = [];
+
+    if (!achievement.condition) return ['generic'];
+
+    // Convertir la función a string para analizar qué propiedades verifica
+    const conditionString = achievement.condition.toString();
+
+    // Mapeo de propiedades stats a tipos de acción
+    const statsMapping = {
+      'booksOpened': 'bookOpened',
+      'uniqueBooksOpened': 'bookOpened',
+      'booksOpenedList': 'bookOpened',
+      'notesCount': 'noteCreated',
+      'aiChats': 'aiChat',
+      'reflexionsCount': 'reflexionSaved',
+      'audioUsed': 'audioUsed',
+      'totalReadingMinutes': 'readingTime',
+      'timelineViewed': 'timelineViewed',
+      'resourcesViewed': 'resourcesViewed',
+      'meditationsCompleted': 'meditationCompleted',
+      'koansGenerated': 'koanGenerated',
+      'plansCreated': 'planCreated',
+      'plansCompleted': 'planCompleted'
+    };
+
+    // Detectar qué propiedades de stats se verifican
+    for (const [statsProp, actionType] of Object.entries(statsMapping)) {
+      if (conditionString.includes(statsProp)) {
+        actionTypes.push(actionType);
+      }
+    }
+
+    // Detectar verificaciones de progress (capítulos leídos, etc.)
+    if (conditionString.includes('chaptersRead') ||
+        conditionString.includes('progress') ||
+        conditionString.includes('chapter')) {
+      actionTypes.push('bookOpened'); // Los logros de progress se verifican al abrir libros
+    }
+
+    // Si no se detectó ningún tipo específico, clasificar como genérico
+    if (actionTypes.length === 0) {
+      actionTypes.push('generic');
+    }
+
+    return actionTypes;
+  }
+
+  // ==========================================================================
   // TRACKING DE ESTADÍSTICAS
   // ==========================================================================
 
@@ -68,46 +189,53 @@ class AchievementSystem {
       this.stats.uniqueBooksOpened = this.stats.booksOpenedList.length;
     }
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('bookOpened', bookId);
   }
 
   trackNoteCreated() {
     this.stats.notesCount++;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('noteCreated');
   }
 
   trackAIChat() {
     this.stats.aiChats++;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('aiChat');
   }
 
   trackReflexionSaved() {
     this.stats.reflexionsCount++;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('reflexionSaved');
   }
 
   trackAudioUsed() {
     if (this.stats.audioUsed === 0) {
       this.stats.audioUsed = 1;
       this.saveStats();
-      this.checkAndUnlock();
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+      this.checkAndUnlock('audioUsed');
     }
   }
 
   trackReadingTime(minutes) {
     this.stats.totalReadingMinutes += minutes;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('readingTime');
   }
 
   trackTimelineViewed() {
     if (!this.stats.timelineViewed) {
       this.stats.timelineViewed = true;
       this.saveStats();
-      this.checkAndUnlock();
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+      this.checkAndUnlock('timelineViewed');
     }
   }
 
@@ -115,44 +243,46 @@ class AchievementSystem {
     if (!this.stats.resourcesViewed) {
       this.stats.resourcesViewed = true;
       this.saveStats();
-      this.checkAndUnlock();
+      // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+      this.checkAndUnlock('resourcesViewed');
     }
   }
 
   trackMeditationCompleted() {
     this.stats.meditationsCompleted++;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('meditationCompleted');
   }
 
   trackKoanGenerated() {
     this.stats.koansGenerated++;
     this.saveStats();
-    this.checkAndUnlock();
+    // 🔧 FIX #58: Pasar tipo de acción para evaluación eficiente
+    this.checkAndUnlock('koanGenerated');
   }
 
   // ==========================================================================
   // VERIFICACIÓN Y DESBLOQUEO
   // ==========================================================================
 
-  checkAndUnlock(bookId = null) {
+  /**
+   * 🔧 FIX #58: Verifica y desbloquea logros solo evaluando los relevantes al tipo de acción
+   * @param {string} actionType - Tipo de acción que desencadenó la verificación
+   * @param {string} bookId - ID del libro actual (opcional)
+   */
+  checkAndUnlock(actionType = 'generic', bookId = null) {
     const currentBook = bookId || this.bookEngine?.getCurrentBook();
-    const achievementsToCheck = [];
 
-    // Siempre verificar logros globales
-    if (window.ACHIEVEMENTS?.global) {
-      achievementsToCheck.push(...window.ACHIEVEMENTS.global);
-    }
-
-    // Verificar logros del libro actual
-    if (currentBook && window.ACHIEVEMENTS?.[currentBook]) {
-      achievementsToCheck.push(...window.ACHIEVEMENTS[currentBook]);
-    }
+    // 🔧 FIX #58: Solo obtener logros relevantes al tipo de acción
+    const relevantAchievements = this.achievementIndex.get(actionType) || [];
 
     // Obtener progreso del libro
     const progress = currentBook ? this.bookEngine?.getBookProgress(currentBook) || {} : {};
 
-    for (const achievement of achievementsToCheck) {
+    // 🔧 FIX #58: Evaluar solo los logros relevantes en lugar de TODOS los logros
+    for (const achievement of relevantAchievements) {
+      // Saltar logros ya desbloqueados
       if (this.unlockedAchievements[achievement.id]) continue;
 
       let unlocked = false;
@@ -192,6 +322,14 @@ class AchievementSystem {
   // ==========================================================================
 
   showNotification(achievement) {
+    // Verificar si el usuario quiere ver notificaciones de logros
+    const showAchievementNotifications = localStorage.getItem('show-achievement-notifications');
+    if (showAchievementNotifications === 'false') {
+      // Usuario desactivó notificaciones, solo guardar silenciosamente
+      console.log('[Achievements] Logro desbloqueado (notificación desactivada):', achievement.titulo);
+      return;
+    }
+
     // Crear notificación
     const notification = document.createElement('div');
     notification.id = 'achievement-notification';
@@ -239,18 +377,42 @@ class AchievementSystem {
     // Reproducir sonido (opcional)
     this.playUnlockSound();
 
-    // Remover después de 5 segundos
-    setTimeout(() => {
+    // 🔧 FIX #60: Trackear timeout para poder limpiarlo después y prevenir acumulación
+    const timeout1 = setTimeout(() => {
       notification.classList.remove('animate-slide-in-right');
       notification.classList.add('animate-slide-out-right');
-      setTimeout(() => notification.remove(), 300);
+
+      const timeout2 = setTimeout(() => {
+        notification.remove();
+        this.notificationTimeouts.delete(timeout2);
+      }, 300);
+
+      this.notificationTimeouts.add(timeout2);
+      this.notificationTimeouts.delete(timeout1);
     }, 5000);
+
+    this.notificationTimeouts.add(timeout1);
+  }
+
+  // FIX #61: Reutilizar AudioContext en lugar de crear uno nuevo cada vez
+  getAudioContext() {
+    if (!this.audioContext) {
+      try {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('[Achievements] AudioContext not supported');
+        return null;
+      }
+    }
+    return this.audioContext;
   }
 
   playUnlockSound() {
     // Crear un pequeño sonido de celebración usando Web Audio API
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = this.getAudioContext();
+      if (!audioContext) return;
+
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -268,6 +430,7 @@ class AchievementSystem {
       oscillator.stop(audioContext.currentTime + 0.4);
     } catch (e) {
       // Silenciar errores de audio
+      console.warn('[Achievements] Error playing sound:', e);
     }
   }
 
@@ -285,13 +448,12 @@ class AchievementSystem {
   }
 
   getTotalCount() {
-    let total = 0;
-    if (window.ACHIEVEMENTS) {
-      for (const category of Object.values(window.ACHIEVEMENTS)) {
-        total += category.length;
-      }
+    // 🔧 FIX #62: Cachear resultado para evitar iteración en cada llamada
+    if (this._totalCountCache === null) {
+      this._totalCountCache = Object.values(this.achievements)
+        .reduce((sum, category) => sum + category.length, 0);
     }
-    return total;
+    return this._totalCountCache;
   }
 
   getTotalAchievementsCount() {
@@ -305,8 +467,8 @@ class AchievementSystem {
     for (const [id, data] of Object.entries(this.unlockedAchievements)) {
       // Buscar el logro en todas las categorías
       let achievement = null;
-      if (window.ACHIEVEMENTS) {
-        for (const category of Object.values(window.ACHIEVEMENTS)) {
+      if (this.achievements) {
+        for (const category of Object.values(this.achievements)) {
           achievement = category.find(a => a.id === id);
           if (achievement) break;
         }
@@ -335,15 +497,15 @@ class AchievementSystem {
     let achievementsToShow = [];
 
     // Globales
-    if (window.ACHIEVEMENTS?.global) {
-      achievementsToShow.push(...window.ACHIEVEMENTS.global.map(a => ({ ...a, category: 'Global' })));
+    if (this.achievements?.global) {
+      achievementsToShow.push(...this.achievements.global.map(a => ({ ...a, category: 'Global' })));
     }
 
     // Del libro actual
-    if (bookId && window.ACHIEVEMENTS?.[bookId]) {
+    if (bookId && this.achievements?.[bookId]) {
       const bookData = this.bookEngine?.getCurrentBookData();
       const bookTitle = bookData?.title || bookId;
-      achievementsToShow.push(...window.ACHIEVEMENTS[bookId].map(a => ({ ...a, category: bookTitle })));
+      achievementsToShow.push(...this.achievements[bookId].map(a => ({ ...a, category: bookTitle })));
     }
 
     return `
@@ -470,16 +632,22 @@ class AchievementSystem {
 
     document.body.appendChild(modal);
 
+    // 🔧 FIX #63: Escape handler como propiedad de instancia para prevenir memory leaks
+    this.escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.closeDashboardModal();
+      }
+    };
+    document.addEventListener('keydown', this.escapeHandler);
+
     // Event listeners
     document.getElementById('close-achievements-modal')?.addEventListener('click', () => {
-      modal.style.animation = 'fadeOut 0.2s ease-out';
-      setTimeout(() => modal.remove(), 200);
+      this.closeDashboardModal();
     });
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
-        modal.style.animation = 'fadeOut 0.2s ease-out';
-        setTimeout(() => modal.remove(), 200);
+        this.closeDashboardModal();
       }
     });
 
@@ -507,11 +675,29 @@ class AchievementSystem {
     });
   }
 
+  // 🔧 FIX #63: Método separado para cerrar modal con limpieza de escape handler
+  closeDashboardModal() {
+    const modal = document.getElementById('achievements-modal');
+    if (!modal) return;
+
+    // Limpiar escape handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+    }
+
+    // Animar y remover modal
+    modal.style.animation = 'fadeOut 0.2s ease-out';
+    setTimeout(() => {
+      modal.remove();
+    }, 200);
+  }
+
   shareAchievement(achievementId) {
     // Find the achievement
     let achievement = null;
-    if (window.ACHIEVEMENTS) {
-      for (const category of Object.values(window.ACHIEVEMENTS)) {
+    if (this.achievements) {
+      for (const category of Object.values(this.achievements)) {
         achievement = category.find(a => a.id === achievementId);
         if (achievement) break;
       }
@@ -520,6 +706,42 @@ class AchievementSystem {
     if (achievement && window.shareHelper) {
       window.shareHelper.shareAchievement(achievement);
     }
+  }
+
+  // ==========================================================================
+  // CLEANUP - 🔧 FIX #60, #61
+  // ==========================================================================
+
+  /**
+   * Limpia recursos para prevenir memory leaks
+   * Debe llamarse cuando se destruye el componente
+   */
+  cleanup() {
+    console.log('[Achievements] Cleanup iniciado');
+
+    // 🔧 FIX #60: Limpiar timeouts de notificaciones pendientes
+    this.notificationTimeouts.forEach(timeout => clearTimeout(timeout));
+    this.notificationTimeouts.clear();
+    console.log('[Achievements] Timeouts de notificaciones limpiados');
+
+    // 🔧 FIX #63: Limpiar escape handler del modal
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+      console.log('[Achievements] Escape handler limpiado');
+    }
+
+    // Cerrar AudioContext (#61)
+    if (this.audioContext) {
+      this.audioContext.close().then(() => {
+        console.log('[Achievements] AudioContext cerrado');
+      }).catch(err => {
+        console.warn('[Achievements] Error al cerrar AudioContext:', err);
+      });
+      this.audioContext = null;
+    }
+
+    console.log('[Achievements] Cleanup completado');
   }
 }
 

@@ -23,6 +23,9 @@ class AchievementSystem {
 
     // 🔧 FIX #58: Indexar logros por tipo de acción para evaluación eficiente
     this.achievementIndex = this.buildAchievementIndex();
+
+    // 🔧 FIX #63: Handler de escape como propiedad de instancia
+    this.escapeHandler = null;
   }
 
   // ==========================================================================
@@ -445,21 +448,12 @@ class AchievementSystem {
   }
 
   getTotalCount() {
-    // 🔧 FIX #62: Usar caché para evitar iteración en cada llamada
-    if (this._totalCountCache !== null) {
-      return this._totalCountCache;
+    // 🔧 FIX #62: Cachear resultado para evitar iteración en cada llamada
+    if (this._totalCountCache === null) {
+      this._totalCountCache = Object.values(this.achievements)
+        .reduce((sum, category) => sum + category.length, 0);
     }
-
-    let total = 0;
-    if (this.achievements) {
-      for (const category of Object.values(this.achievements)) {
-        total += category.length;
-      }
-    }
-
-    // 🔧 FIX #62: Guardar en caché
-    this._totalCountCache = total;
-    return total;
+    return this._totalCountCache;
   }
 
   getTotalAchievementsCount() {
@@ -638,34 +632,22 @@ class AchievementSystem {
 
     document.body.appendChild(modal);
 
-    // 🔧 FIX #63: Añadir escape handler para cerrar modal
-    const escapeHandler = (e) => {
+    // 🔧 FIX #63: Escape handler como propiedad de instancia para prevenir memory leaks
+    this.escapeHandler = (e) => {
       if (e.key === 'Escape') {
-        modal.style.animation = 'fadeOut 0.2s ease-out';
-        setTimeout(() => {
-          modal.remove();
-          document.removeEventListener('keydown', escapeHandler);
-        }, 200);
+        this.closeDashboardModal();
       }
     };
-    document.addEventListener('keydown', escapeHandler);
+    document.addEventListener('keydown', this.escapeHandler);
 
     // Event listeners
     document.getElementById('close-achievements-modal')?.addEventListener('click', () => {
-      modal.style.animation = 'fadeOut 0.2s ease-out';
-      setTimeout(() => {
-        modal.remove();
-        document.removeEventListener('keydown', escapeHandler);
-      }, 200);
+      this.closeDashboardModal();
     });
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
-        modal.style.animation = 'fadeOut 0.2s ease-out';
-        setTimeout(() => {
-          modal.remove();
-          document.removeEventListener('keydown', escapeHandler);
-        }, 200);
+        this.closeDashboardModal();
       }
     });
 
@@ -691,6 +673,24 @@ class AchievementSystem {
         this.shareAchievement(achievementId);
       });
     });
+  }
+
+  // 🔧 FIX #63: Método separado para cerrar modal con limpieza de escape handler
+  closeDashboardModal() {
+    const modal = document.getElementById('achievements-modal');
+    if (!modal) return;
+
+    // Limpiar escape handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+    }
+
+    // Animar y remover modal
+    modal.style.animation = 'fadeOut 0.2s ease-out';
+    setTimeout(() => {
+      modal.remove();
+    }, 200);
   }
 
   shareAchievement(achievementId) {
@@ -723,6 +723,13 @@ class AchievementSystem {
     this.notificationTimeouts.forEach(timeout => clearTimeout(timeout));
     this.notificationTimeouts.clear();
     console.log('[Achievements] Timeouts de notificaciones limpiados');
+
+    // 🔧 FIX #63: Limpiar escape handler del modal
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+      this.escapeHandler = null;
+      console.log('[Achievements] Escape handler limpiado');
+    }
 
     // Cerrar AudioContext (#61)
     if (this.audioContext) {

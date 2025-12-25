@@ -9,6 +9,8 @@ class OnboardingTutorial {
     this.isActive = false;
     this.isTransitioning = false; // Prevenir clics múltiples
     this.i18n = window.i18n || { t: (key) => key };
+    // 🔧 FIX #64: Inicializar handler de resize para limpieza posterior
+    this.resizeHandler = null;
 
     // Definir los pasos del tutorial
     this.steps = [
@@ -181,6 +183,12 @@ class OnboardingTutorial {
       window.analyticsHelper.trackTutorialStart();
     }
 
+    // 🔧 FIX #64: Configurar listener de resize para reposicionar tooltip
+    this.resizeHandler = () => {
+      this.repositionTooltip();
+    };
+    window.addEventListener('resize', this.resizeHandler);
+
     this.isActive = true;
     this.currentStep = 0;
     this.showStep(this.currentStep);
@@ -191,7 +199,7 @@ class OnboardingTutorial {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
-    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee siempre
     try {
       // Track skip del tutorial
       if (window.analyticsHelper) {
@@ -200,10 +208,10 @@ class OnboardingTutorial {
 
       this.markAsCompleted();
       this.close();
+    } catch (error) {
+      console.error('[Tutorial] Error en skip():', error);
     } finally {
-      setTimeout(() => {
-        this.isTransitioning = false;
-      }, 300);
+      this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
     }
   }
 
@@ -211,7 +219,7 @@ class OnboardingTutorial {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
-    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+    // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee siempre
     try {
       // Track completado del tutorial
       if (window.analyticsHelper) {
@@ -225,10 +233,10 @@ class OnboardingTutorial {
       if (window.toast) {
         window.toast.success('🎉 ¡Tutorial completado! Ya estás listo para explorar.');
       }
+    } catch (error) {
+      console.error('[Tutorial] Error en finish():', error);
     } finally {
-      setTimeout(() => {
-        this.isTransitioning = false;
-      }, 300);
+      this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
     }
   }
 
@@ -253,6 +261,12 @@ class OnboardingTutorial {
   }
 
   close() {
+    // 🔧 FIX #64: Limpiar listener de resize para evitar memory leaks
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+      this.resizeHandler = null;
+    }
+
     this.isActive = false;
     this.removeOverlay();
     this.removeTooltip();
@@ -263,14 +277,14 @@ class OnboardingTutorial {
     if (this.currentStep < this.steps.length - 1) {
       this.isTransitioning = true;
 
-      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee siempre
       try {
         this.currentStep++;
         this.showStep(this.currentStep);
+      } catch (error) {
+        console.error('[Tutorial] Error en next():', error);
       } finally {
-        setTimeout(() => {
-          this.isTransitioning = false;
-        }, 300);
+        this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
       }
     }
   }
@@ -280,14 +294,14 @@ class OnboardingTutorial {
     if (this.currentStep > 0) {
       this.isTransitioning = true;
 
-      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee
+      // 🔧 FIX #65: Usar try-finally para asegurar que el flag se resetee siempre
       try {
         this.currentStep--;
         this.showStep(this.currentStep);
+      } catch (error) {
+        console.error('[Tutorial] Error en previous():', error);
       } finally {
-        setTimeout(() => {
-          this.isTransitioning = false;
-        }, 300);
+        this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
       }
     }
   }
@@ -492,6 +506,17 @@ class OnboardingTutorial {
 
     tooltip.style.top = `${top}px`;
     tooltip.style.left = `${left}px`;
+  }
+
+  // 🔧 FIX #64: Método para reposicionar tooltip existente en eventos de resize
+  repositionTooltip() {
+    const tooltip = document.getElementById('tutorial-tooltip');
+    if (!tooltip || !this.isActive) return;
+
+    const currentStep = this.steps[this.currentStep];
+    if (!currentStep) return;
+
+    this.positionTooltip(tooltip, currentStep);
   }
 
   removeOverlay() {

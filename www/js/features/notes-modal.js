@@ -631,6 +631,12 @@ class NotesModal {
       textarea.setSelectionRange(note.content.length, note.content.length);
     }, 50);
 
+    // 🔧 FIX #19: Función de limpieza centralizada para evitar memory leaks
+    const cleanup = () => {
+      document.removeEventListener('keydown', escHandler);
+      modal.remove();
+    };
+
     // Guardar
     const save = () => {
       const newContent = textarea.value.trim();
@@ -639,21 +645,20 @@ class NotesModal {
         this.render();
         this.attachEventListeners();
       }
-      modal.remove();
+      cleanup();
     };
-
-    // Eventos
-    saveBtn.addEventListener('click', save);
-    cancelBtn.addEventListener('click', () => modal.remove());
 
     // ESC para cerrar
     const escHandler = (e) => {
       if (e.key === 'Escape') {
-        modal.remove();
-        document.removeEventListener('keydown', escHandler);
+        cleanup();
       }
     };
     document.addEventListener('keydown', escHandler);
+
+    // Eventos
+    saveBtn.addEventListener('click', save);
+    cancelBtn.addEventListener('click', cleanup);
 
     // Ctrl+Enter para guardar
     textarea.addEventListener('keydown', (e) => {
@@ -666,7 +671,7 @@ class NotesModal {
     // Click fuera para cerrar
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
-        modal.remove();
+        cleanup();
       }
     });
   }
@@ -700,28 +705,33 @@ class NotesModal {
     // Focus en botón de cancelar por seguridad
     setTimeout(() => cancelBtn.focus(), 50);
 
-    // Confirmar
-    okBtn.addEventListener('click', () => {
+    // 🔧 FIX #19: Función de limpieza centralizada para evitar memory leaks
+    const cleanup = () => {
+      document.removeEventListener('keydown', escHandler);
       modal.remove();
-      if (onConfirm) onConfirm();
-    });
-
-    // Cancelar
-    cancelBtn.addEventListener('click', () => modal.remove());
+    };
 
     // ESC para cerrar
     const escHandler = (e) => {
       if (e.key === 'Escape') {
-        modal.remove();
-        document.removeEventListener('keydown', escHandler);
+        cleanup();
       }
     };
     document.addEventListener('keydown', escHandler);
 
+    // Confirmar
+    okBtn.addEventListener('click', () => {
+      cleanup();
+      if (onConfirm) onConfirm();
+    });
+
+    // Cancelar
+    cancelBtn.addEventListener('click', cleanup);
+
     // Click fuera para cerrar
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
-        modal.remove();
+        cleanup();
       }
     });
   }

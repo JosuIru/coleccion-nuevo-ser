@@ -25,6 +25,91 @@ class AIChatModal {
   }
 
   // ==========================================================================
+  // GESTIÓN DE CRÉDITOS (🔧 FIX #23)
+  // ==========================================================================
+
+  /**
+   * 🔧 FIX #23: Verificar si hay suficientes créditos para una consulta
+   * @param {number} estimatedTokens - Número estimado de tokens necesarios
+   * @returns {Promise<boolean>} - true si hay créditos suficientes
+   */
+  async checkCredits(estimatedTokens = 1000) {
+    // Si no hay sistema de créditos, permitir siempre
+    if (!window.aiPremium) return true;
+
+    // Si es usuario autenticado, verificar créditos
+    if (!window.authHelper?.user) return true;
+
+    const profile = window.authHelper?.getProfile?.();
+    const isPremiumUser = ['premium', 'pro'].includes(profile?.subscription_tier);
+
+    // Los usuarios premium no necesitan verificación local (el proxy maneja sus créditos)
+    if (isPremiumUser) return true;
+
+    try {
+      const hasCredits = await window.aiPremium.checkCredits(estimatedTokens, 'ai_chat');
+      return hasCredits;
+    } catch (error) {
+      console.warn('Credit check warning:', error.message);
+      // En caso de error, permitir continuar (graceful degradation)
+      return true;
+    }
+  }
+
+  /**
+   * 🔧 FIX #23: Consumir créditos después de una consulta exitosa
+   * @param {string} userMessage - Mensaje del usuario
+   * @param {string} aiResponse - Respuesta de la IA
+   */
+  async consumeCredits(userMessage, aiResponse) {
+    // Si no hay sistema de créditos, no hacer nada
+    if (!window.aiPremium) return;
+
+    // Si no es usuario autenticado, no consumir
+    if (!window.authHelper?.user) return;
+
+    const profile = window.authHelper?.getProfile?.();
+    const isPremiumUser = ['premium', 'pro'].includes(profile?.subscription_tier);
+
+    // Los usuarios premium no consumen créditos localmente (el proxy maneja sus créditos)
+    if (isPremiumUser) return;
+
+    try {
+      const provider = window.aiConfig?.getCurrentProvider?.() || 'local';
+      const model = window.aiConfig?.getSelectedModel?.() || 'local';
+
+      // Calcular tokens basado en caracteres (estimación: ~4 caracteres = 1 token)
+      const inputTokens = Math.ceil(userMessage.length / 4);
+      const outputTokens = Math.ceil(aiResponse.length / 4);
+      const totalTokens = inputTokens + outputTokens;
+
+      // Convertir tokens a créditos: 1 crédito = 1000 tokens
+      const creditsToConsume = Math.max(1, Math.ceil(totalTokens / 1000));
+
+      logger.debug(`[AI Chat] Consumiendo ${creditsToConsume} créditos (${totalTokens} tokens: ${inputTokens} input + ${outputTokens} output)`);
+
+      await window.aiPremium.consumeCredits(creditsToConsume, 'ai_chat', provider, model, totalTokens);
+    } catch (error) {
+      console.warn('Credit consume warning:', error.message);
+    }
+  }
+
+  /**
+   * 🔧 FIX #23: Mostrar mensaje cuando no hay créditos suficientes
+   * @param {number} estimatedTokens - Tokens estimados necesarios
+   */
+  showNoCreditsMessage(estimatedTokens) {
+    this.conversationHistory.push({
+      role: 'assistant',
+      content: `💳 **Sin créditos suficientes**\n\nNecesitas aproximadamente ${estimatedTokens} créditos para esta consulta.\n\n💡 **Soluciones:**\n- Actualiza tu plan en ⚙️ Configuración > Premium\n- Espera al próximo mes para el reset de créditos\n- Usa un proveedor gratuito como HuggingFace u Ollama local`,
+      timestamp: new Date().toISOString(),
+      isError: true
+    });
+    this.render();
+    this.attachEventListeners();
+  }
+
+  // ==========================================================================
   // APERTURA Y CIERRE
   // ==========================================================================
 
@@ -882,9 +967,22 @@ class AIChatModal {
     const toggleConfigBtn = document.getElementById('toggle-ai-config');
     if (toggleConfigBtn) {
       toggleConfigBtn.addEventListener('click', () => {
+        // 🔧 FIX #22: Guardar texto del input antes del re-render
+        const currentInput = document.getElementById('ai-chat-input');
+        const savedInputValue = currentInput?.value || '';
+
         this.showConfig = !this.showConfig;
         this.render();
         this.attachEventListeners();
+
+        // 🔧 FIX #22: Restaurar texto con requestAnimationFrame para asegurar DOM listo
+        requestAnimationFrame(() => {
+          const newInput = document.getElementById('ai-chat-input');
+          if (newInput && savedInputValue) {
+            newInput.value = savedInputValue;
+            newInput.focus();
+          }
+        });
       });
     }
 
@@ -922,7 +1020,7 @@ class AIChatModal {
       quickProviderSelector.addEventListener('change', (e) => {
         const provider = e.target.value;
         if (window.aiConfig) {
-          // Guardar el texto del input antes del re-render
+          // 🔧 FIX #22: Guardar texto del input antes del re-render
           const currentInput = document.getElementById('ai-chat-input');
           const savedInputValue = currentInput?.value || '';
 
@@ -1040,9 +1138,22 @@ class AIChatModal {
     const cancelBtn = document.getElementById('cancel-chat-config');
     if (cancelBtn) {
       cancelBtn.addEventListener('click', () => {
+        // 🔧 FIX #22: Guardar texto del input antes del re-render
+        const currentInput = document.getElementById('ai-chat-input');
+        const savedInputValue = currentInput?.value || '';
+
         this.showConfig = false;
         this.render();
         this.attachEventListeners();
+
+        // 🔧 FIX #22: Restaurar texto con requestAnimationFrame para asegurar DOM listo
+        requestAnimationFrame(() => {
+          const newInput = document.getElementById('ai-chat-input');
+          if (newInput && savedInputValue) {
+            newInput.value = savedInputValue;
+            newInput.focus();
+          }
+        });
       });
     }
   }
@@ -1072,6 +1183,10 @@ class AIChatModal {
     const provider = providerSelect.value;
     const model = modelSelect?.value;
     const apiKey = apiKeyInput?.value?.trim() || '';
+
+    // 🔧 FIX #22: Guardar texto del input antes del re-render
+    const currentInput = document.getElementById('ai-chat-input');
+    const savedInputValue = currentInput?.value || '';
 
     // Guardar según el proveedor
     switch (provider) {
@@ -1111,6 +1226,15 @@ class AIChatModal {
     this.render();
     this.attachEventListeners();
 
+    // 🔧 FIX #22: Restaurar texto con requestAnimationFrame para asegurar DOM listo
+    requestAnimationFrame(() => {
+      const newInput = document.getElementById('ai-chat-input');
+      if (newInput && savedInputValue) {
+        newInput.value = savedInputValue;
+        newInput.focus();
+      }
+    });
+
     // Mostrar toast de confirmación
     if (window.toast) {
       window.toast.success('Configuración de IA guardada');
@@ -1130,9 +1254,22 @@ class AIChatModal {
   // ==========================================================================
 
   switchMode(mode) {
+    // 🔧 FIX #22: Guardar texto del input antes del re-render
+    const currentInput = document.getElementById('ai-chat-input');
+    const savedInputValue = currentInput?.value || '';
+
     this.currentMode = mode;
     this.render();
     this.attachEventListeners();
+
+    // 🔧 FIX #22: Restaurar texto con requestAnimationFrame para asegurar DOM listo
+    requestAnimationFrame(() => {
+      const newInput = document.getElementById('ai-chat-input');
+      if (newInput && savedInputValue) {
+        newInput.value = savedInputValue;
+        newInput.focus();
+      }
+    });
   }
 
   async sendMessage() {
@@ -1142,34 +1279,15 @@ class AIChatModal {
     const userMessage = input.value.trim();
     input.value = '';
 
-    // Para usuarios Premium/Pro, el proxy maneja los créditos
-    // Solo verificar créditos localmente para usuarios free con API key propia
-    const profile = window.authHelper?.getProfile?.();
-    const isPremiumUser = ['premium', 'pro'].includes(profile?.subscription_tier);
+    // 🔧 FIX #23: Verificar créditos usando método centralizado
+    const estimatedInputTokens = Math.ceil(userMessage.length / 4) + 500;
+    const estimatedOutputTokens = 500;
+    const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
 
-    // Verificar creditos ANTES de procesar (solo para usuarios NO premium)
-    if (window.aiPremium && !isPremiumUser) {
-      try {
-        const estimatedInputTokens = Math.ceil(userMessage.length / 4) + 500;
-        const estimatedOutputTokens = 500;
-        const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
-
-        const hasCredits = await window.aiPremium.checkCredits(estimatedTotalTokens, 'ai_chat');
-        if (!hasCredits) {
-          this.conversationHistory.push({
-            role: 'assistant',
-            content: `💳 **Sin creditos suficientes**\n\nNecesitas aproximadamente ${estimatedTotalTokens} creditos para esta consulta.\n\n💡 **Soluciones:**\n- Actualiza tu plan en ⚙️ Configuracion > Premium\n- Espera al proximo mes para el reset de creditos\n- Usa un proveedor gratuito como HuggingFace u Ollama local`,
-            timestamp: new Date().toISOString(),
-            isError: true
-          });
-          this.render();
-          this.attachEventListeners();
-          return;
-        }
-      } catch (creditError) {
-        console.warn('Credit check warning:', creditError.message);
-        // Continuar si el sistema de creditos falla (modo graceful degradation)
-      }
+    const hasCredits = await this.checkCredits(estimatedTotalTokens);
+    if (!hasCredits) {
+      this.showNoCreditsMessage(estimatedTotalTokens);
+      return;
     }
 
     // Añadir mensaje del usuario
@@ -1189,29 +1307,8 @@ class AIChatModal {
       // Obtener respuesta de IA
       const response = await this.getAIResponse(userMessage);
 
-      // El proxy ya descuenta créditos automáticamente para usuarios Premium/Pro
-      // Solo consumir localmente si el usuario NO es premium (usa su propia API key)
-      if (window.aiPremium && !isPremiumUser) {
-        try {
-          const provider = window.aiConfig?.getCurrentProvider?.() || 'local';
-          const model = window.aiConfig?.getSelectedModel?.() || 'local';
-
-          // 🔧 FIX #24: Calcular créditos basado en tokens reales (input + output)
-          // Estimación: ~4 caracteres = 1 token
-          const inputTokens = Math.ceil(userMessage.length / 4);
-          const outputTokens = Math.ceil(response.length / 4);
-          const totalTokens = inputTokens + outputTokens;
-
-          // Convertir tokens a créditos: 1 crédito = 1000 tokens
-          const creditsToConsume = Math.max(1, Math.ceil(totalTokens / 1000));
-
-          logger.debug(`[AI Chat] Consumiendo ${creditsToConsume} créditos (${totalTokens} tokens: ${inputTokens} input + ${outputTokens} output)`);
-
-          await window.aiPremium.consumeCredits(creditsToConsume, 'ai_chat', provider, model, totalTokens);
-        } catch (consumeError) {
-          console.warn('Credit consume warning:', consumeError.message);
-        }
-      }
+      // 🔧 FIX #23: Consumir créditos usando método centralizado
+      await this.consumeCredits(userMessage, response);
 
       // Añadir respuesta de IA
       this.conversationHistory.push({

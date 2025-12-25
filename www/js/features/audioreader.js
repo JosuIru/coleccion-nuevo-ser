@@ -745,6 +745,18 @@ class AudioReader {
       this.synthesis.cancel();
     }
 
+    // 🔧 FIX #50: Asegurar cancelación completa de Web Speech API
+    if (window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+        console.warn('Error cancelando window.speechSynthesis en stop():', e);
+      }
+    }
+
+    // 🔧 FIX #50: Limpiar referencia a utterance al detener
+    this.utterance = null;
+
     // Liberar wake lock cuando se detiene la reproducción
     await this.releaseWakeLock();
 
@@ -3557,6 +3569,7 @@ class AudioReader {
     logger.log('[AudioReader] Iniciando cleanup completo...');
 
     // 1. Detener reproducción y cancelar speech (#50)
+    // 🔧 FIX #50: Web Speech API cleanup completo
     if (this.synthesis) {
       try {
         this.synthesis.cancel();
@@ -3565,6 +3578,19 @@ class AudioReader {
         console.warn('Error cancelando speech:', e);
       }
     }
+
+    // 🔧 FIX #50: Cleanup adicional con window.speechSynthesis global
+    if (window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+        logger.log('🔧 FIX #50: window.speechSynthesis.cancel() ejecutado');
+      } catch (e) {
+        console.warn('Error cancelando window.speechSynthesis:', e);
+      }
+    }
+
+    // 🔧 FIX #50: Limpiar referencia a utterance
+    this.utterance = null;
 
     if (this.nativeTTS) {
       try {

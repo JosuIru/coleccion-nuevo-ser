@@ -18,6 +18,9 @@ class BookReader {
     this.eventManager = new EventManager(false); // false = sin debug logs
     this.eventManager.setComponentName('BookReader');
 
+    // 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
+    this._eventHandlers = new Map();
+
     // 🔧 FIX #87: Inicializar dependencias de forma segura
     this.initDependencies();
   }
@@ -126,6 +129,33 @@ class BookReader {
     }
   }
 
+  /**
+   * 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
+   * Adjunta un event listener con seguimiento para limpieza posterior
+   * @param {string} elementId - ID del elemento DOM
+   * @param {string} event - Tipo de evento ('click', 'change', etc.)
+   * @param {Function} handler - Función manejadora del evento
+   */
+  attachEventListener(elementId, event, handler) {
+    const key = `${elementId}-${event}`;
+    const oldHandler = this._eventHandlers.get(key);
+
+    // Limpiar listener anterior si existe
+    if (oldHandler) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.removeEventListener(event, oldHandler);
+      }
+    }
+
+    // Añadir nuevo listener
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.addEventListener(event, handler);
+      this._eventHandlers.set(key, handler);
+    }
+  }
+
   // ==========================================================================
   // RENDERIZADO PRINCIPAL
   // ==========================================================================
@@ -179,6 +209,18 @@ class BookReader {
     // 🔧 FIX #47: Limpiar todos los event listeners gestionados por EventManager
     if (this.eventManager) {
       this.eventManager.cleanup();
+    }
+
+    // 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
+    if (this._eventHandlers) {
+      this._eventHandlers.forEach((handler, key) => {
+        const [elementId, event] = key.split('-');
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.removeEventListener(event, handler);
+        }
+      });
+      this._eventHandlers.clear();
     }
 
     // 🔧 FIX #47: Resetear todos los flags de dropdown y event listeners
@@ -2755,7 +2797,7 @@ class BookReader {
     // AI SUGGESTIONS - Attach click handlers for chapter suggestions
     // ========================================================================
     const aiSuggestions = this.getDependency('aiSuggestions'); // 🔧 FIX #87
-    if (aiSuggestions {
+    if (aiSuggestions) {
       aiSuggestions.attachToChapterContent();
     }
   }
@@ -2801,7 +2843,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
       this.showToast('error', 'Error al cargar el capítulo');
     }
   }
@@ -2825,7 +2866,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
     }
   }
 
@@ -2851,7 +2891,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
     }
   }
 
@@ -2899,7 +2938,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
     }
   }
 
@@ -2925,7 +2963,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
     }
   }
 
@@ -2960,7 +2997,6 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
-      }
     }
   }
 

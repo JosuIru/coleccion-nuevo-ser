@@ -84,6 +84,9 @@ class BackgroundAudioHelper {
       return;
     }
 
+    // 🔧 FIX #52: Limpiar handlers existentes antes de registrar nuevos para evitar duplicación
+    this.clearMediaSession();
+
     // Configurar metadata inicial
     navigator.mediaSession.metadata = new MediaMetadata({
       title: this.currentTitle,
@@ -111,6 +114,30 @@ class BackgroundAudioHelper {
     navigator.mediaSession.setActionHandler('nexttrack', () => {
       this.dispatchEvent('backgroundaudio:next');
     });
+  }
+
+  // 🔧 FIX #52: Limpiar handlers de Media Session API
+  clearMediaSession() {
+    if ('mediaSession' in navigator) {
+      try {
+        // Limpiar metadata
+        navigator.mediaSession.metadata = null;
+
+        // Limpiar todos los action handlers
+        const actions = ['play', 'pause', 'stop', 'previoustrack', 'nexttrack', 'seekbackward', 'seekforward'];
+        actions.forEach(action => {
+          try {
+            navigator.mediaSession.setActionHandler(action, null);
+          } catch (e) {
+            // Ignorar errores (algunos actions pueden no estar soportados)
+          }
+        });
+
+        console.log('[BackgroundAudioHelper] Media Session limpiada');
+      } catch (error) {
+        console.warn('[BackgroundAudioHelper] Error limpiando Media Session:', error);
+      }
+    }
   }
 
   updateMediaSessionMetadata(title, chapter) {
@@ -381,6 +408,9 @@ class BackgroundAudioHelper {
       });
       this.audioContext = null;
     }
+
+    // 🔧 FIX #52: Limpiar Media Session handlers al destruir
+    this.clearMediaSession();
   }
 }
 

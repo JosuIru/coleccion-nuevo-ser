@@ -84,6 +84,10 @@ class AudioReader {
     this.visibilityChangeHandler = null;
     this.attachVisibilityHandler();
 
+    // 🔧 FIX #51: Handler para beforeunload (liberar wake lock al cerrar página)
+    this.beforeUnloadHandler = null;
+    this.attachBeforeUnloadHandler();
+
     // Inicializar TTS según plataforma
     this.initTTS();
   }
@@ -384,12 +388,25 @@ class AudioReader {
 
   async acquireWakeLock() {
     try {
+      // 🔧 FIX #51: Liberar wake lock anterior antes de adquirir uno nuevo
+      if (this.wakeLock && !this.wakeLock.released) {
+        try {
+          await this.wakeLock.release();
+          this.wakeLock = null;
+        } catch (err) {
+          console.warn('Error liberando wake lock anterior:', err);
+          this.wakeLock = null;
+        }
+      }
+
       // Usar Web Wake Lock API (funciona en Android WebView con el permiso WAKE_LOCK)
       if ('wakeLock' in navigator) {
         try {
           this.wakeLock = await navigator.wakeLock.request('screen');
           this.wakeLock.addEventListener('release', () => {
             logger.log('🔓 Wake lock liberado automáticamente');
+            // 🔧 FIX #51: Limpiar referencia cuando se libera automáticamente
+            this.wakeLock = null;
           });
           logger.log('🔒 Wake lock adquirido - La pantalla se mantendrá activa durante la reproducción');
         } catch (err) {
@@ -409,19 +426,29 @@ class AudioReader {
   }
 
   async releaseWakeLock() {
+    // 🔧 FIX #51: Mejorar manejo de errores y asegurar limpieza completa
+    if (!this.wakeLock) {
+      return; // No hay wake lock para liberar
+    }
+
     try {
       // Liberar Web Wake Lock API
-      if (this.wakeLock && !this.wakeLock.released) {
+      if (!this.wakeLock.released) {
         await this.wakeLock.release();
-        this.wakeLock = null;
         logger.log('🔓 Wake lock liberado - La pantalla puede apagarse normalmente');
       }
     } catch (error) {
       // console.warn('⚠️ Error al liberar wake lock:', error);
+    } finally {
+      // 🔧 FIX #51: Siempre limpiar la referencia, incluso si release() falla
+      this.wakeLock = null;
     }
   }
 
   setupMediaSession() {
+    // 🔧 FIX #52: Limpiar handlers existentes antes de registrar nuevos para evitar duplicación
+    this.clearMediaSession();
+
     // Media Session API para controles nativos en móvil y reproducción en background
     if ('mediaSession' in navigator) {
       try {
@@ -610,6 +637,9 @@ class AudioReader {
 
   async pause() {
     if (!this.isPlaying || this.isPaused) return;
+
+    // 🔧 FIX #51: Liberar wake lock al pausar
+    await this.releaseWakeLock();
 
     if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       // Premium TTS pause (OpenAI, Hugging Face o ElevenLabs)
@@ -3174,7 +3204,13 @@ class AudioReader {
       timestamp: Date.now()
     };
 
-    localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
+    // 🔧 FIX #55: Wrap en try-catch para evitar crashes por QuotaExceededError
+    try {
+      localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando posición:', error);
+      // No mostrar error al usuario, es funcionalidad secundaria
+    }
   }
 
   loadLastPosition() {
@@ -3441,6 +3477,12 @@ class AudioReader {
           this.pauseSleepTimer();
         }
       } else {
+        // 🔧 FIX #51: Re-adquirir wake lock al volver a foreground si está reproduciendo
+        if (this.isPlaying && !this.isPaused) {
+          logger.log('📱 App en foreground - re-adquiriendo wake lock');
+          await this.acquireWakeLock();
+        }
+
         // 🔧 FIX #56: Resumir sleep timer al volver a la app
         if (this.sleepTimerPaused && this.sleepTimerRemainingTime > 0) {
           this.resumeSleepTimer();
@@ -3457,6 +3499,32 @@ class AudioReader {
       document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
       this.visibilityChangeHandler = null;
       logger.log('👁️ Handler de visibilidad removido');
+    }
+  }
+
+  // 🔧 FIX #51: BeforeUnload handler para liberar wake lock al cerrar página
+  attachBeforeUnloadHandler() {
+    this.beforeUnloadHandler = () => {
+      // Liberar wake lock sincronamente antes de cerrar
+      if (this.wakeLock && !this.wakeLock.released) {
+        try {
+          this.wakeLock.release();
+          logger.log('📱 Wake lock liberado antes de cerrar página');
+        } catch (err) {
+          console.warn('Error liberando wake lock en beforeunload:', err);
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', this.beforeUnloadHandler);
+    logger.log('👁️ Handler de beforeunload adjuntado');
+  }
+
+  detachBeforeUnloadHandler() {
+    if (this.beforeUnloadHandler) {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+      this.beforeUnloadHandler = null;
+      logger.log('👁️ Handler de beforeunload removido');
     }
   }
 
@@ -3508,12 +3576,20 @@ class AudioReader {
     }
 
     // 2. Liberar wake lock (#51)
-    if (this.wakeLock && !this.wakeLock.released) {
-      this.wakeLock.release().catch(err => {
-        console.warn('Error liberando wake lock:', err);
-      });
-      this.wakeLock = null;
-      logger.log('🔓 Wake lock liberado');
+    // 🔧 FIX #51: Asegurar liberación completa en todos los casos
+    if (this.wakeLock) {
+      try {
+        if (!this.wakeLock.released) {
+          this.wakeLock.release().catch(err => {
+            console.warn('Error liberando wake lock:', err);
+          });
+          logger.log('🔓 Wake lock liberado');
+        }
+      } catch (err) {
+        console.warn('Error verificando/liberando wake lock:', err);
+      } finally {
+        this.wakeLock = null;
+      }
     }
 
     // 3. Limpiar Media Session (#52)
@@ -3527,6 +3603,7 @@ class AudioReader {
     this.detachDragListeners();
     this.detachMinimizedPlayerGestures();
     this.detachVisibilityHandler();
+    this.detachBeforeUnloadHandler(); // 🔧 FIX #51: Remover handler de beforeunload
 
     // 6. Limpiar caché de TTS
     if (this.ttsManager && this.ttsManager.providers && this.ttsManager.providers.openai) {

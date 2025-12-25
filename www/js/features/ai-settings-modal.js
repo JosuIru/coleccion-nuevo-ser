@@ -17,6 +17,11 @@ class AISettingsModal {
 
   close() {
     this.isOpen = false;
+    // 🔧 FIX #32: Cleanup escape key handler to prevent memory leaks
+    if (this.handleEscape) {
+      document.removeEventListener('keydown', this.handleEscape);
+      this.handleEscape = null;
+    }
     const modal = document.getElementById('ai-settings-modal');
     if (modal) modal.remove();
   }

@@ -51,6 +51,11 @@ class InteractiveQuiz {
   }
 
   close() {
+    // 🔧 FIX #32: Cleanup escape key handler to prevent memory leaks
+    if (this.handleEscape) {
+      document.removeEventListener('keydown', this.handleEscape);
+      this.handleEscape = null;
+    }
     const modal = document.getElementById('quiz-modal');
     if (modal) {
       modal.classList.add('opacity-0');

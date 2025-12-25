@@ -171,20 +171,45 @@ class BookReader {
   }
 
   // 🧹 MEMORY LEAK FIX #44: Método de cleanup
+  // 🔧 FIX #47: Cleanup completo de recursos
   cleanup() {
     // 🔧 FIX #4: Usar logger en lugar de console.log
     logger.debug('[BookReader] Iniciando cleanup...');
 
-    // Limpiar todos los event listeners gestionados por EventManager
+    // 🔧 FIX #47: Limpiar todos los event listeners gestionados por EventManager
     if (this.eventManager) {
       this.eventManager.cleanup();
     }
 
-    // 🔧 FIX #45: Resetear todos los flags de dropdown y event listeners
+    // 🔧 FIX #47: Resetear todos los flags de dropdown y event listeners
     this._eventListenersAttached = false;
     this._bottomNavClickOutsideAttached = false;
     this._moreActionsClickOutsideAttached = false;
     this._desktopDropdownsClickOutsideAttached = false;
+
+    // 🔧 FIX #47: Limpiar referencias a handlers almacenados
+    this._toggleSidebarHandler = null;
+    this._closeSidebarHandler = null;
+    this._backToBibliotecaHandler = null;
+    this._mobileMenuHandler = null;
+    this._bottomNavMoreHandler = null;
+    this._bottomNavClickOutsideHandler = null;
+    this._audioreaderHandler = null;
+    this._moreActionsToggleHandler = null;
+    this._moreActionsClickOutsideHandler = null;
+    this._desktopDropdownsClickOutsideHandler = null;
+    this._markReadHandler = null;
+
+    // 🔧 FIX #47: Limpiar mapa de dropdown handlers
+    if (this._dropdownHandlers) {
+      this._dropdownHandlers = {};
+    }
+
+    // 🔧 FIX #47: Limpiar referencia al capítulo actual
+    this.currentChapter = null;
+
+    // 🔧 FIX #47: Remover tema del libro al cerrar
+    this.removeBookTheme();
 
     // 🔧 FIX #4: Usar logger en lugar de console.log
     logger.debug('[BookReader] Cleanup completado ✅');

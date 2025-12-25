@@ -22,6 +22,11 @@ class MyAccountModal {
       { id: 'settings', label: 'Preferencias', icon: 'settings' }
     ];
 
+    // 🔧 FIX: EventManager para gestión automática de listeners
+    this.eventManager = new EventManager();
+    this.eventManager.setComponentName('MyAccountModal');
+    this._eventListenersAttached = false;
+
     this.init();
   }
 
@@ -54,6 +59,12 @@ class MyAccountModal {
   }
 
   close() {
+    // 🔧 FIX: Cleanup de event listeners ANTES de remover
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+    this._eventListenersAttached = false;
+
     const modal = document.getElementById('my-account-modal');
     if (modal) {
       modal.classList.add('fade-out');
@@ -632,16 +643,29 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   attachEvents() {
+    // 🔧 FIX: Protección contra re-attach múltiple
+    if (this._eventListenersAttached) {
+      console.warn('[MyAccountModal] Listeners already attached, skipping');
+      return;
+    }
+
     const modal = document.getElementById('my-account-modal');
     if (!modal) return;
 
     // Cerrar modal
-    document.getElementById('my-account-backdrop')?.addEventListener('click', () => this.close());
-    document.getElementById('my-account-close')?.addEventListener('click', () => this.close());
+    const backdrop = document.getElementById('my-account-backdrop');
+    if (backdrop) {
+      this.eventManager.addEventListener(backdrop, 'click', () => this.close());
+    }
+
+    const closeBtn = document.getElementById('my-account-close');
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.close());
+    }
 
     // Tabs
     modal.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      this.eventManager.addEventListener(btn, 'click', () => {
         this.currentTab = btn.dataset.tab;
         modal.querySelectorAll('.tab-btn').forEach(b => {
           b.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400', 'bg-white/5');
@@ -656,82 +680,110 @@ class MyAccountModal {
 
     this.attachTabEvents();
 
-    // Escape para cerrar
+    // 🔧 FIX: Escape para cerrar usando EventManager
     const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        this.close();
-        document.removeEventListener('keydown', handleEscape);
-      }
+      if (e.key === 'Escape') this.close();
     };
-    document.addEventListener('keydown', handleEscape);
+    this.eventManager.addEventListener(document, 'keydown', handleEscape);
+
+    this._eventListenersAttached = true;
   }
 
   attachTabEvents() {
+    // 🔧 FIX: Usar EventManager para todos los listeners de tabs
+
     // Guardar perfil
-    document.getElementById('save-profile-btn')?.addEventListener('click', async () => {
-      const name = document.getElementById('profile-name')?.value;
-      if (name && this.supabase) {
-        try {
-          await this.supabase.from('profiles').update({ full_name: name }).eq('id', this.authHelper.getUser().id);
-          window.toast?.success('Perfil actualizado');
-        } catch (error) {
-          window.toast?.error('Error al guardar');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    if (saveProfileBtn) {
+      this.eventManager.addEventListener(saveProfileBtn, 'click', async () => {
+        const name = document.getElementById('profile-name')?.value;
+        if (name && this.supabase) {
+          try {
+            await this.supabase.from('profiles').update({ full_name: name }).eq('id', this.authHelper.getUser().id);
+            window.toast?.success('Perfil actualizado');
+          } catch (error) {
+            window.toast?.error('Error al guardar');
+          }
         }
-      }
-    });
+      });
+    }
 
     // Cambiar contraseña
-    document.getElementById('change-password-btn')?.addEventListener('click', () => {
-      if (window.authModal) {
-        this.close();
-        window.authModal.show('reset');
-      }
-    });
+    const changePasswordBtn = document.getElementById('change-password-btn');
+    if (changePasswordBtn) {
+      this.eventManager.addEventListener(changePasswordBtn, 'click', () => {
+        if (window.authModal) {
+          this.close();
+          window.authModal.show('reset');
+        }
+      });
+    }
 
     // Upgrade
-    document.getElementById('upgrade-btn')?.addEventListener('click', () => {
-      this.close();
-      if (window.pricingModal) {
-        window.pricingModal.showPricingModal();
-      } else if (window.biblioteca) {
-        window.biblioteca.showPremiumInfoModal();
-      }
-    });
+    const upgradeBtn = document.getElementById('upgrade-btn');
+    if (upgradeBtn) {
+      this.eventManager.addEventListener(upgradeBtn, 'click', () => {
+        this.close();
+        if (window.pricingModal) {
+          window.pricingModal.showPricingModal();
+        } else if (window.biblioteca) {
+          window.biblioteca.showPremiumInfoModal();
+        }
+      });
+    }
 
-    document.getElementById('upgrade-pro-btn')?.addEventListener('click', () => {
-      this.close();
-      if (window.pricingModal) {
-        window.pricingModal.showPricingModal();
-      }
-    });
+    const upgradeProBtn = document.getElementById('upgrade-pro-btn');
+    if (upgradeProBtn) {
+      this.eventManager.addEventListener(upgradeProBtn, 'click', () => {
+        this.close();
+        if (window.pricingModal) {
+          window.pricingModal.showPricingModal();
+        }
+      });
+    }
 
     // Cancelar suscripción
-    document.getElementById('cancel-subscription-btn')?.addEventListener('click', () => {
-      this.showCancelConfirmation();
-    });
+    const cancelBtn = document.getElementById('cancel-subscription-btn');
+    if (cancelBtn) {
+      this.eventManager.addEventListener(cancelBtn, 'click', () => {
+        this.showCancelConfirmation();
+      });
+    }
 
     // Guardar preferencias
-    document.getElementById('save-preferences-btn')?.addEventListener('click', async () => {
-      await this.savePreferences();
-    });
+    const savePrefsBtn = document.getElementById('save-preferences-btn');
+    if (savePrefsBtn) {
+      this.eventManager.addEventListener(savePrefsBtn, 'click', async () => {
+        await this.savePreferences();
+      });
+    }
 
     // Exportar datos
-    document.getElementById('export-data-btn')?.addEventListener('click', async () => {
-      await this.exportData();
-    });
+    const exportBtn = document.getElementById('export-data-btn');
+    if (exportBtn) {
+      this.eventManager.addEventListener(exportBtn, 'click', async () => {
+        await this.exportData();
+      });
+    }
 
     // Eliminar cuenta
-    document.getElementById('delete-account-btn')?.addEventListener('click', () => {
-      this.showDeleteConfirmation();
-    });
+    const deleteBtn = document.getElementById('delete-account-btn');
+    if (deleteBtn) {
+      this.eventManager.addEventListener(deleteBtn, 'click', () => {
+        this.showDeleteConfirmation();
+      });
+    }
 
     // Comprar créditos
-    document.getElementById('buy-credits-btn')?.addEventListener('click', () => {
-      this.close();
-      if (window.pricingModal) {
-        window.pricingModal.showPricingModal();
-      }
-    });
+    const buyCreditsBtn = document.getElementById('buy-credits-btn');
+    if (buyCreditsBtn) {
+      this.eventManager.addEventListener(buyCreditsBtn, 'click', () => {
+        this.close();
+        if (window.pricingModal) {
+          window.pricingModal.showPricingModal();
+        }
+      });
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

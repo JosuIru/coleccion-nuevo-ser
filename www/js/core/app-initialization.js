@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX v2.9.150: Memory leak fixes - 3 critical modals migrated to EventManager
-    window.__APP_VERSION__ = '2.9.150'; // Cambiar con cada release
+    // 🔧 FIX v2.9.151: Memory leak fixes - ALL 5 critical modals migrated to EventManager
+    window.__APP_VERSION__ = '2.9.151'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

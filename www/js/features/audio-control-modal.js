@@ -8,6 +8,11 @@ class AudioControlModal {
     this.modal = null;
     this.currentTab = 'modes';
     this.visualizer = null;
+
+    // 🔧 FIX: EventManager para gestión automática de listeners
+    this.eventManager = new EventManager();
+    this.eventManager.setComponentName('AudioControlModal');
+    this._eventListenersAttached = false;
   }
 
   // ==========================================================================
@@ -402,168 +407,199 @@ class AudioControlModal {
   // ==========================================================================
 
   attachEvents() {
+    // 🔧 FIX: Protección contra re-attach múltiple
+    if (this._eventListenersAttached) {
+      console.warn('[AudioControlModal] Listeners already attached, skipping');
+      return;
+    }
+
     // Cerrar modal
     const closeBtn = this.modal.querySelector('#audio-control-close');
-    closeBtn?.addEventListener('click', () => this.close());
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.close());
+    }
 
     // Tabs
     const tabs = this.modal.querySelectorAll('.audio-tab');
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
+      this.eventManager.addEventListener(tab, 'click', () => {
         this.showTab(tab.dataset.tab);
       });
     });
 
     // Delegación de eventos para contenido dinámico
     const content = this.modal.querySelector('#audio-tab-content');
-    content?.addEventListener('click', async (e) => {
-      const modeBtn = e.target.closest('.audio-mode-btn');
-      const presetBtn = e.target.closest('.audio-preset-btn');
-      const profileBtn = e.target.closest('.audio-profile-btn');
-      const ambientBtn = e.target.closest('.ambient-btn');
-      const binauralBtn = e.target.closest('.binaural-btn');
+    if (content) {
+      this.eventManager.addEventListener(content, 'click', async (e) => {
+        const modeBtn = e.target.closest('.audio-mode-btn');
+        const presetBtn = e.target.closest('.audio-preset-btn');
+        const profileBtn = e.target.closest('.audio-profile-btn');
+        const ambientBtn = e.target.closest('.ambient-btn');
+        const binauralBtn = e.target.closest('.binaural-btn');
 
-      if (modeBtn) {
-        await this.audioReader.setMode(modeBtn.dataset.mode);
-        this.showTab('modes'); // Refresh
-      } else if (presetBtn) {
-        await this.audioReader.quickSetup(presetBtn.dataset.preset);
-        this.showTab('modes'); // Refresh
-      } else if (profileBtn) {
-        this.audioReader.setProfile(profileBtn.dataset.profile);
-        this.showTab('equalizer'); // Refresh
-      } else if (ambientBtn) {
-        // Toggle: Si ya está activo, detener
-        const isActive = ambientBtn.classList.contains('border-cyan-500');
+        if (modeBtn) {
+          await this.audioReader.setMode(modeBtn.dataset.mode);
+          this.showTab('modes'); // Refresh
+        } else if (presetBtn) {
+          await this.audioReader.quickSetup(presetBtn.dataset.preset);
+          this.showTab('modes'); // Refresh
+        } else if (profileBtn) {
+          this.audioReader.setProfile(profileBtn.dataset.profile);
+          this.showTab('equalizer'); // Refresh
+        } else if (ambientBtn) {
+          // Toggle: Si ya está activo, detener
+          const isActive = ambientBtn.classList.contains('border-cyan-500');
 
-        if (isActive) {
-          // Desactivar y detener
-          ambientBtn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
-          ambientBtn.classList.add('border-slate-300 dark:border-slate-700');
+          if (isActive) {
+            // Desactivar y detener
+            ambientBtn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
+            ambientBtn.classList.add('border-slate-300 dark:border-slate-700');
+            this.audioReader.stopAmbient();
+          } else {
+            // Desactivar todos los demás
+            const allAmbientBtns = this.modal.querySelectorAll('.ambient-btn');
+            allAmbientBtns.forEach(btn => {
+              btn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
+              btn.classList.add('border-slate-300 dark:border-slate-700');
+            });
+
+            // Activar el seleccionado
+            ambientBtn.classList.add('border-cyan-500', 'bg-cyan-500/20');
+            ambientBtn.classList.remove('border-slate-300 dark:border-slate-700');
+
+            // Reproducir
+            await this.audioReader.playAmbient(ambientBtn.dataset.soundscape);
+          }
+        } else if (binauralBtn) {
+          // Toggle: Si ya está activo, detener
+          const isActive = binauralBtn.classList.contains('border-cyan-500');
+
+          if (isActive) {
+            // Desactivar y detener
+            binauralBtn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
+            binauralBtn.classList.add('border-slate-300 dark:border-slate-700');
+            this.audioReader.stopBinaural();
+          } else {
+            // Desactivar todos los demás
+            const allBinauralBtns = this.modal.querySelectorAll('.binaural-btn');
+            allBinauralBtns.forEach(btn => {
+              btn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
+              btn.classList.add('border-slate-300 dark:border-slate-700');
+            });
+
+            // Activar el seleccionado
+            binauralBtn.classList.add('border-cyan-500', 'bg-cyan-500/20');
+            binauralBtn.classList.remove('border-slate-300 dark:border-slate-700');
+
+            // Reproducir
+            await this.audioReader.playBinaural(binauralBtn.dataset.binaural);
+          }
+        } else if (e.target.id === 'ambient-stop') {
           this.audioReader.stopAmbient();
-        } else {
-          // Desactivar todos los demás
-          const allAmbientBtns = this.modal.querySelectorAll('.ambient-btn');
-          allAmbientBtns.forEach(btn => {
-            btn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
-            btn.classList.add('border-slate-300 dark:border-slate-700');
-          });
-
-          // Activar el seleccionado
-          ambientBtn.classList.add('border-cyan-500', 'bg-cyan-500/20');
-          ambientBtn.classList.remove('border-slate-300 dark:border-slate-700');
-
-          // Reproducir
-          await this.audioReader.playAmbient(ambientBtn.dataset.soundscape);
-        }
-      } else if (binauralBtn) {
-        // Toggle: Si ya está activo, detener
-        const isActive = binauralBtn.classList.contains('border-cyan-500');
-
-        if (isActive) {
-          // Desactivar y detener
-          binauralBtn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
-          binauralBtn.classList.add('border-slate-300 dark:border-slate-700');
+        } else if (e.target.id === 'binaural-stop') {
           this.audioReader.stopBinaural();
-        } else {
-          // Desactivar todos los demás
-          const allBinauralBtns = this.modal.querySelectorAll('.binaural-btn');
-          allBinauralBtns.forEach(btn => {
-            btn.classList.remove('border-cyan-500', 'bg-cyan-500/20');
-            btn.classList.add('border-slate-300 dark:border-slate-700');
-          });
-
-          // Activar el seleccionado
-          binauralBtn.classList.add('border-cyan-500', 'bg-cyan-500/20');
-          binauralBtn.classList.remove('border-slate-300 dark:border-slate-700');
-
-          // Reproducir
-          await this.audioReader.playBinaural(binauralBtn.dataset.binaural);
         }
-      } else if (e.target.id === 'ambient-stop') {
-        this.audioReader.stopAmbient();
-      } else if (e.target.id === 'binaural-stop') {
-        this.audioReader.stopBinaural();
-      }
-    });
+      });
+    }
 
     // Click fuera del modal para cerrar
-    this.modal.addEventListener('click', (e) => {
+    this.eventManager.addEventListener(this.modal, 'click', (e) => {
       if (e.target === this.modal) {
         this.close();
       }
     });
+
+    this._eventListenersAttached = true;
   }
 
   attachEqualizerEvents() {
+    // 🔧 FIX: Usar EventManager para todos los listeners del ecualizador
     const bassSlider = this.modal.querySelector('#bass-slider');
     const midSlider = this.modal.querySelector('#mid-slider');
     const trebleSlider = this.modal.querySelector('#treble-slider');
     const reverbSlider = this.modal.querySelector('#reverb-slider');
     const resetBtn = this.modal.querySelector('#eq-reset');
 
-    bassSlider?.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.modal.querySelector('#bass-value').textContent = `${value} dB`;
-      this.audioReader.setBass(value);
-    });
+    if (bassSlider) {
+      this.eventManager.addEventListener(bassSlider, 'input', (e) => {
+        const value = parseInt(e.target.value);
+        this.modal.querySelector('#bass-value').textContent = `${value} dB`;
+        this.audioReader.setBass(value);
+      });
+    }
 
-    midSlider?.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.modal.querySelector('#mid-value').textContent = `${value} dB`;
-      this.audioReader.setMid(value);
-    });
+    if (midSlider) {
+      this.eventManager.addEventListener(midSlider, 'input', (e) => {
+        const value = parseInt(e.target.value);
+        this.modal.querySelector('#mid-value').textContent = `${value} dB`;
+        this.audioReader.setMid(value);
+      });
+    }
 
-    trebleSlider?.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.modal.querySelector('#treble-value').textContent = `${value} dB`;
-      this.audioReader.setTreble(value);
-    });
+    if (trebleSlider) {
+      this.eventManager.addEventListener(trebleSlider, 'input', (e) => {
+        const value = parseInt(e.target.value);
+        this.modal.querySelector('#treble-value').textContent = `${value} dB`;
+        this.audioReader.setTreble(value);
+      });
+    }
 
-    reverbSlider?.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.modal.querySelector('#reverb-value').textContent = `${value}%`;
-      this.audioReader.setReverb(value / 100);
-    });
+    if (reverbSlider) {
+      this.eventManager.addEventListener(reverbSlider, 'input', (e) => {
+        const value = parseInt(e.target.value);
+        this.modal.querySelector('#reverb-value').textContent = `${value}%`;
+        this.audioReader.setReverb(value / 100);
+      });
+    }
 
-    resetBtn?.addEventListener('click', () => {
-      bassSlider.value = 0;
-      midSlider.value = 0;
-      trebleSlider.value = 0;
-      reverbSlider.value = 5;
+    if (resetBtn) {
+      this.eventManager.addEventListener(resetBtn, 'click', () => {
+        bassSlider.value = 0;
+        midSlider.value = 0;
+        trebleSlider.value = 0;
+        reverbSlider.value = 5;
 
-      this.audioReader.setBass(0);
-      this.audioReader.setMid(0);
-      this.audioReader.setTreble(0);
-      this.audioReader.setReverb(0.05);
+        this.audioReader.setBass(0);
+        this.audioReader.setMid(0);
+        this.audioReader.setTreble(0);
+        this.audioReader.setReverb(0.05);
 
-      this.showTab('equalizer'); // Refresh
-    });
+        this.showTab('equalizer'); // Refresh
+      });
+    }
 
     // Volumen de canales
     const ambientVolume = this.modal.querySelector('#ambient-volume');
     const binauralVolume = this.modal.querySelector('#binaural-volume');
     const masterVolume = this.modal.querySelector('#master-volume');
 
-    ambientVolume?.addEventListener('input', (e) => {
-      this.audioReader.setAmbientVolume(parseInt(e.target.value) / 100);
-    });
+    if (ambientVolume) {
+      this.eventManager.addEventListener(ambientVolume, 'input', (e) => {
+        this.audioReader.setAmbientVolume(parseInt(e.target.value) / 100);
+      });
+    }
 
-    binauralVolume?.addEventListener('input', (e) => {
-      this.audioReader.setBinauralVolume(parseInt(e.target.value) / 100);
-    });
+    if (binauralVolume) {
+      this.eventManager.addEventListener(binauralVolume, 'input', (e) => {
+        this.audioReader.setBinauralVolume(parseInt(e.target.value) / 100);
+      });
+    }
 
-    masterVolume?.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.modal.querySelector('#master-volume-value').textContent = `${value}%`;
-      this.audioReader.setMasterVolume(value / 100);
-    });
+    if (masterVolume) {
+      this.eventManager.addEventListener(masterVolume, 'input', (e) => {
+        const value = parseInt(e.target.value);
+        this.modal.querySelector('#master-volume-value').textContent = `${value}%`;
+        this.audioReader.setMasterVolume(value / 100);
+      });
+    }
 
     // Toggle enhanced
     const enhancedToggle = this.modal.querySelector('#enhanced-toggle');
-    enhancedToggle?.addEventListener('change', (e) => {
-      this.audioReader.toggleEnhanced();
-    });
+    if (enhancedToggle) {
+      this.eventManager.addEventListener(enhancedToggle, 'change', (e) => {
+        this.audioReader.toggleEnhanced();
+      });
+    }
   }
 
   // ==========================================================================
@@ -580,6 +616,12 @@ class AudioControlModal {
   }
 
   close() {
+    // 🔧 FIX: Cleanup de event listeners ANTES de ocultar
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+    this._eventListenersAttached = false;
+
     if (this.modal) {
       this.modal.classList.add('hidden');
       this.modal.classList.remove('flex');

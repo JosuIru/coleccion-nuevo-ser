@@ -1522,23 +1522,16 @@ class BookReader {
       };
     };
 
+    // 🔧 FIX #43: Eliminación de duplicación masiva de handlers
     /**
-     * Crea un handler para cambiar de libro
+     * Crea un handler para cambiar de libro usando el método unificado handleBookSwitch
      * @param {string} bookId - ID del libro
      * @param {Function|null} closeMenu - Función para cerrar menú
      */
     const createBookSwitchHandler = (bookId, closeMenu = null) => {
       return async () => {
         if (closeMenu) closeMenu();
-
-        await this.bookEngine.loadBook(bookId);
-        this.applyBookTheme();
-        const firstChapter = this.bookEngine.getFirstChapter();
-        if (firstChapter) {
-          this.currentChapter = this.bookEngine.navigateToChapter(firstChapter.id);
-        }
-        this.render();
-        this.attachEventListeners();
+        await this.handleBookSwitch(bookId);
       };
     };
 
@@ -2601,9 +2594,18 @@ class BookReader {
           await this.bookEngine.loadBook(targetBook);
           this.applyBookTheme();
 
+          // 🔧 FIX #48: Verificación de existencia en cross-references
           // Navegar al capítulo específico o al primero si no se especifica
-          // 🔧 FIX #49: Usar navigateToChapter() para actualización parcial
           if (targetChapterId) {
+            // Verificar que el capítulo existe antes de navegar
+            const chapter = this.bookEngine.getChapter(targetChapterId);
+            if (!chapter) {
+              console.warn(`Cross-reference target not found: ${targetChapterId}`);
+              this.showToast('warning', 'Referencia no encontrada');
+              // Navegar al primer capítulo como fallback
+              this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+              return;
+            }
             this.navigateToChapter(targetChapterId);
           } else {
             this.navigateToChapter(this.bookEngine.getFirstChapter().id);
@@ -2652,8 +2654,16 @@ class BookReader {
           await this.bookEngine.loadBook(targetBook);
           this.applyBookTheme();
 
+          // 🔧 FIX #48: Verificación de existencia en cross-references
           // Navegar al capítulo de la acción específica
           if (targetChapterId) {
+            const chapter = this.bookEngine.getChapter(targetChapterId);
+            if (!chapter) {
+              console.warn(`Action detail target not found: ${targetChapterId}`);
+              this.showToast('warning', 'Referencia no encontrada');
+              this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+              return;
+            }
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
@@ -2687,8 +2697,16 @@ class BookReader {
           await this.bookEngine.loadBook(targetBook);
           this.applyBookTheme();
 
+          // 🔧 FIX #48: Verificación de existencia en cross-references
           // Navegar al capítulo del ejercicio específico
           if (targetChapterId) {
+            const chapter = this.bookEngine.getChapter(targetChapterId);
+            if (!chapter) {
+              console.warn(`Toolkit exercise target not found: ${targetChapterId}`);
+              this.showToast('warning', 'Referencia no encontrada');
+              this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+              return;
+            }
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
@@ -2773,8 +2791,16 @@ class BookReader {
           await this.bookEngine.loadBook(targetBook);
           this.applyBookTheme();
 
+          // 🔧 FIX #48: Verificación de existencia en cross-references
           // Navegar al capítulo del libro principal
           if (targetChapterId) {
+            const chapter = this.bookEngine.getChapter(targetChapterId);
+            if (!chapter) {
+              console.warn(`Parent book target not found: ${targetChapterId}`);
+              this.showToast('warning', 'Referencia no encontrada');
+              this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+              return;
+            }
             this.currentChapter = this.bookEngine.navigateToChapter(targetChapterId);
           }
 
@@ -2847,6 +2873,62 @@ class BookReader {
     }
   }
 
+  // 🔧 FIX #43: Handler reutilizable para cambio de libros
+  /**
+   * Cambia al libro especificado con confirmación del usuario
+   * @param {string} bookId - ID del libro de destino
+   */
+  async handleBookSwitch(bookId) {
+    try {
+      const allBooks = this.bookEngine.getAllBooks();
+      const targetBook = allBooks.find(b => b.id === bookId);
+
+      if (!targetBook) {
+        console.warn(`[BookReader] Libro no encontrado: ${bookId}`);
+        this.showToast('error', 'Libro no encontrado');
+        return;
+      }
+
+      // Confirmar cambio de libro
+      const currentBookId = this.bookEngine.getCurrentBook();
+      if (currentBookId === bookId) {
+        this.showToast('info', 'Ya estás leyendo este libro');
+        return;
+      }
+
+      const confirmMessage = this.i18n?.t('reader.confirmBookSwitch', { title: targetBook.title })
+        || `¿Cambiar a "${targetBook.title}"?`;
+
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      // Cargar el libro de destino
+      await this.bookEngine.loadBook(bookId);
+      this.applyBookTheme();
+
+      // Navegar al primer capítulo
+      const firstChapter = this.bookEngine.getFirstChapter();
+      if (firstChapter) {
+        this.navigateToChapter(firstChapter.id);
+      } else {
+        // Fallback: render completo si no hay primer capítulo
+        this.render();
+        this.attachEventListeners();
+      }
+
+      this.showToast('success', this.i18n?.t('reader.bookSwitched') || 'Libro cambiado exitosamente');
+    } catch (error) {
+      console.error('[BookReader] Error cambiando de libro:', error);
+      this.captureError(error, {
+        context: 'handle_book_switch',
+        bookId: bookId,
+        filename: 'book-reader.js'
+      });
+      this.showToast('error', 'Error al cambiar de libro');
+    }
+  }
+
   // 🔧 FIX #49: Métodos de actualización parcial para evitar re-renderizados completos
 
   /**
@@ -2857,6 +2939,9 @@ class BookReader {
       const contentContainer = document.querySelector('.chapter-content');
       if (contentContainer) {
         contentContainer.innerHTML = this.renderChapterContent();
+
+        // 🔧 FIX #49: Re-attach event listeners solo para elementos del contenido
+        this.attachContentListeners();
       }
     } catch (error) {
       // 🔧 FIX #94: Error boundary para actualización de contenido
@@ -2929,6 +3014,12 @@ class BookReader {
         } else if (oldBackdrop) {
           oldBackdrop.remove();
         }
+
+        // 🔧 FIX #49: Re-attach listeners para chapter items en el sidebar
+        this.attachChapterListeners();
+
+        // Re-inicializar iconos
+        Icons.init();
       }
     } catch (error) {
       // 🔧 FIX #94: Error boundary para actualización de sidebar
@@ -2995,6 +3086,103 @@ class BookReader {
       this.captureError(error, {
         context: 'navigate_to_chapter',
         chapterId: chapterId,
+        filename: 'book-reader.js'
+      });
+    }
+  }
+
+  /**
+   * 🔧 FIX #49: Adjunta event listeners solo para elementos dentro del contenido del capítulo
+   * Usado después de updateChapterContent() para restaurar interactividad
+   */
+  attachContentListeners() {
+    try {
+      // Mark chapter as read button
+      if (!this._markReadHandler) {
+        this._markReadHandler = () => {
+          if (this.currentChapter?.id) {
+            this.bookEngine.toggleChapterRead(this.currentChapter.id);
+            const markReadSection = document.querySelector('.mark-read-section');
+            if (markReadSection) {
+              markReadSection.outerHTML = this.renderMarkAsReadButton();
+              const newBtn = document.getElementById('mark-chapter-read-btn');
+              if (newBtn) {
+                this.eventManager.addEventListener(newBtn, 'click', this._markReadHandler);
+              }
+              Icons.init();
+            }
+            this.updateSidebar();
+          }
+        };
+      }
+
+      const markReadBtn = document.getElementById('mark-chapter-read-btn');
+      if (markReadBtn) {
+        this.eventManager.addEventListener(markReadBtn, 'click', this._markReadHandler);
+      }
+
+      // Action cards (solo las que tienen data-action, las otras usan onclick en HTML)
+      const actionCards = document.querySelectorAll('.action-card');
+      actionCards.forEach(card => {
+        const action = card.getAttribute('data-action');
+        if (action) {
+          this.eventManager.addEventListener(card, 'click', (e) => {
+            const button = e.target.closest('button');
+
+            if (action === 'quiz') {
+              const InteractiveQuiz = this.getDependency('InteractiveQuiz');
+              if (InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {
+                const quiz = new InteractiveQuiz(this.currentChapter.quiz, this.currentChapter.id);
+                quiz.start();
+              }
+            } else if (action === 'resources') {
+              const chapterResourcesModal = this.getDependency('chapterResourcesModal');
+              if (chapterResourcesModal) {
+                const chapterId = (this.currentChapter && this.currentChapter.id) ? this.currentChapter.id : null;
+                chapterResourcesModal.open(chapterId);
+              }
+            } else if (action === 'reflection') {
+              const closingQuestion = document.querySelector('.closing-question');
+              if (closingQuestion) {
+                closingQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }
+          });
+        }
+      });
+
+      // Previous/Next chapter buttons en footer
+      const prevBtn = document.getElementById('prev-chapter');
+      if (prevBtn) {
+        this.eventManager.addEventListener(prevBtn, 'click', () => {
+          const chapterId = prevBtn.getAttribute('data-chapter-id');
+          this.navigateToChapter(chapterId);
+        });
+      }
+
+      const nextBtn = document.getElementById('next-chapter');
+      if (nextBtn) {
+        this.eventManager.addEventListener(nextBtn, 'click', () => {
+          const chapterId = nextBtn.getAttribute('data-chapter-id');
+          this.navigateToChapter(chapterId);
+        });
+      }
+
+      // AI Suggestions (si está disponible)
+      const aiSuggestions = this.getDependency('aiSuggestions');
+      if (aiSuggestions) {
+        aiSuggestions.attachToChapterContent();
+      }
+
+      // Re-inicializar iconos
+      Icons.init();
+
+    } catch (error) {
+      // 🔧 FIX #94: Error boundary para attach de content listeners
+      console.error('[BookReader] Error adjuntando content listeners:', error);
+      this.captureError(error, {
+        context: 'attach_content_listeners',
+        chapterId: this.currentChapter?.id,
         filename: 'book-reader.js'
       });
     }

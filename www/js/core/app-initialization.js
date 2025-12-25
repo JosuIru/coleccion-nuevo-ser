@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX #44, #50: Event handlers tracking + Web Speech cleanup + syntax fixes
-    window.__APP_VERSION__ = '2.9.132'; // Cambiar con cada release
+    // 🔧 FIX #43, #48, #49: Handlers unificados + Cross-ref verification + Partial rendering
+    window.__APP_VERSION__ = '2.9.133'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX #67-85: Final batch - All 100 fixes complete! ✅
-    window.__APP_VERSION__ = '2.9.145'; // Cambiar con cada release
+    // 🎯 v2.9.146: Post-auditoría cleanup (100 fixes + limpieza de código y APKs)
+    window.__APP_VERSION__ = '2.9.146'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

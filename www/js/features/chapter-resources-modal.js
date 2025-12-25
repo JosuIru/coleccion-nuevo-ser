@@ -11,6 +11,11 @@ class ChapterResourcesModal {
     this.currentChapterId = null;
     this.currentTab = 'all';
     this.favorites = this.loadFavorites();
+
+    // 🔧 FIX: EventManager para gestión automática de listeners
+    this.eventManager = new EventManager();
+    this.eventManager.setComponentName('ChapterResourcesModal');
+    this._eventListenersAttached = false;
   }
 
   /**
@@ -782,14 +787,24 @@ class ChapterResourcesModal {
    * Event listeners
    */
   attachEventListeners() {
+    // 🔧 FIX: Protección contra re-attach múltiple
+    if (this._eventListenersAttached) {
+      console.warn('[ChapterResourcesModal] Listeners already attached, skipping');
+      return;
+    }
+
     // Close button
-    document.getElementById('close-resources-modal')?.addEventListener('click', () => {
-      this.close();
-    });
+    const closeBtn = document.getElementById('close-resources-modal');
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => {
+        this.close();
+      });
+    }
 
     // Tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         this.currentTab = e.currentTarget.dataset.tab;
         const resources = this.getResourcesForChapter(this.currentChapterId);
         document.getElementById('resources-content').innerHTML = this.renderContent(resources);
@@ -811,22 +826,28 @@ class ChapterResourcesModal {
     this.attachFavoriteListeners();
 
     // Close on backdrop click
-    document.getElementById('chapter-resources-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'chapter-resources-modal') {
-        this.close();
-      }
-    });
+    const modal = document.getElementById('chapter-resources-modal');
+    if (modal) {
+      this.eventManager.addEventListener(modal, 'click', (e) => {
+        if (e.target.id === 'chapter-resources-modal') {
+          this.close();
+        }
+      });
+    }
 
-    // ESC to close
-    this.handleEscape = (e) => {
+    // 🔧 FIX: ESC to close usando EventManager
+    const handleEscape = (e) => {
       if (e.key === 'Escape') this.close();
     };
-    document.addEventListener('keydown', this.handleEscape);
+    this.eventManager.addEventListener(document, 'keydown', handleEscape);
+
+    this._eventListenersAttached = true;
   }
 
   attachFavoriteListeners() {
-    document.querySelectorAll('.favorite-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    const favBtns = document.querySelectorAll('.favorite-btn');
+    favBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         e.preventDefault();
         const type = btn.dataset.type;
         const id = btn.dataset.id;
@@ -851,12 +872,14 @@ class ChapterResourcesModal {
    * Cierra el modal
    */
   close() {
+    // 🔧 FIX: Cleanup de event listeners ANTES de remover
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+    this._eventListenersAttached = false;
+
     const modal = document.getElementById('chapter-resources-modal');
     if (modal) modal.remove();
-
-    if (this.handleEscape) {
-      document.removeEventListener('keydown', this.handleEscape);
-    }
   }
 }
 

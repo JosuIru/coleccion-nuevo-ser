@@ -10,6 +10,11 @@ class KoanModal {
     this.showBinauralControls = false;
     this.selectedPreset = 'THETA';
     this.duration = 10;
+
+    // 🔧 FIX: EventManager para gestión automática de listeners
+    this.eventManager = new EventManager();
+    this.eventManager.setComponentName('KoanModal');
+    this._eventListenersAttached = false;
   }
 
   // Open modal with koan for current chapter
@@ -26,13 +31,14 @@ class KoanModal {
 
   // Close modal
   close() {
+    // 🔧 FIX: Cleanup de event listeners ANTES de remover
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+    this._eventListenersAttached = false;
+
     const modal = document.getElementById('koan-modal');
     if (modal) modal.remove();
-
-    // Remove escape listener
-    if (this.handleEscape) {
-      document.removeEventListener('keydown', this.handleEscape);
-    }
   }
 
   // Render binaural section
@@ -212,29 +218,50 @@ class KoanModal {
 
   // Attach event listeners
   attachEventListeners() {
+    // 🔧 FIX: Protección contra re-attach múltiple
+    if (this._eventListenersAttached) {
+      console.warn('[KoanModal] Listeners already attached, skipping');
+      return;
+    }
+
     // Close buttons
-    document.getElementById('close-koan')?.addEventListener('click', () => this.close());
-    document.getElementById('close-koan-btn')?.addEventListener('click', () => this.close());
+    const closeBtn = document.getElementById('close-koan');
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.close());
+    }
+
+    const closeBtn2 = document.getElementById('close-koan-btn');
+    if (closeBtn2) {
+      this.eventManager.addEventListener(closeBtn2, 'click', () => this.close());
+    }
 
     // New koan button
-    document.getElementById('new-koan-btn')?.addEventListener('click', () => {
-      if (this.currentChapterId) {
-        this.open(this.currentChapterId);
-      }
-    });
+    const newKoanBtn = document.getElementById('new-koan-btn');
+    if (newKoanBtn) {
+      this.eventManager.addEventListener(newKoanBtn, 'click', () => {
+        if (this.currentChapterId) {
+          this.open(this.currentChapterId);
+        }
+      });
+    }
 
     // Toggle binaural controls
-    document.getElementById('toggle-binaural')?.addEventListener('click', () => {
-      this.showBinauralControls = !this.showBinauralControls;
-      this.render();
-      this.attachEventListeners();
-    });
+    const toggleBtn = document.getElementById('toggle-binaural');
+    if (toggleBtn) {
+      this.eventManager.addEventListener(toggleBtn, 'click', () => {
+        this.showBinauralControls = !this.showBinauralControls;
+        this._eventListenersAttached = false; // Permitir re-attach después de render
+        this.render();
+        this.attachEventListeners();
+      });
+    }
 
     // Preset buttons
     const presetBtns = document.querySelectorAll('.preset-btn');
     presetBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      this.eventManager.addEventListener(btn, 'click', () => {
         this.selectedPreset = btn.getAttribute('data-preset');
+        this._eventListenersAttached = false; // Permitir re-attach después de render
         this.render();
         this.attachEventListeners();
       });
@@ -244,32 +271,43 @@ class KoanModal {
     const durationSlider = document.getElementById('duration-slider');
     const durationDisplay = document.getElementById('duration-display');
     if (durationSlider && durationDisplay) {
-      durationSlider.addEventListener('input', (e) => {
+      this.eventManager.addEventListener(durationSlider, 'input', (e) => {
         this.duration = parseInt(e.target.value);
         durationDisplay.textContent = `${this.duration} min`;
       });
     }
 
     // Play binaural
-    document.getElementById('play-binaural-btn')?.addEventListener('click', () => {
-      this.playBinaural();
-    });
+    const playBtn = document.getElementById('play-binaural-btn');
+    if (playBtn) {
+      this.eventManager.addEventListener(playBtn, 'click', () => {
+        this.playBinaural();
+      });
+    }
 
     // Stop binaural
-    document.getElementById('stop-binaural-btn')?.addEventListener('click', () => {
-      this.stopBinaural();
-    });
+    const stopBtn = document.getElementById('stop-binaural-btn');
+    if (stopBtn) {
+      this.eventManager.addEventListener(stopBtn, 'click', () => {
+        this.stopBinaural();
+      });
+    }
 
     // Close on backdrop click
-    document.getElementById('koan-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'koan-modal') this.close();
-    });
+    const modal = document.getElementById('koan-modal');
+    if (modal) {
+      this.eventManager.addEventListener(modal, 'click', (e) => {
+        if (e.target.id === 'koan-modal') this.close();
+      });
+    }
 
-    // ESC to close
-    this.handleEscape = (e) => {
+    // 🔧 FIX: ESC to close usando EventManager
+    const handleEscape = (e) => {
       if (e.key === 'Escape') this.close();
     };
-    document.addEventListener('keydown', this.handleEscape);
+    this.eventManager.addEventListener(document, 'keydown', handleEscape);
+
+    this._eventListenersAttached = true;
   }
 
   // Play binaural audio

@@ -10,6 +10,11 @@ class HelpCenterModal {
     this.searchQuery = '';
     this.i18n = window.i18n || { t: (key) => key };
 
+    // 🔧 FIX: EventManager para gestión automática de listeners
+    this.eventManager = new EventManager();
+    this.eventManager.setComponentName('HelpCenterModal');
+    this._eventListenersAttached = false;
+
     // Base de conocimiento organizada por categorías
     this.helpContent = {
       basics: {
@@ -891,6 +896,12 @@ class HelpCenterModal {
   }
 
   close() {
+    // 🔧 FIX: Cleanup de event listeners ANTES de remover
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+    this._eventListenersAttached = false;
+
     const modal = document.getElementById('help-center-modal');
     if (modal) {
       modal.classList.add('opacity-0');
@@ -955,8 +966,10 @@ class HelpCenterModal {
     if (isMobile) {
       const mobileSelect = document.getElementById('help-mobile-tab');
       if (mobileSelect) {
-        mobileSelect.addEventListener('change', (e) => {
+        // 🔧 FIX: Usar EventManager en vez de addEventListener directo
+        this.eventManager.addEventListener(mobileSelect, 'change', (e) => {
           this.currentTab = e.target.value;
+          this._eventListenersAttached = false; // Permitir re-attach después de render
           this.render();
           this.attachEventListeners();
         });
@@ -1100,33 +1113,38 @@ class HelpCenterModal {
   // ==========================================================================
 
   attachEventListeners() {
+    // 🔧 FIX: Protección contra re-attach múltiple
+    if (this._eventListenersAttached) {
+      console.warn('[HelpCenterModal] Listeners already attached, skipping');
+      return;
+    }
+
     // Cerrar modal
     const closeBtn = document.getElementById('close-help-center');
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.close());
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.close());
     }
 
     // Click fuera del modal
     const modal = document.getElementById('help-center-modal');
     if (modal) {
-      modal.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(modal, 'click', (e) => {
         if (e.target === modal) this.close();
       });
     }
 
-    // ESC para cerrar
+    // 🔧 FIX: ESC para cerrar usando EventManager
     const handleEsc = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.close();
-        document.removeEventListener('keydown', handleEsc);
       }
     };
-    document.addEventListener('keydown', handleEsc);
+    this.eventManager.addEventListener(document, 'keydown', handleEsc);
 
     // Búsqueda
     const searchInput = document.getElementById('help-search-input');
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+      this.eventManager.addEventListener(searchInput, 'input', (e) => {
         this.searchQuery = e.target.value;
         this.updateContent();
       });
@@ -1135,7 +1153,7 @@ class HelpCenterModal {
     // Clear search
     const clearSearch = document.getElementById('clear-help-search');
     if (clearSearch) {
-      clearSearch.addEventListener('click', () => {
+      this.eventManager.addEventListener(clearSearch, 'click', () => {
         this.searchQuery = '';
         const searchInput = document.getElementById('help-search-input');
         if (searchInput) {
@@ -1149,10 +1167,11 @@ class HelpCenterModal {
     // Tabs
     const tabs = document.querySelectorAll('.help-tab');
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
+      this.eventManager.addEventListener(tab, 'click', () => {
         this.currentTab = tab.dataset.tab;
         this.searchQuery = ''; // Reset search cuando cambia tab
         this.render();
+        this._eventListenersAttached = false; // Permitir re-attach después de render
         this.attachEventListeners();
       });
     });
@@ -1160,7 +1179,7 @@ class HelpCenterModal {
     // Acordeón de items
     const itemHeaders = document.querySelectorAll('.help-item-header');
     itemHeaders.forEach(header => {
-      header.addEventListener('click', () => {
+      this.eventManager.addEventListener(header, 'click', () => {
         const itemId = header.dataset.itemId;
         const content = document.getElementById(`help-content-${itemId}`);
         const chevron = header.querySelector('.help-item-chevron');
@@ -1182,7 +1201,7 @@ class HelpCenterModal {
     // Tutorial button
     const tutorialBtn = document.getElementById('start-tutorial-btn');
     if (tutorialBtn) {
-      tutorialBtn.addEventListener('click', () => {
+      this.eventManager.addEventListener(tutorialBtn, 'click', () => {
         this.close();
         setTimeout(() => {
           if (window.onboardingTutorial) {
@@ -1191,12 +1210,16 @@ class HelpCenterModal {
         }, 300);
       });
     }
+
+    this._eventListenersAttached = true;
   }
 
   updateContent() {
     const contentArea = document.querySelector('#help-center-modal .flex-1.overflow-y-auto');
     if (contentArea) {
       contentArea.innerHTML = this.renderContent();
+      // 🔧 FIX: Resetear flag para permitir re-attach de listeners en nuevos elementos
+      this._eventListenersAttached = false;
       this.attachEventListeners();
     }
   }

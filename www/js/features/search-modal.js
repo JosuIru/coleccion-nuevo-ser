@@ -31,6 +31,14 @@ class SearchModal {
     // 🔧 FIX #35: Debounce configurable a nivel de instancia
     this.debounceDelay = parseInt(localStorage.getItem('search-debounce-delay') || '300', 10); // 300ms por defecto
     this.debounceTimer = null; // Timer a nivel de instancia
+
+    // 🔧 FIX #33: Índice invertido para búsqueda rápida en catálogos grandes
+    this.searchIndex = null;
+    this.indexPromise = this.buildSearchIndex();
+
+    // 🔧 FIX #31: Inicializar filtros dinámicos desde catálogo
+    this.filters = null;
+    this.filtersPromise = this.loadFilters();
   }
 
   async loadMetadata() {
@@ -43,9 +51,149 @@ class SearchModal {
     }
   }
 
+  // 🔧 FIX #31: Cargar filtros dinámicamente desde el catálogo real
+  async loadFilters() {
+    try {
+      // Obtener libros del catálogo real
+      const catalogResponse = await fetch('books/catalog.json');
+      const catalog = await catalogResponse.json();
+
+      // Extraer categorías únicas de todos los libros
+      const categoriesSet = new Set();
+      if (catalog && catalog.books) {
+        catalog.books.forEach(book => {
+          if (book.category) {
+            categoriesSet.add(book.category);
+          }
+        });
+      }
+
+      this.filters = {
+        books: catalog.books
+          .filter(book => book.status === 'published')
+          .map(book => ({
+            id: book.id,
+            title: book.title
+          })),
+        categories: Array.from(categoriesSet).sort(),
+        difficulty: ['básico', 'intermedio', 'avanzado']
+      };
+
+      console.log('✅ Filtros cargados desde catálogo:', this.filters);
+    } catch (error) {
+      console.error('Error loading filters from catalog:', error);
+      // Fallback a filtros vacíos
+      this.filters = {
+        books: [],
+        categories: [],
+        difficulty: ['básico', 'intermedio', 'avanzado']
+      };
+    }
+  }
+
+  // 🔧 FIX #33: Tokenizar texto para índice de búsqueda
+  tokenize(text) {
+    if (!text) return [];
+
+    return this.normalizeText(text)
+      .split(/\s+/)
+      .filter(word => word.length > 2) // Ignorar palabras muy cortas
+      .filter(word => !this.isStopWord(word)); // Filtrar palabras comunes sin valor semántico
+  }
+
+  // 🔧 FIX #33: Palabras comunes en español que no aportan valor a la búsqueda
+  isStopWord(word) {
+    const stopWords = new Set([
+      'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
+      'de', 'del', 'al', 'en', 'con', 'por', 'para', 'sin',
+      'que', 'como', 'pero', 'mas', 'mas', 'esto', 'esta',
+      'ese', 'esa', 'aquel', 'aquella', 'este', 'estos', 'estas',
+      'esos', 'esas', 'aquellos', 'aquellas', 'su', 'sus',
+      'mi', 'mis', 'tu', 'tus', 'nuestro', 'nuestra', 'vuestro',
+      'ser', 'estar', 'haber', 'tener', 'hacer', 'poder', 'ir',
+      'muy', 'mas', 'menos', 'tan', 'tanto', 'cuando', 'donde',
+      'quien', 'cual', 'cuales'
+    ]);
+    return stopWords.has(word);
+  }
+
+  // 🔧 FIX #33: Construir índice invertido para búsqueda rápida
+  async buildSearchIndex() {
+    try {
+      const index = new Map();
+
+      // Cargar catálogo de libros
+      const catalog = await this.bookEngine.loadCatalog();
+      if (!catalog || !catalog.books) {
+        console.warn('No se pudo cargar el catálogo para construir el índice');
+        return;
+      }
+
+      // Indexar todos los libros
+      for (const book of catalog.books) {
+        try {
+          const bookData = await this.loadBookData(book.id);
+          if (!bookData || !bookData.sections) continue;
+
+          // Indexar cada sección y capítulo
+          for (const section of bookData.sections) {
+            for (const chapter of section.chapters || []) {
+              // Tokenizar contenido del capítulo
+              const titleTokens = this.tokenize(chapter.title || '');
+              const contentTokens = this.tokenize(chapter.content || '');
+
+              // Tokenizar ejercicios si existen
+              let exerciseTokens = [];
+              if (chapter.exercises && chapter.exercises.length > 0) {
+                const exerciseText = chapter.exercises.map(ex =>
+                  `${ex.title} ${ex.description || ''} ${ex.reflection || ''}`
+                ).join(' ');
+                exerciseTokens = this.tokenize(exerciseText);
+              }
+
+              // Combinar todos los tokens únicos
+              const allTokens = new Set([...titleTokens, ...contentTokens, ...exerciseTokens]);
+
+              // Agregar al índice invertido
+              for (const token of allTokens) {
+                if (!index.has(token)) {
+                  index.set(token, []);
+                }
+
+                // Guardar referencia al capítulo
+                index.get(token).push({
+                  bookId: book.id,
+                  bookTitle: book.title,
+                  sectionId: section.id,
+                  sectionTitle: section.title,
+                  chapterId: chapter.id,
+                  chapterTitle: chapter.title
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error indexando libro ${book.id}:`, error);
+        }
+      }
+
+      this.searchIndex = index;
+      console.log(`✅ Índice de búsqueda construido: ${index.size} términos únicos indexados`);
+    } catch (error) {
+      console.error('Error construyendo índice de búsqueda:', error);
+      this.searchIndex = null;
+    }
+  }
+
   async open() {
     // 🔧 FIX #29: Esperar a que metadata esté cargada antes de continuar
     await this.metadataPromise;
+
+    // 🔧 FIX #33: Esperar a que el índice de búsqueda esté construido
+    await this.indexPromise;
+
+    // 🔧 FIX #31: Esperar a que los filtros estén cargados
+    await this.filtersPromise;
 
     // Registrar uso de feature para hints contextuales
     if (window.contextualHints) {
@@ -145,70 +293,18 @@ class SearchModal {
       `;
     }
 
-    // Buscar en todos los libros del catálogo
-    // console.log('🔍 Iniciando búsqueda con query:', query);
-    // console.log('🔍 BookEngine:', this.bookEngine);
-
-    let catalog;
-    try {
-      catalog = await this.bookEngine.loadCatalog();
-      // console.log('🔍 Catálogo cargado:', catalog);
-    } catch (error) {
-      console.error('❌ Error cargando catálogo:', error);
-      if (loadingIndicator) loadingIndicator.classList.add('hidden');
-      if (container) {
-        container.innerHTML = `
-          <div class="text-center text-red-600 dark:text-red-400 py-12">
-            <div class="text-6xl mb-4">❌</div>
-            <p class="text-lg">Error cargando el catálogo de libros</p>
-            <p class="text-sm mt-2">${error.message}</p>
-          </div>
-        `;
-      }
-      return;
-    }
-
-    for (const book of catalog.books) {
+    // 🔧 FIX #33: Usar índice de búsqueda si está disponible (búsqueda rápida)
+    if (this.searchIndex) {
       try {
-        // console.log('🔍 Buscando en libro:', book.id);
-        // Cargar book.json completo (contiene todas las secciones y capítulos)
-        const bookData = await this.loadBookData(book.id);
-        // console.log(`📚 Datos de ${book.id}:`, bookData);
-
-        if (!bookData || !bookData.sections) {
-          // console.warn(`⚠️ ${book.id} no tiene secciones`);
-          continue;
-        }
-
-        // Buscar en cada sección
-        for (const section of bookData.sections) {
-          for (const chapter of section.chapters || []) {
-            // El contenido está directamente en el capítulo
-            if (chapter.content) {
-              const relevance = this.calculateRelevance(chapter, queryWords, chapter.id, book.id);
-              // console.log(`   📄 Capítulo ${chapter.id}: score=${relevance.score}`);
-
-              if (relevance.score > 0) {
-                // console.log(`   ✅ MATCH encontrado en ${chapter.id}`);
-                this.searchResults.push({
-                  bookId: book.id,
-                  bookTitle: book.title,
-                  sectionId: section.id,
-                  sectionTitle: section.title,
-                  chapterId: chapter.id,
-                  chapterTitle: chapter.title,
-                  score: relevance.score,
-                  matches: relevance.matches,
-                  excerpt: relevance.excerpt,
-                  metadata: this.getChapterMetadata(book.id, chapter.id)
-                });
-              }
-            }
-          }
-        }
+        await this.searchWithIndex(queryWords);
       } catch (error) {
-        console.error(`❌ Error searching in book ${book.id}:`, error);
+        console.error('Error en búsqueda indexada, fallback a búsqueda secuencial:', error);
+        await this.searchSequential(queryWords);
       }
+    } else {
+      // Fallback a búsqueda secuencial si el índice no está disponible
+      console.warn('Índice no disponible, usando búsqueda secuencial');
+      await this.searchSequential(queryWords);
     }
 
     // console.log('🎯 Total resultados encontrados:', this.searchResults.length);
@@ -243,6 +339,129 @@ class SearchModal {
     this.applyFilters();
   }
 
+  // 🔧 FIX #33: Búsqueda rápida usando índice invertido
+  async searchWithIndex(queryWords) {
+    // Usar el índice para obtener candidatos rápidamente
+    const candidatesMap = new Map(); // key: "bookId|chapterId", value: { bookId, chapterId, ... }
+
+    // Para cada palabra de la query, obtener capítulos candidatos del índice
+    for (const word of queryWords) {
+      const matches = this.searchIndex.get(word) || [];
+
+      for (const match of matches) {
+        const key = `${match.bookId}|${match.chapterId}`;
+        if (!candidatesMap.has(key)) {
+          candidatesMap.set(key, match);
+        }
+      }
+    }
+
+    // console.log(`🔍 Índice encontró ${candidatesMap.size} candidatos únicos`);
+
+    // Ahora calcular relevancia detallada solo para los candidatos
+    const candidates = Array.from(candidatesMap.values());
+
+    for (const candidate of candidates) {
+      try {
+        // Cargar datos completos del libro para calcular relevancia precisa
+        const bookData = await this.loadBookData(candidate.bookId);
+        if (!bookData || !bookData.sections) continue;
+
+        // Encontrar el capítulo específico
+        for (const section of bookData.sections) {
+          const chapter = section.chapters?.find(ch => ch.id === candidate.chapterId);
+
+          if (chapter && chapter.content) {
+            const relevance = this.calculateRelevance(chapter, queryWords, chapter.id, candidate.bookId);
+
+            if (relevance.score > 0) {
+              this.searchResults.push({
+                bookId: candidate.bookId,
+                bookTitle: candidate.bookTitle,
+                sectionId: section.id,
+                sectionTitle: section.title,
+                chapterId: chapter.id,
+                chapterTitle: chapter.title,
+                score: relevance.score,
+                matches: relevance.matches,
+                excerpt: relevance.excerpt,
+                metadata: this.getChapterMetadata(candidate.bookId, chapter.id)
+              });
+            }
+            break; // Ya encontramos el capítulo, salir del loop de secciones
+          }
+        }
+      } catch (error) {
+        console.error(`❌ Error procesando candidato ${candidate.bookId}/${candidate.chapterId}:`, error);
+      }
+    }
+  }
+
+  // 🔧 FIX #33: Búsqueda secuencial (fallback cuando no hay índice)
+  async searchSequential(queryWords) {
+    // Buscar en todos los libros del catálogo
+    // console.log('🔍 Iniciando búsqueda secuencial con query:', queryWords);
+
+    let catalog;
+    try {
+      catalog = await this.bookEngine.loadCatalog();
+    } catch (error) {
+      console.error('❌ Error cargando catálogo:', error);
+      const loadingIndicator = document.getElementById('search-loading');
+      const container = document.getElementById('search-results');
+
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center text-red-600 dark:text-red-400 py-12">
+            <div class="text-6xl mb-4">❌</div>
+            <p class="text-lg">Error cargando el catálogo de libros</p>
+            <p class="text-sm mt-2">${error.message}</p>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    for (const book of catalog.books) {
+      try {
+        // Cargar book.json completo (contiene todas las secciones y capítulos)
+        const bookData = await this.loadBookData(book.id);
+
+        if (!bookData || !bookData.sections) {
+          continue;
+        }
+
+        // Buscar en cada sección
+        for (const section of bookData.sections) {
+          for (const chapter of section.chapters || []) {
+            // El contenido está directamente en el capítulo
+            if (chapter.content) {
+              const relevance = this.calculateRelevance(chapter, queryWords, chapter.id, book.id);
+
+              if (relevance.score > 0) {
+                this.searchResults.push({
+                  bookId: book.id,
+                  bookTitle: book.title,
+                  sectionId: section.id,
+                  sectionTitle: section.title,
+                  chapterId: chapter.id,
+                  chapterTitle: chapter.title,
+                  score: relevance.score,
+                  matches: relevance.matches,
+                  excerpt: relevance.excerpt,
+                  metadata: this.getChapterMetadata(book.id, chapter.id)
+                });
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`❌ Error searching in book ${book.id}:`, error);
+      }
+    }
+  }
+
   async loadBookData(bookId) {
     try {
       const url = `books/${bookId}/book.json`;
@@ -271,72 +490,73 @@ class SearchModal {
       .trim();
   }
 
-  // 🔧 FIX #34: calculateRelevance optimizado para reducir operaciones redundantes
+  // 🔧 FIX #34: Pre-procesar query con frecuencia de términos para evitar iteraciones redundantes
   calculateRelevance(chapter, queryWords, chapterId, bookId) {
-    let score = 0;
     const matches = [];
     let excerpt = '';
+
+    // Calcular frecuencia de términos en la query (pre-procesamiento)
+    const termFrequencyMap = new Map();
+    queryWords.forEach(term => {
+      termFrequencyMap.set(term, (termFrequencyMap.get(term) || 0) + 1);
+    });
 
     // Pre-normalizar todos los textos una sola vez
     const titleNormalized = this.normalizeText(chapter.title || '');
     const contentNormalized = this.normalizeText(chapter.content || '');
 
-    // Crear un Set para palabras ya procesadas (evitar duplicados)
-    const processedWords = new Set();
+    let score = 0;
 
-    // Buscar en título (peso 3x)
-    for (const word of queryWords) {
-      if (titleNormalized.includes(word)) {
-        score += 3;
-        matches.push({ field: 'title', word });
+    // Buscar en título (peso 5x, ponderado por frecuencia del término)
+    queryWords.forEach(term => {
+      if (titleNormalized.includes(term)) {
+        const termWeight = termFrequencyMap.get(term);
+        score += 5 * termWeight;
+        matches.push({ field: 'title', word: term });
       }
-    }
+    });
 
-    // Buscar en contenido (peso 1x) - usar búsqueda simple en vez de regex para cada palabra
-    for (const word of queryWords) {
-      // Contar ocurrencias manualmente (más rápido que regex)
-      let index = 0;
-      let occurrences = 0;
-      while ((index = contentNormalized.indexOf(word, index)) !== -1) {
-        occurrences++;
-        index += word.length;
-      }
-
+    // Buscar en contenido (peso 1x por ocurrencia)
+    queryWords.forEach(term => {
+      // Contar ocurrencias usando regex
+      const occurrences = (contentNormalized.match(new RegExp(term, 'g')) || []).length;
       if (occurrences > 0) {
         score += occurrences;
-        matches.push({ field: 'content', word, count: occurrences });
+        matches.push({ field: 'content', word: term, count: occurrences });
       }
-    }
+    });
 
-    // Buscar en ejercicios (peso 2x) - normalizar una sola vez por ejercicio
+    // Buscar en ejercicios (peso 2x, ponderado por frecuencia del término)
     if (chapter.exercises && chapter.exercises.length > 0) {
       for (const exercise of chapter.exercises) {
         const exerciseText = this.normalizeText(
           `${exercise.title} ${exercise.description || ''} ${exercise.reflection || ''}`
         );
 
-        for (const word of queryWords) {
-          if (exerciseText.includes(word)) {
-            score += 2;
-            matches.push({ field: 'exercise', word });
+        queryWords.forEach(term => {
+          if (exerciseText.includes(term)) {
+            const termWeight = termFrequencyMap.get(term);
+            score += 2 * termWeight;
+            matches.push({ field: 'exercise', word: term });
           }
-        }
+        });
       }
     }
 
-    // Buscar en metadatos/tags (peso 4x) - normalizar una sola vez
+    // Buscar en metadatos/tags (peso 4x, ponderado por frecuencia del término)
     const metadata = this.getChapterMetadata(bookId, chapterId);
     if (metadata) {
       const tags = [...(metadata.tags || []), ...(metadata.keywords || [])];
       if (tags.length > 0) {
         const tagsText = this.normalizeText(tags.join(' '));
 
-        for (const word of queryWords) {
-          if (tagsText.includes(word)) {
-            score += 4;
-            matches.push({ field: 'tags', word });
+        queryWords.forEach(term => {
+          if (tagsText.includes(term)) {
+            const termWeight = termFrequencyMap.get(term);
+            score += 4 * termWeight;
+            matches.push({ field: 'tags', word: term });
           }
-        }
+        });
       }
     }
 
@@ -469,13 +689,11 @@ class SearchModal {
   renderFilters() {
     const selectClass = "px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-900 dark:text-white";
 
-    // 🔧 FIX #31: Cargar libros dinámicamente desde el catálogo
+    // 🔧 FIX #31: Usar filtros cargados dinámicamente desde loadFilters()
     let booksOptions = '<option value="all">Todos los libros</option>';
-    if (this.bookEngine && this.bookEngine.catalog && this.bookEngine.catalog.books) {
-      this.bookEngine.catalog.books.forEach(book => {
-        if (book.status === 'published') {
-          booksOptions += `<option value="${book.id}">${book.title}</option>`;
-        }
+    if (this.filters && this.filters.books) {
+      this.filters.books.forEach(book => {
+        booksOptions += `<option value="${book.id}">${book.title}</option>`;
       });
     }
 

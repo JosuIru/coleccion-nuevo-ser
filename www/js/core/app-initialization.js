@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX #3, #9, #10: Practice widget timeout + DocumentFragment + Optimized fallback
-    window.__APP_VERSION__ = '2.9.134'; // Cambiar con cada release
+    // 🔧 FIX #4, #6, #12: Logger migration + Dynamic padding + Mobile detection
+    window.__APP_VERSION__ = '2.9.135'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

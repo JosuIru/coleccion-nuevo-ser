@@ -169,7 +169,8 @@ class Biblioteca {
       this.render();
       this.attachEventListeners();
     } catch (error) {
-      console.error('Error initializing Biblioteca:', error);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('Error initializing Biblioteca:', error);
       this.renderError(error);
     }
   }
@@ -314,9 +315,22 @@ class Biblioteca {
     const contenedorPrincipal = document.getElementById('biblioteca-view');
     if (!contenedorPrincipal) return;
 
-    // 🔧 FIX #12: Detectar móvil considerando ancho Y capacidad táctil
-    const isMobile = window.innerWidth < 1024 &&
-                     ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    // 🔧 FIX #12: Detección de móvil mejorada con user agent/matchMedia
+    const isMobile = (() => {
+      const width = window.innerWidth;
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // Detección por user agent (móviles reales)
+      const isMobileUA = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+
+      // Tablets tienen screen más grande pero pueden ser touch
+      const isTablet = /ipad|android(?!.*mobile)|tablet/i.test(userAgent.toLowerCase());
+
+      // Móvil si: UA indica móvil Y width < 768, O solo width < 480 (definitivamente móvil)
+      // Tablets (width >= 768) NO se consideran móvil para mejor layout
+      if (isTablet && width >= 768) return false;
+      return (isMobileUA && width < 768) || width < 480;
+    })();
 
     // Detectar si el usuario tiene progreso
     const progresoGlobal = this.bookEngine.getGlobalProgress();
@@ -361,14 +375,13 @@ class Biblioteca {
     // 🔧 FIX #9: Poblar books grid con DocumentFragment para mejor performance
     this.populateBooksGrid();
 
-    // 🔧 FIX #6: Calcular padding dinámicamente basado en la altura del bottom nav
+    // 🔧 FIX #6: Calcular paddingBottom dinámicamente
     if (isMobile) {
       requestAnimationFrame(() => {
-        const bottomNav = document.getElementById('biblioteca-bottom-nav');
         const container = document.querySelector('.biblioteca-container');
-        if (bottomNav && container) {
-          const navHeight = bottomNav.offsetHeight;
-          const padding = navHeight + 20; // 20px adicionales de margen
+        if (container) {
+          const bottomNav = document.getElementById('biblioteca-bottom-nav');
+          const padding = bottomNav ? bottomNav.offsetHeight + 20 : 140; // fallback a 140
           container.style.paddingBottom = `${padding}px`;
         }
       });
@@ -388,7 +401,8 @@ class Biblioteca {
 
     // Verificar timeout real
     if (Date.now() - startTime > TIMEOUT_MS) {
-      console.warn('[Biblioteca] Practice widget timeout después de 5s');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.warn('[Biblioteca] Practice widget timeout después de 5s');
       // 🔧 FIX #14: Mostrar mensaje al usuario cuando el sistema no carga
       const container = document.getElementById('practice-widget-container');
       if (container) {
@@ -406,7 +420,8 @@ class Biblioteca {
 
     // Verificar reintentos
     if (attempt >= MAX_RETRIES) {
-      console.warn('[Biblioteca] Practice widget alcanzó MAX_RETRIES');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.warn('[Biblioteca] Practice widget alcanzó MAX_RETRIES');
       // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla después de reintentos
       const container = document.getElementById('practice-widget-container');
       if (container) {
@@ -440,7 +455,8 @@ class Biblioteca {
       // Attach event listeners
       window.practiceWidget.attachEventListeners(container);
     } catch (error) {
-      console.error('Error rendering practice widget:', error);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('Error rendering practice widget:', error);
       // Fallar silenciosamente - el widget es opcional
     }
   }
@@ -455,7 +471,8 @@ class Biblioteca {
     try {
       activeTab = localStorage.getItem('biblioteca-active-tab') || 'inicio';
     } catch (e) {
-      console.warn('[Biblioteca] No se pudo leer tab activo:', e);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.warn('[Biblioteca] No se pudo leer tab activo:', e);
     }
 
     return `
@@ -542,7 +559,8 @@ class Biblioteca {
     try {
       localStorage.setItem('biblioteca-active-tab', tabName);
     } catch (e) {
-      console.warn('[Biblioteca] No se pudo guardar tab activo:', e);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.warn('[Biblioteca] No se pudo guardar tab activo:', e);
     }
 
     document.querySelectorAll('.app-bottom-nav-tab').forEach(tab => {
@@ -1160,7 +1178,8 @@ class Biblioteca {
     herramientas.forEach(herramienta => {
       // Validar que la herramienta tenga datos completos
       if (!herramienta || !herramienta.name || !herramienta.icon || !herramienta.url) {
-        console.warn('[Biblioteca] Herramienta con datos incompletos, saltando:', herramienta);
+        // 🔧 FIX #4: Usar logger en lugar de console.log
+        logger.warn('[Biblioteca] Herramienta con datos incompletos, saltando:', herramienta);
         return;
       }
 
@@ -1558,7 +1577,8 @@ class Biblioteca {
 
       return isAdmin;
     } catch (error) {
-      console.error('Error verificando admin:', error);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('Error verificando admin:', error);
       return false;
     }
   }
@@ -1992,7 +2012,8 @@ class Biblioteca {
     if (window.practiceLibrary) {
       window.practiceLibrary.open();
     } else {
-      console.error('Practice Library not loaded');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('Practice Library not loaded');
     }
   }
 
@@ -2002,7 +2023,8 @@ class Biblioteca {
       const hub = new window.ExplorationHub(window.bookEngine);
       hub.open('search'); // Abrir con tab de búsqueda por defecto
     } else {
-      console.error('ExplorationHub no está disponible');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('ExplorationHub no está disponible');
     }
   }
 
@@ -2041,13 +2063,15 @@ class Biblioteca {
             window.toast.show('✅ Cosmos cargado', 'success', 2000);
           }
         } else {
-          console.error('CosmosNavigation no se inicializó correctamente después de la carga');
+          // 🔧 FIX #4: Usar logger en lugar de console.log
+          logger.error('CosmosNavigation no se inicializó correctamente después de la carga');
           if (window.toast) {
             window.toast.show('❌ Error inicializando Cosmos', 'error', 3000);
           }
         }
       } catch (error) {
-        console.error('Error cargando cosmos-3d:', error);
+        // 🔧 FIX #4: Usar logger en lugar de console.log
+        logger.error('Error cargando cosmos-3d:', error);
         if (window.toast) {
           window.toast.show('❌ Error cargando Cosmos del Conocimiento', 'error', 3000);
         }
@@ -2056,7 +2080,8 @@ class Biblioteca {
         this._loadingCosmos = false;
       }
     } else {
-      console.error('LazyLoader no está disponible');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('LazyLoader no está disponible');
       if (window.toast) {
         window.toast.show('❌ Sistema de carga no disponible', 'error', 3000);
       }
@@ -2167,19 +2192,22 @@ class Biblioteca {
             window.toast.show('✅ Laboratorio cargado', 'success', 2000);
           }
         } else {
-          console.error('FrankensteinLabUI o BookEngine no disponibles');
+          // 🔧 FIX #4: Usar logger en lugar de console.log
+          logger.error('FrankensteinLabUI o BookEngine no disponibles');
           if (window.toast) {
             window.toast.show('❌ Error inicializando Laboratorio', 'error', 3000);
           }
         }
       } catch (error) {
-        console.error('Error cargando Frankenstein Lab:', error);
+        // 🔧 FIX #4: Usar logger en lugar de console.log
+        logger.error('Error cargando Frankenstein Lab:', error);
         if (window.toast) {
           window.toast.show('❌ Error cargando Laboratorio Frankenstein', 'error', 3000);
         }
       }
     } else {
-      console.error('LazyLoader no está disponible');
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('LazyLoader no está disponible');
       if (window.toast) {
         window.toast.show('❌ Sistema de carga no disponible', 'error', 3000);
       }
@@ -2439,7 +2467,8 @@ class Biblioteca {
           logger.log(`🛠️ Opening tool: ${idHerramienta}`);
           this[nombreHandler](evento);
         } else {
-          console.error(`Handler ${nombreHandler} not found for tool ${idHerramienta}`);
+          // 🔧 FIX #4: Usar logger en lugar de console.log
+          logger.error(`Handler ${nombreHandler} not found for tool ${idHerramienta}`);
         }
         return;
       }
@@ -2529,7 +2558,8 @@ class Biblioteca {
       }
 
     } catch (error) {
-      console.error('Error opening book:', error);
+      // 🔧 FIX #4: Usar logger en lugar de console.log
+      logger.error('Error opening book:', error);
       window.toast.error(`${this.i18n.t('error.openBook')}: ${error.message}`, 5000, false);
       this.hideLoading();
     }

@@ -1522,8 +1522,11 @@ class AudioReader {
       }
 
       console.log('🎧 Rendering full player...');
-      // Ya no hay bottom nav, siempre bottom-0
-      const bottomOffset = 'bottom-0';
+      // 🔧 FIX #53: Usar requestAnimationFrame para evitar bloquear el thread principal
+      return new Promise(resolve => {
+        requestAnimationFrame(() => {
+          // Ya no hay bottom nav, siempre bottom-0
+          const bottomOffset = 'bottom-0';
 
     const html = `
       <div id="audioreader-controls"
@@ -1798,6 +1801,11 @@ class AudioReader {
     }
     this.attachKeyboardListeners();
     console.log('🎧 renderControls() DONE');
+
+    // 🔧 FIX #53: Resolver la promesa después de completar el render
+    resolve();
+        });
+      });
     } catch (error) {
       console.error('🎧 ERROR in renderControls():', error);
       alert('Error renderControls: ' + error.message);
@@ -1805,14 +1813,17 @@ class AudioReader {
   }
 
   renderMinimizedPlayer(bookData, tiempoEstimado) {
-    // Detectar si hay bottom nav visible (móvil)
-    const bottomNav = document.querySelector('.app-bottom-nav');
-    const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
+    // 🔧 FIX #53: Usar requestAnimationFrame para evitar bloquear el thread principal
+    return new Promise(resolve => {
+      requestAnimationFrame(() => {
+        // Detectar si hay bottom nav visible (móvil)
+        const bottomNav = document.querySelector('.app-bottom-nav');
+        const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
 
-    // Actualizar el botón de Audio en el bottom nav si existe
-    if (hasBottomNav) {
-      this.updateBottomNavAudioButton();
-    }
+        // Actualizar el botón de Audio en el bottom nav si existe
+        if (hasBottomNav) {
+          this.updateBottomNavAudioButton();
+        }
 
     const html = `
       <!-- Barra de progreso pegada al bottom nav con botón expandir -->
@@ -1946,6 +1957,11 @@ class AudioReader {
       this.detachKeyboardListeners();
     }
     this.attachKeyboardListeners();
+
+    // 🔧 FIX #53: Resolver la promesa después de completar el render
+    resolve();
+      });
+    });
   }
 
   attachDragListeners() {
@@ -3100,6 +3116,11 @@ class AudioReader {
     }
   }
 
+  // 🔧 FIX #54: Generar clave de bookmark con namespace robusto
+  generateBookmarkKey(idLibro, idCapitulo) {
+    return `bookmark:${idLibro}:${idCapitulo}`;
+  }
+
   saveBookmarks() {
     try {
       localStorage.setItem('audio-bookmarks', JSON.stringify(this.audioBookmarks));
@@ -3117,7 +3138,8 @@ class AudioReader {
       return;
     }
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
 
     if (!this.audioBookmarks[claveBookmark]) {
       this.audioBookmarks[claveBookmark] = [];
@@ -3145,7 +3167,8 @@ class AudioReader {
 
     if (!idLibro || !idCapitulo) return [];
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     return this.audioBookmarks[claveBookmark] || [];
   }
 
@@ -3181,7 +3204,8 @@ class AudioReader {
 
     if (!idLibro || !idCapitulo) return;
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     const bookmarks = this.audioBookmarks[claveBookmark];
 
     if (!bookmarks || indice < 0 || indice >= bookmarks.length) return;
@@ -3218,7 +3242,13 @@ class AudioReader {
 
     // 🔧 FIX #55: Wrap en try-catch para evitar crashes por QuotaExceededError
     try {
+      const storageKey = `audio-position-${idLibro}-${idCapitulo}`;
       localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
+
+      // 🔧 FIX #55: Sincronizar con Supabase si está disponible
+      if (window.authHelper?.user && window.supabaseSyncHelper) {
+        window.supabaseSyncHelper.syncPreference(storageKey, posicion);
+      }
     } catch (error) {
       console.warn('[AudioReader] Error guardando posición:', error);
       // No mostrar error al usuario, es funcionalidad secundaria

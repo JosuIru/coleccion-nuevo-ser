@@ -494,31 +494,6 @@ class BookReader {
     `;
   }
 
-  // Actualiza solo el sidebar sin re-renderizar toda la página
-  updateSidebar() {
-    const sidebarContainer = document.querySelector('.sidebar');
-    if (sidebarContainer) {
-      // Re-renderizar solo los chapter items
-      const chaptersContainer = sidebarContainer.querySelector('.chapters-list');
-      if (chaptersContainer) {
-        const chapters = this.bookEngine.getAllChapters();
-        chaptersContainer.innerHTML = chapters.map(ch => this.renderChapterItem(ch)).join('');
-
-        // Re-attach listeners solo para los chapter items
-        this.attachChapterListeners();
-      }
-
-      // Actualizar barra de progreso
-      const progressContainer = sidebarContainer.querySelector('.progress-box');
-      if (progressContainer) {
-        progressContainer.outerHTML = this.renderSidebarProgress();
-      }
-
-      // Re-inicializar iconos
-      Icons.init();
-    }
-  }
-
   // 🔧 FIX #44: Attach listeners solo para chapter items usando EventManager
   attachChapterListeners() {
     // Chapter read toggle buttons
@@ -2877,7 +2852,7 @@ class BookReader {
       if (chapter) {
         this.currentChapter = chapter;
 
-        // 🔧 BUGFIX: Verificar si ya existe la estructura DOM
+        // 🔧 FIX #49: Verificar si ya existe la estructura DOM
         // Si no existe, hacer render completo. Si existe, actualización parcial.
         const contentArea = document.querySelector('.chapter-content');
         const hasRendered = contentArea !== null;
@@ -2887,7 +2862,8 @@ class BookReader {
           this.render();
           this.attachEventListeners();
         } else {
-          // Ya renderizado: solo actualizar las partes que cambian (Fix #49)
+          // 🔧 FIX #49: Ya renderizado - solo actualizar las partes que cambian
+          // Evita re-renderizar TODO el reader, mejora rendimiento significativamente
           this.updateChapterContent();
           this.updateHeader();
           this.updateSidebar();
@@ -2992,12 +2968,14 @@ class BookReader {
   // 🔧 FIX #49: Métodos de actualización parcial para evitar re-renderizados completos
 
   /**
-   * Actualiza solo el contenido del capítulo sin reconstruir todo el reader
+   * 🔧 FIX #49: Actualiza solo el contenido del capítulo sin reconstruir todo el reader
+   * Evita re-renderizado completo, solo actualiza el área de contenido del capítulo
    */
   updateChapterContent() {
     try {
       const contentContainer = document.querySelector('.chapter-content');
       if (contentContainer) {
+        // 🔧 FIX #49: Renderizado parcial - solo chapter content
         contentContainer.innerHTML = this.renderChapterContent();
 
         // 🔧 FIX #49: Re-attach event listeners solo para elementos del contenido
@@ -3015,12 +2993,14 @@ class BookReader {
   }
 
   /**
-   * Actualiza solo el header sin reconstruir todo el reader
+   * 🔧 FIX #49: Actualiza solo el header sin reconstruir todo el reader
+   * Evita re-renderizado completo, solo actualiza la sección del header
    */
   updateHeader() {
     try {
       const headerContainer = document.querySelector('.main-content > .header, .main-content > header');
       if (headerContainer) {
+        // 🔧 FIX #49: Renderizado parcial - solo header
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = this.renderHeader();
         const newHeader = tempDiv.firstElementChild;
@@ -3040,12 +3020,14 @@ class BookReader {
   }
 
   /**
-   * Actualiza solo el sidebar sin reconstruir todo el reader
+   * 🔧 FIX #49: Actualiza solo el sidebar sin reconstruir todo el reader
+   * Evita re-renderizado completo, solo actualiza el sidebar y preserva su estado
    */
   updateSidebar() {
     try {
       const sidebarContainer = document.querySelector('.sidebar');
       if (sidebarContainer) {
+        // 🔧 FIX #49: Renderizado parcial - solo sidebar
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = this.renderSidebar();
 
@@ -3053,7 +3035,7 @@ class BookReader {
         // Buscar específicamente el elemento con clase .sidebar
         const newSidebar = tempDiv.querySelector('.sidebar');
         if (newSidebar) {
-          // Preservar estado de apertura del sidebar
+          // 🔧 FIX #49: Preservar estado de apertura del sidebar
           if (this.sidebarOpen) {
             newSidebar.classList.remove('-translate-x-full');
           } else {
@@ -3062,7 +3044,7 @@ class BookReader {
           sidebarContainer.replaceWith(newSidebar);
         }
 
-        // Actualizar o remover backdrop si existe
+        // 🔧 FIX #49: Actualizar o remover backdrop si existe
         const oldBackdrop = document.getElementById('sidebar-backdrop');
         const newBackdrop = tempDiv.querySelector('#sidebar-backdrop');
         if (newBackdrop && this.sidebarOpen) {
@@ -3093,17 +3075,19 @@ class BookReader {
   }
 
   /**
-   * Actualiza solo la navegación inferior sin reconstruir todo el reader
+   * 🔧 FIX #49: Actualiza solo la navegación inferior sin reconstruir todo el reader
+   * Evita re-renderizado completo, solo actualiza los botones de navegación prev/next
    */
   updateFooterNav() {
     try {
       const footerNavContainer = document.querySelector('.main-content > .block');
       if (footerNavContainer) {
+        // 🔧 FIX #49: Renderizado parcial - solo footer nav
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = this.renderFooterNav();
         footerNavContainer.innerHTML = tempDiv.innerHTML;
 
-        // Re-attach event listeners solo para los botones de navegación
+        // 🔧 FIX #49: Re-attach event listeners solo para los botones de navegación
         this.attachNavigationListeners();
       }
     } catch (error) {
@@ -3118,8 +3102,8 @@ class BookReader {
   }
 
   /**
-   * Adjunta event listeners solo para los botones de navegación (prev/next)
-   * Evita re-attachar todos los listeners del reader
+   * 🔧 FIX #49: Adjunta event listeners solo para los botones de navegación (prev/next)
+   * Evita re-attachar todos los listeners del reader durante actualización parcial
    */
   attachNavigationListeners() {
     try {

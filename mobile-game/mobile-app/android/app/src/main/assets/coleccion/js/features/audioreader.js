@@ -3088,6 +3088,11 @@ class AudioReader {
     }
   }
 
+  // 🔧 FIX #54: Generar clave de bookmark con namespace robusto
+  generateBookmarkKey(idLibro, idCapitulo) {
+    return `bookmark:${idLibro}:${idCapitulo}`;
+  }
+
   saveBookmarks() {
     try {
       localStorage.setItem('audio-bookmarks', JSON.stringify(this.audioBookmarks));
@@ -3105,7 +3110,8 @@ class AudioReader {
       return;
     }
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
 
     if (!this.audioBookmarks[claveBookmark]) {
       this.audioBookmarks[claveBookmark] = [];
@@ -3133,7 +3139,8 @@ class AudioReader {
 
     if (!idLibro || !idCapitulo) return [];
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     return this.audioBookmarks[claveBookmark] || [];
   }
 
@@ -3169,7 +3176,8 @@ class AudioReader {
 
     if (!idLibro || !idCapitulo) return;
 
-    const claveBookmark = `${idLibro}:${idCapitulo}`;
+    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
+    const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     const bookmarks = this.audioBookmarks[claveBookmark];
 
     if (!bookmarks || indice < 0 || indice >= bookmarks.length) return;

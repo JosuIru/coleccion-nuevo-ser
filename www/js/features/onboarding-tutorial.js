@@ -169,7 +169,8 @@ class OnboardingTutorial {
     // Verificar si ya se mostró antes
     const hasSeenTutorial = localStorage.getItem('has_seen_tutorial');
     if (hasSeenTutorial && hasSeenTutorial === 'true') {
-      // console.log('Tutorial ya visto anteriormente');
+      // 🔧 FIX #67: Usar logger en lugar de console.log comentado
+      logger.debug('[Tutorial] Tutorial ya visto anteriormente - reinicio manual');
       // Permitir reiniciar manualmente
     }
 
@@ -183,11 +184,14 @@ class OnboardingTutorial {
       window.analyticsHelper.trackTutorialStart();
     }
 
-    // 🔧 FIX #64: Configurar listener de resize para reposicionar tooltip
+    // 🔧 FIX #64, #68: Configurar listeners de resize y orientationchange para reposicionar tooltip
     this.resizeHandler = () => {
       this.repositionTooltip();
     };
     window.addEventListener('resize', this.resizeHandler);
+
+    // 🔧 FIX #68: Listener para cambios de orientación (móvil/tablet)
+    window.addEventListener('orientationchange', this.resizeHandler);
 
     this.isActive = true;
     this.currentStep = 0;
@@ -195,7 +199,8 @@ class OnboardingTutorial {
   }
 
   skip() {
-    // console.log('[Tutorial] skip() llamado, isTransitioning:', this.isTransitioning);
+    // 🔧 FIX #67: Usar logger en lugar de console.log comentado
+    logger.debug('[Tutorial] skip() llamado, isTransitioning:', this.isTransitioning);
     if (this.isTransitioning) return;
     this.isTransitioning = true;
 
@@ -261,9 +266,10 @@ class OnboardingTutorial {
   }
 
   close() {
-    // 🔧 FIX #64: Limpiar listener de resize para evitar memory leaks
+    // 🔧 FIX #64, #68: Limpiar listeners de resize y orientationchange para evitar memory leaks
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
+      window.removeEventListener('orientationchange', this.resizeHandler);
       this.resizeHandler = null;
     }
 
@@ -549,31 +555,31 @@ class OnboardingTutorial {
   }
 
   attachTooltipListeners() {
-    // console.log('[Tutorial] attachTooltipListeners() llamado');
+    // 🔧 FIX #67: Usar logger en lugar de console.log comentados
+    logger.debug('[Tutorial] attachTooltipListeners() llamado');
 
     // Pequeño delay para asegurar que el DOM esté renderizado
     requestAnimationFrame(() => {
-      // console.log('[Tutorial] Buscando botones del tooltip...');
+      logger.debug('[Tutorial] Buscando botones del tooltip...');
 
       const skipBtn = document.getElementById('tutorial-skip');
-      // console.log('[Tutorial] skipBtn:', skipBtn);
       if (skipBtn) {
-        // console.log('[Tutorial] ✅ Botón "Saltar" encontrado, adjuntando listener');
+        logger.debug('[Tutorial] Botón "Saltar" encontrado, adjuntando listener');
         skipBtn.addEventListener('click', (e) => {
-          // console.log('[Tutorial] 🔵 Click capturado en "Saltar"');
+          logger.debug('[Tutorial] Click capturado en "Saltar"');
           e.stopPropagation();
           e.preventDefault();
           this.skip();
         }, { capture: true });
       } else {
-        // console.warn('[Tutorial] ❌ Botón "Saltar" NO encontrado');
+        logger.warn('[Tutorial] Botón "Saltar" NO encontrado');
       }
 
       const prevBtn = document.getElementById('tutorial-prev');
       if (prevBtn) {
-        // console.log('[Tutorial] ✅ Botón "Anterior" encontrado');
+        logger.debug('[Tutorial] Botón "Anterior" encontrado');
         prevBtn.addEventListener('click', (e) => {
-          // console.log('[Tutorial] 🔵 Click capturado en "Anterior"');
+          logger.debug('[Tutorial] Click capturado en "Anterior"');
           e.stopPropagation();
           e.preventDefault();
           this.previous();
@@ -581,31 +587,30 @@ class OnboardingTutorial {
       }
 
       const nextBtn = document.getElementById('tutorial-next');
-      // console.log('[Tutorial] nextBtn:', nextBtn);
       if (nextBtn) {
-        // console.log('[Tutorial] ✅ Botón "Siguiente" encontrado, adjuntando listener');
+        logger.debug('[Tutorial] Botón "Siguiente" encontrado, adjuntando listener');
         nextBtn.addEventListener('click', (e) => {
-          // console.log('[Tutorial] 🔵 Click capturado en "Siguiente"');
+          logger.debug('[Tutorial] Click capturado en "Siguiente"');
           e.stopPropagation();
           e.preventDefault();
           this.next();
         }, { capture: true });
       } else {
-        // console.warn('[Tutorial] ❌ Botón "Siguiente" NO encontrado');
+        logger.warn('[Tutorial] Botón "Siguiente" NO encontrado');
       }
 
       const finishBtn = document.getElementById('tutorial-finish');
       if (finishBtn) {
-        // console.log('[Tutorial] ✅ Botón "Empezar" encontrado');
+        logger.debug('[Tutorial] Botón "Empezar" encontrado');
         finishBtn.addEventListener('click', (e) => {
-          // console.log('[Tutorial] 🔵 Click capturado en "Empezar"');
+          logger.debug('[Tutorial] Click capturado en "Empezar"');
           e.stopPropagation();
           e.preventDefault();
           this.finish();
         }, { capture: true });
       }
 
-      // console.log('[Tutorial] Listeners adjuntados completamente');
+      logger.debug('[Tutorial] Listeners adjuntados completamente');
     });
   }
 
@@ -685,7 +690,8 @@ class OnboardingTutorial {
 
   reset() {
     localStorage.removeItem('has_seen_tutorial');
-    // console.log('Tutorial reset - se mostrará en la próxima visita');
+    // 🔧 FIX #67: Usar logger en lugar de console.log comentado
+    logger.debug('[Tutorial] Tutorial reset - se mostrará en la próxima visita');
   }
 }
 
@@ -697,44 +703,57 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     window.onboardingTutorial = new OnboardingTutorial();
 
-    // Mostrar automáticamente SOLO después de completar el Welcome Flow
+    // 🔧 FIX #69: Usar eventos en lugar de polling para mostrar el tutorial
     if (OnboardingTutorial.shouldShowOnFirstVisit()) {
-      let intentos = 0;
-      const MAX_INTENTOS = 60; // 30 segundos máximo
-
-      const checkReadyToShow = () => {
-        intentos++;
-
-        // 1. Verificar que el Welcome Flow ya se completó o no existe
-        const welcomeFlowCompleted = !window.welcomeFlow || !window.welcomeFlow.shouldShow();
-        const welcomeFlowNotActive = !window.welcomeFlow || !window.welcomeFlow.isActive;
-
-        // 2. Verificar que los libros están visibles
+      // Verificar si hay libros visibles de inmediato
+      const checkBooksVisible = () => {
         const bibliotecaView = document.getElementById('biblioteca-view');
         const bookCards = bibliotecaView?.querySelectorAll('.book-card');
-        const hasVisibleBooks = bookCards && Array.from(bookCards).some(card => {
+        return bookCards && Array.from(bookCards).some(card => {
           const rect = card.getBoundingClientRect();
           return rect.height > 0 && rect.width > 0;
         });
+      };
 
-        // Mostrar tutorial solo si:
-        // - Welcome Flow completado o no activo
-        // - Y hay libros visibles
-        if (welcomeFlowCompleted && welcomeFlowNotActive && hasVisibleBooks) {
+      // Función para mostrar el tutorial cuando todo esté listo
+      const showWhenReady = () => {
+        if (checkBooksVisible()) {
           setTimeout(() => {
             window.onboardingTutorial.start();
           }, 800);
-          return;
-        }
-
-        // Reintentar
-        if (intentos < MAX_INTENTOS) {
-          setTimeout(checkReadyToShow, 500);
+        } else {
+          // Fallback: si no hay libros visibles después de 3s, mostrar de todas formas
+          setTimeout(() => {
+            if (OnboardingTutorial.shouldShowOnFirstVisit()) {
+              window.onboardingTutorial.start();
+            }
+          }, 3000);
         }
       };
 
-      // Empezar a verificar después de 3 segundos
-      setTimeout(checkReadyToShow, 3000);
+      // Intentar usar eventos del welcomeFlow si existe
+      if (window.welcomeFlow) {
+        // Verificar si el welcomeFlow está activo
+        if (!window.welcomeFlow.shouldShow() || !window.welcomeFlow.isActive) {
+          // Ya completado - mostrar de inmediato
+          setTimeout(showWhenReady, 1000);
+        } else {
+          // Esperar a que complete vía custom event
+          document.addEventListener('welcomeFlowCompleted', () => {
+            setTimeout(showWhenReady, 800);
+          }, { once: true });
+
+          // Timeout de seguridad (30 segundos)
+          setTimeout(() => {
+            if (OnboardingTutorial.shouldShowOnFirstVisit()) {
+              showWhenReady();
+            }
+          }, 30000);
+        }
+      } else {
+        // No hay welcomeFlow - mostrar directamente
+        setTimeout(showWhenReady, 2000);
+      }
     }
   });
 } else {

@@ -21,8 +21,7 @@ class ContextualHints {
     this.eventManager = new EventManager();
     this.eventManager.setComponentName('ContextualHints');
 
-    // Detectar si estamos en móvil/tablet (Capacitor o pantalla táctil)
-    this.isMobile = this.detectMobile();
+    // 🔧 FIX #74: No detectar aquí - usar getter dinámico en su lugar (ver más abajo)
 
     // Definición de hints con sus condiciones
     this.hints = {
@@ -427,6 +426,13 @@ class ContextualHints {
   // ==========================================================================
 
   /**
+   * 🔧 FIX #74: isMobile como getter dinámico que se actualiza con cambios de ventana
+   */
+  get isMobile() {
+    return this.detectMobile();
+  }
+
+  /**
    * Detecta si estamos en un dispositivo móvil/tablet
    */
   detectMobile() {
@@ -612,12 +618,6 @@ document.head.appendChild(hintStyles);
 window.ContextualHints = ContextualHints;
 window.contextualHints = new ContextualHints();
 
-// Registrar visitas automáticamente
-document.addEventListener('DOMContentLoaded', () => {
-  // Detectar contexto y registrar visita
-  setTimeout(() => {
-    const isReader = document.getElementById('book-reader-view')?.classList.contains('hidden') === false;
-    const context = isReader ? 'reader' : 'biblioteca';
-    window.contextualHints.onPageVisit(context);
-  }, 2000);
-});
+// 🔧 FIX #75: NO auto-invocar onPageVisit - llamar explícitamente desde app-initialization.js
+// para tener mejor control del timing y evitar que se ejecute antes de que la app esté lista
+// La invocación se hará desde app-initialization.js después de cargar todos los módulos

@@ -32,6 +32,12 @@ class SettingsModal {
 
         // 🔧 FIX #83: Debounce timers para sliders
         this.sliderDebounceTimers = new Map();
+
+        // 🔧 FIX #78: Debounce timer para auto-guardar config de AI
+        this.aiConfigAutoSaveTimer = null;
+
+        // 🔧 FIX #79: Handler de resize para limpiar después
+        this.resizeHandler = null;
     }
 
     /**
@@ -59,8 +65,13 @@ class SettingsModal {
         // Adjuntar listeners
         await this.attachListeners();
 
-        // Listener para resize (detectar rotación de dispositivo)
-        this.resizeListener = () => {
+        // 🔧 FIX #79: Listener para resize (con limpieza posterior)
+        // Limpiar listener anterior si existe
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+        }
+
+        this.resizeHandler = () => {
             const isMobile = this.isMobile();
             const dropdown = document.getElementById('mobile-tab-dropdown');
             const sidebar = document.getElementById('desktop-tab-sidebar');
@@ -80,7 +91,7 @@ class SettingsModal {
             }
         };
 
-        window.addEventListener('resize', this.resizeListener);
+        window.addEventListener('resize', this.resizeHandler);
 
         // Inicializar Lucide icons
         if (window.lucide) {
@@ -1964,17 +1975,69 @@ class SettingsModal {
     }
 
     /**
+     * 🔧 FIX #78: Helper para auto-guardar config de AI con debounce
+     */
+    autoSaveAIConfig() {
+        clearTimeout(this.aiConfigAutoSaveTimer);
+        this.aiConfigAutoSaveTimer = setTimeout(() => {
+            const aiConfig = window.aiConfig;
+            if (!aiConfig) return;
+
+            const providerSelect = document.getElementById('settings-ai-provider-select');
+            const modelSelect = document.getElementById('settings-ai-model-select');
+            const keyInput = document.getElementById('settings-ai-key-input');
+            const provider = providerSelect?.value;
+
+            // Guardar modelo si existe
+            if (modelSelect && modelSelect.value) {
+                aiConfig.setSelectedModel(modelSelect.value);
+            }
+
+            // Guardar API key si existe
+            if (keyInput && keyInput.value && provider) {
+                switch (provider) {
+                    case 'claude':
+                        aiConfig.setClaudeApiKey(keyInput.value);
+                        break;
+                    case 'openai':
+                        aiConfig.setOpenAIApiKey(keyInput.value);
+                        break;
+                    case 'gemini':
+                        aiConfig.setGeminiApiKey(keyInput.value);
+                        break;
+                    case 'qwen':
+                        aiConfig.setQwenApiKey(keyInput.value);
+                        break;
+                    case 'mistral':
+                        aiConfig.setMistralApiKey(keyInput.value);
+                        break;
+                    case 'huggingface':
+                        aiConfig.setHuggingFaceToken(keyInput.value);
+                        break;
+                    case 'ollama':
+                        aiConfig.setOllamaUrl(keyInput.value);
+                        break;
+                }
+            }
+
+            // Guardar configuración
+            aiConfig.saveConfig();
+            logger.debug('[Settings] AI configuration auto-saved');
+        }, 1000); // 1 segundo de debounce
+    }
+
+    /**
      * Listeners del tab IA
      */
     async attachAIListeners() {
         const aiConfig = window.aiConfig;
         if (!aiConfig) return;
 
-        // Provider change
+        // 🔧 FIX #78: Provider change con auto-guardado
         const providerSelect = document.getElementById('settings-ai-provider-select');
         providerSelect?.addEventListener('change', (e) => {
             const newProvider = e.target.value;
-            // console.log('[Settings] AI Provider changed to:', newProvider);
+            logger.debug('[Settings] AI Provider changed to:', newProvider);
 
             // Actualizar secciones dinámicas
             const modelSection = document.getElementById('settings-ai-model-section');
@@ -1992,13 +2055,23 @@ class SettingsModal {
             if (window.Icons) {
                 window.Icons.init();
             }
+
+            // 🔧 FIX #78: Auto-guardar con debounce
+            this.autoSaveAIConfig();
         });
 
-        // Model change
+        // 🔧 FIX #78: Model change con auto-guardado
         document.addEventListener('change', (e) => {
             if (e.target.id === 'settings-ai-model-select') {
-                // console.log('[Settings] AI Model changed to:', e.target.value);
+                logger.debug('[Settings] AI Model changed to:', e.target.value);
+                this.autoSaveAIConfig();
             }
+        });
+
+        // 🔧 FIX #78: API Key input con auto-guardado
+        const keyInput = document.getElementById('settings-ai-key-input');
+        keyInput?.addEventListener('input', () => {
+            this.autoSaveAIConfig();
         });
 
         // Save button
@@ -2291,14 +2364,47 @@ class SettingsModal {
     }
 
     /**
-     * Actualiza el contenido del modal (al cambiar de tab)
+     * 🔧 FIX #85: Actualiza el contenido del modal (al cambiar de tab)
+     * Optimizado para mostrar/ocultar en lugar de re-renderizar todo el HTML
      */
     async updateContent() {
-        // Actualizar contenido
         const contentContainer = document.querySelector('.settings-content');
-        if (contentContainer) {
-            contentContainer.innerHTML = this.renderTabContent();
-            await this.attachTabListeners(); // 🔧 FIX #81: await para attachTabListeners()
+        if (!contentContainer) return;
+
+        // Verificar si ya existen los contenedores de tabs
+        const existingTabs = contentContainer.querySelectorAll('[data-settings-tab-content]');
+
+        if (existingTabs.length === 0) {
+            // Primera renderización: crear todos los tabs a la vez
+            const allTabs = this.getTabs();
+            let tabsHTML = '';
+
+            for (const tab of allTabs) {
+                const isActive = tab.id === this.currentTab;
+                tabsHTML += `
+                    <div data-settings-tab-content="${tab.id}" class="${isActive ? 'block' : 'hidden'}">
+                        ${this.renderTabContentByType(tab.id)}
+                    </div>
+                `;
+            }
+
+            contentContainer.innerHTML = tabsHTML;
+            await this.attachTabListeners();
+        } else {
+            // 🔧 FIX #85: Solo mostrar/ocultar tabs existentes (sin re-renderizar)
+            existingTabs.forEach(tabContent => {
+                const tabId = tabContent.getAttribute('data-settings-tab-content');
+                if (tabId === this.currentTab) {
+                    tabContent.classList.remove('hidden');
+                    tabContent.classList.add('block');
+                } else {
+                    tabContent.classList.remove('block');
+                    tabContent.classList.add('hidden');
+                }
+            });
+
+            // Solo re-adjuntar listeners del tab actual (más eficiente)
+            await this.attachTabListeners();
         }
 
         // Actualizar tabs activos (desktop sidebar)
@@ -2318,6 +2424,32 @@ class SettingsModal {
         // Reinicializar Lucide icons
         if (window.lucide) {
             lucide.createIcons();
+        }
+    }
+
+    /**
+     * 🔧 FIX #85: Helper para renderizar contenido de tab específico
+     */
+    renderTabContentByType(tabId) {
+        switch (tabId) {
+            case 'general':
+                return this.renderGeneralTab();
+            case 'ai':
+                return this.renderAITab();
+            case 'account':
+                return this.renderAccountTab();
+            case 'notifications':
+                return this.renderNotificationsTab();
+            case 'security':
+                return this.renderSecurityTab();
+            case 'appearance':
+                return this.renderAppearanceTab();
+            case 'sync':
+                return this.renderSyncTab();
+            case 'advanced':
+                return this.renderAdvancedTab();
+            default:
+                return '';
         }
     }
 
@@ -2428,6 +2560,12 @@ class SettingsModal {
             this.currentTestTTSManager = null;
         }
 
+        // 🔧 FIX #78: Limpiar timer de auto-guardado de AI config
+        if (this.aiConfigAutoSaveTimer) {
+            clearTimeout(this.aiConfigAutoSaveTimer);
+            this.aiConfigAutoSaveTimer = null;
+        }
+
         // 🔧 FIX #83: Limpiar timers de debounce de sliders
         if (this.sliderDebounceTimers.size > 0) {
             console.log('[Settings] 🧹 Limpiando timers de sliders pendientes');
@@ -2436,6 +2574,12 @@ class SettingsModal {
                 console.log(`[Settings] Timer de "${key}" cancelado`);
             });
             this.sliderDebounceTimers.clear();
+        }
+
+        // 🔧 FIX #79: Limpiar listener de resize
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
         }
 
         // 🔧 FIX #86: Limpiar todos los event listeners con EventManager

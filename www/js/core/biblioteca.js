@@ -358,6 +358,9 @@ class Biblioteca {
       Icons.init();
     }
 
+    // 🔧 FIX #9: Poblar books grid con DocumentFragment para mejor performance
+    this.populateBooksGrid();
+
     // 🔧 FIX #6: Calcular padding dinámicamente basado en la altura del bottom nav
     if (isMobile) {
       requestAnimationFrame(() => {
@@ -378,19 +381,14 @@ class Biblioteca {
     this.renderPracticeWidget();
   }
 
-  async renderPracticeWidget(retryCount = 0, startTime = null) {
-    const MAX_RETRIES = 10; // Máximo 10 reintentos
-    const TIMEOUT_MS = 5000; // 🔧 FIX #3: Timeout absoluto de 5 segundos
+  // 🔧 FIX #3: Timeout real para evitar colgado infinito
+  async renderPracticeWidget(attempt = 0, startTime = Date.now()) {
+    const MAX_RETRIES = 5;
+    const TIMEOUT_MS = 5000; // 5 segundos
 
-    // 🔧 FIX #3: Inicializar timestamp en el primer intento
-    if (startTime === null) {
-      startTime = Date.now();
-    }
-
-    // 🔧 FIX #3: Verificar timeout absoluto
-    const elapsed = Date.now() - startTime;
-    if (elapsed > TIMEOUT_MS) {
-      console.warn('[Biblioteca] ⏱️ Practice widget timeout (5s) - sistema no disponible');
+    // Verificar timeout real
+    if (Date.now() - startTime > TIMEOUT_MS) {
+      console.warn('[Biblioteca] Practice widget timeout después de 5s');
       // 🔧 FIX #14: Mostrar mensaje al usuario cuando el sistema no carga
       const container = document.getElementById('practice-widget-container');
       if (container) {
@@ -406,31 +404,28 @@ class Biblioteca {
       return;
     }
 
-    // Esperar a que el sistema esté listo
-    if (!window.practiceLibrary || !window.practiceRecommender) {
-      if (retryCount >= MAX_RETRIES) {
-        console.warn('[Biblioteca] ⏭️ Practice system not available after', MAX_RETRIES, 'retries - skipping widget');
-        // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla después de reintentos
-        const container = document.getElementById('practice-widget-container');
-        if (container) {
-          container.innerHTML = `
-            <div class="text-center text-gray-500 text-sm py-4">
-              <p>El sistema de prácticas no pudo cargarse.</p>
-              <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
-                Recargar página
-              </button>
-            </div>
-          `;
-        }
-        return;
+    // Verificar reintentos
+    if (attempt >= MAX_RETRIES) {
+      console.warn('[Biblioteca] Practice widget alcanzó MAX_RETRIES');
+      // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla después de reintentos
+      const container = document.getElementById('practice-widget-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center text-gray-500 text-sm py-4">
+            <p>El sistema de prácticas no pudo cargarse.</p>
+            <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
+              Recargar página
+            </button>
+          </div>
+        `;
       }
-
-      if (retryCount === 0) {
-        // console.log('⏳ Waiting for practice system to initialize...');
-      }
-
-      setTimeout(() => this.renderPracticeWidget(retryCount + 1, startTime), 500);
       return;
+    }
+
+    // Si practiceLibrary no está disponible, reintentar
+    if (!window.practiceLibrary || !window.practiceRecommender) {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      return this.renderPracticeWidget(attempt + 1, startTime);
     }
 
     // console.log('✅ Practice system ready - rendering widget');
@@ -978,122 +973,134 @@ class Biblioteca {
     `;
   }
 
+  // 🔧 FIX #9: Usar DocumentFragment para mejor performance
   renderBooksGridHTML() {
-    const libros = this.getFilteredBooks();
-
-    let html = '<div class="books-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">';
-
-    libros.forEach(libro => {
-      html += this.renderBookCard(libro);
-    });
-
-    html += '</div>';
-
-    return html;
+    // Retornar placeholder que será poblado después con DocumentFragment
+    return '<div id="books-grid-container" class="books-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>';
   }
 
-  renderBookCard(libro) {
+  // 🔧 FIX #9: Método para poblar el grid con DocumentFragment
+  populateBooksGrid() {
+    const contenedorGrid = document.getElementById('books-grid-container');
+    if (!contenedorGrid) return;
+
+    const libros = this.getFilteredBooks();
+    const fragment = document.createDocumentFragment();
+
+    libros.forEach(libro => {
+      const card = this.createBookCard(libro);
+      fragment.appendChild(card);
+    });
+
+    contenedorGrid.innerHTML = '';
+    contenedorGrid.appendChild(fragment);
+  }
+
+  // 🔧 FIX #9: Método helper para crear card individual
+  createBookCard(libro) {
+    const card = document.createElement('div');
+    card.className = 'book-card group relative rounded-xl border-2 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer hover:border-opacity-80 bg-white dark:bg-slate-900/60 backdrop-blur-sm';
+    card.style.borderColor = `${libro.color}40`;
+    card.dataset.bookId = libro.id;
+
     const progresoLibro = this.bookEngine.getProgress(libro.id);
     const libroIniciado = progresoLibro.chaptersRead > 0;
 
-    return `
-      <div class="book-card group relative rounded-xl border-2 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer hover:border-opacity-80 bg-white dark:bg-slate-900/60 backdrop-blur-sm"
-           style="border-color: ${libro.color}40"
-           data-book-id="${libro.id}">
+    card.innerHTML = `
+      <!-- Background Gradient -->
+      <div class="absolute inset-0 bg-gradient-to-br opacity-5 dark:opacity-10 group-hover:opacity-15 dark:group-hover:opacity-20 transition-opacity duration-300"
+           style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor})"></div>
 
-        <!-- Background Gradient -->
-        <div class="absolute inset-0 bg-gradient-to-br opacity-5 dark:opacity-10 group-hover:opacity-15 dark:group-hover:opacity-20 transition-opacity duration-300"
-             style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor})"></div>
+      <!-- Paper Texture Overlay -->
+      <div class="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] pointer-events-none"
+           style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOSIgbnVtT2N0YXZlcz0iNCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=='); background-repeat: repeat;"></div>
 
-        <!-- Paper Texture Overlay -->
-        <div class="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] pointer-events-none"
-             style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOSIgbnVtT2N0YXZlcz0iNCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg=='); background-repeat: repeat;"></div>
-
-        <div class="relative p-4 sm:p-6">
-          <!-- Icon & Status -->
-          <div class="flex items-start justify-between mb-3 sm:mb-4">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center opacity-80" style="color: ${libro.color}">
-              ${Icons.getBookIcon(libro.id, 48, libro.color)}
-            </div>
-            <div class="flex flex-col items-end gap-2">
-              ${libro.status === 'published' ?
-                `<span class="px-2 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-500/30">${this.i18n.t('library.published')}</span>` :
-                `<span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-500/30">${this.i18n.t('library.comingSoon')}</span>`
-              }
-              ${libroIniciado ?
-                `<span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-500/30">${this.i18n.t('library.inProgress')}</span>` :
-                `<span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-500/30">${this.i18n.t('library.notStarted')}</span>`
-              }
-            </div>
+      <div class="relative p-4 sm:p-6">
+        <!-- Icon & Status -->
+        <div class="flex items-start justify-between mb-3 sm:mb-4">
+          <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center opacity-80" style="color: ${libro.color}">
+            ${Icons.getBookIcon(libro.id, 48, libro.color)}
           </div>
+          <div class="flex flex-col items-end gap-2">
+            ${libro.status === 'published' ?
+              `<span class="px-2 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-500/30">${this.i18n.t('library.published')}</span>` :
+              `<span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-500/30">${this.i18n.t('library.comingSoon')}</span>`
+            }
+            ${libroIniciado ?
+              `<span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-500/30">${this.i18n.t('library.inProgress')}</span>` :
+              `<span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-500/30">${this.i18n.t('library.notStarted')}</span>`
+            }
+          </div>
+        </div>
 
-          <!-- Title -->
-          <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-[${libro.color}] transition">
-            ${libro.title}
-          </h3>
+        <!-- Title -->
+        <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-[${libro.color}] transition">
+          ${libro.title}
+        </h3>
 
-          <!-- Subtitle -->
-          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
-            ${libro.subtitle}
+        <!-- Subtitle -->
+        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
+          ${libro.subtitle}
+        </p>
+
+        <!-- Description -->
+        ${libro.description ? `
+          <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-3 leading-relaxed">
+            ${libro.description}
           </p>
+        ` : ''}
 
-          <!-- Description -->
-          ${libro.description ? `
-            <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-3 leading-relaxed">
-              ${libro.description}
-            </p>
-          ` : ''}
+        <!-- Complementary Info -->
+        ${this.renderComplementaryInfo(libro)}
 
-          <!-- Complementary Info -->
-          ${this.renderComplementaryInfo(libro)}
+        <!-- Info -->
+        <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
+          <span class="flex items-center gap-1">${Icons.book(14)} ${libro.chapters} ${this.i18n.t('library.chapters')}</span>
+          <span class="flex items-center gap-1">${Icons.clock(14)} ${libro.estimatedReadTime}</span>
+        </div>
 
-          <!-- Info -->
-          <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
-            <span class="flex items-center gap-1">${Icons.book(14)} ${libro.chapters} ${this.i18n.t('library.chapters')}</span>
-            <span class="flex items-center gap-1">${Icons.clock(14)} ${libro.estimatedReadTime}</span>
-          </div>
-
-          <!-- Progress Bar -->
-          ${libroIniciado ? `
-            <div class="mb-3 sm:mb-4">
-              <div class="flex justify-between text-xs mb-1 text-gray-700 dark:text-gray-300">
-                <span>${progresoLibro.chaptersRead} ${this.i18n.t('progress.of')} ${progresoLibro.totalChapters} ${this.i18n.t('library.chapters')}</span>
-                <span class="font-semibold">${progresoLibro.percentage}%</span>
-              </div>
-              <div class="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                <div class="h-full transition-all duration-500 rounded-full"
-                     style="width: ${progresoLibro.percentage}%; background: linear-gradient(90deg, ${libro.color}, ${libro.secondaryColor || libro.color})"></div>
-              </div>
+        <!-- Progress Bar -->
+        ${libroIniciado ? `
+          <div class="mb-3 sm:mb-4">
+            <div class="flex justify-between text-xs mb-1 text-gray-700 dark:text-gray-300">
+              <span>${progresoLibro.chaptersRead} ${this.i18n.t('progress.of')} ${progresoLibro.totalChapters} ${this.i18n.t('library.chapters')}</span>
+              <span class="font-semibold">${progresoLibro.percentage}%</span>
             </div>
-          ` : ''}
-
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-            ${(libro.tags || []).slice(0, 3).map(etiqueta =>
-              `<span class="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200">#${etiqueta}</span>`
-            ).join('')}
+            <div class="w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+              <div class="h-full transition-all duration-500 rounded-full"
+                   style="width: ${progresoLibro.percentage}%; background: linear-gradient(90deg, ${libro.color}, ${libro.secondaryColor || libro.color})"></div>
+            </div>
           </div>
+        ` : ''}
 
-          <!-- Action Button -->
-          <button class="w-full py-3 sm:py-4 px-4 rounded-lg font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2 text-white shadow-md min-h-[48px]"
-                  style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor || libro.color})"
-                  data-action="open-book"
-                  data-book-id="${libro.id}">
-            ${libroIniciado ? `${Icons.book(18)} ${this.i18n.t('library.continue')}` : `${Icons.zap(18)} ${this.i18n.t('library.start')}`}
-          </button>
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+          ${(libro.tags || []).slice(0, 3).map(etiqueta =>
+            `<span class="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200">#${etiqueta}</span>`
+          ).join('')}
+        </div>
 
-          <!-- Features Icons -->
-          <div class="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 text-base sm:text-sm text-gray-600 dark:text-gray-400">
-            ${libro.features.meditations ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Meditaciones" aria-label="Meditaciones">${Icons.meditation(18)}</span>` : ''}
-            ${libro.features.exercises ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Ejercicios" aria-label="Ejercicios">${Icons.edit(18)}</span>` : ''}
-            ${libro.features.aiChat ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Chat IA" aria-label="Chat IA">${Icons.bot(18)}</span>` : ''}
-            ${libro.features.timeline ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Timeline" aria-label="Timeline">${Icons.calendar(18)}</span>` : ''}
-            ${libro.features.audiobook ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Audioreader" aria-label="Audioreader">${Icons.volume(18)}</span>` : ''}
-            ${libro.features.actionTracker ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Tracker Acciones" aria-label="Tracker Acciones">${Icons.zap(18)}</span>` : ''}
-          </div>
+        <!-- Action Button -->
+        <button class="w-full py-3 sm:py-4 px-4 rounded-lg font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2 text-white shadow-md min-h-[48px]"
+                style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor || libro.color})"
+                data-action="open-book"
+                data-book-id="${libro.id}">
+          ${libroIniciado ? `${Icons.book(18)} ${this.i18n.t('library.continue')}` : `${Icons.zap(18)} ${this.i18n.t('library.start')}`}
+        </button>
+
+        <!-- Features Icons -->
+        <div class="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 text-base sm:text-sm text-gray-600 dark:text-gray-400">
+          ${libro.features.meditations ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Meditaciones" aria-label="Meditaciones">${Icons.meditation(18)}</span>` : ''}
+          ${libro.features.exercises ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Ejercicios" aria-label="Ejercicios">${Icons.edit(18)}</span>` : ''}
+          ${libro.features.aiChat ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Chat IA" aria-label="Chat IA">${Icons.bot(18)}</span>` : ''}
+          ${libro.features.timeline ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Timeline" aria-label="Timeline">${Icons.calendar(18)}</span>` : ''}
+          ${libro.features.audiobook ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Audioreader" aria-label="Audioreader">${Icons.volume(18)}</span>` : ''}
+          ${libro.features.actionTracker ? `<span class="px-1.5 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700/30 transition cursor-help" title="Tracker Acciones" aria-label="Tracker Acciones">${Icons.zap(18)}</span>` : ''}
         </div>
       </div>
     `;
+
+    return card;
   }
 
   renderComplementaryInfo(book) {
@@ -2336,38 +2343,37 @@ class Biblioteca {
     }
   }
 
-  // 🔧 FIX #10: Re-renderizado optimizado (solo grid, no toda la biblioteca)
+  // 🔧 FIX #10: Fallback optimizado sin re-render completo
   renderBooksGrid() {
-    const contenedorGrid = document.querySelector('.books-grid');
+    let contenedorGrid = document.querySelector('.books-grid');
 
     if (!contenedorGrid) {
-      logger.warn('[Biblioteca] Grid container not found, attempting to render grid section only');
+      logger.warn('[Biblioteca] .books-grid no encontrado, creando contenedor');
 
       // Buscar el contenedor padre donde debería estar el grid
       const bibliotecaContainer = document.querySelector('.biblioteca-container');
       if (!bibliotecaContainer) {
-        logger.error('[Biblioteca] Biblioteca container not found, cannot render grid');
+        logger.error('[Biblioteca] No se encontró .biblioteca-container');
         return;
       }
 
-      // Buscar o crear la sección de libros
+      // Buscar la sección de libros donde debería estar el grid
       let booksSection = bibliotecaContainer.querySelector('.books-section');
+
       if (!booksSection) {
-        // Si no existe, crear la sección completa del grid
+        // Crear la sección si no existe
         booksSection = document.createElement('div');
         booksSection.className = 'books-section';
-        booksSection.innerHTML = this.renderBooksGridHTML();
         bibliotecaContainer.appendChild(booksSection);
-      } else {
-        // Si existe la sección pero no el grid, recrear solo el grid
-        booksSection.innerHTML = this.renderBooksGridHTML();
       }
 
-      if (window.Icons) {
-        Icons.init();
-      }
+      // Crear solo el contenedor del grid (sin el contenido aún)
+      contenedorGrid = document.createElement('div');
+      contenedorGrid.className = 'books-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12';
+      booksSection.appendChild(contenedorGrid);
 
-      return;
+      // Ahora que existe el grid, continuar con el renderizado normal
+      logger.info('[Biblioteca] .books-grid creado exitosamente');
     }
 
     // 🔧 FIX #9: Usar DocumentFragment para mejor performance
@@ -2380,11 +2386,8 @@ class Biblioteca {
     const fragment = document.createDocumentFragment();
 
     libros.forEach(libro => {
-      const cardHTML = this.renderBookCard(libro);
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = cardHTML;
-      const cardElement = tempDiv.firstElementChild;
-      fragment.appendChild(cardElement);
+      const card = this.createBookCard(libro);
+      fragment.appendChild(card);
     });
 
     contenedorGrid.appendChild(fragment);

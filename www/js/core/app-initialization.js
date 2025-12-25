@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX #19, #20, #22, #23: Modal replacement + Input preservation + Credit centralization
-    window.__APP_VERSION__ = '2.9.138'; // Cambiar con cada release
+    // 🔧 FIX #24, #25, #27, #28: Credit accuracy + Dynamic questions + Configurable history + Concise mode
+    window.__APP_VERSION__ = '2.9.139'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

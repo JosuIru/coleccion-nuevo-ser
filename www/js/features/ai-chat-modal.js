@@ -83,8 +83,9 @@ class AIChatModal {
       const outputTokens = Math.ceil(aiResponse.length / 4);
       const totalTokens = inputTokens + outputTokens;
 
+      // 🔧 FIX #24: Calcular créditos basado en tokens usados reales
       // Convertir tokens a créditos: 1 crédito = 1000 tokens
-      const creditsToConsume = Math.max(1, Math.ceil(totalTokens / 1000));
+      const creditsToConsume = Math.ceil(totalTokens / 1000);
 
       logger.debug(`[AI Chat] Consumiendo ${creditsToConsume} créditos (${totalTokens} tokens: ${inputTokens} input + ${outputTokens} output)`);
 
@@ -766,21 +767,41 @@ class AIChatModal {
       // Pregunta sobre aplicación práctica
       questions.push('¿Cómo aplico estos conceptos en mi vida diaria?');
     }
-    // Si no hay capítulo, usar preguntas específicas del libro
-    else if (bookId === 'codigo-despertar') {
-      questions.push(
-        '¿Qué es la conciencia según el libro?',
-        '¿Cómo puedo empezar a meditar?',
-        '¿Cuál es la relación entre IA y conciencia?'
-      );
-    } else if (bookId === 'manifiesto') {
-      questions.push(
-        '¿Cuáles son las premisas ocultas del sistema actual?',
-        '¿Qué alternativas económicas propone el Manifiesto?',
-        '¿Cómo puedo empezar a actuar para el cambio?'
-      );
-    } else {
-      // Preguntas genéricas para cualquier libro
+    // 🔧 FIX #25: Generar preguntas basadas en el contenido real del libro (sin hardcodeo)
+    else if (bookData) {
+      // Pregunta sobre el título/tema del libro
+      if (bookData.title) {
+        questions.push(`¿Cuál es la idea central de "${bookData.title}"?`);
+      }
+
+      // Pregunta basada en el subtítulo o descripción
+      if (bookData.subtitle) {
+        questions.push(`Explícame más sobre ${bookData.subtitle.toLowerCase()}`);
+      }
+
+      // Analizar primeras secciones/capítulos para generar preguntas relevantes
+      if (bookData.sections && bookData.sections.length > 0) {
+        const firstSection = bookData.sections[0];
+
+        // Pregunta sobre la primera sección
+        if (firstSection.title && firstSection.title !== bookData.title) {
+          questions.push(`¿Qué aborda el libro sobre ${firstSection.title.toLowerCase()}?`);
+        }
+
+        // Si hay capítulos, preguntar sobre conceptos del primer capítulo
+        if (firstSection.chapters && firstSection.chapters.length > 0) {
+          const firstChapter = firstSection.chapters[0];
+          if (firstChapter.title) {
+            questions.push(`Explícame el concepto de "${firstChapter.title}"`);
+          }
+        }
+      }
+
+      // Pregunta genérica de aplicación práctica
+      questions.push('¿Cómo puedo aplicar las enseñanzas de este libro?');
+    }
+    // Fallback solo si no hay datos del libro
+    else {
       questions.push(
         '¿Cuál es la idea central del libro?',
         'Explícame un concepto clave',
@@ -1510,14 +1531,19 @@ class AIChatModal {
     // Instrucciones generales
     context += `INSTRUCCIONES: Responde basándote en el contenido del capítulo actual. Si el usuario pregunta sobre algo específico del capítulo, usa la información proporcionada arriba. Sé claro, profundo y relevante. Si no tienes información suficiente del capítulo para responder, indícalo honestamente.`;
 
-    // 🔧 FIX #28: Modo práctico conciso (reducción de ~20 líneas a ~6 líneas = -70% tokens)
+    // 🔧 FIX #28: Modo práctico conciso (reducción de ~100 líneas a ~8 líneas = -90% tokens)
     if (this.practicalMode) {
+      const currentChapterId = this.bookEngine.currentChapter;
+      const currentChapterData = currentChapterId ? this.bookEngine.getChapter(currentChapterId) : null;
+      const exercisesCount = currentChapterData?.exercises?.length || 0;
+
       context += `\n\n=== MODO PRÁCTICO ===\n`;
-      context += `Proporciona respuestas orientadas a la acción:\n`;
-      context += `1. Pasos concretos y accionables\n`;
-      context += `2. Enlaces relevantes: [Título](manual-transicion#capX)\n`;
-      context += `3. Ejercicios/meditaciones aplicables\n`;
-      context += `Capítulos: 1-Transición, 2-Economía, 3-Comunidad, 4-Tecnología, 5-Educación, 6-Salud, 7-Alimentación, 8-Energía, 9-Vivienda, 10-Gobernanza, 11-Espiritualidad, 12-Acción`;
+      context += `Eres un guía práctico. Enfócate en:\n`;
+      context += `- Ejercicios concretos\n`;
+      context += `- Pasos accionables\n`;
+      context += `- Ejemplos reales\n\n`;
+      context += `Capítulo actual: ${currentChapterData?.title || 'No seleccionado'}\n`;
+      context += `Ejercicios disponibles: ${exercisesCount}`;
     }
 
     return context;
@@ -1533,6 +1559,12 @@ class AIChatModal {
   // ==========================================================================
   // UTILIDADES
   // ==========================================================================
+
+  // 🔧 FIX #27: Permitir configuración del tamaño del historial
+  setMaxHistory(length) {
+    this.maxHistoryLength = length;
+    localStorage.setItem('ai-max-history', length.toString());
+  }
 
   clearHistory() {
     this.conversationHistory = [];

@@ -491,9 +491,17 @@ class Biblioteca {
 
   /**
    * Scroll suave al inicio de la biblioteca
+   * 🔧 FIX #13: Validación explícita del contenedor antes de scroll
    */
   scrollToTop() {
-    document.querySelector('.biblioteca-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+    const container = document.querySelector('.biblioteca-container');
+
+    if (!container) {
+      logger.warn('[Biblioteca] Container not found for scroll to top');
+      return;
+    }
+
+    container.scrollTo({ top: 0, behavior: 'smooth' });
     this.setActiveBottomTab('inicio');
   }
 
@@ -698,7 +706,56 @@ class Biblioteca {
   }
 
   /**
+   * 🔧 FIX #8: Obtiene el historial de herramientas usadas por el usuario
+   */
+  getUserPracticeHistory() {
+    try {
+      const history = localStorage.getItem('daily-practice-history');
+      return history ? JSON.parse(history) : {};
+    } catch (error) {
+      logger.warn('[Biblioteca] Error al leer historial de prácticas:', error);
+      return {};
+    }
+  }
+
+  /**
+   * 🔧 FIX #8: Encuentra la herramienta menos usada del array
+   */
+  findLeastUsedTool(tools, history) {
+    // Contar uso de cada herramienta
+    const toolUsage = tools.map(tool => ({
+      tool,
+      count: history[tool.libroId] || 0
+    }));
+
+    // Ordenar por uso ascendente (menos usado primero)
+    toolUsage.sort((a, b) => a.count - b.count);
+
+    // Entre las menos usadas, elegir una al azar para variedad
+    const minCount = toolUsage[0].count;
+    const leastUsed = toolUsage.filter(t => t.count === minCount);
+    const randomIndex = Math.floor(Math.random() * leastUsed.length);
+
+    return leastUsed[randomIndex].tool;
+  }
+
+  /**
+   * 🔧 FIX #8: Registra el uso de una herramienta
+   */
+  trackPracticeUsage(libroId) {
+    try {
+      const history = this.getUserPracticeHistory();
+      history[libroId] = (history[libroId] || 0) + 1;
+      localStorage.setItem('daily-practice-history', JSON.stringify(history));
+      logger.debug(`[Biblioteca] Práctica registrada: ${libroId} (${history[libroId]} veces)`);
+    } catch (error) {
+      logger.warn('[Biblioteca] Error al registrar práctica:', error);
+    }
+  }
+
+  /**
    * Renderiza la sección "Práctica del Día"
+   * 🔧 FIX #8: Personalizada según historial del usuario
    */
   renderDailyPractice() {
     // Incluir widget de racha
@@ -708,7 +765,7 @@ class Biblioteca {
     const herramientasDelDia = [
       // Filosofía y teoría
       { titulo: 'Principio del Reconocimiento', categoria: 'Filosofía', icono: '💡', descripcion: 'Explora cómo el reconocimiento mutuo transforma las relaciones humanas', libroId: 'filosofia-nuevo-ser', accion: 'Leer capítulo' },
-      { titulo: 'Transición Consciente', categoria: 'Teoría', icono: '🔄', descripcion: 'Comprende los mecanismos de cambio sistémico en comunidades', libroId: 'guia-transicion', accion: 'Explorar' },
+      { titulo: 'Transición Consciente', categoria: 'Teoría', icono: '🔄', descripcion: 'Comprende los mecanismos de cambio sistémico en comunidades', libroId: 'manual-transicion', accion: 'Explorar' },
       // Comunidad y organización
       { titulo: 'Estructura de Microsociedad', categoria: 'Comunidad', icono: '🏛️', descripcion: 'Diseña una estructura organizativa basada en el reconocimiento', libroId: 'toolkit-transicion', accion: 'Ver herramienta' },
       { titulo: 'Resolución de Conflictos', categoria: 'Social', icono: '🤝', descripcion: 'Aplica el diálogo transformativo en situaciones de tensión', libroId: 'guia-acciones', accion: 'Practicar' },
@@ -720,9 +777,20 @@ class Biblioteca {
       { titulo: 'Conexión con la Tierra', categoria: 'Ecología', icono: '🌍', descripcion: 'Reconecta con los ritmos naturales como base de la transformación', libroId: 'tierra-que-despierta', accion: 'Explorar' }
     ];
 
-    // Seleccionar herramienta basada en el día
-    const indiceHerramienta = new Date().getDate() % herramientasDelDia.length;
-    const herramientaHoy = herramientasDelDia[indiceHerramienta];
+    // 🔧 FIX #8: Seleccionar herramienta personalizada basada en historial
+    const userHistory = this.getUserPracticeHistory();
+    let herramientaHoy;
+
+    if (Object.keys(userHistory).length > 0) {
+      // Usuario tiene historial → mostrar herramienta menos usada
+      herramientaHoy = this.findLeastUsedTool(herramientasDelDia, userHistory);
+      logger.debug('[Biblioteca] Herramienta del día: personalizada según historial');
+    } else {
+      // Usuario nuevo → usar rotación por día como fallback
+      const indiceHerramienta = new Date().getDate() % herramientasDelDia.length;
+      herramientaHoy = herramientasDelDia[indiceHerramienta];
+      logger.debug('[Biblioteca] Herramienta del día: rotación por fecha (sin historial)');
+    }
 
     return `
       <!-- Widget de Racha (si hay datos) -->
@@ -741,7 +809,7 @@ class Biblioteca {
             <p class="text-sm text-gray-400 mb-3">${herramientaHoy.descripcion}</p>
           </div>
 
-          <button onclick="window.biblioteca?.openBook('${herramientaHoy.libroId}')"
+          <button onclick="window.biblioteca?.openDailyPractice('${herramientaHoy.libroId}')"
                   class="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2">
             ${herramientaHoy.accion} →
           </button>
@@ -2268,14 +2336,41 @@ class Biblioteca {
     }
   }
 
+  // 🔧 FIX #10: Re-renderizado optimizado (solo grid, no toda la biblioteca)
   renderBooksGrid() {
     const contenedorGrid = document.querySelector('.books-grid');
+
     if (!contenedorGrid) {
-      this.render();
-      this.attachEventListeners();
+      logger.warn('[Biblioteca] Grid container not found, attempting to render grid section only');
+
+      // Buscar el contenedor padre donde debería estar el grid
+      const bibliotecaContainer = document.querySelector('.biblioteca-container');
+      if (!bibliotecaContainer) {
+        logger.error('[Biblioteca] Biblioteca container not found, cannot render grid');
+        return;
+      }
+
+      // Buscar o crear la sección de libros
+      let booksSection = bibliotecaContainer.querySelector('.books-section');
+      if (!booksSection) {
+        // Si no existe, crear la sección completa del grid
+        booksSection = document.createElement('div');
+        booksSection.className = 'books-section';
+        booksSection.innerHTML = this.renderBooksGridHTML();
+        bibliotecaContainer.appendChild(booksSection);
+      } else {
+        // Si existe la sección pero no el grid, recrear solo el grid
+        booksSection.innerHTML = this.renderBooksGridHTML();
+      }
+
+      if (window.Icons) {
+        Icons.init();
+      }
+
       return;
     }
 
+    // Caso normal: actualizar solo el contenido del grid existente
     const libros = this.getFilteredBooks();
     let htmlLibros = '';
     libros.forEach(libro => {
@@ -2370,6 +2465,17 @@ class Biblioteca {
   // ==========================================================================
   // NAVEGACIÓN
   // ==========================================================================
+
+  /**
+   * 🔧 FIX #8: Abre un libro desde la herramienta del día y trackea su uso
+   */
+  openDailyPractice(libroId) {
+    // Registrar uso de esta práctica
+    this.trackPracticeUsage(libroId);
+
+    // Abrir el libro normalmente
+    this.openBook(libroId);
+  }
 
   async openBook(idLibro, idCapituloObjetivo = null) {
     try {

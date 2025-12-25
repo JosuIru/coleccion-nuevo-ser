@@ -242,10 +242,10 @@ class BookReader {
     this._desktopDropdownsClickOutsideHandler = null;
     this._markReadHandler = null;
 
-    // 🔧 FIX #47: Limpiar mapa de dropdown handlers
-    if (this._dropdownHandlers) {
-      this._dropdownHandlers = {};
-    }
+    // 🔧 FIX #45: Resetear mapa de dropdown handlers a null (no solo vaciar)
+    // Antes: se asignaba {} pero el código hace if (!this._dropdownHandlers)
+    // lo cual falla con objeto vacío, causando que los handlers no se recreen
+    this._dropdownHandlers = null;
 
     // 🔧 FIX #47: Limpiar referencia al capítulo actual
     this.currentChapter = null;
@@ -281,6 +281,35 @@ class BookReader {
       toggleBtn.innerHTML = this.sidebarOpen ? Icons.chevronLeft() : Icons.chevronRight();
       toggleBtn.setAttribute('aria-label', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
       toggleBtn.setAttribute('title', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
+    }
+  }
+
+  // 🔧 FIX #46: Método unificado para toggle de dropdowns con cierre automático
+  toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) return;
+
+    const isOpen = dropdown.classList.contains('hidden');
+
+    // Cerrar todos los dropdowns
+    document.querySelectorAll('[id$="-dropdown"]').forEach(dd => {
+      dd.classList.add('hidden');
+    });
+
+    if (isOpen) {
+      dropdown.classList.remove('hidden');
+
+      // Cerrar al hacer click fuera
+      const closeHandler = (e) => {
+        if (!e.target.closest(`#${dropdownId}`) && !e.target.closest('[data-dropdown-toggle]')) {
+          dropdown.classList.add('hidden');
+          document.removeEventListener('click', closeHandler);
+        }
+      };
+
+      setTimeout(() => {
+        document.addEventListener('click', closeHandler);
+      }, 0);
     }
   }
 
@@ -998,7 +1027,7 @@ class BookReader {
             <div class="title">Este capítulo incluye una práctica</div>
             <div class="description">${primerEjercicio.title || 'Ejercicio de integración'} • ${primerEjercicio.duration || '10 min'}</div>
           </div>
-          <button class="action-btn" onclick="document.querySelector('.exercises-section')?.scrollIntoView({behavior: 'smooth'})">
+          <button class="action-btn" onclick="window.bookReader?.scrollToElement('.exercises-section')">
             Ver práctica
           </button>
         </div>
@@ -1011,7 +1040,7 @@ class BookReader {
             <div class="title">Ejercicio práctico disponible</div>
             <div class="description">${tieneLinkedExercise.title || 'Actividad práctica relacionada'}</div>
           </div>
-          <button class="action-btn" onclick="document.querySelector('.linked-exercise')?.scrollIntoView({behavior: 'smooth'})">
+          <button class="action-btn" onclick="window.bookReader?.scrollToElement('.linked-exercise')">
             Ver ejercicio
           </button>
         </div>
@@ -1497,8 +1526,9 @@ class BookReader {
     // 🔧 FIX #43: Helpers reutilizables para eliminar duplicación (~300 líneas)
 
     /**
-     * Crea un handler para abrir modales con cierre automático de menús
-     * @param {string} modalPath - Ruta al modal en window (ej: 'notesModal', 'window.notesModal')
+     * 🔧 FIX #43: Crea un handler para abrir modales con cierre automático de menús
+     * Usa getDependency() en lugar de window.* para acceso seguro
+     * @param {string} modalPath - Nombre del modal/dependencia (ej: 'notesModal', 'chapterResourcesModal')
      * @param {Function|null} closeMenu - Función para cerrar menú (null si no aplica)
      * @param {string} methodName - Nombre del método a llamar (default: 'open')
      * @param  {...any} args - Argumentos para el método del modal
@@ -1507,16 +1537,15 @@ class BookReader {
       return () => {
         if (closeMenu) closeMenu();
 
-        const modal = modalPath.startsWith('window.')
-          ? eval(modalPath)  // Para paths como 'window.notesModal'
-          : window[modalPath]; // Para paths simples como 'notesModal'
+        // 🔧 FIX #43: Usar getDependency() en lugar de eval() o window.*
+        const modal = this.getDependency(modalPath);
 
         if (modal) {
           // Evaluar args que sean funciones (ej: () => this.currentChapter?.id)
           const evaluatedArgs = args.map(arg => typeof arg === 'function' ? arg() : arg);
           modal[methodName](...evaluatedArgs);
         } else {
-          const errorKey = `error.${modalPath.replace(/^window\./, '')}NotAvailable`;
+          const errorKey = `error.${modalPath}NotAvailable`;
           this.showToast('error', errorKey);
         }
       };
@@ -1687,7 +1716,11 @@ class BookReader {
     const closeMobileMenu = document.getElementById('close-mobile-menu');
     if (closeMobileMenu) {
       this.eventManager.addEventListener(closeMobileMenu, 'click', () => {
-        document.getElementById('mobile-menu').classList.add('hidden');
+        // 🔧 FIX #48: Verificar existencia antes de manipular elemento
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+          mobileMenu.classList.add('hidden');
+        }
       });
     }
 
@@ -1695,7 +1728,11 @@ class BookReader {
     const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
     if (mobileMenuBackdrop) {
       this.eventManager.addEventListener(mobileMenuBackdrop, 'click', () => {
-        document.getElementById('mobile-menu').classList.add('hidden');
+        // 🔧 FIX #48: Verificar existencia antes de manipular elemento
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+          mobileMenu.classList.add('hidden');
+        }
       });
     }
 
@@ -1703,7 +1740,11 @@ class BookReader {
     const backToLibMobile = document.getElementById('back-to-biblioteca-mobile');
     if (backToLibMobile) {
       this.eventManager.addEventListener(backToLibMobile, 'click', () => {
-        document.getElementById('mobile-menu').classList.add('hidden');
+        // 🔧 FIX #48: Verificar existencia antes de manipular elemento
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+          mobileMenu.classList.add('hidden');
+        }
         // Remover tema específico del libro
         this.removeBookTheme();
         this.hide();
@@ -2460,10 +2501,8 @@ class BookReader {
             chapterResourcesModal.open(chapterId);
           }
         } else if (action === 'reflection') {
-          const closingQuestion = document.querySelector('.closing-question');
-          if (closingQuestion) {
-            closingQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          // 🔧 FIX #48: Usar método seguro con validación
+          this.scrollToElement('.closing-question');
         }
       });
     });
@@ -2873,6 +2912,27 @@ class BookReader {
     }
   }
 
+  // 🔧 FIX #48: Scroll seguro con validación de existencia
+  /**
+   * Scroll suave a un elemento con validación de existencia
+   * @param {string} selector - Selector CSS del elemento objetivo
+   */
+  scrollToElement(selector) {
+    const targetElement = document.querySelector(selector);
+
+    if (!targetElement) {
+      console.warn(`[BookReader] Elemento no encontrado: ${selector}`);
+      if (window.toast) {
+        window.toast.warning('Referencia no encontrada');
+      } else {
+        this.showToast('warning', 'Referencia no encontrada');
+      }
+      return;
+    }
+
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   // 🔧 FIX #43: Handler reutilizable para cambio de libros
   /**
    * Cambia al libro especificado con confirmación del usuario
@@ -3142,10 +3202,8 @@ class BookReader {
                 chapterResourcesModal.open(chapterId);
               }
             } else if (action === 'reflection') {
-              const closingQuestion = document.querySelector('.closing-question');
-              if (closingQuestion) {
-                closingQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
+              // 🔧 FIX #48: Usar método seguro con validación
+              this.scrollToElement('.closing-question');
             }
           });
         }

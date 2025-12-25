@@ -531,11 +531,30 @@ class Biblioteca {
     this.setActiveBottomTab('inicio');
   }
 
+  // 🔧 FIX #48: Scroll seguro con validación de existencia
+  /**
+   * Scroll suave a un elemento con validación de existencia
+   * @param {string} selector - Selector CSS del elemento objetivo
+   */
+  scrollToElement(selector) {
+    const targetElement = document.querySelector(selector);
+
+    if (!targetElement) {
+      logger.warn(`[Biblioteca] Elemento no encontrado: ${selector}`);
+      if (window.toast) {
+        window.toast.warning('Referencia no encontrada');
+      }
+      return;
+    }
+
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   /**
    * Scroll suave a la sección de libros
    */
   scrollToBooks() {
-    document.querySelector('.books-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.scrollToElement('.books-grid');
     this.setActiveBottomTab('libros');
   }
 
@@ -564,7 +583,8 @@ class Biblioteca {
     if (window.explorationHub) {
       window.explorationHub.open();
     } else {
-      document.querySelector('.tools-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 🔧 FIX #48: Usar método seguro con validación
+      this.scrollToElement('.tools-section');
     }
   }
 

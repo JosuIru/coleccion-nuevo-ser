@@ -171,6 +171,7 @@ class BookReader {
   }
 
   // 🧹 MEMORY LEAK FIX #44: Método de cleanup
+  // 🔧 FIX #47: Cleanup completo de recursos
   cleanup() {
     console.log('[BookReader] Iniciando cleanup...');
 
@@ -179,11 +180,47 @@ class BookReader {
       this.eventManager.cleanup();
     }
 
-    // 🔧 FIX #45: Resetear todos los flags de dropdown y event listeners
+    // 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
+    if (this._eventHandlers) {
+      this._eventHandlers.forEach((handler, key) => {
+        const [elementId, event] = key.split('-');
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.removeEventListener(event, handler);
+        }
+      });
+      this._eventHandlers.clear();
+    }
+
+    // 🔧 FIX #47: Resetear todos los flags de dropdown y event listeners
     this._eventListenersAttached = false;
     this._bottomNavClickOutsideAttached = false;
     this._moreActionsClickOutsideAttached = false;
     this._desktopDropdownsClickOutsideAttached = false;
+
+    // 🔧 FIX #47: Limpiar referencias a handlers almacenados
+    this._toggleSidebarHandler = null;
+    this._closeSidebarHandler = null;
+    this._backToBibliotecaHandler = null;
+    this._mobileMenuHandler = null;
+    this._bottomNavMoreHandler = null;
+    this._bottomNavClickOutsideHandler = null;
+    this._audioreaderHandler = null;
+    this._moreActionsToggleHandler = null;
+    this._moreActionsClickOutsideHandler = null;
+    this._desktopDropdownsClickOutsideHandler = null;
+    this._markReadHandler = null;
+
+    // 🔧 FIX #45: Resetear mapa de dropdown handlers a null (no solo vaciar)
+    // Antes: se asignaba {} pero el código hace if (!this._dropdownHandlers)
+    // lo cual falla con objeto vacío, causando que los handlers no se recreen
+    this._dropdownHandlers = null;
+
+    // 🔧 FIX #47: Limpiar referencia al capítulo actual
+    this.currentChapter = null;
+
+    // 🔧 FIX #47: Remover tema del libro al cerrar
+    this.removeBookTheme();
 
     console.log('[BookReader] Cleanup completado ✅');
   }

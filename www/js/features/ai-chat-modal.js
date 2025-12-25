@@ -1354,28 +1354,14 @@ class AIChatModal {
     // Instrucciones generales
     context += `INSTRUCCIONES: Responde basándote en el contenido del capítulo actual. Si el usuario pregunta sobre algo específico del capítulo, usa la información proporcionada arriba. Sé claro, profundo y relevante. Si no tienes información suficiente del capítulo para responder, indícalo honestamente.`;
 
-    // Add practical mode instructions if enabled
+    // 🔧 FIX #28: Modo práctico conciso (reducción de ~20 líneas a ~6 líneas = -70% tokens)
     if (this.practicalMode) {
-      context += `\n\n=== MODO PRÁCTICO ACTIVADO ===\n`;
-      context += `Cuando el usuario pregunte cómo hacer algo práctico (crear una comunidad, iniciar un grupo de consumo, implementar modelos de vivienda, practicar meditaciones específicas, etc.), proporciona:\n\n`;
-      context += `1. Un plan de acción paso a paso con tareas concretas\n`;
-      context += `2. Enlaces a capítulos relevantes en el formato: [Capítulo X: Título](manual-transicion#capX)\n`;
-      context += `3. Referencias a ejercicios o meditaciones específicas cuando aplique\n`;
-      context += `4. Recursos adicionales o herramientas útiles\n\n`;
-      context += `CAPÍTULOS DISPONIBLES PARA REFERENCIA:\n`;
-      context += `- [Capítulo 1: La Transición](manual-transicion#cap1) - Entender crisis y cambios\n`;
-      context += `- [Capítulo 2: Economía](manual-transicion#cap2) - Sistemas económicos alternativos, trueque, moneda local\n`;
-      context += `- [Capítulo 3: Comunidad](manual-transicion#cap3) - Crear comunidades, redes de apoyo, economía del don\n`;
-      context += `- [Capítulo 4: Tecnología](manual-transicion#cap4) - Tecnología social, descentralización\n`;
-      context += `- [Capítulo 5: Educación](manual-transicion#cap5) - Pedagogías alternativas, aprendizaje libre\n`;
-      context += `- [Capítulo 6: Salud](manual-transicion#cap6) - Medicina integral, prevención, autocuidado\n`;
-      context += `- [Capítulo 7: Alimentación](manual-transicion#cap7) - Huertos, permacultura, soberanía alimentaria\n`;
-      context += `- [Capítulo 8: Energía](manual-transicion#cap8) - Energías renovables, autonomía energética\n`;
-      context += `- [Capítulo 9: Vivienda](manual-transicion#cap9) - Ecoaldeas, cohousing, bioconstrucción\n`;
-      context += `- [Capítulo 10: Gobernanza](manual-transicion#cap10) - Sociocracia, consenso, toma de decisiones\n`;
-      context += `- [Capítulo 11: Espiritualidad](manual-transicion#cap11) - Meditación, mindfulness, prácticas contemplativas\n`;
-      context += `- [Capítulo 12: Acción](manual-transicion#cap12) - Primeros pasos, integración práctica\n\n`;
-      context += `Incluye estos enlaces de forma natural en tu respuesta cuando sean relevantes. El usuario podrá hacer clic en ellos para navegar directamente al capítulo.`;
+      context += `\n\n=== MODO PRÁCTICO ===\n`;
+      context += `Proporciona respuestas orientadas a la acción:\n`;
+      context += `1. Pasos concretos y accionables\n`;
+      context += `2. Enlaces relevantes: [Título](manual-transicion#capX)\n`;
+      context += `3. Ejercicios/meditaciones aplicables\n`;
+      context += `Capítulos: 1-Transición, 2-Economía, 3-Comunidad, 4-Tecnología, 5-Educación, 6-Salud, 7-Alimentación, 8-Energía, 9-Vivienda, 10-Gobernanza, 11-Espiritualidad, 12-Acción`;
     }
 
     return context;

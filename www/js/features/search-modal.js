@@ -219,58 +219,73 @@ class SearchModal {
       .trim();
   }
 
+  // 🔧 FIX #34: calculateRelevance optimizado para reducir operaciones redundantes
   calculateRelevance(chapter, queryWords, chapterId, bookId) {
     let score = 0;
     const matches = [];
     let excerpt = '';
 
-    // Buscar en título (peso 3x)
+    // Pre-normalizar todos los textos una sola vez
     const titleNormalized = this.normalizeText(chapter.title || '');
-    queryWords.forEach(word => {
+    const contentNormalized = this.normalizeText(chapter.content || '');
+
+    // Crear un Set para palabras ya procesadas (evitar duplicados)
+    const processedWords = new Set();
+
+    // Buscar en título (peso 3x)
+    for (const word of queryWords) {
       if (titleNormalized.includes(word)) {
         score += 3;
         matches.push({ field: 'title', word });
       }
-    });
+    }
 
-    // Buscar en contenido (peso 1x)
-    const contentNormalized = this.normalizeText(chapter.content || '');
-    queryWords.forEach(word => {
-      const regex = new RegExp(word, 'gi');
-      const occurrences = (contentNormalized.match(regex) || []).length;
-      score += occurrences;
+    // Buscar en contenido (peso 1x) - usar búsqueda simple en vez de regex para cada palabra
+    for (const word of queryWords) {
+      // Contar ocurrencias manualmente (más rápido que regex)
+      let index = 0;
+      let occurrences = 0;
+      while ((index = contentNormalized.indexOf(word, index)) !== -1) {
+        occurrences++;
+        index += word.length;
+      }
+
       if (occurrences > 0) {
+        score += occurrences;
         matches.push({ field: 'content', word, count: occurrences });
       }
-    });
+    }
 
-    // Buscar en ejercicios (peso 2x)
-    if (chapter.exercises) {
-      chapter.exercises.forEach(exercise => {
+    // Buscar en ejercicios (peso 2x) - normalizar una sola vez por ejercicio
+    if (chapter.exercises && chapter.exercises.length > 0) {
+      for (const exercise of chapter.exercises) {
         const exerciseText = this.normalizeText(
           `${exercise.title} ${exercise.description || ''} ${exercise.reflection || ''}`
         );
-        queryWords.forEach(word => {
+
+        for (const word of queryWords) {
           if (exerciseText.includes(word)) {
             score += 2;
             matches.push({ field: 'exercise', word });
           }
-        });
-      });
+        }
+      }
     }
 
-    // Buscar en metadatos/tags (peso 4x)
+    // Buscar en metadatos/tags (peso 4x) - normalizar una sola vez
     const metadata = this.getChapterMetadata(bookId, chapterId);
     if (metadata) {
-      const tagsText = this.normalizeText(
-        [...(metadata.tags || []), ...(metadata.keywords || [])].join(' ')
-      );
-      queryWords.forEach(word => {
-        if (tagsText.includes(word)) {
-          score += 4;
-          matches.push({ field: 'tags', word });
+      const tags = [...(metadata.tags || []), ...(metadata.keywords || [])];
+      if (tags.length > 0) {
+        const tagsText = this.normalizeText(tags.join(' '));
+
+        for (const word of queryWords) {
+          if (tagsText.includes(word)) {
+            score += 4;
+            matches.push({ field: 'tags', word });
+          }
         }
-      });
+      }
     }
 
     // Generar extracto

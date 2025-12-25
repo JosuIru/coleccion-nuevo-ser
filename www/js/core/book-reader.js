@@ -2852,15 +2852,22 @@ class BookReader {
       if (chapter) {
         this.currentChapter = chapter;
 
-        // 🔧 FIX #49: Verificar si ya existe la estructura DOM
-        // Si no existe, hacer render completo. Si existe, actualización parcial.
+        // 🔧 FIX #49 + HOTFIX: Verificar si ya existe la estructura DOM Y está visible
+        // Si no existe O no está visible, hacer render completo. Si existe, actualización parcial.
+        const container = document.getElementById('book-reader-view');
         const contentArea = document.querySelector('.chapter-content');
-        const hasRendered = contentArea !== null;
+        const isContainerVisible = container && !container.classList.contains('hidden');
+        const hasRendered = contentArea !== null && isContainerVisible;
 
         if (!hasRendered) {
-          // Primera vez: render completo
+          // Primera vez O container oculto: render completo
           this.render();
           this.attachEventListeners();
+
+          // 🔧 HOTFIX: Asegurar que el container esté visible
+          if (container) {
+            container.classList.remove('hidden');
+          }
         } else {
           // 🔧 FIX #49: Ya renderizado - solo actualizar las partes que cambian
           // Evita re-renderizar TODO el reader, mejora rendimiento significativamente

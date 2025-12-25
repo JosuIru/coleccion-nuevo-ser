@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🎯 v2.9.146: Post-auditoría cleanup (100 fixes + limpieza de código y APKs)
-    window.__APP_VERSION__ = '2.9.146'; // Cambiar con cada release
+    // 🔧 HOTFIX v2.9.147: Fix book reader rendering bug (Fix #49 partial render issue)
+    window.__APP_VERSION__ = '2.9.147'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

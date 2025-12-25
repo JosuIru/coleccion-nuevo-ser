@@ -131,6 +131,9 @@ class Biblioteca {
     // 🔧 FIX #11: Debounce helper para localStorage writes
     this.debounceTimers = new Map();
 
+    // 🔧 FIX #16: Tracking para global click handler
+    this._globalClickHandler = null;
+
     // Combinar botones primarios y secundarios para event delegation
     BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL = [
       ...BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS,
@@ -485,7 +488,7 @@ class Biblioteca {
           <span class="app-bottom-nav-icon">📚</span>
           <span class="app-bottom-nav-label">Libros</span>
         </button>
-        <button class="app-bottom-nav-tab ${activeTab === 'practicas' ? 'active' : ''}" data-tab="practicas" onclick="window.practiceLibrary?.open()">
+        <button class="app-bottom-nav-tab ${activeTab === 'practicas' ? 'active' : ''}" data-tab="practicas" onclick="window.biblioteca?.openPracticeLibrary()">
           <span class="app-bottom-nav-icon">🧘</span>
           <span class="app-bottom-nav-label">Prácticas</span>
         </button>
@@ -503,17 +506,20 @@ class Biblioteca {
 
   /**
    * Scroll suave al inicio de la biblioteca
-   * 🔧 FIX #13: Validación explícita del contenedor antes de scroll
+   * 🔧 FIX #13: Verificar existencia antes de scrollTo
    */
   scrollToTop() {
+    // 🔧 FIX #13: Verificar existencia antes de scrollTo
     const container = document.querySelector('.biblioteca-container');
 
-    if (!container) {
-      logger.warn('[Biblioteca] Container not found for scroll to top');
-      return;
+    if (container) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Fallback a window scroll
+      logger.warn('[Biblioteca] Container not found for scroll to top, using window fallback');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    container.scrollTo({ top: 0, behavior: 'smooth' });
     this.setActiveBottomTab('inicio');
   }
 
@@ -523,6 +529,19 @@ class Biblioteca {
   scrollToBooks() {
     document.querySelector('.books-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.setActiveBottomTab('libros');
+  }
+
+  /**
+   * Abre la biblioteca de prácticas
+   * 🔧 FIX #7: Actualizar estado activo del tab al abrir prácticas
+   */
+  openPracticeLibrary() {
+    this.setActiveBottomTab('practicas');
+    if (window.practiceLibrary) {
+      window.practiceLibrary.open();
+    } else {
+      logger.warn('[Biblioteca] PracticeLibrary not loaded');
+    }
   }
 
   /**
@@ -553,9 +572,10 @@ class Biblioteca {
 
   /**
    * Actualiza el tab activo en la navegación inferior
+   * 🔧 FIX #7: Mantener estado activo del tab
    */
   setActiveBottomTab(tabName) {
-    // 🔧 FIX #7: Persistir tab activo en localStorage
+    // Persistir tab activo en localStorage
     try {
       localStorage.setItem('biblioteca-active-tab', tabName);
     } catch (e) {
@@ -2009,12 +2029,8 @@ class Biblioteca {
 
   handlePracticeLibraryButton(evento) {
     evento.preventDefault();
-    if (window.practiceLibrary) {
-      window.practiceLibrary.open();
-    } else {
-      // 🔧 FIX #4: Usar logger en lugar de console.log
-      logger.error('Practice Library not loaded');
-    }
+    // 🔧 FIX #7: Usar método wrapper que actualiza tab activo
+    this.openPracticeLibrary();
   }
 
   handleExplorationHub(evento) {
@@ -2432,6 +2448,11 @@ class Biblioteca {
     const contenedorBiblioteca = document.getElementById('biblioteca-view');
     if (!contenedorBiblioteca) return;
 
+    // 🔧 FIX #16: Limpiar listener anterior antes de añadir nuevo
+    if (this._globalClickHandler) {
+      document.removeEventListener('click', this._globalClickHandler);
+    }
+
     const mapaHandlers = {};
     BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL.forEach(boton => {
       mapaHandlers[boton.id] = this[boton.handler].bind(this);
@@ -2488,8 +2509,8 @@ class Biblioteca {
       }
     });
 
-    // 🔧 FIX #86: Usar EventManager para click outside listener
-    this.eventManager.addEventListener(document, 'click', (evento) => {
+    // 🔧 FIX #16: Crear y guardar referencia al global click handler
+    this._globalClickHandler = (evento) => {
       const dropdown = document.getElementById('more-options-menu-bib');
       const botonDropdown = document.getElementById('more-options-btn-bib');
 
@@ -2498,7 +2519,10 @@ class Biblioteca {
           this.closeMenuDropdown();
         }
       }
-    });
+    };
+
+    // 🔧 FIX #16: Añadir listener global usando la referencia almacenada
+    document.addEventListener('click', this._globalClickHandler);
 
     this.delegatedListenersAttached = true;
     logger.log('✅ Event delegation attached to biblioteca-view');
@@ -2594,6 +2618,12 @@ class Biblioteca {
   cleanup() {
     // 🔧 FIX #4: Usar logger en lugar de console.log
     logger.debug('[Biblioteca] Iniciando cleanup...');
+
+    // 🔧 FIX #16: Limpiar global click handler
+    if (this._globalClickHandler) {
+      document.removeEventListener('click', this._globalClickHandler);
+      this._globalClickHandler = null;
+    }
 
     // Limpiar todos los event listeners gestionados por EventManager
     if (this.eventManager) {

@@ -625,7 +625,10 @@ class PracticeOfTheDayWidget {
     const openLibraryBtn = container.querySelector('#open-practice-library-widget');
     if (openLibraryBtn) {
       openLibraryBtn.addEventListener('click', () => {
-        if (window.practiceLibrary) {
+        // 🔧 FIX #7: Usar método wrapper de biblioteca que actualiza tab activo
+        if (window.biblioteca?.openPracticeLibrary) {
+          window.biblioteca.openPracticeLibrary();
+        } else if (window.practiceLibrary) {
           window.practiceLibrary.open();
         }
       });

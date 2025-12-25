@@ -1829,7 +1829,12 @@ class LearningPaths {
         if (this.bookId) {
           window.practiceLibrary.filters.book = this.bookId;
         }
-        window.practiceLibrary.open();
+        // 🔧 FIX #7: Usar método wrapper de biblioteca que actualiza tab activo
+        if (window.biblioteca?.openPracticeLibrary) {
+          window.biblioteca.openPracticeLibrary();
+        } else {
+          window.practiceLibrary.open();
+        }
       } else {
         window.toast?.error('Biblioteca de Prácticas no disponible');
       }

@@ -22,6 +22,15 @@ class SearchModal {
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
     this.eventManager = new EventManager();
     this.eventManager.setComponentName('SearchModal');
+
+    // 🔧 FIX #30: Caché de resultados de búsqueda para evitar búsquedas repetidas
+    this.searchCache = new Map(); // key: "query|filters", value: { results, timestamp }
+    this.cacheTTL = 5 * 60 * 1000; // 5 minutos
+    this.maxCacheSize = 50; // Máximo 50 búsquedas en caché
+
+    // 🔧 FIX #35: Debounce configurable a nivel de instancia
+    this.debounceDelay = parseInt(localStorage.getItem('search-debounce-delay') || '300', 10); // 300ms por defecto
+    this.debounceTimer = null; // Timer a nivel de instancia
   }
 
   async loadMetadata() {
@@ -69,6 +78,12 @@ class SearchModal {
       this.escapeHandler = null;
     }
 
+    // 🔧 FIX #35: Limpiar debounce timer para evitar búsquedas pendientes
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+
     const modal = document.getElementById('search-modal');
     if (modal) modal.remove();
   }
@@ -89,6 +104,23 @@ class SearchModal {
         }
       }
       this.searchResults = [];
+      return;
+    }
+
+    // 🔧 FIX #30: Verificar caché antes de ejecutar búsqueda costosa
+    const cacheKey = `${query}|${JSON.stringify(this.currentFilters)}`;
+    const cachedResult = this.searchCache.get(cacheKey);
+    const now = Date.now();
+
+    if (cachedResult && (now - cachedResult.timestamp) < this.cacheTTL) {
+      // Usar resultados cacheados
+      this.searchResults = cachedResult.results;
+      this.renderResults();
+
+      // Ocultar indicador de carga
+      const loadingIndicator = document.getElementById('search-loading');
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+
       return;
     }
 
@@ -183,6 +215,26 @@ class SearchModal {
 
     // Ordenar por relevancia
     this.searchResults.sort((a, b) => b.score - a.score);
+
+    // 🔧 FIX #30: Guardar resultados en caché (con evicción LRU si es necesario)
+    // Limpiar entradas expiradas primero
+    for (const [key, value] of this.searchCache.entries()) {
+      if ((now - value.timestamp) >= this.cacheTTL) {
+        this.searchCache.delete(key);
+      }
+    }
+
+    // Evicción LRU: eliminar entrada más antigua si se excede el tamaño
+    if (this.searchCache.size >= this.maxCacheSize) {
+      const firstKey = this.searchCache.keys().next().value;
+      this.searchCache.delete(firstKey);
+    }
+
+    // Guardar nuevos resultados en caché
+    this.searchCache.set(cacheKey, {
+      results: [...this.searchResults], // Deep copy para evitar mutaciones
+      timestamp: now
+    });
 
     // Ocultar indicador de carga
     if (loadingIndicator) loadingIndicator.classList.add('hidden');
@@ -577,21 +629,21 @@ class SearchModal {
     // console.log('📝 Search input encontrado:', searchInput ? 'SÍ' : 'NO');
 
     if (searchInput) {
-      let debounceTimer;
+      // 🔧 FIX #35: Usar debounce a nivel de instancia con delay configurable
       searchInput.addEventListener('input', (e) => {
         // console.log('⌨️ Input event - valor:', e.target.value);
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
           // console.log('⏰ Debounce timeout - ejecutando búsqueda automática');
           this.search(e.target.value);
-        }, 500);
+        }, this.debounceDelay);
       });
 
       // Search on Enter
       searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           // console.log('⏎ Enter presionado - ejecutando búsqueda');
-          clearTimeout(debounceTimer);
+          clearTimeout(this.debounceTimer);
           this.search(e.target.value);
         }
       });

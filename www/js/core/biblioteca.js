@@ -1087,7 +1087,7 @@ class Biblioteca {
       <div class="relative p-4 sm:p-6">
         <!-- Icon & Status -->
         <div class="flex items-start justify-between mb-3 sm:mb-4">
-          <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center opacity-80" style="color: ${libro.color}">
+          <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center" style="color: ${libro.color}">
             ${Icons.getBookIcon(libro.id, 48, libro.color)}
           </div>
           <div class="flex flex-col items-end gap-2">

@@ -16,7 +16,9 @@ class AudioReader {
     this.rate = 1.0;
     this.selectedVoice = null;
     this.selectedVoiceURI = localStorage.getItem('preferred-tts-voice'); // Para TTS nativo
-    this.autoAdvanceChapter = false;
+    // 🔧 FIX v2.9.175: Cargar auto-advance desde localStorage
+    this.autoAdvanceChapter = localStorage.getItem('audio-auto-advance') === 'true';
+    this.isRendering = false; // 🔧 FIX v2.9.173: Evitar renderizados paralelos
 
     // Verificar si estamos en Android/Capacitor
     this.isCapacitor = !!(window.Capacitor && window.Capacitor.isNative);
@@ -69,6 +71,9 @@ class AudioReader {
     // 🔧 FIX #56: Variables para pausar sleep timer al minimizar app
     this.sleepTimerPaused = false;
     this.sleepTimerRemainingTime = 0;
+
+    // ⭐ MEJORA v2.9.178: Temporizador para pausas de meditación
+    this.pauseTimerInterval = null;
 
     // Bookmarks de audio
     this.audioBookmarks = this.loadBookmarks();
@@ -517,6 +522,18 @@ class AudioReader {
     if (!text) return '';
 
     return text
+      // 🔧 FIX v2.9.175: Eliminar TODAS las flechas (Unicode y ASCII)
+      .replace(/→/g, ' ')           // Flecha derecha Unicode
+      .replace(/←/g, ' ')           // Flecha izquierda Unicode
+      .replace(/↑/g, ' ')           // Flecha arriba Unicode
+      .replace(/↓/g, ' ')           // Flecha abajo Unicode
+      .replace(/⇒/g, ' ')           // Doble flecha derecha
+      .replace(/⇐/g, ' ')           // Doble flecha izquierda
+      .replace(/->/g, ' ')          // Flecha ASCII derecha
+      .replace(/<-/g, ' ')          // Flecha ASCII izquierda
+      .replace(/=>/g, ' ')          // Flecha gorda
+      // Eliminar guiones sueltos con espacios alrededor (pero mantener palabras compuestas)
+      .replace(/\s+-\s+/g, ' ')
       // Eliminar símbolos markdown de encabezados (# ## ### etc.)
       .replace(/^#{1,6}\s*/gm, '')
       // Eliminar asteriscos de negrita/cursiva
@@ -549,27 +566,182 @@ class AudioReader {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = chapterContent;
 
+    // 🔧 FIX v2.9.176: Detectar si es un libro de ejercicios/meditaciones
+    const isExerciseBook = this.isExerciseBook();
+    // Detectar si hay duración especificada en el contenido
+    const exerciseDuration = this.extractExerciseDuration(tempDiv);
+
+    // ⭐ MEJORA v2.9.178: Contar pasos reales del ejercicio
+    const totalExerciseSteps = isExerciseBook
+      ? tempDiv.querySelectorAll('ol.exercise-steps li').length
+      : 0;
+
     // Obtener párrafos (p, h2, h3, li)
     const elements = tempDiv.querySelectorAll('p, h2, h3, li, blockquote');
     this.paragraphs = [];
 
+    // ⭐ MEJORA v2.9.178: Contador de pasos para distribuir pausas
+    let currentStepNumber = 0;
+
     elements.forEach((el, index) => {
       // Sanitizar texto para TTS
       const rawText = el.innerText.trim();
+
+      // 🔧 FIX v2.9.175: Filtrar elementos de footer que se repiten
+      const isFooterElement = this.isFooterElement(rawText);
+      if (isFooterElement) {
+        return; // Saltar este elemento
+      }
+
       const text = this.sanitizeTextForTTS(rawText);
 
       if (text && text.length > 0) {
+        // 🔧 FIX v2.9.176: Detectar si es un paso de ejercicio/meditación
+        const isExerciseStep = this.isExerciseStep(el);
+
+        // ⭐ MEJORA v2.9.178: Incrementar contador de pasos
+        if (isExerciseStep) {
+          currentStepNumber++;
+        }
+
+        // ⭐ MEJORA v2.9.178: Calcular pausa basada en número real de pasos
+        let pauseAfter = 0;
+        if (isExerciseBook && isExerciseStep) {
+          // Verificar si hay pausa personalizada en el HTML (data-pause="120")
+          const customPause = el.getAttribute('data-pause');
+          if (customPause) {
+            pauseAfter = parseInt(customPause) * 1000; // Convertir segundos a ms
+          } else {
+            pauseAfter = this.calculatePauseTime(exerciseDuration, totalExerciseSteps, currentStepNumber);
+          }
+        }
+
         this.paragraphs.push({
           index,
           text,
           element: el,
-          spoken: false
+          spoken: false,
+          isExerciseStep,
+          stepNumber: isExerciseStep ? currentStepNumber : null,
+          totalSteps: isExerciseStep ? totalExerciseSteps : null,
+          pauseAfter // milisegundos de pausa después de hablar
         });
       }
     });
 
+    if (isExerciseBook && exerciseDuration) {
+      logger.log(`🧘 Libro de ejercicios detectado - Duración: ${exerciseDuration} min - ${totalExerciseSteps} pasos - Pausas activadas`);
+    }
+
     logger.log(`📖 Preparados ${this.paragraphs.length} párrafos para narrar`);
     return this.paragraphs.length;
+  }
+
+  /**
+   * Detecta si estamos leyendo un libro de ejercicios/meditaciones
+   */
+  isExerciseBook() {
+    // Detectar por bookId del bookEngine
+    const currentBookId = this.bookEngine?.currentBook?.id || '';
+    const exerciseBooks = ['manual-practico', 'practicas-radicales'];
+    return exerciseBooks.includes(currentBookId);
+  }
+
+  /**
+   * Detecta si un elemento es un paso de ejercicio (li dentro de ol.exercise-steps)
+   */
+  isExerciseStep(element) {
+    if (element.tagName !== 'LI') return false;
+
+    // Verificar si el padre es ol.exercise-steps
+    const parent = element.parentElement;
+    if (!parent || parent.tagName !== 'OL') return false;
+
+    return parent.classList.contains('exercise-steps');
+  }
+
+  /**
+   * Extrae la duración del ejercicio del HTML (ej: "⏱ 20-30 minutos")
+   */
+  extractExerciseDuration(containerDiv) {
+    const durationElements = containerDiv.querySelectorAll('.duration, p.duration');
+    for (const el of durationElements) {
+      const text = el.textContent;
+      // Buscar patrones como "20-30 minutos", "25 min", "30 minutos"
+      const match = text.match(/(\d+)(?:-\d+)?\s*(?:min|minutos)/i);
+      if (match) {
+        return parseInt(match[1]); // Retorna el tiempo mínimo en minutos
+      }
+    }
+    return null;
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.178: Calcula el tiempo de pausa apropiado después de cada paso
+   * Basado en la duración total del ejercicio y número REAL de pasos
+   *
+   * @param {number} durationMinutes - Duración total del ejercicio en minutos
+   * @param {number} totalSteps - Número real de pasos del ejercicio
+   * @param {number} currentStep - Número del paso actual (para pausas variables opcionales)
+   * @returns {number} Milisegundos de pausa
+   */
+  calculatePauseTime(durationMinutes, totalSteps, currentStep = 1) {
+    if (!durationMinutes) {
+      return 8000; // Pausa por defecto: 8 segundos
+    }
+
+    if (!totalSteps || totalSteps === 0) {
+      return 8000; // Fallback si no se detectaron pasos
+    }
+
+    // ⭐ ALGORITMO MEJORADO:
+    // - Tiempo total disponible en segundos
+    // - Estimamos ~10 segundos para leer cada instrucción
+    // - El resto del tiempo se distribuye equitativamente como pausas
+    const totalSeconds = durationMinutes * 60;
+    const estimatedReadingTimePerStep = 10; // segundos por leer cada paso
+    const totalReadingTime = totalSteps * estimatedReadingTimePerStep;
+    const availableTimeForPauses = totalSeconds - totalReadingTime;
+
+    // Distribuir el tiempo disponible entre todos los pasos
+    let pauseSeconds = Math.floor(availableTimeForPauses / totalSteps);
+
+    // Limitar pausas entre 10 segundos y 5 minutos
+    const minPause = 10;
+    const maxPause = 300; // 5 minutos máximo
+    pauseSeconds = Math.max(minPause, Math.min(maxPause, pauseSeconds));
+
+    // ⭐ OPCIONAL: Dar más tiempo al paso final para contemplación
+    // (puedes descomentar esto si quieres que el último paso tenga más pausa)
+    // if (currentStep === totalSteps && pauseSeconds < 60) {
+    //   pauseSeconds = 60; // Mínimo 1 minuto en el último paso
+    // }
+
+    const pauseMilliseconds = pauseSeconds * 1000;
+
+    logger.log(`🧘 Paso ${currentStep}/${totalSteps}: Pausa de ${pauseSeconds}s (${(pauseSeconds/60).toFixed(1)} min)`);
+
+    return pauseMilliseconds;
+  }
+
+  /**
+   * Detecta si un elemento es parte del footer repetitivo
+   */
+  isFooterElement(text) {
+    if (!text) return false;
+
+    // Patrones comunes de footer
+    const footerPatterns = [
+      /^©/,                           // Copyright
+      /anterior\s*\|?\s*siguiente/i,  // Navegación anterior/siguiente
+      /ir\s+al\s+índice/i,            // "Ir al índice"
+      /volver\s+al\s+inicio/i,        // "Volver al inicio"
+      /^\s*\|\s*$/,                   // Separadores solos
+      /página\s+\d+/i,                // "Página 12"
+      /^\d+\s*\/\s*\d+$/,             // "1 / 5" paginación
+    ];
+
+    return footerPatterns.some(pattern => pattern.test(text));
   }
 
   // ==========================================================================
@@ -683,6 +855,9 @@ class AudioReader {
       window.backgroundAudio.pause();
     }
 
+    // ⭐ MEJORA v2.9.178: Ocultar indicador de pausa si está visible
+    this.hidePauseIndicator();
+
     await this.updateUI();
   }
 
@@ -773,6 +948,9 @@ class AudioReader {
     if (resetPosition) {
       this.currentParagraphIndex = 0;
     }
+
+    // ⭐ MEJORA v2.9.178: Ocultar indicador de pausa si está visible
+    this.hidePauseIndicator();
 
     this.clearHighlights();
     await this.updateUI();
@@ -1032,12 +1210,19 @@ class AudioReader {
         this.currentParagraphIndex++;
 
         if (this.currentParagraphIndex < this.paragraphs.length) {
-          // Pequeña pausa entre párrafos
+          // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
+          const pauseDuration = paragraph.pauseAfter || 300;
+          if (paragraph.isExerciseStep && pauseDuration > 1000) {
+            console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+            // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
+            this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
+          }
+
           setTimeout(() => {
             if (this.isPlaying && !this.isPaused) {
               this.speakParagraph(this.currentParagraphIndex);
             }
-          }, 300);
+          }, pauseDuration);
         } else {
           // Terminó el capítulo
           this.onChapterEnd();
@@ -1137,10 +1322,17 @@ class AudioReader {
       this.currentParagraphIndex++;
 
       if (this.currentParagraphIndex < this.paragraphs.length && this.isPlaying && !this.isPaused) {
-        // Continuar con el siguiente
+        // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
+        const pauseDuration = paragraph.pauseAfter || 300;
+        if (paragraph.isExerciseStep && pauseDuration > 1000) {
+          console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+          // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
+          this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
+        }
+
         setTimeout(() => {
           this.speakParagraph(this.currentParagraphIndex);
-        }, 300); // Pequeña pausa entre párrafos
+        }, pauseDuration);
       } else {
         // Terminó el capítulo
         this.onChapterEnd();
@@ -1203,12 +1395,19 @@ class AudioReader {
           this.currentParagraphIndex++;
 
           if (this.currentParagraphIndex < this.paragraphs.length && this.isPlaying && !this.isPaused) {
-            // Pequeña pausa entre párrafos
+            // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
+            const pauseDuration = paragraph.pauseAfter || 300;
+            if (paragraph.isExerciseStep && pauseDuration > 1000) {
+              console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+              // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
+              this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
+            }
+
             setTimeout(() => {
               if (this.isPlaying && !this.isPaused) {
                 this.speakParagraph(this.currentParagraphIndex);
               }
-            }, 300);
+            }, pauseDuration);
           } else {
             // Terminó el capítulo
             this.onChapterEnd();
@@ -1286,11 +1485,19 @@ class AudioReader {
           this.currentParagraphIndex++;
 
           if (this.currentParagraphIndex < this.paragraphs.length && this.isPlaying && !this.isPaused) {
+            // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
+            const pauseDuration = paragraph.pauseAfter || 300;
+            if (paragraph.isExerciseStep && pauseDuration > 1000) {
+              console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+              // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
+              this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
+            }
+
             setTimeout(() => {
               if (this.isPlaying && !this.isPaused) {
                 this.speakParagraph(this.currentParagraphIndex);
               }
-            }, 300);
+            }, pauseDuration);
           } else {
             this.onChapterEnd();
           }
@@ -1498,14 +1705,45 @@ class AudioReader {
 
   async renderControls() {
     try {
-      console.log('🎧 renderControls() START');
-      // Remover controles existentes
-      const existing = document.getElementById('audioreader-controls');
-      if (existing) existing.remove();
+      console.log('🎧 renderControls() START - isMinimized:', this.isMinimized);
+
+      // 🔧 FIX v2.9.173: Evitar renderizados paralelos
+      if (this.isRendering) {
+        console.log('⚠️ Ya hay un renderizado en progreso, cancelando...');
+        return;
+      }
+      this.isRendering = true;
+
+      // ⭐ FIX v2.9.179: Detach event listeners ANTES de eliminar DOM (prevenir memory leaks)
+      console.log('🧹 Limpiando event listeners antes de eliminar DOM...');
+      this.detachDragListeners();
+      this.detachMinimizedPlayerGestures();
+      // Los keyboard listeners se manejan separadamente más abajo
+      // NOTA: Los control listeners (play/pause/stop) se eliminan automáticamente al hacer element.remove()
+
+      // 🔧 FIX v2.9.172: Limpiar TODOS los elementos del reproductor (full y minimized)
+      const elementsToClean = [
+        'audioreader-controls',      // Full player
+        'audioreader-progress-bar',  // Minimized player - barra de progreso
+        'audioreader-bottom-sheet',  // Minimized player - panel expandible
+        'audioreader-overlay'        // Minimized player - overlay oscuro
+      ];
+
+      let elementsRemoved = 0;
+      elementsToClean.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          console.log(`🧹 Removiendo elemento existente: ${id}`);
+          element.remove();
+          elementsRemoved++;
+        }
+      });
+      console.log(`🧹 Total elementos removidos: ${elementsRemoved}`);
 
       const bookData = this.bookEngine.getCurrentBookData();
       if (!bookData) {
         alert('ERROR: No hay bookData - libro no cargado');
+        this.isRendering = false;
         return;
       }
 
@@ -1517,11 +1755,13 @@ class AudioReader {
 
       // Renderizar versión minimizada o expandida
       if (this.isMinimized) {
-        console.log('🎧 Rendering minimized player...');
-        return this.renderMinimizedPlayer(bookData, tiempoEstimado);
+        console.log('🎧 Rendering MINIMIZED player...');
+        const result = await this.renderMinimizedPlayer(bookData, tiempoEstimado);
+        this.isRendering = false;
+        return result;
       }
 
-      console.log('🎧 Rendering full player...');
+      console.log('🎧 Rendering FULL player...');
       // 🔧 FIX #53: Usar requestAnimationFrame para evitar bloquear el thread principal
       return new Promise(resolve => {
         requestAnimationFrame(() => {
@@ -1800,14 +2040,16 @@ class AudioReader {
       this.detachKeyboardListeners();
     }
     this.attachKeyboardListeners();
-    console.log('🎧 renderControls() DONE');
+    console.log('🎧 renderControls() DONE - FULL player');
 
     // 🔧 FIX #53: Resolver la promesa después de completar el render
+    this.isRendering = false;
     resolve();
         });
       });
     } catch (error) {
       console.error('🎧 ERROR in renderControls():', error);
+      this.isRendering = false;
       alert('Error renderControls: ' + error.message);
     }
   }
@@ -1816,6 +2058,9 @@ class AudioReader {
     // 🔧 FIX #53: Usar requestAnimationFrame para evitar bloquear el thread principal
     return new Promise(resolve => {
       requestAnimationFrame(() => {
+        // Ya no limpiamos aquí - lo hace renderControls() antes de llamar a esta función
+        console.log('📱 Iniciando renderizado de MINIMIZED player...');
+
         // Detectar si hay bottom nav visible (móvil)
         const bottomNav = document.querySelector('.app-bottom-nav');
         const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
@@ -1958,6 +2203,8 @@ class AudioReader {
     }
     this.attachKeyboardListeners();
 
+    console.log('🎧 renderControls() DONE - MINIMIZED player');
+
     // 🔧 FIX #53: Resolver la promesa después de completar el render
     resolve();
       });
@@ -2045,44 +2292,66 @@ class AudioReader {
   }
 
   updateBottomNavAudioButton() {
+    console.log('🔵 updateBottomNavAudioButton ejecutándose...');
+
     const audioTab = document.querySelector('[data-tab="audio"]');
-    if (!audioTab) return;
+    if (!audioTab) {
+      console.log('⚠️ No se encontró [data-tab="audio"]');
+      return;
+    }
 
     const icon = audioTab.querySelector('.app-bottom-nav-icon');
     const label = audioTab.querySelector('.app-bottom-nav-label');
 
-    if (!icon || !label) return;
+    if (!icon || !label) {
+      console.log('⚠️ No se encontró icon o label en audioTab');
+      return;
+    }
+
+    console.log('📱 Actualizando bottom nav:', {
+      paragraphsCount: this.paragraphs.length,
+      isPlaying: this.isPlaying,
+      isPaused: this.isPaused
+    });
 
     // Transformar el botón según el estado
     if (this.paragraphs.length > 0) {
       // Hay contenido cargado
       if (this.isPlaying && !this.isPaused) {
         // Está reproduciendo → mostrar Pause
+        console.log('🔄 Cambiando a PAUSE (⏸️)');
         icon.innerHTML = '⏸️';
         label.textContent = 'Pausa';
         audioTab.classList.add('active');
       } else {
         // Está pausado o detenido → mostrar Play
+        console.log('🔄 Cambiando a PLAY (▶️)');
         icon.innerHTML = '▶️';
         label.textContent = 'Play';
         audioTab.classList.add('active');
       }
     } else {
       // Sin contenido → estado por defecto
+      console.log('🔄 Estado por defecto (🎧)');
       icon.innerHTML = '🎧';
       label.textContent = 'Audio';
       audioTab.classList.remove('active');
     }
 
     // Actualizar el handler del click
-    audioTab.onclick = (e) => {
+    audioTab.onclick = async (e) => {
       e.preventDefault();
+      console.log('🎯 Click en audioTab del bottom nav');
       if (this.paragraphs.length > 0) {
         // Play/Pause directo
         if (this.isPlaying && !this.isPaused) {
-          this.pause();
+          console.log('⏸️ Pausando desde bottom nav');
+          await this.pause();
+          await this.updateUI();
         } else {
-          this.resume();
+          console.log('▶️ Resumiendo desde bottom nav');
+          await this.resume();
+          await this.updateUI();
         }
       } else {
         // Abrir bottom sheet para seleccionar contenido
@@ -2264,21 +2533,21 @@ class AudioReader {
     // Play
     const playBtn = document.getElementById('audioreader-play');
     if (playBtn) {
-      playBtn.addEventListener('click', () => {
+      playBtn.addEventListener('click', async () => {
         // Si hay párrafos preparados y está pausado, solo reanudar
         if (this.paragraphs.length > 0 && this.isPaused) {
-          this.resume();
+          await this.resume();
         } else if (this.paragraphs.length > 0) {
           // Si hay contenido pero no está pausado, reproducir desde posición actual
           this.isPlaying = true;
           this.isPaused = false;
           this.speakParagraph(this.currentParagraphIndex);
-          this.updateUI();
+          await this.updateUI(); // 🔧 FIX: Asegurar sincronización con header
         } else {
           // Si no hay contenido preparado, preparar y reproducir desde inicio
           const chapterContent = document.querySelector('.chapter-content');
           if (chapterContent) {
-            this.play(chapterContent.innerHTML);
+            await this.play(chapterContent.innerHTML);
           }
         }
       });
@@ -2287,7 +2556,11 @@ class AudioReader {
     // Pause
     const pauseBtn = document.getElementById('audioreader-pause');
     if (pauseBtn) {
-      pauseBtn.addEventListener('click', () => this.pause());
+      pauseBtn.addEventListener('click', async () => {
+        await this.pause();
+        // 🔧 FIX v2.9.166: Forzar actualización de header después de pausar
+        await this.updateUI();
+      });
     }
 
     // Stop
@@ -2466,13 +2739,36 @@ class AudioReader {
 
   async updateUI() {
     // NO re-renderizar todo, solo actualizar estados de botones
+    console.log('🎯 updateUI called:', {
+      isMinimized: this.isMinimized,
+      isPlaying: this.isPlaying,
+      isPaused: this.isPaused
+    });
+
+    // 🔧 FIX v2.9.171: Si los botones no existen, re-renderizar el panel completo
+    const controls = document.getElementById('audioreader-controls');
+    if (controls) {
+      const playBtn = document.getElementById('audioreader-play');
+      const pauseBtn = document.getElementById('audioreader-pause');
+
+      // Si debería haber un botón pero no existe ninguno, re-renderizar
+      if (!playBtn && !pauseBtn) {
+        console.log('🔄 CRÍTICO: Botones no encontrados, re-renderizando panel completo...');
+        await this.renderControls();
+        return;
+      }
+    }
+
     this.updateButtonStates();
     this.updateProgressInfo();
 
     // Actualizar bottom nav y barra de progreso si está minimizado
     if (this.isMinimized) {
+      console.log('📱 Llamando updateBottomNavAudioButton (minimizado)');
       this.updateBottomNavAudioButton();
       this.updateProgressBar();
+    } else {
+      console.log('🖥️ Player NO está minimizado, usando botones del panel');
     }
 
     // ⭐ Sincronizar iconos del header con estado actual
@@ -2483,49 +2779,64 @@ class AudioReader {
     const controls = document.getElementById('audioreader-controls');
     if (!controls) return;
 
-    // Actualizar botones Play/Pause
+    // 🔧 FIX v2.9.169: Actualizar botones Play/Pause correctamente + debug
     const playBtn = document.getElementById('audioreader-play');
     const pauseBtn = document.getElementById('audioreader-pause');
-    const playPauseContainer = playBtn?.parentElement || pauseBtn?.parentElement;
+    const shouldShowPlay = !this.isPlaying || this.isPaused;
 
-    if (playPauseContainer) {
-      const shouldShowPlay = !this.isPlaying || this.isPaused;
+    console.log('🎯 updateButtonStates:', {
+      isPlaying: this.isPlaying,
+      isPaused: this.isPaused,
+      shouldShowPlay,
+      hasPlayBtn: !!playBtn,
+      hasPauseBtn: !!pauseBtn
+    });
 
-      if (shouldShowPlay && !playBtn) {
-        // Cambiar a botón Play
-        playPauseContainer.innerHTML = `
-          <button id="audioreader-play"
-                  class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-cyan-600 hover:bg-cyan-700 transition flex items-center justify-center"
-                  title="Reproducir">
-            ${Icons.play(24)}
-          </button>`;
-        const newPlayBtn = document.getElementById('audioreader-play');
-        newPlayBtn.addEventListener('click', () => {
-          if (this.paragraphs.length > 0 && this.isPaused) {
-            this.resume();
-          } else if (this.paragraphs.length > 0) {
-            this.isPlaying = true;
-            this.isPaused = false;
-            this.speakParagraph(this.currentParagraphIndex);
-            this.updateUI();
-          } else {
-            const chapterContent = document.querySelector('.chapter-content');
-            if (chapterContent) {
-              this.play(chapterContent.innerHTML);
-            }
+    // Si deberíamos mostrar PLAY pero existe PAUSE → reemplazar
+    if (shouldShowPlay && pauseBtn) {
+      console.log('🔄 Reemplazando PAUSE → PLAY');
+      const newPlayBtn = document.createElement('button');
+      newPlayBtn.id = 'audioreader-play';
+      newPlayBtn.className = 'w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-xl flex items-center justify-center text-white';
+      newPlayBtn.title = 'Reproducir';
+      newPlayBtn.innerHTML = Icons.play(28);
+
+      newPlayBtn.addEventListener('click', async () => {
+        console.log('▶️ Click en PLAY');
+        if (this.paragraphs.length > 0 && this.isPaused) {
+          await this.resume();
+        } else if (this.paragraphs.length > 0) {
+          this.isPlaying = true;
+          this.isPaused = false;
+          this.speakParagraph(this.currentParagraphIndex);
+          await this.updateUI();
+        } else {
+          const chapterContent = document.querySelector('.chapter-content');
+          if (chapterContent) {
+            await this.play(chapterContent.innerHTML);
           }
-        });
-      } else if (!shouldShowPlay && !pauseBtn) {
-        // Cambiar a botón Pause
-        playPauseContainer.innerHTML = `
-          <button id="audioreader-pause"
-                  class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-orange-600 hover:bg-orange-700 transition flex items-center justify-center"
-                  title="Pausar">
-            ${Icons.pause(24)}
-          </button>`;
-        const newPauseBtn = document.getElementById('audioreader-pause');
-        newPauseBtn.addEventListener('click', () => this.pause());
-      }
+        }
+      });
+
+      pauseBtn.replaceWith(newPlayBtn);
+    }
+    // Si deberíamos mostrar PAUSE pero existe PLAY → reemplazar
+    else if (!shouldShowPlay && playBtn) {
+      console.log('🔄 Reemplazando PLAY → PAUSE');
+      const newPauseBtn = document.createElement('button');
+      newPauseBtn.id = 'audioreader-pause';
+      newPauseBtn.className = 'w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 transition-all shadow-xl flex items-center justify-center text-white animate-pulse';
+      newPauseBtn.title = 'Pausar';
+      newPauseBtn.innerHTML = Icons.pause(28);
+
+      newPauseBtn.addEventListener('click', async () => {
+        console.log('⏸️ Click en PAUSE');
+        await this.pause();
+      });
+
+      playBtn.replaceWith(newPauseBtn);
+    } else {
+      console.log('⚠️ No se reemplazó ningún botón');
     }
 
     // Actualizar estado de botones prev/next/stop
@@ -2578,11 +2889,17 @@ class AudioReader {
       const tiempoEstimado = this.calcularTiempoEstimado();
       const sleepTimerRestante = this.getSleepTimerRemaining();
 
-      infoContainer.innerHTML = `
-        <span>Párrafo ${this.currentParagraphIndex + 1} / ${this.paragraphs.length}</span>
-        ${tiempoEstimado > 0 ? `<span>• ${this.formatearTiempo(tiempoEstimado)} restante</span>` : ''}
-        ${sleepTimerRestante > 0 ? `<span class="text-orange-400">• 😴 ${sleepTimerRestante}min</span>` : ''}
-      `;
+      // ⭐ MEJORA v2.9.178: Mostrar info de pausa si está activa
+      const pauseIndicator = document.getElementById('audioreader-pause-indicator');
+      const showingPause = pauseIndicator && !pauseIndicator.classList.contains('hidden');
+
+      if (!showingPause) {
+        infoContainer.innerHTML = `
+          <span>Párrafo ${this.currentParagraphIndex + 1} / ${this.paragraphs.length}</span>
+          ${tiempoEstimado > 0 ? `<span>• ${this.formatearTiempo(tiempoEstimado)} restante</span>` : ''}
+          ${sleepTimerRestante > 0 ? `<span class="text-orange-400">• 😴 ${sleepTimerRestante}min</span>` : ''}
+        `;
+      }
     }
 
     // Actualizar barra de progreso
@@ -2591,6 +2908,122 @@ class AudioReader {
       const progress = ((this.currentParagraphIndex + 1) / this.paragraphs.length * 100).toFixed(1);
       progressBar.style.width = `${progress}%`;
     }
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.178: Muestra un indicador visual durante las pausas de meditación
+   * @param {number} pauseDurationMs - Duración de la pausa en milisegundos
+   * @param {number} stepNumber - Número del paso actual
+   * @param {number} totalSteps - Total de pasos del ejercicio
+   */
+  showPauseIndicator(pauseDurationMs, stepNumber, totalSteps) {
+    const controls = document.getElementById('audioreader-controls');
+    if (!controls) return;
+
+    // Buscar o crear el contenedor del indicador
+    let indicator = document.getElementById('audioreader-pause-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.id = 'audioreader-pause-indicator';
+      indicator.className = 'mt-3 p-3 rounded-lg bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30';
+
+      // Insertar después de la información de progreso
+      const infoContainer = controls.querySelector('.text-xs.opacity-50');
+      if (infoContainer) {
+        infoContainer.after(indicator);
+      }
+    }
+
+    const pauseDurationSeconds = Math.floor(pauseDurationMs / 1000);
+    const minutes = Math.floor(pauseDurationSeconds / 60);
+    const seconds = pauseDurationSeconds % 60;
+    const timeDisplay = minutes > 0 ? `${minutes}:${seconds.toString().padStart(2, '0')}` : `${seconds}s`;
+
+    indicator.classList.remove('hidden');
+    indicator.innerHTML = `
+      <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🧘</span>
+          <div>
+            <div class="font-semibold text-purple-300">Pausa de contemplación</div>
+            <div class="text-xs text-purple-400">Paso ${stepNumber}/${totalSteps}</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="font-mono text-lg font-bold text-purple-200" id="pause-timer-display">${timeDisplay}</div>
+          <div class="text-xs text-purple-400">restante</div>
+        </div>
+      </div>
+      <div class="mt-2 h-1 bg-purple-900/50 rounded-full overflow-hidden">
+        <div id="pause-progress-bar" class="h-full bg-gradient-to-r from-purple-400 to-indigo-400 transition-all" style="width: 0%"></div>
+      </div>
+    `;
+
+    // Iniciar temporizador visual
+    this.startPauseTimer(pauseDurationMs);
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.178: Inicia el temporizador visual de pausa
+   */
+  startPauseTimer(pauseDurationMs) {
+    // Cancelar temporizador anterior si existe
+    if (this.pauseTimerInterval) {
+      clearInterval(this.pauseTimerInterval);
+    }
+
+    const startTime = Date.now();
+    const endTime = startTime + pauseDurationMs;
+
+    this.pauseTimerInterval = setInterval(() => {
+      const now = Date.now();
+      const remaining = Math.max(0, endTime - now);
+      const elapsed = pauseDurationMs - remaining;
+      const progress = (elapsed / pauseDurationMs) * 100;
+
+      // Actualizar display de tiempo
+      const display = document.getElementById('pause-timer-display');
+      if (display) {
+        const remainingSeconds = Math.ceil(remaining / 1000);
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        const timeDisplay = minutes > 0
+          ? `${minutes}:${seconds.toString().padStart(2, '0')}`
+          : `${seconds}s`;
+        display.textContent = timeDisplay;
+      }
+
+      // Actualizar barra de progreso
+      const progressBar = document.getElementById('pause-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+      }
+
+      // Terminar cuando se agote el tiempo
+      if (remaining <= 0) {
+        clearInterval(this.pauseTimerInterval);
+        this.pauseTimerInterval = null;
+        this.hidePauseIndicator();
+      }
+    }, 100); // Actualizar cada 100ms para suavidad
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.178: Oculta el indicador de pausa
+   */
+  hidePauseIndicator() {
+    const indicator = document.getElementById('audioreader-pause-indicator');
+    if (indicator) {
+      indicator.classList.add('hidden');
+    }
+
+    if (this.pauseTimerInterval) {
+      clearInterval(this.pauseTimerInterval);
+      this.pauseTimerInterval = null;
+    }
+
+    // Actualizar la info de progreso normal
+    this.updateProgressInfo();
   }
 
   // ==========================================================================
@@ -2634,8 +3067,15 @@ class AudioReader {
     }
   }
 
-  // Reproductor COMPLETO con estilos inline (funciona en móvil)
-  showSimplePlayer() {
+  // 🔧 FIX v2.9.174: Deprecado - redirigir a renderControls()
+  async showSimplePlayer() {
+    console.warn('⚠️ showSimplePlayer() está DEPRECADO - usar renderControls() en su lugar');
+    this.isMinimized = false;
+    return this.renderControls();
+  }
+
+  // DEPRECATED - Solo se mantiene para compatibilidad temporal
+  _showSimplePlayerOLD() {
     const existing = document.getElementById('audioreader-controls');
     if (existing) existing.remove();
 

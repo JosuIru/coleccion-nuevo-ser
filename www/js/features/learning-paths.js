@@ -33,8 +33,12 @@ class LearningPaths {
       console.log('[LearningPaths] 📝 Renderizando modal...');
       this.render();
       console.log('[LearningPaths] 🔗 Adjuntando event listeners...');
-      this.attachEventListeners();
-      console.log('[LearningPaths] ✅ Learning Paths abierto correctamente');
+
+      // Esperar a que el DOM esté listo antes de adjuntar listeners
+      setTimeout(() => {
+        this.attachEventListeners();
+        console.log('[LearningPaths] ✅ Learning Paths abierto correctamente');
+      }, 10);
     } catch (error) {
       console.error('[LearningPaths] ❌ Error al abrir:', error);
     }

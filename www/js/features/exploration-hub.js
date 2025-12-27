@@ -26,6 +26,9 @@ class ExplorationHub {
 
     // Inicializar brújula
     this.brujulaRecursos.init();
+
+    // ⭐ FIX v2.9.180: EventManager para prevenir memory leaks
+    this.eventManager = new EventManager();
   }
 
   /**
@@ -50,8 +53,12 @@ class ExplorationHub {
 
   /**
    * Cierra el hub
+   * ⭐ FIX v2.9.180: Incluye cleanup de recursos
    */
   close() {
+    // Limpiar recursos antes de remover DOM
+    this.cleanup();
+
     const modal = document.getElementById('exploration-hub-modal');
     if (modal) modal.remove();
   }
@@ -461,7 +468,7 @@ class ExplorationHub {
           </div>
 
           <!-- Vitruvian Being -->
-          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-purple-900/20 rounded-xl p-6 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all group opacity-75">
+          <div class="lab-card bg-gradient-to-br from-slate-800/50 to-purple-900/20 rounded-xl p-6 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all group">
             <div class="flex items-start gap-4">
               <div class="text-5xl group-hover:scale-110 transition-transform">🎨</div>
               <div class="flex-1">
@@ -573,21 +580,29 @@ class ExplorationHub {
    * Adjunta todos los event listeners
    */
   attachListeners() {
+    // ⭐ FIX v2.9.180: Migrado a EventManager para prevenir memory leaks
+
     // Cerrar modal
-    document.getElementById('close-exploration-hub')?.addEventListener('click', () => {
-      this.close();
-    });
+    const closeBtn = document.getElementById('close-exploration-hub');
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => {
+        this.close();
+      });
+    }
 
     // Cerrar al hacer click fuera
-    document.getElementById('exploration-hub-modal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'exploration-hub-modal') {
-        this.close();
-      }
-    });
+    const modal = document.getElementById('exploration-hub-modal');
+    if (modal) {
+      this.eventManager.addEventListener(modal, 'click', (e) => {
+        if (e.target.id === 'exploration-hub-modal') {
+          this.close();
+        }
+      });
+    }
 
     // Tab switching
     document.querySelectorAll('.hub-tab').forEach(tab => {
-      tab.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(tab, 'click', (e) => {
         const tabId = e.currentTarget.dataset.tab;
         this.switchTab(tabId);
       });
@@ -619,6 +634,7 @@ class ExplorationHub {
 
   /**
    * Listeners del tab de laboratorios
+   * ⭐ FIX v2.9.180: Migrado a EventManager
    */
   attachLabListeners() {
     // Setup Frankenstein Lab con detección de dispositivo
@@ -626,7 +642,7 @@ class ExplorationHub {
 
     // Otros laboratorios
     document.querySelectorAll('.lab-card[data-lab]').forEach(card => {
-      card.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(card, 'click', (e) => {
         const labType = e.currentTarget.dataset.lab;
         this.openLab(labType);
       });
@@ -678,31 +694,49 @@ class ExplorationHub {
 
   /**
    * Listeners del tab de búsqueda
+   * ⭐ FIX v2.9.180: Migrado a EventManager + cleanup de timers
    */
   attachSearchListeners() {
     const searchInput = document.getElementById('hub-search-input');
 
     // Búsqueda en tiempo real con debounce
-    let searchTimeout;
-    searchInput?.addEventListener('input', (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        this.performSearch(e.target.value);
-      }, 300);
-    });
+    if (searchInput) {
+      this.eventManager.addEventListener(searchInput, 'input', (e) => {
+        // Limpiar timeout anterior si existe
+        if (this.searchTimeout) {
+          clearTimeout(this.searchTimeout);
+        }
+        this.searchTimeout = setTimeout(() => {
+          this.performSearch(e.target.value);
+        }, 300);
+      });
+    }
 
     // Filtros
-    document.getElementById('hub-filter-book')?.addEventListener('change', () => this.applySearchFilters());
-    document.getElementById('hub-filter-type')?.addEventListener('change', () => this.applySearchFilters());
-    document.getElementById('hub-filter-difficulty')?.addEventListener('change', () => this.applySearchFilters());
+    const filterBook = document.getElementById('hub-filter-book');
+    const filterType = document.getElementById('hub-filter-type');
+    const filterDifficulty = document.getElementById('hub-filter-difficulty');
+
+    if (filterBook) {
+      this.eventManager.addEventListener(filterBook, 'change', () => this.applySearchFilters());
+    }
+    if (filterType) {
+      this.eventManager.addEventListener(filterType, 'change', () => this.applySearchFilters());
+    }
+    if (filterDifficulty) {
+      this.eventManager.addEventListener(filterDifficulty, 'change', () => this.applySearchFilters());
+    }
 
     // Limpiar filtros
-    document.getElementById('hub-clear-filters')?.addEventListener('click', () => {
-      document.getElementById('hub-filter-book').value = 'all';
-      document.getElementById('hub-filter-type').value = 'all';
-      document.getElementById('hub-filter-difficulty').value = 'all';
-      this.applySearchFilters();
-    });
+    const clearBtn = document.getElementById('hub-clear-filters');
+    if (clearBtn) {
+      this.eventManager.addEventListener(clearBtn, 'click', () => {
+        document.getElementById('hub-filter-book').value = 'all';
+        document.getElementById('hub-filter-type').value = 'all';
+        document.getElementById('hub-filter-difficulty').value = 'all';
+        this.applySearchFilters();
+      });
+    }
 
     // Cargar opciones de libros en el select
     this.loadBookOptions();
@@ -710,16 +744,24 @@ class ExplorationHub {
 
   /**
    * Listeners del tab de temas
+   * ⭐ FIX v2.9.180: Migrado a EventManager
    */
   attachThemesListeners() {
     // Toggle entre vista práctica y exploración
-    document.getElementById('hub-themes-practical')?.addEventListener('click', () => {
-      this.showThemesView('practical');
-    });
+    const practicalBtn = document.getElementById('hub-themes-practical');
+    const browseBtn = document.getElementById('hub-themes-browse');
 
-    document.getElementById('hub-themes-browse')?.addEventListener('click', () => {
-      this.showThemesView('browse');
-    });
+    if (practicalBtn) {
+      this.eventManager.addEventListener(practicalBtn, 'click', () => {
+        this.showThemesView('practical');
+      });
+    }
+
+    if (browseBtn) {
+      this.eventManager.addEventListener(browseBtn, 'click', () => {
+        this.showThemesView('browse');
+      });
+    }
 
     // Cargar vista por defecto
     this.showThemesView('practical');
@@ -727,11 +769,12 @@ class ExplorationHub {
 
   /**
    * Listeners del tab de recursos
+   * ⭐ FIX v2.9.180: Migrado a EventManager
    */
   attachResourcesListeners() {
     // Click en dimensiones
     document.querySelectorAll('[data-dimension]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         const dimension = e.currentTarget.dataset.dimension;
         this.filterResourcesByDimension(dimension);
       });
@@ -739,7 +782,7 @@ class ExplorationHub {
 
     // Click en tipos de recurso
     document.querySelectorAll('.resource-type-filter').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         // Actualizar UI
         document.querySelectorAll('.resource-type-filter').forEach(b => {
           b.classList.remove('bg-blue-600', 'text-white');
@@ -875,12 +918,13 @@ class ExplorationHub {
   }
 
   /**
-   * Listeners del tab de recursos (Brújula)
+   * Listeners adicionales del tab de recursos (Brújula modes)
+   * ⭐ FIX v2.9.180: Migrado a EventManager
    */
-  attachResourcesListeners() {
+  attachBrujulaListeners() {
     // Click en modos de brújula
     document.querySelectorAll('[data-brujula-mode]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         const mode = e.currentTarget.dataset.brujulaMode;
         this.activateBrujulaMode(mode);
       });
@@ -1024,16 +1068,36 @@ class ExplorationHub {
 
   /**
    * Attach listeners a tarjetas de recursos
+   * ⭐ FIX v2.9.180: Migrado a EventManager
    */
   attachResourceCardListeners() {
     document.querySelectorAll('.resource-card').forEach(card => {
-      card.addEventListener('click', () => {
+      this.eventManager.addEventListener(card, 'click', () => {
         const url = card.dataset.url;
         if (url && url !== '#') {
           window.open(url, '_blank');
         }
       });
     });
+  }
+
+  /**
+   * Cleanup completo - Liberar todos los recursos
+   * ⭐ FIX v2.9.180: Prevenir memory leaks
+   */
+  cleanup() {
+    console.log('🧹 [ExplorationHub] Iniciando cleanup...');
+
+    // Limpiar timeout de búsqueda si existe
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = null;
+    }
+
+    // Limpiar event listeners
+    this.eventManager.cleanup();
+
+    console.log('✅ [ExplorationHub] Cleanup completado');
   }
 }
 

@@ -40,13 +40,19 @@ class ResourcesViewer {
 
     const data = await this.loadResourcesData();
     if (!data) {
-      window.toast.info('error.resourcesNotAvailable');
+      if (window.toast) {
+        window.toast.info('Recursos no disponibles para este libro');
+      }
       return;
     }
 
     this.isOpen = true;
     this.render();
-    this.attachEventListeners();
+
+    // Esperar a que el DOM esté listo antes de adjuntar listeners
+    setTimeout(() => {
+      this.attachEventListeners();
+    }, 10);
 
     // Track para logros
     if (window.achievementSystem) {
@@ -206,7 +212,7 @@ class ResourcesViewer {
         </p>
 
         <!-- Focus areas -->
-        ${org.focus && org.focus.length > 0 ? `
+        ${Array.isArray(org.focus) && org.focus.length > 0 ? `
           <div class="flex flex-wrap gap-2 mb-4">
             ${org.focus.slice(0, 3).map(f => `
               <span class="text-xs px-2 py-1 rounded bg-orange-950/30 text-orange-400">
@@ -286,7 +292,7 @@ class ResourcesViewer {
         ` : ''}
 
         <!-- Topics -->
-        ${book.topics && book.topics.length > 0 ? `
+        ${Array.isArray(book.topics) && book.topics.length > 0 ? `
           <div class="flex flex-wrap gap-1 mb-4">
             ${book.topics.slice(0, 3).map(t => `
               <span class="text-xs px-2 py-1 rounded bg-orange-950/30 text-orange-400">
@@ -357,7 +363,7 @@ class ResourcesViewer {
             ` : ''}
 
             <!-- Themes -->
-            ${doc.themes && doc.themes.length > 0 ? `
+            ${Array.isArray(doc.themes) && doc.themes.length > 0 ? `
               <div class="flex flex-wrap gap-2 mb-3">
                 ${doc.themes.map(t => `
                   <span class="text-xs px-2 py-1 rounded bg-orange-950/30 text-orange-400">
@@ -423,7 +429,7 @@ class ResourcesViewer {
         </p>
 
         <!-- Features -->
-        ${tool.features && tool.features.length > 0 ? `
+        ${Array.isArray(tool.features) && tool.features.length > 0 ? `
           <ul class="text-xs space-y-1 mb-4 opacity-70">
             ${tool.features.slice(0, 3).map(f => `
               <li class="flex items-center gap-1">${Icons.check(12)} ${f}</li>

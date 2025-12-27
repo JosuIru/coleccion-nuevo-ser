@@ -1468,7 +1468,7 @@ class SettingsModal {
     /**
      * Listeners del tab General
      */
-    attachGeneralListeners() {
+    async attachGeneralListeners() {
         // Cargar voces disponibles de forma asíncrona
         this.loadVoices();
 
@@ -2593,9 +2593,10 @@ class SettingsModal {
             this.escapeHandler = null;
         }
 
-        // Remover listener de resize
-        if (this.resizeListener) {
-            window.removeEventListener('resize', this.resizeListener);
+        // 🔧 FIX #79: Remover listener de resize correctamente
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
         }
 
         const modal = document.getElementById(this.modalId);

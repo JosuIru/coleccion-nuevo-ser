@@ -92,6 +92,10 @@ class OrganismKnowledge {
     this.isVisible = false;
     this.animationFrameId = null;
     this.time = 0;
+
+    // ⭐ FIX v2.9.181: Tracking de timers para cleanup (21 timers sin clear)
+    this.timers = [];
+    this.intervals = [];
   }
 
   /**
@@ -346,7 +350,7 @@ class OrganismKnowledge {
           </div>
 
           <!-- Botón de activación -->
-          <button id="activate-body-btn" class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 rounded-lg text-black font-bold text-lg transition-all shadow-lg disabled:opacity-30 disabled:cursor-not-allowed" style="text-shadow: 0 0 5px #000; box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);" disabled>
+          <button id="activate-body-btn" class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 rounded-lg text-black font-bold text-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" style="text-shadow: 0 0 5px #000; box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);" disabled>
             ⚡ ACTIVAR SER ⚡
           </button>
         </div>
@@ -530,7 +534,7 @@ class OrganismKnowledge {
             <!-- Footer con navegación -->
             <div class="bg-gradient-to-r from-slate-900/80 to-purple-900/80 p-6 border-t-2 border-rose-500/50">
               <div class="flex justify-between items-center">
-                <button id="tutorial-prev" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                <button id="tutorial-prev" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                   ← Anterior
                 </button>
                 <div id="tutorial-dots" class="flex gap-2">
@@ -633,12 +637,13 @@ class OrganismKnowledge {
     this.updateBodyStatus();
 
     // 6. Ocultar loading
-    setTimeout(() => {
+    // ⭐ FIX v2.9.181: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       const loading = document.getElementById('organism-loading');
       if (loading) {
         loading.style.opacity = '0';
         loading.style.transition = 'opacity 0.8s';
-        setTimeout(() => loading.remove(), 800);
+        this._setTimeout(() => loading.remove(), 800);
       }
     }, 1500);
   }
@@ -971,14 +976,15 @@ class OrganismKnowledge {
     this.scene.add(light);
 
     // Animar intensidad
+    // ⭐ FIX v2.9.181: Usar _setInterval para tracking
     let intensity = 2;
-    const fadeOut = setInterval(() => {
+    const fadeOut = this._setInterval(() => {
       intensity -= 0.1;
       light.intensity = Math.max(0, intensity);
 
       if (intensity <= 0) {
         this.scene.remove(light);
-        clearInterval(fadeOut);
+        this._clearInterval(fadeOut);
       }
     }, 50);
   }
@@ -996,7 +1002,8 @@ class OrganismKnowledge {
 
     border.material.color.setHex(0xff0000);
 
-    setTimeout(() => {
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       border.material.color.copy(originalColor);
     }, 300);
   }
@@ -1761,14 +1768,15 @@ class OrganismKnowledge {
     light.position.copy(position);
     this.scene.add(light);
 
+    // ⭐ FIX v2.9.181: Usar _setInterval para tracking
     let intensity = 1.5;
-    const fadeOut = setInterval(() => {
+    const fadeOut = this._setInterval(() => {
       intensity -= 0.1;
       light.intensity = Math.max(0, intensity);
 
       if (intensity <= 0) {
         this.scene.remove(light);
-        clearInterval(fadeOut);
+        this._clearInterval(fadeOut);
       }
     }, 50);
   }
@@ -1870,11 +1878,12 @@ class OrganismKnowledge {
     const startTime = Date.now();
 
     return new Promise((resolve) => {
-      const interval = setInterval(() => {
+      // ⭐ FIX v2.9.182: Usar _setInterval para tracking
+      const interval = this._setInterval(() => {
         const elapsed = Date.now() - startTime;
 
         if (elapsed >= duration) {
-          clearInterval(interval);
+          this._clearInterval(interval);
           resolve();
           return;
         }
@@ -1895,11 +1904,13 @@ class OrganismKnowledge {
     const delayBetweenOrgans = 400; // 400ms por órgano
 
     for (let slotId of organSlots) {
-      await new Promise(resolve => setTimeout(resolve, delayBetweenOrgans));
+      // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+      await new Promise(resolve => this._setTimeout(resolve, delayBetweenOrgans));
       this.energizeOrgan(slotId);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500)); // Pausa extra
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    await new Promise(resolve => this._setTimeout(resolve, 500)); // Pausa extra
   }
 
   /**
@@ -1937,9 +1948,11 @@ class OrganismKnowledge {
       this.scene.add(boltLine);
 
       // Fade out
-      setTimeout(() => {
+      // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         let opacity = 1;
-        const fadeInterval = setInterval(() => {
+        // ⭐ FIX v2.9.182: Usar _setInterval para tracking
+        const fadeInterval = this._setInterval(() => {
           opacity -= 0.1;
           boltMaterial.opacity = Math.max(0, opacity);
           lightningLight.intensity = Math.max(0, opacity * 5);
@@ -1947,7 +1960,7 @@ class OrganismKnowledge {
           if (opacity <= 0) {
             this.scene.remove(boltLine);
             this.scene.remove(lightningLight);
-            clearInterval(fadeInterval);
+            this._clearInterval(fadeInterval);
             resolve();
           }
         }, 50);
@@ -1965,7 +1978,8 @@ class OrganismKnowledge {
       let pulseCount = 0;
       const maxPulses = 3;
 
-      const pulseInterval = setInterval(() => {
+      // ⭐ FIX v2.9.182: Usar _setInterval para tracking
+      const pulseInterval = this._setInterval(() => {
         pulseCount++;
 
         // Hacer brillar todos los órganos
@@ -1979,7 +1993,8 @@ class OrganismKnowledge {
             const originalIntensity = mesh.material.emissiveIntensity;
             mesh.material.emissiveIntensity = 1.5;
 
-            setTimeout(() => {
+            // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+            this._setTimeout(() => {
               mesh.material.emissiveIntensity = originalIntensity;
             }, 200);
           }
@@ -1989,7 +2004,7 @@ class OrganismKnowledge {
         });
 
         if (pulseCount >= maxPulses) {
-          clearInterval(pulseInterval);
+          this._clearInterval(pulseInterval);
           resolve();
         }
       }, 600); // Pulso cada 600ms
@@ -2046,9 +2061,11 @@ class OrganismKnowledge {
     this.scene.add(light);
 
     // Fade out rápido
-    setTimeout(() => {
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       let opacity = 0.8;
-      const fadeInterval = setInterval(() => {
+      // ⭐ FIX v2.9.182: Usar _setInterval para tracking
+      const fadeInterval = this._setInterval(() => {
         opacity -= 0.2;
         material.opacity = Math.max(0, opacity);
         light.intensity = Math.max(0, opacity * 2);
@@ -2056,7 +2073,7 @@ class OrganismKnowledge {
         if (opacity <= 0) {
           this.scene.remove(lightningLine);
           this.scene.remove(light);
-          clearInterval(fadeInterval);
+          this._clearInterval(fadeInterval);
         }
       }, 50);
     }, 100);
@@ -2091,7 +2108,8 @@ class OrganismKnowledge {
     }
 
     // Revertir después de un momento
-    setTimeout(() => {
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       organPiece.scale.copy(originalScale);
 
       if (mesh && mesh.material) {
@@ -2101,13 +2119,14 @@ class OrganismKnowledge {
 
       // Fade out de la luz
       let intensity = 3;
-      const fadeInterval = setInterval(() => {
+      // ⭐ FIX v2.9.182: Usar _setInterval para tracking
+      const fadeInterval = this._setInterval(() => {
         intensity -= 0.2;
         light.intensity = Math.max(0, intensity);
 
         if (intensity <= 0) {
           this.scene.remove(light);
-          clearInterval(fadeInterval);
+          this._clearInterval(fadeInterval);
         }
       }, 50);
     }, 300);
@@ -2220,7 +2239,8 @@ class OrganismKnowledge {
     // Generar conocimiento basado en los órganos implantados
     const generatedKnowledge = this.generateDynamicKnowledge(beingData);
 
-    setTimeout(() => {
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       this.showGeneratedKnowledge(generatedKnowledge);
     }, 1500);
   }
@@ -3021,7 +3041,8 @@ class OrganismKnowledge {
     if (tooltip) {
       tooltip.style.transform = 'translateY(-10px)';
       tooltip.style.opacity = '0';
-      setTimeout(() => {
+      // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         tooltip.classList.add('hidden');
       }, 300);
     }
@@ -3159,7 +3180,8 @@ class OrganismKnowledge {
 
     // Si el organismo está VIVO, generar material
     if (vitality.isAlive && vitality.vitalityScore >= 70) {
-      setTimeout(() => {
+      // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         this.generateOrganismKnowledge(newOrganism);
       }, 2000);
     }
@@ -3425,7 +3447,8 @@ class OrganismKnowledge {
     resultContainer?.classList.remove('hidden');
 
     // Ocultar después de 10 segundos (más tiempo para leer el diagnóstico)
-    setTimeout(() => {
+    // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+    this._setTimeout(() => {
       resultContainer?.classList.add('hidden');
     }, 10000);
   }
@@ -3831,7 +3854,8 @@ Formato JSON:
     // Tutorial primera vez
     const tutorialSeen = localStorage.getItem('organism-tutorial-seen');
     if (!tutorialSeen) {
-      setTimeout(() => {
+      // ⭐ FIX v2.9.182: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         document.getElementById('organism-tutorial')?.classList.remove('hidden');
       }, 1000);
     }
@@ -3864,6 +3888,126 @@ Formato JSON:
     } else {
       this.show();
     }
+  }
+
+  /**
+   * Helper: setTimeout que se auto-registra para cleanup
+   * ⭐ FIX v2.9.181: Prevenir memory leaks de timers
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remover del array cuando se ejecuta
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) this.timers.splice(index, 1);
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * Helper: setInterval que se auto-registra para cleanup
+   * ⭐ FIX v2.9.181: Prevenir memory leaks de intervals
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * Helper: clearInterval que se auto-desregistra
+   */
+  _clearInterval(intervalId) {
+    clearInterval(intervalId);
+    const index = this.intervals.indexOf(intervalId);
+    if (index > -1) this.intervals.splice(index, 1);
+  }
+
+  /**
+   * Cleanup completo - Liberar todos los recursos
+   * ⭐ FIX v2.9.181: Prevenir memory leaks de timers y Three.js
+   */
+  cleanup() {
+    console.log('🧹 [OrganismKnowledge] Iniciando cleanup completo...');
+
+    // 1. Cancelar animationFrame
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    // 2. Limpiar todos los timers
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+    console.log('  ✅ Timers limpiados');
+
+    // 3. Limpiar todos los intervals
+    this.intervals.forEach(intervalId => clearInterval(intervalId));
+    this.intervals = [];
+    console.log('  ✅ Intervals limpiados');
+
+    // 4. Dispose de Three.js resources
+    if (this.scene) {
+      this.scene.traverse((object) => {
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(mat => mat.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      });
+
+      while (this.scene.children.length > 0) {
+        this.scene.remove(this.scene.children[0]);
+      }
+
+      this.scene = null;
+      console.log('  ✅ Three.js scene limpiada');
+    }
+
+    // 5. Dispose renderer
+    if (this.renderer) {
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+      this.renderer.domElement = null;
+      this.renderer = null;
+      console.log('  ✅ Renderer dispose');
+    }
+
+    // 6. Limpiar arrays
+    this.organs = [];
+    this.cells = [];
+    this.organisms = [];
+    this.particleBursts = [];
+
+    // 7. Limpiar referencias
+    this.camera = null;
+    this.raycaster = null;
+    this.mouse = null;
+    this.bodyModel = null;
+    this.draggedCell = null;
+    this.draggedOrgan = null;
+    this.hoveredObject = null;
+
+    this.isInitialized = false;
+
+    console.log('✅ [OrganismKnowledge] Cleanup completado');
+  }
+
+  /**
+   * Destruir completamente el componente
+   */
+  destroy() {
+    this.hide();
+    this.cleanup();
+
+    const container = document.getElementById('organism-container');
+    if (container) container.remove();
+
+    console.log('🗑️ [OrganismKnowledge] Componente destruido');
   }
 }
 

@@ -15,6 +15,10 @@ class WelcomeFlow {
     this.isActive = false;
     this.container = null;
 
+    // ⭐ FIX v2.9.183: Tracking de timers para cleanup (6 timers sin clear)
+    this.timers = [];
+    this.intervals = [];
+
     // Configuración de intenciones y recomendaciones
     this.intents = {
       philosophy: {
@@ -152,7 +156,8 @@ class WelcomeFlow {
     this.isActive = false;
     if (this.container) {
       this.container.classList.add('opacity-0');
-      setTimeout(() => {
+      // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         this.container.remove();
         this.container = null;
       }, 300);
@@ -319,7 +324,8 @@ class WelcomeFlow {
       this.complete();
       // Abrir el libro recomendado
       if (window.biblioteca && bookId) {
-        setTimeout(() => {
+        // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+        this._setTimeout(() => {
           window.biblioteca.openBook(bookId);
         }, 300);
       }
@@ -433,7 +439,8 @@ class WelcomeFlow {
     // Actualizar instrucción inicial
     instruction.textContent = this.quickPractice.steps[0].text;
 
-    const interval = setInterval(() => {
+    // ⭐ FIX v2.9.183: Usar _setInterval para tracking
+    const interval = this._setInterval(() => {
       currentTime--;
       stepTime++;
 
@@ -453,14 +460,15 @@ class WelcomeFlow {
           if (stepIndex < this.quickPractice.steps.length) {
             instruction.textContent = this.quickPractice.steps[stepIndex].text;
             instruction.classList.add('animate-pulse');
-            setTimeout(() => instruction.classList.remove('animate-pulse'), 500);
+            // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+            this._setTimeout(() => instruction.classList.remove('animate-pulse'), 500);
           }
         }
       }
 
       // Finalizar
       if (currentTime <= 0) {
-        clearInterval(interval);
+        this._clearInterval(interval);
         instruction.textContent = '🙏 Gracias por este momento de presencia';
 
         // Mostrar botón de continuar
@@ -476,7 +484,8 @@ class WelcomeFlow {
     // Abrir el libro recomendado
     const bookId = this.recommendedBook?.id || this.intents[this.userIntent]?.recommendedBooks[0];
     if (window.biblioteca && bookId) {
-      setTimeout(() => {
+      // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+      this._setTimeout(() => {
         window.biblioteca.openBook(bookId);
       }, 300);
     }
@@ -580,6 +589,57 @@ class WelcomeFlow {
 
     return fallbackBooks[bookId] || fallbackBooks['codigo-despertar'];
   }
+
+  // ==========================================================================
+  // ⭐ FIX v2.9.183: TIMER CLEANUP HELPERS
+  // ==========================================================================
+
+  /**
+   * Helper: setTimeout que se auto-registra para cleanup
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remover del array cuando se ejecuta
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) this.timers.splice(index, 1);
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * Helper: setInterval que se auto-registra para cleanup
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * Helper: clearInterval con auto-tracking
+   */
+  _clearInterval(intervalId) {
+    clearInterval(intervalId);
+    const index = this.intervals.indexOf(intervalId);
+    if (index > -1) this.intervals.splice(index, 1);
+  }
+
+  /**
+   * Cleanup: Limpiar todos los timers e intervals
+   */
+  cleanup() {
+    // Limpiar todos los timers
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+
+    // Limpiar todos los intervals
+    this.intervals.forEach(intervalId => clearInterval(intervalId));
+    this.intervals = [];
+
+    console.log('[WelcomeFlow] Cleanup completado');
+  }
 }
 
 // ============================================================================
@@ -593,7 +653,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.welcomeFlow = new WelcomeFlow();
 
   // Auto-mostrar si es primera visita (después de que cargue la biblioteca)
-  setTimeout(() => {
+  // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+  window.welcomeFlow._setTimeout(() => {
     if (window.welcomeFlow.shouldShow()) {
       window.welcomeFlow.start();
     }

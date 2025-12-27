@@ -72,6 +72,12 @@ class CosmosNavigationV2 {
     this.isInitialized = false;
     this.isVisible = false;
     this.animationFrameId = null;
+
+    // ⭐ FIX v2.9.180: EventManager para prevenir memory leaks
+    this.eventManager = new EventManager();
+
+    // ⭐ FIX v2.9.185: Tracking de timers para cleanup (3 timers sin clear)
+    this.timers = [];
   }
 
   /**
@@ -364,12 +370,12 @@ class CosmosNavigationV2 {
     await this.createGalaxies();
 
     // 3. Ocultar loading screen con animación
-    setTimeout(() => {
+    this._setTimeout(() => {
       const loading = document.getElementById('cosmos-loading');
       if (loading) {
         loading.style.opacity = '0';
         loading.style.transition = 'opacity 0.8s ease-out';
-        setTimeout(() => loading.remove(), 800);
+        this._setTimeout(() => loading.remove(), 800);
       }
     }, 1500);
   }
@@ -609,14 +615,18 @@ class CosmosNavigationV2 {
 
   /**
    * Event listeners mejorados
+   * ⭐ FIX v2.9.180: Migrado a EventManager para prevenir memory leaks
    */
   attachEventListeners() {
     // Cerrar
-    document.getElementById('cosmos-close')?.addEventListener('click', () => this.hide());
+    const closeBtn = document.getElementById('cosmos-close');
+    if (closeBtn) {
+      this.eventManager.addEventListener(closeBtn, 'click', () => this.hide());
+    }
 
     // Cambio de modo
     document.querySelectorAll('.cosmos-mode-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         const mode = e.currentTarget.dataset.mode;
         this.setMode(mode);
       });
@@ -624,43 +634,52 @@ class CosmosNavigationV2 {
 
     // Necesidades
     document.querySelectorAll('.cosmos-need-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
         const need = e.currentTarget.dataset.need;
         this.applyNeedFilter(need);
       });
     });
 
     // Limpiar filtro
-    document.getElementById('cosmos-clear-filter')?.addEventListener('click', () => {
-      this.clearNeedFilter();
-    });
+    const clearFilterBtn = document.getElementById('cosmos-clear-filter');
+    if (clearFilterBtn) {
+      this.eventManager.addEventListener(clearFilterBtn, 'click', () => {
+        this.clearNeedFilter();
+      });
+    }
 
     // Tutorial
-    document.getElementById('cosmos-tutorial-start')?.addEventListener('click', () => {
-      document.getElementById('cosmos-tutorial')?.classList.add('hidden');
-      localStorage.setItem('cosmos-tutorial-seen', 'true');
-    });
+    const tutorialBtn = document.getElementById('cosmos-tutorial-start');
+    if (tutorialBtn) {
+      this.eventManager.addEventListener(tutorialBtn, 'click', () => {
+        document.getElementById('cosmos-tutorial')?.classList.add('hidden');
+        localStorage.setItem('cosmos-tutorial-seen', 'true');
+      });
+    }
 
     // Búsqueda
     const searchInput = document.getElementById('cosmos-search-input');
-    searchInput?.addEventListener('input', (e) => {
-      this.searchQuery = e.target.value.toLowerCase();
-      this.applySearch();
-    });
+    if (searchInput) {
+      this.eventManager.addEventListener(searchInput, 'input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase();
+        this.applySearch();
+      });
+    }
 
     // Mouse events con controles mejorados
     const canvas = document.getElementById('cosmos-canvas');
+    if (!canvas) return;
 
-    canvas?.addEventListener('mousedown', (e) => {
+    this.eventManager.addEventListener(canvas, 'mousedown', (e) => {
       this.isDragging = true;
       this.previousMousePosition = { x: e.clientX, y: e.clientY };
     });
 
-    canvas?.addEventListener('mouseup', () => {
+    this.eventManager.addEventListener(canvas, 'mouseup', () => {
       this.isDragging = false;
     });
 
-    canvas?.addEventListener('mousemove', (e) => {
+    this.eventManager.addEventListener(canvas, 'mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -681,19 +700,19 @@ class CosmosNavigationV2 {
       this.onMouseMove();
     });
 
-    canvas?.addEventListener('wheel', (e) => {
+    this.eventManager.addEventListener(canvas, 'wheel', (e) => {
       e.preventDefault();
       this.targetCameraDistance += e.deltaY * this.config.zoomSpeed;
       this.targetCameraDistance = Math.max(500, Math.min(3000, this.targetCameraDistance));
     });
 
-    canvas?.addEventListener('dblclick', (e) => {
+    this.eventManager.addEventListener(canvas, 'dblclick', (e) => {
       if (e.target.closest('#cosmos-hud')) return;
       this.onDoubleClick();
     });
 
     // Resize
-    window.addEventListener('resize', () => {
+    this.eventManager.addEventListener(window, 'resize', () => {
       if (!this.isVisible) return;
       this.onResize();
     });
@@ -988,7 +1007,7 @@ class CosmosNavigationV2 {
     // Mostrar tutorial si es primera vez
     const tutorialSeen = localStorage.getItem('cosmos-tutorial-seen');
     if (!tutorialSeen) {
-      setTimeout(() => {
+      this._setTimeout(() => {
         document.getElementById('cosmos-tutorial')?.classList.remove('hidden');
       }, 1000);
     }
@@ -1011,6 +1030,122 @@ class CosmosNavigationV2 {
 
     this.clearNeedFilter();
     // console.log('👋 Cosmos oculto');
+  }
+
+  /**
+   * setTimeout wrapper que auto-registra el timer para cleanup posterior
+   * ⭐ FIX v2.9.185: Timer tracking para prevenir memory leaks
+   * @param {Function} callback - Función a ejecutar
+   * @param {Number} delay - Delay en ms
+   * @returns {Number} - Timer ID
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * Cleanup completo - Liberar todos los recursos
+   * ⭐ FIX v2.9.180: Prevenir memory leaks críticos de WebGL y event listeners
+   * ⭐ FIX v2.9.185: Añadido cleanup de timers pendientes
+   */
+  cleanup() {
+    console.log('🧹 [CosmosNavigation] Iniciando cleanup completo...');
+
+    // 1. Cancelar animationFrame
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    // 2. Limpiar timers pendientes (⭐ FIX v2.9.185)
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+
+    // 3. Limpiar event listeners
+    this.eventManager.cleanup();
+
+    // 4. Dispose de Three.js resources (CRÍTICO para evitar memory leaks de WebGL)
+    if (this.scene) {
+      this.scene.traverse((object) => {
+        // Dispose geometries
+        if (object.geometry) {
+          object.geometry.dispose();
+        }
+
+        // Dispose materials
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(material => material.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+
+        // Dispose textures
+        if (object.material && object.material.map) {
+          object.material.map.dispose();
+        }
+      });
+
+      // Clear scene
+      while (this.scene.children.length > 0) {
+        this.scene.remove(this.scene.children[0]);
+      }
+
+      this.scene = null;
+    }
+
+    // 5. Dispose renderer y forzar liberación de contexto WebGL
+    if (this.renderer) {
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+      this.renderer.domElement = null;
+      this.renderer = null;
+    }
+
+    // 6. Limpiar arrays
+    this.galaxies = [];
+    this.stars = [];
+    this.constellations = [];
+    this.labels = [];
+    this.particles = null;
+
+    // 7. Limpiar referencias
+    this.camera = null;
+    this.raycaster = null;
+    this.mouse = null;
+    this.hoveredObject = null;
+    this.selectedGalaxy = null;
+
+    this.isInitialized = false;
+
+    console.log('✅ [CosmosNavigation] Cleanup completado - Memoria liberada');
+  }
+
+  /**
+   * Destruir completamente el componente
+   * Llamar cuando ya no se necesite el cosmos navigation
+   */
+  destroy() {
+    this.hide();
+    this.cleanup();
+
+    // Remover contenedor del DOM
+    const container = document.getElementById('cosmos-container');
+    if (container) {
+      container.remove();
+    }
+
+    console.log('🗑️ [CosmosNavigation] Componente destruido completamente');
   }
 
   /**

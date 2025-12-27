@@ -12,6 +12,9 @@ class OnboardingTutorial {
     // 🔧 FIX #64: Inicializar handler de resize para limpieza posterior
     this.resizeHandler = null;
 
+    // ⭐ FIX v2.9.184: Tracking de timers para cleanup (9 timers sin clear)
+    this.timers = [];
+
     // Definir los pasos del tutorial
     this.steps = [
       {
@@ -326,7 +329,7 @@ class OnboardingTutorial {
       this.removeTooltip();
 
       this.openExampleBook(() => {
-        setTimeout(() => {
+        this._setTimeout(() => {
           this.showStep(stepIndex);
         }, 300);
       });
@@ -352,7 +355,7 @@ class OnboardingTutorial {
     if (step.target) {
       const targetElement = document.querySelector(step.target);
       if (targetElement) {
-        setTimeout(() => {
+        this._setTimeout(() => {
           targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
       }
@@ -637,7 +640,7 @@ class OnboardingTutorial {
         } else if (attempts >= maxAttempts) {
           reject(new Error('Timeout esperando book reader'));
         } else {
-          setTimeout(checkReader, pollInterval);
+          this._setTimeout(checkReader, pollInterval);
         }
       };
 
@@ -693,6 +696,41 @@ class OnboardingTutorial {
     // 🔧 FIX #67: Usar logger en lugar de console.log comentado
     logger.debug('[Tutorial] Tutorial reset - se mostrará en la próxima visita');
   }
+
+  // ==========================================================================
+  // TIMER MANAGEMENT - ⭐ FIX v2.9.184
+  // ==========================================================================
+
+  /**
+   * setTimeout wrapper que auto-registra el timer para cleanup posterior
+   * @param {Function} callback - Función a ejecutar
+   * @param {Number} delay - Delay en ms
+   * @returns {Number} - Timer ID
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * Limpia todos los timers pendientes
+   * Llamar este método antes de destruir la instancia
+   */
+  cleanup() {
+    // Limpiar todos los timers pendientes
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+
+    console.log('[OnboardingTutorial] Cleanup completado');
+  }
 }
 
 // Exportar globalmente
@@ -718,12 +756,12 @@ if (document.readyState === 'loading') {
       // Función para mostrar el tutorial cuando todo esté listo
       const showWhenReady = () => {
         if (checkBooksVisible()) {
-          setTimeout(() => {
+          window.onboardingTutorial._setTimeout(() => {
             window.onboardingTutorial.start();
           }, 800);
         } else {
           // Fallback: si no hay libros visibles después de 3s, mostrar de todas formas
-          setTimeout(() => {
+          window.onboardingTutorial._setTimeout(() => {
             if (OnboardingTutorial.shouldShowOnFirstVisit()) {
               window.onboardingTutorial.start();
             }
@@ -736,15 +774,15 @@ if (document.readyState === 'loading') {
         // Verificar si el welcomeFlow está activo
         if (!window.welcomeFlow.shouldShow() || !window.welcomeFlow.isActive) {
           // Ya completado - mostrar de inmediato
-          setTimeout(showWhenReady, 1000);
+          window.onboardingTutorial._setTimeout(showWhenReady, 1000);
         } else {
           // Esperar a que complete vía custom event
           document.addEventListener('welcomeFlowCompleted', () => {
-            setTimeout(showWhenReady, 800);
+            window.onboardingTutorial._setTimeout(showWhenReady, 800);
           }, { once: true });
 
           // Timeout de seguridad (30 segundos)
-          setTimeout(() => {
+          window.onboardingTutorial._setTimeout(() => {
             if (OnboardingTutorial.shouldShowOnFirstVisit()) {
               showWhenReady();
             }
@@ -752,7 +790,7 @@ if (document.readyState === 'loading') {
         }
       } else {
         // No hay welcomeFlow - mostrar directamente
-        setTimeout(showWhenReady, 2000);
+        window.onboardingTutorial._setTimeout(showWhenReady, 2000);
       }
     }
   });

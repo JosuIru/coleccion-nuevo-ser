@@ -70,6 +70,10 @@ class FrankensteinLabUI {
     this.labStateKey = 'frankenstein-lab-state';
     this.vitruvianPopupTimeout = null;
 
+    // ⭐ FIX v2.9.186: Tracking de timers para cleanup (~44 timers sin clear)
+    this.timers = [];
+    this.intervals = [];
+
     // Cache de referencias DOM frecuentes (optimización de rendimiento)
     this.domCache = {
       // Contenedores principales
@@ -396,7 +400,7 @@ class FrankensteinLabUI {
     // Verificar login diario y mostrar recompensa si aplica
     const dailyReward = window.frankensteinRewards.checkDailyLogin();
     if (dailyReward) {
-      setTimeout(() => {
+      this._setTimeout(() => {
         this.showDailyLoginReward(dailyReward);
       }, 1500);
     }
@@ -1013,13 +1017,13 @@ class FrankensteinLabUI {
 
   startBackgroundRotation(forceImage = null) {
     if (this.backgroundRotationTimer) {
-      clearInterval(this.backgroundRotationTimer);
+      this._clearInterval(this.backgroundRotationTimer);
       this.backgroundRotationTimer = null;
     }
 
     this.setRandomDaVinciBackground(forceImage);
 
-    this.backgroundRotationTimer = window.setInterval(() => {
+    this.backgroundRotationTimer = this._setInterval(() => {
       this.setRandomDaVinciBackground();
     }, 45000);
   }
@@ -1656,7 +1660,7 @@ class FrankensteinLabUI {
     }
 
     // Esperar a que la UI esté lista
-    setTimeout(() => {
+    this._setTimeout(() => {
       if (window.frankensteinOnboarding.shouldShow()) {
         window.frankensteinOnboarding.start();
       }
@@ -2071,7 +2075,7 @@ class FrankensteinLabUI {
       this.populatePiecesGrid(filter);
 
       // Evaluar estado inicial del sticky header
-      setTimeout(() => {
+      this._setTimeout(() => {
         this.handlePiecesModalScroll();
       }, 100);
     }
@@ -2201,7 +2205,7 @@ class FrankensteinLabUI {
       }).join('');
 
       // Add click handlers to filter buttons
-      setTimeout(() => {
+      this._setTimeout(() => {
         document.querySelectorAll('.quick-view-filter-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2272,7 +2276,7 @@ class FrankensteinLabUI {
     this.updatePiecesCountBadge();
 
     // Initialize drag and drop enhanced
-    setTimeout(() => {
+    this._setTimeout(() => {
       this.initDragAndDropEnhanced();
     }, 100);
   }
@@ -2510,7 +2514,7 @@ class FrankensteinLabUI {
       let searchDebounce;
       searchInput.addEventListener('input', () => {
         clearTimeout(searchDebounce);
-        searchDebounce = setTimeout(() => {
+        searchDebounce = this._setTimeout(() => {
           this.mobileSheetSearch = searchInput.value.trim().toLowerCase();
           this.renderMobileBookChapters(body, bookId, bookData);
         }, 120);
@@ -2522,7 +2526,7 @@ class FrankensteinLabUI {
     const sheet = document.getElementById('book-bottom-sheet');
     if (!sheet) return;
     sheet.classList.remove('open');
-    setTimeout(() => sheet.remove(), 250);
+    this._setTimeout(() => sheet.remove(), 250);
     document.body.classList.remove('modal-open');
     if (this.bookSheetKeyHandler) {
       document.removeEventListener('keydown', this.bookSheetKeyHandler);
@@ -3378,8 +3382,8 @@ class FrankensteinLabUI {
     // Efectos visuales
     if (results.viable) {
       this.playLightningEffect();
-      setTimeout(() => this.playLightningEffect(), 300);
-      setTimeout(() => this.playLightningEffect(), 600);
+      this._setTimeout(() => this.playLightningEffect(), 300);
+      this._setTimeout(() => this.playLightningEffect(), 600);
 
       // Recompensas por validar ser viable
       if (window.frankensteinRewards) {
@@ -3786,7 +3790,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     // Abrir chat de IA con el prompt
     window.aiChatModal.open();
 
-    setTimeout(() => {
+    this._setTimeout(() => {
       const input = document.getElementById('ai-chat-input');
       if (input) {
         input.value = '';
@@ -3968,7 +3972,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     const lightning = document.createElement('div');
     lightning.className = 'fusion-lightning';
     document.querySelector('.frankenstein-laboratory')?.appendChild(lightning);
-    setTimeout(() => lightning.remove(), 1000);
+    this._setTimeout(() => lightning.remove(), 1000);
   }
 
   /**
@@ -3997,10 +4001,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     document.body.appendChild(notification);
 
-    setTimeout(() => {
+    this._setTimeout(() => {
       notification.style.transition = 'opacity 0.5s';
       notification.style.opacity = '0';
-      setTimeout(() => notification.remove(), 500);
+      this._setTimeout(() => notification.remove(), 500);
     }, duration);
   }
 
@@ -4279,7 +4283,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     // Open mission modal on first load if no mission selected
     if (!this.selectedMission) {
-      setTimeout(() => this.openMissionModal(), 500);
+      this._setTimeout(() => this.openMissionModal(), 500);
     }
   }
 
@@ -5092,7 +5096,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     progressFill.style.width = `${percentage}%`;
     if (percentage > this.lastProgressPercentage) {
       progressFill.classList.add('increased');
-      setTimeout(() => progressFill.classList.remove('increased'), 600);
+      this._setTimeout(() => progressFill.classList.remove('increased'), 600);
     }
 
     progressText.textContent = `${fulfilled}/${total}`;
@@ -5496,7 +5500,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     celebration.style.left = `${clampPercent}%`;
     celebration.style.top = '10px';
     card.appendChild(celebration);
-    setTimeout(() => celebration.remove(), 1200);
+    this._setTimeout(() => celebration.remove(), 1200);
   }
 
   generateMiniChallenge(force = false) {
@@ -5645,7 +5649,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.rewardSpecialPiece(this.activeMiniChallenge.attribute);
     }
 
-    setTimeout(() => this.generateMiniChallenge(true), 3500);
+    this._setTimeout(() => this.generateMiniChallenge(true), 3500);
   }
 
   rewardSpecialPiece(attributeKey) {
@@ -6252,7 +6256,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     this.updatePiecesCountBadge();
 
     // Initialize drag and drop
-    setTimeout(() => {
+    this._setTimeout(() => {
       this.initDragAndDropEnhanced();
     }, 100);
   }
@@ -6312,7 +6316,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     document.body.appendChild(confettiContainer);
 
-    setTimeout(() => {
+    this._setTimeout(() => {
       confettiContainer.remove();
     }, 4000);
 
@@ -6387,7 +6391,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.createParticleBurst(targetElement);
       // Flash target
       targetElement.classList.add('drop-success');
-      setTimeout(() => targetElement.classList.remove('drop-success'), 400);
+      this._setTimeout(() => targetElement.classList.remove('drop-success'), 400);
     };
   }
 
@@ -6399,7 +6403,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     const duration = 600; // Same as flight animation
 
     for (let i = 0; i < trailCount; i++) {
-      setTimeout(() => {
+      this._setTimeout(() => {
         const trail = document.createElement('div');
         trail.classList.add('flight-trail');
 
@@ -6414,7 +6418,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
         document.body.appendChild(trail);
 
-        setTimeout(() => trail.remove(), 800);
+        this._setTimeout(() => trail.remove(), 800);
       }, (duration / trailCount) * i);
     }
   }
@@ -6470,7 +6474,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       document.body.appendChild(particle);
 
-      setTimeout(() => particle.remove(), animDuration);
+      this._setTimeout(() => particle.remove(), animDuration);
     }
 
     // Play sound if available
@@ -6495,7 +6499,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     document.body.appendChild(ripple);
 
-    setTimeout(() => ripple.remove(), 600);
+    this._setTimeout(() => ripple.remove(), 600);
   }
 
   /**
@@ -6548,7 +6552,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       oscillator.stop(audioContext.currentTime + 0.1);
 
       // 🔧 FIX #61: Cerrar AudioContext después del sonido para prevenir memory leak
-      setTimeout(() => {
+      this._setTimeout(() => {
         audioContext.close();
       }, 150); // 50ms después de que termina el sonido
     } catch (e) {
@@ -6636,7 +6640,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }
 
       // Particle burst
-      setTimeout(() => {
+      this._setTimeout(() => {
         if (!targetCard) return;
         this.createParticleBurst(targetCard, {
           particleCount: 12,
@@ -6648,7 +6652,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       // If there's a vitruvian being, animate to it
       const vitruvianContainer = document.getElementById('vitruvian-being-container');
       if (vitruvianContainer) {
-        setTimeout(() => {
+        this._setTimeout(() => {
           if (targetCard) {
             this.animatePieceToTarget(targetCard, vitruvianContainer);
           }
@@ -6656,7 +6660,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       }
 
       // Show Vitruvian popup after animation completes
-      setTimeout(() => {
+      this._setTimeout(() => {
         this.showVitruvianPopup(piece);
       }, 800);
 
@@ -6693,7 +6697,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.triggerHaptic('light');
       if (targetCard) {
         targetCard.classList.add('shake');
-        setTimeout(() => targetCard.classList.remove('shake'), 500);
+        this._setTimeout(() => targetCard.classList.remove('shake'), 500);
         targetCard.classList.remove('selected');
       }
       this.selectedPieces = this.selectedPieces.filter(p => p.id !== piece.id);
@@ -6784,7 +6788,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         document.body.appendChild(clone);
         e.dataTransfer.setDragImage(clone, clone.offsetWidth / 2, clone.offsetHeight / 2);
 
-        setTimeout(() => clone.remove(), 0);
+        this._setTimeout(() => clone.remove(), 0);
       });
 
       piece.addEventListener('dragend', (e) => {
@@ -6820,7 +6824,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
           // Add piece to being
           const pieceData = this.getPieceData(piece);
           if (pieceData) {
-            setTimeout(() => {
+            this._setTimeout(() => {
               this.togglePieceSelectionEnhanced(pieceData, piece);
             }, 300);
           }
@@ -6960,9 +6964,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
           const card = document.querySelector(`.piece-card[data-piece-id="${pieceId}"]`);
           if (card) {
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            setTimeout(() => {
+            this._setTimeout(() => {
               card.classList.add('bounce');
-              setTimeout(() => card.classList.remove('bounce'), 600);
+              this._setTimeout(() => card.classList.remove('bounce'), 600);
             }, 300);
           }
         }
@@ -7236,7 +7240,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       // Add pulse animation
       beingContainer.classList.add('piece-added');
-      setTimeout(() => {
+      this._setTimeout(() => {
         beingContainer.classList.remove('piece-added');
       }, 600);
     } else {
@@ -7275,8 +7279,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     // Auto-hide after 4 seconds
     if (this.vitruvianPopupTimeout) {
       clearTimeout(this.vitruvianPopupTimeout);
+      this.vitruvianPopupTimeout = null;
     }
-    this.vitruvianPopupTimeout = window.setTimeout(() => {
+    this.vitruvianPopupTimeout = this._setTimeout(() => {
       this.hideVitruvianPopup();
       this.vitruvianPopupTimeout = null;
     }, 4000);
@@ -7435,7 +7440,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         if (e.target.closest('.help-hint')) {
           e.preventDefault();
           this.showTooltip(element, data);
-          setTimeout(() => this.hideTooltip(), 3000);
+          this._setTimeout(() => this.hideTooltip(), 3000);
         }
       });
     });
@@ -7510,7 +7515,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     const tooltip = document.getElementById('active-tooltip');
     if (tooltip) {
       tooltip.classList.remove('show');
-      setTimeout(() => tooltip.remove(), 200);
+      this._setTimeout(() => tooltip.remove(), 200);
     }
   }
 
@@ -7593,16 +7598,16 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     overlay.querySelector('#tutorial-skip').addEventListener('click', () => {
       localStorage.setItem('frankenstein-tutorial-shown', 'skipped');
       overlay.classList.remove('active');
-      setTimeout(() => overlay.remove(), 300);
+      this._setTimeout(() => overlay.remove(), 300);
     });
 
     overlay.querySelector('#tutorial-start').addEventListener('click', () => {
       localStorage.setItem('frankenstein-tutorial-shown', 'completed');
       overlay.classList.remove('active');
-      setTimeout(() => overlay.remove(), 300);
+      this._setTimeout(() => overlay.remove(), 300);
 
       // Show first tooltip
-      setTimeout(() => {
+      this._setTimeout(() => {
         const missionSelector = document.getElementById('mission-selector');
         if (missionSelector) {
           this.showTooltip(missionSelector, {
@@ -7611,7 +7616,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
             shortcut: null
           });
 
-          setTimeout(() => this.hideTooltip(), 4000);
+          this._setTimeout(() => this.hideTooltip(), 4000);
         }
       }, 500);
     });
@@ -7631,10 +7636,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     progressBar.style.position = 'relative';
     progressBar.appendChild(hint);
 
-    setTimeout(() => {
+    this._setTimeout(() => {
       hint.style.opacity = '0';
       hint.style.transform = 'translateX(-50%) translateY(-10px)';
-      setTimeout(() => hint.remove(), 300);
+      this._setTimeout(() => hint.remove(), 300);
     }, 2000);
   }
 
@@ -8139,10 +8144,76 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     document.body.appendChild(modal);
   }
 
+  // ==========================================================================
+  // TIMER MANAGEMENT - ⭐ FIX v2.9.186
+  // ==========================================================================
+
+  /**
+   * setTimeout wrapper que auto-registra el timer para cleanup posterior
+   * @param {Function} callback - Función a ejecutar
+   * @param {Number} delay - Delay en ms
+   * @returns {Number} - Timer ID
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * setInterval wrapper que auto-registra el interval para cleanup posterior
+   * @param {Function} callback - Función a ejecutar
+   * @param {Number} delay - Delay en ms
+   * @returns {Number} - Interval ID
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * clearInterval wrapper que remueve el interval del tracking array
+   * @param {Number} intervalId - Interval ID a limpiar
+   */
+  _clearInterval(intervalId) {
+    clearInterval(intervalId);
+    const index = this.intervals.indexOf(intervalId);
+    if (index > -1) {
+      this.intervals.splice(index, 1);
+    }
+  }
+
   /**
    * Destruir UI
+   * ⭐ FIX v2.9.186: Añadido cleanup de timers pendientes
    */
   destroy() {
+    // Limpiar timers e intervals pendientes (⭐ FIX v2.9.186)
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+
+    this.intervals.forEach(intervalId => clearInterval(intervalId));
+    this.intervals = [];
+
+    // Limpiar timers específicos con referencias guardadas
+    if (this.backgroundRotationTimer) {
+      clearInterval(this.backgroundRotationTimer);
+      this.backgroundRotationTimer = null;
+    }
+
+    if (this.vitruvianPopupTimeout) {
+      clearTimeout(this.vitruvianPopupTimeout);
+      this.vitruvianPopupTimeout = null;
+    }
+
     const container = document.getElementById('organism-container');
     if (container) {
       container.innerHTML = '';

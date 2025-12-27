@@ -59,6 +59,20 @@ class BookReader {
    * @param {string[]} names - Array de nombres de dependencias
    * @returns {Object} - Objeto con las dependencias disponibles
    */
+  /**
+   * Acortar título de capítulo para navegación móvil
+   * @param {string} title - Título completo del capítulo
+   * @param {number} maxLength - Longitud máxima (default: 35 para móvil)
+   * @returns {string} - Título acortado con elipsis si es necesario
+   */
+  shortenChapterTitle(title, maxLength = 35) {
+    if (!title) return '';
+    if (title.length <= maxLength) return title;
+
+    // Acortar y añadir elipsis
+    return title.substring(0, maxLength).trim() + '...';
+  }
+
   getDependencies(names) {
     if (window.dependencyInjector) {
       return window.dependencyInjector.getMultipleSafe(names);
@@ -172,6 +186,10 @@ class BookReader {
 
     // Ahora sí renderizar (con container visible)
     this.render();
+
+    // 🔧 HOTFIX v3: Resetear flag para permitir re-adjuntar listeners después de render()
+    // Al re-renderizar, los elementos DOM son nuevos y pierden sus listeners
+    this._eventListenersAttached = false;
     this.attachEventListeners();
 
     // Ocultar main-nav al abrir el lector
@@ -1134,8 +1152,11 @@ class BookReader {
   }
 
   renderFooterNav() {
+    console.log('🔍 [DEBUG] renderFooterNav() llamado para capítulo:', this.currentChapter?.id);
     const prevChapter = this.bookEngine.getPreviousChapter(this.currentChapter?.id);
     const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
+    console.log('🔍 [DEBUG] prevChapter:', prevChapter?.id, prevChapter?.title);
+    console.log('🔍 [DEBUG] nextChapter:', nextChapter?.id, nextChapter?.title);
 
     return `
       <div class="footer-nav border-t border-slate-700/50 bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm">
@@ -1143,15 +1164,15 @@ class BookReader {
           <!-- Previous Button -->
           ${prevChapter ? `
             <button id="prev-chapter"
-                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 sm:max-w-md"
                     data-chapter-id="${prevChapter.id}"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 sm:max-w-md"
                     title="${prevChapter.title}">
               <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-slate-700/50 group-hover:bg-cyan-600/20 flex items-center justify-center transition-colors">
                 ${Icons.chevronLeft(16)}
               </div>
               <div class="flex-1 text-left min-w-0">
                 <div class="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide hidden sm:block mb-0.5">Anterior</div>
-                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${prevChapter.title}</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${this.shortenChapterTitle(prevChapter.title)}</div>
               </div>
             </button>
           ` : '<div class="hidden sm:flex flex-1"></div>'}
@@ -1159,12 +1180,12 @@ class BookReader {
           <!-- Next Button -->
           ${nextChapter ? `
             <button id="next-chapter"
-                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-600/90 to-blue-600/90 hover:from-cyan-500/90 hover:to-blue-500/90 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/20 flex-1 sm:max-w-md"
                     data-chapter-id="${nextChapter.id}"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-600/90 to-blue-600/90 hover:from-cyan-500/90 hover:to-blue-500/90 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/20 flex-1 sm:max-w-md"
                     title="${nextChapter.title}">
               <div class="flex-1 text-right min-w-0">
                 <div class="text-[10px] sm:text-xs text-cyan-100 uppercase tracking-wide hidden sm:block mb-0.5">Siguiente</div>
-                <div class="text-[11px] sm:text-sm font-semibold text-white truncate leading-tight">${nextChapter.title}</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-white truncate leading-tight">${this.shortenChapterTitle(nextChapter.title)}</div>
               </div>
               <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
                 ${Icons.chevronRight(16)}
@@ -1224,7 +1245,7 @@ class BookReader {
                 <span class="text-xl">⬅️</span>
                 <div class="flex-1 min-w-0">
                   <div class="text-xs text-slate-400 uppercase">Anterior</div>
-                  <div class="text-sm font-semibold text-white truncate">${prevChapter.title}</div>
+                  <div class="text-sm font-semibold text-white truncate">${this.shortenChapterTitle(prevChapter.title, 40)}</div>
                 </div>
               </button>
             ` : ''}
@@ -1233,7 +1254,7 @@ class BookReader {
                 <span class="text-xl">➡️</span>
                 <div class="flex-1 min-w-0">
                   <div class="text-xs text-slate-400 uppercase">Siguiente</div>
-                  <div class="text-sm font-semibold text-white truncate">${nextChapter.title}</div>
+                  <div class="text-sm font-semibold text-white truncate">${this.shortenChapterTitle(nextChapter.title, 40)}</div>
                 </div>
               </button>
             ` : ''}
@@ -1555,6 +1576,16 @@ class BookReader {
           this[methodName](...args);
         }
       };
+    };
+
+    /**
+     * 🔧 HOTFIX v2.9.157: Helper para cerrar dropdown del menú "más acciones"
+     * Declarado AQUÍ para evitar ReferenceError (debe estar antes de su primer uso)
+     */
+    const closeDropdownHelper = () => {
+      ['more-actions-dropdown', 'tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+      });
     };
 
     /**
@@ -1908,14 +1939,20 @@ class BookReader {
         if (reader.isPlaying && !reader.isPaused) {
           // Pausar
           await reader.pause();
+          // 🔧 FIX v2.9.166: Forzar sincronización con reproductor
+          await reader.updateUI();
         } else {
           // Reproducir o resumir
           if (reader.isPaused) {
             await reader.resume();
+            // 🔧 FIX v2.9.166: Forzar sincronización con reproductor
+            await reader.updateUI();
           } else {
             const chapterContent = document.querySelector('.chapter-content');
             if (chapterContent) {
               await reader.play(chapterContent.innerHTML);
+              // 🔧 FIX v2.9.166: Forzar sincronización con reproductor
+              await reader.updateUI();
             }
           }
         }
@@ -1923,11 +1960,13 @@ class BookReader {
     }
 
     // Botón expandir - muestra reproductor completo
-    const audioExpandHandler = () => {
+    const audioExpandHandler = async () => {
       const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
       const reader = audioReader?.baseReader || audioReader;
-      if (reader && reader.showSimplePlayer) {
-        reader.showSimplePlayer();
+      if (reader) {
+        // 🔧 FIX v2.9.174: Usar show() en lugar de showSimplePlayer() obsoleto
+        reader.isMinimized = false;
+        await reader.renderControls();
       }
     };
 
@@ -2255,9 +2294,8 @@ class BookReader {
       }
     }
 
-    const closeDropdownHelper = () => {
-      if (moreActionsDropdown) moreActionsDropdown.classList.add('hidden');
-    };
+    // 🔧 HOTFIX v2.9.157: closeDropdownHelper ahora se declara ANTES (línea ~1571)
+    // para evitar ReferenceError. NO redeclarar aquí.
 
     // ========================================================================
     // DESKTOP DROPDOWN MENUS (lg+ breakpoint)
@@ -2852,7 +2890,10 @@ class BookReader {
 
   navigateToChapter(chapterId) {
     try {
+      console.log('🔍 [DEBUG] navigateToChapter() llamado con chapterId:', chapterId);
       const chapter = this.bookEngine.navigateToChapter(chapterId);
+      console.log('🔍 [DEBUG] chapter obtenido:', chapter?.id, chapter?.title);
+
       if (chapter) {
         this.currentChapter = chapter;
 
@@ -2863,8 +2904,11 @@ class BookReader {
         const isContainerVisible = container && !container.classList.contains('hidden');
         const hasRendered = contentArea !== null && isContainerVisible;
 
+        console.log('🔍 [DEBUG] hasRendered:', hasRendered, 'isContainerVisible:', isContainerVisible);
+
         if (!hasRendered) {
           // Primera vez O container oculto: render completo
+          console.log('✅ [DEBUG] Primera vez - render completo');
           this.render();
           this.attachEventListeners();
 
@@ -2875,10 +2919,11 @@ class BookReader {
         } else {
           // 🔧 FIX #49: Ya renderizado - solo actualizar las partes que cambian
           // Evita re-renderizar TODO el reader, mejora rendimiento significativamente
+          console.log('✅ [DEBUG] Actualización parcial');
           this.updateChapterContent();
-          this.updateHeader();
+          this.updateHeader(); // Re-adjunta header listeners automáticamente
           this.updateSidebar();
-          this.updateFooterNav();
+          this.updateFooterNav(); // Re-adjunta footer listeners automáticamente
         }
 
         // Scroll to top
@@ -2886,6 +2931,10 @@ class BookReader {
         if (finalContentArea) {
           finalContentArea.scrollTop = 0;
         }
+
+        console.log('✅ [DEBUG] navigateToChapter() completado');
+      } else {
+        console.error('⚠️ [DEBUG] No se pudo obtener el chapter para:', chapterId);
       }
     } catch (error) {
       // 🔧 FIX #94: Error boundary para navegación de capítulos
@@ -3017,6 +3066,9 @@ class BookReader {
         const newHeader = tempDiv.firstElementChild;
         if (newHeader) {
           headerContainer.replaceWith(newHeader);
+
+          // 🔧 HOTFIX v2.9.153: Re-attach event listeners del header y menú móvil
+          this.attachHeaderListeners();
         }
       }
     } catch (error) {
@@ -3027,6 +3079,133 @@ class BookReader {
         chapterId: chapterId,
         filename: 'book-reader.js'
       });
+    }
+  }
+
+  /**
+   * 🔧 HOTFIX v2.9.153: Adjunta event listeners del header y menú móvil
+   * Se llama después de updateHeader() para re-adjuntar listeners a los elementos recreados
+   * 🔧 HOTFIX v2.9.165: Re-adjuntar TODOS los listeners del header
+   */
+  attachHeaderListeners() {
+    try {
+      console.log('[BookReader] 🔗 Re-adjuntando listeners del header...');
+
+      // =======================================================================
+      // TOGGLE SIDEBAR (ÍNDICE)
+      // =======================================================================
+      if (this._toggleSidebarHandler) {
+        const toggleSidebar = document.getElementById('toggle-sidebar');
+        if (toggleSidebar) {
+          this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
+        }
+      }
+
+      // =======================================================================
+      // AUDIOREADER (REPRODUCTOR DE AUDIO)
+      // =======================================================================
+      if (this._audioreaderHandler) {
+        const audioreaderBtn = document.getElementById('audioreader-btn');
+        const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
+        const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
+
+        if (audioreaderBtn) {
+          this.eventManager.addEventListener(audioreaderBtn, 'click', this._audioreaderHandler);
+        }
+        if (audioreaderBtnTablet) {
+          this.eventManager.addEventListener(audioreaderBtnTablet, 'click', this._audioreaderHandler);
+        }
+        if (audioreaderBtnMobile) {
+          this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
+        }
+      }
+
+      // =======================================================================
+      // SUPPORT/DONATIONS (DONAR/APOYAR)
+      // =======================================================================
+      const createModalHandler = (modalName, beforeOpen) => {
+        return async () => {
+          try {
+            if (beforeOpen) beforeOpen();
+            const modal = this.getDependency(modalName);
+            if (modal && typeof modal.open === 'function') {
+              await modal.open();
+            }
+          } catch (error) {
+            console.error(`Error opening ${modalName}:`, error);
+          }
+        };
+      };
+
+      const supportHandler = createModalHandler('donationsModal');
+      const supportBtn = document.getElementById('support-btn');
+      const supportBtnTablet = document.getElementById('support-btn-tablet');
+      const supportBtnMobile = document.getElementById('support-btn-mobile');
+
+      if (supportBtn) {
+        this.eventManager.addEventListener(supportBtn, 'click', supportHandler);
+      }
+      if (supportBtnTablet) {
+        this.eventManager.addEventListener(supportBtnTablet, 'click', supportHandler);
+      }
+      if (supportBtnMobile) {
+        this.eventManager.addEventListener(supportBtnMobile, 'click', supportHandler);
+      }
+
+      // =======================================================================
+      // BOOKMARK
+      // =======================================================================
+      if (this._bookmarkHandler) {
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        const bookmarkBtnTablet = document.getElementById('bookmark-btn-tablet');
+        const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
+
+        if (bookmarkBtn) {
+          this.eventManager.addEventListener(bookmarkBtn, 'click', this._bookmarkHandler);
+        }
+        if (bookmarkBtnTablet) {
+          this.eventManager.addEventListener(bookmarkBtnTablet, 'click', this._bookmarkHandler);
+        }
+        if (bookmarkBtnMobile) {
+          this.eventManager.addEventListener(bookmarkBtnMobile, 'click', this._bookmarkHandler);
+        }
+      }
+
+      // =======================================================================
+      // NOTES
+      // =======================================================================
+      const notesHandler = createModalHandler('notesModal');
+      const notesBtn = document.getElementById('notes-btn');
+      if (notesBtn) {
+        this.eventManager.addEventListener(notesBtn, 'click', notesHandler);
+      }
+
+      // =======================================================================
+      // AI CHAT
+      // =======================================================================
+      const aiChatHandler = createModalHandler('aiChatModal');
+      const aiChatBtn = document.getElementById('ai-chat-btn');
+      const aiChatBtnTablet = document.getElementById('ai-chat-btn-tablet');
+
+      if (aiChatBtn) {
+        this.eventManager.addEventListener(aiChatBtn, 'click', aiChatHandler);
+      }
+      if (aiChatBtnTablet) {
+        this.eventManager.addEventListener(aiChatBtnTablet, 'click', aiChatHandler);
+      }
+
+      // =======================================================================
+      // MOBILE MENU
+      // =======================================================================
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      if (mobileMenuBtn && this._mobileMenuHandler) {
+        this.eventManager.addEventListener(mobileMenuBtn, 'click', this._mobileMenuHandler);
+      }
+
+      console.log('[BookReader] ✅ Listeners del header re-adjuntados');
+
+    } catch (error) {
+      console.error('[BookReader] Error adjuntando listeners del header:', error);
     }
   }
 
@@ -3091,22 +3270,27 @@ class BookReader {
    */
   updateFooterNav() {
     try {
+      console.log('🔍 [DEBUG] updateFooterNav() llamado');
       const footerNavContainer = document.querySelector('.main-content > .block');
+      console.log('🔍 [DEBUG] footerNavContainer:', footerNavContainer);
+
       if (footerNavContainer) {
         // 🔧 FIX #49: Renderizado parcial - solo footer nav
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = this.renderFooterNav();
         footerNavContainer.innerHTML = tempDiv.innerHTML;
+        console.log('✅ [DEBUG] Footer nav HTML actualizado');
 
         // 🔧 FIX #49: Re-attach event listeners solo para los botones de navegación
         this.attachNavigationListeners();
+      } else {
+        console.warn('⚠️ [DEBUG] footerNavContainer NO encontrado');
       }
     } catch (error) {
       // 🔧 FIX #94: Error boundary para actualización de footer nav
       console.error('[BookReader] Error actualizando footer nav:', error);
       this.captureError(error, {
-        context: 'navigate_to_chapter',
-        chapterId: chapterId,
+        context: 'update_footer_nav',
         filename: 'book-reader.js'
       });
     }
@@ -3118,29 +3302,77 @@ class BookReader {
    */
   attachNavigationListeners() {
     try {
-      const prevBtn = document.getElementById('prev-chapter-btn');
-      const nextBtn = document.getElementById('next-chapter-btn');
+      // 🔧 HOTFIX v2.9.157: Usar touchend Y click para compatibilidad con Android
+      // Aumentar delay y agregar múltiples event types
+      setTimeout(() => {
+        const prevBtn = document.getElementById('prev-chapter');
+        const nextBtn = document.getElementById('next-chapter');
 
-      // 🔧 FIX #44: Usar EventManager para navigation buttons
-      if (prevBtn) {
-        const chapterId = prevBtn.getAttribute('data-chapter-id');
-        if (chapterId) {
-          this.eventManager.addEventListener(prevBtn, 'click', () => this.navigateToChapter(chapterId));
-        }
-      }
+        console.log('[DEBUG] attachNavigationListeners - prevBtn:', prevBtn, 'nextBtn:', nextBtn);
 
-      if (nextBtn) {
-        const chapterId = nextBtn.getAttribute('data-chapter-id');
-        if (chapterId) {
-          this.eventManager.addEventListener(nextBtn, 'click', () => this.navigateToChapter(chapterId));
+        if (prevBtn) {
+          const prevChapterId = prevBtn.getAttribute('data-chapter-id');
+          console.log('[DEBUG] prevBtn data-chapter-id:', prevChapterId);
+
+          if (prevChapterId) {
+            // Handler que funciona tanto para click como touch
+            const handler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('[DEBUG] prevBtn CLICKED/TOUCHED - navigating to:', prevChapterId);
+              this.navigateToChapter(prevChapterId);
+            };
+
+            // Remover listeners anteriores
+            if (this._prevChapterHandler) {
+              prevBtn.removeEventListener('click', this._prevChapterHandler);
+              prevBtn.removeEventListener('touchend', this._prevChapterHandler);
+            }
+
+            // Adjuntar AMBOS eventos para máxima compatibilidad
+            this._prevChapterHandler = handler;
+            prevBtn.addEventListener('click', handler, { passive: false });
+            prevBtn.addEventListener('touchend', handler, { passive: false });
+            console.log('[BookReader] Prev chapter button listeners attached (click + touchend)');
+          }
+        } else {
+          console.warn('[DEBUG] prevBtn NOT FOUND');
         }
-      }
+
+        if (nextBtn) {
+          const nextChapterId = nextBtn.getAttribute('data-chapter-id');
+          console.log('[DEBUG] nextBtn data-chapter-id:', nextChapterId);
+
+          if (nextChapterId) {
+            // Handler que funciona tanto para click como touch
+            const handler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('[DEBUG] nextBtn CLICKED/TOUCHED - navigating to:', nextChapterId);
+              this.navigateToChapter(nextChapterId);
+            };
+
+            // Remover listeners anteriores
+            if (this._nextChapterHandler) {
+              nextBtn.removeEventListener('click', this._nextChapterHandler);
+              nextBtn.removeEventListener('touchend', this._nextChapterHandler);
+            }
+
+            // Adjuntar AMBOS eventos para máxima compatibilidad
+            this._nextChapterHandler = handler;
+            nextBtn.addEventListener('click', handler, { passive: false });
+            nextBtn.addEventListener('touchend', handler, { passive: false });
+            console.log('[BookReader] Next chapter button listeners attached (click + touchend)');
+          }
+        } else {
+          console.warn('[DEBUG] nextBtn NOT FOUND');
+        }
+      }, 200); // Aumentar a 200ms para Android WebView
     } catch (error) {
       // 🔧 FIX #94: Error boundary para attach de listeners
       console.error('[BookReader] Error adjuntando navigation listeners:', error);
       this.captureError(error, {
-        context: 'navigate_to_chapter',
-        chapterId: chapterId,
+        context: 'attach_navigation_listeners',
         filename: 'book-reader.js'
       });
     }

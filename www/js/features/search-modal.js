@@ -412,11 +412,12 @@ class SearchModal {
 
       if (loadingIndicator) loadingIndicator.classList.add('hidden');
       if (container) {
+        // ⭐ FIX v2.9.181: Sanitizar error.message para prevenir XSS
         container.innerHTML = `
           <div class="text-center text-red-600 dark:text-red-400 py-12">
             <div class="text-6xl mb-4">❌</div>
             <p class="text-lg">Error cargando el catálogo de libros</p>
-            <p class="text-sm mt-2">${error.message}</p>
+            <p class="text-sm mt-2">${Sanitizer.escapeHtml(error.message)}</p>
           </div>
         `;
       }

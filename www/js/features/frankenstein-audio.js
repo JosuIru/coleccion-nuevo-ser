@@ -335,6 +335,7 @@ class FrankensteinAudioSystem {
 
   /**
    * 🔧 FIX #61: Limpiar recursos de audio para prevenir memory leaks
+   * ⭐ FIX v2.9.181: Añadir cleanup de bubbling interval
    */
   cleanup() {
     // Detener todos los oscillators activos
@@ -347,6 +348,12 @@ class FrankensteinAudioSystem {
     });
     this.oscillators = [];
     this.gainNodes = [];
+
+    // ⭐ FIX v2.9.181: Limpiar interval de burbujas
+    if (this.sounds.bubbling) {
+      clearInterval(this.sounds.bubbling);
+      this.sounds.bubbling = null;
+    }
 
     // Limpiar timer de thunder
     if (this.thunderTimer) {

@@ -464,7 +464,7 @@ class FrankensteinBeingCard {
         </div>
         <div class="p-4 space-y-2">
           ${predictions.map(p => `
-            <div class="flex items-center justify-between p-3 rounded-lg ${p.isViable ? 'bg-slate-800/50 hover:bg-slate-700/50' : 'bg-slate-800/30 opacity-60'} transition cursor-pointer"
+            <div class="flex items-center justify-between p-3 rounded-lg ${p.isViable ? 'bg-slate-800/50 hover:bg-slate-700/50' : 'bg-slate-800/30 opacity-75'} transition cursor-pointer"
                  onclick="${p.isViable ? `window.frankensteinUI?.selectMission?.('${p.missionId}'); document.getElementById('mission-predictions-modal')?.remove()` : ''}">
               <div class="flex items-center gap-3">
                 <span class="text-2xl">${p.missionIcon}</span>

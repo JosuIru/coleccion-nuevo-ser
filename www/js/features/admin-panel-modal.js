@@ -720,12 +720,12 @@ class AdminPanelModal {
               <span class="text-yellow-400">⚠️ Pendiente de configurar</span>
             </div>
             <p class="text-slate-400 text-sm">
-              Para activar pagos automáticos, configura las claves de Stripe en las variables de entorno:
+              Para activar pagos automáticos, configura las claves de Stripe en las variables de entorno.
             </p>
             <div class="bg-slate-800 rounded-lg p-3 font-mono text-xs text-slate-300">
-              STRIPE_PUBLIC_KEY=pk_live_xxx<br>
-              STRIPE_SECRET_KEY=sk_live_xxx<br>
-              STRIPE_WEBHOOK_SECRET=whsec_xxx
+              🔧 FIX v2.9.197: Security - API keys must be configured in env.js<br><br>
+              Ver: www/js/core/env.example.js para el formato correcto<br>
+              Documentación: www/.env.example
             </div>
           </div>
         </div>

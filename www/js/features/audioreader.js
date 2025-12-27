@@ -1140,7 +1140,16 @@ class AudioReader {
 
   async toggleAutoAdvance() {
     this.autoAdvanceChapter = !this.autoAdvanceChapter;
+    // 🔧 FIX v2.9.196: Guardar estado en localStorage para persistencia
+    localStorage.setItem('audio-auto-advance', this.autoAdvanceChapter);
     await this.updateUI();
+
+    // Mostrar notificación al usuario
+    if (this.autoAdvanceChapter) {
+      window.toast?.success('📖 Auto-avance de capítulos activado');
+    } else {
+      window.toast?.info('Auto-avance de capítulos desactivado');
+    }
   }
 
   async toggleWordByWord() {
@@ -2166,28 +2175,7 @@ class AudioReader {
         }
 
     const html = `
-      <!-- Barra de progreso pegada al bottom nav con botón expandir -->
-      ${hasBottomNav ? `
-        <div id="audioreader-progress-bar"
-             class="fixed left-0 right-0 z-[899] group cursor-pointer"
-             style="bottom: 64px;">
-          <!-- Progress bar -->
-          ${this.paragraphs.length > 0 ? `
-            <div class="relative w-full h-1 bg-cyan-500/30 dark:bg-cyan-400/30 group-hover:h-2 transition-all">
-              <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 transition-all duration-300"
-                   style="width: ${((this.currentParagraphIndex + 1) / this.paragraphs.length * 100).toFixed(1)}%">
-              </div>
-              <!-- Botón expandir (visible al hover/touch) -->
-              <button id="audioreader-expand-mini"
-                      class="absolute right-2 -top-7 opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity bg-slate-800 dark:bg-slate-700 text-white px-3 py-1.5 rounded-t-lg text-xs font-medium shadow-lg flex items-center gap-1"
-                      title="Expandir reproductor">
-                ${Icons.chevronUp(14)}
-                <span>Expandir</span>
-              </button>
-            </div>
-          ` : ''}
-        </div>
-      ` : ''}
+      <!-- 🔧 FIX v2.9.195: Eliminada barra de progreso del footer (tapaba botones de navegación) -->
 
       <!-- Bottom Sheet Expandible -->
       <div id="audioreader-bottom-sheet"
@@ -2489,134 +2477,35 @@ class AudioReader {
     if (paraInfo && this.paragraphs.length > 0) {
       paraInfo.textContent = `${this.currentParagraphIndex + 1}/${this.paragraphs.length}`;
     }
+
+    // 🔧 FIX v2.9.196: Actualizar barra de progreso del header
+    if (this.paragraphs.length > 0) {
+      const progressBar = document.getElementById('audio-progress-bar');
+      if (progressBar) {
+        const percentage = ((this.currentParagraphIndex + 1) / this.paragraphs.length * 100).toFixed(1);
+        progressBar.style.width = `${percentage}%`;
+      }
+    }
   }
 
   updateProgressBar() {
-    const progressBar = document.getElementById('audioreader-progress-bar');
-    if (!progressBar || this.paragraphs.length === 0) return;
-
-    const progressFill = progressBar.querySelector('div > div');
-    if (progressFill) {
-      const percentage = ((this.currentParagraphIndex + 1) / this.paragraphs.length * 100).toFixed(1);
-      progressFill.style.width = `${percentage}%`;
-    }
+    // 🔧 FIX v2.9.195: Ya no existe barra de progreso en footer
+    // La barra de progreso ahora solo está dentro del bottom sheet
+    // y se actualiza automáticamente al hacer renderControls()
+    return;
   }
 
   attachMinimizedPlayerGestures() {
-    // Ya no se usa el FAB, todo se maneja desde el bottom nav
-    // Esta función ahora solo gestiona el opening del long press en la barra de progreso
-    const progressBar = document.getElementById('audioreader-progress-bar');
-    if (!progressBar) return;
-
-    // 🔧 FIX v2.9.193: Long press en la barra de progreso para abrir el bottom sheet completo
-    // Usar this.longPressTimer (propiedad de clase) para cleanup correcto
-
-    progressBar.addEventListener('touchstart', (e) => {
-      this.longPressTimer = this._setTimeout(() => {
-        this.toggleMinimize(); // Expandir el reproductor completo
-        if (navigator.vibrate) navigator.vibrate(50);
-        this.longPressTimer = null;
-      }, 500);
-    });
-
-    progressBar.addEventListener('touchend', () => {
-      if (this.longPressTimer) {
-        this._clearTimeout(this.longPressTimer);
-        this.longPressTimer = null;
-      }
-    });
-
-    progressBar.addEventListener('touchmove', () => {
-      if (this.longPressTimer) {
-        this._clearTimeout(this.longPressTimer);
-        this.longPressTimer = null;
-      }
-    });
-
-    // Gestos de swipe para cerrar el bottom sheet
-    const handleTouchStart = (e) => {
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isBottomSheetOpen) return;
-      touchCurrentY = e.touches[0].clientY;
-      const deltaY = touchCurrentY - touchStartY;
-
-      // Si arrastra hacia abajo más de 100px, cerrar
-      if (deltaY > 100) {
-        isBottomSheetOpen = false;
-        bottomSheet.classList.add('translate-y-full');
-        overlay.classList.remove('opacity-100');
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-        touchStartY = 0;
-        touchCurrentY = 0;
-      }
-    };
-
-    // Click handler para desktop (evitar conflicto con touch events)
-    const handleFabClickDesktop = (e) => {
-      // Solo ejecutar si NO fue un evento touch (para evitar doble disparo)
-      if (e.pointerType === 'mouse' || !('ontouchstart' in window)) {
-        handleFabClick(e);
-      }
-    };
-
-    // Adjuntar eventos al FAB (touch para móvil, click para desktop)
-    fab.addEventListener('touchstart', handleFabTouchStart, { passive: true });
-    fab.addEventListener('touchend', handleFabTouchEnd, { passive: false }); // No passive para poder preventDefault
-    fab.addEventListener('click', handleFabClickDesktop);
-
-    // Adjuntar eventos al overlay y bottom sheet
-    overlay.addEventListener('click', handleOverlayClick);
-    bottomSheet.addEventListener('touchstart', handleTouchStart, { passive: true });
-    bottomSheet.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-    // Guardar referencias para limpieza posterior
-    if (!this.minimizedPlayerGestureHandlers) {
-      this.minimizedPlayerGestureHandlers = {};
-    }
-    this.minimizedPlayerGestureHandlers.fab = fab;
-    this.minimizedPlayerGestureHandlers.overlay = overlay;
-    this.minimizedPlayerGestureHandlers.bottomSheet = bottomSheet;
-    this.minimizedPlayerGestureHandlers.handleFabClick = handleFabClick;
-    this.minimizedPlayerGestureHandlers.handleFabClickDesktop = handleFabClickDesktop;
-    this.minimizedPlayerGestureHandlers.handleFabTouchStart = handleFabTouchStart;
-    this.minimizedPlayerGestureHandlers.handleFabTouchEnd = handleFabTouchEnd;
-    this.minimizedPlayerGestureHandlers.handleOverlayClick = handleOverlayClick;
-    this.minimizedPlayerGestureHandlers.handleTouchStart = handleTouchStart;
-    this.minimizedPlayerGestureHandlers.handleTouchMove = handleTouchMove;
+    // 🔧 FIX v2.9.195: Eliminada lógica de progress bar en footer
+    // Ya no hay barra de progreso en el footer, solo dentro del bottom sheet
+    // Los gestures ahora se manejan directamente desde los botones del bottom sheet
+    return;
   }
 
   detachMinimizedPlayerGestures() {
-    if (!this.minimizedPlayerGestureHandlers) return;
-
-    const {
-      fab,
-      overlay,
-      bottomSheet,
-      handleFabClickDesktop,
-      handleFabTouchStart,
-      handleFabTouchEnd,
-      handleOverlayClick,
-      handleTouchStart,
-      handleTouchMove
-    } = this.minimizedPlayerGestureHandlers;
-
-    if (fab) {
-      if (handleFabTouchStart) fab.removeEventListener('touchstart', handleFabTouchStart);
-      if (handleFabTouchEnd) fab.removeEventListener('touchend', handleFabTouchEnd);
-      if (handleFabClickDesktop) fab.removeEventListener('click', handleFabClickDesktop);
-    }
-    if (overlay && handleOverlayClick) {
-      overlay.removeEventListener('click', handleOverlayClick);
-    }
-    if (bottomSheet) {
-      if (handleTouchStart) bottomSheet.removeEventListener('touchstart', handleTouchStart);
-      if (handleTouchMove) bottomSheet.removeEventListener('touchmove', handleTouchMove);
-    }
-
+    // 🔧 FIX v2.9.195: Ya no hay gestures que limpiar (eliminada barra del footer)
     this.minimizedPlayerGestureHandlers = null;
+    return;
   }
 
   toggleMinimize() {

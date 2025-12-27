@@ -131,9 +131,10 @@ class ElevenLabsTTSProvider {
     if (!this.sharedCacheEnabled || !window.supabase) return null;
 
     try {
+      // 🔧 FIX v2.9.197: Security - no hardcoded URLs, use config
       const supabaseUrl = window.supabase.supabaseUrl ||
-                          localStorage.getItem('supabase-url') ||
-                          'https://flxrilsxghiqfsfifxch.supabase.co';
+                          window.supabaseConfig?.url ||
+                          localStorage.getItem('supabase-url');
 
       const functionUrl = `${supabaseUrl}/functions/v1/audio-cache`;
       const params = new URLSearchParams({
@@ -170,9 +171,10 @@ class ElevenLabsTTSProvider {
       const { data: { session } } = await window.supabase.auth.getSession();
       if (!session) return; // Necesita autenticación
 
+      // 🔧 FIX v2.9.197: Security - no hardcoded URLs, use config
       const supabaseUrl = window.supabase.supabaseUrl ||
-                          localStorage.getItem('supabase-url') ||
-                          'https://flxrilsxghiqfsfifxch.supabase.co';
+                          window.supabaseConfig?.url ||
+                          localStorage.getItem('supabase-url');
 
       const functionUrl = `${supabaseUrl}/functions/v1/audio-cache`;
 
@@ -357,9 +359,10 @@ class ElevenLabsTTSProvider {
     }
 
     // URL de la Edge Function
+    // 🔧 FIX v2.9.197: Security - no hardcoded URLs, use config
     const supabaseUrl = window.supabase.supabaseUrl ||
-                        localStorage.getItem('supabase-url') ||
-                        'https://flxrilsxghiqfsfifxch.supabase.co';
+                        window.supabaseConfig?.url ||
+                        localStorage.getItem('supabase-url');
 
     const functionUrl = `${supabaseUrl}/functions/v1/elevenlabs-tts`;
 

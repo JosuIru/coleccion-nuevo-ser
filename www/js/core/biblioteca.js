@@ -1588,10 +1588,14 @@ class Biblioteca {
       if (window.adminPanelModal) {
         window.adminPanelModal.show();
       } else if (window.lazyLoader) {
+        // 🔧 FIX v2.9.197: Added error handling to prevent silent failures
         window.lazyLoader.load('admin-panel').then(() => {
           if (window.adminPanelModal) {
             window.adminPanelModal.show();
           }
+        }).catch(error => {
+          console.error('Error loading admin panel:', error);
+          window.toast?.error('Error al cargar el panel de administración.');
         });
       }
     };

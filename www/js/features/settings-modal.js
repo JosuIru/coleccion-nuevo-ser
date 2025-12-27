@@ -38,6 +38,11 @@ class SettingsModal {
 
         // 🔧 FIX #79: Handler de resize para limpiar después
         this.resizeHandler = null;
+
+        // 🔧 FIX v2.9.197: Memory leak cleanup - timer and listener tracking
+        this.timers = [];
+        this.intervals = [];
+        this.listeners = new Map();
     }
 
     /**
@@ -96,6 +101,61 @@ class SettingsModal {
         // Inicializar Lucide icons
         if (window.lucide) {
             lucide.createIcons();
+        }
+    }
+
+    /**
+     * 🔧 FIX v2.9.197: Memory leak cleanup - timer and listener tracking
+     * Helper methods para tracking de timers y event listeners
+     */
+    _setTimeout(callback, delay) {
+        const timerId = setTimeout(() => {
+            callback();
+            const index = this.timers.indexOf(timerId);
+            if (index > -1) this.timers.splice(index, 1);
+        }, delay);
+        this.timers.push(timerId);
+        return timerId;
+    }
+
+    _setInterval(callback, delay) {
+        const intervalId = setInterval(callback, delay);
+        this.intervals.push(intervalId);
+        return intervalId;
+    }
+
+    _clearTimeout(timerId) {
+        if (timerId) {
+            clearTimeout(timerId);
+            const index = this.timers.indexOf(timerId);
+            if (index > -1) this.timers.splice(index, 1);
+        }
+    }
+
+    _clearInterval(intervalId) {
+        if (intervalId) {
+            clearInterval(intervalId);
+            const index = this.intervals.indexOf(intervalId);
+            if (index > -1) this.intervals.splice(index, 1);
+        }
+    }
+
+    _addEventListener(element, event, handler, options) {
+        element.addEventListener(event, handler, options);
+        // Generar key único usando WeakMap o contador para elementos sin ID
+        const elementId = element.id || `elem-${this.listeners.size}`;
+        const key = `${elementId}-${event}-${Date.now()}`;
+        this.listeners.set(key, { element, event, handler, options });
+    }
+
+    _removeEventListener(element, event, handler) {
+        element.removeEventListener(event, handler);
+        // Buscar y eliminar el listener correspondiente
+        for (const [key, value] of this.listeners.entries()) {
+            if (value.element === element && value.event === event && value.handler === handler) {
+                this.listeners.delete(key);
+                break;
+            }
         }
     }
 
@@ -863,7 +923,7 @@ class SettingsModal {
                     }
 
                     retryCount++;
-                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount)); // 1s, 2s, 3s, 4s, 5s
+                    await new Promise(resolve => this._setTimeout(resolve, 1000 * retryCount)); // 1s, 2s, 3s, 4s, 5s
 
                     // 🔧 FIX #76: Verificar nuevamente después del delay
                     if (this.voicesLoadCancelled) {
@@ -1384,17 +1444,24 @@ class SettingsModal {
      * 🔧 FIX #81: async para permitir await en attachTabListeners()
      */
     async attachListeners() {
+        // 🔧 FIX v2.9.197: Memory leak cleanup - usar _addEventListener para tracking
         // Cerrar modal
-        document.getElementById('close-settings-modal')?.addEventListener('click', () => {
-            this.close();
-        });
+        const closeBtn = document.getElementById('close-settings-modal');
+        if (closeBtn) {
+            this._addEventListener(closeBtn, 'click', () => {
+                this.close();
+            });
+        }
 
         // Cerrar al hacer click fuera
-        document.getElementById(this.modalId)?.addEventListener('click', (e) => {
-            if (e.target.id === this.modalId) {
-                this.close();
-            }
-        });
+        const modalElement = document.getElementById(this.modalId);
+        if (modalElement) {
+            this._addEventListener(modalElement, 'click', (e) => {
+                if (e.target.id === this.modalId) {
+                    this.close();
+                }
+            });
+        }
 
         // 🔧 FIX #80: Limpiar handler anterior antes de crear uno nuevo
         if (this.escapeHandler) {
@@ -1407,20 +1474,21 @@ class SettingsModal {
                 this.close();
             }
         };
-        document.addEventListener('keydown', this.escapeHandler);
+        this._addEventListener(document, 'keydown', this.escapeHandler);
 
         // Tab switching (desktop sidebar)
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.settings-tab').forEach((tab, index) => {
+            const handler = (e) => {
                 this.currentTab = e.currentTarget.dataset.tab;
                 this.updateContent();
-            });
+            };
+            this._addEventListener(tab, 'click', handler);
         });
 
         // Tab switching (mobile dropdown)
         const mobileTabSelect = document.getElementById('mobile-settings-tab');
         if (mobileTabSelect) {
-            mobileTabSelect.addEventListener('change', (e) => {
+            this._addEventListener(mobileTabSelect, 'change', (e) => {
                 this.currentTab = e.target.value;
                 this.updateContent();
             });
@@ -1472,69 +1540,85 @@ class SettingsModal {
         // Cargar voces disponibles de forma asíncrona
         this.loadVoices();
 
+        // 🔧 FIX v2.9.197: Memory leak cleanup - usar _addEventListener para tracking
         // Cambio de idioma
-        document.getElementById('language-select')?.addEventListener('change', (e) => {
-            localStorage.setItem('app-language', e.target.value);
-            // console.log('[Settings] Language changed to:', e.target.value);
-        });
+        const languageSelect = document.getElementById('language-select');
+        if (languageSelect) {
+            this._addEventListener(languageSelect, 'change', (e) => {
+                localStorage.setItem('app-language', e.target.value);
+                // console.log('[Settings] Language changed to:', e.target.value);
+            });
+        }
 
         // Tamaño de fuente
         const slider = document.getElementById('font-size-slider');
         const display = document.getElementById('font-size-display');
-        slider?.addEventListener('input', (e) => {
-            const size = e.target.value;
-            // Actualizar UI inmediatamente
-            display.textContent = size + 'px';
-            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+        if (slider) {
+            this._addEventListener(slider, 'input', (e) => {
+                const size = e.target.value;
+                // Actualizar UI inmediatamente
+                display.textContent = size + 'px';
+                document.documentElement.style.setProperty('--font-size-base', size + 'px');
 
-            // 🔧 FIX #83: Debounce para guardar en localStorage (evita writes excesivos)
-            this.debouncedSliderSave('font-size', size, 300);
+                // 🔧 FIX #83: Debounce para guardar en localStorage (evita writes excesivos)
+                this.debouncedSliderSave('font-size', size, 300);
 
-            // Aplicar cambio inmediatamente al contenido de lectura
-            const readingContent = document.querySelector('.chapter-content');
-            if (readingContent) {
-                readingContent.style.fontSize = size + 'px';
-            }
+                // Aplicar cambio inmediatamente al contenido de lectura
+                const readingContent = document.querySelector('.chapter-content');
+                if (readingContent) {
+                    readingContent.style.fontSize = size + 'px';
+                }
 
-            // Mostrar notificación
-            if (window.toast) {
-                window.toast.info(`Tamaño de fuente: ${size}px`);
-            }
-        });
+                // Mostrar notificación
+                if (window.toast) {
+                    window.toast.info(`Tamaño de fuente: ${size}px`);
+                }
+            });
+        }
 
         // Auto audio
-        document.getElementById('auto-audio-toggle')?.addEventListener('change', (e) => {
-            localStorage.setItem('auto-audio', e.target.checked);
-        });
+        const autoAudioToggle = document.getElementById('auto-audio-toggle');
+        if (autoAudioToggle) {
+            this._addEventListener(autoAudioToggle, 'change', (e) => {
+                localStorage.setItem('auto-audio', e.target.checked);
+            });
+        }
 
         // Notificaciones de logros
-        document.getElementById('achievement-notifications-toggle')?.addEventListener('change', (e) => {
-            localStorage.setItem('show-achievement-notifications', e.target.checked);
-            if (window.toast) {
-                window.toast.info(e.target.checked ? '✅ Notificaciones de logros activadas' : '🔕 Notificaciones de logros desactivadas');
-            }
-        });
+        const achievementToggle = document.getElementById('achievement-notifications-toggle');
+        if (achievementToggle) {
+            this._addEventListener(achievementToggle, 'change', (e) => {
+                localStorage.setItem('show-achievement-notifications', e.target.checked);
+                if (window.toast) {
+                    window.toast.info(e.target.checked ? '✅ Notificaciones de logros activadas' : '🔕 Notificaciones de logros desactivadas');
+                }
+            });
+        }
 
         // Selector de voz TTS
-        document.getElementById('tts-voice-select')?.addEventListener('change', (e) => {
-            const voiceURI = e.target.value;
-            if (window.audioReader) {
-                window.audioReader.setVoice(voiceURI);
+        const ttsVoiceSelect = document.getElementById('tts-voice-select');
+        if (ttsVoiceSelect) {
+            this._addEventListener(ttsVoiceSelect, 'change', (e) => {
+                const voiceURI = e.target.value;
+                if (window.audioReader) {
+                    window.audioReader.setVoice(voiceURI);
 
-                // Guardar preferencia
-                localStorage.setItem('preferred-tts-voice', voiceURI);
+                    // Guardar preferencia
+                    localStorage.setItem('preferred-tts-voice', voiceURI);
 
-                if (window.toast) {
-                    window.toast.success('Voz cambiada correctamente');
+                    if (window.toast) {
+                        window.toast.success('Voz cambiada correctamente');
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // ==================== OpenAI TTS Premium ====================
 
         // Input de API Key
         const openaiKeyInput = document.getElementById('openai-tts-key-input');
-        openaiKeyInput?.addEventListener('change', (e) => {
+        if (openaiKeyInput) {
+            this._addEventListener(openaiKeyInput, 'change', (e) => {
             const apiKey = e.target.value.trim();
             if (apiKey && apiKey !== '••••••••••••••••') {
                 // Guardar API key
@@ -1912,74 +1996,78 @@ class SettingsModal {
 
         // Botón de actualizar estadísticas
         const refreshCacheBtn = document.getElementById('refresh-cache-stats-btn');
-        refreshCacheBtn?.addEventListener('click', async () => {
-            refreshCacheBtn.disabled = true;
-            const icon = refreshCacheBtn.querySelector('i');
-            if (icon) icon.classList.add('animate-spin');
+        if (refreshCacheBtn) {
+            this._addEventListener(refreshCacheBtn, 'click', async () => {
+                refreshCacheBtn.disabled = true;
+                const icon = refreshCacheBtn.querySelector('i');
+                if (icon) icon.classList.add('animate-spin');
 
-            await this.updateAudioCacheStats();
+                await this.updateAudioCacheStats();
 
-            setTimeout(() => {
-                refreshCacheBtn.disabled = false;
-                if (icon) icon.classList.remove('animate-spin');
-            }, 500);
-        });
+                this._setTimeout(() => {
+                    refreshCacheBtn.disabled = false;
+                    if (icon) icon.classList.remove('animate-spin');
+                }, 500);
+            });
+        }
 
         // Botón de limpiar caché
         const clearCacheBtn = document.getElementById('clear-audio-cache-btn');
-        clearCacheBtn?.addEventListener('click', async () => {
-            const cacheManager = window.audioCacheManager;
-            if (!cacheManager) return;
+        if (clearCacheBtn) {
+            this._addEventListener(clearCacheBtn, 'click', async () => {
+                const cacheManager = window.audioCacheManager;
+                if (!cacheManager) return;
 
-            // Confirmar antes de borrar
-            // 🔧 FIX #82: Asegurar que confirmModal exista, crear fallback si es necesario
-            let confirmed = false;
-            if (window.confirmModal) {
-                confirmed = await window.confirmModal.show({
-                    title: 'Limpiar caché de audio',
-                    message: '¿Eliminar todos los audios guardados? Tendrás que regenerarlos la próxima vez.',
-                    confirmText: 'Eliminar',
-                    cancelText: 'Cancelar',
-                    type: 'warning'
-                });
-            } else {
-                // Fallback: crear modal simple inline
-                confirmed = await this.showSimpleConfirm(
-                    'Limpiar caché de audio',
-                    '¿Eliminar todos los audios guardados? Tendrás que regenerarlos la próxima vez.'
-                );
-            }
-            if (!confirmed) return;
-
-            clearCacheBtn.disabled = true;
-            clearCacheBtn.innerHTML = '<i data-lucide="loader" class="w-3 h-3 animate-spin"></i> Limpiando...';
-
-            try {
-                await cacheManager.clearAll();
-                await this.updateAudioCacheStats();
-
-                if (window.toast) {
-                    window.toast.success('Caché de audio limpiado');
+                // Confirmar antes de borrar
+                // 🔧 FIX #82: Asegurar que confirmModal exista, crear fallback si es necesario
+                let confirmed = false;
+                if (window.confirmModal) {
+                    confirmed = await window.confirmModal.show({
+                        title: 'Limpiar caché de audio',
+                        message: '¿Eliminar todos los audios guardados? Tendrás que regenerarlos la próxima vez.',
+                        confirmText: 'Eliminar',
+                        cancelText: 'Cancelar',
+                        type: 'warning'
+                    });
+                } else {
+                    // Fallback: crear modal simple inline
+                    confirmed = await this.showSimpleConfirm(
+                        'Limpiar caché de audio',
+                        '¿Eliminar todos los audios guardados? Tendrás que regenerarlos la próxima vez.'
+                    );
                 }
-            } catch (error) {
-                console.error('Error limpiando caché:', error);
-                if (window.toast) {
-                    window.toast.error('Error al limpiar caché');
+                if (!confirmed) return;
+
+                clearCacheBtn.disabled = true;
+                clearCacheBtn.innerHTML = '<i data-lucide="loader" class="w-3 h-3 animate-spin"></i> Limpiando...';
+
+                try {
+                    await cacheManager.clearAll();
+                    await this.updateAudioCacheStats();
+
+                    if (window.toast) {
+                        window.toast.success('Caché de audio limpiado');
+                    }
+                } catch (error) {
+                    console.error('Error limpiando caché:', error);
+                    if (window.toast) {
+                        window.toast.error('Error al limpiar caché');
+                    }
+                } finally {
+                    clearCacheBtn.disabled = false;
+                    clearCacheBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i> Limpiar Caché';
+                    if (window.Icons) window.Icons.init();
                 }
-            } finally {
-                clearCacheBtn.disabled = false;
-                clearCacheBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i> Limpiar Caché';
-                if (window.Icons) window.Icons.init();
-            }
-        });
+            });
+        }
     }
 
     /**
      * 🔧 FIX #78: Helper para auto-guardar config de AI con debounce
      */
     autoSaveAIConfig() {
-        clearTimeout(this.aiConfigAutoSaveTimer);
-        this.aiConfigAutoSaveTimer = setTimeout(() => {
+        this._clearTimeout(this.aiConfigAutoSaveTimer);
+        this.aiConfigAutoSaveTimer = this._setTimeout(() => {
             const aiConfig = window.aiConfig;
             if (!aiConfig) return;
 
@@ -2135,7 +2223,7 @@ class SettingsModal {
             // });
 
             // Actualizar vista para mostrar nuevo estado
-            setTimeout(() => {
+            this._setTimeout(() => {
                 this.updateContent();
             }, 500);
         });
@@ -2296,7 +2384,7 @@ class SettingsModal {
         }
 
         // Recargar la página para aplicar cambios
-        setTimeout(() => {
+        this._setTimeout(() => {
             if (confirm('Los datos se han importado. ¿Deseas recargar la página para aplicar los cambios?')) {
                 window.location.reload();
             }
@@ -2460,11 +2548,11 @@ class SettingsModal {
     debouncedSliderSave(key, value, delay = 300) {
         // Cancelar timer anterior si existe
         if (this.sliderDebounceTimers.has(key)) {
-            clearTimeout(this.sliderDebounceTimers.get(key));
+            this._clearTimeout(this.sliderDebounceTimers.get(key));
         }
 
         // Crear nuevo timer
-        const timer = setTimeout(() => {
+        const timer = this._setTimeout(() => {
             localStorage.setItem(key, value);
             this.sliderDebounceTimers.delete(key);
             console.log(`[Settings] 💾 Slider "${key}" guardado: ${value}`);
@@ -2540,6 +2628,7 @@ class SettingsModal {
 
     /**
      * Cierra el modal
+     * 🔧 FIX v2.9.197: Memory leak cleanup - timer and listener tracking
      */
     close() {
         // 🔧 FIX #76: Cancelar carga de voces si está en progreso
@@ -2560,7 +2649,14 @@ class SettingsModal {
             this.currentTestTTSManager = null;
         }
 
-        // 🔧 FIX #78: Limpiar timer de auto-guardado de AI config
+        // 🔧 FIX v2.9.197: Limpiar todos los timers trackeados
+        this.timers.forEach(id => clearTimeout(id));
+        this.timers = [];
+
+        this.intervals.forEach(id => clearInterval(id));
+        this.intervals = [];
+
+        // Limpiar timers legacy (por compatibilidad)
         if (this.aiConfigAutoSaveTimer) {
             clearTimeout(this.aiConfigAutoSaveTimer);
             this.aiConfigAutoSaveTimer = null;
@@ -2575,6 +2671,12 @@ class SettingsModal {
             });
             this.sliderDebounceTimers.clear();
         }
+
+        // 🔧 FIX v2.9.197: Limpiar todos los event listeners trackeados
+        this.listeners.forEach(({ element, event, handler }) => {
+            element.removeEventListener(event, handler);
+        });
+        this.listeners.clear();
 
         // 🔧 FIX #79: Limpiar listener de resize
         if (this.resizeHandler) {
@@ -2591,12 +2693,6 @@ class SettingsModal {
         if (this.escapeHandler) {
             document.removeEventListener('keydown', this.escapeHandler);
             this.escapeHandler = null;
-        }
-
-        // 🔧 FIX #79: Remover listener de resize correctamente
-        if (this.resizeHandler) {
-            window.removeEventListener('resize', this.resizeHandler);
-            this.resizeHandler = null;
         }
 
         const modal = document.getElementById(this.modalId);

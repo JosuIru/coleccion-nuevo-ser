@@ -292,8 +292,13 @@ class PracticeLibrary {
 
     // Cargar prácticas si no están cargadas
     if (this.practices.length === 0) {
+      // 🔧 FIX v2.9.197: Added error handling to prevent silent failures
       this.loadAllPractices().then(() => {
         this.render();
+      }).catch(error => {
+        console.error('Error loading practices:', error);
+        window.toast?.error('Error al cargar prácticas. Intenta de nuevo.');
+        this.close();
       });
     } else {
       this.render();

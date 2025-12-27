@@ -478,10 +478,17 @@ class MobileGestures {
         refreshIndicator.textContent = '...';
         refreshIndicator.style.animation = 'spin 1s linear infinite';
 
+        // 🔧 FIX v2.9.197: Added error handling to prevent silent failures
         onRefresh().then(() => {
           refreshIndicator.style.top = '-60px';
           refreshIndicator.style.opacity = '0';
           refreshIndicator.style.animation = '';
+        }).catch(error => {
+          console.error('Error during pull-to-refresh:', error);
+          refreshIndicator.style.top = '-60px';
+          refreshIndicator.style.opacity = '0';
+          refreshIndicator.style.animation = '';
+          window.toast?.error('Error al refrescar. Intenta de nuevo.');
         });
       } else {
         refreshIndicator.style.top = '-60px';

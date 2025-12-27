@@ -2,16 +2,19 @@
  * Supabase Configuration
  * Configuración centralizada para Supabase
  *
+ * 🔧 FIX v2.9.197: Security - moved API keys to env config
+ *
  * Priority order for configuration:
  * 1. window.env (from env.js - production)
- * 2. Fallback values (development defaults)
+ * 2. window.__CONFIG__ (injected at build time)
+ * 3. No fallback - fail with clear error message
  *
  * IMPORTANTE: En producción, crea www/js/core/env.js con tus credenciales reales.
  * Ver env.example.js para el formato correcto.
  */
 
 // Get environment variables if available
-const env = window.env || {};
+const env = window.env || window.__CONFIG__ || {};
 
 // Check if we're likely in production but missing env.js
 const isLikelyProduction = (
@@ -20,29 +23,25 @@ const isLikelyProduction = (
   !window.location.hostname.includes('192.168.')
 );
 
-// Development fallback values
-const DEV_DEFAULTS = {
-    url: 'https://flxrilsxghiqfsfifxch.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZseHJpbHN4Z2hpcWZzZmlmeGNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2ODUzMDQsImV4cCI6MjA4MDI2MTMwNH0.Q-loU9hZybMoFr4SrIvnCyhZPOmsYdRAqnJnyIvUdV4',
-    recaptchaSiteKey: ''
-};
-
-// Warn if using fallback in production
-if (!window.env && isLikelyProduction) {
-  console.warn(
-    '⚠️ SUPABASE CONFIG: Usando valores de desarrollo en lo que parece ser producción.\n' +
-    'Crea www/js/core/env.js con tus credenciales reales.\n' +
+// Warn if missing configuration in production
+if ((!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) && isLikelyProduction) {
+  console.error(
+    '❌ SUPABASE CONFIG: Credenciales no configuradas en producción.\n' +
+    'CRÍTICO: La aplicación no funcionará sin credenciales válidas.\n\n' +
+    'Configuración requerida:\n' +
+    '1. Crea www/js/core/env.js con tus credenciales reales\n' +
+    '2. O inyecta via window.__CONFIG__\n' +
     'Ver env.example.js para el formato correcto.'
   );
 }
 
 const supabaseConfig = {
-    // Use env variables if available, otherwise fallback to dev defaults
-    url: env.SUPABASE_URL || DEV_DEFAULTS.url,
-    anonKey: env.SUPABASE_ANON_KEY || DEV_DEFAULTS.anonKey,
+    // 🔧 FIX v2.9.197: Security - no hardcoded keys, must come from env
+    url: env.SUPABASE_URL || null,
+    anonKey: env.SUPABASE_ANON_KEY || null,
 
     // Google reCAPTCHA Site Key (public key)
-    recaptchaSiteKey: env.RECAPTCHA_SITE_KEY || DEV_DEFAULTS.recaptchaSiteKey,
+    recaptchaSiteKey: env.RECAPTCHA_SITE_KEY || '',
 
     // Stripe publishable key (public)
     stripePublishableKey: env.STRIPE_PUBLISHABLE_KEY || '',

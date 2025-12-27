@@ -829,12 +829,16 @@ class ConceptMaps {
         // Navigate to other book
         if (window.biblioteca && window.bookReader) {
           window.bookReader.hide();
+          // 🔧 FIX v2.9.197: Added error handling to prevent silent failures
           window.biblioteca.openBook(targetBookId).then(() => {
             setTimeout(() => {
               if (window.bookReader) {
                 window.bookReader.navigateToChapter(targetChapterId);
               }
             }, 500);
+          }).catch(error => {
+            console.error('Error opening book from concept map:', error);
+            window.toast?.error('Error al abrir el libro. Intenta de nuevo.');
           });
         }
       });

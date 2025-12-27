@@ -10,6 +10,11 @@ class ResourcesViewer {
     this.resourcesData = null;
     this.selectedTab = 'organizations'; // organizations, books, documentaries, tools
     this.selectedChapter = 'all';
+
+    // 🔧 FIX v2.9.197: Memory leak cleanup - timer and listener tracking
+    this.timers = [];
+    this.intervals = [];
+    this.eventListeners = [];
   }
 
   // ==========================================================================
@@ -50,7 +55,8 @@ class ResourcesViewer {
     this.render();
 
     // Esperar a que el DOM esté listo antes de adjuntar listeners
-    setTimeout(() => {
+    // 🔧 FIX v2.9.197: Usar _setTimeout para tracking automático
+    this._setTimeout(() => {
       this.attachEventListeners();
     }, 10);
 
@@ -61,10 +67,14 @@ class ResourcesViewer {
   }
 
   close() {
+    // 🔧 FIX v2.9.197: Cleanup antes de cerrar
+    this.cleanup();
+
     const modal = document.getElementById('resources-modal');
     if (modal) {
       modal.classList.add('opacity-0');
-      setTimeout(() => {
+      // 🔧 FIX v2.9.197: Usar _setTimeout para tracking automático
+      this._setTimeout(() => {
         modal.remove();
         this.isOpen = false;
       }, 200);
@@ -101,7 +111,8 @@ class ResourcesViewer {
     document.body.insertAdjacentHTML('beforeend', html);
 
     // Fade in
-    setTimeout(() => {
+    // 🔧 FIX v2.9.197: Usar _setTimeout para tracking automático
+    this._setTimeout(() => {
       const modal = document.getElementById('resources-modal');
       if (modal) modal.classList.remove('opacity-0');
     }, 10);
@@ -487,29 +498,91 @@ class ResourcesViewer {
   }
 
   // ==========================================================================
+  // TIMER & LISTENER TRACKING (🔧 FIX v2.9.197: Memory leak prevention)
+  // ==========================================================================
+
+  /**
+   * setTimeout wrapper con tracking automático
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * setInterval wrapper con tracking automático
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * addEventListener wrapper con tracking automático
+   */
+  _addEventListener(target, event, handler, options) {
+    if (!target) return;
+    target.addEventListener(event, handler, options);
+    this.eventListeners.push({ target, event, handler, options });
+  }
+
+  /**
+   * Cleanup completo de timers, intervals y listeners
+   */
+  cleanup() {
+    // Limpiar timers
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+
+    // Limpiar intervals
+    this.intervals.forEach(intervalId => clearInterval(intervalId));
+    this.intervals = [];
+
+    // Limpiar event listeners
+    this.eventListeners.forEach(({ target, event, handler, options }) => {
+      if (target && typeof target.removeEventListener === 'function') {
+        target.removeEventListener(event, handler, options);
+      }
+    });
+    this.eventListeners = [];
+
+    console.log('[ResourcesViewer] Cleanup completado');
+  }
+
+  // ==========================================================================
   // EVENT LISTENERS
   // ==========================================================================
 
   attachEventListeners() {
+    // 🔧 FIX v2.9.197: Migrar TODOS los listeners a _addEventListener
+
     // Close button
     const closeBtn = document.getElementById('close-resources-btn');
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.close());
+      this._addEventListener(closeBtn, 'click', () => this.close());
     }
 
     // Close on ESC
     const escHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    this._addEventListener(document, 'keydown', escHandler);
 
     // Close on click outside
     const modal = document.getElementById('resources-modal');
     if (modal) {
-      modal.addEventListener('click', (e) => {
+      this._addEventListener(modal, 'click', (e) => {
         if (e.target === modal) {
           this.close();
         }
@@ -519,10 +592,14 @@ class ResourcesViewer {
     // Tab buttons
     const tabBtns = document.querySelectorAll('.resource-tab');
     tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      this._addEventListener(btn, 'click', () => {
         this.selectedTab = btn.getAttribute('data-tab');
         this.render();
-        this.attachEventListeners();
+        // 🔧 FIX v2.9.197: Cleanup listeners anteriores antes de re-render
+        this.cleanup();
+        this._setTimeout(() => {
+          this.attachEventListeners();
+        }, 10);
       });
     });
   }

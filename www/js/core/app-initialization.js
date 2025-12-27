@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // ⭐ CONTENT v2.9.192: Expansión libro "Educar para el Nuevo Ser" - 5 caps (+11,500 palabras)
-    window.__APP_VERSION__ = '2.9.192'; // Cambiar con cada release
+    // 🔧 FIX v2.9.193: Memory leak fixes - AudioReader timer tracking completo
+    window.__APP_VERSION__ = '2.9.193'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

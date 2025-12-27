@@ -75,6 +75,12 @@ class AudioReader {
     // ⭐ MEJORA v2.9.178: Temporizador para pausas de meditación
     this.pauseTimerInterval = null;
 
+    // 🔧 FIX v2.9.193: Timer tracking para prevenir memory leaks
+    this.timers = [];           // Array de setTimeout IDs para cleanup
+    this.intervals = [];        // Array de setInterval IDs para cleanup
+    this.currentPauseTimer = null;  // Timer de pausa de ejercicio activo
+    this.longPressTimer = null;     // Timer de long press en progress bar
+
     // Bookmarks de audio
     this.audioBookmarks = this.loadBookmarks();
 
@@ -95,6 +101,62 @@ class AudioReader {
 
     // Inicializar TTS según plataforma
     this.initTTS();
+  }
+
+  // ==========================================================================
+  // TIMER TRACKING (Memory Leak Prevention)
+  // ==========================================================================
+
+  /**
+   * 🔧 FIX v2.9.193: setTimeout con tracking automático para cleanup
+   * Previene memory leaks al trackear todos los timers creados
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * 🔧 FIX v2.9.193: setInterval con tracking automático para cleanup
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * 🔧 FIX v2.9.193: clearTimeout con auto-remove del tracking
+   */
+  _clearTimeout(timerId) {
+    if (timerId) {
+      clearTimeout(timerId);
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }
+  }
+
+  /**
+   * 🔧 FIX v2.9.193: clearInterval con auto-remove del tracking
+   */
+  _clearInterval(intervalId) {
+    if (intervalId) {
+      clearInterval(intervalId);
+      const index = this.intervals.indexOf(intervalId);
+      if (index > -1) {
+        this.intervals.splice(index, 1);
+      }
+    }
   }
 
   // ==========================================================================
@@ -225,8 +287,9 @@ class AudioReader {
           this.selectBestVoice();
         }, { once: true });
 
+        // 🔧 FIX v2.9.193: Usar _setTimeout para tracking automático
         // Reintentar después de 500ms por si el evento no se dispara (común en algunos navegadores)
-        setTimeout(() => {
+        this._setTimeout(() => {
           const retryVoices = this.synthesis.getVoices();
           if (retryVoices && retryVoices.length > 0 && !this.selectedVoice) {
             this.selectBestVoice();
@@ -234,7 +297,7 @@ class AudioReader {
         }, 500);
 
         // Último intento después de 2 segundos
-        setTimeout(() => {
+        this._setTimeout(() => {
           const finalVoices = this.synthesis.getVoices();
           if (!finalVoices || finalVoices.length === 0) {
             // console.warn('⚠️ No se encontraron voces TTS. El audio no funcionará hasta que se instalen voces en el sistema.');
@@ -960,6 +1023,12 @@ class AudioReader {
     if (this.currentParagraphIndex < this.paragraphs.length - 1) {
       const wasPlaying = this.isPlaying;
 
+      // 🔧 FIX v2.9.193: Cancelar timer de pausa pendiente
+      if (this.currentPauseTimer) {
+        this._clearTimeout(this.currentPauseTimer);
+        this.currentPauseTimer = null;
+      }
+
       if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
         try {
           this.ttsManager.stop();
@@ -991,6 +1060,12 @@ class AudioReader {
   async previous() {
     if (this.currentParagraphIndex > 0) {
       const wasPlaying = this.isPlaying;
+
+      // 🔧 FIX v2.9.193: Cancelar timer de pausa pendiente
+      if (this.currentPauseTimer) {
+        this._clearTimeout(this.currentPauseTimer);
+        this.currentPauseTimer = null;
+      }
 
       if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
         try {
@@ -1218,7 +1293,9 @@ class AudioReader {
             this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
           }
 
-          setTimeout(() => {
+          // 🔧 FIX v2.9.193: Usar _setTimeout tracked y guardar referencia
+          this.currentPauseTimer = this._setTimeout(() => {
+            this.currentPauseTimer = null;
             if (this.isPlaying && !this.isPaused) {
               this.speakParagraph(this.currentParagraphIndex);
             }
@@ -1234,7 +1311,8 @@ class AudioReader {
       // Si es el primer intento y el error es de inicialización, reintentar
       if (retryCount < 3 && error.message && error.message.includes('not ready')) {
         console.log(`⚠️ TTS no listo, reintentando (${retryCount + 1}/3)...`);
-        setTimeout(() => {
+        // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+        this._setTimeout(() => {
           if (this.isPlaying && !this.isPaused) {
             this.speakWithNativeTTS(paragraph, index, retryCount + 1);
           }
@@ -1280,6 +1358,14 @@ class AudioReader {
     }
 
     try {
+      // 🔧 FIX v2.9.193: Limpiar utterance anterior para evitar memory leaks
+      if (this.utterance) {
+        this.utterance.onstart = null;
+        this.utterance.onend = null;
+        this.utterance.onerror = null;
+        this.utterance.onboundary = null;
+      }
+
       // Crear utterance
       this.utterance = new SpeechSynthesisUtterance(paragraph.text);
       this.utterance.voice = this.selectedVoice;
@@ -1330,7 +1416,9 @@ class AudioReader {
           this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
         }
 
-        setTimeout(() => {
+        // 🔧 FIX v2.9.193: Usar _setTimeout tracked y guardar referencia
+        this.currentPauseTimer = this._setTimeout(() => {
+          this.currentPauseTimer = null;
           this.speakParagraph(this.currentParagraphIndex);
         }, pauseDuration);
       } else {
@@ -1355,7 +1443,8 @@ class AudioReader {
 
       // Chrome/Brave workaround: forzar resume si se queda pausado
       // Algunos navegadores quedan en pausa automáticamente
-      setTimeout(() => {
+      // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+      this._setTimeout(() => {
         if (this.synthesis.paused && !this.isPaused) {
           this.synthesis.resume();
         }
@@ -1403,7 +1492,9 @@ class AudioReader {
               this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
             }
 
-            setTimeout(() => {
+            // 🔧 FIX v2.9.193: Usar _setTimeout tracked y guardar referencia
+            this.currentPauseTimer = this._setTimeout(() => {
+              this.currentPauseTimer = null;
               if (this.isPlaying && !this.isPaused) {
                 this.speakParagraph(this.currentParagraphIndex);
               }
@@ -1493,7 +1584,9 @@ class AudioReader {
               this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
             }
 
-            setTimeout(() => {
+            // 🔧 FIX v2.9.193: Usar _setTimeout tracked y guardar referencia
+            this.currentPauseTimer = this._setTimeout(() => {
+              this.currentPauseTimer = null;
               if (this.isPlaying && !this.isPaused) {
                 this.speakParagraph(this.currentParagraphIndex);
               }
@@ -1549,7 +1642,8 @@ class AudioReader {
     // Si auto-advance está activado, pasar al siguiente capítulo
     if (this.autoAdvanceChapter) {
       logger.log('🔄 Auto-avance activado, pasando al siguiente capítulo en 2s...');
-      setTimeout(() => {
+      // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+      this._setTimeout(() => {
         this.advanceToNextChapter();
       }, 2000);
     } else {
@@ -1567,7 +1661,8 @@ class AudioReader {
       window.bookReader.navigateToChapter(nextChapter.id);
 
       // Esperar a que se cargue el nuevo capítulo y continuar reproducción
-      setTimeout(() => {
+      // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+      this._setTimeout(() => {
         const newContent = document.querySelector('.chapter-content');
         if (newContent) {
           this.play(newContent.innerHTML);
@@ -2413,27 +2508,28 @@ class AudioReader {
     const progressBar = document.getElementById('audioreader-progress-bar');
     if (!progressBar) return;
 
-    // Long press en la barra de progreso para abrir el bottom sheet completo
-    let longPressTimer = null;
+    // 🔧 FIX v2.9.193: Long press en la barra de progreso para abrir el bottom sheet completo
+    // Usar this.longPressTimer (propiedad de clase) para cleanup correcto
 
     progressBar.addEventListener('touchstart', (e) => {
-      longPressTimer = setTimeout(() => {
+      this.longPressTimer = this._setTimeout(() => {
         this.toggleMinimize(); // Expandir el reproductor completo
         if (navigator.vibrate) navigator.vibrate(50);
+        this.longPressTimer = null;
       }, 500);
     });
 
     progressBar.addEventListener('touchend', () => {
-      if (longPressTimer) {
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
+      if (this.longPressTimer) {
+        this._clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
       }
     });
 
     progressBar.addEventListener('touchmove', () => {
-      if (longPressTimer) {
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
+      if (this.longPressTimer) {
+        this._clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
       }
     });
 
@@ -2975,7 +3071,8 @@ class AudioReader {
     const startTime = Date.now();
     const endTime = startTime + pauseDurationMs;
 
-    this.pauseTimerInterval = setInterval(() => {
+    // 🔧 FIX v2.9.193: Usar _setInterval tracked
+    this.pauseTimerInterval = this._setInterval(() => {
       const now = Date.now();
       const remaining = Math.max(0, endTime - now);
       const elapsed = pauseDurationMs - remaining;
@@ -3001,7 +3098,7 @@ class AudioReader {
 
       // Terminar cuando se agote el tiempo
       if (remaining <= 0) {
-        clearInterval(this.pauseTimerInterval);
+        this._clearInterval(this.pauseTimerInterval);
         this.pauseTimerInterval = null;
         this.hidePauseIndicator();
       }
@@ -3018,7 +3115,7 @@ class AudioReader {
     }
 
     if (this.pauseTimerInterval) {
-      clearInterval(this.pauseTimerInterval);
+      this._clearInterval(this.pauseTimerInterval);
       this.pauseTimerInterval = null;
     }
 
@@ -3452,7 +3549,8 @@ class AudioReader {
     this.sleepTimerMinutes = minutos;
     this.sleepTimerStartTime = Date.now();
 
-    this.sleepTimer = setTimeout(() => {
+    // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+    this.sleepTimer = this._setTimeout(() => {
       logger.log('😴 Sleep timer finalizado, deteniendo audio...');
       this.fadeOutAndStop();
     }, minutos * 60 * 1000);
@@ -3463,7 +3561,8 @@ class AudioReader {
 
   clearSleepTimer() {
     if (this.sleepTimer) {
-      clearTimeout(this.sleepTimer);
+      // 🔧 FIX v2.9.193: Usar _clearTimeout
+      this._clearTimeout(this.sleepTimer);
       this.sleepTimer = null;
       this.sleepTimerMinutes = 0;
       this.sleepTimerStartTime = null;
@@ -3489,7 +3588,7 @@ class AudioReader {
     this.sleepTimerRemainingTime = Math.max(0, this.sleepTimerMinutes - transcurrido);
 
     // Cancelar timer actual
-    clearTimeout(this.sleepTimer);
+    this._clearTimeout(this.sleepTimer);
     this.sleepTimer = null;
     this.sleepTimerPaused = true;
 
@@ -3503,7 +3602,8 @@ class AudioReader {
     if (!this.sleepTimerPaused || this.sleepTimerRemainingTime <= 0) return;
 
     // Crear nuevo timer con el tiempo restante
-    this.sleepTimer = setTimeout(() => {
+    // 🔧 FIX v2.9.193: Usar _setTimeout tracked
+    this.sleepTimer = this._setTimeout(() => {
       logger.log('😴 Sleep timer finalizado - deteniendo reproducción');
       this.stop();
     }, this.sleepTimerRemainingTime * 60 * 1000);
@@ -4059,8 +4159,14 @@ class AudioReader {
       }
     }
 
-    // 🔧 FIX #50: Limpiar referencia a utterance
-    this.utterance = null;
+    // 🔧 FIX #50: Limpiar referencia a utterance con event handlers
+    if (this.utterance) {
+      this.utterance.onstart = null;
+      this.utterance.onend = null;
+      this.utterance.onerror = null;
+      this.utterance.onboundary = null;
+      this.utterance = null;
+    }
 
     if (this.nativeTTS) {
       try {
@@ -4069,6 +4175,43 @@ class AudioReader {
       } catch (e) {
         console.warn('Error deteniendo TTS nativo:', e);
       }
+    }
+
+    // 🔧 FIX v2.9.193: Limpiar TODOS los timers e intervals tracked
+    // Esto previene memory leaks al cancelar todos los timers pendientes
+    if (this.timers && this.timers.length > 0) {
+      logger.log(`🧹 Limpiando ${this.timers.length} timers pendientes...`);
+      this.timers.forEach(timerId => {
+        try {
+          clearTimeout(timerId);
+        } catch (e) {
+          // Ignorar errores de timers ya completados
+        }
+      });
+      this.timers = [];
+    }
+
+    if (this.intervals && this.intervals.length > 0) {
+      logger.log(`🧹 Limpiando ${this.intervals.length} intervals pendientes...`);
+      this.intervals.forEach(intervalId => {
+        try {
+          clearInterval(intervalId);
+        } catch (e) {
+          // Ignorar errores
+        }
+      });
+      this.intervals = [];
+    }
+
+    // Limpiar timers específicos con referencias guardadas
+    if (this.currentPauseTimer) {
+      clearTimeout(this.currentPauseTimer);
+      this.currentPauseTimer = null;
+    }
+
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
     }
 
     // 2. Liberar wake lock (#51)
@@ -4119,6 +4262,31 @@ class AudioReader {
     }
 
     logger.log('[AudioReader] Cleanup completado ✅');
+  }
+
+  /**
+   * 🔧 FIX v2.9.193: Destructor público para destrucción completa de la instancia
+   * Llama a cleanup() y limpia referencias circulares
+   */
+  destroy() {
+    logger.log('[AudioReader] Iniciando destrucción completa...');
+
+    // 1. Detener y limpiar todo
+    this.stop(true);
+    this.cleanup();
+
+    // 2. Limpiar referencias circulares para permitir garbage collection
+    this.bookEngine = null;
+    this.ttsManager = null;
+    this.synthesis = null;
+    this.nativeTTS = null;
+    this.paragraphs = [];
+    this.audioBookmarks = [];
+
+    // 3. Marcar como destruido (previene uso después de destrucción)
+    this.destroyed = true;
+
+    logger.log('[AudioReader] Instancia destruida completamente ✅');
   }
 
   // ==========================================================================

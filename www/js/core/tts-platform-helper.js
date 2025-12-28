@@ -2,6 +2,7 @@
 // TTS PLATFORM HELPER - Detecta y soluciona problemas de TTS por plataforma
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class TTSPlatformHelper {
   constructor() {
     this.platform = this.detectPlatform();
@@ -55,7 +56,7 @@ class TTSPlatformHelper {
 
         if (voices.length > 0) {
           this.hasVoices = true;
-          // console.log(`✅ Voces TTS detectadas (${voices.length}) en intento ${this.checkAttempts}`);
+          // logger.debug(`✅ Voces TTS detectadas (${voices.length}) en intento ${this.checkAttempts}`);
           resolve(true);
           return;
         }
@@ -198,7 +199,7 @@ ${browser} \\
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(command).then(() => {
-        // console.log('✅ Comando copiado al portapapeles');
+        // logger.debug('✅ Comando copiado al portapapeles');
         if (window.toast) {
           window.toast.success('Comando copiado al portapapeles');
         }
@@ -221,7 +222,7 @@ ${browser} \\
 
     try {
       document.execCommand('copy');
-      // console.log('✅ Comando copiado (fallback)');
+      // logger.debug('✅ Comando copiado (fallback)');
       if (window.toast) {
         window.toast.success('Comando copiado');
       }
@@ -410,17 +411,17 @@ ${browser} \\
   // ==========================================================================
 
   async autoCheck() {
-    // console.log(`🔍 Plataforma: ${this.platform}, Navegador: ${this.browser}`);
+    // logger.debug(`🔍 Plataforma: ${this.platform}, Navegador: ${this.browser}`);
 
     // Solo verificar si es Linux + Chrome/Brave/Edge
     if (!this.isLinuxChromeIssue()) {
-      // console.log('✅ No es necesario verificar (no es Linux + Chrome/Brave/Edge)');
+      // logger.debug('✅ No es necesario verificar (no es Linux + Chrome/Brave/Edge)');
       return;
     }
 
     // Verificar si el usuario ya dijo "no mostrar más"
     if (localStorage.getItem('hide-linux-chrome-tts-warning') === 'true') {
-      // console.log('ℹ️ Usuario deshabilitó el aviso de TTS');
+      // logger.debug('ℹ️ Usuario deshabilitó el aviso de TTS');
       return;
     }
 
@@ -444,6 +445,11 @@ ${browser} \\
   // ==========================================================================
 
   async checkAndShowModalIfNeeded() {
+    // 🔧 FIX v2.9.202: No mostrar modal en apps Capacitor (tienen TTS nativo)
+    if (window.Capacitor) {
+      return false; // Capacitor apps tienen TTS nativo, no necesitan este check
+    }
+
     // Solo verificar si es Linux + Chrome/Brave/Edge
     if (!this.isLinuxChromeIssue()) {
       return false; // No hay problema
@@ -472,4 +478,4 @@ window.ttsPlatformHelper = new TTSPlatformHelper();
 // NOTA: Ya no se ejecuta autoCheck automáticamente.
 // El modal solo se mostrará cuando el usuario intente usar el reproductor de audio.
 
-// console.log('✅ TTS Platform Helper cargado');
+// logger.debug('✅ TTS Platform Helper cargado');

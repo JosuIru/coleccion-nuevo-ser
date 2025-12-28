@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🎉 v2.9.201: Frankenstein Lab refactored - 26 modules extracted (13,405 lines)
-    window.__APP_VERSION__ = '2.9.201'; // Cambiar con cada release
+    // 🔧 v2.9.202: Fix TTS - bypass platform check para apps Capacitor
+    window.__APP_VERSION__ = '2.9.202'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

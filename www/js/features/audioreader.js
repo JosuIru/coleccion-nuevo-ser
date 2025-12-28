@@ -51,6 +51,7 @@ class AudioReader {
 
     // ⭐ Estado minimizado/expandido
     this.isMinimized = localStorage.getItem('audioreader-minimized') === 'true';
+    this.isBottomSheetExpanded = false; // 🔧 FIX v2.9.212: Control del bottom-sheet (expandido/contraído)
     this.dragStartY = 0;
     this.dragCurrentY = 0;
     this.isDragging = false;
@@ -74,12 +75,21 @@ class AudioReader {
     this.sleepTimerMinutes = 0;
     this.sleepTimerStartTime = null;
 
+    // 🔧 FIX v2.9.231: Restaurar sleep timer desde localStorage
+    this.restoreSleepTimerFromStorage();
+
     // 🔧 FIX #56: Variables para pausar sleep timer al minimizar app
     this.sleepTimerPaused = false;
     this.sleepTimerRemainingTime = 0;
 
     // ⭐ MEJORA v2.9.178: Temporizador para pausas de meditación
     this.pauseTimerInterval = null;
+
+    // ⭐ MEJORA v2.9.233: Sistema de audio meditativo
+    this.meditationAudioContext = null;
+    this.meditationBellEnabled = localStorage.getItem('meditation-bell-enabled') !== 'false'; // Enabled by default
+    this.currentPauseEndTime = null; // Para control manual de pausas
+    this.pauseResolve = null; // Promise resolver para pausas manuales
 
     // 🔧 FIX v2.9.193: Timer tracking para prevenir memory leaks
     this.timers = [];           // Array de setTimeout IDs para cleanup
@@ -163,6 +173,149 @@ class AudioReader {
         this.intervals.splice(index, 1);
       }
     }
+  }
+
+  // ==========================================================================
+  // ⭐ MEJORA v2.9.233: SISTEMA DE AUDIO MEDITATIVO
+  // ==========================================================================
+
+  /**
+   * Inicializa el contexto de audio para sonidos de meditación
+   */
+  initMeditationAudio() {
+    if (this.meditationAudioContext) return;
+
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        this.meditationAudioContext = new AudioContext();
+        logger.log('🔔 Sistema de audio meditativo inicializado');
+      }
+    } catch (error) {
+      console.warn('[AudioReader] No se pudo inicializar audio meditativo:', error);
+    }
+  }
+
+  /**
+   * Reproduce un sonido de campana/gong para transiciones de meditación
+   * @param {string} type - 'start' | 'end' | 'soft'
+   */
+  playMeditationBell(type = 'start') {
+    if (!this.meditationBellEnabled) return;
+
+    // Inicializar contexto si no existe
+    if (!this.meditationAudioContext) {
+      this.initMeditationAudio();
+    }
+
+    const ctx = this.meditationAudioContext;
+    if (!ctx) return;
+
+    // Reanudar contexto si está suspendido (política de autoplay)
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+
+    try {
+      const now = ctx.currentTime;
+
+      // Crear osciladores para un sonido de campana tibetana
+      const fundamental = ctx.createOscillator();
+      const harmonic1 = ctx.createOscillator();
+      const harmonic2 = ctx.createOscillator();
+
+      const gainNode = ctx.createGain();
+      const filterNode = ctx.createBiquadFilter();
+
+      // Configurar frecuencias según tipo
+      let baseFreq, duration, volume;
+      switch (type) {
+        case 'start':
+          baseFreq = 528; // Frecuencia de transformación (Solfeggio)
+          duration = 4;
+          volume = 0.3;
+          break;
+        case 'end':
+          baseFreq = 432; // Frecuencia de sanación
+          duration = 3;
+          volume = 0.25;
+          break;
+        case 'soft':
+        default:
+          baseFreq = 396; // Frecuencia de liberación
+          duration = 2;
+          volume = 0.15;
+          break;
+      }
+
+      // Configurar osciladores (fundamental + armónicos)
+      fundamental.type = 'sine';
+      fundamental.frequency.setValueAtTime(baseFreq, now);
+
+      harmonic1.type = 'sine';
+      harmonic1.frequency.setValueAtTime(baseFreq * 2.756, now); // Armónico de campana
+
+      harmonic2.type = 'sine';
+      harmonic2.frequency.setValueAtTime(baseFreq * 5.404, now); // Segundo armónico
+
+      // Filtro para suavizar
+      filterNode.type = 'lowpass';
+      filterNode.frequency.setValueAtTime(2000, now);
+      filterNode.Q.setValueAtTime(1, now);
+
+      // Envelope ADSR para la campana
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(volume, now + 0.02); // Attack rápido
+      gainNode.gain.exponentialRampToValueAtTime(volume * 0.7, now + 0.1); // Decay
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration); // Release largo
+
+      // Conectar nodos
+      fundamental.connect(gainNode);
+      harmonic1.connect(gainNode);
+      harmonic2.connect(gainNode);
+      gainNode.connect(filterNode);
+      filterNode.connect(ctx.destination);
+
+      // Reducir volumen de armónicos
+      const harm1Gain = ctx.createGain();
+      harm1Gain.gain.setValueAtTime(0.3, now);
+      harmonic1.disconnect();
+      harmonic1.connect(harm1Gain);
+      harm1Gain.connect(gainNode);
+
+      const harm2Gain = ctx.createGain();
+      harm2Gain.gain.setValueAtTime(0.1, now);
+      harmonic2.disconnect();
+      harmonic2.connect(harm2Gain);
+      harm2Gain.connect(gainNode);
+
+      // Iniciar y detener
+      fundamental.start(now);
+      harmonic1.start(now);
+      harmonic2.start(now);
+
+      fundamental.stop(now + duration);
+      harmonic1.stop(now + duration);
+      harmonic2.stop(now + duration);
+
+      logger.debug(`🔔 Campana de meditación: ${type} (${baseFreq}Hz)`);
+
+    } catch (error) {
+      console.warn('[AudioReader] Error reproduciendo campana:', error);
+    }
+  }
+
+  /**
+   * Toggle para activar/desactivar campanas de meditación
+   */
+  toggleMeditationBell() {
+    this.meditationBellEnabled = !this.meditationBellEnabled;
+    try {
+      localStorage.setItem('meditation-bell-enabled', this.meditationBellEnabled.toString());
+    } catch (e) {
+      // Ignore storage errors
+    }
+    return this.meditationBellEnabled;
   }
 
   // ==========================================================================
@@ -715,8 +868,9 @@ class AudioReader {
    * Detecta si estamos leyendo un libro de ejercicios/meditaciones
    */
   isExerciseBook() {
-    // Detectar por bookId del bookEngine
-    const currentBookId = this.bookEngine?.currentBook?.id || '';
+    // 🔧 FIX v2.9.232: currentBook ES el ID string, no un objeto con .id
+    // Antes: this.bookEngine?.currentBook?.id (incorrecto - devolvía undefined)
+    const currentBookId = this.bookEngine?.currentBook || '';
     const exerciseBooks = ['manual-practico', 'practicas-radicales'];
     return exerciseBooks.includes(currentBookId);
   }
@@ -751,49 +905,78 @@ class AudioReader {
   }
 
   /**
-   * ⭐ MEJORA v2.9.178: Calcula el tiempo de pausa apropiado después de cada paso
-   * Basado en la duración total del ejercicio y número REAL de pasos
+   * ⭐ MEJORA v2.9.233: Calcula el tiempo de pausa con distribución PROGRESIVA
+   * Los pasos contemplativos (centrales y finales) tienen pausas más largas
    *
    * @param {number} durationMinutes - Duración total del ejercicio en minutos
    * @param {number} totalSteps - Número real de pasos del ejercicio
-   * @param {number} currentStep - Número del paso actual (para pausas variables opcionales)
+   * @param {number} currentStep - Número del paso actual
    * @returns {number} Milisegundos de pausa
    */
   calculatePauseTime(durationMinutes, totalSteps, currentStep = 1) {
     if (!durationMinutes) {
-      return 8000; // Pausa por defecto: 8 segundos
+      return 15000; // Pausa por defecto: 15 segundos (más generosa)
     }
 
     if (!totalSteps || totalSteps === 0) {
-      return 8000; // Fallback si no se detectaron pasos
+      return 15000; // Fallback si no se detectaron pasos
     }
 
-    // ⭐ ALGORITMO MEJORADO:
-    // - Tiempo total disponible en segundos
-    // - Estimamos ~10 segundos para leer cada instrucción
-    // - El resto del tiempo se distribuye equitativamente como pausas
+    // ⭐ ALGORITMO PROGRESIVO v2.9.233:
+    // Distribuye el tiempo de forma no lineal:
+    // - Pasos iniciales (preparación): pausas más cortas
+    // - Pasos centrales (inmersión): pausas medias
+    // - Pasos finales (contemplación profunda): pausas más largas
+
     const totalSeconds = durationMinutes * 60;
-    const estimatedReadingTimePerStep = 10; // segundos por leer cada paso
+    const estimatedReadingTimePerStep = 12; // 12 segundos para leer cada instrucción
     const totalReadingTime = totalSteps * estimatedReadingTimePerStep;
-    const availableTimeForPauses = totalSeconds - totalReadingTime;
+    const availableTimeForPauses = Math.max(totalSeconds - totalReadingTime, totalSteps * 15);
 
-    // Distribuir el tiempo disponible entre todos los pasos
-    let pauseSeconds = Math.floor(availableTimeForPauses / totalSteps);
+    // Calcular peso progresivo del paso actual
+    // Los pasos finales tienen más peso
+    const position = currentStep / totalSteps;
+    let weight;
 
-    // Limitar pausas entre 10 segundos y 5 minutos
-    const minPause = 10;
+    if (position <= 0.25) {
+      // Primer 25%: Preparación - pausas cortas
+      weight = 0.6;
+    } else if (position <= 0.5) {
+      // 25-50%: Entrada - pausas medias
+      weight = 0.9;
+    } else if (position <= 0.75) {
+      // 50-75%: Inmersión profunda - pausas largas
+      weight = 1.3;
+    } else if (position < 1.0) {
+      // 75-99%: Contemplación - pausas muy largas
+      weight = 1.5;
+    } else {
+      // Último paso: Integración final - pausa extra larga
+      weight = 2.0;
+    }
+
+    // Calcular pausa base (distribución equitativa)
+    const basePauseSeconds = availableTimeForPauses / totalSteps;
+
+    // Aplicar peso progresivo
+    let pauseSeconds = Math.floor(basePauseSeconds * weight);
+
+    // Limitar pausas entre 15 segundos y 5 minutos
+    const minPause = 15;
     const maxPause = 300; // 5 minutos máximo
     pauseSeconds = Math.max(minPause, Math.min(maxPause, pauseSeconds));
 
-    // ⭐ OPCIONAL: Dar más tiempo al paso final para contemplación
-    // (puedes descomentar esto si quieres que el último paso tenga más pausa)
-    // if (currentStep === totalSteps && pauseSeconds < 60) {
-    //   pauseSeconds = 60; // Mínimo 1 minuto en el último paso
-    // }
+    // El paso final siempre tiene mínimo 45 segundos para integración
+    if (currentStep === totalSteps && pauseSeconds < 45) {
+      pauseSeconds = 45;
+    }
 
     const pauseMilliseconds = pauseSeconds * 1000;
 
-    logger.log(`🧘 Paso ${currentStep}/${totalSteps}: Pausa de ${pauseSeconds}s (${(pauseSeconds/60).toFixed(1)} min)`);
+    const phaseNames = ['Preparación', 'Entrada', 'Inmersión', 'Contemplación', 'Integración'];
+    const phaseIndex = position <= 0.25 ? 0 : position <= 0.5 ? 1 : position <= 0.75 ? 2 : position < 1 ? 3 : 4;
+
+    logger.log(`🧘 Paso ${currentStep}/${totalSteps} [${phaseNames[phaseIndex]}]: Pausa de ${pauseSeconds}s (${(pauseSeconds/60).toFixed(1)} min)`);
 
     return pauseMilliseconds;
   }
@@ -871,6 +1054,13 @@ class AudioReader {
     this.isPaused = false;
     this.startTime = Date.now();
     this.speakParagraph(this.currentParagraphIndex);
+
+    // 🔧 FIX v2.9.231: Reactivar sleep timer si había uno restaurado desde localStorage
+    this.reactivateRestoredSleepTimer();
+
+    // 🔧 FIX v2.9.230: Iniciar ambient/binaural si estaban seleccionados
+    await this.syncAmbientBinauralWithPlayback(true);
+
     await this.updateUI();
 
     // Track para logros
@@ -929,6 +1119,9 @@ class AudioReader {
       window.backgroundAudio.pause();
     }
 
+    // 🔧 FIX v2.9.230: Pausar ambient/binaural
+    await this.syncAmbientBinauralWithPlayback(false);
+
     // ⭐ MEJORA v2.9.178: Ocultar indicador de pausa si está visible
     this.hidePauseIndicator();
 
@@ -947,6 +1140,9 @@ class AudioReader {
     if (window.backgroundAudio) {
       window.backgroundAudio.resume();
     }
+
+    // 🔧 FIX v2.9.230: Reanudar ambient/binaural
+    await this.syncAmbientBinauralWithPlayback(true);
 
     if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       // Premium TTS resume (OpenAI, Hugging Face o ElevenLabs)
@@ -1014,6 +1210,9 @@ class AudioReader {
       await window.backgroundAudio.stop();
     }
 
+    // 🔧 FIX v2.9.230: Detener ambient/binaural
+    await this.syncAmbientBinauralWithPlayback(false);
+
     this.isPlaying = false;
     this.isPaused = false;
 
@@ -1028,6 +1227,42 @@ class AudioReader {
 
     this.clearHighlights();
     await this.updateUI();
+  }
+
+  /**
+   * 🔧 FIX v2.9.230: Sincronizar sonidos ambiente y binaural con el estado de reproducción
+   * @param {boolean} isPlaying - true para iniciar, false para detener
+   */
+  async syncAmbientBinauralWithPlayback(isPlaying) {
+    try {
+      if (!window.audioMixer) {
+        // Si no hay audioMixer pero hay AudioMixer disponible, no hacer nada
+        // Se inicializará cuando el usuario seleccione un sonido
+        return;
+      }
+
+      if (isPlaying) {
+        // Reiniciar los sonidos que estaban seleccionados
+        const ambientSelect = document.getElementById('audioreader-ambient-select');
+        const binauralSelect = document.getElementById('audioreader-binaural-select');
+
+        if (ambientSelect && ambientSelect.value) {
+          console.warn('[AudioReader] 🎵 Iniciando sonido ambiente:', ambientSelect.value);
+          await window.audioMixer.playAmbient(ambientSelect.value);
+        }
+
+        if (binauralSelect && binauralSelect.value) {
+          console.warn('[AudioReader] 🧠 Iniciando binaural:', binauralSelect.value);
+          await window.audioMixer.playBinaural(binauralSelect.value);
+        }
+      } else {
+        // Detener todos los sonidos
+        console.warn('[AudioReader] 🔇 Deteniendo ambient/binaural');
+        await window.audioMixer.stopAll();
+      }
+    } catch (error) {
+      console.warn('[AudioReader] Error sincronizando ambient/binaural:', error);
+    }
   }
 
   async next() {
@@ -1727,7 +1962,8 @@ class AudioReader {
 
     const nextChapter = this.bookEngine.getNextChapter(currentChapter.id);
     if (nextChapter && window.bookReader) {
-      window.bookReader.navigateToChapter(nextChapter.id);
+      // 🔧 FIX v2.9.208: Pasar skipAudioStop=true para que no se detenga el reproductor
+      window.bookReader.navigateToChapter(nextChapter.id, true);
 
       // Esperar a que se cargue el nuevo capítulo y continuar reproducción
       // 🔧 FIX v2.9.193: Usar _setTimeout tracked
@@ -2235,16 +2471,17 @@ class AudioReader {
         }
 
     const html = `
-      <!-- 🔧 FIX v2.9.195: Eliminada barra de progreso del footer (tapaba botones de navegación) -->
+      <!-- 🔧 FIX v2.9.214: Bottom-sheet respeta estado isBottomSheetExpanded -->
 
       <!-- Bottom Sheet Expandible -->
+      <!-- 🔧 FIX v2.9.228: z-index forzado con inline style (Tailwind CDN bloqueado) -->
       <div id="audioreader-bottom-sheet"
-           class="fixed left-0 right-0 z-[8999] transition-all duration-300 transform translate-y-full"
-           style="bottom: ${hasBottomNav ? '64px' : '0'};">
+           class="fixed left-0 right-0 transition-all duration-300 transform ${this.isBottomSheetExpanded ? '' : 'translate-y-full pointer-events-none invisible'}"
+           style="z-index: 9999 !important; bottom: ${this.isBottomSheetExpanded ? (hasBottomNav ? '64px' : '0') : '-500px'};">
         <div class="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-700 shadow-2xl backdrop-blur-xl bg-opacity-95 dark:bg-opacity-95 rounded-t-3xl px-5 pb-5 pt-3">
 
           <!-- Handle para arrastrar -->
-          <div class="flex justify-center pb-3">
+          <div id="audioreader-drag-handle" class="flex justify-center pb-3 cursor-pointer">
             <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
           </div>
 
@@ -2298,8 +2535,20 @@ class AudioReader {
             </button>
           </div>
 
-          <!-- Acciones adicionales -->
+          <!-- Opciones y acciones -->
           <div class="flex items-center justify-center gap-2 mt-4">
+            <!-- Botón Auto-advance -->
+            <button id="audioreader-auto-advance"
+                    class="px-3 py-2.5 rounded-xl ${
+                      this.autoAdvanceChapter
+                        ? 'bg-green-600 hover:bg-green-700 text-white'
+                        : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    } transition-all flex items-center justify-center gap-1.5 text-sm font-medium shadow-sm hover:shadow active:scale-95"
+                    title="Auto-avance de capítulos">
+              ${Icons.book(16)}
+              <span class="hidden sm:inline">Auto</span>
+            </button>
+
             <button id="audioreader-expand"
                     class="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all flex items-center justify-center gap-2 text-sm font-medium shadow-sm hover:shadow active:scale-95">
               ${Icons.chevronUp(18)}
@@ -2307,17 +2556,19 @@ class AudioReader {
             </button>
 
             <button id="audioreader-close"
-                    class="px-4 py-2.5 rounded-xl bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 transition-all flex items-center justify-center gap-2 text-sm font-medium shadow-sm hover:shadow active:scale-95">
-              ${Icons.close(18)}
-              <span>Cerrar</span>
+                    class="px-3 py-2.5 rounded-xl bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 transition-all flex items-center justify-center gap-1.5 text-sm font-medium shadow-sm hover:shadow active:scale-95">
+              ${Icons.close(16)}
+              <span class="hidden sm:inline">Cerrar</span>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Overlay para cerrar el bottom sheet -->
+      <!-- 🔧 FIX v2.9.228: z-index forzado con inline style, DEBAJO del bottom-sheet -->
       <div id="audioreader-overlay"
-           class="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-[8998] opacity-0 pointer-events-none transition-opacity duration-300">
+           class="fixed inset-0 bg-black/30 dark:bg-black/50 transition-opacity duration-300 ${this.isBottomSheetExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none invisible'}"
+           style="z-index: 9998 !important; ${this.isBottomSheetExpanded ? '' : 'display: none !important; visibility: hidden !important;'}">
       </div>
 
       <style>
@@ -2378,14 +2629,29 @@ class AudioReader {
       this.dragCurrentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
       const deltaY = this.dragCurrentY - this.dragStartY;
 
-      // Si arrastra hacia abajo más de 50px, minimizar
-      // Si arrastra hacia arriba más de 50px, expandir
-      if (this.isMinimized && deltaY < -50) {
-        this.toggleMinimize();
-        this.isDragging = false;
-      } else if (!this.isMinimized && deltaY > 50) {
-        this.toggleMinimize();
-        this.isDragging = false;
+      // 🔧 FIX v2.9.212: Lógica actualizada para bottom-sheet
+      // Si está minimizado:
+      //   - Arrastrar hacia arriba: expandir bottom-sheet
+      //   - Arrastrar hacia abajo: contraer bottom-sheet
+      // Si está expandido (full player):
+      //   - Arrastrar hacia abajo: minimizar a bottom-sheet
+      if (this.isMinimized) {
+        // Modo minimizado - toggle del bottom-sheet
+        if (deltaY < -50 && !this.isBottomSheetExpanded) {
+          // Expandir bottom-sheet
+          this.toggleBottomSheet();
+          this.isDragging = false;
+        } else if (deltaY > 50 && this.isBottomSheetExpanded) {
+          // Contraer bottom-sheet
+          this.toggleBottomSheet();
+          this.isDragging = false;
+        }
+      } else {
+        // Modo expandido (full player) - minimizar
+        if (deltaY > 50) {
+          this.toggleMinimize();
+          this.isDragging = false;
+        }
       }
     };
 
@@ -2521,16 +2787,19 @@ class AudioReader {
       iconMobile.innerHTML = Icons.audio ? Icons.audio(20) : '🎧';
       if (expandBtn) expandBtn.classList.add('hidden');
       if (progressContainer) progressContainer.classList.add('hidden');
+      console.warn('[AudioReader] Header: Sin contenido, botón expandir OCULTO');
     } else if (this.isPlaying && !this.isPaused) {
       // Reproduciendo → icono de pausa
       iconMobile.innerHTML = Icons.pause ? Icons.pause(20) : '⏸';
       if (expandBtn) expandBtn.classList.remove('hidden');
       if (progressContainer) progressContainer.classList.remove('hidden');
+      console.warn('[AudioReader] Header: Reproduciendo, botón expandir VISIBLE');
     } else {
       // Pausado o detenido con contenido → icono de play
       iconMobile.innerHTML = Icons.play ? Icons.play(20) : '▶';
       if (expandBtn) expandBtn.classList.remove('hidden');
       if (progressContainer) progressContainer.classList.remove('hidden');
+      console.warn('[AudioReader] Header: Pausado/contenido, botón expandir VISIBLE');
     }
 
     // Actualizar info de párrafo
@@ -2538,12 +2807,30 @@ class AudioReader {
       paraInfo.textContent = `${this.currentParagraphIndex + 1}/${this.paragraphs.length}`;
     }
 
-    // 🔧 FIX v2.9.196: Actualizar barra de progreso del header
+    // 🔧 FIX v2.9.208: Actualizar barra de progreso y tiempos del header
     if (this.paragraphs.length > 0) {
       const progressBar = document.getElementById('audio-progress-bar');
       if (progressBar) {
         const percentage = ((this.currentParagraphIndex + 1) / this.paragraphs.length * 100).toFixed(1);
         progressBar.style.width = `${percentage}%`;
+      }
+
+      // Actualizar campos de tiempo
+      const currentTimeEl = document.getElementById('audio-current-time');
+      const totalTimeEl = document.getElementById('audio-total-time');
+      const paraInfoEl = document.getElementById('audio-paragraph-info');
+
+      const tiempoEstimado = this.calcularTiempoEstimado();
+      const tiempoActual = this.currentParagraphIndex * (tiempoEstimado / this.paragraphs.length);
+
+      if (currentTimeEl) {
+        currentTimeEl.textContent = this.formatearTiempo(tiempoActual);
+      }
+      if (totalTimeEl) {
+        totalTimeEl.textContent = this.formatearTiempo(tiempoEstimado);
+      }
+      if (paraInfoEl) {
+        paraInfoEl.textContent = `${this.currentParagraphIndex + 1}/${this.paragraphs.length}`;
       }
     }
   }
@@ -2556,10 +2843,42 @@ class AudioReader {
   }
 
   attachMinimizedPlayerGestures() {
-    // 🔧 FIX v2.9.195: Eliminada lógica de progress bar en footer
-    // Ya no hay barra de progreso en el footer, solo dentro del bottom sheet
-    // Los gestures ahora se manejan directamente desde los botones del bottom sheet
-    return;
+    // 🔧 FIX v2.9.218: Async handlers para toggleBottomSheet()
+    const dragHandle = document.getElementById('audioreader-drag-handle');
+    const overlay = document.getElementById('audioreader-overlay');
+
+    // Click en drag handle para expandir/contraer bottom-sheet
+    if (dragHandle) {
+      dragHandle.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        console.warn('[AudioReader] 📌 Click en drag-handle');
+        await this.toggleBottomSheet();
+      });
+    }
+
+    // 🔧 FIX v2.9.227: Click en overlay - con debounce para evitar cierre inmediato
+    if (overlay) {
+      overlay.addEventListener('click', async (e) => {
+        // Solo cerrar si el click fue en el overlay mismo
+        if (e.target !== overlay) {
+          console.warn('[AudioReader] 🔳 Click en overlay ignorado - target no es overlay');
+          return;
+        }
+
+        // Ignorar clicks dentro de 500ms después de expandir (evita cierre accidental)
+        const timeSinceExpand = Date.now() - (this._lastExpandTime || 0);
+        if (timeSinceExpand < 500) {
+          console.warn('[AudioReader] 🔳 Click en overlay ignorado - debounce:', timeSinceExpand, 'ms');
+          return;
+        }
+
+        if (this.isBottomSheetExpanded) {
+          console.warn('[AudioReader] 🔳 Click en overlay - cerrando bottom-sheet');
+          await this.toggleBottomSheet();
+        }
+      });
+    }
   }
 
   detachMinimizedPlayerGestures() {
@@ -2569,35 +2888,118 @@ class AudioReader {
   }
 
   toggleMinimize() {
+    const wasMinimized = this.isMinimized;
     this.isMinimized = !this.isMinimized;
+    console.warn('[AudioReader] 🔄 toggleMinimize():', wasMinimized, '->', this.isMinimized);
+
+    // 🔧 FIX v2.9.222: Al minimizar, contraer bottom-sheet para que no tape botones
+    if (this.isMinimized) {
+      this.isBottomSheetExpanded = false;
+      console.warn('[AudioReader] Minimizando - bottom-sheet contraído');
+    }
+
     // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
     try {
       localStorage.setItem('audioreader-minimized', this.isMinimized);
     } catch (error) {
       console.warn('[AudioReader] Error guardando estado minimizado:', error);
     }
+    console.warn('[AudioReader] 🎨 Llamando renderControls() con isMinimized:', this.isMinimized);
     this.renderControls();
   }
 
+  // 🔧 FIX v2.9.222: Asegurar que no bloquea botones cuando está oculto
+  async toggleBottomSheet() {
+    this.isBottomSheetExpanded = !this.isBottomSheetExpanded;
+    const bottomSheet = document.getElementById('audioreader-bottom-sheet');
+    const overlay = document.getElementById('audioreader-overlay');
+
+    console.warn('[AudioReader] toggleBottomSheet:', {
+      isExpanded: this.isBottomSheetExpanded,
+      bottomSheetExists: !!bottomSheet,
+      overlayExists: !!overlay,
+      isMinimized: this.isMinimized
+    });
+
+    if (!bottomSheet) {
+      console.warn('[AudioReader] ⚠️ Bottom-sheet no existe - re-renderizando...');
+      // 🔧 FIX v2.9.227: Registrar tiempo de expansión ANTES del render
+      this._lastExpandTime = Date.now();
+      // Si el bottom-sheet no existe, forzar renderizado del minimized player
+      if (this.isMinimized) {
+        await this.renderControls();
+        // Después del renderizado, el estado ya estará aplicado
+        return;
+      } else {
+        // Si no está minimizado, primero minimizar (esto renderizará el bottom-sheet)
+        this.isMinimized = true;
+        await this.renderControls();
+        return;
+      }
+    }
+
+    // Detectar si hay bottom nav
+    const bottomNav = document.querySelector('.app-bottom-nav');
+    const hasBottomNav = bottomNav && window.getComputedStyle(bottomNav).display !== 'none';
+
+    if (this.isBottomSheetExpanded) {
+      // 🔧 FIX v2.9.227: Registrar tiempo de expansión para debounce del overlay
+      this._lastExpandTime = Date.now();
+
+      // Expandir bottom-sheet
+      bottomSheet.classList.remove('translate-y-full', 'pointer-events-none', 'invisible');
+      bottomSheet.style.bottom = hasBottomNav ? '64px' : '0';
+      if (overlay) {
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'invisible');
+        overlay.classList.add('opacity-100');
+        overlay.style.display = 'block';
+        overlay.style.visibility = 'visible';
+      }
+      console.warn('[AudioReader] ✅ Bottom-sheet EXPANDIDO');
+    } else {
+      // Contraer bottom-sheet - ocultarlo completamente
+      bottomSheet.classList.add('translate-y-full', 'pointer-events-none', 'invisible');
+      bottomSheet.style.bottom = '-500px'; // Mover fuera de pantalla
+      if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none', 'invisible');
+        overlay.classList.remove('opacity-100');
+        overlay.style.display = 'none';
+        overlay.style.visibility = 'hidden';
+      }
+      console.warn('[AudioReader] ✅ Bottom-sheet CONTRAÍDO (bottom: -500px)');
+    }
+  }
+
   attachControlListeners() {
+    // 🔧 FIX v2.9.226: Debug logs para verificar handlers
+    console.warn('[AudioReader] 🔧 attachControlListeners() ejecutándose...');
+
     // Play
     const playBtn = document.getElementById('audioreader-play');
+    console.warn('[AudioReader] PlayBtn encontrado:', !!playBtn);
     if (playBtn) {
-      playBtn.addEventListener('click', async () => {
+      playBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        console.warn('[AudioReader] ▶️ PLAY CLICK - paragraphs:', this.paragraphs.length, 'isPaused:', this.isPaused);
         // Si hay párrafos preparados y está pausado, solo reanudar
         if (this.paragraphs.length > 0 && this.isPaused) {
+          console.warn('[AudioReader] ▶️ Reanudando...');
           await this.resume();
         } else if (this.paragraphs.length > 0) {
           // Si hay contenido pero no está pausado, reproducir desde posición actual
+          console.warn('[AudioReader] ▶️ Reproduciendo desde posición:', this.currentParagraphIndex);
           this.isPlaying = true;
           this.isPaused = false;
           this.speakParagraph(this.currentParagraphIndex);
           await this.updateUI(); // 🔧 FIX: Asegurar sincronización con header
         } else {
           // Si no hay contenido preparado, preparar y reproducir desde inicio
+          console.warn('[AudioReader] ▶️ Preparando contenido y reproduciendo...');
           const chapterContent = document.querySelector('.chapter-content');
           if (chapterContent) {
             await this.play(chapterContent.innerHTML);
+          } else {
+            console.warn('[AudioReader] ⚠️ No se encontró .chapter-content');
           }
         }
       });
@@ -2605,6 +3007,7 @@ class AudioReader {
 
     // Pause
     const pauseBtn = document.getElementById('audioreader-pause');
+    console.warn('[AudioReader] PauseBtn encontrado:', !!pauseBtn, '(isPlaying:', this.isPlaying, 'isPaused:', this.isPaused, ')');
     if (pauseBtn) {
       pauseBtn.addEventListener('click', async () => {
         await this.pause();
@@ -2763,12 +3166,21 @@ class AudioReader {
     // Minimize/Expand
     const minimizeBtn = document.getElementById('audioreader-minimize');
     if (minimizeBtn) {
-      minimizeBtn.addEventListener('click', () => this.toggleMinimize());
+      minimizeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.warn('[AudioReader] 📉 MINIMIZE CLICK');
+        this.toggleMinimize();
+      });
     }
 
     const expandBtn = document.getElementById('audioreader-expand');
+    console.warn('[AudioReader] ExpandBtn encontrado:', !!expandBtn);
     if (expandBtn) {
-      expandBtn.addEventListener('click', () => this.toggleMinimize());
+      expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.warn('[AudioReader] 📈 EXPAND CLICK - isMinimized:', this.isMinimized);
+        this.toggleMinimize();
+      });
     }
 
     // Expand mini (desde barra de progreso)
@@ -2961,7 +3373,7 @@ class AudioReader {
   }
 
   /**
-   * ⭐ MEJORA v2.9.178: Muestra un indicador visual durante las pausas de meditación
+   * ⭐ MEJORA v2.9.233: Muestra indicador de pausa meditativa con controles manuales
    * @param {number} pauseDurationMs - Duración de la pausa en milisegundos
    * @param {number} stepNumber - Número del paso actual
    * @param {number} totalSteps - Total de pasos del ejercicio
@@ -2970,19 +3382,51 @@ class AudioReader {
     const controls = document.getElementById('audioreader-controls');
     if (!controls) return;
 
+    // ⭐ MEJORA v2.9.233: Reproducir campana al inicio de la pausa
+    this.playMeditationBell('start');
+
+    // Determinar fase de la meditación
+    const position = stepNumber / totalSteps;
+    let phaseName, phaseIcon, phaseColor;
+
+    if (position <= 0.25) {
+      phaseName = 'Preparación';
+      phaseIcon = '🌅';
+      phaseColor = 'from-blue-600/20 to-cyan-600/20 border-cyan-500/30';
+    } else if (position <= 0.5) {
+      phaseName = 'Entrada';
+      phaseIcon = '🌊';
+      phaseColor = 'from-teal-600/20 to-emerald-600/20 border-emerald-500/30';
+    } else if (position <= 0.75) {
+      phaseName = 'Inmersión';
+      phaseIcon = '🧘';
+      phaseColor = 'from-purple-600/20 to-indigo-600/20 border-purple-500/30';
+    } else if (stepNumber < totalSteps) {
+      phaseName = 'Contemplación';
+      phaseIcon = '✨';
+      phaseColor = 'from-violet-600/20 to-purple-600/20 border-violet-500/30';
+    } else {
+      phaseName = 'Integración';
+      phaseIcon = '🌟';
+      phaseColor = 'from-amber-600/20 to-orange-600/20 border-amber-500/30';
+    }
+
     // Buscar o crear el contenedor del indicador
     let indicator = document.getElementById('audioreader-pause-indicator');
     if (!indicator) {
       indicator = document.createElement('div');
       indicator.id = 'audioreader-pause-indicator';
-      indicator.className = 'mt-3 p-3 rounded-lg bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30';
 
       // Insertar después de la información de progreso
       const infoContainer = controls.querySelector('.text-xs.opacity-50');
       if (infoContainer) {
         infoContainer.after(indicator);
+      } else {
+        controls.appendChild(indicator);
       }
     }
+
+    indicator.className = `mt-3 p-4 rounded-xl bg-gradient-to-r ${phaseColor} backdrop-blur-sm`;
 
     const pauseDurationSeconds = Math.floor(pauseDurationMs / 1000);
     const minutes = Math.floor(pauseDurationSeconds / 60);
@@ -2991,46 +3435,142 @@ class AudioReader {
 
     indicator.classList.remove('hidden');
     indicator.innerHTML = `
-      <div class="flex items-center justify-between text-sm">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🧘</span>
+      <div class="flex items-center justify-between text-sm mb-3">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl animate-pulse">${phaseIcon}</span>
           <div>
-            <div class="font-semibold text-purple-300">Pausa de contemplación</div>
-            <div class="text-xs text-purple-400">Paso ${stepNumber}/${totalSteps}</div>
+            <div class="font-bold text-white/90 text-base">${phaseName}</div>
+            <div class="text-xs text-white/60">Paso ${stepNumber} de ${totalSteps}</div>
           </div>
         </div>
         <div class="text-right">
-          <div class="font-mono text-lg font-bold text-purple-200" id="pause-timer-display">${timeDisplay}</div>
-          <div class="text-xs text-purple-400">restante</div>
+          <div class="font-mono text-2xl font-bold text-white/90" id="pause-timer-display">${timeDisplay}</div>
+          <div class="text-xs text-white/50">restante</div>
         </div>
       </div>
-      <div class="mt-2 h-1 bg-purple-900/50 rounded-full overflow-hidden">
-        <div id="pause-progress-bar" class="h-full bg-gradient-to-r from-purple-400 to-indigo-400 transition-all" style="width: 0%"></div>
+
+      <!-- Barra de progreso -->
+      <div class="h-2 bg-black/20 rounded-full overflow-hidden mb-3">
+        <div id="pause-progress-bar" class="h-full bg-gradient-to-r from-white/60 to-white/40 transition-all duration-100" style="width: 0%"></div>
+      </div>
+
+      <!-- ⭐ Controles manuales de pausa -->
+      <div class="flex gap-2 justify-center">
+        <button id="pause-skip-btn" class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 text-sm font-medium transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+          </svg>
+          Continuar
+        </button>
+        <button id="pause-extend-btn" class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 text-sm font-medium transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
+          </svg>
+          +1 min
+        </button>
+      </div>
+
+      <!-- Mensaje inspirador -->
+      <div class="mt-3 text-center text-xs text-white/40 italic">
+        Respira profundamente... deja que la práctica se integre
       </div>
     `;
+
+    // Adjuntar event listeners a los botones
+    this.attachPauseControlListeners();
 
     // Iniciar temporizador visual
     this.startPauseTimer(pauseDurationMs);
   }
 
   /**
-   * ⭐ MEJORA v2.9.178: Inicia el temporizador visual de pausa
+   * ⭐ MEJORA v2.9.233: Adjunta listeners a los controles de pausa
+   */
+  attachPauseControlListeners() {
+    const skipBtn = document.getElementById('pause-skip-btn');
+    const extendBtn = document.getElementById('pause-extend-btn');
+
+    if (skipBtn) {
+      skipBtn.onclick = () => this.skipPause();
+    }
+
+    if (extendBtn) {
+      extendBtn.onclick = () => this.extendPause(60000); // +1 minuto
+    }
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.233: Salta la pausa actual y continúa con el siguiente paso
+   */
+  skipPause() {
+    logger.log('⏭️ Saltando pausa de meditación');
+
+    // Reproducir campana suave al saltar
+    this.playMeditationBell('soft');
+
+    // Cancelar el timer de pausa actual
+    if (this.currentPauseTimer) {
+      this._clearTimeout(this.currentPauseTimer);
+      this.currentPauseTimer = null;
+    }
+
+    // Ocultar indicador
+    this.hidePauseIndicator();
+
+    // Continuar con el siguiente párrafo
+    if (this.isPlaying && !this.isPaused && this.currentParagraphIndex < this.paragraphs.length) {
+      this.speakParagraph(this.currentParagraphIndex);
+    }
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.233: Extiende la pausa actual
+   * @param {number} extraMs - Milisegundos adicionales
+   */
+  extendPause(extraMs = 60000) {
+    if (!this.currentPauseEndTime) return;
+
+    // Añadir tiempo extra
+    this.currentPauseEndTime += extraMs;
+
+    // Actualizar display inmediatamente
+    const remaining = Math.max(0, this.currentPauseEndTime - Date.now());
+    const remainingSeconds = Math.ceil(remaining / 1000);
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    const display = document.getElementById('pause-timer-display');
+    if (display) {
+      display.textContent = minutes > 0
+        ? `${minutes}:${seconds.toString().padStart(2, '0')}`
+        : `${seconds}s`;
+    }
+
+    // Mostrar feedback
+    window.toast?.info(`⏱️ +${Math.floor(extraMs/1000/60)} minuto añadido`);
+
+    logger.log(`⏱️ Pausa extendida: +${extraMs/1000}s`);
+  }
+
+  /**
+   * ⭐ MEJORA v2.9.233: Inicia el temporizador visual de pausa con campana al final
    */
   startPauseTimer(pauseDurationMs) {
     // Cancelar temporizador anterior si existe
     if (this.pauseTimerInterval) {
-      clearInterval(this.pauseTimerInterval);
+      this._clearInterval(this.pauseTimerInterval);
     }
 
     const startTime = Date.now();
-    const endTime = startTime + pauseDurationMs;
+    this.currentPauseEndTime = startTime + pauseDurationMs;
 
     // 🔧 FIX v2.9.193: Usar _setInterval tracked
     this.pauseTimerInterval = this._setInterval(() => {
       const now = Date.now();
-      const remaining = Math.max(0, endTime - now);
-      const elapsed = pauseDurationMs - remaining;
-      const progress = (elapsed / pauseDurationMs) * 100;
+      const remaining = Math.max(0, this.currentPauseEndTime - now);
+      const totalDuration = this.currentPauseEndTime - startTime;
+      const elapsed = totalDuration - remaining;
+      const progress = Math.min(100, (elapsed / totalDuration) * 100);
 
       // Actualizar display de tiempo
       const display = document.getElementById('pause-timer-display');
@@ -3054,13 +3594,17 @@ class AudioReader {
       if (remaining <= 0) {
         this._clearInterval(this.pauseTimerInterval);
         this.pauseTimerInterval = null;
+
+        // ⭐ MEJORA v2.9.233: Reproducir campana al final de la pausa
+        this.playMeditationBell('end');
+
         this.hidePauseIndicator();
       }
     }, 100); // Actualizar cada 100ms para suavidad
   }
 
   /**
-   * ⭐ MEJORA v2.9.178: Oculta el indicador de pausa
+   * ⭐ MEJORA v2.9.233: Oculta el indicador de pausa
    */
   hidePauseIndicator() {
     const indicator = document.getElementById('audioreader-pause-indicator');
@@ -3072,6 +3616,8 @@ class AudioReader {
       this._clearInterval(this.pauseTimerInterval);
       this.pauseTimerInterval = null;
     }
+
+    this.currentPauseEndTime = null;
 
     // Actualizar la info de progreso normal
     this.updateProgressInfo();
@@ -3506,11 +4052,44 @@ class AudioReader {
   // ⭐ SLEEP TIMER
   // ==========================================================================
 
+  /**
+   * 🔧 FIX v2.9.231: Restaurar sleep timer desde localStorage al iniciar
+   */
+  restoreSleepTimerFromStorage() {
+    try {
+      const savedData = localStorage.getItem('audioreader-sleep-timer-data');
+      if (!savedData) return;
+
+      const { minutes, startTime } = JSON.parse(savedData);
+      if (!minutes || !startTime) return;
+
+      // Calcular tiempo transcurrido desde que se guardó
+      const elapsedMs = Date.now() - startTime;
+      const elapsedMinutes = elapsedMs / 1000 / 60;
+      const remainingMinutes = minutes - elapsedMinutes;
+
+      // Si aún queda tiempo, restaurar el timer
+      if (remainingMinutes > 1) {
+        this.sleepTimerMinutes = minutes;
+        this.sleepTimerStartTime = startTime;
+        logger.log(`😴 Sleep timer restaurado - ${Math.ceil(remainingMinutes)}m restantes`);
+      } else {
+        // Timer expirado, limpiar storage
+        localStorage.removeItem('audioreader-sleep-timer-data');
+      }
+    } catch (error) {
+      logger.warn('[AudioReader] Error restaurando sleep timer:', error);
+      localStorage.removeItem('audioreader-sleep-timer-data');
+    }
+  }
+
   setSleepTimer(minutos) {
     this.clearSleepTimer();
 
     if (minutos === 0) {
       this.sleepTimerMinutes = 0;
+      // 🔧 FIX v2.9.231: Limpiar localStorage al cancelar
+      localStorage.removeItem('audioreader-sleep-timer-data');
       this.updateUI();
       return;
     }
@@ -3518,10 +4097,22 @@ class AudioReader {
     this.sleepTimerMinutes = minutos;
     this.sleepTimerStartTime = Date.now();
 
+    // 🔧 FIX v2.9.231: Persistir en localStorage
+    try {
+      localStorage.setItem('audioreader-sleep-timer-data', JSON.stringify({
+        minutes: minutos,
+        startTime: this.sleepTimerStartTime
+      }));
+    } catch (error) {
+      logger.warn('[AudioReader] Error guardando sleep timer:', error);
+    }
+
     // 🔧 FIX v2.9.193: Usar _setTimeout tracked
     this.sleepTimer = this._setTimeout(() => {
       logger.log('😴 Sleep timer finalizado, deteniendo audio...');
       this.fadeOutAndStop();
+      // 🔧 FIX v2.9.231: Limpiar localStorage al finalizar
+      localStorage.removeItem('audioreader-sleep-timer-data');
     }, minutos * 60 * 1000);
 
     this.updateUI();
@@ -3535,15 +4126,44 @@ class AudioReader {
       this.sleepTimer = null;
       this.sleepTimerMinutes = 0;
       this.sleepTimerStartTime = null;
+      // 🔧 FIX v2.9.231: Limpiar localStorage
+      localStorage.removeItem('audioreader-sleep-timer-data');
     }
   }
 
   getSleepTimerRemaining() {
-    if (!this.sleepTimer || !this.sleepTimerStartTime) return 0;
+    // 🔧 FIX v2.9.231: Funciona con timer restaurado desde localStorage
+    if (!this.sleepTimerStartTime || !this.sleepTimerMinutes) return 0;
 
     const transcurrido = (Date.now() - this.sleepTimerStartTime) / 1000 / 60;
     const restante = Math.max(0, this.sleepTimerMinutes - transcurrido);
     return Math.ceil(restante);
+  }
+
+  /**
+   * 🔧 FIX v2.9.231: Reactivar sleep timer restaurado cuando se inicia reproducción
+   */
+  reactivateRestoredSleepTimer() {
+    // Solo reactivar si hay valores restaurados pero no hay timer activo
+    if (this.sleepTimer || !this.sleepTimerStartTime || !this.sleepTimerMinutes) return;
+
+    const remainingMinutes = this.getSleepTimerRemaining();
+    if (remainingMinutes <= 0) {
+      // Timer expirado
+      this.sleepTimerMinutes = 0;
+      this.sleepTimerStartTime = null;
+      localStorage.removeItem('audioreader-sleep-timer-data');
+      return;
+    }
+
+    // Reactivar el timer con el tiempo restante
+    this.sleepTimer = this._setTimeout(() => {
+      logger.log('😴 Sleep timer finalizado, deteniendo audio...');
+      this.fadeOutAndStop();
+      localStorage.removeItem('audioreader-sleep-timer-data');
+    }, remainingMinutes * 60 * 1000);
+
+    logger.log(`😴 Sleep timer reactivado - ${remainingMinutes}m restantes`);
   }
 
   /**
@@ -3639,7 +4259,8 @@ class AudioReader {
   }
 
   async addBookmark(nombre = null) {
-    const idLibro = this.bookEngine.currentBook?.id;
+    // 🔧 FIX v2.9.232: currentBook ES el ID string, no objeto con .id
+    const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) {
@@ -3671,7 +4292,8 @@ class AudioReader {
   }
 
   getBookmarksForCurrentChapter() {
-    const idLibro = this.bookEngine.currentBook?.id;
+    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) return [];
@@ -3708,7 +4330,8 @@ class AudioReader {
   }
 
   async deleteBookmark(indice) {
-    const idLibro = this.bookEngine.currentBook?.id;
+    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) return;
@@ -3737,7 +4360,8 @@ class AudioReader {
   // ==========================================================================
 
   savePosition() {
-    const idLibro = this.bookEngine.currentBook?.id;
+    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) return;
@@ -3771,7 +4395,8 @@ class AudioReader {
 
       const posicion = JSON.parse(datosGuardados);
 
-      const idLibroActual = this.bookEngine.currentBook?.id;
+      // 🔧 FIX v2.9.232: currentBook ES el ID string
+      const idLibroActual = this.bookEngine.currentBook;
       const idCapituloActual = this.bookEngine.currentChapter?.id;
 
       if (posicion.libro === idLibroActual && posicion.capitulo === idCapituloActual) {

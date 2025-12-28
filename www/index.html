@@ -61,10 +61,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN (sin integrity - el CDN no soporta SRI) -->
-  <script src="https://cdn.tailwindcss.com"
-          crossorigin="anonymous"
-          onerror="document.head.appendChild(Object.assign(document.createElement('link'),{rel:'stylesheet',href:'css/tailwind-fallback.css'}))"></script>
+  <!-- Tailwind CSS local (v2.9.229 - evita CORS en WebView) -->
+  <script src="js/vendor/tailwind.min.js"></script>
   <script>
     // Configuración de Tailwind para dark mode basado en clase
     tailwind.config = {
@@ -389,7 +387,7 @@
 
   <!-- Lazy Loader - Dynamic Module Loading System -->
   <script src="js/core/lazy-loader.js?v=1.0.0"></script>
-  <script src="js/core/icons.js?v=2.9.176"></script>
+  <script src="js/core/icons.js?v=2.9.212"></script> <!-- 🔧 FIX v2.9.212: Forzar recarga para iconos SVG inline -->
   <script src="js/core/theme-helper.js?v=2.8.6.5-light-mode"></script>
   <script src="js/core/share-helper.js"></script>
   <script src="js/core/notifications-helper.js"></script>
@@ -436,6 +434,8 @@
   <script src="js/utils/dependency-injector.js?v=1.0.0"></script>
   <script src="js/utils/sync-manager.js?v=1.0.0"></script>
   <script src="js/utils/event-manager.js?v=1.0.0"></script>
+  <script src="js/utils/safe-fetch.js?v=1.0.0"></script>
+  <script src="js/utils/offline-detector.js?v=1.0.0"></script>
   <script src="js/utils/safe-expression-evaluator.js?v=1.0.0"></script>
 
   <!-- Features -->
@@ -456,7 +456,9 @@
   <script src="js/core/background-audio-helper.js?v=1.0.0"></script>
   <script src="js/features/audioreader.js?v=2.9.176"></script>
   <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
-  <!-- <script src="js/features/audio-mixer.js?v=3.0.0"></script>
+  <!-- 🔧 FIX v2.9.212: Descomentar audio-mixer para habilitar sonidos binaurales y de fondo -->
+  <script src="js/features/audio-mixer.js?v=3.0.0"></script>
+  <!--
   <script src="js/features/audio-processor.js?v=3.0.0"></script>
   <script src="js/features/audio-visualizer.js?v=3.0.0"></script>
   <script src="js/features/word-by-word-sync.js?v=3.0.0"></script>

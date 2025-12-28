@@ -5,6 +5,7 @@
 // y prácticas de toda la colección de forma rápida y componible
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class PracticeLibrary {
   constructor() {
     this.practices = [];
@@ -24,20 +25,33 @@ class PracticeLibrary {
 
   async loadAllPractices() {
     try {
-      // console.log('📚 Loading all practices from library...');
+      // logger.debug('📚 Loading all practices from library...');
 
-      // Cargar catálogo
-      const response = await fetch('books/catalog.json');
-      const catalog = await response.json();
+      // 🔧 FIX v2.9.234: Usar SafeFetch con validación de respuesta
+      let catalog;
+      if (window.SafeFetch) {
+        catalog = await window.SafeFetch.json('books/catalog.json', { showToast: false });
+      } else {
+        const response = await fetch('books/catalog.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        catalog = await response.json();
+      }
 
       this.practices = [];
 
       // Recorrer todos los libros
       for (const book of catalog.books) {
         try {
-          // Cargar book.json
-          const bookResponse = await fetch(`books/${book.id}/book.json`);
-          const bookData = await bookResponse.json();
+          // 🔧 FIX v2.9.234: Usar SafeFetch con validación
+          let bookData;
+          if (window.SafeFetch) {
+            bookData = await window.SafeFetch.jsonWithFallback(`books/${book.id}/book.json`, null, { showToast: false });
+            if (!bookData) continue;
+          } else {
+            const bookResponse = await fetch(`books/${book.id}/book.json`);
+            if (!bookResponse.ok) continue;
+            bookData = await bookResponse.json();
+          }
 
           // Cargar metadata si existe
           let metadata = {};
@@ -45,7 +59,7 @@ class PracticeLibrary {
             const metadataResponse = await fetch(`books/${book.id}/assets/chapter-metadata.json`);
             metadata = await metadataResponse.json();
           } catch (e) {
-            // console.log(`No metadata for ${book.id}`);
+            // logger.debug(`No metadata for ${book.id}`);
           }
 
           // Extraer ejercicios de cada sección/capítulo
@@ -130,7 +144,7 @@ class PracticeLibrary {
         }
       }
 
-      // console.log(`✅ Loaded ${this.practices.length} practices from ${catalog.books.length} books`);
+      // logger.debug(`✅ Loaded ${this.practices.length} practices from ${catalog.books.length} books`);
       return this.practices;
 
     } catch (error) {
@@ -701,19 +715,25 @@ class PracticeLibrary {
       completed: false
     });
 
-    // Guardar en localStorage
-    localStorage.setItem('user_action_plan', JSON.stringify(actionPlan));
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      // Guardar en localStorage
+      localStorage.setItem('user_action_plan', JSON.stringify(actionPlan));
 
-    // Integrar con action-plans.js si está disponible
-    if (window.actionPlans && typeof window.actionPlans.addPractice === 'function') {
-      window.actionPlans.addPractice(practice);
-    }
+      // Integrar con action-plans.js si está disponible
+      if (window.actionPlans && typeof window.actionPlans.addPractice === 'function') {
+        window.actionPlans.addPractice(practice);
+      }
 
-    // Mostrar confirmación
-    if (window.Toast) {
-      window.Toast.show(`"${practice.title}" añadido a tu plan (${actionPlan.length} prácticas)`, 'success');
-    } else if (window.showToast) {
-      window.showToast(`"${practice.title}" añadido a tu plan`, 'success');
+      // Mostrar confirmación
+      if (window.Toast) {
+        window.Toast.show(`"${practice.title}" añadido a tu plan (${actionPlan.length} prácticas)`, 'success');
+      } else if (window.showToast) {
+        window.showToast(`"${practice.title}" añadido a tu plan`, 'success');
+      }
+    } catch (error) {
+      console.error('Error guardando práctica en plan de acción:', error);
+      window.toast?.error('Error al guardar la práctica. Intenta de nuevo.');
     }
   }
 
@@ -803,4 +823,4 @@ if (!document.getElementById('practice-library-styles')) {
 // Crear instancia global
 window.practiceLibrary = new PracticeLibrary();
 
-// console.log('✅ Practice Library initialized');
+// logger.debug('✅ Practice Library initialized');

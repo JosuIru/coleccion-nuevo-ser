@@ -8,8 +8,8 @@ android {
         applicationId "com.nuevosser.coleccion"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 196
-        versionName "2.9.233"
+        versionCode 197
+        versionName "2.9.234"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
 
     // Firebase Cloud Messaging
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
 }

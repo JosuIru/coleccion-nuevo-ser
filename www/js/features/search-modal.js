@@ -2,6 +2,7 @@
 // SEARCH MODAL - Búsqueda semántica en todos los libros
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class SearchModal {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -43,8 +44,18 @@ class SearchModal {
 
   async loadMetadata() {
     try {
-      const response = await fetch('books/metadata/chapters-metadata.json');
-      this.metadata = await response.json();
+      // 🔧 FIX v2.9.234: Usar SafeFetch con cache offline y validación
+      if (window.SafeFetch) {
+        this.metadata = await window.SafeFetch.jsonWithFallback(
+          'books/metadata/chapters-metadata.json',
+          null,
+          { showToast: false }
+        );
+      } else {
+        const response = await fetch('books/metadata/chapters-metadata.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        this.metadata = await response.json();
+      }
     } catch (error) {
       console.error('Error loading metadata:', error);
       this.metadata = null;
@@ -54,9 +65,19 @@ class SearchModal {
   // 🔧 FIX #31: Cargar filtros dinámicamente desde el catálogo real
   async loadFilters() {
     try {
-      // Obtener libros del catálogo real
-      const catalogResponse = await fetch('books/catalog.json');
-      const catalog = await catalogResponse.json();
+      // 🔧 FIX v2.9.234: Usar SafeFetch con cache offline
+      let catalog;
+      if (window.SafeFetch) {
+        catalog = await window.SafeFetch.jsonWithFallback(
+          'books/catalog.json',
+          { books: [] },
+          { showToast: false }
+        );
+      } else {
+        const catalogResponse = await fetch('books/catalog.json');
+        if (!catalogResponse.ok) throw new Error(`HTTP ${catalogResponse.status}`);
+        catalog = await catalogResponse.json();
+      }
 
       // Extraer categorías únicas de todos los libros
       const categoriesSet = new Set();
@@ -79,7 +100,7 @@ class SearchModal {
         difficulty: ['básico', 'intermedio', 'avanzado']
       };
 
-      console.log('✅ Filtros cargados desde catálogo:', this.filters);
+      logger.debug('✅ Filtros cargados desde catálogo:', this.filters);
     } catch (error) {
       console.error('Error loading filters from catalog:', error);
       // Fallback a filtros vacíos
@@ -178,7 +199,7 @@ class SearchModal {
       }
 
       this.searchIndex = index;
-      console.log(`✅ Índice de búsqueda construido: ${index.size} términos únicos indexados`);
+      logger.debug(`✅ Índice de búsqueda construido: ${index.size} términos únicos indexados`);
     } catch (error) {
       console.error('Error construyendo índice de búsqueda:', error);
       this.searchIndex = null;
@@ -204,12 +225,12 @@ class SearchModal {
 
     // Esperar a que el DOM se actualice antes de adjuntar listeners
     setTimeout(() => {
-      // console.log('⏱️ Timeout ejecutado - adjuntando listeners');
+      // logger.debug('⏱️ Timeout ejecutado - adjuntando listeners');
       this.attachEventListeners();
 
       // Focus en el input de búsqueda
       const input = document.getElementById('search-input');
-      // console.log('🎯 Focus en input:', input ? 'SÍ' : 'NO');
+      // logger.debug('🎯 Focus en input:', input ? 'SÍ' : 'NO');
       input?.focus();
     }, 50);
   }
@@ -307,7 +328,7 @@ class SearchModal {
       await this.searchSequential(queryWords);
     }
 
-    // console.log('🎯 Total resultados encontrados:', this.searchResults.length);
+    // logger.debug('🎯 Total resultados encontrados:', this.searchResults.length);
 
     // Ordenar por relevancia
     this.searchResults.sort((a, b) => b.score - a.score);
@@ -356,7 +377,7 @@ class SearchModal {
       }
     }
 
-    // console.log(`🔍 Índice encontró ${candidatesMap.size} candidatos únicos`);
+    // logger.debug(`🔍 Índice encontró ${candidatesMap.size} candidatos únicos`);
 
     // Ahora calcular relevancia detallada solo para los candidatos
     const candidates = Array.from(candidatesMap.values());
@@ -400,7 +421,7 @@ class SearchModal {
   // 🔧 FIX #33: Búsqueda secuencial (fallback cuando no hay índice)
   async searchSequential(queryWords) {
     // Buscar en todos los libros del catálogo
-    // console.log('🔍 Iniciando búsqueda secuencial con query:', queryWords);
+    // logger.debug('🔍 Iniciando búsqueda secuencial con query:', queryWords);
 
     let catalog;
     try {
@@ -466,14 +487,14 @@ class SearchModal {
   async loadBookData(bookId) {
     try {
       const url = `books/${bookId}/book.json`;
-      // console.log(`📖 Cargando: ${url}`);
+      // logger.debug(`📖 Cargando: ${url}`);
       const response = await fetch(url);
       if (!response.ok) {
         console.error(`❌ HTTP ${response.status} para ${url}`);
         return null;
       }
       const data = await response.json();
-      // console.log(`✅ ${bookId} cargado: ${data.sections?.length || 0} secciones`);
+      // logger.debug(`✅ ${bookId} cargado: ${data.sections?.length || 0} secciones`);
       return data;
     } catch (error) {
       console.error(`❌ Error loading book ${bookId}:`, error);
@@ -735,7 +756,7 @@ class SearchModal {
   }
 
   updateResults() {
-    // console.log('📊 updateResults() llamado');
+    // logger.debug('📊 updateResults() llamado');
     const container = document.getElementById('search-results');
     if (!container) {
       console.error('❌ Container search-results no encontrado');
@@ -743,10 +764,10 @@ class SearchModal {
     }
 
     const results = this.filteredResults || this.searchResults;
-    // console.log('📊 Mostrando resultados:', results.length);
+    // logger.debug('📊 Mostrando resultados:', results.length);
 
     if (results.length === 0) {
-      // console.log('⚠️ Sin resultados, mostrando mensaje');
+      // logger.debug('⚠️ Sin resultados, mostrando mensaje');
       container.innerHTML = `
         <div class="text-center text-gray-600 dark:text-gray-400 py-12">
           <div class="text-6xl mb-4">🔍</div>
@@ -757,7 +778,7 @@ class SearchModal {
       return;
     }
 
-    // console.log('✅ Renderizando', results.length, 'resultados');
+    // logger.debug('✅ Renderizando', results.length, 'resultados');
     const html = `
       <div class="space-y-4">
         <div class="text-sm text-gray-700 dark:text-gray-400 mb-4 font-semibold">
@@ -768,7 +789,7 @@ class SearchModal {
     `;
 
     container.innerHTML = html;
-    // console.log('✅ Resultados renderizados en el DOM');
+    // logger.debug('✅ Resultados renderizados en el DOM');
   }
 
   renderResult(result) {
@@ -787,16 +808,17 @@ class SearchModal {
 
     const difficultyClass = difficultyClasses[difficultyInfo.color] || difficultyClasses.gray;
 
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize search result data
     return `
       <div class="bg-gray-100 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-lg p-4 hover:border-cyan-500/50 hover:shadow-lg transition cursor-pointer search-result-item"
-           data-book-id="${result.bookId}"
-           data-chapter-id="${result.chapterId}">
+           data-book-id="${Sanitizer.sanitizeAttribute(result.bookId)}"
+           data-chapter-id="${Sanitizer.sanitizeAttribute(result.chapterId)}">
 
         <!-- Title and Book -->
         <div class="flex items-start justify-between gap-4 mb-2">
           <div class="flex-1">
-            <h3 class="text-lg font-bold text-cyan-700 dark:text-cyan-400 mb-1 hover:text-cyan-800 dark:hover:text-cyan-300">${result.chapterTitle}</h3>
-            <p class="text-sm text-gray-700 dark:text-gray-400">${result.bookTitle} › ${result.sectionTitle}</p>
+            <h3 class="text-lg font-bold text-cyan-700 dark:text-cyan-400 mb-1 hover:text-cyan-800 dark:hover:text-cyan-300">${Sanitizer.escapeHtml(result.chapterTitle)}</h3>
+            <p class="text-sm text-gray-700 dark:text-gray-400">${Sanitizer.escapeHtml(result.bookTitle)} › ${Sanitizer.escapeHtml(result.sectionTitle)}</p>
           </div>
           <div class="text-xs text-gray-600 dark:text-gray-500 text-right font-medium">
             Relevancia: ${Math.round(result.score)}
@@ -806,7 +828,7 @@ class SearchModal {
         <!-- Excerpt -->
         ${result.excerpt ? `
           <div class="text-sm text-gray-800 dark:text-gray-300 mb-3 italic bg-cyan-50 dark:bg-slate-900/50 p-3 rounded border-l-2 border-cyan-500/50">
-            "${result.excerpt}"
+            "${Sanitizer.escapeHtml(result.excerpt)}"
           </div>
         ` : ''}
 
@@ -835,25 +857,25 @@ class SearchModal {
   }
 
   attachEventListeners() {
-    // console.log('🎯 attachEventListeners() llamado');
+    // logger.debug('🎯 attachEventListeners() llamado');
 
     // Close button
     document.getElementById('close-search')?.addEventListener('click', () => {
-      // console.log('❌ Close button clicked');
+      // logger.debug('❌ Close button clicked');
       this.close();
     });
 
     // Search input
     const searchInput = document.getElementById('search-input');
-    // console.log('📝 Search input encontrado:', searchInput ? 'SÍ' : 'NO');
+    // logger.debug('📝 Search input encontrado:', searchInput ? 'SÍ' : 'NO');
 
     if (searchInput) {
       // 🔧 FIX #35: Usar debounce a nivel de instancia con delay configurable
       searchInput.addEventListener('input', (e) => {
-        // console.log('⌨️ Input event - valor:', e.target.value);
+        // logger.debug('⌨️ Input event - valor:', e.target.value);
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => {
-          // console.log('⏰ Debounce timeout - ejecutando búsqueda automática');
+          // logger.debug('⏰ Debounce timeout - ejecutando búsqueda automática');
           this.search(e.target.value);
         }, this.debounceDelay);
       });
@@ -861,7 +883,7 @@ class SearchModal {
       // Search on Enter
       searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-          // console.log('⏎ Enter presionado - ejecutando búsqueda');
+          // logger.debug('⏎ Enter presionado - ejecutando búsqueda');
           clearTimeout(this.debounceTimer);
           this.search(e.target.value);
         }
@@ -870,31 +892,31 @@ class SearchModal {
 
     // Search button
     const searchBtn = document.getElementById('search-btn');
-    // console.log('🔘 Search button encontrado:', searchBtn ? 'SÍ' : 'NO');
+    // logger.debug('🔘 Search button encontrado:', searchBtn ? 'SÍ' : 'NO');
 
     // Verificar si hay múltiples inputs con el mismo ID
     const allInputs = document.querySelectorAll('#search-input');
-    // console.log('🔍 Número de elementos con ID "search-input":', allInputs.length);
+    // logger.debug('🔍 Número de elementos con ID "search-input":', allInputs.length);
     allInputs.forEach((input, index) => {
-      // console.log(`  Input ${index}: value="${input.value}", placeholder="${input.placeholder}"`);
+      // logger.debug(`  Input ${index}: value="${input.value}", placeholder="${input.placeholder}"`);
     });
 
     if (searchBtn) {
       searchBtn.addEventListener('click', (e) => {
         e.preventDefault(); // Prevenir comportamiento por defecto
-        // console.log('🔘 BOTÓN BUSCAR CLICKEADO');
+        // logger.debug('🔘 BOTÓN BUSCAR CLICKEADO');
 
         // Obtener el input desde el contexto del modal
         const modal = document.getElementById('search-modal');
         const searchInputInModal = modal?.querySelector('#search-input');
 
-        // console.log('🔘 Modal encontrado:', modal ? 'SÍ' : 'NO');
-        // console.log('🔘 Input en modal:', searchInputInModal ? 'SÍ' : 'NO');
-        // console.log('🔘 Valor del input:', searchInputInModal?.value);
-        // console.log('🔘 Input es visible:', searchInputInModal ? window.getComputedStyle(searchInputInModal).display : 'N/A');
+        // logger.debug('🔘 Modal encontrado:', modal ? 'SÍ' : 'NO');
+        // logger.debug('🔘 Input en modal:', searchInputInModal ? 'SÍ' : 'NO');
+        // logger.debug('🔘 Valor del input:', searchInputInModal?.value);
+        // logger.debug('🔘 Input es visible:', searchInputInModal ? window.getComputedStyle(searchInputInModal).display : 'N/A');
 
         if (searchInputInModal && searchInputInModal.value) {
-          // console.log('✅ Ejecutando búsqueda con:', searchInputInModal.value);
+          // logger.debug('✅ Ejecutando búsqueda con:', searchInputInModal.value);
           this.search(searchInputInModal.value);
         } else if (searchInputInModal) {
           // console.warn('⚠️ Input vacío - por favor escribe algo primero');

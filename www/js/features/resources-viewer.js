@@ -27,12 +27,24 @@ class ResourcesViewer {
 
     try {
       const bookId = this.bookEngine.getCurrentBook();
-      const response = await fetch(`books/${bookId}/assets/resources.json`);
-      if (!response.ok) throw new Error('Recursos no disponibles para este libro');
-      this.resourcesData = await response.json();
+      // 🔧 FIX v2.9.234: Usar SafeFetch con cache offline
+      if (window.SafeFetch) {
+        this.resourcesData = await window.SafeFetch.jsonWithFallback(
+          `books/${bookId}/assets/resources.json`,
+          null,
+          { showToast: false }
+        );
+      } else {
+        const response = await fetch(`books/${bookId}/assets/resources.json`);
+        if (!response.ok) throw new Error('Recursos no disponibles');
+        this.resourcesData = await response.json();
+      }
       return this.resourcesData;
     } catch (error) {
       console.error('Error cargando recursos:', error);
+      if (window.toast) {
+        window.toast.error('Error al cargar recursos');
+      }
       return null;
     }
   }

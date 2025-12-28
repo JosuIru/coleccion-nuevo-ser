@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.233: Sistema meditativo completo - campanas, pausas progresivas, controles manuales
-    window.__APP_VERSION__ = '2.9.233'; // Cambiar con cada release
+    // 🔧 v2.9.234: Audit fixes - SafeFetch, ProGuard, book content, offline detection
+    window.__APP_VERSION__ = '2.9.234'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

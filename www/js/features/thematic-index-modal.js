@@ -27,13 +27,40 @@ class ThematicIndexModal {
   }
 
   async open() {
-    await this.loadMetadata();
-    this.render();
+    // FIX v2.9.234: Show loading state while fetching metadata
+    this.renderLoading();
 
-    // Esperar a que el DOM se actualice antes de adjuntar listeners
-    setTimeout(() => {
-      this.attachEventListeners();
-    }, 50);
+    try {
+      await this.loadMetadata();
+      this.render();
+
+      // Esperar a que el DOM se actualice antes de adjuntar listeners
+      setTimeout(() => {
+        this.attachEventListeners();
+      }, 50);
+    } catch (error) {
+      console.error('Error opening thematic index:', error);
+      window.toast?.error('Error al cargar el indice tematico');
+      this.close();
+    }
+  }
+
+  // FIX v2.9.234: Loading state for async data
+  renderLoading() {
+    const existing = document.getElementById('thematic-index-modal');
+    if (existing) existing.remove();
+
+    const html = `
+      <div id="thematic-index-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[10000] p-4 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 rounded-2xl p-8 border-2 border-purple-500/30 shadow-2xl">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+            <p class="text-gray-400">Cargando indice tematico...</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
   }
 
   close() {

@@ -3,6 +3,9 @@
 // ============================================================================
 // Usa @capacitor-community/text-to-speech para Android nativo
 // Fallback a Web Speech API para navegadores web
+//
+// v2.9.234: Modularización - Sleep Timer, Bookmarks, Meditation, Position
+// extraídos a módulos separados para mejor mantenibilidad
 
 // 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioReader {
@@ -69,36 +72,51 @@ class AudioReader {
       dragHandleElement: null
     };
 
-    // ⭐ NUEVAS FEATURES
-    // Sleep Timer
+    // ⭐ v2.9.234: MÓDULOS EXTRAÍDOS
+    // Sleep Timer Module
+    if (window.AudioReaderSleepTimer) {
+      this.sleepTimerModule = new window.AudioReaderSleepTimer(this);
+    }
+    // Backward compatibility - keep old properties
     this.sleepTimer = null;
     this.sleepTimerMinutes = 0;
     this.sleepTimerStartTime = null;
-
-    // 🔧 FIX v2.9.231: Restaurar sleep timer desde localStorage
-    this.restoreSleepTimerFromStorage();
-
-    // 🔧 FIX #56: Variables para pausar sleep timer al minimizar app
     this.sleepTimerPaused = false;
     this.sleepTimerRemainingTime = 0;
 
-    // ⭐ MEJORA v2.9.178: Temporizador para pausas de meditación
-    this.pauseTimerInterval = null;
+    // 🔧 FIX v2.9.231: Restaurar sleep timer desde localStorage
+    if (!this.sleepTimerModule) {
+      this.restoreSleepTimerFromStorage();
+    }
 
-    // ⭐ MEJORA v2.9.233: Sistema de audio meditativo
+    // Meditation Audio Module
+    if (window.AudioReaderMeditation) {
+      this.meditationModule = new window.AudioReaderMeditation(this);
+    }
+    // Backward compatibility
+    this.pauseTimerInterval = null;
     this.meditationAudioContext = null;
-    this.meditationBellEnabled = localStorage.getItem('meditation-bell-enabled') !== 'false'; // Enabled by default
-    this.currentPauseEndTime = null; // Para control manual de pausas
-    this.pauseResolve = null; // Promise resolver para pausas manuales
+    this.meditationBellEnabled = localStorage.getItem('meditation-bell-enabled') !== 'false';
+    this.currentPauseEndTime = null;
+    this.pauseResolve = null;
+
+    // Bookmarks Module
+    if (window.AudioReaderBookmarks) {
+      this.bookmarksModule = new window.AudioReaderBookmarks(this);
+    }
+    // Backward compatibility
+    this.audioBookmarks = this.bookmarksModule?.bookmarks || this.loadBookmarks();
+
+    // Position Module
+    if (window.AudioReaderPosition) {
+      this.positionModule = new window.AudioReaderPosition(this);
+    }
 
     // 🔧 FIX v2.9.193: Timer tracking para prevenir memory leaks
     this.timers = [];           // Array de setTimeout IDs para cleanup
     this.intervals = [];        // Array de setInterval IDs para cleanup
     this.currentPauseTimer = null;  // Timer de pausa de ejercicio activo
     this.longPressTimer = null;     // Timer de long press en progress bar
-
-    // Bookmarks de audio
-    this.audioBookmarks = this.loadBookmarks();
 
     // Tiempo estimado
     this.estimatedTimeRemaining = 0;
@@ -201,6 +219,13 @@ class AudioReader {
    * @param {string} type - 'start' | 'end' | 'soft'
    */
   playMeditationBell(type = 'start') {
+    // v2.9.234: Delegate to module if available
+    if (this.meditationModule) {
+      this.meditationModule.playBell(type);
+      return;
+    }
+
+    // Fallback: legacy implementation
     if (!this.meditationBellEnabled) return;
 
     // Inicializar contexto si no existe
@@ -4084,11 +4109,20 @@ class AudioReader {
   }
 
   setSleepTimer(minutos) {
+    // v2.9.234: Delegate to module if available
+    if (this.sleepTimerModule) {
+      this.sleepTimerModule.set(minutos);
+      // Sync backward-compatible properties
+      this.sleepTimerMinutes = this.sleepTimerModule.minutes;
+      this.sleepTimerStartTime = this.sleepTimerModule.startTime;
+      return;
+    }
+
+    // Fallback: legacy implementation
     this.clearSleepTimer();
 
     if (minutos === 0) {
       this.sleepTimerMinutes = 0;
-      // 🔧 FIX v2.9.231: Limpiar localStorage al cancelar
       localStorage.removeItem('audioreader-sleep-timer-data');
       this.updateUI();
       return;
@@ -4097,7 +4131,6 @@ class AudioReader {
     this.sleepTimerMinutes = minutos;
     this.sleepTimerStartTime = Date.now();
 
-    // 🔧 FIX v2.9.231: Persistir en localStorage
     try {
       localStorage.setItem('audioreader-sleep-timer-data', JSON.stringify({
         minutes: minutos,
@@ -4107,11 +4140,9 @@ class AudioReader {
       logger.warn('[AudioReader] Error guardando sleep timer:', error);
     }
 
-    // 🔧 FIX v2.9.193: Usar _setTimeout tracked
     this.sleepTimer = this._setTimeout(() => {
-      logger.log('😴 Sleep timer finalizado, deteniendo audio...');
+      logger.log('Sleep timer finalizado, deteniendo audio...');
       this.fadeOutAndStop();
-      // 🔧 FIX v2.9.231: Limpiar localStorage al finalizar
       localStorage.removeItem('audioreader-sleep-timer-data');
     }, minutos * 60 * 1000);
 
@@ -4120,21 +4151,33 @@ class AudioReader {
   }
 
   clearSleepTimer() {
+    // v2.9.234: Delegate to module if available
+    if (this.sleepTimerModule) {
+      this.sleepTimerModule.clear();
+      this.sleepTimer = null;
+      this.sleepTimerMinutes = 0;
+      this.sleepTimerStartTime = null;
+      return;
+    }
+
+    // Fallback: legacy implementation
     if (this.sleepTimer) {
-      // 🔧 FIX v2.9.193: Usar _clearTimeout
       this._clearTimeout(this.sleepTimer);
       this.sleepTimer = null;
       this.sleepTimerMinutes = 0;
       this.sleepTimerStartTime = null;
-      // 🔧 FIX v2.9.231: Limpiar localStorage
       localStorage.removeItem('audioreader-sleep-timer-data');
     }
   }
 
   getSleepTimerRemaining() {
-    // 🔧 FIX v2.9.231: Funciona con timer restaurado desde localStorage
-    if (!this.sleepTimerStartTime || !this.sleepTimerMinutes) return 0;
+    // v2.9.234: Delegate to module if available
+    if (this.sleepTimerModule) {
+      return this.sleepTimerModule.getRemaining();
+    }
 
+    // Fallback: legacy implementation
+    if (!this.sleepTimerStartTime || !this.sleepTimerMinutes) return 0;
     const transcurrido = (Date.now() - this.sleepTimerStartTime) / 1000 / 60;
     const restante = Math.max(0, this.sleepTimerMinutes - transcurrido);
     return Math.ceil(restante);
@@ -4259,51 +4302,66 @@ class AudioReader {
   }
 
   async addBookmark(nombre = null) {
-    // 🔧 FIX v2.9.232: currentBook ES el ID string, no objeto con .id
+    // v2.9.234: Delegate to module if available
+    if (this.bookmarksModule) {
+      await this.bookmarksModule.add(nombre);
+      return;
+    }
+
+    // Fallback: legacy implementation
     const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) {
-      window.toast?.error('No hay capítulo activo');
+      window.toast?.error('No hay capitulo activo');
       return;
     }
 
-    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
     const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
 
     if (!this.audioBookmarks[claveBookmark]) {
       this.audioBookmarks[claveBookmark] = [];
     }
 
-    const nombreBookmark = nombre || `Párrafo ${this.currentParagraphIndex + 1}`;
+    const nombreBookmark = nombre || `Parrafo ${this.currentParagraphIndex + 1}`;
 
     this.audioBookmarks[claveBookmark].push({
       nombre: nombreBookmark,
       paragrafo: this.currentParagraphIndex,
       timestamp: Date.now(),
-      tituloCapitulo: this.bookEngine.currentChapter?.title || 'Sin título'
+      tituloCapitulo: this.bookEngine.currentChapter?.title || 'Sin titulo'
     });
 
     this.saveBookmarks();
-    // Re-renderizar controles para mostrar el nuevo bookmark
     await this.renderControls();
     this.attachControlListeners();
-    window.toast?.success(`📌 Bookmark guardado: ${nombreBookmark}`);
+    window.toast?.success(`Bookmark guardado: ${nombreBookmark}`);
   }
 
   getBookmarksForCurrentChapter() {
-    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    // v2.9.234: Delegate to module if available
+    if (this.bookmarksModule) {
+      return this.bookmarksModule.getForCurrentChapter();
+    }
+
+    // Fallback: legacy implementation
     const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) return [];
 
-    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
     const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     return this.audioBookmarks[claveBookmark] || [];
   }
 
   jumpToBookmark(indice) {
+    // v2.9.234: Delegate to module if available
+    if (this.bookmarksModule) {
+      this.bookmarksModule.jumpTo(indice);
+      return;
+    }
+
+    // Fallback: legacy implementation
     const bookmarks = this.getBookmarksForCurrentChapter();
     if (indice < 0 || indice >= bookmarks.length) return;
 
@@ -4330,13 +4388,18 @@ class AudioReader {
   }
 
   async deleteBookmark(indice) {
-    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    // v2.9.234: Delegate to module if available
+    if (this.bookmarksModule) {
+      await this.bookmarksModule.delete(indice);
+      return;
+    }
+
+    // Fallback: legacy implementation
     const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
     if (!idLibro || !idCapitulo) return;
 
-    // 🔧 FIX #54: Usar namespace robusto para evitar colisiones
     const claveBookmark = this.generateBookmarkKey(idLibro, idCapitulo);
     const bookmarks = this.audioBookmarks[claveBookmark];
 
@@ -4349,10 +4412,9 @@ class AudioReader {
     }
 
     this.saveBookmarks();
-    // Re-renderizar controles para actualizar la lista de bookmarks
     await this.renderControls();
     this.attachControlListeners();
-    window.toast?.info('🗑️ Bookmark eliminado');
+    window.toast?.info('Bookmark eliminado');
   }
 
   // ==========================================================================
@@ -4360,7 +4422,13 @@ class AudioReader {
   // ==========================================================================
 
   savePosition() {
-    // 🔧 FIX v2.9.232: currentBook ES el ID string
+    // v2.9.234: Delegate to module if available
+    if (this.positionModule) {
+      this.positionModule.save();
+      return;
+    }
+
+    // Fallback: legacy implementation
     const idLibro = this.bookEngine.currentBook;
     const idCapitulo = this.bookEngine.currentChapter?.id;
 
@@ -4373,18 +4441,15 @@ class AudioReader {
       timestamp: Date.now()
     };
 
-    // 🔧 FIX #55: Wrap en try-catch para evitar crashes por QuotaExceededError
     try {
       const storageKey = `audio-position-${idLibro}-${idCapitulo}`;
       localStorage.setItem('audioreader-last-position', JSON.stringify(posicion));
 
-      // 🔧 FIX #55: Sincronizar con Supabase si está disponible
       if (window.authHelper?.user && window.supabaseSyncHelper) {
         window.supabaseSyncHelper.syncPreference(storageKey, posicion);
       }
     } catch (error) {
-      console.warn('[AudioReader] Error guardando posición:', error);
-      // No mostrar error al usuario, es funcionalidad secundaria
+      console.warn('[AudioReader] Error guardando posicion:', error);
     }
   }
 

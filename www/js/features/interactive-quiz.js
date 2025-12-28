@@ -33,21 +33,51 @@ class InteractiveQuiz {
   // ==========================================================================
 
   async open(bookId, chapterId) {
-    const quiz = await this.loadQuiz(bookId, chapterId);
+    // FIX v2.9.234: Show loading state while fetching data
+    this.renderLoading();
 
-    if (!quiz) {
-      window.toast?.info('No hay quiz disponible para este capítulo');
-      return;
+    try {
+      const quiz = await this.loadQuiz(bookId, chapterId);
+
+      if (!quiz) {
+        this.close();
+        window.toast?.info('No hay quiz disponible para este capitulo');
+        return;
+      }
+
+      this.currentQuiz = quiz;
+      this.currentQuestionIndex = 0;
+      this.answers = [];
+      this.score = 0;
+      this.isOpen = true;
+
+      this.render();
+      this.attachEventListeners();
+    } catch (error) {
+      console.error('Error opening quiz:', error);
+      this.close();
+      window.toast?.error('Error al cargar el quiz');
     }
+  }
 
-    this.currentQuiz = quiz;
-    this.currentQuestionIndex = 0;
-    this.answers = [];
-    this.score = 0;
-    this.isOpen = true;
+  /**
+   * FIX v2.9.234: Loading state for async data
+   */
+  renderLoading() {
+    const existing = document.getElementById('quiz-modal');
+    if (existing) existing.remove();
 
-    this.render();
-    this.attachEventListeners();
+    const html = `
+      <div id="quiz-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-2xl p-8 border border-cyan-500/30 shadow-2xl">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+            <p class="text-gray-400">Cargando quiz...</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
   }
 
   close() {

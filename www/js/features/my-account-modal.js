@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MY ACCOUNT MODAL - Pantalla de Mi Cuenta
  * Gestión completa del perfil de usuario, suscripción y créditos
  *
@@ -34,7 +35,7 @@ class MyAccountModal {
     if (typeof window.supabase !== 'undefined') {
       this.supabase = window.supabase;
     }
-    console.log('✅ MyAccountModal inicializado');
+    logger.debug('✅ MyAccountModal inicializado');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -53,9 +54,39 @@ class MyAccountModal {
     }
 
     this.currentTab = tab;
-    await this.loadData();
-    this.render();
-    this.attachEvents();
+
+    // 🔧 FIX v2.9.234: Mostrar loading mientras carga datos
+    this.renderLoading();
+
+    try {
+      await this.loadData();
+      this.render();
+      this.attachEvents();
+    } catch (error) {
+      console.error('[MyAccount] Error abriendo modal:', error);
+      window.toast?.error('Error al cargar datos de la cuenta');
+      this.close();
+    }
+  }
+
+  // 🔧 FIX v2.9.234: Loading state para async operations
+  renderLoading() {
+    const existing = document.getElementById('my-account-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'my-account-modal';
+    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4 fade-in';
+    modal.innerHTML = `
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 shadow-2xl border border-white/10">
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+          <p class="text-gray-400">Cargando tu cuenta...</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
   }
 
   close() {
@@ -926,4 +957,4 @@ class MyAccountModal {
 window.MyAccountModal = MyAccountModal;
 window.myAccountModal = new MyAccountModal();
 
-console.log('✅ MyAccountModal loaded');
+logger.debug('✅ MyAccountModal loaded');

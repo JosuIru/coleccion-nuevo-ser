@@ -2,6 +2,7 @@
 // CHAPTER RESOURCES MODAL - Modal de recursos complementarios por capítulo
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ChapterResourcesModal {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -62,41 +63,59 @@ class ChapterResourcesModal {
 
   /**
    * Abre modal con recursos filtrados por capítulo
+   * FIX v2.9.234: Added loading state for async data
    */
   async open(chapterId) {
     this.currentChapterId = chapterId;
 
-    // console.log('[ChapterResourcesModal] Opening for chapter:', chapterId);
-    // console.log('[ChapterResourcesModal] Current book:', this.bookEngine.getCurrentBook());
+    // FIX v2.9.234: Show loading state while fetching data
+    this.renderLoading();
 
-    // Cargar recursos y metadata si no están cargados
-    if (!this.resourcesData) {
-      await this.loadResources();
-    }
-    if (!this.metadataData) {
-      await this.loadMetadata();
-    }
-
-    // Si no hay recursos NI metadata, mostrar mensaje
-    if (!this.resourcesData && !this.metadataData) {
-      // console.warn('[ChapterResourcesModal] No resources or metadata found for this book');
-      if (window.toast) {
-        window.toast.info(this.i18n.t('resources.noResourcesAvailable') || 'No hay recursos disponibles para este libro');
+    try {
+      // Cargar recursos y metadata si no están cargados
+      if (!this.resourcesData) {
+        await this.loadResources();
       }
-      return;
+      if (!this.metadataData) {
+        await this.loadMetadata();
+      }
+
+      // Si no hay recursos NI metadata, mostrar mensaje
+      if (!this.resourcesData && !this.metadataData) {
+        this.close();
+        if (window.toast) {
+          window.toast.info(this.i18n.t('resources.noResourcesAvailable') || 'No hay recursos disponibles para este libro');
+        }
+        return;
+      }
+
+      // Renderizar modal
+      this.render();
+      this.attachEventListeners();
+    } catch (error) {
+      console.error('Error opening chapter resources:', error);
+      this.close();
+      window.toast?.error('Error al cargar recursos');
     }
+  }
 
-    // console.log('[ChapterResourcesModal] Resources loaded:', {
-    //   organizations: (this.resourcesData.organizations && this.resourcesData.organizations.length) || 0,
-    //   books: (this.resourcesData.books && this.resourcesData.books.length) || 0,
-    //   tools: (this.resourcesData.tools && this.resourcesData.tools.length) || 0,
-    //   documentaries: (this.resourcesData.documentaries && this.resourcesData.documentaries.length) || 0,
-    //   podcasts: (this.resourcesData.podcasts && this.resourcesData.podcasts.length) || 0
-    // });
+  /**
+   * FIX v2.9.234: Loading state for async data
+   */
+  renderLoading() {
+    this.close(); // Remove existing modal
 
-    // Renderizar modal
-    this.render();
-    this.attachEventListeners();
+    const html = `
+      <div id="chapter-resources-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 rounded-2xl p-8 border-2 border-amber-500/30 shadow-2xl">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
+            <p class="text-gray-400">Cargando recursos...</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
   }
 
   /**
@@ -135,7 +154,7 @@ class ChapterResourcesModal {
 
     // Si no hay recursos específicos para este capítulo, devolver TODOS los recursos del libro
     if (totalFiltered === 0) {
-      // console.log('[ChapterResourcesModal] No resources for this chapter, showing all book resources');
+      // logger.debug('[ChapterResourcesModal] No resources for this chapter, showing all book resources');
       return {
         organizations: this.resourcesData.organizations || [],
         books: this.resourcesData.books || [],

@@ -38,20 +38,50 @@ class TimelineViewer {
   async open() {
     if (this.isOpen) return;
 
-    const data = await this.loadTimelineData();
-    if (!data) {
-      window.toast.info('error.timelineNotAvailable');
-      return;
-    }
-
+    // FIX v2.9.234: Show loading state while fetching data
+    this.renderLoading();
     this.isOpen = true;
-    this.render();
-    this.attachEventListeners();
 
-    // Track para logros
-    if (window.achievementSystem) {
-      window.achievementSystem.trackTimelineViewed();
+    try {
+      const data = await this.loadTimelineData();
+      if (!data) {
+        this.close();
+        window.toast?.info('Timeline no disponible para este libro');
+        return;
+      }
+
+      this.render();
+      this.attachEventListeners();
+
+      // Track para logros
+      if (window.achievementSystem) {
+        window.achievementSystem.trackTimelineViewed();
+      }
+    } catch (error) {
+      console.error('Error opening timeline:', error);
+      this.close();
+      window.toast?.error('Error al cargar timeline');
     }
+  }
+
+  /**
+   * FIX v2.9.234: Loading state for async data
+   */
+  renderLoading() {
+    const existing = document.getElementById('timeline-modal');
+    if (existing) existing.remove();
+
+    const html = `
+      <div id="timeline-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-slate-900/95 rounded-2xl p-8 border border-red-900/50 shadow-2xl">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin"></div>
+            <p class="text-gray-400">Cargando timeline historico...</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
   }
 
   close() {

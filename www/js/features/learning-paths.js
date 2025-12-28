@@ -2,6 +2,7 @@
 // LEARNING PATHS - Rutas de aprendizaje personalizadas
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class LearningPaths {
   constructor() {
     this.currentPath = null;
@@ -14,11 +15,23 @@ class LearningPaths {
   // ==========================================================================
 
   loadProgress() {
-    return JSON.parse(localStorage.getItem('learning-paths-progress') || '{}');
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      return JSON.parse(localStorage.getItem('learning-paths-progress') || '{}');
+    } catch (error) {
+      console.error('Error cargando progreso de rutas de aprendizaje:', error);
+      return {};
+    }
   }
 
   saveProgress() {
-    localStorage.setItem('learning-paths-progress', JSON.stringify(this.userProgress));
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('learning-paths-progress', JSON.stringify(this.userProgress));
+    } catch (error) {
+      console.error('Error guardando progreso de rutas de aprendizaje:', error);
+      window.toast?.error('Error al guardar progreso. Intenta de nuevo.');
+    }
   }
 
   // ==========================================================================
@@ -26,18 +39,18 @@ class LearningPaths {
   // ==========================================================================
 
   open(bookId) {
-    console.log('[LearningPaths] 🎯 Abriendo Learning Paths para libro:', bookId);
+    logger.debug('[LearningPaths] 🎯 Abriendo Learning Paths para libro:', bookId);
     try {
       this.isOpen = true;
       this.bookId = bookId;
-      console.log('[LearningPaths] 📝 Renderizando modal...');
+      logger.debug('[LearningPaths] 📝 Renderizando modal...');
       this.render();
-      console.log('[LearningPaths] 🔗 Adjuntando event listeners...');
+      logger.debug('[LearningPaths] 🔗 Adjuntando event listeners...');
 
       // Esperar a que el DOM esté listo antes de adjuntar listeners
       setTimeout(() => {
         this.attachEventListeners();
-        console.log('[LearningPaths] ✅ Learning Paths abierto correctamente');
+        logger.debug('[LearningPaths] ✅ Learning Paths abierto correctamente');
       }, 10);
     } catch (error) {
       console.error('[LearningPaths] ❌ Error al abrir:', error);
@@ -65,14 +78,14 @@ class LearningPaths {
   // ==========================================================================
 
   render() {
-    console.log('[LearningPaths] 🎨 Inicio de render()');
+    logger.debug('[LearningPaths] 🎨 Inicio de render()');
     const existing = document.getElementById('learning-paths-modal');
     if (existing) {
-      console.log('[LearningPaths] 🗑️ Removiendo modal existente');
+      logger.debug('[LearningPaths] 🗑️ Removiendo modal existente');
       existing.remove();
     }
 
-    console.log('[LearningPaths] 📚 bookId actual:', this.bookId);
+    logger.debug('[LearningPaths] 📚 bookId actual:', this.bookId);
     const html = `
       <div id="learning-paths-modal"
            class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-200">

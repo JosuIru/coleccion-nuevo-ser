@@ -3,6 +3,7 @@
 // ============================================================================
 // Modal para explorar organizaciones, libros, documentales y herramientas
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ResourcesViewer {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -555,7 +556,7 @@ class ResourcesViewer {
     });
     this.eventListeners = [];
 
-    console.log('[ResourcesViewer] Cleanup completado');
+    logger.debug('[ResourcesViewer] Cleanup completado');
   }
 
   // ==========================================================================

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BackgroundRotator Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #16213e;
+      border-radius: 8px;
+    }
+    .test-box {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+      border: 2px solid #0f3460;
+      border-radius: 4px;
+      background-size: cover;
+      background-position: center;
+      background-image: var(--da-vinci-bg);
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #0f3460;
+      color: #eee;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1a5490;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 10px;
+      background: #0f0f0f;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-left: 3px solid #0f3460;
+      padding-left: 10px;
+    }
+    .success { border-color: #28a745; color: #28a745; }
+    .error { border-color: #dc3545; color: #dc3545; }
+    .info { border-color: #17a2b8; color: #17a2b8; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>BackgroundRotator Module Test</h1>
+    <p>Testing extracted background rotation module from frankenstein-ui.js</p>
+
+    <div class="test-box"></div>
+
+    <div>
+      <button onclick="testSetRandomBackground()">Set Random Background</button>
+      <button onclick="testStartRotation()">Start Rotation (5s interval)</button>
+      <button onclick="testStopRotation()">Stop Rotation</button>
+      <button onclick="testUpdateBackgrounds()">Update Backgrounds List</button>
+      <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div class="log" id="log">
+      <div class="log-entry info">Ready for testing...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import BackgroundRotator from './frankenstein-background-rotator.js';
+
+    // Create global rotator instance
+    window.rotator = new BackgroundRotator('--da-vinci-bg', [
+      'https://via.placeholder.com/800x400/FF6B6B/FFFFFF?text=Background+1',
+      'https://via.placeholder.com/800x400/4ECDC4/FFFFFF?text=Background+2',
+      'https://via.placeholder.com/800x400/FFE66D/FFFFFF?text=Background+3',
+      'https://via.placeholder.com/800x400/95E1D3/FFFFFF?text=Background+4'
+    ]);
+
+    window.log = (message, type = 'info') => {
+      const logDiv = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    };
+
+    window.clearLog = () => {
+      document.getElementById('log').innerHTML = '<div class="log-entry info">Log cleared...</div>';
+    };
+
+    window.testSetRandomBackground = () => {
+      try {
+        window.rotator.setRandomBackground();
+        window.log('✓ Set random background', 'success');
+      } catch (error) {
+        window.log(`✗ Error: ${error.message}`, 'error');
+      }
+    };
+
+    window.testStartRotation = () => {
+      try {
+        window.rotator.startRotation(null, 5000); // 5 seconds for testing
+        window.log('✓ Started rotation (5s interval)', 'success');
+      } catch (error) {
+        window.log(`✗ Error: ${error.message}`, 'error');
+      }
+    };
+
+    window.testStopRotation = () => {
+      try {
+        window.rotator.stopRotation();
+        window.log('✓ Stopped rotation', 'success');
+      } catch (error) {
+        window.log(`✗ Error: ${error.message}`, 'error');
+      }
+    };
+
+    window.testUpdateBackgrounds = () => {
+      try {
+        window.rotator.updateBackgrounds([
+          'https://via.placeholder.com/800x400/A8E6CF/FFFFFF?text=New+BG+1',
+          'https://via.placeholder.com/800x400/DCEDC1/FFFFFF?text=New+BG+2'
+        ]);
+        window.log('✓ Updated backgrounds list', 'success');
+        window.rotator.setRandomBackground();
+      } catch (error) {
+        window.log(`✗ Error: ${error.message}`, 'error');
+      }
+    };
+
+    window.log('✓ BackgroundRotator module loaded successfully', 'success');
+  </script>
+</body>
+</html>

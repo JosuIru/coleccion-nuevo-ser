@@ -7,6 +7,7 @@
 // CONFIGURACIONES
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 const BIBLIOTECA_CONFIG = {
   CATEGORIAS_FILTRO: [
     { value: 'all', label: 'library.allCategories' },
@@ -134,6 +135,11 @@ class Biblioteca {
     // 🔧 FIX #16: Tracking para global click handler
     this._globalClickHandler = null;
 
+    // 🔧 FIX v2.9.199: Memory leak cleanup - timer and listener tracking
+    this.timers = [];
+    this.intervals = [];
+    this.eventListeners = [];
+
     // Combinar botones primarios y secundarios para event delegation
     BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL = [
       ...BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS,
@@ -160,6 +166,46 @@ class Biblioteca {
     }, delay);
 
     this.debounceTimers.set(key, timer);
+  }
+
+  /**
+   * 🔧 FIX v2.9.199: Wrapper para setTimeout con auto-cleanup
+   * @param {Function} callback - Función a ejecutar
+   * @param {number} delay - Delay en milisegundos
+   * @returns {number} Timer ID
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      const indice = this.timers.indexOf(timerId);
+      if (indice > -1) this.timers.splice(indice, 1);
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * 🔧 FIX v2.9.199: Wrapper para setInterval con auto-cleanup
+   * @param {Function} callback - Función a ejecutar
+   * @param {number} delay - Delay en milisegundos
+   * @returns {number} Interval ID
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * 🔧 FIX v2.9.199: Wrapper para addEventListener con tracking
+   * @param {EventTarget} target - Elemento target
+   * @param {string} event - Tipo de evento
+   * @param {Function} handler - Handler del evento
+   * @param {Object} options - Opciones del listener
+   */
+  _addEventListener(target, event, handler, options) {
+    target.addEventListener(event, handler, options);
+    this.eventListeners.push({ target, event, handler, options });
   }
 
   // ==========================================================================
@@ -442,11 +488,12 @@ class Biblioteca {
 
     // Si practiceLibrary no está disponible, reintentar
     if (!window.practiceLibrary || !window.practiceRecommender) {
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // 🔧 FIX v2.9.199: Usar _setTimeout para tracking
+      await new Promise(resolve => this._setTimeout(resolve, 200));
       return this.renderPracticeWidget(attempt + 1, startTime);
     }
 
-    // console.log('✅ Practice system ready - rendering widget');
+    // logger.debug('✅ Practice system ready - rendering widget');
 
     const container = document.getElementById('practice-widget-container');
     if (!container) return;
@@ -1075,10 +1122,17 @@ class Biblioteca {
     const progresoLibro = this.bookEngine.getProgress(libro.id);
     const libroIniciado = progresoLibro.chaptersRead > 0;
 
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize book data from catalog.json
+    const safeColor = Sanitizer.sanitizeAttribute(libro.color);
+    const safeSecondaryColor = Sanitizer.sanitizeAttribute(libro.secondaryColor);
+    const safeTitle = Sanitizer.escapeHtml(libro.title);
+    const safeSubtitle = Sanitizer.escapeHtml(libro.subtitle);
+    const safeDescription = libro.description ? Sanitizer.escapeHtml(libro.description) : '';
+
     card.innerHTML = `
       <!-- Background Gradient -->
       <div class="absolute inset-0 bg-gradient-to-br opacity-5 dark:opacity-10 group-hover:opacity-15 dark:group-hover:opacity-20 transition-opacity duration-300"
-           style="background: linear-gradient(135deg, ${libro.color}, ${libro.secondaryColor})"></div>
+           style="background: linear-gradient(135deg, ${safeColor}, ${safeSecondaryColor})"></div>
 
       <!-- Paper Texture Overlay -->
       <div class="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] pointer-events-none"
@@ -1087,8 +1141,8 @@ class Biblioteca {
       <div class="relative p-4 sm:p-6">
         <!-- Icon & Status -->
         <div class="flex items-start justify-between mb-3 sm:mb-4">
-          <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center" style="color: ${libro.color}">
-            ${Icons.getBookIcon(libro.id, 48, libro.color)}
+          <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center" style="color: ${safeColor}">
+            ${Icons.getBookIcon(libro.id, 48, safeColor)}
           </div>
           <div class="flex flex-col items-end gap-2">
             ${libro.status === 'published' ?
@@ -1103,19 +1157,19 @@ class Biblioteca {
         </div>
 
         <!-- Title -->
-        <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-[${libro.color}] transition">
-          ${libro.title}
+        <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-[${safeColor}] transition">
+          ${safeTitle}
         </h3>
 
         <!-- Subtitle -->
         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
-          ${libro.subtitle}
+          ${safeSubtitle}
         </p>
 
         <!-- Description -->
-        ${libro.description ? `
+        ${safeDescription ? `
           <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-3 leading-relaxed">
-            ${libro.description}
+            ${safeDescription}
           </p>
         ` : ''}
 
@@ -1934,8 +1988,9 @@ class Biblioteca {
       if (window.SettingsModal) {
         const settings = new window.SettingsModal();
         settings.show();
+        // 🔧 FIX v2.9.199: Usar _setTimeout para tracking
         // Intentar abrir la pestaña de IA después de un momento
-        setTimeout(() => {
+        this._setTimeout(() => {
           const iaTab = document.querySelector('[data-tab="ia"], [data-section="ia"], #settings-tab-ia');
           if (iaTab) iaTab.click();
         }, 300);
@@ -2144,7 +2199,7 @@ class Biblioteca {
     // Si ya está cargado, mostrarlo directamente
     if (window.cosmosNavigation) {
       window.cosmosNavigation.show();
-      // console.log('🌌 Abriendo Cosmos del Conocimiento');
+      // logger.debug('🌌 Abriendo Cosmos del Conocimiento');
       return;
     }
 
@@ -2453,7 +2508,8 @@ class Biblioteca {
           // Si hay texto, iniciar búsqueda automáticamente
           const queryActual = evento.target.value.trim();
           if (queryActual.length >= 3) {
-            setTimeout(() => {
+            // 🔧 FIX v2.9.199: Usar _setTimeout para tracking
+            this._setTimeout(() => {
               const inputModal = document.querySelector('#search-modal #search-input');
               if (inputModal) {
                 inputModal.value = queryActual;
@@ -2609,7 +2665,8 @@ class Biblioteca {
     };
 
     // 🔧 FIX #16: Añadir listener global usando la referencia almacenada
-    document.addEventListener('click', this._globalClickHandler);
+    // 🔧 FIX v2.9.199: Usar _addEventListener para tracking
+    this._addEventListener(document, 'click', this._globalClickHandler);
 
     this.delegatedListenersAttached = true;
     logger.log('✅ Event delegation attached to biblioteca-view');
@@ -2706,6 +2763,18 @@ class Biblioteca {
     // 🔧 FIX #4: Usar logger en lugar de console.log
     logger.debug('[Biblioteca] Iniciando cleanup...');
 
+    // 🔧 FIX v2.9.199: Limpiar timers y intervals
+    this.timers.forEach(timerId => clearTimeout(timerId));
+    this.timers = [];
+    this.intervals.forEach(intervalId => clearInterval(intervalId));
+    this.intervals = [];
+
+    // 🔧 FIX v2.9.199: Limpiar event listeners nativos
+    this.eventListeners.forEach(({ target, event, handler }) => {
+      target.removeEventListener(event, handler);
+    });
+    this.eventListeners = [];
+
     // 🔧 FIX #16: Limpiar global click handler
     if (this._globalClickHandler) {
       document.removeEventListener('click', this._globalClickHandler);
@@ -2716,6 +2785,12 @@ class Biblioteca {
     if (this.eventManager) {
       this.eventManager.cleanup();
     }
+
+    // 🔧 FIX #11: Limpiar debounce timers
+    this.debounceTimers.forEach((timerId, key) => {
+      clearTimeout(timerId);
+    });
+    this.debounceTimers.clear();
 
     // Resetear flags para permitir re-adjuntar listeners si se vuelve a abrir
     this.delegatedListenersAttached = false;

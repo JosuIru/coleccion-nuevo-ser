@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 FIX v2.9.197: Security & Memory Leaks - API keys to ENV + cleanup in 3 modules
-    window.__APP_VERSION__ = '2.9.197'; // Cambiar con cada release
+    // 🎉 v2.9.201: Frankenstein Lab refactored - 26 modules extracted (13,405 lines)
+    window.__APP_VERSION__ = '2.9.201'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

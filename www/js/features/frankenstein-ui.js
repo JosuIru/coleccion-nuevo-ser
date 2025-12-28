@@ -8,6 +8,13 @@
  * @author J. Irurtzun & Claude Sonnet 4.5
  */
 
+// 🔧 REFACTORING v2.9.201: Bottom Sheet extracted to module
+import FrankensteinBottomSheet from './frankenstein/ui/frankenstein-bottom-sheet.js';
+// 🔧 REFACTORING v2.9.201: Modals system extracted to module
+import FrankensteinModals from './frankenstein/ui/frankenstein-modals.js';
+// 🔧 REFACTORING v2.9.201: UI Renderer extracted to module
+import FrankensteinUIRenderer from './frankenstein/core/frankenstein-ui-renderer.js';
+
 class FrankensteinLabUI {
   constructor(organismKnowledge) {
     this.organism = organismKnowledge;
@@ -32,6 +39,14 @@ class FrankensteinLabUI {
     this.activeDemoScenario = null;
     this.microSocietySnapshot = null;
     this.skipQuizForSpecialReward = false;
+
+    // 🔧 REFACTORING v2.9.201: Bottom Sheet module
+    // 🔧 REFACTORING v2.9.201: Modals system module
+    // 🔧 REFACTORING v2.9.201: UI Renderer module
+    this.modals = null; // Inicializado en init()
+    this.bottomSheet = null; // Inicializado en init()
+    this.uiRenderer = null; // Inicializado en init()
+
     this.vintageBackgrounds = [
       'assets/backgrounds/vitruvio.jpg',
       'assets/backgrounds/leonardo-skull.jpg',
@@ -358,14 +373,26 @@ class FrankensteinLabUI {
     await this.loadAvailablePieces();
     console.log('✅ Piezas cargadas:', this.availablePieces.length);
 
+    // Inicializar sistema de bottom sheet móvil
+    this.bottomSheet = new FrankensteinBottomSheet(this.domCache, this);
+    console.log('✅ FrankensteinBottomSheet inicializado');
+
+    // Inicializar sistema de modales
+    this.modals = new FrankensteinModals(this.domCache, this);
+    console.log('✅ FrankensteinModals inicializado');
+
+    // Inicializar UI renderer
+    this.uiRenderer = new FrankensteinUIRenderer(this, this.domCache);
+    console.log('✅ FrankensteinUIRenderer inicializado');
+
     // Si ya se inició antes, ir directo al lab, sino mostrar pantalla de inicio
     if (this.labStarted) {
       console.log('🎮 Lab ya iniciado antes, creando UI directamente');
-      this.createLabUI();
+      this.uiRenderer.createLabUI();
       this.attachEventListeners();
     } else {
       console.log('🌟 Primera vez, mostrando pantalla de inicio');
-      this.createStartScreen();
+      this.uiRenderer.createStartScreen();
 
       // Si el modo actual es demo, cargar datos automáticamente
       const currentMode = window.FrankensteinQuiz?.getMode();
@@ -483,8 +510,8 @@ class FrankensteinLabUI {
     // Marcar que el lab ya se inició
     this.labStarted = true;
 
-    // Crear UI del laboratorio
-    this.createLabUI();
+    // Crear UI del laboratorio (delegado a renderer)
+    this.uiRenderer.createLabUI();
     // El selector de modo ya se configuró en la pantalla de inicio
     // this.createGameModeSelector();
     this.attachEventListeners();
@@ -668,370 +695,49 @@ class FrankensteinLabUI {
 
   /**
    * Crear pantalla de inicio con selección de modo y dificultad
+   * @deprecated v2.9.201 - Use uiRenderer.createStartScreen() instead
    */
   createStartScreen() {
-    const container = document.getElementById('organism-container');
-    if (!container) {
-      console.error('❌ Contenedor no encontrado para pantalla de inicio');
-      return;
-    }
-
-    // Establecer fondo vintage aleatorio y mantenerlo rotando
-    this.startBackgroundRotation();
-
-    console.log('✅ Creando pantalla de inicio en:', container);
-
-    const currentMode = window.FrankensteinQuiz?.getMode() || 'juego';
-    const currentDifficulty = window.FrankensteinQuiz?.getDifficulty() || 'iniciado';
-
-    console.log('📊 Modo actual:', currentMode, 'Dificultad:', currentDifficulty);
-
-    const modeLabels = {
-      investigacion: 'Exploración Libre',
-      juego: 'Aprendizaje Guiado',
-      demo: 'Demo Cinemática'
-    };
-
-    const difficultyLabels = {
-      ninos: 'Niños',
-      principiante: 'Principiante',
-      iniciado: 'Iniciado',
-      experto: 'Experto'
-    };
-
-    const startScreen = document.createElement('div');
-    startScreen.id = 'frankenstein-start-screen';
-    startScreen.className = 'frankenstein-start-screen';
-    startScreen.innerHTML = `
-      <div class="start-screen-content">
-        <div class="start-hero">
-          <div class="hero-info">
-            <p class="hero-label">Temporada 3.1 · Laboratorio Vivo</p>
-            <h1 class="hero-title">
-              Ensambla seres. Activa misiones.
-            </h1>
-            <p class="hero-description">
-              Selecciona tu modo, ajusta la dificultad y entra a un laboratorio inspirado en RPGs tácticos. Cada sesión desbloquea nuevas combinaciones de conocimiento.
-            </p>
-
-            <div class="hero-actions">
-              <button class="start-button" id="frankenstein-start-button">
-                <span>Entrar al Laboratorio</span>
-                <span class="start-button-arrow">→</span>
-              </button>
-              <button class="ghost-button" id="frankenstein-close-button">
-                Volver a la Colección
-              </button>
-            </div>
-
-            <div class="hero-stats">
-              <div class="hero-stat">
-                <span class="hero-stat-label">Modo activo</span>
-                <span class="hero-stat-value">${modeLabels[currentMode] || 'Selecciona modo'}</span>
-              </div>
-              <div class="hero-stat">
-                <span class="hero-stat-label">Dificultad</span>
-                <span class="hero-stat-value">${difficultyLabels[currentDifficulty] || 'Principiante'}</span>
-              </div>
-              <div class="hero-stat">
-                <span class="hero-stat-label">Piezas disponibles</span>
-                <span class="hero-stat-value">${this.availablePieces.length}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="hero-visual">
-            <div class="hero-holo">
-              <div class="hero-holo-ring ring-1"></div>
-              <div class="hero-holo-ring ring-2"></div>
-              <div class="hero-holo-ring ring-3"></div>
-              <div class="hero-holo-core">🧬</div>
-            </div>
-            <div class="hero-visual-meta">
-              <div>
-                <p class="meta-label">Briefing</p>
-                <p class="meta-value">Selecciona un modo y pulsa “Entrar” para desbloquear el tablero completo.</p>
-              </div>
-              <div class="meta-divider"></div>
-              <div class="meta-grid">
-                <div>
-                  <p class="meta-label">Misiones disponibles</p>
-                  <p class="meta-number">12</p>
-                </div>
-                <div>
-                  <p class="meta-label">Microsistemas</p>
-                  <p class="meta-number">5</p>
-                </div>
-                <div>
-                  <p class="meta-label">Seres demo</p>
-                  <p class="meta-number">3</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-tabs">
-          <button class="hero-tab active" data-panel-target="panel-modes">🎮 Modos</button>
-          <button class="hero-tab" data-panel-target="panel-difficulty">⚙️ Dificultad</button>
-          <button class="hero-tab" data-panel-target="panel-briefing">📜 Briefing</button>
-        </div>
-
-        <div class="start-panels">
-          <section class="start-panel active" id="panel-modes">
-            <div class="panel-heading">
-              <div>
-                <p class="panel-label">Paso 1</p>
-                <h2>Elige cómo quieres jugar</h2>
-              </div>
-              <p class="panel-description">Cada modo ajusta el comportamiento del laboratorio y la forma en que se calculan los atributos.</p>
-            </div>
-            <div class="mode-grid">
-              <button class="mode-card ${currentMode === 'investigacion' ? 'selected' : ''}" data-mode="investigacion">
-                <div class="mode-card-icon">🔍</div>
-                <div>
-                  <h3 class="mode-card-title">Investigación</h3>
-                  <p class="mode-card-description">Explora libremente sin evaluaciones ni presión. Perfecto para crear prototipos.</p>
-                </div>
-              </button>
-              <button class="mode-card ${currentMode === 'juego' ? 'selected' : ''}" data-mode="juego">
-                <div class="mode-card-icon">🧠</div>
-                <div>
-                  <h3 class="mode-card-title">Aprendizaje</h3>
-                  <p class="mode-card-description">Completa quizzes para potenciar tus piezas. Ideal para progresión narrativa.</p>
-                </div>
-              </button>
-              <button class="mode-card ${currentMode === 'demo' ? 'selected' : ''}" data-mode="demo">
-                <div class="mode-card-icon">✨</div>
-                <div>
-                  <h3 class="mode-card-title">Demo</h3>
-                  <p class="mode-card-description">Carga seres y microsociedades de ejemplo para inspirarte rápidamente.</p>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <section class="start-panel" id="panel-difficulty">
-            <div class="panel-heading">
-              <div>
-                <p class="panel-label">Paso 2</p>
-                <h2>Ajusta la dificultad del quiz</h2>
-              </div>
-              <p class="panel-description">Solo aplica en modo Aprendizaje. A mayor dificultad, mayor impacto en el poder de cada pieza.</p>
-            </div>
-            <div class="difficulty-grid">
-              <button class="difficulty-card ${currentDifficulty === 'ninos' ? 'selected' : ''}" data-difficulty="ninos">
-                <div class="difficulty-card-icon">🎈</div>
-                <div>
-                  <h3 class="difficulty-card-title">Niños</h3>
-                  <p class="difficulty-card-description">Lenguaje sencillo, feedback amable y retos cortos.</p>
-                </div>
-              </button>
-              <button class="difficulty-card ${currentDifficulty === 'principiante' ? 'selected' : ''}" data-difficulty="principiante">
-                <div class="difficulty-card-icon">🌱</div>
-                <div>
-                  <h3 class="difficulty-card-title">Principiante</h3>
-                  <p class="difficulty-card-description">Introduce conceptos clave de cada libro sin saturar.</p>
-                </div>
-              </button>
-              <button class="difficulty-card ${currentDifficulty === 'iniciado' ? 'selected' : ''}" data-difficulty="iniciado">
-                <div class="difficulty-card-icon">📚</div>
-                <div>
-                  <h3 class="difficulty-card-title">Iniciado</h3>
-                  <p class="difficulty-card-description">Preguntas situacionales y conexiones entre piezas.</p>
-                </div>
-              </button>
-              <button class="difficulty-card ${currentDifficulty === 'experto' ? 'selected' : ''}" data-difficulty="experto">
-                <div class="difficulty-card-icon">🔥</div>
-                <div>
-                  <h3 class="difficulty-card-title">Experto</h3>
-                  <p class="difficulty-card-description">Desafíos profundos que exigen síntesis y visión estratégica.</p>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <section class="start-panel" id="panel-briefing">
-            <div class="panel-heading">
-              <div>
-                <p class="panel-label">Resumen</p>
-                <h2>Antes de entrar</h2>
-              </div>
-              <p class="panel-description">Este laboratorio mezcla UI de videojuegos con contenidos reales de la colección. Usa este briefing para orientarte.</p>
-            </div>
-            <div class="briefing-grid">
-              <article class="briefing-card">
-                <h3>🔧 Micro UX</h3>
-                <p>Gestos, tarjetas y paneles flotantes pensados para móvil y escritorio.</p>
-              </article>
-              <article class="briefing-card">
-                <h3>🕹️ Flujo modular</h3>
-                <p>Activa o desactiva módulos: misiones, piezas, chat IA, microsistemas.</p>
-              </article>
-              <article class="briefing-card">
-                <h3>🌌 Ambientación</h3>
-                <p>Fondos dinámicos inspirados en bocetos de Da Vinci y laboratorio gótico.</p>
-              </article>
-            </div>
-            <ul class="briefing-list">
-              <li>⚡ Selecciona un modo y una dificultad antes de entrar.</li>
-              <li>🧬 En modo Demo cargamos seres automáticamente para que puedas experimentar.</li>
-              <li>🎯 Puedes cambiar de misión en cualquier momento desde el laboratorio.</li>
-            </ul>
-          </section>
-        </div>
-      </div>
-    `;
-
-    container.appendChild(startScreen);
-
-    // Event listeners para selección de modo
-    startScreen.querySelectorAll('.mode-card').forEach(card => {
-      card.addEventListener('click', () => {
-        startScreen.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        const mode = card.dataset.mode;
-        if (window.FrankensteinQuiz) {
-          window.FrankensteinQuiz.setMode(mode);
-        }
-
-        // Si se activa modo demo, cargar datos de ejemplo
-        if (mode === 'demo' && window.FrankensteinDemoData) {
-          console.log('📦 Cargando datos de demostración...');
-          window.FrankensteinDemoData.loadDemoData(this);
-          // Mostrar notificación temporal
-          if (window.toast) {
-            window.toast.show('✨ Datos de demostración cargados', 'success', 3000);
-          }
-        }
-      });
-    });
-
-    // Event listeners para selección de dificultad
-    startScreen.querySelectorAll('.difficulty-card').forEach(card => {
-      card.addEventListener('click', () => {
-        startScreen.querySelectorAll('.difficulty-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        const difficulty = card.dataset.difficulty;
-        if (window.FrankensteinQuiz) {
-          window.FrankensteinQuiz.setDifficulty(difficulty);
-        }
-      });
-    });
-
-    // Tab panels
-    const heroTabs = startScreen.querySelectorAll('[data-panel-target]');
-    const panels = startScreen.querySelectorAll('.start-panel');
-    heroTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetId = tab.dataset.panelTarget;
-        heroTabs.forEach(btn => btn.classList.remove('active'));
-        panels.forEach(panel => panel.classList.remove('active'));
-        tab.classList.add('active');
-        const targetPanel = startScreen.querySelector(`#${targetId}`);
-        if (targetPanel) {
-          targetPanel.classList.add('active');
-        }
-      });
-    });
-
-    // Event listener para botón comenzar
-    const startButton = startScreen.querySelector('#frankenstein-start-button');
-    if (startButton) {
-      startButton.addEventListener('click', () => {
-        this.startLab();
-      });
-    }
-
-    // Event listener para botón cerrar
-    const closeButton = startScreen.querySelector('#frankenstein-close-button');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        if (this.organism && this.organism.hide) {
-          this.organism.hide();
-        } else {
-          // Fallback: ocultar container y mostrar biblioteca
-          const container = document.getElementById('organism-container');
-          if (container) {
-            container.classList.add('hidden');
-          }
-          document.getElementById('biblioteca-view')?.classList.remove('hidden');
-        }
-      });
-    }
+    return this.uiRenderer.createStartScreen();
   }
 
   /**
    * Set random vintage scientific/technical background image
+   * @deprecated v2.9.201 - Use uiRenderer.setRandomDaVinciBackground() instead
    */
   setRandomDaVinciBackground(preferredImage = null) {
-    const fallbackImage = 'assets/backgrounds/vitruvio.jpg';
-    const available = this.vintageBackgrounds?.length ? this.vintageBackgrounds : [fallbackImage];
-
-    let selectedImage = preferredImage;
-    if (!selectedImage) {
-      if (available.length === 1) {
-        selectedImage = available[0];
-      } else {
-        let nextIndex = this.previousBackgroundIndex;
-        let safety = 0;
-        while (nextIndex === this.previousBackgroundIndex && safety < 10) {
-          nextIndex = Math.floor(Math.random() * available.length);
-          safety += 1;
-        }
-        this.previousBackgroundIndex = nextIndex;
-        selectedImage = available[nextIndex];
-      }
-    }
-
-    const resolvedUrl = this.resolveAssetUrl(selectedImage);
-    const fallbackUrl = this.resolveAssetUrl(fallbackImage);
-
-    const applyBackground = (url) => {
-      document.documentElement.style.setProperty('--da-vinci-bg', `url('${url}')`);
-    };
-
-    const preview = new Image();
-    preview.onload = () => applyBackground(resolvedUrl);
-    preview.onerror = () => applyBackground(fallbackUrl || resolvedUrl);
-    preview.src = resolvedUrl;
+    return this.uiRenderer.setRandomDaVinciBackground(preferredImage);
   }
 
+  /**
+   * Resolver URL de asset relativo a absoluto
+   * @deprecated v2.9.201 - Use uiRenderer.resolveAssetUrl() instead
+   */
   resolveAssetUrl(assetPath) {
-    if (!assetPath) return '';
-    if (/^https?:\/\//.test(assetPath)) {
-      return assetPath;
-    }
-
-    try {
-      return new URL(assetPath, window.location.href).href;
-    } catch (error) {
-      try {
-        const basePath = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}`;
-        return new URL(assetPath, basePath).href;
-      } catch {
-        return assetPath;
-      }
-    }
+    return this.uiRenderer.resolveAssetUrl(assetPath);
   }
 
+  /**
+   * Iniciar rotación automática de fondos vintage
+   * @deprecated v2.9.201 - Use uiRenderer.startBackgroundRotation() instead
+   */
   startBackgroundRotation(forceImage = null) {
-    if (this.backgroundRotationTimer) {
-      this._clearInterval(this.backgroundRotationTimer);
-      this.backgroundRotationTimer = null;
-    }
-
-    this.setRandomDaVinciBackground(forceImage);
-
-    this.backgroundRotationTimer = this._setInterval(() => {
-      this.setRandomDaVinciBackground();
-    }, 45000);
+    return this.uiRenderer.startBackgroundRotation(forceImage);
   }
 
   /**
    * Crear estructura HTML del laboratorio
+   * @deprecated v2.9.201 - Use uiRenderer.createLabUI() instead
    */
   createLabUI() {
+    return this.uiRenderer.createLabUI();
+  }
+
+  /**
+   * @deprecated v2.9.201 - Removed - HTML rendering delegated to uiRenderer
+   * @private
+   */
+  _createLabUI_OLD() {
     const container = document.getElementById('organism-container');
     if (!container) {
       console.error('❌ Contenedor del organismo no encontrado');
@@ -1817,23 +1523,21 @@ class FrankensteinLabUI {
    */
   /**
    * Open Mission Modal
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinModals
    */
   openMissionModal() {
-    const modal = document.getElementById('mission-modal');
-    if (modal) {
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
+    if (this.modals) {
+      this.modals.openMission();
     }
   }
 
   /**
    * Close Mission Modal
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinModals
    */
   closeMissionModal() {
-    const modal = document.getElementById('mission-modal');
-    if (modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
+    if (this.modals) {
+      this.modals.closeMission();
     }
   }
 
@@ -2021,63 +1725,31 @@ class FrankensteinLabUI {
 
   /**
    * Open Requirements Modal
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinModals
    */
   openRequirementsModal() {
-    const modal = document.getElementById('requirements-modal');
-    if (modal) {
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
+    if (this.modals) {
+      this.modals.openRequirements();
     }
   }
 
   /**
    * Close Requirements Modal
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinModals
    */
   closeRequirementsModal() {
-    const modal = document.getElementById('requirements-modal');
-    if (modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
+    if (this.modals) {
+      this.modals.closeRequirements();
     }
   }
 
   /**
    * Open Pieces Modal
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinModals
    */
   openPiecesModal() {
-    const modal = document.getElementById('pieces-modal');
-    if (modal) {
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-
-      // Cerrar cualquier libro expandido al abrir el modal
-      const expandedBooks = document.querySelectorAll('.book-tree-item.expanded');
-      expandedBooks.forEach(book => {
-        const content = book.querySelector('.book-tree-content');
-        const toggle = book.querySelector('.book-tree-toggle');
-        const header = book.querySelector('.book-tree-header');
-        if (content) content.classList.remove('open');
-        if (toggle) toggle.classList.remove('open');
-        if (header) header.classList.remove('open');
-        book.classList.remove('expanded');
-      });
-
-      // Quitar clase del grid
-      const grid = document.getElementById('pieces-grid');
-      if (grid) grid.classList.remove('has-expanded-book');
-
-      // Update missing requirements when opening
-      this.updateMissingRequirementsQuickView();
-
-      // Re-poblar grid para asegurar que esté visible
-      const activeFilter = document.querySelector('.filter-pill.active');
-      const filter = activeFilter ? activeFilter.dataset.filter : 'all';
-      this.populatePiecesGrid(filter);
-
-      // Evaluar estado inicial del sticky header
-      this._setTimeout(() => {
-        this.handlePiecesModalScroll();
-      }, 100);
+    if (this.modals) {
+      this.modals.openPieces();
     }
   }
 
@@ -2085,12 +1757,9 @@ class FrankensteinLabUI {
    * Close Pieces Modal
    */
   closePiecesModal() {
-    const modal = document.getElementById('pieces-modal');
-    if (modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
+    if (this.modals) {
+      this.modals.closePieces();
     }
-    this.closeBookBottomSheet();
   }
 
   /**
@@ -2253,756 +1922,150 @@ class FrankensteinLabUI {
 
   /**
    * Poblar grid de piezas (ahora como árbol)
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   populatePiecesGrid(filter = 'all') {
-    const grid = this.domCache.piecesGrid || document.getElementById('pieces-grid');
-    if (!grid) return;
-
-    grid.innerHTML = '';
-    if (this.isMobileViewport()) {
-      this.mobileBooksData = {};
+    if (!this.pieceCards) {
+      console.error('❌ FrankensteinPieceCards not initialized');
+      return;
     }
-
-    // Organizar piezas por libro
-    const piecesByBook = this.organizePiecesByBook(filter);
-
-    // Crear árbol para cada libro
-    Object.entries(piecesByBook).forEach(([bookId, bookData]) => {
-      const bookTree = this.createBookTree(bookId, bookData);
-      grid.appendChild(bookTree);
-    });
-
-    // Update pieces count badge
-    this.updatePiecesCountBadge();
-
-    // Initialize drag and drop enhanced
-    this._setTimeout(() => {
-      this.initDragAndDropEnhanced();
-    }, 100);
+    this.pieceCards.populateGrid(filter);
   }
 
   /**
    * Exposed helper para que datos de demo puedan refrescar la UI
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   renderPiecesTree(filter = 'all') {
-    this.populatePiecesGrid(filter);
-    this.updateMissingRequirementsQuickView();
-    this.handlePiecesModalScroll();
+    if (!this.pieceCards) {
+      console.error('❌ FrankensteinPieceCards not initialized');
+      return;
+    }
+    this.pieceCards.renderTree(filter);
   }
 
   /**
    * Organizar piezas por libro
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   organizePiecesByBook(filter) {
-    const organized = {};
-
-    this.availablePieces.forEach(piece => {
-      // Aplicar filtro
-      if (filter !== 'all' && piece.type !== filter) return;
-
-      // Agrupar por libro
-      if (!organized[piece.bookId]) {
-        organized[piece.bookId] = {
-          bookTitle: piece.bookTitle,
-          bookId: piece.bookId,
-          color: piece.color,
-          chapters: {}
-        };
-      }
-
-      // Agrupar por capítulo
-      if (!organized[piece.bookId].chapters[piece.chapterId]) {
-        organized[piece.bookId].chapters[piece.chapterId] = {
-          chapterTitle: this.getChapterTitle(piece),
-          pieces: []
-        };
-      }
-
-      organized[piece.bookId].chapters[piece.chapterId].pieces.push(piece);
-    });
-
-    return organized;
+    return this.pieceCards?.organizeByBook(filter) || {};
   }
 
   /**
    * Obtener título del capítulo de una pieza
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   getChapterTitle(piece) {
-    // Buscar el capítulo original
-    const catalog = this.organism.bookEngine?.catalog;
-    if (!catalog) {
-      return `Capítulo ${piece.chapterId}`;
-    }
-
-    const book = catalog.books.find(b => b.id === piece.bookId);
-    if (!book) {
-      return `Capítulo ${piece.chapterId}`;
-    }
-
-    // Intentar obtener capítulos usando el método del organism
-    try {
-      const chapters = this.organism.getBookChapters(book);
-      if (chapters && Array.isArray(chapters)) {
-        const chapter = chapters.find(c => c.id === piece.chapterId);
-        if (chapter && chapter.title) {
-          return chapter.title;
-        }
-      }
-    } catch (error) {
-      // Silent error
-    }
-
-    // Fallback: buscar en sections si existen y son iterables
-    if (book.sections && Array.isArray(book.sections)) {
-      for (const section of book.sections) {
-        if (section.chapters && Array.isArray(section.chapters)) {
-          const chapter = section.chapters.find(c => c.id === piece.chapterId);
-          if (chapter && chapter.title) {
-            return chapter.title;
-          }
-        }
-      }
-    }
-
-    // Fallback: buscar en chapters directamente si existe
-    if (book.chapters && Array.isArray(book.chapters)) {
-      const chapter = book.chapters.find(c => c.id === piece.chapterId);
-      if (chapter && chapter.title) {
-        return chapter.title;
-      }
-    }
-
-    return `Capítulo ${piece.chapterId}`;
-  }
-
-  getStatsSummaryHtml(totalPower, totalPieces) {
-    return `
-      <div class="book-card-stats">
-        <div class="book-card-stat">
-          <span>Poder</span>
-          <strong>${totalPower}</strong>
-        </div>
-        <div class="book-card-stat">
-          <span>Piezas</span>
-          <strong>${totalPieces}</strong>
-        </div>
-      </div>
-    `;
-
-    // Estado inicial de paneles visuales
-    this.updateVitruvianHud();
-    this.updateBeingCompositionSummary();
-  }
-
-  createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes) {
-    this.mobileBooksData[bookId] = bookData;
-    const attributesPreview = Object.entries(aggregatedAttributes)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4)
-      .map(([attr, value]) => {
-        const attrData = this.missionsSystem.attributes[attr];
-        if (!attrData) return '';
-        return `<span class="book-card-attr">${attrData.icon} ${Math.round(value)}</span>`;
-      })
-      .join('');
-
-    const card = document.createElement('div');
-    card.className = 'book-card-mobile';
-    card.dataset.bookId = bookId;
-
-    card.innerHTML = `
-      <div class="book-card-top">
-        <div class="book-card-icon">📚</div>
-        <div class="book-card-info">
-          <h4>${bookData.bookTitle}</h4>
-          <p>${subtitleText}</p>
-        </div>
-        <button class="book-card-open" type="button" data-book-id="${bookId}">
-          Ver piezas
-        </button>
-      </div>
-      ${this.getStatsSummaryHtml(totalPower, totalPieces)}
-      <div class="book-card-attributes-scroll">
-        ${attributesPreview || '<span class="book-card-attr muted">Añade piezas para ver atributos</span>'}
-      </div>
-    `;
-
-    const openBtn = card.querySelector('.book-card-open');
-    openBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.openBookBottomSheet(bookId);
-    });
-
-    return card;
-  }
-
-  openBookBottomSheet(bookId) {
-    const bookData = this.mobileBooksData?.[bookId];
-    if (!bookData) return;
-
-    this.closeBookBottomSheet();
-    this.mobileSheetFilter = 'all';
-    this.mobileSheetSearch = '';
-
-    const sheet = document.createElement('div');
-    sheet.id = 'book-bottom-sheet';
-    sheet.className = 'book-bottom-sheet';
-    sheet.innerHTML = `
-      <div class="book-bottom-sheet-overlay"></div>
-      <div class="book-bottom-sheet-content">
-        <div class="book-bottom-sheet-header">
-          <div>
-            <p class="sheet-label">Libro</p>
-            <h3>${bookData.bookTitle}</h3>
-          </div>
-          <button class="sheet-close" aria-label="Cerrar menú de libro"><span aria-hidden="true">✕</span></button>
-        </div>
-        <div class="book-bottom-sheet-toolbar">
-          <div class="mobile-filter-chips" role="tablist">
-            <button class="mobile-filter-chip active" data-filter="all">Todos</button>
-            <button class="mobile-filter-chip" data-filter="chapter">Capítulos</button>
-            <button class="mobile-filter-chip" data-filter="exercise">Ejercicios</button>
-            <button class="mobile-filter-chip" data-filter="resource">Recursos</button>
-          </div>
-          <div class="mobile-search-wrapper">
-            <input type="search" id="mobile-book-search" placeholder="Buscar pieza o capítulo..." autocomplete="off">
-            <span class="mobile-search-icon">🔍</span>
-          </div>
-        </div>
-        <div class="book-bottom-sheet-body"></div>
-      </div>
-    `;
-
-    document.body.appendChild(sheet);
-    document.body.classList.add('modal-open');
-    requestAnimationFrame(() => sheet.classList.add('open'));
-
-    sheet.querySelector('.sheet-close').addEventListener('click', () => this.closeBookBottomSheet());
-    sheet.querySelector('.book-bottom-sheet-overlay').addEventListener('click', () => this.closeBookBottomSheet());
-
-    const body = sheet.querySelector('.book-bottom-sheet-body');
-    this.renderMobileBookChapters(body, bookId, bookData);
-    this.setupBookBottomSheetControls(sheet, bookId, bookData);
-
-    this.bookSheetKeyHandler = (event) => {
-      if (event.key === 'Escape') {
-        this.closeBookBottomSheet();
-      }
-    };
-    document.addEventListener('keydown', this.bookSheetKeyHandler);
-  }
-
-  setupBookBottomSheetControls(sheet, bookId, bookData) {
-    const body = sheet.querySelector('.book-bottom-sheet-body');
-    if (!body) return;
-
-    const filterButtons = sheet.querySelectorAll('.mobile-filter-chip');
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.mobileSheetFilter = btn.dataset.filter || 'all';
-        this.renderMobileBookChapters(body, bookId, bookData);
-      });
-    });
-
-    const searchInput = sheet.querySelector('#mobile-book-search');
-    if (searchInput) {
-      searchInput.value = '';
-      let searchDebounce;
-      searchInput.addEventListener('input', () => {
-        clearTimeout(searchDebounce);
-        searchDebounce = this._setTimeout(() => {
-          this.mobileSheetSearch = searchInput.value.trim().toLowerCase();
-          this.renderMobileBookChapters(body, bookId, bookData);
-        }, 120);
-      });
-    }
-  }
-
-  closeBookBottomSheet() {
-    const sheet = document.getElementById('book-bottom-sheet');
-    if (!sheet) return;
-    sheet.classList.remove('open');
-    this._setTimeout(() => sheet.remove(), 250);
-    document.body.classList.remove('modal-open');
-    if (this.bookSheetKeyHandler) {
-      document.removeEventListener('keydown', this.bookSheetKeyHandler);
-      this.bookSheetKeyHandler = null;
-    }
-  }
-
-  renderMobileBookChapters(container, bookId, bookData) {
-    container.innerHTML = '';
-    const chapters = Object.entries(bookData.chapters || {});
-
-    if (chapters.length === 0) {
-      container.innerHTML = '<p class="mobile-chapter-empty">No hay piezas registradas para este libro.</p>';
-      return;
-    }
-
-    chapters.forEach(([chapterId, chapterData]) => {
-      const details = document.createElement('details');
-      details.className = 'mobile-chapter-block';
-
-      const chapterTitle = chapterData.chapterTitle || `Capítulo ${chapterId}`;
-      const chapterPower = this.calculateChapterPower(chapterData.pieces || []);
-      const piecesCount = chapterData.pieces?.length || 0;
-      const chapterMatchesSearch = this.mobileSheetSearch
-        ? chapterTitle.toLowerCase().includes(this.mobileSheetSearch)
-        : true;
-
-      const filteredPieces = (chapterData.pieces || []).filter(piece => {
-        const typeMatch = this.mobileSheetFilter === 'all' || piece.type === this.mobileSheetFilter;
-        const text = `${piece.title || ''} ${piece.bookTitle || ''}`.toLowerCase();
-        const pieceMatchesSearch = this.mobileSheetSearch ? text.includes(this.mobileSheetSearch) : true;
-        return typeMatch && pieceMatchesSearch;
-      });
-
-      if (!chapterMatchesSearch && filteredPieces.length === 0) {
-        return;
-      }
-
-      details.innerHTML = `
-        <summary>
-          <div>
-            <p class="mobile-chapter-title">${chapterTitle}</p>
-            <span class="mobile-chapter-meta">${piecesCount} piezas • ⚡ ${chapterPower}</span>
-          </div>
-          <span class="mobile-chapter-chevron">⌄</span>
-        </summary>
-      `;
-
-      const piecesWrapper = document.createElement('div');
-      piecesWrapper.className = 'mobile-chapter-pieces';
-
-      if (filteredPieces.length === 0) {
-        piecesWrapper.innerHTML = `
-          <div class="mobile-empty-state">
-            <span>Sin piezas que coincidan con el filtro.</span>
-          </div>
-        `;
-      }
-
-      filteredPieces.forEach(piece => {
-        const card = this.createMobilePieceCard(piece);
-        piecesWrapper.appendChild(card);
-      });
-
-      details.appendChild(piecesWrapper);
-      container.appendChild(details);
-      details.open = chapters.length <= 3 || details.open;
-      details.addEventListener('toggle', () => {
-        if (details.open) {
-          container.querySelectorAll('.mobile-chapter-block').forEach(block => {
-            if (block !== details) block.removeAttribute('open');
-          });
-        }
-      });
-    });
-
-    if (!container.children.length) {
-      container.innerHTML = `
-        <div class="mobile-empty-state">
-          <span>No se encontraron piezas con ese filtro.</span>
-        </div>
-      `;
-    }
-  }
-
-  createMobilePieceCard(piece) {
-    const card = document.createElement('div');
-    card.className = 'mobile-piece-card';
-    card.dataset.pieceId = piece.id;
-    card.dataset.type = piece.type;
-
-    const analysis = this.missionsSystem?.analyzePiece(piece) || { attributes: {} };
-    const attrsPreview = Object.entries(analysis.attributes)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 2)
-      .map(([attr, value]) => {
-        const attrData = this.missionsSystem.attributes[attr];
-        return `<span class="mobile-piece-attr">${attrData?.icon || '📊'} ${Math.round(value)}</span>`;
-      })
-      .join('');
-
-    card.innerHTML = `
-      <div class="mobile-piece-main">
-        <div class="mobile-piece-icon">${piece.icon}</div>
-        <div class="mobile-piece-info">
-          <h5>${piece.title}</h5>
-          <p>${this.getTypeLabel(piece.type)} • ⚡ ${Math.round(analysis.totalPower)}</p>
-          <div class="mobile-piece-attrs">${attrsPreview}</div>
-        </div>
-        <button class="lab-button mobile-piece-action" type="button">${this.isPieceSelected(piece.id) ? 'Quitar' : 'Agregar'}</button>
-      </div>
-    `;
-
-    const actionBtn = card.querySelector('.mobile-piece-action');
-    const handleToggle = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.togglePieceSelectionEnhanced(piece, card);
-      this.updateMobilePieceActionState(actionBtn, card);
-    };
-
-    card.addEventListener('click', handleToggle);
-    actionBtn.addEventListener('click', handleToggle);
-
-    if (this.isPieceSelected(piece.id)) {
-      card.classList.add('selected');
-    }
-
-    return card;
-  }
-
-  updateMobilePieceActionState(button, card) {
-    if (!button || !card) return;
-    if (card.classList.contains('selected')) {
-      button.textContent = 'Quitar';
-      button.classList.add('secondary');
-    } else {
-      button.textContent = 'Agregar';
-      button.classList.remove('secondary');
-    }
-  }
-
-  isPieceSelected(pieceId) {
-    return this.selectedPieces.some(p => p.id === pieceId);
-  }
-
-  calculateChapterPower(pieces = []) {
-    return pieces.reduce((sum, piece) => {
-      const analysis = this.missionsSystem.analyzePiece(piece);
-      return sum + (analysis.totalPower || 0);
-    }, 0);
+    return this.pieceCards?.getChapterTitle(piece) || `Capítulo ${piece.chapterId}`;
   }
 
   /**
-   * Crear árbol de libro
+   * Obtener HTML del resumen de estadísticas
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  getStatsSummaryHtml(totalPower, totalPieces) {
+    return this.pieceCards?.getStatsSummaryHtml(totalPower, totalPieces) || '';
+  }
+
+  /**
+   * Crear card de libro para vista mobile
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes) {
+    return this.pieceCards?.createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes);
+  }
+
+  /**
+   * Abrir bottom sheet de libro (mobile)
+   * 🔧 REFACTORING v2.9.201: Delegated to FrankensteinBottomSheet module
+   */
+  openBookBottomSheet(bookId) {
+    if (this.bottomSheet) {
+      this.bottomSheet.registerBook(bookId, this.mobileBooksData?.[bookId]);
+      this.bottomSheet.openBook(bookId);
+    }
+  }
+
+  /**
+   * Configurar controles del bottom sheet
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  setupBookBottomSheetControls(sheet, bookId, bookData) {
+    this.pieceCards?.setupBookBottomSheetControls(sheet, bookId, bookData);
+  }
+
+  /**
+   * Cerrar bottom sheet de libro
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  closeBookBottomSheet() {
+    if (this.bottomSheet) { this.bottomSheet.close(); }
+  }
+
+  /**
+   * Renderizar capítulos del libro en mobile
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  renderMobileBookChapters(container, bookId, bookData) {
+    this.pieceCards?.renderMobileBookChapters(container, bookId, bookData);
+  }
+
+  /**
+   * Crear card de pieza para mobile
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  createMobilePieceCard(piece) {
+    return this.pieceCards?.createMobilePieceCard(piece);
+  }
+
+  /**
+   * Actualizar estado del botón de acción en mobile piece card
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  updateMobilePieceActionState(button, card) {
+    this.pieceCards?.updateMobilePieceActionState(button, card);
+  }
+
+  /**
+   * Verificar si una pieza está seleccionada
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  isPieceSelected(pieceId) {
+    return this.pieceCards?.isPieceSelected(pieceId) || false;
+  }
+
+  /**
+   * Calcular poder total de un capítulo
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
+   */
+  calculateChapterPower(pieces = []) {
+    return this.pieceCards?.calculateChapterPower(pieces) || 0;
+  }
+
+  /**
+   * Crear árbol de libro (vista desktop)
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   createBookTree(bookId, bookData) {
-    const bookItem = document.createElement('div');
-    bookItem.className = 'book-tree-item';
-    bookItem.dataset.bookId = bookId;
-
-    // Calcular total de piezas, poder y atributos agregados
-    let totalPieces = 0;
-    let totalPower = 0;
-    const aggregatedAttributes = {};
-
-    Object.values(bookData.chapters).forEach(ch => {
-      totalPieces += ch.pieces.length;
-      ch.pieces.forEach(piece => {
-        const analysis = this.missionsSystem.analyzePiece(piece);
-        totalPower += analysis.totalPower;
-
-        // Agregar atributos
-        Object.entries(analysis.attributes).forEach(([attr, value]) => {
-          if (!aggregatedAttributes[attr]) {
-            aggregatedAttributes[attr] = 0;
-          }
-          aggregatedAttributes[attr] += value;
-        });
-      });
-    });
-
-    // Crear HTML de atributos
-    const attributesHTML = Object.entries(aggregatedAttributes)
-      .map(([attr, value]) => {
-        const attrData = this.missionsSystem.attributes[attr];
-        // Validar que attrData existe antes de acceder a sus propiedades
-        if (!attrData) {
-          return '';
-        }
-        return `<span class="tree-attribute" title="${attrData.name}: +${value}">${attrData.icon}${value}</span>`;
-      })
-      .join('');
-
-    const chapterCount = Object.keys(bookData.chapters).length;
-
-    const isCompactView = window.innerWidth <= 768;
-    const subtitleText = isCompactView
-      ? `${chapterCount} caps • ${totalPieces} piezas`
-      : `${chapterCount} capítulos • ${totalPieces} piezas de conocimiento`;
-
-    if (this.isMobileViewport()) {
-      return this.createBookCardMobile(bookId, bookData, subtitleText, totalPieces, totalPower, aggregatedAttributes);
-    }
-
-    bookItem.innerHTML = `
-      <div class="book-tree-header">
-        <div class="book-tree-leading">
-          <span class="book-tree-toggle" title="Abrir/Cerrar libro">▶</span>
-          <span class="book-tree-icon">📚</span>
-        </div>
-        <div class="book-tree-title">
-          <div class="book-tree-title-text">${bookData.bookTitle}</div>
-          <div class="book-tree-subtitle">${subtitleText}</div>
-        </div>
-        <div class="book-tree-stats">
-          <span class="book-tree-power" title="Poder total">⚡ ${totalPower}</span>
-          <span class="book-tree-count" title="Piezas totales">📦 ${totalPieces}</span>
-        </div>
-      </div>
-      <div class="book-tree-attributes">
-        ${attributesHTML}
-      </div>
-      <div class="book-tree-content">
-        <div class="book-chapters" id="chapters-${bookId}">
-          <!-- Capítulos se insertan aquí -->
-        </div>
-      </div>
-    `;
-
-    const header = bookItem.querySelector('.book-tree-header');
-    const toggle = bookItem.querySelector('.book-tree-toggle');
-    const content = bookItem.querySelector('.book-tree-content');
-
-    header.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const isOpen = content.classList.contains('open');
-      const grid = document.getElementById('pieces-grid');
-      const stickyHeader = document.getElementById('requirements-sticky-header');
-
-      if (isOpen) {
-        // Cerrar este libro
-        toggle.classList.remove('open');
-        header.classList.remove('open');
-        content.classList.remove('open');
-        bookItem.classList.remove('expanded');
-
-        // Quitar clase del grid
-        if (grid) {
-          grid.classList.remove('has-expanded-book');
-        }
-
-        // Remover clase del body
-        document.body.classList.remove('book-expanded');
-
-        // Ocultar sticky header al cerrar libro
-        if (stickyHeader) {
-          stickyHeader.classList.remove('visible');
-        }
-      } else {
-        // COMPORTAMIENTO DE ACORDEÓN: Cerrar todos los demás libros primero
-        document.querySelectorAll('.book-tree-content.open').forEach(openContent => {
-          const openItem = openContent.closest('.book-tree-item');
-          const openToggle = openItem.querySelector('.book-tree-toggle');
-          const openHeader = openItem.querySelector('.book-tree-header');
-          openToggle.classList.remove('open');
-          openHeader.classList.remove('open');
-          openContent.classList.remove('open');
-          openItem.classList.remove('expanded');
-        });
-
-        // Abrir este libro y expandirlo
-        toggle.classList.add('open');
-        header.classList.add('open');
-        content.classList.add('open');
-        bookItem.classList.add('expanded');
-
-        // Añadir clase al grid para mostrar solo este libro
-        if (grid) {
-          grid.classList.add('has-expanded-book');
-        }
-
-        // Agregar clase al body para ocultar elementos
-        document.body.classList.add('book-expanded');
-
-        // Mostrar sticky header al expandir libro
-        if (stickyHeader) {
-          stickyHeader.classList.add('visible');
-          this.updateStickyRequirementsHeader();
-        }
-
-        // No hacer scroll automático - el libro ahora es absolute y toma control de la vista
-      }
-    });
-
-    // Añadir capítulos
-    const chaptersContainer = bookItem.querySelector(`#chapters-${bookId}`);
-    Object.entries(bookData.chapters).forEach(([chapterId, chapterData]) => {
-      const chapterTree = this.createChapterTree(bookId, chapterId, chapterData);
-      chaptersContainer.appendChild(chapterTree);
-    });
-
-    return bookItem;
+    return this.pieceCards?.createBookTree(bookId, bookData);
   }
 
   /**
-   * Crear árbol de capítulo
+   * Crear árbol de capítulo (vista desktop)
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   createChapterTree(bookId, chapterId, chapterData) {
-    const chapterItem = document.createElement('div');
-    chapterItem.className = 'chapter-tree-item';
-    chapterItem.dataset.chapterId = chapterId;
-
-    // Calcular poder total y atributos del capítulo
-    let totalPower = 0;
-    const aggregatedAttributes = {};
-
-    chapterData.pieces.forEach(piece => {
-      const analysis = this.missionsSystem.analyzePiece(piece);
-      totalPower += analysis.totalPower;
-
-      // Agregar atributos
-      Object.entries(analysis.attributes).forEach(([attr, value]) => {
-        if (!aggregatedAttributes[attr]) {
-          aggregatedAttributes[attr] = 0;
-        }
-        aggregatedAttributes[attr] += value;
-      });
-    });
-
-    // Asegurar que tenemos un título válido
-    const chapterTitle = chapterData.chapterTitle || `Capítulo ${chapterId}`;
-
-    // Crear HTML de atributos
-    const attributesHTML = Object.entries(aggregatedAttributes)
-      .map(([attr, value]) => {
-        const attrData = this.missionsSystem.attributes[attr];
-        // Validar que attrData existe antes de acceder a sus propiedades
-        if (!attrData) {
-          return '';
-        }
-        return `<span class="tree-attribute" title="${attrData.name}: +${value}">${attrData.icon}${value}</span>`;
-      })
-      .join('');
-
-    chapterItem.innerHTML = `
-      <div class="chapter-tree-header">
-        <span class="chapter-tree-toggle">▶</span>
-        <span class="chapter-tree-icon">📖</span>
-        <span class="chapter-tree-title">${chapterTitle}</span>
-        <span class="chapter-tree-stats">
-          <span class="chapter-tree-count" title="Piezas">${chapterData.pieces.length}</span>
-          <span class="chapter-tree-power" title="Poder total">⚡${totalPower}</span>
-        </span>
-      </div>
-      <div class="chapter-tree-attributes">
-        ${attributesHTML}
-      </div>
-      <div class="chapter-tree-content">
-        <div class="chapter-pieces" id="pieces-${bookId}-${chapterId}">
-          <!-- Piezas se insertan aquí -->
-        </div>
-      </div>
-    `;
-
-    const header = chapterItem.querySelector('.chapter-tree-header');
-    const toggle = chapterItem.querySelector('.chapter-tree-toggle');
-    const content = chapterItem.querySelector('.chapter-tree-content');
-
-    header.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const isOpen = content.classList.contains('open');
-
-      if (isOpen) {
-        toggle.classList.remove('open');
-        header.classList.remove('open');
-        content.classList.remove('open');
-      } else {
-        toggle.classList.add('open');
-        header.classList.add('open');
-        content.classList.add('open');
-      }
-    });
-
-    // Añadir piezas
-    const piecesContainer = chapterItem.querySelector(`#pieces-${bookId}-${chapterId}`);
-    chapterData.pieces.forEach(piece => {
-      const card = this.createPieceCard(piece);
-      piecesContainer.appendChild(card);
-    });
-
-    return chapterItem;
+    return this.pieceCards?.createChapterTree(bookId, chapterId, chapterData);
   }
 
   /**
-   * Crear carta de pieza
+   * Crear carta de pieza (vista desktop)
+   * 🔧 REFACTORING v2.9.154: Delegated to FrankensteinPieceCards module
    */
   createPieceCard(piece) {
-    const card = document.createElement('div');
-    card.className = 'piece-card';
-    card.dataset.pieceId = piece.id;
-    card.dataset.type = piece.type;
-    card.style.borderColor = piece.color;
-
-    // Analizar atributos que aporta esta pieza
-    const analysis = this.missionsSystem.analyzePiece(piece);
-    const attributesHTML = Object.entries(analysis.attributes || {})
-      .map(([attr, value]) => {
-        const attrData = this.missionsSystem.attributes[attr];
-        // Validar que attrData existe antes de acceder a sus propiedades
-        if (!attrData) {
-          return '';
-        }
-        return `<span class="piece-attribute"
-          data-tooltip-type="attribute"
-          data-tooltip-name="${attrData.name}"
-          data-tooltip-icon="${attrData.icon}"
-          data-tooltip-value="${value}"
-          data-tooltip-desc="${attrData.description || attrData.name}"
-        >${attrData.icon} ${value}</span>`;
-      })
-      .join(' ');
-
-    card.innerHTML = `
-      <span class="piece-icon">${piece.icon}</span>
-      <span class="piece-type-badge">${this.getTypeLabel(piece.type)}</span>
-      <span class="piece-title">${piece.title}</span>
-      <div class="piece-attributes-preview">
-        ${attributesHTML}
-      </div>
-      <span class="piece-power">⚡ ${analysis.totalPower}</span>
-    `;
-
-    card.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.togglePieceSelectionEnhanced(piece, card);
-    });
-
-    return card;
+    return this.pieceCards?.createPieceCard(piece);
   }
-
-  /**
-   * Obtener etiqueta de tipo
-   */
-  getTypeLabel(type) {
-    const labels = {
-      chapter: 'Capítulo',
-      exercise: 'Ejercicio',
-      resource: 'Recurso'
-    };
-    return labels[type] || type;
-  }
-
-  /**
-   * Toggle selección de pieza
-   */
-  async togglePieceSelection(piece, card) {
-    // Si ya está seleccionada, deseleccionar
-    if (card.classList.contains('selected')) {
-      card.classList.remove('selected');
-      this.selectedPieces = this.selectedPieces.filter(p => p.id !== piece.id);
-
-      // Actualizar display del ser
-      this.updateBeingFromPieces();
-      // Update requirements panel
-      this.updateRequirementsPanel();
-      return;
-    }
-
-    // Máximo 12 piezas
-    if (this.selectedPieces.length >= 12) {
       this.showNotification('Máximo 12 piezas para un ser', 'warning');
       return;
     }
@@ -3175,50 +2238,20 @@ class FrankensteinLabUI {
 
   /**
    * Actualizar display del avatar
+   * 🔧 REFACTORING v2.9.201: Delegado a FrankensteinAvatarGenerator
    */
   updateAvatarDisplay() {
-    const container = this.domCache.beingAvatar || document.getElementById('being-avatar-display');
-    if (!container) return;
-
-    // Si no hay sistema de avatares o no hay ser, ocultar
-    if (!this.avatarSystem || !this.currentBeing || this.selectedPieces.length === 0) {
-      container.style.display = 'none';
-      return;
+    if (this.avatarGenerator) {
+      this.avatarGenerator.updateDisplay(this.currentBeing, this.selectedPieces);
+    } else {
+      // Fallback: ocultar contenedor si no hay generador
+      const container = this.domCache.beingAvatar || document.getElementById('being-avatar-display');
+      if (container) {
+        container.style.display = 'none';
+      }
     }
-
-    // Generar avatar y visualizaciones
-    const avatarUrl = this.avatarSystem.generateAvatarUrl(this.currentBeing);
-    const beingEmoji = this.avatarSystem.getBeingEmoji(this.currentBeing);
-    const bgGradient = this.avatarSystem.generateBeingGradient(this.currentBeing);
-    const radarChart = this.avatarSystem.generateRadarChart(this.currentBeing.attributes, 180);
-
-    // Mostrar y renderizar
-    container.style.display = 'block';
-    container.style.background = bgGradient;
-    container.style.borderRadius = '12px';
-    container.style.border = '2px solid rgba(139, 115, 85, 0.4)';
-    container.style.backdropFilter = 'blur(10px)';
-
-    container.innerHTML = `
-      <div style="display: flex; gap: 2rem; align-items: center; justify-content: center; flex-wrap: wrap;">
-        <div style="position: relative;">
-          <div style="width: 140px; height: 140px; border-radius: 50%; overflow: hidden; border: 3px solid var(--franken-brass); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); background: rgba(0, 0, 0, 0.2);">
-            <img src="${avatarUrl}" alt="Avatar del Ser" style="width: 100%; height: 100%; object-fit: cover;">
-          </div>
-          <div style="position: absolute; bottom: -10px; right: -10px; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--franken-brass), var(--franken-copper)); border: 2px solid var(--franken-parchment); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
-            ${beingEmoji}
-          </div>
-        </div>
-
-        <div style="flex: 1; min-width: 200px; max-width: 300px;">
-          ${radarChart}
-          <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--franken-parchment); opacity: 0.7; text-align: center;">
-            Gráfico de Atributos
-          </p>
-        </div>
-      </div>
-    `;
   }
+
 
   /**
    * Actualizar barras de atributos
@@ -3737,27 +2770,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Mostrar prompt en modal
    */
   showPromptModal(prompt) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
-    modal.style.zIndex = '9999';
-    modal.innerHTML = `
-      <div class="bg-slate-900 rounded-xl border-2 border-cyan-500 p-6 max-w-2xl w-full max-h-[80vh] overflow-auto">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-xl font-bold text-cyan-300">Prompt del Ser</h3>
-          <button class="text-white hover:text-red-400" onclick="this.closest('.fixed').remove()" aria-label="Cerrar modal"><span aria-hidden="true">✕</span></button>
-        </div>
-        <pre class="bg-slate-800 p-4 rounded text-sm text-gray-300 overflow-auto">${prompt}</pre>
-        <div class="mt-4 flex gap-2">
-          <button class="lab-button primary" onclick="navigator.clipboard.writeText(\`${prompt.replace(/`/g, '\\`')}\`); window.toast?.success('Copiado')">
-            📋 Copiar
-          </button>
-          <button class="lab-button" onclick="window.frankensteinLabUI.talkToBeing()">
-            💬 Hablar con el Ser
-          </button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
+    if (this.modals) {
+      this.modals.showPrompt(prompt);
+    }
   }
 
   /**
@@ -4010,16 +3025,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
   /**
    * Generar partículas flotantes decorativas
+   * @deprecated v2.9.201 - Use uiRenderer.generateFloatingParticles() instead
    */
   generateFloatingParticles() {
-    let html = '';
-    for (let i = 0; i < 20; i++) {
-      const x = Math.random() * 100;
-      const y = Math.random() * 100;
-      const delay = Math.random() * 6;
-      html += `<div class="floating-particle" style="left: ${x}%; top: ${y}%; animation-delay: ${delay}s;"></div>`;
-    }
-    return html;
+    return this.uiRenderer.generateFloatingParticles();
   }
 
   /**
@@ -4034,8 +3043,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       laboratory.addEventListener('click', (e) => e.stopPropagation());
     }
 
-    // Bottom Sheet - Swipe Gestures
-    this.initBottomSheetGestures();
+    // Bottom Sheet - Swipe Gestures (delegado al módulo)
+    if (this.bottomSheet) {
+      this.bottomSheet.init();
+    }
 
     // Bottom Sheet - Header Click
     document.getElementById('bottom-sheet-header-click')?.addEventListener('click', (e) => {
@@ -4740,124 +3751,8 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Mostrar modal de seres guardados
    */
   showSavedBeingsModal() {
-    const savedBeings = this.loadBeings();
-
-    const modal = document.createElement('div');
-    modal.id = 'saved-beings-modal';
-
-    modal.innerHTML = `
-      <div class="saved-beings-header">
-        <h3>🗂️ Seres Guardados</h3>
-        <button class="saved-beings-close" onclick="this.closest('#saved-beings-modal').remove()" aria-label="Cerrar seres guardados"><span aria-hidden="true">✕</span></button>
-      </div>
-
-      <div class="saved-beings-body scrollable">
-        ${savedBeings.length === 0 ? `
-          <div class="empty-beings-state" style="text-align: center; padding: 4rem 2rem;">
-            <svg width="120" height="120" viewBox="0 0 120 120" style="margin: 0 auto 2rem; opacity: 0.3;">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--franken-brass)" stroke-width="2"/>
-              <path d="M 40 50 L 50 60 L 40 70 M 80 50 L 70 60 L 80 70" stroke="var(--franken-brass)" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path d="M 45 85 Q 60 95 75 85" stroke="var(--franken-brass)" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </svg>
-            <p style="color: var(--franken-parchment); font-size: 1.2rem; margin-bottom: 0.5rem;">No hay seres guardados todavía</p>
-            <p style="color: rgba(244, 233, 216, 0.6); font-size: 0.9rem;">Crea un ser y usa el botón "Guardar Ser" para preservarlo</p>
-          </div>
-        ` : `
-          <div class="beings-grid responsive">
-            ${savedBeings.map(saved => {
-              // Manejar tanto estructura antigua como nueva (demo data)
-              const totalPower = saved.totalPower || saved.being?.totalPower || 0;
-              const pieceCount = saved.pieceCount || saved.pieces?.length || 0;
-              const timestamp = saved.timestamp || saved.createdAt;
-
-              // Generar avatar URL y colores si el sistema está disponible
-              let avatarUrl = '';
-              let bgGradient = '';
-              let beingEmoji = '🧬';
-              let radarChart = '';
-
-              if (this.avatarSystem && saved.being) {
-                avatarUrl = this.avatarSystem.generateAvatarUrl(saved.being);
-                bgGradient = this.avatarSystem.generateBeingGradient(saved.being);
-                beingEmoji = this.avatarSystem.getBeingEmoji(saved.being);
-                radarChart = this.avatarSystem.generateRadarChart(saved.being.attributes, 120);
-              }
-
-              const attrEntries = Object.entries(saved.being?.attributes || {})
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 6);
-              const attributesHTML = attrEntries.length
-                ? attrEntries.map(([attr, value]) => {
-                    const attrData = this.missionsSystem.attributes[attr];
-                    return `<span class="being-card-attribute-pill">${attrData?.icon || '📊'} ${attrData?.name || attr}: ${value}</span>`;
-                  }).join('')
-                : '<span class="being-card-attribute-pill">Sin atributos calculados</span>';
-              const missionName = saved.mission?.name || 'Misión desconocida';
-
-              return `
-                <div class="being-card" style="background: ${bgGradient || 'rgba(34, 28, 23, 0.6)'}; border: 2px solid rgba(139, 115, 85, 0.4); backdrop-filter: blur(10px);">
-                  <div class="being-card-header">
-                    <div class="being-card-avatar">
-                      ${avatarUrl
-                        ? `<img src="${avatarUrl}" alt="${saved.name || 'Ser guardado'}">`
-                        : beingEmoji}
-                    </div>
-                    <div class="being-card-info">
-                      <p class="being-card-date">${new Date(timestamp).toLocaleString('es-ES')}</p>
-                      <h4 class="being-card-name">${saved.name || 'Ser guardado'}</h4>
-                      <p class="being-card-mission">🎯 ${missionName}</p>
-                      <div class="being-card-stats">
-                        <span>⚡ ${Math.round(totalPower)} poder</span>
-                        <span>🧩 ${pieceCount} piezas</span>
-                      </div>
-                    </div>
-                    <div class="being-card-actions">
-                      <button
-                        class="lab-button secondary"
-                        onclick="window.frankensteinLabUI.loadBeing('${saved.id}'); document.getElementById('saved-beings-modal').remove()">
-                        📥 Cargar
-                      </button>
-                      <button
-                        class="lab-button danger"
-                        onclick="if(confirm('¿Eliminar este ser?')) { window.frankensteinLabUI.deleteBeing('${saved.id}'); this.closest('.being-card').remove(); if(document.querySelectorAll('.being-card').length === 0) { document.getElementById('saved-beings-modal').remove(); window.frankensteinLabUI.showSavedBeingsModal(); } }">
-                        🗑️ Eliminar
-                      </button>
-                    </div>
-                  </div>
-                  <div class="being-card-body">
-                    ${radarChart ? `<div class="being-card-radar">${radarChart}</div>` : ''}
-                    <div class="being-card-attributes">
-                      ${attributesHTML}
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `}
-      </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    // Añadir bloqueo de scroll del body
-    document.body.classList.add('modal-open');
-
-    // Inicializar swipe-to-close si mobileGestures está disponible
-    if (window.mobileGestures) {
-      window.mobileGestures.setupSwipeToCloseModal(modal, () => {
-        modal.remove();
-        document.body.classList.remove('modal-open');
-      });
-    }
-
-    // Añadir listener al botón de cerrar
-    const closeButton = modal.querySelector('.saved-beings-close');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        modal.remove();
-        document.body.classList.remove('modal-open');
-      });
+    if (this.modals) {
+      this.modals.showSavedBeings();
     }
   }
 
@@ -4874,10 +3769,20 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * ========================================
    */
 
+  // ==========================================
+  // 🔧 DEPRECATED FUNCTIONS - Migrated to FrankensteinBottomSheet
+  // Kept for reference only - DO NOT USE
+  // ==========================================
+
   /**
+   * @deprecated Use FrankensteinBottomSheet.init() instead
    * Initialize Bottom Sheet Swipe Gestures
    */
   initBottomSheetGestures() {
+    // DEPRECATED: Functionality moved to FrankensteinBottomSheet module
+    logger.warn('⚠️ initBottomSheetGestures is deprecated. Use bottomSheet.init() instead.');
+    return;
+    /* ORIGINAL CODE COMMENTED OUT:
     const bottomSheet = document.getElementById('pieces-bottom-sheet');
     const handle = document.getElementById('bottom-sheet-handle');
 
@@ -4958,9 +3863,11 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     }, { passive: true });
 
     this.currentBottomSheetState = 'collapsed';
+    */
   }
 
   /**
+   * @deprecated Use FrankensteinBottomSheet.getBottomSheetTransform() instead
    * Get transform value for current state
    */
   getBottomSheetTransform(state) {
@@ -4973,9 +3880,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   }
 
   /**
+   * @deprecated Use FrankensteinBottomSheet.expand() instead
    * Expand Bottom Sheet (up)
    */
   expandBottomSheet(currentState) {
+    logger.warn('⚠️ expandBottomSheet is deprecated');
+    return currentState;
+    /* ORIGINAL CODE:
     if (currentState === 'collapsed') {
       this.setBottomSheetState('half');
       return 'half';
@@ -4987,9 +3898,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   }
 
   /**
+   * @deprecated Use FrankensteinBottomSheet.collapse() instead
    * Collapse Bottom Sheet (down)
    */
   collapseBottomSheet(currentState) {
+    logger.warn('⚠️ collapseBottomSheet is deprecated');
+    return currentState;
+    /* ORIGINAL CODE:
     if (currentState === 'full') {
       this.setBottomSheetState('half');
       return 'half';
@@ -5001,9 +3916,13 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   }
 
   /**
+   * @deprecated Use FrankensteinBottomSheet.setState() instead
    * Set Bottom Sheet State
    */
   setBottomSheetState(state) {
+    logger.warn('⚠️ setBottomSheetState is deprecated');
+    return;
+    /* ORIGINAL CODE:
     const bottomSheet = document.getElementById('pieces-bottom-sheet');
     if (!bottomSheet) return;
 
@@ -5014,18 +3933,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
   /**
    * Toggle Bottom Sheet (click on header)
    */
+  // 🔧 REFACTORING v2.9.201: Wrapper - delegado a FrankensteinBottomSheet
   toggleBottomSheet() {
-    const currentState = this.currentBottomSheetState || 'collapsed';
-
-    if (currentState === 'collapsed') {
-      this.setBottomSheetState('half');
-      this.currentBottomSheetState = 'half';
-    } else if (currentState === 'half') {
-      this.setBottomSheetState('full');
-      this.currentBottomSheetState = 'full';
-    } else {
-      this.setBottomSheetState('collapsed');
-      this.currentBottomSheetState = 'collapsed';
+    if (this.bottomSheet) {
+      this.bottomSheet.toggle();
     }
   }
 
@@ -8212,6 +7123,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     if (this.vitruvianPopupTimeout) {
       clearTimeout(this.vitruvianPopupTimeout);
       this.vitruvianPopupTimeout = null;
+    }
+
+    // 🔧 REFACTORING v2.9.201: Cleanup FrankensteinModals
+    if (this.modals) {
+      this.modals.destroy();
+      this.modals = null;
+    }
+
+    // 🔧 REFACTORING v2.9.201: Cleanup FrankensteinUIRenderer
+    if (this.uiRenderer) {
+      this.uiRenderer.destroy();
+      this.uiRenderer = null;
     }
 
     const container = document.getElementById('organism-container');

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SettingsModal - Modal centralizado de configuración
  *
  * Integra todos los settings de los diferentes helpers en un único modal
@@ -96,7 +97,8 @@ class SettingsModal {
             }
         };
 
-        window.addEventListener('resize', this.resizeHandler);
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        this._addEventListener(window, 'resize', this.resizeHandler);
 
         // Inicializar Lucide icons
         if (window.lucide) {
@@ -866,7 +868,7 @@ class SettingsModal {
     async loadVoices() {
         // 🔧 FIX #76: Prevenir múltiples cargas simultáneas
         if (this.loadingVoices) {
-            console.log('[Settings] ⏭️ Ya hay una carga de voces en progreso');
+            logger.debug('[Settings] ⏭️ Ya hay una carga de voces en progreso');
             return;
         }
 
@@ -884,7 +886,7 @@ class SettingsModal {
             getVoices: typeof window.speechSynthesis?.getVoices
         };
 
-        console.log('[Settings] 🎤 Cargando voces...', diagnosis);
+        logger.debug('[Settings] 🎤 Cargando voces...', diagnosis);
 
         if (!audioReader || !selectElement) {
             console.warn('[Settings] ⚠️ No se puede cargar voces', diagnosis);
@@ -897,12 +899,12 @@ class SettingsModal {
         try {
             // Intentar obtener voces directamente de speechSynthesis primero
             const directVoices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-            console.log('[Settings] 📞 Voces directas de speechSynthesis:', directVoices.length);
+            logger.debug('[Settings] 📞 Voces directas de speechSynthesis:', directVoices.length);
 
             const availableVoices = await audioReader.getAvailableVoices();
             const selectedVoiceURI = audioReader.selectedVoiceURI || audioReader.selectedVoice?.voiceURI || '';
 
-            console.log('[Settings] 📋 Voces de audioReader:', availableVoices.length);
+            logger.debug('[Settings] 📋 Voces de audioReader:', availableVoices.length);
 
             // 🔧 FIX #77: Eliminar toast diagnóstico que se muestra siempre
             // Solo mostrar toasts en caso de éxito o error final
@@ -917,7 +919,7 @@ class SettingsModal {
                 const retryLoad = async () => {
                     // 🔧 FIX #76: Verificar si la carga fue cancelada
                     if (this.voicesLoadCancelled) {
-                        console.log('[Settings] 🛑 Carga de voces cancelada');
+                        logger.debug('[Settings] 🛑 Carga de voces cancelada');
                         this.loadingVoices = false;
                         return;
                     }
@@ -927,7 +929,7 @@ class SettingsModal {
 
                     // 🔧 FIX #76: Verificar nuevamente después del delay
                     if (this.voicesLoadCancelled) {
-                        console.log('[Settings] 🛑 Carga de voces cancelada durante delay');
+                        logger.debug('[Settings] 🛑 Carga de voces cancelada durante delay');
                         this.loadingVoices = false;
                         return;
                     }
@@ -935,7 +937,7 @@ class SettingsModal {
                     const retryVoices = await audioReader.getAvailableVoices();
                     const retryDirect = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
 
-                    console.log(`[Settings] 🔄 Reintento ${retryCount}/${maxRetries}:`, retryVoices.length, '/', retryDirect.length);
+                    logger.debug(`[Settings] 🔄 Reintento ${retryCount}/${maxRetries}:`, retryVoices.length, '/', retryDirect.length);
 
                     if (retryVoices.length > 0 || retryDirect.length > 0) {
                         const voicesToUse = retryVoices.length > 0 ? retryVoices : retryDirect.filter(v => v.lang.startsWith('es'));
@@ -968,13 +970,14 @@ class SettingsModal {
                     ${voice.name} ${voice.lang ? `(${voice.lang})` : ''}
                 </option>
             `).join('');
-            console.log('[Settings] ✅ Voces cargadas correctamente');
+            logger.debug('[Settings] ✅ Voces cargadas correctamente');
             this.loadingVoices = false; // 🔧 FIX #76: Resetear flag al completar exitosamente
         } catch (error) {
             console.error('[Settings] ❌ Error loading voices:', error);
-            selectElement.innerHTML = '<option value="">Error: ' + error.message + '</option>';
+            // 🔧 FIX v2.9.198: XSS prevention - sanitize error message
+            selectElement.innerHTML = '<option value="">Error: ' + (window.sanitizer?.sanitize(error.message) || Sanitizer.escapeHtml(error.message)) + '</option>';
             if (window.toast) {
-                window.toast.error('Error cargando voces: ' + error.message);
+                window.toast.error('Error cargando voces: ' + (window.sanitizer?.sanitize(error.message) || Sanitizer.escapeHtml(error.message)));
             }
             this.loadingVoices = false; // 🔧 FIX #76: Resetear flag al encontrar error
         }
@@ -1545,8 +1548,14 @@ class SettingsModal {
         const languageSelect = document.getElementById('language-select');
         if (languageSelect) {
             this._addEventListener(languageSelect, 'change', (e) => {
-                localStorage.setItem('app-language', e.target.value);
-                // console.log('[Settings] Language changed to:', e.target.value);
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    localStorage.setItem('app-language', e.target.value);
+                    // logger.debug('[Settings] Language changed to:', e.target.value);
+                } catch (error) {
+                    console.error('Error guardando idioma:', error);
+                    window.toast?.error('Error al guardar idioma. Intenta de nuevo.');
+                }
             });
         }
 
@@ -1580,7 +1589,12 @@ class SettingsModal {
         const autoAudioToggle = document.getElementById('auto-audio-toggle');
         if (autoAudioToggle) {
             this._addEventListener(autoAudioToggle, 'change', (e) => {
-                localStorage.setItem('auto-audio', e.target.checked);
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    localStorage.setItem('auto-audio', e.target.checked);
+                } catch (error) {
+                    console.error('Error guardando auto-audio:', error);
+                }
             });
         }
 
@@ -1588,9 +1602,14 @@ class SettingsModal {
         const achievementToggle = document.getElementById('achievement-notifications-toggle');
         if (achievementToggle) {
             this._addEventListener(achievementToggle, 'change', (e) => {
-                localStorage.setItem('show-achievement-notifications', e.target.checked);
-                if (window.toast) {
-                    window.toast.info(e.target.checked ? '✅ Notificaciones de logros activadas' : '🔕 Notificaciones de logros desactivadas');
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    localStorage.setItem('show-achievement-notifications', e.target.checked);
+                    if (window.toast) {
+                        window.toast.info(e.target.checked ? '✅ Notificaciones de logros activadas' : '🔕 Notificaciones de logros desactivadas');
+                    }
+                } catch (error) {
+                    console.error('Error guardando notificaciones de logros:', error);
                 }
             });
         }
@@ -1603,11 +1622,16 @@ class SettingsModal {
                 if (window.audioReader) {
                     window.audioReader.setVoice(voiceURI);
 
-                    // Guardar preferencia
-                    localStorage.setItem('preferred-tts-voice', voiceURI);
+                    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                    try {
+                        // Guardar preferencia
+                        localStorage.setItem('preferred-tts-voice', voiceURI);
 
-                    if (window.toast) {
-                        window.toast.success('Voz cambiada correctamente');
+                        if (window.toast) {
+                            window.toast.success('Voz cambiada correctamente');
+                        }
+                    } catch (error) {
+                        console.error('Error guardando voz preferida:', error);
                     }
                 }
             });
@@ -1621,28 +1645,37 @@ class SettingsModal {
             this._addEventListener(openaiKeyInput, 'change', (e) => {
             const apiKey = e.target.value.trim();
             if (apiKey && apiKey !== '••••••••••••••••') {
-                // Guardar API key
-                localStorage.setItem('openai-tts-key', apiKey);
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    // Guardar API key
+                    localStorage.setItem('openai-tts-key', apiKey);
 
-                // Configurar en TTSManager
-                if (window.TTSManager) {
-                    const ttsManager = new window.TTSManager();
-                    ttsManager.setOpenAIKey(apiKey);
+                    // Configurar en TTSManager
+                    if (window.TTSManager) {
+                        const ttsManager = new window.TTSManager();
+                        ttsManager.setOpenAIKey(apiKey);
+                    }
+
+                    // Mostrar confirmación
+                    if (window.toast) {
+                        window.toast.success('API Key guardada correctamente');
+                    }
+
+                    // Recargar UI para mostrar opciones
+                    this.updateContent();
+                } catch (error) {
+                    console.error('Error guardando API Key de OpenAI:', error);
+                    window.toast?.error('Error al guardar API Key. Intenta de nuevo.');
                 }
-
-                // Mostrar confirmación
-                if (window.toast) {
-                    window.toast.success('API Key guardada correctamente');
-                }
-
-                // Recargar UI para mostrar opciones
-                this.updateContent();
             }
         });
+        }
 
         // Botón "Probar"
         const testButton = document.getElementById('test-openai-voice-btn');
-        testButton?.addEventListener('click', async () => {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (testButton) {
+            this._addEventListener(testButton, 'click', async () => {
             const apiKey = localStorage.getItem('openai-tts-key');
             if (!apiKey) {
                 if (window.toast) {
@@ -1679,7 +1712,7 @@ class SettingsModal {
                     voice: selectedVoice,
                     speed: 1.0,
                     onEnd: () => {
-                        // console.log('✅ Prueba de voz completada');
+                        // logger.debug('✅ Prueba de voz completada');
                     },
                     onError: (error) => {
                         console.error('❌ Error en prueba de voz:', error);
@@ -1710,78 +1743,106 @@ class SettingsModal {
                 testButton.disabled = false;
                 testButton.textContent = 'Probar';
             }
-        });
+            });
+        }
 
         // Selector de voz OpenAI
         const openaiVoiceSelect = document.getElementById('openai-voice-select');
-        openaiVoiceSelect?.addEventListener('change', (e) => {
-            const voice = e.target.value;
-            localStorage.setItem('openai-voice', voice);
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (openaiVoiceSelect) {
+            this._addEventListener(openaiVoiceSelect, 'change', (e) => {
+                const voice = e.target.value;
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    localStorage.setItem('openai-voice', voice);
 
-            if (window.toast) {
-                window.toast.success(`Voz cambiada a ${voice}`);
-            }
-        });
+                    if (window.toast) {
+                        window.toast.success(`Voz cambiada a ${voice}`);
+                    }
+                } catch (error) {
+                    console.error('Error guardando voz de OpenAI:', error);
+                }
+            });
+        }
 
         // Toggle de caché
         const cacheToggle = document.getElementById('tts-cache-toggle');
-        cacheToggle?.addEventListener('change', (e) => {
-            const enabled = e.target.checked;
-            localStorage.setItem('tts-cache-enabled', enabled.toString());
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (cacheToggle) {
+            this._addEventListener(cacheToggle, 'change', (e) => {
+                const enabled = e.target.checked;
+                // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+                try {
+                    localStorage.setItem('tts-cache-enabled', enabled.toString());
 
-            if (window.TTSManager) {
-                const ttsManager = new window.TTSManager();
-                ttsManager.setCacheEnabled(enabled);
-            }
+                    if (window.TTSManager) {
+                        const ttsManager = new window.TTSManager();
+                        ttsManager.setCacheEnabled(enabled);
+                    }
 
-            if (window.toast) {
-                window.toast.success(enabled ? 'Caché activado' : 'Caché desactivado');
-            }
-        });
+                    if (window.toast) {
+                        window.toast.success(enabled ? 'Caché activado' : 'Caché desactivado');
+                    }
+                } catch (error) {
+                    console.error('Error guardando configuración de caché:', error);
+                }
+            });
+        }
 
         // ==================== ElevenLabs TTS Premium ====================
 
         // Selector de voz ElevenLabs
         const elevenLabsVoiceSelect = document.getElementById('elevenlabs-voice-select');
-        elevenLabsVoiceSelect?.addEventListener('change', (e) => {
-            const voice = e.target.value;
-            localStorage.setItem('elevenlabs-voice', voice);
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (elevenLabsVoiceSelect) {
+            this._addEventListener(elevenLabsVoiceSelect, 'change', (e) => {
+                const voice = e.target.value;
+                localStorage.setItem('elevenlabs-voice', voice);
 
-            if (window.toast) {
-                const voiceName = e.target.options[e.target.selectedIndex].text.split(' (')[0];
-                window.toast.success(`Voz cambiada a ${voiceName}`);
-            }
-        });
+                if (window.toast) {
+                    const voiceName = e.target.options[e.target.selectedIndex].text.split(' (')[0];
+                    window.toast.success(`Voz cambiada a ${voiceName}`);
+                }
+            });
+        }
 
         // Slider de estabilidad
         const stabilitySlider = document.getElementById('elevenlabs-stability-slider');
-        stabilitySlider?.addEventListener('input', (e) => {
-            const value = e.target.value;
-            // Actualizar label inmediatamente
-            const label = stabilitySlider.parentElement?.querySelector('.text-gray-500');
-            if (label) {
-                label.textContent = `(${value})`;
-            }
-            // 🔧 FIX #83: Debounce para guardar en localStorage
-            this.debouncedSliderSave('elevenlabs-stability', value, 300);
-        });
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (stabilitySlider) {
+            this._addEventListener(stabilitySlider, 'input', (e) => {
+                const value = e.target.value;
+                // Actualizar label inmediatamente
+                const label = stabilitySlider.parentElement?.querySelector('.text-gray-500');
+                if (label) {
+                    label.textContent = `(${value})`;
+                }
+                // 🔧 FIX #83: Debounce para guardar en localStorage
+                this.debouncedSliderSave('elevenlabs-stability', value, 300);
+            });
+        }
 
         // Slider de similitud
         const similaritySlider = document.getElementById('elevenlabs-similarity-slider');
-        similaritySlider?.addEventListener('input', (e) => {
-            const value = e.target.value;
-            // Actualizar label inmediatamente
-            const label = similaritySlider.parentElement?.querySelector('.text-gray-500');
-            if (label) {
-                label.textContent = `(${value})`;
-            }
-            // 🔧 FIX #83: Debounce para guardar en localStorage
-            this.debouncedSliderSave('elevenlabs-similarity', value, 300);
-        });
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (similaritySlider) {
+            this._addEventListener(similaritySlider, 'input', (e) => {
+                const value = e.target.value;
+                // Actualizar label inmediatamente
+                const label = similaritySlider.parentElement?.querySelector('.text-gray-500');
+                if (label) {
+                    label.textContent = `(${value})`;
+                }
+                // 🔧 FIX #83: Debounce para guardar en localStorage
+                this.debouncedSliderSave('elevenlabs-similarity', value, 300);
+            });
+        }
 
         // Botón de prueba ElevenLabs
         const testElevenLabsBtn = document.getElementById('test-elevenlabs-voice-btn');
-        testElevenLabsBtn?.addEventListener('click', async () => {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (testElevenLabsBtn) {
+            this._addEventListener(testElevenLabsBtn, 'click', async () => {
             // Verificar premium
             if (!window.aiPremium || !window.aiPremium.hasFeature('elevenlabs_tts')) {
                 if (window.toast) {
@@ -1846,98 +1907,110 @@ class SettingsModal {
                     lucide.createIcons();
                 }
             }
-        });
+            });
+        }
 
         // Toggle para usar ElevenLabs como provider predeterminado
         const elevenLabsDefaultToggle = document.getElementById('elevenlabs-as-default-toggle');
-        elevenLabsDefaultToggle?.addEventListener('change', (e) => {
-            const useElevenLabs = e.target.checked;
-            const usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (elevenLabsDefaultToggle) {
+            this._addEventListener(elevenLabsDefaultToggle, 'change', (e) => {
+                const useElevenLabs = e.target.checked;
+                const usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
 
-            if (useElevenLabs) {
-                // Si usa key personal, no necesita premium
-                if (!usePersonalKey) {
-                    // Verificar que tenga premium
-                    if (!window.aiPremium || !window.aiPremium.hasFeature('elevenlabs_tts')) {
-                        e.target.checked = false;
-                        if (window.toast) {
-                            window.toast.error('Requiere suscripción Premium o API key personal');
+                if (useElevenLabs) {
+                    // Si usa key personal, no necesita premium
+                    if (!usePersonalKey) {
+                        // Verificar que tenga premium
+                        if (!window.aiPremium || !window.aiPremium.hasFeature('elevenlabs_tts')) {
+                            e.target.checked = false;
+                            if (window.toast) {
+                                window.toast.error('Requiere suscripción Premium o API key personal');
+                            }
+                            return;
                         }
-                        return;
+                    }
+
+                    // Activar ElevenLabs
+                    localStorage.setItem('tts-provider', 'elevenlabs');
+                    if (window.audioReader) {
+                        window.audioReader.ttsProvider = 'elevenlabs';
+                    }
+                    if (window.toast) {
+                        window.toast.success('Voces ElevenLabs activadas');
+                    }
+                } else {
+                    // Volver a navegador
+                    localStorage.setItem('tts-provider', 'browser');
+                    if (window.audioReader) {
+                        window.audioReader.ttsProvider = 'browser';
+                    }
+                    if (window.toast) {
+                        window.toast.info('Volviendo a voces del navegador');
                     }
                 }
-
-                // Activar ElevenLabs
-                localStorage.setItem('tts-provider', 'elevenlabs');
-                if (window.audioReader) {
-                    window.audioReader.ttsProvider = 'elevenlabs';
-                }
-                if (window.toast) {
-                    window.toast.success('Voces ElevenLabs activadas');
-                }
-            } else {
-                // Volver a navegador
-                localStorage.setItem('tts-provider', 'browser');
-                if (window.audioReader) {
-                    window.audioReader.ttsProvider = 'browser';
-                }
-                if (window.toast) {
-                    window.toast.info('Volviendo a voces del navegador');
-                }
-            }
-        });
+            });
+        }
 
         // ==================== ElevenLabs API Key Personal ====================
 
         // Toggle para usar API key personal
         const usePersonalKeyToggle = document.getElementById('elevenlabs-use-personal-key-toggle');
-        usePersonalKeyToggle?.addEventListener('change', (e) => {
-            const usePersonal = e.target.checked;
-            localStorage.setItem('elevenlabs-use-personal-key', usePersonal.toString());
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (usePersonalKeyToggle) {
+            this._addEventListener(usePersonalKeyToggle, 'change', (e) => {
+                const usePersonal = e.target.checked;
+                localStorage.setItem('elevenlabs-use-personal-key', usePersonal.toString());
 
-            // Mostrar/ocultar sección de API key
-            const keySection = document.getElementById('elevenlabs-personal-key-section');
-            if (keySection) {
-                keySection.classList.toggle('hidden', !usePersonal);
-            }
-
-            // Actualizar provider si está activo
-            if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
-                window.audioReader.ttsManager.providers.elevenlabs.setUsePersonalKey(usePersonal);
-            }
-
-            if (window.toast) {
-                window.toast.info(usePersonal ? 'Usando API key personal' : 'Usando servicio Premium');
-            }
-        });
-
-        // Input de API key personal
-        const personalKeyInput = document.getElementById('elevenlabs-personal-key-input');
-        personalKeyInput?.addEventListener('change', (e) => {
-            const apiKey = e.target.value.trim();
-            if (apiKey && apiKey !== '••••••••••••••••') {
-                localStorage.setItem('elevenlabs-personal-key', apiKey);
-
-                // Configurar en provider
-                if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
-                    window.audioReader.ttsManager.providers.elevenlabs.setApiKey(apiKey);
+                // Mostrar/ocultar sección de API key
+                const keySection = document.getElementById('elevenlabs-personal-key-section');
+                if (keySection) {
+                    keySection.classList.toggle('hidden', !usePersonal);
                 }
 
-                // Habilitar botón de prueba
-                const testBtn = document.getElementById('test-elevenlabs-personal-key-btn');
-                if (testBtn) {
-                    testBtn.disabled = false;
+                // Actualizar provider si está activo
+                if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
+                    window.audioReader.ttsManager.providers.elevenlabs.setUsePersonalKey(usePersonal);
                 }
 
                 if (window.toast) {
-                    window.toast.success('API Key personal guardada');
+                    window.toast.info(usePersonal ? 'Usando API key personal' : 'Usando servicio Premium');
                 }
-            }
-        });
+            });
+        }
+
+        // Input de API key personal
+        const personalKeyInput = document.getElementById('elevenlabs-personal-key-input');
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (personalKeyInput) {
+            this._addEventListener(personalKeyInput, 'change', (e) => {
+                const apiKey = e.target.value.trim();
+                if (apiKey && apiKey !== '••••••••••••••••') {
+                    localStorage.setItem('elevenlabs-personal-key', apiKey);
+
+                    // Configurar en provider
+                    if (window.audioReader && window.audioReader.ttsManager && window.audioReader.ttsManager.providers.elevenlabs) {
+                        window.audioReader.ttsManager.providers.elevenlabs.setApiKey(apiKey);
+                    }
+
+                    // Habilitar botón de prueba
+                    const testBtn = document.getElementById('test-elevenlabs-personal-key-btn');
+                    if (testBtn) {
+                        testBtn.disabled = false;
+                    }
+
+                    if (window.toast) {
+                        window.toast.success('API Key personal guardada');
+                    }
+                }
+            });
+        }
 
         // Botón de prueba de API key personal
         const testPersonalKeyBtn = document.getElementById('test-elevenlabs-personal-key-btn');
-        testPersonalKeyBtn?.addEventListener('click', async () => {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (testPersonalKeyBtn) {
+            this._addEventListener(testPersonalKeyBtn, 'click', async () => {
             const apiKey = localStorage.getItem('elevenlabs-personal-key');
             if (!apiKey) {
                 if (window.toast) {
@@ -1986,7 +2059,8 @@ class SettingsModal {
                 testPersonalKeyBtn.disabled = false;
                 testPersonalKeyBtn.textContent = 'Probar';
             }
-        });
+            });
+        }
 
         // === Listeners de Caché de Audio ===
 
@@ -2123,33 +2197,37 @@ class SettingsModal {
 
         // 🔧 FIX #78: Provider change con auto-guardado
         const providerSelect = document.getElementById('settings-ai-provider-select');
-        providerSelect?.addEventListener('change', (e) => {
-            const newProvider = e.target.value;
-            logger.debug('[Settings] AI Provider changed to:', newProvider);
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (providerSelect) {
+            this._addEventListener(providerSelect, 'change', (e) => {
+                const newProvider = e.target.value;
+                logger.debug('[Settings] AI Provider changed to:', newProvider);
 
-            // Actualizar secciones dinámicas
-            const modelSection = document.getElementById('settings-ai-model-section');
-            const keySection = document.getElementById('settings-ai-key-section');
+                // Actualizar secciones dinámicas
+                const modelSection = document.getElementById('settings-ai-model-section');
+                const keySection = document.getElementById('settings-ai-key-section');
 
-            if (modelSection) {
-                modelSection.innerHTML = this.renderAIModelSelector(newProvider);
-            }
+                if (modelSection) {
+                    modelSection.innerHTML = this.renderAIModelSelector(newProvider);
+                }
 
-            if (keySection) {
-                keySection.innerHTML = this.renderAIKeyInput(newProvider);
-            }
+                if (keySection) {
+                    keySection.innerHTML = this.renderAIKeyInput(newProvider);
+                }
 
-            // Re-inicializar icons
-            if (window.Icons) {
-                window.Icons.init();
-            }
+                // Re-inicializar icons
+                if (window.Icons) {
+                    window.Icons.init();
+                }
 
-            // 🔧 FIX #78: Auto-guardar con debounce
-            this.autoSaveAIConfig();
-        });
+                // 🔧 FIX #78: Auto-guardar con debounce
+                this.autoSaveAIConfig();
+            });
+        }
 
         // 🔧 FIX #78: Model change con auto-guardado
-        document.addEventListener('change', (e) => {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration - delegated event
+        this._addEventListener(document, 'change', (e) => {
             if (e.target.id === 'settings-ai-model-select') {
                 logger.debug('[Settings] AI Model changed to:', e.target.value);
                 this.autoSaveAIConfig();
@@ -2158,13 +2236,18 @@ class SettingsModal {
 
         // 🔧 FIX #78: API Key input con auto-guardado
         const keyInput = document.getElementById('settings-ai-key-input');
-        keyInput?.addEventListener('input', () => {
-            this.autoSaveAIConfig();
-        });
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (keyInput) {
+            this._addEventListener(keyInput, 'input', () => {
+                this.autoSaveAIConfig();
+            });
+        }
 
         // Save button
         const saveButton = document.getElementById('save-ai-settings');
-        saveButton?.addEventListener('click', async () => {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (saveButton) {
+            this._addEventListener(saveButton, 'click', async () => {
             const provider = providerSelect?.value;
             const modelSelect = document.getElementById('settings-ai-model-select');
             const keyInput = document.getElementById('settings-ai-key-input');
@@ -2216,7 +2299,7 @@ class SettingsModal {
                 window.toast.success('✓ Configuración de IA guardada correctamente');
             }
 
-            // console.log('[Settings] AI configuration saved:', {
+            // logger.debug('[Settings] AI configuration saved:', {
             //     provider,
             //     model: modelSelect?.value,
             //     hasKey: !!keyInput?.value
@@ -2226,25 +2309,31 @@ class SettingsModal {
             this._setTimeout(() => {
                 this.updateContent();
             }, 500);
-        });
+            });
+        }
     }
 
     /**
      * Listeners del tab Seguridad
      */
     attachSecurityListeners() {
-        document.getElementById('incognito-toggle')?.addEventListener('change', (e) => {
-            localStorage.setItem('incognito-mode', e.target.checked);
-            // console.log('[Settings] Incognito mode:', e.target.checked);
-        });
+        const incognitoToggle = document.getElementById('incognito-toggle');
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (incognitoToggle) {
+            this._addEventListener(incognitoToggle, 'change', (e) => {
+                localStorage.setItem('incognito-mode', e.target.checked);
+                // logger.debug('[Settings] Incognito mode:', e.target.checked);
+            });
+        }
     }
 
     /**
      * Listeners del tab Apariencia
      */
     attachAppearanceListeners() {
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
         document.querySelectorAll('.theme-option').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            this._addEventListener(btn, 'click', (e) => {
                 const theme = e.currentTarget.dataset.theme;
                 localStorage.setItem('theme-preference', theme);
 
@@ -2264,7 +2353,10 @@ class SettingsModal {
      * Listeners del tab Sincronización
      */
     attachSyncListeners() {
-        document.getElementById('sync-now-btn')?.addEventListener('click', async () => {
+        const syncNowBtn = document.getElementById('sync-now-btn');
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (syncNowBtn) {
+            this._addEventListener(syncNowBtn, 'click', async () => {
             const btn = document.getElementById('sync-now-btn');
             if (btn) {
                 btn.disabled = true;
@@ -2293,20 +2385,29 @@ class SettingsModal {
                     btn.textContent = 'Sincronizar Ahora';
                 }
             }
-        });
+            });
+        }
 
-        document.getElementById('export-data-btn')?.addEventListener('click', () => {
-            if (window.fileExportHelper) {
-                window.fileExportHelper.exportFullBackup();
-            } else {
-                // Fallback: exportar datos manualmente
-                this.exportDataFallback();
-            }
-        });
+        const exportDataBtn = document.getElementById('export-data-btn');
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (exportDataBtn) {
+            this._addEventListener(exportDataBtn, 'click', () => {
+                if (window.fileExportHelper) {
+                    window.fileExportHelper.exportFullBackup();
+                } else {
+                    // Fallback: exportar datos manualmente
+                    this.exportDataFallback();
+                }
+            });
+        }
 
-        document.getElementById('import-data-btn')?.addEventListener('click', () => {
-            this.showImportDialog();
-        });
+        const importDataBtn = document.getElementById('import-data-btn');
+        // 🔧 FIX v2.9.199: Complete listener tracking migration
+        if (importDataBtn) {
+            this._addEventListener(importDataBtn, 'click', () => {
+                this.showImportDialog();
+            });
+        }
     }
 
     /**
@@ -2447,7 +2548,7 @@ class SettingsModal {
         } else if (window.showToast) {
             window.showToast(message, type);
         } else {
-            console.log(`[${type}] ${message}`);
+            logger.debug(`[${type}] ${message}`);
         }
     }
 
@@ -2555,7 +2656,7 @@ class SettingsModal {
         const timer = this._setTimeout(() => {
             localStorage.setItem(key, value);
             this.sliderDebounceTimers.delete(key);
-            console.log(`[Settings] 💾 Slider "${key}" guardado: ${value}`);
+            logger.debug(`[Settings] 💾 Slider "${key}" guardado: ${value}`);
         }, delay);
 
         this.sliderDebounceTimers.set(key, timer);
@@ -2633,14 +2734,14 @@ class SettingsModal {
     close() {
         // 🔧 FIX #76: Cancelar carga de voces si está en progreso
         if (this.loadingVoices) {
-            console.log('[Settings] 🛑 Cancelando carga de voces al cerrar modal');
+            logger.debug('[Settings] 🛑 Cancelando carga de voces al cerrar modal');
             this.voicesLoadCancelled = true;
             this.loadingVoices = false;
         }
 
         // 🔧 FIX #84: Cancelar audio de test si está reproduciéndose
         if (this.currentTestTTSManager) {
-            console.log('[Settings] 🛑 Deteniendo audio de test al cerrar modal');
+            logger.debug('[Settings] 🛑 Deteniendo audio de test al cerrar modal');
             try {
                 this.currentTestTTSManager.stop();
             } catch (e) {
@@ -2664,10 +2765,10 @@ class SettingsModal {
 
         // 🔧 FIX #83: Limpiar timers de debounce de sliders
         if (this.sliderDebounceTimers.size > 0) {
-            console.log('[Settings] 🧹 Limpiando timers de sliders pendientes');
+            logger.debug('[Settings] 🧹 Limpiando timers de sliders pendientes');
             this.sliderDebounceTimers.forEach((timer, key) => {
                 clearTimeout(timer);
-                console.log(`[Settings] Timer de "${key}" cancelado`);
+                logger.debug(`[Settings] Timer de "${key}" cancelado`);
             });
             this.sliderDebounceTimers.clear();
         }

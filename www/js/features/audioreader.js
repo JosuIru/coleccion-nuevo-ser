@@ -4,6 +4,7 @@
 // Usa @capacitor-community/text-to-speech para Android nativo
 // Fallback a Web Speech API para navegadores web
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioReader {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -36,8 +37,13 @@ class AudioReader {
 
     // Si no hay provider guardado, guardar 'browser' como predeterminado
     if (!savedProvider) {
-      localStorage.setItem('tts-provider', 'browser');
-      console.log('🔊 Configurando Google Web Speech API como motor de voz predeterminado');
+      // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+      try {
+        localStorage.setItem('tts-provider', 'browser');
+        logger.debug('🔊 Configurando Google Web Speech API como motor de voz predeterminado');
+      } catch (error) {
+        console.warn('[AudioReader] Error guardando provider predeterminado:', error);
+      }
     }
 
     // Wake Lock para mantener pantalla activa durante audio
@@ -246,13 +252,18 @@ class AudioReader {
         // Verificar si ElevenLabs está disponible
         if (this.ttsManager && this.ttsManager.providers && this.ttsManager.providers.elevenlabs) {
           this.ttsProvider = 'elevenlabs';
-          localStorage.setItem('tts-provider', 'elevenlabs');
-          console.log('✅ Usuario Premium detectado: ElevenLabs configurado automáticamente');
+          // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+          try {
+            localStorage.setItem('tts-provider', 'elevenlabs');
+            logger.debug('✅ Usuario Premium detectado: ElevenLabs configurado automáticamente');
+          } catch (error) {
+            console.warn('[AudioReader] Error guardando provider ElevenLabs:', error);
+          }
         } else {
-          console.log('ℹ️ Usuario Premium detectado, pero ElevenLabs no está disponible aún');
+          logger.debug('ℹ️ Usuario Premium detectado, pero ElevenLabs no está disponible aún');
         }
       } else {
-        console.log(`ℹ️ Usuario Premium usando provider guardado: ${savedProvider}`);
+        logger.debug(`ℹ️ Usuario Premium usando provider guardado: ${savedProvider}`);
       }
     }
   }
@@ -267,7 +278,7 @@ class AudioReader {
 
       // Si hay polyfill disponible, usarlo para carga más robusta
       if (window.ttsPolyfill) {
-        // console.log('🔧 Usando TTS Polyfill para carga robusta de voces...');
+        // logger.debug('🔧 Usando TTS Polyfill para carga robusta de voces...');
         try {
           await window.ttsPolyfill.waitForVoices(10000);
           this.selectBestVoice();
@@ -317,7 +328,7 @@ class AudioReader {
 
       const voices = this.synthesis.getVoices();
       if (!voices || voices.length === 0) {
-        console.log('⏳ Esperando voces TTS...');
+        logger.debug('⏳ Esperando voces TTS...');
         return;
       }
 
@@ -327,7 +338,7 @@ class AudioReader {
         const preferredVoice = voices.find(v => v.voiceURI === preferredVoiceURI);
         if (preferredVoice) {
           this.selectedVoice = preferredVoice;
-          console.log('✅ Voz TTS preferida cargada:', this.selectedVoice?.name, this.selectedVoice?.lang);
+          logger.debug('✅ Voz TTS preferida cargada:', this.selectedVoice?.name, this.selectedVoice?.lang);
           return;
         } else {
           console.warn('⚠️ Voz preferida no encontrada, seleccionando mejor alternativa');
@@ -341,7 +352,7 @@ class AudioReader {
         // Preferir voces de España
         const esES = spanishVoices.find(v => v.lang === 'es-ES');
         this.selectedVoice = esES || spanishVoices[0];
-        console.log('✅ Voz española seleccionada por defecto:', this.selectedVoice?.name, this.selectedVoice?.lang);
+        logger.debug('✅ Voz española seleccionada por defecto:', this.selectedVoice?.name, this.selectedVoice?.lang);
       } else {
         // Fallback a cualquier voz disponible
         this.selectedVoice = voices[0];
@@ -350,7 +361,7 @@ class AudioReader {
 
       // Mostrar lista de voces disponibles para debugging
       if (voices.length > 0) {
-        console.log(`📢 ${voices.length} voces TTS disponibles:`,
+        logger.debug(`📢 ${voices.length} voces TTS disponibles:`,
           voices.filter(v => v.lang && v.lang.startsWith('es')).map(v => `${v.name} (${v.lang})`).join(', ') ||
           voices.map(v => `${v.name} (${v.lang})`).slice(0, 5).join(', ')
         );
@@ -1118,9 +1129,16 @@ class AudioReader {
     try {
       // Si usa TTS nativo, guardar la voz seleccionada en localStorage
       if (this.nativeTTS) {
-        localStorage.setItem('preferred-tts-voice', voiceURI);
-        this.selectedVoiceURI = voiceURI;
-        logger.log('✅ Voz TTS nativa cambiada a:', voiceURI);
+        // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+        try {
+          localStorage.setItem('preferred-tts-voice', voiceURI);
+          this.selectedVoiceURI = voiceURI;
+          logger.log('✅ Voz TTS nativa cambiada a:', voiceURI);
+        } catch (storageError) {
+          console.warn('[AudioReader] Error guardando voz TTS nativa:', storageError);
+          // Configurar voz aunque no se guarde
+          this.selectedVoiceURI = voiceURI;
+        }
         return;
       }
 
@@ -1131,8 +1149,15 @@ class AudioReader {
       }
       const voices = this.synthesis.getVoices();
       this.selectedVoice = voices.find(v => v.voiceURI === voiceURI);
-      localStorage.setItem('preferred-tts-voice', voiceURI);
-      logger.log('✅ Voz cambiada a:', this.selectedVoice?.name);
+
+      // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+      try {
+        localStorage.setItem('preferred-tts-voice', voiceURI);
+        logger.log('✅ Voz cambiada a:', this.selectedVoice?.name);
+      } catch (storageError) {
+        console.warn('[AudioReader] Error guardando voz:', storageError);
+        // La voz ya está configurada en memoria, solo log
+      }
     } catch (error) {
       console.error('Error setting voice:', error);
     }
@@ -1141,7 +1166,12 @@ class AudioReader {
   async toggleAutoAdvance() {
     this.autoAdvanceChapter = !this.autoAdvanceChapter;
     // 🔧 FIX v2.9.196: Guardar estado en localStorage para persistencia
-    localStorage.setItem('audio-auto-advance', this.autoAdvanceChapter);
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('audio-auto-advance', this.autoAdvanceChapter);
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando auto-advance:', error);
+    }
     await this.updateUI();
 
     // Mostrar notificación al usuario
@@ -1154,7 +1184,12 @@ class AudioReader {
 
   async toggleWordByWord() {
     this.wordByWordEnabled = !this.wordByWordEnabled;
-    localStorage.setItem('audioreader-word-by-word', this.wordByWordEnabled);
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('audioreader-word-by-word', this.wordByWordEnabled);
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando word-by-word:', error);
+    }
 
     // Re-renderizar el párrafo actual si está activo
     if (this.wordByWordEnabled && this.paragraphs.length > 0) {
@@ -1212,7 +1247,12 @@ class AudioReader {
 
     // Cambiar provider
     this.ttsProvider = provider;
-    localStorage.setItem('tts-provider', provider);
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('tts-provider', provider);
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando provider:', error);
+    }
 
     if (this.ttsManager) {
       this.ttsManager.setProvider(provider);
@@ -1297,7 +1337,7 @@ class AudioReader {
           // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
           const pauseDuration = paragraph.pauseAfter || 300;
           if (paragraph.isExerciseStep && pauseDuration > 1000) {
-            console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+            logger.debug(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
             // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
             this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
           }
@@ -1319,7 +1359,7 @@ class AudioReader {
 
       // Si es el primer intento y el error es de inicialización, reintentar
       if (retryCount < 3 && error.message && error.message.includes('not ready')) {
-        console.log(`⚠️ TTS no listo, reintentando (${retryCount + 1}/3)...`);
+        logger.debug(`⚠️ TTS no listo, reintentando (${retryCount + 1}/3)...`);
         // 🔧 FIX v2.9.193: Usar _setTimeout tracked
         this._setTimeout(() => {
           if (this.isPlaying && !this.isPaused) {
@@ -1420,7 +1460,7 @@ class AudioReader {
         // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
         const pauseDuration = paragraph.pauseAfter || 300;
         if (paragraph.isExerciseStep && pauseDuration > 1000) {
-          console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+          logger.debug(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
           // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
           this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
         }
@@ -1496,7 +1536,7 @@ class AudioReader {
             // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
             const pauseDuration = paragraph.pauseAfter || 300;
             if (paragraph.isExerciseStep && pauseDuration > 1000) {
-              console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+              logger.debug(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
               // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
               this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
             }
@@ -1530,7 +1570,12 @@ class AudioReader {
           // Fallback automático a navegador
           logger.log('⚠️ Fallback a Web Speech API');
           this.ttsProvider = 'browser';
-          localStorage.setItem('tts-provider', 'browser');
+          // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+          try {
+            localStorage.setItem('tts-provider', 'browser');
+          } catch (storageError) {
+            console.warn('[AudioReader] Error guardando fallback provider:', storageError);
+          }
           this.ttsManager.setProvider('browser');
 
           // Reintentar con Web Speech API
@@ -1543,7 +1588,12 @@ class AudioReader {
 
       // Fallback a navegador
       this.ttsProvider = 'browser';
-      localStorage.setItem('tts-provider', 'browser');
+      // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+      try {
+        localStorage.setItem('tts-provider', 'browser');
+      } catch (storageError) {
+        console.warn('[AudioReader] Error guardando fallback provider:', storageError);
+      }
       this.speakWithWebSpeechAPI(paragraph, index);
     }
   }
@@ -1588,7 +1638,7 @@ class AudioReader {
             // 🔧 FIX v2.9.176: Pausa inteligente para ejercicios/meditaciones
             const pauseDuration = paragraph.pauseAfter || 300;
             if (paragraph.isExerciseStep && pauseDuration > 1000) {
-              console.log(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
+              logger.debug(`🧘 Pausa de ${(pauseDuration/1000).toFixed(0)}s después del paso de ejercicio`);
               // ⭐ MEJORA v2.9.178: Mostrar indicador visual de pausa
               this.showPauseIndicator(pauseDuration, paragraph.stepNumber, paragraph.totalSteps);
             }
@@ -1621,7 +1671,12 @@ class AudioReader {
           // Fallback automático a navegador
           logger.log('⚠️ Fallback a Web Speech API');
           this.ttsProvider = 'browser';
-          localStorage.setItem('tts-provider', 'browser');
+          // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+          try {
+            localStorage.setItem('tts-provider', 'browser');
+          } catch (storageError) {
+            console.warn('[AudioReader] Error guardando fallback provider:', storageError);
+          }
           if (this.ttsManager) {
             this.ttsManager.setProvider('browser');
           }
@@ -1636,7 +1691,12 @@ class AudioReader {
 
       // Fallback a navegador
       this.ttsProvider = 'browser';
-      localStorage.setItem('tts-provider', 'browser');
+      // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+      try {
+        localStorage.setItem('tts-provider', 'browser');
+      } catch (storageError) {
+        console.warn('[AudioReader] Error guardando fallback provider:', storageError);
+      }
       this.speakWithWebSpeechAPI(paragraph, index);
     }
   }
@@ -1809,17 +1869,17 @@ class AudioReader {
 
   async renderControls() {
     try {
-      console.log('🎧 renderControls() START - isMinimized:', this.isMinimized);
+      logger.debug('🎧 renderControls() START - isMinimized:', this.isMinimized);
 
       // 🔧 FIX v2.9.173: Evitar renderizados paralelos
       if (this.isRendering) {
-        console.log('⚠️ Ya hay un renderizado en progreso, cancelando...');
+        logger.debug('⚠️ Ya hay un renderizado en progreso, cancelando...');
         return;
       }
       this.isRendering = true;
 
       // ⭐ FIX v2.9.179: Detach event listeners ANTES de eliminar DOM (prevenir memory leaks)
-      console.log('🧹 Limpiando event listeners antes de eliminar DOM...');
+      logger.debug('🧹 Limpiando event listeners antes de eliminar DOM...');
       this.detachDragListeners();
       this.detachMinimizedPlayerGestures();
       // Los keyboard listeners se manejan separadamente más abajo
@@ -1837,12 +1897,12 @@ class AudioReader {
       elementsToClean.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-          console.log(`🧹 Removiendo elemento existente: ${id}`);
+          logger.debug(`🧹 Removiendo elemento existente: ${id}`);
           element.remove();
           elementsRemoved++;
         }
       });
-      console.log(`🧹 Total elementos removidos: ${elementsRemoved}`);
+      logger.debug(`🧹 Total elementos removidos: ${elementsRemoved}`);
 
       const bookData = this.bookEngine.getCurrentBookData();
       if (!bookData) {
@@ -1859,13 +1919,13 @@ class AudioReader {
 
       // Renderizar versión minimizada o expandida
       if (this.isMinimized) {
-        console.log('🎧 Rendering MINIMIZED player...');
+        logger.debug('🎧 Rendering MINIMIZED player...');
         const result = await this.renderMinimizedPlayer(bookData, tiempoEstimado);
         this.isRendering = false;
         return result;
       }
 
-      console.log('🎧 Rendering FULL player...');
+      logger.debug('🎧 Rendering FULL player...');
       // 🔧 FIX #53: Usar requestAnimationFrame para evitar bloquear el thread principal
       return new Promise(resolve => {
         requestAnimationFrame(() => {
@@ -2144,7 +2204,7 @@ class AudioReader {
       this.detachKeyboardListeners();
     }
     this.attachKeyboardListeners();
-    console.log('🎧 renderControls() DONE - FULL player');
+    logger.debug('🎧 renderControls() DONE - FULL player');
 
     // 🔧 FIX #53: Resolver la promesa después de completar el render
     this.isRendering = false;
@@ -2163,7 +2223,7 @@ class AudioReader {
     return new Promise(resolve => {
       requestAnimationFrame(() => {
         // Ya no limpiamos aquí - lo hace renderControls() antes de llamar a esta función
-        console.log('📱 Iniciando renderizado de MINIMIZED player...');
+        logger.debug('📱 Iniciando renderizado de MINIMIZED player...');
 
         // Detectar si hay bottom nav visible (móvil)
         const bottomNav = document.querySelector('.app-bottom-nav');
@@ -2286,7 +2346,7 @@ class AudioReader {
     }
     this.attachKeyboardListeners();
 
-    console.log('🎧 renderControls() DONE - MINIMIZED player');
+    logger.debug('🎧 renderControls() DONE - MINIMIZED player');
 
     // 🔧 FIX #53: Resolver la promesa después de completar el render
     resolve();
@@ -2375,11 +2435,11 @@ class AudioReader {
   }
 
   updateBottomNavAudioButton() {
-    console.log('🔵 updateBottomNavAudioButton ejecutándose...');
+    logger.debug('🔵 updateBottomNavAudioButton ejecutándose...');
 
     const audioTab = document.querySelector('[data-tab="audio"]');
     if (!audioTab) {
-      console.log('⚠️ No se encontró [data-tab="audio"]');
+      logger.debug('⚠️ No se encontró [data-tab="audio"]');
       return;
     }
 
@@ -2387,11 +2447,11 @@ class AudioReader {
     const label = audioTab.querySelector('.app-bottom-nav-label');
 
     if (!icon || !label) {
-      console.log('⚠️ No se encontró icon o label en audioTab');
+      logger.debug('⚠️ No se encontró icon o label en audioTab');
       return;
     }
 
-    console.log('📱 Actualizando bottom nav:', {
+    logger.debug('📱 Actualizando bottom nav:', {
       paragraphsCount: this.paragraphs.length,
       isPlaying: this.isPlaying,
       isPaused: this.isPaused
@@ -2402,20 +2462,20 @@ class AudioReader {
       // Hay contenido cargado
       if (this.isPlaying && !this.isPaused) {
         // Está reproduciendo → mostrar Pause
-        console.log('🔄 Cambiando a PAUSE (⏸️)');
+        logger.debug('🔄 Cambiando a PAUSE (⏸️)');
         icon.innerHTML = '⏸️';
         label.textContent = 'Pausa';
         audioTab.classList.add('active');
       } else {
         // Está pausado o detenido → mostrar Play
-        console.log('🔄 Cambiando a PLAY (▶️)');
+        logger.debug('🔄 Cambiando a PLAY (▶️)');
         icon.innerHTML = '▶️';
         label.textContent = 'Play';
         audioTab.classList.add('active');
       }
     } else {
       // Sin contenido → estado por defecto
-      console.log('🔄 Estado por defecto (🎧)');
+      logger.debug('🔄 Estado por defecto (🎧)');
       icon.innerHTML = '🎧';
       label.textContent = 'Audio';
       audioTab.classList.remove('active');
@@ -2424,15 +2484,15 @@ class AudioReader {
     // Actualizar el handler del click
     audioTab.onclick = async (e) => {
       e.preventDefault();
-      console.log('🎯 Click en audioTab del bottom nav');
+      logger.debug('🎯 Click en audioTab del bottom nav');
       if (this.paragraphs.length > 0) {
         // Play/Pause directo
         if (this.isPlaying && !this.isPaused) {
-          console.log('⏸️ Pausando desde bottom nav');
+          logger.debug('⏸️ Pausando desde bottom nav');
           await this.pause();
           await this.updateUI();
         } else {
-          console.log('▶️ Resumiendo desde bottom nav');
+          logger.debug('▶️ Resumiendo desde bottom nav');
           await this.resume();
           await this.updateUI();
         }
@@ -2510,7 +2570,12 @@ class AudioReader {
 
   toggleMinimize() {
     this.isMinimized = !this.isMinimized;
-    localStorage.setItem('audioreader-minimized', this.isMinimized);
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('audioreader-minimized', this.isMinimized);
+    } catch (error) {
+      console.warn('[AudioReader] Error guardando estado minimizado:', error);
+    }
     this.renderControls();
   }
 
@@ -2724,7 +2789,7 @@ class AudioReader {
 
   async updateUI() {
     // NO re-renderizar todo, solo actualizar estados de botones
-    console.log('🎯 updateUI called:', {
+    logger.debug('🎯 updateUI called:', {
       isMinimized: this.isMinimized,
       isPlaying: this.isPlaying,
       isPaused: this.isPaused
@@ -2738,7 +2803,7 @@ class AudioReader {
 
       // Si debería haber un botón pero no existe ninguno, re-renderizar
       if (!playBtn && !pauseBtn) {
-        console.log('🔄 CRÍTICO: Botones no encontrados, re-renderizando panel completo...');
+        logger.debug('🔄 CRÍTICO: Botones no encontrados, re-renderizando panel completo...');
         await this.renderControls();
         return;
       }
@@ -2749,11 +2814,11 @@ class AudioReader {
 
     // Actualizar bottom nav y barra de progreso si está minimizado
     if (this.isMinimized) {
-      console.log('📱 Llamando updateBottomNavAudioButton (minimizado)');
+      logger.debug('📱 Llamando updateBottomNavAudioButton (minimizado)');
       this.updateBottomNavAudioButton();
       this.updateProgressBar();
     } else {
-      console.log('🖥️ Player NO está minimizado, usando botones del panel');
+      logger.debug('🖥️ Player NO está minimizado, usando botones del panel');
     }
 
     // ⭐ Sincronizar iconos del header con estado actual
@@ -2769,7 +2834,7 @@ class AudioReader {
     const pauseBtn = document.getElementById('audioreader-pause');
     const shouldShowPlay = !this.isPlaying || this.isPaused;
 
-    console.log('🎯 updateButtonStates:', {
+    logger.debug('🎯 updateButtonStates:', {
       isPlaying: this.isPlaying,
       isPaused: this.isPaused,
       shouldShowPlay,
@@ -2779,7 +2844,7 @@ class AudioReader {
 
     // Si deberíamos mostrar PLAY pero existe PAUSE → reemplazar
     if (shouldShowPlay && pauseBtn) {
-      console.log('🔄 Reemplazando PAUSE → PLAY');
+      logger.debug('🔄 Reemplazando PAUSE → PLAY');
       const newPlayBtn = document.createElement('button');
       newPlayBtn.id = 'audioreader-play';
       newPlayBtn.className = 'w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-xl flex items-center justify-center text-white';
@@ -2787,7 +2852,7 @@ class AudioReader {
       newPlayBtn.innerHTML = Icons.play(28);
 
       newPlayBtn.addEventListener('click', async () => {
-        console.log('▶️ Click en PLAY');
+        logger.debug('▶️ Click en PLAY');
         if (this.paragraphs.length > 0 && this.isPaused) {
           await this.resume();
         } else if (this.paragraphs.length > 0) {
@@ -2807,7 +2872,7 @@ class AudioReader {
     }
     // Si deberíamos mostrar PAUSE pero existe PLAY → reemplazar
     else if (!shouldShowPlay && playBtn) {
-      console.log('🔄 Reemplazando PLAY → PAUSE');
+      logger.debug('🔄 Reemplazando PLAY → PAUSE');
       const newPauseBtn = document.createElement('button');
       newPauseBtn.id = 'audioreader-pause';
       newPauseBtn.className = 'w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 transition-all shadow-xl flex items-center justify-center text-white animate-pulse';
@@ -2815,13 +2880,13 @@ class AudioReader {
       newPauseBtn.innerHTML = Icons.pause(28);
 
       newPauseBtn.addEventListener('click', async () => {
-        console.log('⏸️ Click en PAUSE');
+        logger.debug('⏸️ Click en PAUSE');
         await this.pause();
       });
 
       playBtn.replaceWith(newPauseBtn);
     } else {
-      console.log('⚠️ No se reemplazó ningún botón');
+      logger.debug('⚠️ No se reemplazó ningún botón');
     }
 
     // Actualizar estado de botones prev/next/stop
@@ -3018,7 +3083,7 @@ class AudioReader {
 
   async show() {
     try {
-      console.log('🎧 AudioReader.show() called');
+      logger.debug('🎧 AudioReader.show() called');
       this.isMinimized = false;
 
       // Preparar contenido del capítulo actual
@@ -3256,7 +3321,12 @@ class AudioReader {
     document.getElementById('audio-auto-btn').onclick = (e) => {
       self.autoAdvanceChapter = !self.autoAdvanceChapter;
       e.target.style.background = self.autoAdvanceChapter ? '#16a34a' : '#334155';
-      localStorage.setItem('audio-auto-advance', self.autoAdvanceChapter);
+      // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+      try {
+        localStorage.setItem('audio-auto-advance', self.autoAdvanceChapter);
+      } catch (error) {
+        console.warn('[AudioReader] Error guardando auto-advance:', error);
+      }
     };
 
     document.getElementById('audio-word-btn').onclick = (e) => {
@@ -3338,7 +3408,12 @@ class AudioReader {
       ttsProviderSelect.onchange = async (e) => {
         const provider = e.target.value;
         self.ttsProvider = provider;
-        localStorage.setItem('audio-tts-provider', provider);
+        // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+        try {
+          localStorage.setItem('audio-tts-provider', provider);
+        } catch (error) {
+          console.warn('[AudioReader] Error guardando TTS provider:', error);
+        }
         if (self.ttsManager) self.ttsManager.setProvider(provider);
         await loadVoicesForProvider(provider);
         window.toast?.info(`Proveedor: ${provider}`);
@@ -3350,7 +3425,12 @@ class AudioReader {
         const voice = e.target.value;
         if (voice) {
           self.selectedVoice = voice;
-          localStorage.setItem('audio-selected-voice', voice);
+          // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+          try {
+            localStorage.setItem('audio-selected-voice', voice);
+          } catch (error) {
+            console.warn('[AudioReader] Error guardando voz seleccionada:', error);
+          }
           if (self.ttsManager && self.ttsManager.setVoice) {
             self.ttsManager.setVoice(voice);
           }
@@ -3410,14 +3490,14 @@ class AudioReader {
   }
 
   async toggle() {
-    console.log('🎧 AudioReader.toggle() called');
+    logger.debug('🎧 AudioReader.toggle() called');
     const controls = document.getElementById('audioreader-controls');
-    console.log('🎧 Controls exist:', !!controls);
+    logger.debug('🎧 Controls exist:', !!controls);
     if (controls) {
-      console.log('🎧 Hiding controls...');
+      logger.debug('🎧 Hiding controls...');
       this.hide();
     } else {
-      console.log('🎧 Showing controls...');
+      logger.debug('🎧 Showing controls...');
       await this.show();
     }
   }

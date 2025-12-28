@@ -3,6 +3,7 @@
 // ============================================================================
 // Vista de lectura de capítulos con navegación, sidebar, etc.
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class BookReader {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -20,6 +21,11 @@ class BookReader {
 
     // 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
     this._eventHandlers = new Map();
+
+    // 🔧 FIX v2.9.198: Memory leak cleanup - timer and listener tracking
+    this.timers = [];
+    this.intervals = [];
+    this.eventListeners = [];
 
     // 🔧 FIX #87: Inicializar dependencias de forma segura
     this.initDependencies();
@@ -95,7 +101,7 @@ class BookReader {
       toast[type](message);
     } else {
       // Fallback a console si toast no está disponible
-      console.log(`[Toast ${type.toUpperCase()}]`, message);
+      logger.debug(`[Toast ${type.toUpperCase()}]`, message);
     }
   }
 
@@ -171,6 +177,44 @@ class BookReader {
   }
 
   // ==========================================================================
+  // TIMER & LISTENER TRACKING (🔧 FIX v2.9.198: Memory leak prevention)
+  // ==========================================================================
+
+  /**
+   * setTimeout wrapper con tracking automático
+   */
+  _setTimeout(callback, delay) {
+    const timerId = setTimeout(() => {
+      callback();
+      // Auto-remove del tracking array al completarse
+      const index = this.timers.indexOf(timerId);
+      if (index > -1) {
+        this.timers.splice(index, 1);
+      }
+    }, delay);
+    this.timers.push(timerId);
+    return timerId;
+  }
+
+  /**
+   * setInterval wrapper con tracking automático
+   */
+  _setInterval(callback, delay) {
+    const intervalId = setInterval(callback, delay);
+    this.intervals.push(intervalId);
+    return intervalId;
+  }
+
+  /**
+   * addEventListener wrapper con tracking automático
+   */
+  _addEventListener(target, event, handler, options) {
+    if (!target) return;
+    target.addEventListener(event, handler, options);
+    this.eventListeners.push({ target, event, handler, options });
+  }
+
+  // ==========================================================================
   // RENDERIZADO PRINCIPAL
   // ==========================================================================
 
@@ -231,6 +275,35 @@ class BookReader {
     // 🔧 FIX #47: Limpiar todos los event listeners gestionados por EventManager
     if (this.eventManager) {
       this.eventManager.cleanup();
+    }
+
+    // 🔧 FIX v2.9.198: Limpiar timers, intervals y event listeners trackeados
+    // Limpiar timers
+    if (this.timers && this.timers.length > 0) {
+      const timersCount = this.timers.length;
+      this.timers.forEach(timerId => clearTimeout(timerId));
+      this.timers = [];
+      logger.debug(`[BookReader] Limpiados ${timersCount} timers`);
+    }
+
+    // Limpiar intervals
+    if (this.intervals && this.intervals.length > 0) {
+      const intervalsCount = this.intervals.length;
+      this.intervals.forEach(intervalId => clearInterval(intervalId));
+      this.intervals = [];
+      logger.debug(`[BookReader] Limpiados ${intervalsCount} intervals`);
+    }
+
+    // Limpiar event listeners trackeados
+    if (this.eventListeners && this.eventListeners.length > 0) {
+      const listenersCount = this.eventListeners.length;
+      this.eventListeners.forEach(({ target, event, handler, options }) => {
+        if (target && typeof target.removeEventListener === 'function') {
+          target.removeEventListener(event, handler, options);
+        }
+      });
+      this.eventListeners = [];
+      logger.debug(`[BookReader] Limpiados ${listenersCount} event listeners trackeados`);
     }
 
     // 🔧 FIX #44: Event handlers cleanup para prevenir memory leaks
@@ -325,12 +398,21 @@ class BookReader {
       const closeHandler = (e) => {
         if (!e.target.closest(`#${dropdownId}`) && !e.target.closest('[data-dropdown-toggle]')) {
           dropdown.classList.add('hidden');
+          // 🔧 FIX v2.9.198: Remover del tracking al limpiar listener
+          const listenerIndex = this.eventListeners.findIndex(
+            l => l.target === document && l.event === 'click' && l.handler === closeHandler
+          );
+          if (listenerIndex > -1) {
+            this.eventListeners.splice(listenerIndex, 1);
+          }
           document.removeEventListener('click', closeHandler);
         }
       };
 
-      setTimeout(() => {
-        document.addEventListener('click', closeHandler);
+      // 🔧 FIX v2.9.198: Usar _setTimeout con tracking
+      this._setTimeout(() => {
+        // 🔧 FIX v2.9.198: Usar _addEventListener con tracking
+        this._addEventListener(document, 'click', closeHandler);
       }, 0);
     }
   }
@@ -1152,11 +1234,11 @@ class BookReader {
   }
 
   renderFooterNav() {
-    console.log('🔍 [DEBUG] renderFooterNav() llamado para capítulo:', this.currentChapter?.id);
+    logger.debug('🔍 [DEBUG] renderFooterNav() llamado para capítulo:', this.currentChapter?.id);
     const prevChapter = this.bookEngine.getPreviousChapter(this.currentChapter?.id);
     const nextChapter = this.bookEngine.getNextChapter(this.currentChapter?.id);
-    console.log('🔍 [DEBUG] prevChapter:', prevChapter?.id, prevChapter?.title);
-    console.log('🔍 [DEBUG] nextChapter:', nextChapter?.id, nextChapter?.title);
+    logger.debug('🔍 [DEBUG] prevChapter:', prevChapter?.id, prevChapter?.title);
+    logger.debug('🔍 [DEBUG] nextChapter:', nextChapter?.id, nextChapter?.title);
 
     return `
       <div class="footer-nav border-t border-slate-700/50 bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm">
@@ -1520,7 +1602,7 @@ class BookReader {
       return; // Ya se ejecutó, salir inmediatamente
     }
 
-    console.log('✅ Ejecutando attachEventListeners por ÚNICA vez');
+    logger.debug('✅ Ejecutando attachEventListeners por ÚNICA vez');
     this._eventListenersAttached = true; // Marcar como ejecutado
 
     // 🔧 FIX #43: Helpers reutilizables para eliminar duplicación (~300 líneas)
@@ -1715,7 +1797,8 @@ class BookReader {
       // 🔧 FIX #44: Cerrar dropdown después de seleccionar una opción usando EventManager
       bottomNavDropdown.querySelectorAll('button').forEach(btn => {
         this.eventManager.addEventListener(btn, 'click', () => {
-          setTimeout(() => {
+          // 🔧 FIX v2.9.198: Usar _setTimeout con tracking
+          this._setTimeout(() => {
             bottomNavDropdown.classList.add('hidden');
           }, 100);
         });
@@ -1980,7 +2063,7 @@ class BookReader {
     const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
     const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
 
-    console.log('🎧 Attaching audio listeners:', {
+    logger.debug('🎧 Attaching audio listeners:', {
       desktop: !!audioreaderBtn,
       tablet: !!audioreaderBtnTablet,
       mobile: !!audioreaderBtnMobile
@@ -2890,9 +2973,9 @@ class BookReader {
 
   navigateToChapter(chapterId) {
     try {
-      console.log('🔍 [DEBUG] navigateToChapter() llamado con chapterId:', chapterId);
+      logger.debug('🔍 [DEBUG] navigateToChapter() llamado con chapterId:', chapterId);
       const chapter = this.bookEngine.navigateToChapter(chapterId);
-      console.log('🔍 [DEBUG] chapter obtenido:', chapter?.id, chapter?.title);
+      logger.debug('🔍 [DEBUG] chapter obtenido:', chapter?.id, chapter?.title);
 
       if (chapter) {
         this.currentChapter = chapter;
@@ -2904,11 +2987,11 @@ class BookReader {
         const isContainerVisible = container && !container.classList.contains('hidden');
         const hasRendered = contentArea !== null && isContainerVisible;
 
-        console.log('🔍 [DEBUG] hasRendered:', hasRendered, 'isContainerVisible:', isContainerVisible);
+        logger.debug('🔍 [DEBUG] hasRendered:', hasRendered, 'isContainerVisible:', isContainerVisible);
 
         if (!hasRendered) {
           // Primera vez O container oculto: render completo
-          console.log('✅ [DEBUG] Primera vez - render completo');
+          logger.debug('✅ [DEBUG] Primera vez - render completo');
           this.render();
           this.attachEventListeners();
 
@@ -2919,7 +3002,7 @@ class BookReader {
         } else {
           // 🔧 FIX #49: Ya renderizado - solo actualizar las partes que cambian
           // Evita re-renderizar TODO el reader, mejora rendimiento significativamente
-          console.log('✅ [DEBUG] Actualización parcial');
+          logger.debug('✅ [DEBUG] Actualización parcial');
           this.updateChapterContent();
           this.updateHeader(); // Re-adjunta header listeners automáticamente
           this.updateSidebar();
@@ -2932,7 +3015,7 @@ class BookReader {
           finalContentArea.scrollTop = 0;
         }
 
-        console.log('✅ [DEBUG] navigateToChapter() completado');
+        logger.debug('✅ [DEBUG] navigateToChapter() completado');
       } else {
         console.error('⚠️ [DEBUG] No se pudo obtener el chapter para:', chapterId);
       }
@@ -3089,7 +3172,7 @@ class BookReader {
    */
   attachHeaderListeners() {
     try {
-      console.log('[BookReader] 🔗 Re-adjuntando listeners del header...');
+      logger.debug('[BookReader] 🔗 Re-adjuntando listeners del header...');
 
       // =======================================================================
       // TOGGLE SIDEBAR (ÍNDICE)
@@ -3202,7 +3285,7 @@ class BookReader {
         this.eventManager.addEventListener(mobileMenuBtn, 'click', this._mobileMenuHandler);
       }
 
-      console.log('[BookReader] ✅ Listeners del header re-adjuntados');
+      logger.debug('[BookReader] ✅ Listeners del header re-adjuntados');
 
     } catch (error) {
       console.error('[BookReader] Error adjuntando listeners del header:', error);
@@ -3270,16 +3353,16 @@ class BookReader {
    */
   updateFooterNav() {
     try {
-      console.log('🔍 [DEBUG] updateFooterNav() llamado');
+      logger.debug('🔍 [DEBUG] updateFooterNav() llamado');
       const footerNavContainer = document.querySelector('.main-content > .block');
-      console.log('🔍 [DEBUG] footerNavContainer:', footerNavContainer);
+      logger.debug('🔍 [DEBUG] footerNavContainer:', footerNavContainer);
 
       if (footerNavContainer) {
         // 🔧 FIX #49: Renderizado parcial - solo footer nav
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = this.renderFooterNav();
         footerNavContainer.innerHTML = tempDiv.innerHTML;
-        console.log('✅ [DEBUG] Footer nav HTML actualizado');
+        logger.debug('✅ [DEBUG] Footer nav HTML actualizado');
 
         // 🔧 FIX #49: Re-attach event listeners solo para los botones de navegación
         this.attachNavigationListeners();
@@ -3304,22 +3387,23 @@ class BookReader {
     try {
       // 🔧 HOTFIX v2.9.157: Usar touchend Y click para compatibilidad con Android
       // Aumentar delay y agregar múltiples event types
-      setTimeout(() => {
+      // 🔧 FIX v2.9.198: Usar _setTimeout con tracking
+      this._setTimeout(() => {
         const prevBtn = document.getElementById('prev-chapter');
         const nextBtn = document.getElementById('next-chapter');
 
-        console.log('[DEBUG] attachNavigationListeners - prevBtn:', prevBtn, 'nextBtn:', nextBtn);
+        logger.debug('[DEBUG] attachNavigationListeners - prevBtn:', prevBtn, 'nextBtn:', nextBtn);
 
         if (prevBtn) {
           const prevChapterId = prevBtn.getAttribute('data-chapter-id');
-          console.log('[DEBUG] prevBtn data-chapter-id:', prevChapterId);
+          logger.debug('[DEBUG] prevBtn data-chapter-id:', prevChapterId);
 
           if (prevChapterId) {
             // Handler que funciona tanto para click como touch
             const handler = (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('[DEBUG] prevBtn CLICKED/TOUCHED - navigating to:', prevChapterId);
+              logger.debug('[DEBUG] prevBtn CLICKED/TOUCHED - navigating to:', prevChapterId);
               this.navigateToChapter(prevChapterId);
             };
 
@@ -3327,13 +3411,18 @@ class BookReader {
             if (this._prevChapterHandler) {
               prevBtn.removeEventListener('click', this._prevChapterHandler);
               prevBtn.removeEventListener('touchend', this._prevChapterHandler);
+              // 🔧 FIX v2.9.198: Remover del tracking
+              this.eventListeners = this.eventListeners.filter(
+                l => !(l.target === prevBtn && l.handler === this._prevChapterHandler)
+              );
             }
 
             // Adjuntar AMBOS eventos para máxima compatibilidad
             this._prevChapterHandler = handler;
-            prevBtn.addEventListener('click', handler, { passive: false });
-            prevBtn.addEventListener('touchend', handler, { passive: false });
-            console.log('[BookReader] Prev chapter button listeners attached (click + touchend)');
+            // 🔧 FIX v2.9.198: Usar _addEventListener con tracking
+            this._addEventListener(prevBtn, 'click', handler, { passive: false });
+            this._addEventListener(prevBtn, 'touchend', handler, { passive: false });
+            logger.debug('[BookReader] Prev chapter button listeners attached (click + touchend)');
           }
         } else {
           console.warn('[DEBUG] prevBtn NOT FOUND');
@@ -3341,14 +3430,14 @@ class BookReader {
 
         if (nextBtn) {
           const nextChapterId = nextBtn.getAttribute('data-chapter-id');
-          console.log('[DEBUG] nextBtn data-chapter-id:', nextChapterId);
+          logger.debug('[DEBUG] nextBtn data-chapter-id:', nextChapterId);
 
           if (nextChapterId) {
             // Handler que funciona tanto para click como touch
             const handler = (e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('[DEBUG] nextBtn CLICKED/TOUCHED - navigating to:', nextChapterId);
+              logger.debug('[DEBUG] nextBtn CLICKED/TOUCHED - navigating to:', nextChapterId);
               this.navigateToChapter(nextChapterId);
             };
 
@@ -3356,13 +3445,18 @@ class BookReader {
             if (this._nextChapterHandler) {
               nextBtn.removeEventListener('click', this._nextChapterHandler);
               nextBtn.removeEventListener('touchend', this._nextChapterHandler);
+              // 🔧 FIX v2.9.198: Remover del tracking
+              this.eventListeners = this.eventListeners.filter(
+                l => !(l.target === nextBtn && l.handler === this._nextChapterHandler)
+              );
             }
 
             // Adjuntar AMBOS eventos para máxima compatibilidad
             this._nextChapterHandler = handler;
-            nextBtn.addEventListener('click', handler, { passive: false });
-            nextBtn.addEventListener('touchend', handler, { passive: false });
-            console.log('[BookReader] Next chapter button listeners attached (click + touchend)');
+            // 🔧 FIX v2.9.198: Usar _addEventListener con tracking
+            this._addEventListener(nextBtn, 'click', handler, { passive: false });
+            this._addEventListener(nextBtn, 'touchend', handler, { passive: false });
+            logger.debug('[BookReader] Next chapter button listeners attached (click + touchend)');
           }
         } else {
           console.warn('[DEBUG] nextBtn NOT FOUND');

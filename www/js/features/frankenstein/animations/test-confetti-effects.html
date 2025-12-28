@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Frankenstein Confetti Effects</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d4af37;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .test-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .test-section h2 {
+      color: #d4af37;
+      margin-top: 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #d4af37 0%, #b87333 100%);
+      color: #1a1a2e;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .test-target {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #ffd700, #d4af37);
+      border-radius: 50%;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .test-target:hover {
+      transform: scale(1.1);
+    }
+
+    .progress-card {
+      position: relative;
+      width: 100%;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      overflow: visible;
+      margin: 20px 0;
+    }
+
+    .status {
+      background: rgba(0, 255, 0, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .frankenstein-laboratory {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    /* Estilos para lightning effect (debe coincidir con los del CSS principal) */
+    .fusion-lightning {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+      animation: lightning-flash 1s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes lightning-flash {
+      0%, 100% { opacity: 0; }
+      10%, 30%, 50%, 70%, 90% { opacity: 1; }
+      20%, 40%, 60%, 80% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Test: Frankenstein Confetti Effects</h1>
+
+    <div class="status" id="status">
+      Sistema inicializado. Listo para tests.
+    </div>
+
+    <div class="test-section">
+      <h2>1. Confetti Effect</h2>
+      <p>Efecto de confetti dorado cayendo desde arriba</p>
+      <button onclick="testConfetti()">Lanzar Confetti</button>
+      <button onclick="testConfettiCustom()">Confetti Personalizado (100 piezas)</button>
+    </div>
+
+    <div class="test-section">
+      <h2>2. Lightning Effect</h2>
+      <div class="frankenstein-laboratory">
+        <p>⚡ Lightning Container</p>
+      </div>
+      <button onclick="testLightning()">Lanzar Lightning</button>
+      <button onclick="testMultipleLightning()">Lightning x3</button>
+    </div>
+
+    <div class="test-section">
+      <h2>3. Particle Burst</h2>
+      <div class="test-target" id="target" onclick="testParticleBurst(this)">
+        🎯
+      </div>
+      <p>Haz click en el círculo o usa los botones:</p>
+      <button onclick="testParticleBurst(document.getElementById('target'))">Burst Normal</button>
+      <button onclick="testParticleBurstCustom()">Burst Personalizado</button>
+    </div>
+
+    <div class="test-section">
+      <h2>4. Progress Reward</h2>
+      <div class="progress-card mission-progress-card"></div>
+      <button onclick="testProgressReward(25)">Recompensa al 25%</button>
+      <button onclick="testProgressReward(50)">Recompensa al 50%</button>
+      <button onclick="testProgressReward(75)">Recompensa al 75%</button>
+    </div>
+
+    <div class="test-section">
+      <h2>5. Flight Trail</h2>
+      <p>Trail de partículas entre dos puntos</p>
+      <button onclick="testFlightTrail()">Lanzar Trail</button>
+    </div>
+
+    <div class="test-section">
+      <h2>6. Cleanup Test</h2>
+      <p>Verificar que todos los efectos se limpian correctamente</p>
+      <button onclick="testStopAll()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+        Detener Todos los Efectos
+      </button>
+      <button onclick="testDestroy()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+        Destruir Instancia
+      </button>
+      <button onclick="testReinit()" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%);">
+        Re-inicializar
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import ConfettiEffects from './frankenstein-confetti-effects.js';
+
+    // Instancia global para tests
+    window.confettiSystem = new ConfettiEffects();
+
+    window.log = function(message, type = 'info') {
+      const status = document.getElementById('status');
+      const timestamp = new Date().toLocaleTimeString();
+      const color = type === 'error' ? 'rgba(255, 0, 0, 0.3)' :
+                    type === 'success' ? 'rgba(0, 255, 0, 0.3)' :
+                    'rgba(0, 150, 255, 0.3)';
+      status.style.background = color;
+      status.textContent = `[${timestamp}] ${message}`;
+    };
+
+    window.testConfetti = function() {
+      log('Lanzando confetti...');
+      window.confettiSystem.playConfetti();
+      log('✓ Confetti lanzado', 'success');
+    };
+
+    window.testConfettiCustom = function() {
+      log('Lanzando confetti personalizado (100 piezas, colores custom)...');
+      window.confettiSystem.playConfetti({
+        count: 100,
+        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'],
+        duration: 6000
+      });
+      log('✓ Confetti personalizado lanzado', 'success');
+    };
+
+    window.testLightning = function() {
+      log('Lanzando lightning effect...');
+      const container = document.querySelector('.frankenstein-laboratory');
+      window.confettiSystem.playLightning(container);
+      log('✓ Lightning lanzado', 'success');
+    };
+
+    window.testMultipleLightning = function() {
+      log('Lanzando 3 lightning effects...');
+      const container = document.querySelector('.frankenstein-laboratory');
+      window.confettiSystem.playLightning(container);
+      setTimeout(() => window.confettiSystem.playLightning(container), 300);
+      setTimeout(() => window.confettiSystem.playLightning(container), 600);
+      log('✓ Lightning x3 lanzado', 'success');
+    };
+
+    window.testParticleBurst = function(element) {
+      log('Lanzando particle burst...');
+      window.confettiSystem.createParticleBurst(element);
+      log('✓ Particle burst lanzado', 'success');
+    };
+
+    window.testParticleBurstCustom = function() {
+      log('Lanzando particle burst personalizado...');
+      const target = document.getElementById('target');
+      window.confettiSystem.createParticleBurst(target, {
+        particleCount: 40,
+        colors: ['#ff00ff', '#00ffff', '#ffff00'],
+        types: ['star', 'energy'],
+        duration: 1500
+      });
+      log('✓ Particle burst personalizado lanzado', 'success');
+    };
+
+    window.testProgressReward = function(percent) {
+      log(`Lanzando progress reward al ${percent}%...`);
+      const card = document.querySelector('.mission-progress-card');
+      window.confettiSystem.spawnProgressReward(card, percent, `Objetivo completado (${percent}%)`);
+      log(`✓ Progress reward al ${percent}% lanzado`, 'success');
+    };
+
+    window.testFlightTrail = function() {
+      log('Lanzando flight trail...');
+      const startRect = { left: 100, top: 100, width: 50, height: 50 };
+      const endRect = { left: 600, top: 300, width: 50, height: 50 };
+      window.confettiSystem.createFlightTrail(startRect, endRect);
+      log('✓ Flight trail lanzado', 'success');
+    };
+
+    window.testStopAll = function() {
+      log('Deteniendo todas las animaciones...');
+      window.confettiSystem.stopAll();
+      log('✓ Todas las animaciones detenidas', 'success');
+    };
+
+    window.testDestroy = function() {
+      log('Destruyendo instancia...', 'error');
+      window.confettiSystem.destroy();
+      window.confettiSystem = null;
+      log('✗ Instancia destruida - Re-inicializa para continuar', 'error');
+    };
+
+    window.testReinit = function() {
+      log('Re-inicializando instancia...');
+      window.confettiSystem = new ConfettiEffects();
+      log('✓ Instancia re-inicializada', 'success');
+    };
+
+    log('Sistema de tests cargado correctamente', 'success');
+  </script>
+</body>
+</html>

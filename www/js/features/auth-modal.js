@@ -119,6 +119,30 @@ class AuthModal {
     this.renderModal();
   }
 
+  /**
+   * 🔧 FIX v2.9.236: Método show() genérico para compatibilidad
+   * @param {string} view - 'login' | 'signup' | 'reset' | 'profile'
+   */
+  show(view = 'login') {
+    switch (view) {
+      case 'signup':
+      case 'register':
+        this.showSignupModal();
+        break;
+      case 'reset':
+      case 'forgot':
+        this.showResetPasswordModal();
+        break;
+      case 'profile':
+        this.showProfileModal();
+        break;
+      case 'login':
+      default:
+        this.showLoginModal();
+        break;
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // RENDERIZADO
   // ═══════════════════════════════════════════════════════════════════════════

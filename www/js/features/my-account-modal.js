@@ -42,6 +42,14 @@ class MyAccountModal {
   // ABRIR/CERRAR MODAL
   // ═══════════════════════════════════════════════════════════════════════════
 
+  /**
+   * 🔧 FIX v2.9.237: Método show() como alias de open() para compatibilidad
+   * biblioteca.js llama a show(), pero el método original es open()
+   */
+  show(tab = 'profile') {
+    return this.open(tab);
+  }
+
   async open(tab = 'profile') {
     // Verificar autenticación
     if (!this.authHelper?.isAuthenticated()) {

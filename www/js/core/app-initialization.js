@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.236: Fix AuthModal.show() method missing
-    window.__APP_VERSION__ = '2.9.236'; // Cambiar con cada release
+    // 🔧 v2.9.237: Fix MyAccountModal.show() method missing
+    window.__APP_VERSION__ = '2.9.237'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

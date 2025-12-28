@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AI GAME MASTER - IA para Juegos (Frankenstein Lab)
  * NPCs conversacionales, misiones dinámicas, narrativa adaptativa
  *
@@ -26,7 +27,7 @@ class AIGameMaster {
       return;
     }
 
-    console.log('✅ AIGameMaster inicializado');
+    logger.debug('✅ AIGameMaster inicializado');
   }
 
   /**
@@ -101,7 +102,7 @@ class AIGameMaster {
       // PRO feature
       await this.aiPremium.checkCredits(250, 'ai_game_master');
 
-      console.log(`💬 Conversando con ${npcPersonality.name}...`);
+      logger.debug(`💬 Conversando con ${npcPersonality.name}...`);
 
       const systemPrompt = `Eres ${npcPersonality.name}, ${npcPersonality.role}.
 
@@ -225,7 +226,7 @@ INSTRUCCIONES:
       // PRO feature
       await this.aiPremium.checkCredits(600, 'ai_game_master');
 
-      console.log(`🗺️ Generando misión ${difficulty}...`);
+      logger.debug(`🗺️ Generando misión ${difficulty}...`);
 
       const difficultyDescriptions = {
         principiante: 'fácil (objetivos simples, bajo riesgo)',
@@ -329,7 +330,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO:
         estimatedTokens
       );
 
-      console.log(`✅ Misión generada: ${mission.mission.name}`);
+      logger.debug(`✅ Misión generada: ${mission.mission.name}`);
 
       const missionPayload = mission.mission;
       await this.persistMission(missionPayload, {
@@ -377,7 +378,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO:
       // PRO feature
       await this.aiPremium.checkCredits(400, 'ai_game_master');
 
-      console.log(`📖 Generando narrativa adaptativa...`);
+      logger.debug(`📖 Generando narrativa adaptativa...`);
 
       const systemPrompt = `Eres un maestro de juego narrativo experto.
 
@@ -482,7 +483,7 @@ LONGITUD: 300-400 palabras`;
       // Feature disponible en Premium+
       await this.aiPremium.checkCredits(300, 'ai_game_master');
 
-      console.log(`🔍 Analizando ser para la misión...`);
+      logger.debug(`🔍 Analizando ser para la misión...`);
 
       const systemPrompt = `Eres un analista de estrategia de juegos experto.
 
@@ -614,4 +615,4 @@ Formato: Análisis conciso, tono motivador, incluir emojis`;
 // Crear instancia global
 window.aiGameMaster = new AIGameMaster();
 
-console.log('✅ AIGameMaster loaded. Use window.aiGameMaster for game features.');
+logger.debug('✅ AIGameMaster loaded. Use window.aiGameMaster for game features.');

@@ -2,6 +2,7 @@
 // AUTO SUMMARY - Resumen Automático de Capítulos con IA
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AutoSummary {
   constructor(bookEngine, aiAdapter) {
     this.bookEngine = bookEngine;
@@ -50,21 +51,21 @@ class AutoSummary {
 
   async generateSummary(chapter, bookId) {
     if (!this.aiAdapter || !window.aiConfig?.getClaudeApiKey()) {
-      // console.log('IA no configurada para generar resumen');
+      // logger.debug('IA no configurada para generar resumen');
       return null;
     }
 
     // Verificar cache primero
     const cached = this.getCachedSummary(bookId, chapter.id);
     if (cached) {
-      // console.log('Usando resumen cacheado');
+      // logger.debug('Usando resumen cacheado');
       return cached.summary;
     }
 
     // Obtener contenido del capítulo
     const content = this.extractChapterText(chapter);
     if (!content || content.length < 100) {
-      // console.log('Contenido insuficiente para generar resumen');
+      // logger.debug('Contenido insuficiente para generar resumen');
       return null;
     }
 

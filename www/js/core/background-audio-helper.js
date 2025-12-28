@@ -5,6 +5,7 @@
 // - En Android/Capacitor: Usa Foreground Service nativo
 // - En Web: Usa Audio silencioso + Media Session API como "ancla"
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class BackgroundAudioHelper {
   constructor() {
     this.isActive = false;
@@ -36,7 +37,7 @@ class BackgroundAudioHelper {
       try {
         if (window.Capacitor.Plugins && window.Capacitor.Plugins.BackgroundAudio) {
           this.nativePlugin = window.Capacitor.Plugins.BackgroundAudio;
-          console.log('BackgroundAudioHelper: Plugin nativo disponible');
+          logger.debug('BackgroundAudioHelper: Plugin nativo disponible');
           if (this.nativePlugin.addListener) {
             this.nativePlugin.addListener('event', (data) => {
               this.handleNativeEvent(data);
@@ -133,7 +134,7 @@ class BackgroundAudioHelper {
           }
         });
 
-        console.log('[BackgroundAudioHelper] Media Session limpiada');
+        logger.debug('[BackgroundAudioHelper] Media Session limpiada');
       } catch (error) {
         console.warn('[BackgroundAudioHelper] Error limpiando Media Session:', error);
       }
@@ -200,7 +201,7 @@ class BackgroundAudioHelper {
         document.body.appendChild(this.silentAudio);
       }
 
-      console.log('BackgroundAudioHelper: Audio silencioso preparado');
+      logger.debug('BackgroundAudioHelper: Audio silencioso preparado');
     } catch (error) {
       console.warn('BackgroundAudioHelper: Error creando audio silencioso', error);
     }
@@ -267,7 +268,7 @@ class BackgroundAudioHelper {
     if (this.silentAudio) {
       try {
         await this.silentAudio.play();
-        console.log('BackgroundAudioHelper: Audio silencioso iniciado');
+        logger.debug('BackgroundAudioHelper: Audio silencioso iniciado');
       } catch (error) {
         console.warn('BackgroundAudioHelper: Error iniciando audio silencioso', error);
       }
@@ -281,7 +282,7 @@ class BackgroundAudioHelper {
   stopSilentAudio() {
     if (this.silentAudio) {
       this.silentAudio.pause();
-      console.log('BackgroundAudioHelper: Audio silencioso detenido');
+      logger.debug('BackgroundAudioHelper: Audio silencioso detenido');
     }
 
     if (this.silentOscillator) {
@@ -329,7 +330,7 @@ class BackgroundAudioHelper {
       if (this.isAndroid && this.nativePlugin) {
         // Android: Usar Foreground Service nativo
         const result = await this.nativePlugin.start();
-        console.log('BackgroundAudioHelper: Foreground Service iniciado', result);
+        logger.debug('BackgroundAudioHelper: Foreground Service iniciado', result);
       } else {
         // Web: Usar audio silencioso como ancla
         await this.startSilentAudio();
@@ -352,7 +353,7 @@ class BackgroundAudioHelper {
       if (this.isAndroid && this.nativePlugin) {
         // Android: Detener Foreground Service
         const result = await this.nativePlugin.stop();
-        console.log('BackgroundAudioHelper: Foreground Service detenido', result);
+        logger.debug('BackgroundAudioHelper: Foreground Service detenido', result);
       } else {
         // Web: Detener audio silencioso
         this.stopSilentAudio();
@@ -402,7 +403,7 @@ class BackgroundAudioHelper {
     // 🔧 FIX #61: Cerrar AudioContext correctamente con manejo de promesa
     if (this.audioContext) {
       this.audioContext.close().then(() => {
-        console.log('[BackgroundAudioHelper] AudioContext cerrado correctamente');
+        logger.debug('[BackgroundAudioHelper] AudioContext cerrado correctamente');
       }).catch((err) => {
         console.warn('[BackgroundAudioHelper] Error al cerrar AudioContext:', err);
       });
@@ -418,4 +419,4 @@ class BackgroundAudioHelper {
 window.BackgroundAudioHelper = BackgroundAudioHelper;
 window.backgroundAudio = new BackgroundAudioHelper();
 
-console.log('BackgroundAudioHelper cargado');
+logger.debug('BackgroundAudioHelper cargado');

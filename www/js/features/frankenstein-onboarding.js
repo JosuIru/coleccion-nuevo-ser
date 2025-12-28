@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN LAB - SISTEMA DE ONBOARDING
  * Tutorial interactivo paso a paso para nuevos usuarios
  *
@@ -536,7 +537,7 @@ class FrankensteinOnboarding {
     this.completed = false;
     this.skipped = false;
     this.save();
-    console.log('[Onboarding] Reset completado');
+    logger.debug('[Onboarding] Reset completado');
   }
 }
 

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Awakening Protocol Bridge
  * Handles communication between Colección Nuevo Ser and Awakening Protocol app
  *
@@ -27,7 +28,7 @@ const AwakeningBridge = {
      */
     init() {
         this.setupDeepLinkHandler();
-        console.log('[AwakeningBridge] Initialized');
+        logger.debug('[AwakeningBridge] Initialized');
     },
 
     /**
@@ -39,7 +40,7 @@ const AwakeningBridge = {
             const { App } = window.Capacitor.Plugins;
 
             App.addListener('appUrlOpen', (event) => {
-                console.log('[AwakeningBridge] Deep link received:', event.url);
+                logger.debug('[AwakeningBridge] Deep link received:', event.url);
                 this.handleIncomingDeepLink(event.url);
             });
         }
@@ -79,7 +80,7 @@ const AwakeningBridge = {
                 params = Object.fromEntries(urlObj.searchParams);
             }
 
-            console.log('[AwakeningBridge] Action:', action, 'Params:', params);
+            logger.debug('[AwakeningBridge] Action:', action, 'Params:', params);
 
             switch (action) {
                 case 'receive-being':
@@ -127,7 +128,7 @@ const AwakeningBridge = {
 
         try {
             const beingData = JSON.parse(atob(base64Data));
-            console.log('[AwakeningBridge] Received being:', beingData);
+            logger.debug('[AwakeningBridge] Received being:', beingData);
 
             // Validate being structure
             if (!beingData.name && !beingData.id) {
@@ -192,7 +193,7 @@ const AwakeningBridge = {
             // Build deep link URL
             const deepLinkUrl = `${this.AWAKENING_SCHEME}receive-being?data=${encodeURIComponent(base64Data)}&name=${encodeURIComponent(being.name)}`;
 
-            console.log('[AwakeningBridge] Sending being:', deepLinkUrl);
+            logger.debug('[AwakeningBridge] Sending being:', deepLinkUrl);
 
             // Try to open Awakening Protocol
             const opened = await this.openDeepLink(deepLinkUrl);
@@ -246,7 +247,7 @@ const AwakeningBridge = {
                 await App.openUrl({ url });
                 return true;
             } catch (error) {
-                console.log('[AwakeningBridge] Capacitor openUrl failed:', error);
+                logger.debug('[AwakeningBridge] Capacitor openUrl failed:', error);
             }
         }
 
@@ -257,7 +258,7 @@ const AwakeningBridge = {
                 await Browser.open({ url });
                 return true;
             } catch (error) {
-                console.log('[AwakeningBridge] Browser open failed:', error);
+                logger.debug('[AwakeningBridge] Browser open failed:', error);
             }
         }
 
@@ -266,7 +267,7 @@ const AwakeningBridge = {
             window.open(url, '_system');
             return true;
         } catch (error) {
-            console.log('[AwakeningBridge] window.open failed:', error);
+            logger.debug('[AwakeningBridge] window.open failed:', error);
         }
 
         return false;
@@ -318,13 +319,13 @@ const AwakeningBridge = {
      * Handle sync request from Awakening Protocol
      */
     handleSyncRequest(params) {
-        console.log('[AwakeningBridge] Sync request:', params);
+        logger.debug('[AwakeningBridge] Sync request:', params);
 
         // Get all local beings
         const beings = this.getSavedBeings();
 
         // Send response (in real implementation, this would use a backend)
-        console.log('[AwakeningBridge] Syncing', beings.length, 'beings');
+        logger.debug('[AwakeningBridge] Syncing', beings.length, 'beings');
 
         this.showNotification(
             `Sincronización solicitada. ${beings.length} seres disponibles.`,
@@ -493,7 +494,7 @@ const AwakeningBridge = {
                 return true; // Assume installed, will fail gracefully if not
             }
         } catch (error) {
-            console.log('[AwakeningBridge] Could not check app installation');
+            logger.debug('[AwakeningBridge] Could not check app installation');
         }
         return true; // Optimistically assume installed
     }

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * BOOK SERVICE - Servicio para gestión de libros y progreso de lectura
  * Extiende BaseService para operaciones específicas de libros
  *
@@ -507,4 +508,4 @@ class BookService extends BaseService {
 window.BookService = BookService;
 window.bookService = new BookService();
 
-console.log('📚 BookService inicializado');
+logger.debug('📚 BookService inicializado');

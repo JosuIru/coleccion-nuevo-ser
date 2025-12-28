@@ -3,6 +3,7 @@
 // ============================================================================
 // Extensión que agrega funcionalidades avanzadas al AudioReader
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioEnhancements {
   constructor(audioReader) {
     this.audioReader = audioReader;
@@ -24,25 +25,25 @@ class AudioEnhancements {
     // Inicializar Word Sync si está disponible
     if (window.WordByWordSync && this.isWordSyncEnabled) {
       this.wordSync = new WordByWordSync();
-      // console.log('✅ Word Sync inicializado');
+      // logger.debug('✅ Word Sync inicializado');
     }
 
     // Inicializar efectos de audio
     if (this.isEffectsEnabled) {
       this.audioEffects = new AudioEffects();
-      // console.log('✅ Audio Effects inicializado');
+      // logger.debug('✅ Audio Effects inicializado');
     }
 
     // Inicializar comandos de voz si está disponible
     if (window.SpeechRecognition || window.webkitSpeechRecognition) {
       this.voiceCommands = new VoiceCommands(this.audioReader);
-      // console.log('✅ Voice Commands inicializado');
+      // logger.debug('✅ Voice Commands inicializado');
     }
 
     // Hook en métodos del audioReader
     this.hookAudioReaderMethods();
 
-    // console.log('✅ Audio Enhancements inicializado');
+    // logger.debug('✅ Audio Enhancements inicializado');
   }
 
   // ==========================================================================
@@ -459,7 +460,7 @@ class AudioEffects {
       try {
         this.audioContext.close();
         this.audioContext = null;
-        // console.log('[AudioEffects] AudioContext cerrado');
+        // logger.debug('[AudioEffects] AudioContext cerrado');
       } catch (error) {
         console.warn('[AudioEffects] Error al cerrar AudioContext:', error);
       }
@@ -508,7 +509,7 @@ class VoiceCommands {
       // console.warn('Speech recognition error:', event.error);
     };
 
-    // console.log('✅ Voice Commands inicializado');
+    // logger.debug('✅ Voice Commands inicializado');
   }
 
   start() {
@@ -516,7 +517,7 @@ class VoiceCommands {
       try {
         this.recognition.start();
         this.isListening = true;
-        // console.log('🎤 Escuchando comandos de voz...');
+        // logger.debug('🎤 Escuchando comandos de voz...');
       } catch (error) {
         // console.warn('Error iniciando reconocimiento:', error);
       }
@@ -527,12 +528,12 @@ class VoiceCommands {
     if (this.recognition && this.isListening) {
       this.recognition.stop();
       this.isListening = false;
-      // console.log('🎤 Comandos de voz detenidos');
+      // logger.debug('🎤 Comandos de voz detenidos');
     }
   }
 
   processCommand(command) {
-    // console.log('🎤 Comando recibido:', command);
+    // logger.debug('🎤 Comando recibido:', command);
 
     // Comandos de reproducción
     if (command.includes('reproducir') || command.includes('play')) {

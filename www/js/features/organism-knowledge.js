@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ORGANISMO DEL CONOCIMIENTO
  * Sistema Biológico Generativo de Aprendizaje
  *
@@ -104,11 +105,11 @@ class OrganismKnowledge {
   async init() {
     if (this.isInitialized) return;
 
-    // console.log('🧬 Inicializando Organismo del Conocimiento...');
+    // logger.debug('🧬 Inicializando Organismo del Conocimiento...');
 
     // Usar nuevo UI de cartas si está disponible
     if (typeof FrankensteinLabUI !== 'undefined') {
-      // console.log('🎴 Usando Frankenstein Lab UI (sistema de cartas)');
+      // logger.debug('🎴 Usando Frankenstein Lab UI (sistema de cartas)');
       this.frankensteinUI = new FrankensteinLabUI(this);
       this.isInitialized = true;
       return;
@@ -126,7 +127,7 @@ class OrganismKnowledge {
     this.attachEventListeners();
 
     this.isInitialized = true;
-    // console.log('✨ Organismo del Conocimiento inicializado');
+    // logger.debug('✨ Organismo del Conocimiento inicializado');
   }
 
   /**
@@ -612,14 +613,14 @@ class OrganismKnowledge {
     pinkLight.position.set(300, 100, 300);
     this.scene.add(pinkLight);
 
-    // console.log('✅ Three.js inicializado para organismo');
+    // logger.debug('✅ Three.js inicializado para organismo');
   }
 
   /**
    * CREAR LABORATORIO FRANKENSTEIN
    */
   async createOrganism() {
-    // console.log('🧟 Creando laboratorio Frankenstein...');
+    // logger.debug('🧟 Creando laboratorio Frankenstein...');
 
     // 1. Crear cuerpo humanoid vacío en el centro
     this.createBodyModel();
@@ -652,7 +653,7 @@ class OrganismKnowledge {
    * Crear modelo 3D del cuerpo humanoid vacío
    */
   createBodyModel() {
-    // console.log('👤 Creando cuerpo humanoid...');
+    // logger.debug('👤 Creando cuerpo humanoid...');
 
     const bodyGroup = new THREE.Group();
 
@@ -701,14 +702,14 @@ class OrganismKnowledge {
     this.bodyModel = bodyGroup;
     this.scene.add(bodyGroup);
 
-    // console.log('✅ Cuerpo creado - esperando órganos...');
+    // logger.debug('✅ Cuerpo creado - esperando órganos...');
   }
 
   /**
    * Crear slots visuales para posiciones anatómicas
    */
   createBodySlots() {
-    // console.log('🎯 Creando slots anatómicos...');
+    // logger.debug('🎯 Creando slots anatómicos...');
 
     Object.entries(this.bodyAnatomy).forEach(([slotId, slotData]) => {
       // Crear marcador visual para el slot
@@ -746,14 +747,14 @@ class OrganismKnowledge {
       this.scene.add(slotMesh);
     });
 
-    // console.log('✅ Slots creados:', Object.keys(this.bodySlots).length);
+    // logger.debug('✅ Slots creados:', Object.keys(this.bodySlots).length);
   }
 
   /**
    * Crear órganos disponibles (libros) flotando alrededor
    */
   async createAvailableOrgans() {
-    // console.log('🫀 Preparando órganos disponibles...');
+    // logger.debug('🫀 Preparando órganos disponibles...');
 
     const catalog = this.bookEngine?.catalog;
     if (!catalog || !catalog.books) {
@@ -774,7 +775,7 @@ class OrganismKnowledge {
       this.scene.add(organGroup); // organGroup ya ES el THREE.Group
     });
 
-    // console.log('✅ Órganos disponibles:', this.availableOrgans.length);
+    // logger.debug('✅ Órganos disponibles:', this.availableOrgans.length);
   }
 
   /**
@@ -832,7 +833,7 @@ class OrganismKnowledge {
    * Crear slots visuales del cuerpo (marcadores de posición)
    */
   createBodySlots() {
-    // console.log('🦴 Creando slots del cuerpo...');
+    // logger.debug('🦴 Creando slots del cuerpo...');
 
     Object.entries(this.bodyAnatomy).forEach(([slotId, slotData]) => {
       const slotGroup = new THREE.Group();
@@ -875,7 +876,7 @@ class OrganismKnowledge {
       this.scene.add(slotGroup);
     });
 
-    // console.log('✅ Slots del cuerpo creados:', Object.keys(this.bodySlots).length);
+    // logger.debug('✅ Slots del cuerpo creados:', Object.keys(this.bodySlots).length);
   }
 
   /**
@@ -903,7 +904,7 @@ class OrganismKnowledge {
       return false;
     }
 
-    // console.log('💉 Implantando órgano:', book.title, '→', slotData.name);
+    // logger.debug('💉 Implantando órgano:', book.title, '→', slotData.name);
 
     // Animar el órgano hacia el slot
     this.animateOrganImplantation(organPiece, slotId);
@@ -1025,7 +1026,7 @@ class OrganismKnowledge {
     // Resaltar slots compatibles
     this.highlightCompatibleSlots(organPiece);
 
-    // console.log('🖐️ Arrastrando órgano:', organPiece.userData.book.title);
+    // logger.debug('🖐️ Arrastrando órgano:', organPiece.userData.book.title);
   }
 
   /**
@@ -1194,7 +1195,7 @@ class OrganismKnowledge {
       this.scene.add(organ.group);
     });
 
-    // console.log('✅ Órganos creados:', this.organs.length);
+    // logger.debug('✅ Órganos creados:', this.organs.length);
 
     // Crear red neuronal conectando órganos relacionados
     this.createNeuralNetwork();
@@ -1204,7 +1205,7 @@ class OrganismKnowledge {
    * Crear red neuronal entre órganos
    */
   createNeuralNetwork() {
-    // console.log('🧠 Creando red neuronal...');
+    // logger.debug('🧠 Creando red neuronal...');
 
     // Crear red basada en afinidad entre libros
     this.neuralNetwork = this.neuralSystem.createNetworkFromOrgans(this.organs, {
@@ -1245,7 +1246,7 @@ class OrganismKnowledge {
     });
 
     const stats = this.neuralSystem.getNetworkStats();
-    // console.log(`✅ Red neuronal: ${stats.total} conexiones (${stats.distribution.strong} fuertes, ${stats.distribution.medium} medias, ${stats.distribution.weak} débiles)`);
+    // logger.debug(`✅ Red neuronal: ${stats.total} conexiones (${stats.distribution.strong} fuertes, ${stats.distribution.medium} medias, ${stats.distribution.weak} débiles)`);
   }
 
   /**
@@ -1333,7 +1334,7 @@ class OrganismKnowledge {
    * Crear células (capítulos) CON ADN REAL
    */
   async createCells() {
-    // console.log('🧬 Creando células con ADN real...');
+    // logger.debug('🧬 Creando células con ADN real...');
 
     // Crear células tanto de órganos disponibles como de órganos ya implantados
     const allOrgans = [...(this.availableOrgans || []), ...(this.organs || [])];
@@ -1375,7 +1376,7 @@ class OrganismKnowledge {
       }
     }
 
-    // console.log('✅ Células con ADN real creadas:', this.cells.length);
+    // logger.debug('✅ Células con ADN real creadas:', this.cells.length);
   }
 
   /**
@@ -1403,7 +1404,7 @@ class OrganismKnowledge {
         }
 
         if (chapters.length > 0) {
-          // console.log(`📚 [getBookChapters] ${book.id}: ${chapters.length} capítulos encontrados`);
+          // logger.debug(`📚 [getBookChapters] ${book.id}: ${chapters.length} capítulos encontrados`);
           return chapters; // SIN LÍMITE - devolver todos los capítulos
         }
       }
@@ -1523,7 +1524,7 @@ class OrganismKnowledge {
     // Crear algunas conexiones visuales entre órganos relacionados
     // TODO: Basadas en relaciones temáticas reales
 
-    // console.log('✅ Conexiones creadas');
+    // logger.debug('✅ Conexiones creadas');
   }
 
   /**
@@ -1686,7 +1687,7 @@ class OrganismKnowledge {
         organData.selectedChapters.push(chapterId);
         organData.connectedChapters = organData.selectedChapters.length;
 
-        // console.log(`🍃 Nutriendo órgano ${slotId} con capítulo ${chapterId}`);
+        // logger.debug(`🍃 Nutriendo órgano ${slotId} con capítulo ${chapterId}`);
 
         // Efecto visual en 3D
         this.animateChapterConnection(slotId, chapterId);
@@ -1698,7 +1699,7 @@ class OrganismKnowledge {
         organData.selectedChapters.splice(index, 1);
         organData.connectedChapters = organData.selectedChapters.length;
 
-        // console.log(`❌ Removiendo nutrición del órgano ${slotId}`);
+        // logger.debug(`❌ Removiendo nutrición del órgano ${slotId}`);
       }
     }
 
@@ -1828,11 +1829,11 @@ class OrganismKnowledge {
     }
 
     if (this.isBodyAlive) {
-      // console.log('El ser ya está vivo');
+      // logger.debug('El ser ya está vivo');
       return;
     }
 
-    // console.log('⚡⚡⚡ ACTIVANDO SER ⚡⚡⚡');
+    // logger.debug('⚡⚡⚡ ACTIVANDO SER ⚡⚡⚡');
 
     // Deshabilitar botón
     const activateBtn = document.getElementById('activate-body-btn');
@@ -1872,7 +1873,7 @@ class OrganismKnowledge {
    * Fase 1: Tormenta de relámpagos alrededor del cuerpo
    */
   async phase1_LightningStorm() {
-    // console.log('⚡ Fase 1: Tormenta eléctrica');
+    // logger.debug('⚡ Fase 1: Tormenta eléctrica');
 
     const duration = 3000;
     const startTime = Date.now();
@@ -1898,7 +1899,7 @@ class OrganismKnowledge {
    * Fase 2: Energizar órganos uno por uno
    */
   async phase2_EnergizeOrgans() {
-    // console.log('⚡ Fase 2: Energizando órganos');
+    // logger.debug('⚡ Fase 2: Energizando órganos');
 
     const organSlots = Object.keys(this.implantedOrgans);
     const delayBetweenOrgans = 400; // 400ms por órgano
@@ -1917,7 +1918,7 @@ class OrganismKnowledge {
    * Fase 3: Gran relámpago final desde arriba
    */
   async phase3_FinalBolt() {
-    // console.log('⚡ Fase 3: Relámpago final');
+    // logger.debug('⚡ Fase 3: Relámpago final');
 
     return new Promise((resolve) => {
       // Crear relámpago masivo desde arriba hacia el cerebro
@@ -1972,7 +1973,7 @@ class OrganismKnowledge {
    * Fase 4: Pulso de vida - todos los órganos brillan al unísono
    */
   async phase4_LifePulse() {
-    // console.log('⚡ Fase 4: Pulso de vida');
+    // logger.debug('⚡ Fase 4: Pulso de vida');
 
     return new Promise((resolve) => {
       let pulseCount = 0;
@@ -2089,7 +2090,7 @@ class OrganismKnowledge {
     const organPiece = organData.organPiece;
     const slotData = this.bodyAnatomy[slotId];
 
-    // console.log(`⚡ Energizando ${slotData.name}...`);
+    // logger.debug(`⚡ Energizando ${slotData.name}...`);
 
     // Flash de luz brillante
     const light = new THREE.PointLight(0x00ffff, 3, 300);
@@ -2369,29 +2370,35 @@ class OrganismKnowledge {
    * Guardar ser en localStorage
    */
   saveBeing(knowledge) {
-    const beings = JSON.parse(localStorage.getItem('created-beings') || '[]');
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      const beings = JSON.parse(localStorage.getItem('created-beings') || '[]');
 
-    const newBeing = {
-      id: Date.now(),
-      timestamp: new Date().toISOString(),
-      knowledge: knowledge,
-      organs: Object.entries(this.implantedOrgans).map(([slotId, organData]) => ({
-        slot: slotId,
-        slotName: this.bodyAnatomy[slotId].name,
-        bookId: organData.book.id,
-        bookTitle: organData.book.title,
-        chapters: organData.selectedChapters || []
-      })),
-      vitality: this.bodyVitality
-    };
+      const newBeing = {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        knowledge: knowledge,
+        organs: Object.entries(this.implantedOrgans).map(([slotId, organData]) => ({
+          slot: slotId,
+          slotName: this.bodyAnatomy[slotId].name,
+          bookId: organData.book.id,
+          bookTitle: organData.book.title,
+          chapters: organData.selectedChapters || []
+        })),
+        vitality: this.bodyVitality
+      };
 
-    beings.push(newBeing);
-    localStorage.setItem('created-beings', JSON.stringify(beings));
+      beings.push(newBeing);
+      localStorage.setItem('created-beings', JSON.stringify(beings));
 
-    // console.log('✅ Ser guardado:', newBeing);
+      // logger.debug('✅ Ser guardado:', newBeing);
 
-    // Mostrar notificación
-    alert('✅ ¡Ser guardado exitosamente!');
+      // Mostrar notificación
+      alert('✅ ¡Ser guardado exitosamente!');
+    } catch (error) {
+      console.error('Error guardando ser:', error);
+      window.toast?.error('Error al guardar el ser. Intenta de nuevo.');
+    }
   }
 
   /**
@@ -2563,7 +2570,12 @@ class OrganismKnowledge {
 
     document.getElementById('organism-tutorial-skip')?.addEventListener('click', () => {
       document.getElementById('organism-tutorial')?.classList.add('hidden');
-      localStorage.setItem('organism-tutorial-seen', 'true');
+      // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+      try {
+        localStorage.setItem('organism-tutorial-seen', 'true');
+      } catch (error) {
+        console.error('Error guardando estado del tutorial:', error);
+      }
     });
 
     // Botón de fusión
@@ -2618,7 +2630,12 @@ class OrganismKnowledge {
     } else {
       // Último paso, cerrar tutorial
       document.getElementById('organism-tutorial')?.classList.add('hidden');
-      localStorage.setItem('organism-tutorial-seen', 'true');
+      // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+      try {
+        localStorage.setItem('organism-tutorial-seen', 'true');
+      } catch (error) {
+        console.error('Error guardando estado del tutorial:', error);
+      }
     }
   }
 
@@ -2706,7 +2723,7 @@ class OrganismKnowledge {
     };
     document.getElementById('organism-mode-title').textContent = titles[mode];
 
-    // console.log('🔄 Modo:', mode);
+    // logger.debug('🔄 Modo:', mode);
   }
 
   /**
@@ -2907,9 +2924,10 @@ class OrganismKnowledge {
     document.getElementById('cell-description').textContent = 'Unidad básica de información que contiene conocimiento condensado. Cada célula puede fusionarse con otras para crear organismos híbridos.';
 
     // ADN (tags) con mejores estilos
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize DNA gene tags
     const dnaContainer = document.getElementById('cell-dna');
     dnaContainer.innerHTML = cellData.dna.map(gene =>
-      `<span class="px-3 py-1 bg-gradient-to-r from-purple-600/40 to-pink-600/40 border border-purple-500/50 rounded-full text-purple-200 text-xs font-semibold">${gene}</span>`
+      `<span class="px-3 py-1 bg-gradient-to-r from-purple-600/40 to-pink-600/40 border border-purple-500/50 rounded-full text-purple-200 text-xs font-semibold">${window.sanitizer?.sanitize(gene) || Sanitizer.escapeHtml(gene)}</span>`
     ).join('');
 
     // Mitocondrias
@@ -3108,12 +3126,13 @@ class OrganismKnowledge {
     document.getElementById('fusion-placeholder')?.classList.add('hidden');
     document.getElementById('selected-cells-container')?.classList.remove('hidden');
 
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize cell book titles
     const container = document.getElementById('selected-cells-container');
     container.innerHTML = this.selectedCells.map((cell, i) => `
       <div class="bg-gradient-to-br from-purple-900/70 to-pink-900/70 rounded-xl p-4 border-2 border-purple-500/60 hover:border-purple-400 transition-all transform hover:scale-105">
         <div class="text-3xl mb-2 text-center animate-bounce">${['🔬', '🧬', '⚡'][i]}</div>
         <div class="text-purple-200 text-sm font-bold text-center">Célula ${i + 1}</div>
-        <div class="text-slate-400 text-xs text-center mt-1">${cell.organ.book.title.substring(0, 20)}...</div>
+        <div class="text-slate-400 text-xs text-center mt-1">${Sanitizer.escapeHtml(cell.organ.book.title.substring(0, 20))}...</div>
       </div>
     `).join('');
 
@@ -3140,7 +3159,7 @@ class OrganismKnowledge {
       window.toast.show(messages[this.selectedCells.length - 1], 'success');
     }
 
-    // console.log('✅ Célula seleccionada para fusión:', this.selectedCells.length);
+    // logger.debug('✅ Célula seleccionada para fusión:', this.selectedCells.length);
   }
 
   /**
@@ -3154,12 +3173,12 @@ class OrganismKnowledge {
       return;
     }
 
-    // console.log('⚗️ Fusionando', this.selectedCells.length, 'células... Creando ser Frankenstein');
+    // logger.debug('⚗️ Fusionando', this.selectedCells.length, 'células... Creando ser Frankenstein');
 
     // ANALIZAR VITALIDAD DEL ORGANISMO
     const vitality = this.analyzeOrganismVitality(this.selectedCells);
 
-    // console.log('📊 Análisis de Vitalidad:', vitality);
+    // logger.debug('📊 Análisis de Vitalidad:', vitality);
 
     // Combinar mitocondrias (energía práctica)
     const totalMitochondria = this.selectedCells.reduce((sum, cell) => sum + cell.mitochondria, 0);
@@ -3201,7 +3220,7 @@ class OrganismKnowledge {
       }
     }
 
-    // console.log('✨ Organismo Frankenstein creado:', newOrganism);
+    // logger.debug('✨ Organismo Frankenstein creado:', newOrganism);
   }
 
   /**
@@ -3488,14 +3507,14 @@ class OrganismKnowledge {
       window.toast.show('🧹 Selección limpiada', 'info');
     }
 
-    // console.log('✨ Selección limpiada');
+    // logger.debug('✨ Selección limpiada');
   }
 
   /**
    * GENERAR CONOCIMIENTO - El organismo vivo crea material nuevo
    */
   async generateOrganismKnowledge(organism) {
-    // console.log('✨ Organismo vivo generando conocimiento...', organism);
+    // logger.debug('✨ Organismo vivo generando conocimiento...', organism);
 
     // Mostrar notificación de que está generando
     if (window.toast) {
@@ -3671,7 +3690,7 @@ Formato JSON:
         window.toast.show(`💾 ${organismData.name} guardado correctamente`, 'success');
       }
 
-      // console.log('✅ Organismo guardado:', organismData);
+      // logger.debug('✅ Organismo guardado:', organismData);
     } catch (error) {
       console.error('Error guardando organismo:', error);
       if (window.toast) {
@@ -3684,7 +3703,7 @@ Formato JSON:
    * Abrir libro
    */
   openBook(bookId) {
-    // console.log('📖 Abriendo libro:', bookId);
+    // logger.debug('📖 Abriendo libro:', bookId);
     this.hide();
 
     if (window.biblioteca) {
@@ -3843,7 +3862,7 @@ Formato JSON:
       container.classList.remove('hidden');
       this.frankensteinUI.init();
       this.isVisible = true;
-      // console.log('🧬 Frankenstein Lab visible');
+      // logger.debug('🧬 Frankenstein Lab visible');
       return;
     }
 
@@ -3861,7 +3880,7 @@ Formato JSON:
     }
 
     this.animate();
-    // console.log('🧬 Organismo visible');
+    // logger.debug('🧬 Organismo visible');
   }
 
   /**
@@ -3876,7 +3895,7 @@ Formato JSON:
       this.animationFrameId = null;
     }
 
-    // console.log('👋 Organismo oculto');
+    // logger.debug('👋 Organismo oculto');
   }
 
   /**
@@ -3929,7 +3948,7 @@ Formato JSON:
    * ⭐ FIX v2.9.181: Prevenir memory leaks de timers y Three.js
    */
   cleanup() {
-    console.log('🧹 [OrganismKnowledge] Iniciando cleanup completo...');
+    logger.debug('🧹 [OrganismKnowledge] Iniciando cleanup completo...');
 
     // 1. Cancelar animationFrame
     if (this.animationFrameId) {
@@ -3940,12 +3959,12 @@ Formato JSON:
     // 2. Limpiar todos los timers
     this.timers.forEach(timerId => clearTimeout(timerId));
     this.timers = [];
-    console.log('  ✅ Timers limpiados');
+    logger.debug('  ✅ Timers limpiados');
 
     // 3. Limpiar todos los intervals
     this.intervals.forEach(intervalId => clearInterval(intervalId));
     this.intervals = [];
-    console.log('  ✅ Intervals limpiados');
+    logger.debug('  ✅ Intervals limpiados');
 
     // 4. Dispose de Three.js resources
     if (this.scene) {
@@ -3965,7 +3984,7 @@ Formato JSON:
       }
 
       this.scene = null;
-      console.log('  ✅ Three.js scene limpiada');
+      logger.debug('  ✅ Three.js scene limpiada');
     }
 
     // 5. Dispose renderer
@@ -3974,7 +3993,7 @@ Formato JSON:
       this.renderer.forceContextLoss();
       this.renderer.domElement = null;
       this.renderer = null;
-      console.log('  ✅ Renderer dispose');
+      logger.debug('  ✅ Renderer dispose');
     }
 
     // 6. Limpiar arrays
@@ -3994,7 +4013,7 @@ Formato JSON:
 
     this.isInitialized = false;
 
-    console.log('✅ [OrganismKnowledge] Cleanup completado');
+    logger.debug('✅ [OrganismKnowledge] Cleanup completado');
   }
 
   /**
@@ -4007,21 +4026,21 @@ Formato JSON:
     const container = document.getElementById('organism-container');
     if (container) container.remove();
 
-    console.log('🗑️ [OrganismKnowledge] Componente destruido');
+    logger.debug('🗑️ [OrganismKnowledge] Componente destruido');
   }
 }
 
 // Exportar
 if (typeof window !== 'undefined') {
   window.OrganismKnowledge = OrganismKnowledge;
-  // console.log('✅ OrganismKnowledge class registered globally');
+  // logger.debug('✅ OrganismKnowledge class registered globally');
 
   // Auto-inicialización cuando se carga dinámicamente
   if (!window.organismKnowledge && window.bookEngine) {
     window.organismKnowledge = new OrganismKnowledge(window.bookEngine);
     // Inicializar asíncronamente
     window.organismKnowledge.init().then(() => {
-      console.log('✅ OrganismKnowledge auto-initialized and ready');
+      logger.debug('✅ OrganismKnowledge auto-initialized and ready');
     }).catch(err => {
       console.error('❌ Error auto-initializing OrganismKnowledge:', err);
     });

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Premium System Validator
  * Validates that all Premium + IA modules are correctly loaded and configured
  *
@@ -18,7 +19,7 @@ class PremiumValidator {
      * Run all validations
      */
     async runAllValidations() {
-        console.log('🔍 Starting Premium System Validation...\n');
+        logger.debug('🔍 Starting Premium System Validation...\n');
         this.results = { passed: [], failed: [], warnings: [] };
 
         await this.validateModulesLoaded();
@@ -35,7 +36,7 @@ class PremiumValidator {
      * Validate that all required modules are loaded
      */
     async validateModulesLoaded() {
-        console.log('📦 Checking modules...');
+        logger.debug('📦 Checking modules...');
 
         const requiredModules = [
             { name: 'supabaseConfig', global: 'supabaseConfig', critical: true },
@@ -63,7 +64,7 @@ class PremiumValidator {
      * Validate Supabase connection
      */
     async validateSupabaseConnection() {
-        console.log('🔌 Checking Supabase connection...');
+        logger.debug('🔌 Checking Supabase connection...');
 
         if (!window.supabase) {
             this.fail('Supabase client not initialized');
@@ -96,7 +97,7 @@ class PremiumValidator {
      * Validate authentication state
      */
     async validateAuthState() {
-        console.log('🔐 Checking auth state...');
+        logger.debug('🔐 Checking auth state...');
 
         if (!window.authHelper) {
             this.warn('authHelper not available, skipping auth validation');
@@ -128,7 +129,7 @@ class PremiumValidator {
      * Validate credits system
      */
     async validateCreditsSystem() {
-        console.log('💰 Checking credits system...');
+        logger.debug('💰 Checking credits system...');
 
         if (!window.aiPremium) {
             this.warn('aiPremium not loaded, attempting lazy load...');
@@ -181,7 +182,7 @@ class PremiumValidator {
      * Validate UI components
      */
     async validateUIComponents() {
-        console.log('🎨 Checking UI components...');
+        logger.debug('🎨 Checking UI components...');
 
         // Check for key DOM elements
         const elements = [
@@ -218,7 +219,7 @@ class PremiumValidator {
      */
     pass(message) {
         this.results.passed.push(message);
-        console.log(`  ✅ ${message}`);
+        logger.debug(`  ✅ ${message}`);
     }
 
     /**
@@ -226,7 +227,7 @@ class PremiumValidator {
      */
     fail(message) {
         this.results.failed.push(message);
-        console.log(`  ❌ ${message}`);
+        logger.debug(`  ❌ ${message}`);
     }
 
     /**
@@ -234,25 +235,25 @@ class PremiumValidator {
      */
     warn(message) {
         this.results.warnings.push(message);
-        console.log(`  ⚠️ ${message}`);
+        logger.debug(`  ⚠️ ${message}`);
     }
 
     /**
      * Print final report
      */
     printReport() {
-        console.log('\n' + '='.repeat(50));
-        console.log('📊 VALIDATION REPORT');
-        console.log('='.repeat(50));
-        console.log(`✅ Passed: ${this.results.passed.length}`);
-        console.log(`❌ Failed: ${this.results.failed.length}`);
-        console.log(`⚠️ Warnings: ${this.results.warnings.length}`);
-        console.log('='.repeat(50));
+        logger.debug('\n' + '='.repeat(50));
+        logger.debug('📊 VALIDATION REPORT');
+        logger.debug('='.repeat(50));
+        logger.debug(`✅ Passed: ${this.results.passed.length}`);
+        logger.debug(`❌ Failed: ${this.results.failed.length}`);
+        logger.debug(`⚠️ Warnings: ${this.results.warnings.length}`);
+        logger.debug('='.repeat(50));
 
         if (this.results.failed.length === 0) {
-            console.log('🎉 All critical validations passed!');
+            logger.debug('🎉 All critical validations passed!');
         } else {
-            console.log('🚨 Some validations failed. Please review the errors above.');
+            logger.debug('🚨 Some validations failed. Please review the errors above.');
         }
 
         return {
@@ -282,4 +283,4 @@ if (window.supabaseConfig?.debugMode || window.location.search.includes('validat
     });
 }
 
-console.log('🔍 PremiumValidator loaded. Run: premiumValidator.runAllValidations()');
+logger.debug('🔍 PremiumValidator loaded. Run: premiumValidator.runAllValidations()');

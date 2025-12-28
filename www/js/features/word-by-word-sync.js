@@ -3,6 +3,7 @@
 // ============================================================================
 // Resalta palabras individuales mientras el TTS las narra
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class WordByWordSync {
   constructor() {
     this.isActive = false;
@@ -81,7 +82,7 @@ class WordByWordSync {
       this.highlightNextWord();
     }, msPerWord);
 
-    // console.log(`✅ Sincronización palabra por palabra iniciada (${wpmAdjusted.toFixed(0)} WPM)`);
+    // logger.debug(`✅ Sincronización palabra por palabra iniciada (${wpmAdjusted.toFixed(0)} WPM)`);
     return true;
   }
 
@@ -96,7 +97,7 @@ class WordByWordSync {
     // Limpiar resaltados
     this.clearHighlights();
 
-    // console.log('⏸️ Sincronización palabra por palabra detenida');
+    // logger.debug('⏸️ Sincronización palabra por palabra detenida');
   }
 
   pause() {
@@ -215,7 +216,7 @@ class WordByWordSync {
     if (actualDuration > 0 && wordCount > 0) {
       const measuredWPM = (wordCount / (actualDuration / 60000));
       this.wordsPerMinute = measuredWPM;
-      // console.log(`📊 WPM calibrado: ${measuredWPM.toFixed(0)}`);
+      // logger.debug(`📊 WPM calibrado: ${measuredWPM.toFixed(0)}`);
     }
   }
 

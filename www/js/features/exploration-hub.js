@@ -13,6 +13,7 @@
 // - Mobile-friendly con tabs responsivos
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ExplorationHub {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -1086,7 +1087,7 @@ class ExplorationHub {
    * ⭐ FIX v2.9.180: Prevenir memory leaks
    */
   cleanup() {
-    console.log('🧹 [ExplorationHub] Iniciando cleanup...');
+    logger.debug('🧹 [ExplorationHub] Iniciando cleanup...');
 
     // Limpiar timeout de búsqueda si existe
     if (this.searchTimeout) {
@@ -1097,7 +1098,7 @@ class ExplorationHub {
     // Limpiar event listeners
     this.eventManager.cleanup();
 
-    console.log('✅ [ExplorationHub] Cleanup completado');
+    logger.debug('✅ [ExplorationHub] Cleanup completado');
   }
 }
 

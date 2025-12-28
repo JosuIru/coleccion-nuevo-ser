@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * LAZY LOADER - Sistema de Carga Dinámica de Módulos
  * Reduce el tiempo de carga inicial cargando módulos bajo demanda
  *
@@ -25,6 +26,8 @@ class LazyLoader {
           'js/features/frankenstein-demo-data.js?v=1.0.0',
           'js/features/frankenstein-avatar-system.js?v=1.0.2',
           'js/features/frankenstein-quiz.js?v=1.0.1',
+          // 🔧 REFACTORING v2.9.200: Load mission data before missions system
+          'js/features/frankenstein/data/frankenstein-mission-data.js?v=2.9.200',
           'js/features/frankenstein-missions.js?v=2.9.43',
           'js/features/frankenstein-ui.js?v=3.1.0',
           'js/features/frankenstein-audio.js?v=1.0.0',
@@ -193,13 +196,13 @@ class LazyLoader {
 
     // Si ya está cargado, retornar inmediatamente
     if (this.loadedModules.has(moduleName)) {
-      console.log(`✅ Módulo "${moduleName}" ya cargado`);
+      logger.debug(`✅ Módulo "${moduleName}" ya cargado`);
       return Promise.resolve();
     }
 
     // Si ya está cargándose, retornar la Promise existente
     if (this.loadingModules.has(moduleName)) {
-      console.log(`⏳ Módulo "${moduleName}" ya se está cargando...`);
+      logger.debug(`⏳ Módulo "${moduleName}" ya se está cargando...`);
       return this.loadingModules.get(moduleName);
     }
 
@@ -209,7 +212,7 @@ class LazyLoader {
       return Promise.reject(new Error(`Módulo no encontrado: ${moduleName}`));
     }
 
-    console.log(`📦 Cargando módulo: ${config.name}...`);
+    logger.debug(`📦 Cargando módulo: ${config.name}...`);
 
     // Mostrar indicador de carga si está disponible
     const loaderId = window.loadingIndicator?.showBar(`module-${moduleName}`);
@@ -222,7 +225,7 @@ class LazyLoader {
       await loadingPromise;
       this.loadedModules.add(moduleName);
       this.loadingModules.delete(moduleName);
-      console.log(`✅ Módulo "${config.name}" cargado exitosamente`);
+      logger.debug(`✅ Módulo "${config.name}" cargado exitosamente`);
 
       // Ocultar indicador de carga
       if (loaderId) window.loadingIndicator?.hide(loaderId);
@@ -300,6 +303,10 @@ class LazyLoader {
       const script = document.createElement('script');
       script.src = src;
       script.async = false; // Mantener orden de ejecución
+      // 🔧 REFACTORING v2.9.200: Enable ES6 modules for frankenstein-ui.js
+      if (src.includes('frankenstein-ui.js')) {
+        script.type = 'module';
+      }
       script.onload = () => resolve();
       script.onerror = () => reject(new Error(`Error cargando script: ${src}`));
       document.body.appendChild(script);
@@ -310,7 +317,7 @@ class LazyLoader {
    * Pre-cargar módulos en background (útil para anticipar uso)
    */
   preload(moduleName) {
-    console.log(`🔮 Pre-cargando módulo: ${moduleName}...`);
+    logger.debug(`🔮 Pre-cargando módulo: ${moduleName}...`);
     return this.load(moduleName);
   }
 
@@ -346,11 +353,11 @@ class LazyLoader {
 
     // Si el tema actual es el mismo, no hacer nada
     if (temaActual && temaActual.getAttribute(dataAtributoTema) === nombreTema) {
-      console.log(`✅ Tema "${nombreTema}" ya está cargado`);
+      logger.debug(`✅ Tema "${nombreTema}" ya está cargado`);
       return Promise.resolve();
     }
 
-    console.log(`🎨 Cargando tema: ${nombreTema}...`);
+    logger.debug(`🎨 Cargando tema: ${nombreTema}...`);
 
     // Crear la URL del CSS del tema
     const urlTema = `css/themes/${nombreTema}.css`;
@@ -366,9 +373,9 @@ class LazyLoader {
         // Remover el tema anterior después de que el nuevo esté cargado
         if (temaActual) {
           temaActual.remove();
-          console.log(`🗑️ Tema anterior removido`);
+          logger.debug(`🗑️ Tema anterior removido`);
         }
-        console.log(`✅ Tema "${nombreTema}" cargado exitosamente`);
+        logger.debug(`✅ Tema "${nombreTema}" cargado exitosamente`);
         resolve();
       };
 
@@ -396,4 +403,4 @@ class LazyLoader {
 window.lazyLoader = new LazyLoader();
 
 // Exponer para debugging
-console.log('📦 LazyLoader inicializado. Módulos disponibles:', window.lazyLoader.getAvailableModules());
+logger.debug('📦 LazyLoader inicializado. Módulos disponibles:', window.lazyLoader.getAvailableModules());

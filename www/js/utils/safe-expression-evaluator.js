@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SAFE EXPRESSION EVALUATOR
  * Evaluador seguro de expresiones sin usar new Function() o eval()
  * Soluciona problema de seguridad #59 y #71
@@ -420,7 +421,7 @@ class SafeExpressionEvaluator {
 
     switch (level) {
       case 'debug':
-        console.log(prefix, ...args);
+        logger.debug(prefix, ...args);
         break;
       case 'warn':
         console.warn(prefix, ...args);

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * CONFIRM MODAL - Modal de confirmación personalizado
  *
  * Reemplaza window.confirm() con un modal accesible y personalizable.
@@ -317,4 +318,4 @@ window.confirmLogout = async () => {
   });
 };
 
-console.log('[ConfirmModal] Custom confirm modal loaded. Use window.confirmModal.show() or window.showConfirm()');
+logger.debug('[ConfirmModal] Custom confirm modal loaded. Use window.confirmModal.show() or window.showConfirm()');

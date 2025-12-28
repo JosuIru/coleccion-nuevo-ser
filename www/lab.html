@@ -13,10 +13,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"
-            crossorigin="anonymous"
-            onerror="document.head.appendChild(Object.assign(document.createElement('link'),{rel:'stylesheet',href:'css/tailwind-fallback.css'}))"></script>
+    <!-- Tailwind CSS local (evita CORS en WebView) -->
+    <script src="js/vendor/tailwind.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -196,6 +194,8 @@
     <script src="js/features/frankenstein-settings.js"></script>
 
     <!-- Frankenstein Lab Scripts -->
+    <!-- 🔧 REFACTORING v2.9.200: Load mission data before missions system -->
+    <script src="js/features/frankenstein/data/frankenstein-mission-data.js"></script>
     <script src="js/features/frankenstein-missions.js"></script>
     <script src="js/features/frankenstein-being-card.js"></script>
     <script src="js/features/frankenstein-quiz.js"></script>

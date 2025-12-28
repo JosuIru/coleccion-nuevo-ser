@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * System Validator - Validación rápida del sistema
  * Coleccion Nuevo Ser v2.9.32
  *
@@ -17,7 +18,7 @@ class SystemValidator {
    * Ejecutar validación rápida
    */
   async runQuickCheck() {
-    console.log('🔍 Ejecutando validación rápida del sistema...\n');
+    logger.debug('🔍 Ejecutando validación rápida del sistema...\n');
     this.checks = [];
 
     // 1. Core Dependencies
@@ -58,26 +59,26 @@ class SystemValidator {
     const failed = this.checks.filter(c => c.status === 'fail').length;
     const warnings = this.checks.filter(c => c.status === 'warn').length;
 
-    console.log('\n' + '═'.repeat(50));
-    console.log(`📊 RESULTADO: ${passed} OK, ${failed} FAIL, ${warnings} WARN`);
-    console.log('═'.repeat(50));
+    logger.debug('\n' + '═'.repeat(50));
+    logger.debug(`📊 RESULTADO: ${passed} OK, ${failed} FAIL, ${warnings} WARN`);
+    logger.debug('═'.repeat(50));
 
     if (failed > 0) {
-      console.log('\n❌ Problemas detectados:');
+      logger.debug('\n❌ Problemas detectados:');
       this.checks.filter(c => c.status === 'fail').forEach(c => {
-        console.log(`   - ${c.name}`);
+        logger.debug(`   - ${c.name}`);
       });
     }
 
     if (warnings > 0) {
-      console.log('\n⚠️ Advertencias:');
+      logger.debug('\n⚠️ Advertencias:');
       this.checks.filter(c => c.status === 'warn').forEach(c => {
-        console.log(`   - ${c.name}`);
+        logger.debug(`   - ${c.name}`);
       });
     }
 
     const score = Math.round((passed / (passed + failed)) * 100);
-    console.log(`\n🎯 Score del sistema: ${score}%`);
+    logger.debug(`\n🎯 Score del sistema: ${score}%`);
 
     return {
       passed,
@@ -91,12 +92,12 @@ class SystemValidator {
   check(name, condition, warnIfFalse = false) {
     const status = condition ? 'pass' : (warnIfFalse === 'warn' ? 'warn' : 'fail');
     const icon = status === 'pass' ? '✅' : (status === 'warn' ? '⚠️' : '❌');
-    console.log(`${icon} ${name}`);
+    logger.debug(`${icon} ${name}`);
     this.checks.push({ name, status, type: 'check' });
   }
 
   info(name, value) {
-    console.log(`ℹ️ ${name}: ${value}`);
+    logger.debug(`ℹ️ ${name}: ${value}`);
     this.checks.push({ name, value, status: 'info', type: 'info' });
   }
 
@@ -104,7 +105,7 @@ class SystemValidator {
    * Verificar configuración de producción
    */
   checkProductionReadiness() {
-    console.log('\n🚀 Verificando preparación para producción...\n');
+    logger.debug('\n🚀 Verificando preparación para producción...\n');
 
     const issues = [];
 
@@ -129,10 +130,10 @@ class SystemValidator {
     issues.push('⚠️ RECORDATORIO: Configurar Google OAuth en Supabase Dashboard');
 
     if (issues.length > 0) {
-      console.log('Problemas encontrados:');
-      issues.forEach(i => console.log(`   ${i}`));
+      logger.debug('Problemas encontrados:');
+      issues.forEach(i => logger.debug(`   ${i}`));
     } else {
-      console.log('✅ Sistema listo para producción');
+      logger.debug('✅ Sistema listo para producción');
     }
 
     return issues;
@@ -142,4 +143,4 @@ class SystemValidator {
 // Crear instancia global
 window.systemValidator = new SystemValidator();
 
-console.log('✅ SystemValidator loaded. Use window.systemValidator.runQuickCheck()');
+logger.debug('✅ SystemValidator loaded. Use window.systemValidator.runQuickCheck()');

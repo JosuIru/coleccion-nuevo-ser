@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Frankenstein Quiz System
  * Sistema educativo de evaluación para desbloqueo de piezas de conocimiento
  *
@@ -152,7 +153,7 @@ class FrankensteinQuizSystem {
       this.skipMastered = savedSkipMastered !== 'false';
     }
 
-    console.log(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty (quickMode: ${this.quickMode}, skipMastered: ${this.skipMastered})`);
+    logger.debug(`[FrankensteinQuiz] Initialized in ${this.mode} mode with ${this.difficulty} difficulty (quickMode: ${this.quickMode}, skipMastered: ${this.skipMastered})`);
   }
 
   /**
@@ -161,7 +162,7 @@ class FrankensteinQuizSystem {
   setQuickMode(enabled) {
     this.quickMode = enabled;
     localStorage.setItem('frankenstein_quick_mode', String(enabled));
-    console.log(`[FrankensteinQuiz] Quick mode: ${enabled}`);
+    logger.debug(`[FrankensteinQuiz] Quick mode: ${enabled}`);
   }
 
   /**
@@ -170,7 +171,7 @@ class FrankensteinQuizSystem {
   setSkipMastered(enabled) {
     this.skipMastered = enabled;
     localStorage.setItem('frankenstein_skip_mastered', String(enabled));
-    console.log(`[FrankensteinQuiz] Skip mastered: ${enabled}`);
+    logger.debug(`[FrankensteinQuiz] Skip mastered: ${enabled}`);
   }
 
   /**
@@ -221,7 +222,7 @@ class FrankensteinQuizSystem {
 
     this.mode = mode;
     localStorage.setItem('frankenstein_mode', mode);
-    console.log(`[FrankensteinQuiz] Mode changed to: ${mode}`);
+    logger.debug(`[FrankensteinQuiz] Mode changed to: ${mode}`);
 
     // Emitir evento para que la UI se actualice
     document.dispatchEvent(new CustomEvent('frankenstein:modeChanged', {
@@ -241,7 +242,7 @@ class FrankensteinQuizSystem {
     this.difficulty = difficulty;
     this.powerMultipliers = this.difficultySettings[difficulty].powerMultipliers;
     localStorage.setItem('frankenstein_difficulty', difficulty);
-    console.log(`[FrankensteinQuiz] Difficulty changed to: ${difficulty}`);
+    logger.debug(`[FrankensteinQuiz] Difficulty changed to: ${difficulty}`);
 
     // Emitir evento para que la UI se actualice
     document.dispatchEvent(new CustomEvent('frankenstein:difficultyChanged', {
@@ -492,7 +493,7 @@ class FrankensteinQuizSystem {
     // Si la pieza ya está dominada y skipMastered está activo, saltar quiz
     if (this.skipMastered && this.isPieceMastered(pieceKey)) {
       const mastered = this.masteredPieces[pieceKey];
-      console.log(`[FrankensteinQuiz] Pieza ${pieceKey} ya dominada, saltando quiz`);
+      logger.debug(`[FrankensteinQuiz] Pieza ${pieceKey} ya dominada, saltando quiz`);
       return {
         passed: true,
         powerMultiplier: 1.15, // Bonus moderado por pieza dominada
@@ -505,7 +506,7 @@ class FrankensteinQuizSystem {
     // Si el usuario ha fallado 3+ veces, ofrecer auto-pass con penalización
     const attempts = this.getAttempts(pieceKey);
     if (attempts >= 3) {
-      console.log(`[FrankensteinQuiz] ${attempts} intentos en ${pieceKey}, ofreciendo auto-pass`);
+      logger.debug(`[FrankensteinQuiz] ${attempts} intentos en ${pieceKey}, ofreciendo auto-pass`);
       const autoPass = await this.showAutoPassOption(pieceKey, attempts);
       if (autoPass) {
         return {
@@ -985,7 +986,7 @@ class FrankensteinQuizSystem {
     this.weakPieces = [];
     this.savePiecesPower();
     this.saveWeakPieces();
-    console.log('[FrankensteinQuiz] System reset');
+    logger.debug('[FrankensteinQuiz] System reset');
   }
 }
 

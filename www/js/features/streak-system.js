@@ -7,6 +7,7 @@
 // - Milestones y celebraciones
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class StreakSystem {
   constructor() {
     this.storageKey = 'user_streak_data';
@@ -56,6 +57,7 @@ class StreakSystem {
   }
 
   saveData() {
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.data));
 
@@ -68,8 +70,14 @@ class StreakSystem {
         // Fallback al método antiguo si SyncManager no está disponible
         window.supabaseSyncHelper.syncStreakData(this.data);
       }
-    } catch (e) {
-      console.error('[StreakSystem] Error saving data:', e);
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        console.warn('[StreakSystem] localStorage quota exceeded');
+        window.toast?.warn('Almacenamiento lleno. Racha puede no guardarse.');
+      } else {
+        console.error('[StreakSystem] Error saving data:', error);
+        window.toast?.error('Error al guardar racha.');
+      }
     }
   }
 
@@ -373,7 +381,7 @@ class StreakSystem {
   reset() {
     localStorage.removeItem(this.storageKey);
     this.data = this.loadData();
-    console.log('[StreakSystem] Data reset');
+    logger.debug('[StreakSystem] Data reset');
   }
 }
 

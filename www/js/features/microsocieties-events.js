@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE EVENTOS CON OPCIONES MÚLTIPLES
  * Eventos interactivos donde el usuario elige la respuesta
  */
@@ -534,4 +535,4 @@ class EventsSystem {
 
 // Exportar
 window.EventsSystem = EventsSystem;
-// console.log('🎲 Sistema de Eventos con Opciones cargado');
+// logger.debug('🎲 Sistema de Eventos con Opciones cargado');

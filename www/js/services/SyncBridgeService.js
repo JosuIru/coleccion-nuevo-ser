@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SYNC BRIDGE SERVICE
  * ===================
  *
@@ -28,7 +29,7 @@
  *
  * // Escuchar eventos de sincronización
  * eventBus.on('sync.completed', (data) => {
- *   console.log('Sync completado:', data);
+ *   logger.debug('Sync completado:', data);
  * });
  * ```
  *
@@ -59,7 +60,7 @@ class SyncBridgeService {
    */
   async init() {
     if (this.initialized) {
-      console.log('[SyncBridge] Ya inicializado');
+      logger.debug('[SyncBridge] Ya inicializado');
       return;
     }
 
@@ -99,7 +100,7 @@ class SyncBridgeService {
       }
 
       this.initialized = true;
-      console.log('[SyncBridge] ✓ Inicializado correctamente');
+      logger.debug('[SyncBridge] ✓ Inicializado correctamente');
 
       // Emitir evento
       window.eventBus?.emit('sync.initialized', {
@@ -125,19 +126,19 @@ class SyncBridgeService {
 
     // Validar precondiciones
     if (!this.user) {
-      if (!silent) console.log('[SyncBridge] No hay usuario autenticado');
+      if (!silent) logger.debug('[SyncBridge] No hay usuario autenticado');
       return { success: false, reason: 'no_user' };
     }
 
     if (this.isSyncing && !force) {
-      if (!silent) console.log('[SyncBridge] Sincronización en progreso...');
+      if (!silent) logger.debug('[SyncBridge] Sincronización en progreso...');
       return { success: false, reason: 'already_syncing' };
     }
 
     this.isSyncing = true;
 
     try {
-      if (!silent) console.log('[SyncBridge] Iniciando sincronización...');
+      if (!silent) logger.debug('[SyncBridge] Iniciando sincronización...');
 
       // Emitir evento de inicio
       window.eventBus?.emit('sync.started', {
@@ -170,7 +171,7 @@ class SyncBridgeService {
       };
 
       if (!silent) {
-        console.log('[SyncBridge] ✓ Sincronización completada', syncResults);
+        logger.debug('[SyncBridge] ✓ Sincronización completada', syncResults);
       }
 
       // Emitir evento de completado
@@ -339,7 +340,7 @@ class SyncBridgeService {
         if (!error && data?.status !== 'conflict') {
           syncedCount++;
         } else if (data?.status === 'conflict') {
-          console.log('[SyncBridge] Conflicto en progreso:', progress.book_id, progress.chapter_id);
+          logger.debug('[SyncBridge] Conflicto en progreso:', progress.book_id, progress.chapter_id);
           // Emitir evento de conflicto
           window.eventBus?.emit('sync.conflict', {
             type: 'reading_progress',
@@ -562,7 +563,7 @@ class SyncBridgeService {
   async processOfflineQueue() {
     if (this.syncQueue.length === 0) return;
 
-    console.log(`[SyncBridge] Procesando ${this.syncQueue.length} operaciones en cola...`);
+    logger.debug(`[SyncBridge] Procesando ${this.syncQueue.length} operaciones en cola...`);
 
     const failedOperations = [];
 
@@ -606,7 +607,7 @@ class SyncBridgeService {
    */
   processQueueOnReconnect() {
     window.addEventListener('online', () => {
-      console.log('[SyncBridge] Conexión restaurada, procesando cola...');
+      logger.debug('[SyncBridge] Conexión restaurada, procesando cola...');
       this.processOfflineQueue();
     });
   }
@@ -621,7 +622,7 @@ class SyncBridgeService {
   startAutoSync() {
     if (this.syncInterval) return;
 
-    console.log(`[SyncBridge] Auto-sync activado (cada ${this.autoSyncIntervalMs / 1000}s)`);
+    logger.debug(`[SyncBridge] Auto-sync activado (cada ${this.autoSyncIntervalMs / 1000}s)`);
 
     this.syncInterval = setInterval(() => {
       this.sync({ silent: true });
@@ -635,7 +636,7 @@ class SyncBridgeService {
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
       this.syncInterval = null;
-      console.log('[SyncBridge] Auto-sync desactivado');
+      logger.debug('[SyncBridge] Auto-sync desactivado');
     }
   }
 
@@ -674,11 +675,11 @@ class SyncBridgeService {
     this.user = session?.user || null;
 
     if (event === 'SIGNED_IN' && this.autoSyncEnabled) {
-      console.log('[SyncBridge] Usuario autenticado, iniciando sync...');
+      logger.debug('[SyncBridge] Usuario autenticado, iniciando sync...');
       this.sync({ silent: true });
       this.startAutoSync();
     } else if (event === 'SIGNED_OUT') {
-      console.log('[SyncBridge] Usuario desconectado, deteniendo sync');
+      logger.debug('[SyncBridge] Usuario desconectado, deteniendo sync');
       this.stopAutoSync();
     }
   }
@@ -803,4 +804,4 @@ if (document.readyState === 'loading') {
   window.syncBridge.init();
 }
 
-console.log('[SyncBridge] Servicio cargado - Accesible como window.syncBridge');
+logger.debug('[SyncBridge] Servicio cargado - Accesible como window.syncBridge');

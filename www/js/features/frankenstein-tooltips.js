@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE TOOLTIPS ESTILO GRIMORIO
  * Tooltips elegantes con textura de pergamino para atributos
  * @version 2.0.0 - Corregido para mejor funcionamiento en móvil
@@ -55,7 +56,7 @@ class FrankensteinTooltips {
     // Adjuntar listeners
     this.attachListeners();
 
-    console.log('✨ Sistema de tooltips v2 inicializado');
+    logger.debug('✨ Sistema de tooltips v2 inicializado');
   }
 
   attachListeners() {

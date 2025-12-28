@@ -26,7 +26,14 @@ class ActionPlans {
   }
 
   savePlans() {
-    localStorage.setItem('action-plans', JSON.stringify(this.plans));
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('action-plans', JSON.stringify(this.plans));
+    } catch (error) {
+      console.error('Error guardando planes de acción:', error);
+      window.toast?.error('Error al guardar plan. Intenta de nuevo.');
+      return; // No intentar sincronizar si falla guardar localmente
+    }
 
     // Sincronizar a la nube si está autenticado
     if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
@@ -670,12 +677,18 @@ class ActionPlans {
     const activePlans = this.getActivePlans();
     if (activePlans.length === 0) return;
 
-    // Mostrar solo si no se ha mostrado hoy
-    const lastShown = localStorage.getItem('plans-reminder-shown');
-    const today = new Date().toDateString();
-    if (lastShown === today) return;
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      // Mostrar solo si no se ha mostrado hoy
+      const lastShown = localStorage.getItem('plans-reminder-shown');
+      const today = new Date().toDateString();
+      if (lastShown === today) return;
 
-    localStorage.setItem('plans-reminder-shown', today);
+      localStorage.setItem('plans-reminder-shown', today);
+    } catch (error) {
+      console.error('Error guardando recordatorio de planes:', error);
+      // Continuar mostrando el widget aunque falle guardar
+    }
 
     const widget = document.createElement('div');
     widget.id = 'plans-reminder-widget';

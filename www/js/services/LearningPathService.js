@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * LEARNING PATH SERVICE
  * ======================
  *
@@ -73,7 +74,7 @@ class LearningPathService {
    */
   async init() {
     if (this.initialized) {
-      console.log('[LearningPathService] Ya inicializado');
+      logger.debug('[LearningPathService] Ya inicializado');
       return;
     }
 
@@ -101,7 +102,7 @@ class LearningPathService {
       }
 
       this.initialized = true;
-      console.log('[LearningPathService] ✓ Inicializado correctamente');
+      logger.debug('[LearningPathService] ✓ Inicializado correctamente');
 
     } catch (error) {
       console.error('[LearningPathService] Error en inicialización:', error);
@@ -115,11 +116,11 @@ class LearningPathService {
     if (event === 'SIGNED_IN') {
       this.user = session?.user || null;
       this.clearCache();
-      console.log('[LearningPathService] Usuario autenticado');
+      logger.debug('[LearningPathService] Usuario autenticado');
     } else if (event === 'SIGNED_OUT') {
       this.user = null;
       this.clearCache();
-      console.log('[LearningPathService] Usuario desconectado');
+      logger.debug('[LearningPathService] Usuario desconectado');
     }
   }
 
@@ -288,7 +289,7 @@ class LearningPathService {
         timestamp: new Date().toISOString()
       });
 
-      console.log(`[LearningPathService] Path "${path.title}" iniciado`);
+      logger.debug(`[LearningPathService] Path "${path.title}" iniciado`);
 
       return userPath;
 
@@ -444,7 +445,7 @@ class LearningPathService {
         timestamp: new Date().toISOString()
       });
 
-      console.log(`[LearningPathService] Etapa completada: ${stage.title}`);
+      logger.debug(`[LearningPathService] Etapa completada: ${stage.title}`);
 
       return true;
 
@@ -518,11 +519,11 @@ class LearningPathService {
       if (error) throw error;
 
       if (data) {
-        console.log('[LearningPathService] Avanzado al siguiente día');
+        logger.debug('[LearningPathService] Avanzado al siguiente día');
         this.clearCache();
         return true;
       } else {
-        console.log('[LearningPathService] No se puede avanzar (día incompleto o último día)');
+        logger.debug('[LearningPathService] No se puede avanzar (día incompleto o último día)');
         return false;
       }
 
@@ -606,7 +607,7 @@ class LearningPathService {
         timestamp: new Date().toISOString()
       });
 
-      console.log(`[LearningPathService] Path abandonado: ${path.title}`);
+      logger.debug(`[LearningPathService] Path abandonado: ${path.title}`);
 
       return true;
 
@@ -640,7 +641,7 @@ class LearningPathService {
       if (error) throw error;
 
       this.clearCache();
-      console.log('[LearningPathService] Path pausado');
+      logger.debug('[LearningPathService] Path pausado');
 
       return true;
 
@@ -677,7 +678,7 @@ class LearningPathService {
       if (error) throw error;
 
       this.clearCache();
-      console.log('[LearningPathService] Path reanudado');
+      logger.debug('[LearningPathService] Path reanudado');
 
       return true;
 
@@ -820,4 +821,4 @@ if (document.readyState === 'loading') {
   window.learningPathService.init();
 }
 
-console.log('[LearningPathService] Servicio cargado - Accesible como window.learningPathService');
+logger.debug('[LearningPathService] Servicio cargado - Accesible como window.learningPathService');

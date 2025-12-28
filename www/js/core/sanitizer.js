@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * HTML SANITIZER - Funciones de sanitización para prevenir XSS
  *
  * Proporciona métodos seguros para manejar contenido HTML/texto
@@ -350,4 +351,4 @@ window.Sanitizer = Sanitizer;
 // Alias para compatibilidad
 window.sanitizer = Sanitizer;
 
-console.log('[Sanitizer] HTML sanitizer loaded. Use Sanitizer.escapeHtml() or Sanitizer.sanitizeHtml()');
+logger.debug('[Sanitizer] HTML sanitizer loaded. Use Sanitizer.escapeHtml() or Sanitizer.sanitizeHtml()');

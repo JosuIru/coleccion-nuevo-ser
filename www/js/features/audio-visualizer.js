@@ -3,6 +3,7 @@
 // ============================================================================
 // Muestra una representación visual del audio que se está reproduciendo
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioVisualizer {
   constructor(audioContext) {
     this.audioContext = audioContext;
@@ -44,7 +45,7 @@ class AudioVisualizer {
         sourceNode.connect(this.analyser);
       }
 
-      // console.log('✅ AudioVisualizer inicializado');
+      // logger.debug('✅ AudioVisualizer inicializado');
       return true;
     } catch (error) {
       console.error('❌ Error inicializando AudioVisualizer:', error);

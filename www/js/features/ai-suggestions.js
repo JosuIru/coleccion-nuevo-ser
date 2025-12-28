@@ -2,6 +2,7 @@
 // AI SUGGESTIONS - Sugerencias Contextuales de IA
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AISuggestions {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -328,14 +329,14 @@ class AISuggestions {
   attachToChapterContent() {
     // Añadir listeners a los botones de sugerencia en el contenido
     const buttons = document.querySelectorAll('.ai-suggestion-btn');
-    // console.log('🔧 AI Suggestions: Adjuntando listeners a', buttons.length, 'botones');
+    // logger.debug('🔧 AI Suggestions: Adjuntando listeners a', buttons.length, 'botones');
 
     buttons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         const text = btn.dataset.suggestionText;
-        // console.log('📝 Sugerencia clickeada:', text);
+        // logger.debug('📝 Sugerencia clickeada:', text);
         if (text) {
           this.openChatWithSuggestion(text);
         }

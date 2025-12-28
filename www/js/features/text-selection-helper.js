@@ -3,6 +3,7 @@
 // ============================================================================
 // Permite seleccionar texto en los libros y hacer preguntas a la IA sobre él
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class TextSelectionHelper {
   constructor(aiChatModal) {
     this.aiChatModal = aiChatModal;
@@ -66,7 +67,7 @@ class TextSelectionHelper {
       // Adjuntar listeners
       this.attachListeners();
 
-      // console.log('✅ Text Selection Helper inicializado');
+      // logger.debug('✅ Text Selection Helper inicializado');
       if (window.logger) {
         logger.log('✅ Text Selection Helper inicializado');
       }
@@ -193,8 +194,8 @@ class TextSelectionHelper {
       const text = selection.toString().trim();
 
       // Debug logging
-      // console.log('[TextSelection] Text selected:', text.substring(0, 50) + '...');
-      // console.log('[TextSelection] Text length:', text.length);
+      // logger.debug('[TextSelection] Text selected:', text.substring(0, 50) + '...');
+      // logger.debug('[TextSelection] Text length:', text.length);
 
       // Verificar que:
       // 1. Hay texto seleccionado
@@ -204,12 +205,12 @@ class TextSelectionHelper {
         const range = selection.getRangeAt(0);
         const container = range.commonAncestorContainer;
 
-        // console.log('[TextSelection] Container:', container);
+        // logger.debug('[TextSelection] Container:', container);
 
         // Verificar que está dentro del contenido del capítulo
         const isInChapter = this.isInChapterContent(container);
 
-        // console.log('[TextSelection] Is in chapter:', isInChapter);
+        // logger.debug('[TextSelection] Is in chapter:', isInChapter);
 
         if (isInChapter) {
           this.selectedText = text;
@@ -219,7 +220,7 @@ class TextSelectionHelper {
           this.hideMenu();
         }
       } else {
-        // console.log('[TextSelection] Text too short');
+        // logger.debug('[TextSelection] Text too short');
         this.hideMenu();
       }
     }, 50);
@@ -232,7 +233,7 @@ class TextSelectionHelper {
     while (current && depth < 20) { // Limite de profundidad para evitar loops infinitos
       // Log para debugging
       if (current.classList) {
-        // console.log('[TextSelection] Checking node:', current.className || current.id || current.tagName);
+        // logger.debug('[TextSelection] Checking node:', current.className || current.id || current.tagName);
       }
 
       if (current.classList) {
@@ -244,7 +245,7 @@ class TextSelectionHelper {
             current.classList.contains('main-content') ||
             current.id === 'book-reader-view' ||
             current.id === 'book-content') {
-          // console.log('[TextSelection] Found valid container:', current.className || current.id);
+          // logger.debug('[TextSelection] Found valid container:', current.className || current.id);
           return true;
         }
       }

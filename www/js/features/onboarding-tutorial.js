@@ -3,6 +3,7 @@
 // ============================================================================
 // Se muestra solo la primera vez que el usuario entra a la app
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class OnboardingTutorial {
   constructor() {
     this.currentStep = 0;
@@ -259,13 +260,13 @@ class OnboardingTutorial {
     if (window.authHelper && window.authHelper.user) {
       try {
         window.supabaseSyncHelper?.syncPreference('has_seen_tutorial', true);
-        console.log('[Tutorial] ✅ Tutorial marcado como completado y sincronizado con Supabase');
+        logger.debug('[Tutorial] ✅ Tutorial marcado como completado y sincronizado con Supabase');
       } catch (error) {
         console.warn('[Tutorial] No se pudo sincronizar con Supabase:', error);
       }
     }
 
-    console.log('[Tutorial] ✅ Tutorial marcado como completado permanentemente');
+    logger.debug('[Tutorial] ✅ Tutorial marcado como completado permanentemente');
   }
 
   close() {
@@ -729,7 +730,7 @@ class OnboardingTutorial {
     this.timers.forEach(timerId => clearTimeout(timerId));
     this.timers = [];
 
-    console.log('[OnboardingTutorial] Cleanup completado');
+    logger.debug('[OnboardingTutorial] Cleanup completado');
   }
 }
 

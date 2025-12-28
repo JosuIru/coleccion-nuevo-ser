@@ -2,6 +2,7 @@
 // AI CHAT MODAL - Modal de Conversación con IA
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AIChatModal {
   constructor(bookEngine, aiAdapter) {
     this.bookEngine = bookEngine;
@@ -1024,7 +1025,12 @@ class AIChatModal {
     if (practicalModeToggle) {
       practicalModeToggle.addEventListener('change', (e) => {
         this.practicalMode = e.target.checked;
-        localStorage.setItem('ai-practical-mode', this.practicalMode ? 'true' : 'false');
+        // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+        try {
+          localStorage.setItem('ai-practical-mode', this.practicalMode ? 'true' : 'false');
+        } catch (error) {
+          console.error('Error guardando modo práctico:', error);
+        }
 
         if (window.toast) {
           window.toast.info(this.practicalMode ?
@@ -1079,17 +1085,17 @@ class AIChatModal {
         const selectedModel = e.target.value;
         if (window.aiConfig) {
           window.aiConfig.setSelectedModel(selectedModel);
-          // console.log(`✅ Modelo cambiado a: ${selectedModel}`);
+          // logger.debug(`✅ Modelo cambiado a: ${selectedModel}`);
         }
       });
     }
 
     // Suggested questions - usar event delegation en el contenedor de mensajes
     const messagesArea = document.getElementById('ai-chat-messages');
-    // console.log('🔧 Configurando eventos sugerencias, messagesArea:', !!messagesArea);
+    // logger.debug('🔧 Configurando eventos sugerencias, messagesArea:', !!messagesArea);
     if (messagesArea) {
       messagesArea.addEventListener('click', (e) => {
-        // console.log('👆 Click en messagesArea, target:', e.target.className);
+        // logger.debug('👆 Click en messagesArea, target:', e.target.className);
         const btn = e.target.closest('.suggested-question');
         if (btn) {
           e.preventDefault();
@@ -1099,7 +1105,7 @@ class AIChatModal {
           const question = suggestedQuestions[questionIndex];
           const input = document.getElementById('ai-chat-input');
 
-          // console.log('📝 Sugerencia clickeada:', questionIndex, question);
+          // logger.debug('📝 Sugerencia clickeada:', questionIndex, question);
 
           if (input && question) {
             input.value = question;
@@ -1260,7 +1266,7 @@ class AIChatModal {
     if (window.toast) {
       window.toast.success('Configuración de IA guardada');
     } else {
-      // console.log('✅ Configuración de IA guardada');
+      // logger.debug('✅ Configuración de IA guardada');
     }
   }
 
@@ -1563,7 +1569,12 @@ class AIChatModal {
   // 🔧 FIX #27: Permitir configuración del tamaño del historial
   setMaxHistory(length) {
     this.maxHistoryLength = length;
-    localStorage.setItem('ai-max-history', length.toString());
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('ai-max-history', length.toString());
+    } catch (error) {
+      console.error('Error guardando tamaño de historial de IA:', error);
+    }
   }
 
   clearHistory() {

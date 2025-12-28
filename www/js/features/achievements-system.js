@@ -2,6 +2,7 @@
 // ACHIEVEMENTS SYSTEM - Sistema de Logros y Gamificación
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AchievementSystem {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -41,7 +42,19 @@ class AchievementSystem {
   }
 
   saveUnlocked() {
-    localStorage.setItem('achievements-unlocked', JSON.stringify(this.unlockedAchievements));
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('achievements-unlocked', JSON.stringify(this.unlockedAchievements));
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        console.warn('[Achievements] localStorage quota exceeded');
+        window.toast?.warn('Almacenamiento lleno. Algunos logros pueden no guardarse.');
+      } else {
+        console.error('[Achievements] Error guardando logros:', error);
+        window.toast?.error('Error al guardar logros.');
+      }
+      return; // No continuar con la sincronización si falló el guardado local
+    }
 
     // Sincronizar con Supabase si está logeado
     if (window.authHelper && window.authHelper.user) {
@@ -62,7 +75,18 @@ class AchievementSystem {
   }
 
   saveStats() {
-    localStorage.setItem('achievements-stats', JSON.stringify(this.stats));
+    // 🔧 FIX v2.9.199: localStorage error handling - quota exceeded protection
+    try {
+      localStorage.setItem('achievements-stats', JSON.stringify(this.stats));
+    } catch (error) {
+      if (error.name === 'QuotaExceededError') {
+        console.warn('[Achievements] localStorage quota exceeded');
+        window.toast?.warn('Almacenamiento lleno. Estadísticas pueden no guardarse.');
+      } else {
+        console.error('[Achievements] Error guardando estadísticas:', error);
+      }
+      return;
+    }
 
     // Sincronizar con Supabase si está logeado
     if (window.authHelper && window.authHelper.user) {
@@ -326,7 +350,7 @@ class AchievementSystem {
     const showAchievementNotifications = localStorage.getItem('show-achievement-notifications');
     if (showAchievementNotifications === 'false') {
       // Usuario desactivó notificaciones, solo guardar silenciosamente
-      console.log('[Achievements] Logro desbloqueado (notificación desactivada):', achievement.titulo);
+      logger.debug('[Achievements] Logro desbloqueado (notificación desactivada):', achievement.titulo);
       return;
     }
 
@@ -717,31 +741,31 @@ class AchievementSystem {
    * Debe llamarse cuando se destruye el componente
    */
   cleanup() {
-    console.log('[Achievements] Cleanup iniciado');
+    logger.debug('[Achievements] Cleanup iniciado');
 
     // 🔧 FIX #60: Limpiar timeouts de notificaciones pendientes
     this.notificationTimeouts.forEach(timeout => clearTimeout(timeout));
     this.notificationTimeouts.clear();
-    console.log('[Achievements] Timeouts de notificaciones limpiados');
+    logger.debug('[Achievements] Timeouts de notificaciones limpiados');
 
     // 🔧 FIX #63: Limpiar escape handler del modal
     if (this.escapeHandler) {
       document.removeEventListener('keydown', this.escapeHandler);
       this.escapeHandler = null;
-      console.log('[Achievements] Escape handler limpiado');
+      logger.debug('[Achievements] Escape handler limpiado');
     }
 
     // Cerrar AudioContext (#61)
     if (this.audioContext) {
       this.audioContext.close().then(() => {
-        console.log('[Achievements] AudioContext cerrado');
+        logger.debug('[Achievements] AudioContext cerrado');
       }).catch(err => {
         console.warn('[Achievements] Error al cerrar AudioContext:', err);
       });
       this.audioContext = null;
     }
 
-    console.log('[Achievements] Cleanup completado');
+    logger.debug('[Achievements] Cleanup completado');
   }
 }
 

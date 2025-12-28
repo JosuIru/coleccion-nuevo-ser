@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE INTERVENCIONES DIVINAS
  * Permite al jugador intervenir directamente en la sociedad
  */
@@ -380,7 +381,7 @@ class DivinInterventions {
         window.microSocietiesAudio.playSuccess();
       }
 
-      // console.log(`👁️ Intervención "${intervention.name}" usada`);
+      // logger.debug(`👁️ Intervención "${intervention.name}" usada`);
       return { success: true, ...result };
     }
 
@@ -429,7 +430,7 @@ class DivinInterventions {
   gainDivinePoints(amount) {
     this.divinePoints = Math.min(this.maxDivinePoints, this.divinePoints + amount);
     this.saveState();
-    // console.log(`👁️ +${amount} puntos divinos (total: ${this.divinePoints})`);
+    // logger.debug(`👁️ +${amount} puntos divinos (total: ${this.divinePoints})`);
   }
 
   /**
@@ -493,7 +494,7 @@ class DivinInterventions {
         this.divinePoints = state.divinePoints || 3;
         this.cooldowns = state.cooldowns || {};
         this.history = state.history || [];
-        // console.log('👁️ Estado de intervenciones cargado');
+        // logger.debug('👁️ Estado de intervenciones cargado');
       }
     } catch (error) {
       console.error('❌ Error al cargar intervenciones:', error);
@@ -508,7 +509,7 @@ class DivinInterventions {
     this.cooldowns = {};
     this.history = [];
     this.saveState();
-    // console.log('👁️ Intervenciones reseteadas');
+    // logger.debug('👁️ Intervenciones reseteadas');
   }
 
   /**
@@ -607,4 +608,4 @@ class DivinInterventions {
 
 // Exportar
 window.DivinInterventions = DivinInterventions;
-// console.log('👁️ Divine Interventions System cargado');
+// logger.debug('👁️ Divine Interventions System cargado');

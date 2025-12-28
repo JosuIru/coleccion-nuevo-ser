@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE MISIONES Y OBJETIVOS
  * Para dar estructura y progresión al juego
  */
@@ -667,4 +668,4 @@ class MissionSystem {
 
 // Exportar
 window.MissionSystem = MissionSystem;
-// console.log('🎯 Sistema de Misiones cargado');
+// logger.debug('🎯 Sistema de Misiones cargado');

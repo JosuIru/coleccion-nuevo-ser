@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * DynamicColorsHelper - Material You Integration para JavaScript
  *
  * Obtiene los colores dinámicos del sistema Android (wallpaper-based) y los aplica
@@ -24,13 +25,13 @@ class DynamicColorsHelper {
     }
 
     async init() {
-        // console.log('[DynamicColors] Initializing...');
+        // logger.debug('[DynamicColors] Initializing...');
 
         // Verificar si estamos en Android 12+
         this.isAndroid12Plus = await this.checkAndroidVersion();
 
         if (!this.isAndroid12Plus) {
-            // console.log('[DynamicColors] Not available (requires Android 12+)');
+            // logger.debug('[DynamicColors] Not available (requires Android 12+)');
             window.dynamicColorsHelper = this;
             return;
         }
@@ -48,7 +49,7 @@ class DynamicColorsHelper {
 
         // Exponer globalmente
         window.dynamicColorsHelper = this;
-        // console.log('[DynamicColors] Ready', {
+        // logger.debug('[DynamicColors] Ready', {
         //     enabled: this.enabled,
         //     systemColors: this.systemColors
         // });
@@ -72,7 +73,7 @@ class DynamicColorsHelper {
                 const isAndroid12Plus = info.platform === 'android' &&
                                        info.androidSDKVersion >= 31;
 
-                // console.log('[DynamicColors] Device info:', {
+                // logger.debug('[DynamicColors] Device info:', {
                 //     platform: info.platform,
                 //     androidSDK: info.androidSDKVersion,
                 //     materialYouAvailable: isAndroid12Plus
@@ -103,7 +104,7 @@ class DynamicColorsHelper {
 
                 if (colors && (colors.accent1 || colors.accent2 || colors.accent3)) {
                     this.systemColors = colors;
-                    // console.log('[DynamicColors] System colors obtained from plugin:', this.systemColors);
+                    // logger.debug('[DynamicColors] System colors obtained from plugin:', this.systemColors);
                     return;
                 }
             }
@@ -113,9 +114,9 @@ class DynamicColorsHelper {
 
             if (coloresExtraidos) {
                 this.systemColors = coloresExtraidos;
-                // console.log('[DynamicColors] System colors obtained from CSS:', this.systemColors);
+                // logger.debug('[DynamicColors] System colors obtained from CSS:', this.systemColors);
             } else {
-                // console.log('[DynamicColors] Using fallback colors');
+                // logger.debug('[DynamicColors] Using fallback colors');
                 this.systemColors = {
                     accent1: '#3b82f6', // Azul por defecto
                     accent2: '#8b5cf6', // Púrpura por defecto
@@ -169,7 +170,7 @@ class DynamicColorsHelper {
             return;
         }
 
-        // console.log('[DynamicColors] Applying dynamic colors...');
+        // logger.debug('[DynamicColors] Applying dynamic colors...');
 
         const root = document.documentElement;
 
@@ -186,7 +187,7 @@ class DynamicColorsHelper {
         localStorage.setItem('dynamic-colors-enabled', 'true');
         this.enabled = true;
 
-        // console.log('[DynamicColors] Colors applied successfully');
+        // logger.debug('[DynamicColors] Colors applied successfully');
 
         // Disparar evento para que otros componentes se actualicen
         window.dispatchEvent(new CustomEvent('dynamic-colors-changed', {
@@ -198,7 +199,7 @@ class DynamicColorsHelper {
      * Desactiva los colores dinámicos y vuelve a los colores por defecto
      */
     disable() {
-        // console.log('[DynamicColors] Disabling dynamic colors...');
+        // logger.debug('[DynamicColors] Disabling dynamic colors...');
 
         const root = document.documentElement;
 
@@ -213,7 +214,7 @@ class DynamicColorsHelper {
         localStorage.setItem('dynamic-colors-enabled', 'false');
         this.enabled = false;
 
-        // console.log('[DynamicColors] Colors disabled, using defaults');
+        // logger.debug('[DynamicColors] Colors disabled, using defaults');
 
         // Disparar evento
         window.dispatchEvent(new CustomEvent('dynamic-colors-changed', {

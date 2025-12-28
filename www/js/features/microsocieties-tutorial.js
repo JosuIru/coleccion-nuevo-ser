@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE TUTORIAL INTERACTIVO
  * Guía paso a paso para nuevos jugadores
  */
@@ -158,7 +159,7 @@ class TutorialSystem {
     this.createOverlay();
     this.showStep(this.steps[0]);
 
-    // console.log('📚 Tutorial iniciado');
+    // logger.debug('📚 Tutorial iniciado');
   }
 
   /**
@@ -444,7 +445,7 @@ class TutorialSystem {
     this.cleanup();
 
     // Notificar
-    // console.log('✅ Tutorial completado');
+    // logger.debug('✅ Tutorial completado');
 
     // Disparar evento custom
     window.dispatchEvent(new CustomEvent('tutorialCompleted'));
@@ -509,4 +510,4 @@ class TutorialSystem {
 
 // Exportar
 window.TutorialSystem = TutorialSystem;
-// console.log('📚 Sistema de Tutorial cargado');
+// logger.debug('📚 Sistema de Tutorial cargado');

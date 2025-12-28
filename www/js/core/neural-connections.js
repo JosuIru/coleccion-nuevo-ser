@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Sistema de Conexiones Neuronales
  * Crea redes de axones conectando órganos relacionados
  * Basado en afinidad temática (tags compartidos, categorías similares)
@@ -212,7 +213,7 @@ class NeuralConnectionsSystem {
       }
     }
 
-    // console.log(`🧠 Red neuronal creada: ${network.children.length} conexiones`);
+    // logger.debug(`🧠 Red neuronal creada: ${network.children.length} conexiones`);
 
     network.userData = {
       type: 'neural_network',
@@ -380,5 +381,5 @@ class NeuralConnectionsSystem {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.NeuralConnectionsSystem = NeuralConnectionsSystem;
-  // console.log('✅ NeuralConnectionsSystem class registered globally');
+  // logger.debug('✅ NeuralConnectionsSystem class registered globally');
 }

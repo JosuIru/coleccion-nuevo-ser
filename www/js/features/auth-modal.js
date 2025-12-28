@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AUTH MODAL - UI de Autenticación
  * Modal moderno para login, registro y gestión de cuenta
  *
@@ -66,7 +67,7 @@ class AuthModal {
         }
       });
 
-      console.log('✅ AuthModal inicializado');
+      logger.debug('✅ AuthModal inicializado');
     } catch (error) {
       console.error('[AuthModal] Error al cargar authHelper:', error);
       // Fallback: intentar con setTimeout como antes
@@ -1097,4 +1098,4 @@ class AuthModal {
 // Crear instancia global
 window.authModal = new AuthModal();
 
-console.log('✅ AuthModal loaded. Use window.authModal.showLoginModal() to open.');
+logger.debug('✅ AuthModal loaded. Use window.authModal.showLoginModal() to open.');

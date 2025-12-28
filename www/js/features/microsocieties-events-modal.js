@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MODAL DE EVENTOS INTERACTIVOS
  * UI para mostrar eventos y permitir al jugador elegir entre opciones
  */
@@ -17,7 +18,7 @@ class EventsModal {
    */
   init() {
     this.createModal();
-    // console.log('🎲 Events Modal inicializado');
+    // logger.debug('🎲 Events Modal inicializado');
   }
 
   /**
@@ -580,4 +581,4 @@ class EventsModal {
 
 // Exportar
 window.EventsModal = EventsModal;
-// console.log('🎲 Events Modal cargado');
+// logger.debug('🎲 Events Modal cargado');

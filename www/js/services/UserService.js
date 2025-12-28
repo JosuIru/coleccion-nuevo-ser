@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * USER SERVICE - Servicio para gestión de usuarios y perfiles
  * Extiende BaseService para operaciones específicas de usuarios
  *
@@ -208,7 +209,7 @@ class UserService extends BaseService {
     const yaDesbloqueado = logrosExistentes.find(l => l.achievement_key === achievementKey);
 
     if (yaDesbloqueado) {
-      console.log(`Logro ${achievementKey} ya desbloqueado`);
+      logger.debug(`Logro ${achievementKey} ya desbloqueado`);
       return yaDesbloqueado;
     }
 
@@ -584,4 +585,4 @@ class UserService extends BaseService {
 window.UserService = UserService;
 window.userService = new UserService();
 
-console.log('👤 UserService inicializado');
+logger.debug('👤 UserService inicializado');

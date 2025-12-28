@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE LEADERBOARDS Y SOCIAL SHARING
  * Rankings locales y compartir sociedades
  */
@@ -82,7 +83,7 @@ class LeaderboardsSystem {
 
     this.saveLeaderboards();
 
-    // console.log(`🏆 Nueva entrada en "${leaderboard.name}": ${entry.score}`);
+    // logger.debug(`🏆 Nueva entrada en "${leaderboard.name}": ${entry.score}`);
     return true;
   }
 
@@ -168,7 +169,7 @@ class LeaderboardsSystem {
       });
     }
 
-    // console.log(`🏆 Sociedad "${society.name}" registrada en leaderboards`);
+    // logger.debug(`🏆 Sociedad "${society.name}" registrada en leaderboards`);
   }
 
   /**
@@ -212,7 +213,7 @@ class LeaderboardsSystem {
   reset() {
     this.leaderboards = this.getDefaultLeaderboards();
     this.saveLeaderboards();
-    // console.log('🏆 Leaderboards reseteados');
+    // logger.debug('🏆 Leaderboards reseteados');
   }
 
   /**
@@ -232,7 +233,7 @@ class LeaderboardsSystem {
         const loaded = JSON.parse(saved);
         // Merge con estructura por defecto (para añadir nuevos leaderboards)
         this.leaderboards = {...this.getDefaultLeaderboards(), ...loaded};
-        // console.log('🏆 Leaderboards cargados');
+        // logger.debug('🏆 Leaderboards cargados');
       }
     } catch (error) {
       console.error('❌ Error al cargar leaderboards:', error);
@@ -277,7 +278,7 @@ class LeaderboardsSystem {
 
     URL.revokeObjectURL(url);
 
-    // console.log(`📤 Sociedad "${society.name}" exportada`);
+    // logger.debug(`📤 Sociedad "${society.name}" exportada`);
     return exportData;
   }
 
@@ -297,7 +298,7 @@ class LeaderboardsSystem {
             return;
           }
 
-          // console.log(`📥 Sociedad "${data.society.name}" importada`);
+          // logger.debug(`📥 Sociedad "${data.society.name}" importada`);
           resolve(data);
         } catch (error) {
           reject(error);
@@ -325,7 +326,7 @@ class LeaderboardsSystem {
     const json = JSON.stringify(data);
     const base64 = btoa(json);
 
-    // console.log('🔗 Código de compartir generado');
+    // logger.debug('🔗 Código de compartir generado');
     return base64;
   }
 
@@ -359,7 +360,7 @@ class LeaderboardsSystem {
     const baseURL = window.location.origin + window.location.pathname;
     const shareURL = `${baseURL}?share=${code}`;
 
-    // console.log('🔗 URL de compartir:', shareURL);
+    // logger.debug('🔗 URL de compartir:', shareURL);
     return shareURL;
   }
 
@@ -369,7 +370,7 @@ class LeaderboardsSystem {
   async copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
-      // console.log('📋 Copiado al portapapeles');
+      // logger.debug('📋 Copiado al portapapeles');
       return true;
     } catch (error) {
       console.error('❌ Error al copiar:', error);
@@ -386,7 +387,7 @@ class LeaderboardsSystem {
     // Usar API externa para generar QR
     const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(shareURL)}`;
 
-    // console.log('📱 QR Code generado:', qrURL);
+    // logger.debug('📱 QR Code generado:', qrURL);
     return qrURL;
   }
 
@@ -520,4 +521,4 @@ class LeaderboardsSystem {
 
 // Exportar
 window.LeaderboardsSystem = LeaderboardsSystem;
-// console.log('🏆 Leaderboards System cargado');
+// logger.debug('🏆 Leaderboards System cargado');

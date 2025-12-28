@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Generador de Texturas Procedurales Orgánicas
  * Crea texturas en canvas para normal maps, roughness, y patrones vasculares
  *
@@ -381,5 +382,5 @@ class ProceduralTextures {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.ProceduralTextures = ProceduralTextures;
-  // console.log('✅ ProceduralTextures class registered globally');
+  // logger.debug('✅ ProceduralTextures class registered globally');
 }

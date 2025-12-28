@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Sistema de Partículas de Flujo de Energía
  * Partículas que viajan a lo largo de conexiones neuronales y DNA
  * Representa el flujo de información y energía vital
@@ -323,5 +324,5 @@ class EnergyFlowSystem {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.EnergyFlowSystem = EnergyFlowSystem;
-  // console.log('✅ EnergyFlowSystem class registered globally');
+  // logger.debug('✅ EnergyFlowSystem class registered globally');
 }

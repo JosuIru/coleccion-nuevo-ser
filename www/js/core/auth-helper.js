@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AUTH HELPER - Sistema de Autenticación Premium
  * Gestión completa de usuarios, suscripciones y permisos
  *
@@ -49,7 +50,7 @@ class AuthHelper {
         await this.loadSession();
         this.setupAuthListener();
         this.initialized = true;
-        console.log('🔐 AuthHelper inicializado');
+        logger.debug('🔐 AuthHelper inicializado');
       } catch (error) {
         console.error('❌ Error inicializando AuthHelper:', error);
       }
@@ -91,7 +92,7 @@ class AuthHelper {
    */
   setupAuthListener() {
     this.supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔔 Auth state changed:', event);
+      logger.debug('🔔 Auth state changed:', event);
       this.session = session;
 
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
@@ -133,7 +134,7 @@ class AuthHelper {
 
       this.currentProfile = data;
       // Log reducido para producción (sin datos sensibles)
-      console.log('👤 Perfil cargado para:', data?.email?.split('@')[0] || 'usuario');
+      logger.debug('👤 Perfil cargado para:', data?.email?.split('@')[0] || 'usuario');
 
       // Verificar si necesita reset de créditos
       this.checkCreditsReset();
@@ -156,7 +157,7 @@ class AuthHelper {
       const now = new Date();
 
       if (now >= resetDate) {
-        console.log('🔄 Reseteando créditos mensuales...');
+        logger.debug('🔄 Reseteando créditos mensuales...');
 
         // 🔧 FIX #99: Agregar retry logic y error handling
         const { error } = await this.executeWithRetry(() =>
@@ -203,7 +204,7 @@ class AuthHelper {
 
       if (error) throw error;
 
-      console.log('✅ Usuario registrado:', data);
+      logger.debug('✅ Usuario registrado:', data);
 
       // Mostrar mensaje de confirmación de email
       this.showEmailConfirmationMessage(email);
@@ -227,7 +228,7 @@ class AuthHelper {
 
       if (error) throw error;
 
-      console.log('✅ Sesión iniciada:', data);
+      logger.debug('✅ Sesión iniciada:', data);
       return { success: true, data };
     } catch (error) {
       console.error('❌ Error al iniciar sesión:', error);
@@ -277,7 +278,7 @@ class AuthHelper {
         window.biblioteca.clearAdminCache();
       }
 
-      console.log('👋 Sesión cerrada');
+      logger.debug('👋 Sesión cerrada');
       return { success: true };
     } catch (error) {
       console.error('❌ Error al cerrar sesión:', error);
@@ -346,7 +347,7 @@ class AuthHelper {
       if (error) throw error;
 
       this.currentProfile = data;
-      console.log('✅ Perfil actualizado');
+      logger.debug('✅ Perfil actualizado');
 
       return { success: true, data };
     } catch (error) {
@@ -590,7 +591,7 @@ class AuthHelper {
     }
 
     // Fallback: alert simple
-    console.log(`[${type.toUpperCase()}] ${message}`);
+    logger.debug(`[${type.toUpperCase()}] ${message}`);
     alert(message);
   }
 
@@ -1160,11 +1161,11 @@ class AuthHelper {
 
     // Log estructurado
     console.group(`%c[AuthHelper] Error en ${context}`, 'color: #ef4444; font-weight: bold;');
-    console.log('Categoría:', category);
-    console.log('Mensaje:', error.message);
-    console.log('Código:', error.code);
-    console.log('Detalles:', error.details);
-    console.log('Hint:', error.hint);
+    logger.debug('Categoría:', category);
+    logger.debug('Mensaje:', error.message);
+    logger.debug('Código:', error.code);
+    logger.debug('Detalles:', error.details);
+    logger.debug('Hint:', error.hint);
     console.groupEnd();
 
     // Reportar a ErrorBoundary si está disponible
@@ -1308,13 +1309,13 @@ window.supabaseAuthHelper = window.authHelper;
 // Exponer para debugging
 if (window.location.hostname === 'localhost') {
   window.debugAuth = () => {
-    console.log('Current User:', window.authHelper.currentUser);
-    console.log('Current Profile:', window.authHelper.currentProfile);
-    console.log('Is Authenticated:', window.authHelper.isAuthenticated());
-    console.log('Subscription Tier:', window.authHelper.getSubscriptionTier());
-    console.log('AI Credits:', window.authHelper.getAICredits());
-    console.log('Features:', window.authHelper.currentProfile?.features);
+    logger.debug('Current User:', window.authHelper.currentUser);
+    logger.debug('Current Profile:', window.authHelper.currentProfile);
+    logger.debug('Is Authenticated:', window.authHelper.isAuthenticated());
+    logger.debug('Subscription Tier:', window.authHelper.getSubscriptionTier());
+    logger.debug('AI Credits:', window.authHelper.getAICredits());
+    logger.debug('Features:', window.authHelper.currentProfile?.features);
   };
 }
 
-console.log('🔐 AuthHelper loaded. Use window.authHelper to access authentication.');
+logger.debug('🔐 AuthHelper loaded. Use window.authHelper to access authentication.');

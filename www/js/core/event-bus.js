@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * EVENT BUS - Sistema Centralizado de Eventos
  * ============================================
  *
@@ -17,7 +18,7 @@
  *
  * // Registrar un listener
  * eventBus.on('book.changed', (data) => {
- *   console.log('Libro cambiado:', data.bookId);
+ *   logger.debug('Libro cambiado:', data.bookId);
  * });
  *
  * // Emitir un evento
@@ -25,11 +26,11 @@
  *
  * // Listener de una sola ejecución
  * eventBus.once('app.initialized', () => {
- *   console.log('App inicializada - ejecutado solo una vez');
+ *   logger.debug('App inicializada - ejecutado solo una vez');
  * });
  *
  * // Remover un listener específico
- * const handler = (data) => console.log(data);
+ * const handler = (data) => logger.debug(data);
  * eventBus.on('user.login', handler);
  * eventBus.off('user.login', handler);
  *
@@ -131,7 +132,7 @@ class EventBus {
    *
    * @example
    * eventBus.on('book.opened', (data) => {
-   *   console.log('Libro abierto:', data.bookId);
+   *   logger.debug('Libro abierto:', data.bookId);
    * });
    */
   on(eventName, callback) {
@@ -154,7 +155,7 @@ class EventBus {
     this.listeners[eventName].push(callback);
 
     if (this.debugMode) {
-      console.log(`[EventBus] Listener registrado: ${eventName} (total: ${this.listeners[eventName].length})`);
+      logger.debug(`[EventBus] Listener registrado: ${eventName} (total: ${this.listeners[eventName].length})`);
     }
 
     return this;
@@ -191,7 +192,7 @@ class EventBus {
       delete this.listeners[eventName];
 
       if (this.debugMode) {
-        console.log(`[EventBus] Removidos ${listenerCount} listeners de: ${eventName}`);
+        logger.debug(`[EventBus] Removidos ${listenerCount} listeners de: ${eventName}`);
       }
 
       return this;
@@ -202,7 +203,7 @@ class EventBus {
     this.listeners[eventName] = this.listeners[eventName].filter(cb => cb !== callback);
 
     if (this.debugMode && initialLength !== this.listeners[eventName].length) {
-      console.log(`[EventBus] Listener removido: ${eventName}`);
+      logger.debug(`[EventBus] Listener removido: ${eventName}`);
     }
 
     // Si no quedan listeners, eliminar el array
@@ -235,13 +236,13 @@ class EventBus {
     this.eventCount++;
 
     if (this.debugMode) {
-      console.log(`[EventBus] Evento emitido: ${eventName}`, data);
+      logger.debug(`[EventBus] Evento emitido: ${eventName}`, data);
     }
 
     // Si no hay listeners para este evento, salir
     if (!this.listeners[eventName]) {
       if (this.debugMode) {
-        console.log(`[EventBus] No hay listeners para: ${eventName}`);
+        logger.debug(`[EventBus] No hay listeners para: ${eventName}`);
       }
       return this;
     }
@@ -271,7 +272,7 @@ class EventBus {
    *
    * @example
    * eventBus.once('app.initialized', () => {
-   *   console.log('Esta función solo se ejecuta una vez');
+   *   logger.debug('Esta función solo se ejecuta una vez');
    * });
    */
   once(eventName, callback) {
@@ -303,7 +304,7 @@ class EventBus {
    */
   enableDebug() {
     this.debugMode = true;
-    console.log('[EventBus] Modo debug habilitado');
+    logger.debug('[EventBus] Modo debug habilitado');
     return this;
   }
 
@@ -314,7 +315,7 @@ class EventBus {
    */
   disableDebug() {
     this.debugMode = false;
-    console.log('[EventBus] Modo debug deshabilitado');
+    logger.debug('[EventBus] Modo debug deshabilitado');
     return this;
   }
 
@@ -346,16 +347,16 @@ class EventBus {
    */
   showStats() {
     const stats = this.getStats();
-    console.log('=== EventBus Stats ===');
-    console.log(`Total de eventos registrados: ${stats.totalEvents}`);
-    console.log(`Total de listeners: ${stats.totalListeners}`);
-    console.log(`Eventos emitidos: ${stats.eventCount}`);
-    console.log(`Debug mode: ${stats.debugMode ? 'ON' : 'OFF'}`);
-    console.log('\nEventos con listeners:');
+    logger.debug('=== EventBus Stats ===');
+    logger.debug(`Total de eventos registrados: ${stats.totalEvents}`);
+    logger.debug(`Total de listeners: ${stats.totalListeners}`);
+    logger.debug(`Eventos emitidos: ${stats.eventCount}`);
+    logger.debug(`Debug mode: ${stats.debugMode ? 'ON' : 'OFF'}`);
+    logger.debug('\nEventos con listeners:');
     stats.events.forEach(event => {
-      console.log(`  - ${event.name}: ${event.listeners} listener(s)`);
+      logger.debug(`  - ${event.name}: ${event.listeners} listener(s)`);
     });
-    console.log('=====================');
+    logger.debug('=====================');
   }
 
   /**
@@ -369,7 +370,7 @@ class EventBus {
     this.listeners = {};
 
     if (this.debugMode) {
-      console.log(`[EventBus] Limpiados ${eventCount} eventos`);
+      logger.debug(`[EventBus] Limpiados ${eventCount} eventos`);
     }
 
     return this;
@@ -415,4 +416,4 @@ window.eventBusDebug = (enable = true) => {
   }
 };
 
-console.log('[EventBus] Sistema de eventos inicializado - Accesible como window.eventBus');
+logger.debug('[EventBus] Sistema de eventos inicializado - Accesible como window.eventBus');

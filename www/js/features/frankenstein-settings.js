@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN LAB - Sistema de Ajustes y UI Mejorada v1.0
  * Panel de settings, header mejorado, galeria de microsociedades
  *
@@ -107,17 +108,17 @@ class FrankensteinSettings {
           // Habilitar audio
           window.frankenAudio.enabled = true;
           window.frankenAudio.start();
-          console.log('[FrankenAudio] ✅ Audio habilitado desde Settings');
+          logger.debug('[FrankenAudio] ✅ Audio habilitado desde Settings');
         } else {
           // Deshabilitar audio
           window.frankenAudio.stop();
           window.frankenAudio.enabled = false;
-          console.log('[FrankenAudio] 🔇 Audio deshabilitado desde Settings');
+          logger.debug('[FrankenAudio] 🔇 Audio deshabilitado desde Settings');
         }
       } else if (key === 'soundVolume') {
         // Actualizar volumen (value ya está en rango 0-1)
         window.frankenAudio.setVolume(value);
-        console.log(`[FrankenAudio] 🔊 Volumen actualizado: ${Math.round(value * 100)}%`);
+        logger.debug(`[FrankenAudio] 🔊 Volumen actualizado: ${Math.round(value * 100)}%`);
       }
     }
   }
@@ -1193,7 +1194,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.frankensteinStats = new FrankensteinStats();
   window.frankensteinStats.track('session_start');
 
-  console.log('✅ Frankenstein Settings & UI initialized');
+  logger.debug('✅ Frankenstein Settings & UI initialized');
 });
 
 // Exportar globalmente

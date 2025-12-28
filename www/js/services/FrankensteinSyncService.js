@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN SYNC SERVICE
  * Sincronización de Seres Transformadores con Supabase
  *
@@ -53,7 +54,7 @@ class FrankensteinSyncService {
       await this.setupRealtime();
     }
 
-    console.log('✅ FrankensteinSyncService inicializado');
+    logger.debug('✅ FrankensteinSyncService inicializado');
     return true;
   }
 

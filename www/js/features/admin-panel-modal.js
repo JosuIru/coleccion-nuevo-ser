@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ADMIN PANEL MODAL - Panel de Administración
  * Gestión de usuarios, suscripciones, métricas y configuración del sistema
  *
@@ -1166,4 +1167,4 @@ class AdminPanelModal {
 // Crear instancia global
 window.adminPanelModal = new AdminPanelModal();
 
-console.log('🛡️ AdminPanelModal inicializado');
+logger.debug('🛡️ AdminPanelModal inicializado');

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE AVATARES GENERATIVOS V2
  * Avatares procedurales de alta calidad con detalles artísticos
  */
@@ -835,7 +836,7 @@ class AvatarSystemV2 {
    */
   clearCache() {
     this.cache.clear();
-    // console.log('🎨 Avatar cache limpiado');
+    // logger.debug('🎨 Avatar cache limpiado');
   }
 
   /**
@@ -851,4 +852,4 @@ class AvatarSystemV2 {
 
 // Exportar
 window.AvatarSystemV2 = AvatarSystemV2;
-// console.log('🎨 Avatar System V2 cargado - Avatares de alta calidad');
+// logger.debug('🎨 Avatar System V2 cargado - Avatares de alta calidad');

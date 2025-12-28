@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ENHANCED UI SYSTEM v1.0
  * Sistema de UI/UX mejorado para Frankenstein Lab
  * Incluye: Toasts, Bottom Sheets, Tooltips, y utilidades
@@ -892,7 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Loading manager
   window.loadingStates = new LoadingStatesManager();
 
-  console.log('✅ Enhanced UI System initialized');
+  logger.debug('✅ Enhanced UI System initialized');
 });
 
 // Exportar para uso como modulos

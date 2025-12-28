@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * COSMOS DEL CONOCIMIENTO v2.0
  * Sistema de Navegación 3D Inmersivo Multi-Dimensional - VERSIÓN MEJORADA
  *
@@ -86,7 +87,7 @@ class CosmosNavigationV2 {
   async init() {
     if (this.isInitialized) return;
 
-    // console.log('🌌 Inicializando Cosmos del Conocimiento v2...');
+    // logger.debug('🌌 Inicializando Cosmos del Conocimiento v2...');
 
     // Verificar Three.js
     if (typeof THREE === 'undefined') {
@@ -107,7 +108,7 @@ class CosmosNavigationV2 {
     this.attachEventListeners();
 
     this.isInitialized = true;
-    // console.log('✨ Cosmos del Conocimiento v2 inicializado');
+    // logger.debug('✨ Cosmos del Conocimiento v2 inicializado');
   }
 
   /**
@@ -354,14 +355,14 @@ class CosmosNavigationV2 {
     pointLight2.position.set(-500, -500, -500);
     this.scene.add(pointLight2);
 
-    // console.log('✅ Three.js inicializado con mejoras');
+    // logger.debug('✅ Three.js inicializado con mejoras');
   }
 
   /**
    * Crear el universo completo
    */
   async createUniverse() {
-    // console.log('🌠 Creando universo mejorado...');
+    // logger.debug('🌠 Creando universo mejorado...');
 
     // 1. Campo de estrellas de fondo
     this.createStarfield();
@@ -432,7 +433,7 @@ class CosmosNavigationV2 {
     this.particles = new THREE.Points(geometry, material);
     this.scene.add(this.particles);
 
-    // console.log('✨ Campo de estrellas mejorado:', this.config.particleCount, 'partículas');
+    // logger.debug('✨ Campo de estrellas mejorado:', this.config.particleCount, 'partículas');
   }
 
   /**
@@ -467,7 +468,7 @@ class CosmosNavigationV2 {
       this.scene.add(label);
     }
 
-    // console.log('✅ Galaxias creadas con labels:', this.galaxies.length);
+    // logger.debug('✅ Galaxias creadas con labels:', this.galaxies.length);
   }
 
   /**
@@ -653,7 +654,12 @@ class CosmosNavigationV2 {
     if (tutorialBtn) {
       this.eventManager.addEventListener(tutorialBtn, 'click', () => {
         document.getElementById('cosmos-tutorial')?.classList.add('hidden');
-        localStorage.setItem('cosmos-tutorial-seen', 'true');
+        // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+        try {
+          localStorage.setItem('cosmos-tutorial-seen', 'true');
+        } catch (error) {
+          console.error('Error guardando estado del tutorial:', error);
+        }
       });
     }
 
@@ -767,7 +773,7 @@ class CosmosNavigationV2 {
     const titleEl = document.getElementById('cosmos-mode-title');
     if (titleEl) titleEl.textContent = titles[mode];
 
-    // console.log('🔄 Modo cambiado a:', mode);
+    // logger.debug('🔄 Modo cambiado a:', mode);
   }
 
   /**
@@ -933,7 +939,7 @@ class CosmosNavigationV2 {
    * Abrir libro
    */
   openBook(bookId) {
-    // console.log('📖 Abriendo libro:', bookId);
+    // logger.debug('📖 Abriendo libro:', bookId);
     this.hide();
 
     if (window.biblioteca) {
@@ -1013,7 +1019,7 @@ class CosmosNavigationV2 {
     }
 
     this.animate();
-    // console.log('🌌 Cosmos visible');
+    // logger.debug('🌌 Cosmos visible');
   }
 
   /**
@@ -1029,7 +1035,7 @@ class CosmosNavigationV2 {
     }
 
     this.clearNeedFilter();
-    // console.log('👋 Cosmos oculto');
+    // logger.debug('👋 Cosmos oculto');
   }
 
   /**
@@ -1058,7 +1064,7 @@ class CosmosNavigationV2 {
    * ⭐ FIX v2.9.185: Añadido cleanup de timers pendientes
    */
   cleanup() {
-    console.log('🧹 [CosmosNavigation] Iniciando cleanup completo...');
+    logger.debug('🧹 [CosmosNavigation] Iniciando cleanup completo...');
 
     // 1. Cancelar animationFrame
     if (this.animationFrameId) {
@@ -1128,7 +1134,7 @@ class CosmosNavigationV2 {
 
     this.isInitialized = false;
 
-    console.log('✅ [CosmosNavigation] Cleanup completado - Memoria liberada');
+    logger.debug('✅ [CosmosNavigation] Cleanup completado - Memoria liberada');
   }
 
   /**
@@ -1145,7 +1151,7 @@ class CosmosNavigationV2 {
       container.remove();
     }
 
-    console.log('🗑️ [CosmosNavigation] Componente destruido completamente');
+    logger.debug('🗑️ [CosmosNavigation] Componente destruido completamente');
   }
 
   /**
@@ -1163,7 +1169,7 @@ class CosmosNavigationV2 {
 // Exportar para uso global
 if (typeof window !== 'undefined') {
   window.CosmosNavigation = CosmosNavigationV2;
-  // console.log('✅ CosmosNavigation v2 class registered globally');
+  // logger.debug('✅ CosmosNavigation v2 class registered globally');
 }
 
 // Node.js module export

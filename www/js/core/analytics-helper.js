@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ANALYTICS HELPER
  * Sistema centralizado de analytics con Google Analytics 4
  *
@@ -16,7 +17,7 @@ class AnalyticsHelper {
     if (this.isEnabled && this.measurementId) {
       this.initialize();
     } else {
-      console.log('[Analytics] Deshabilitado - configure un ID de GA4 en Ajustes > General');
+      logger.debug('[Analytics] Deshabilitado - configure un ID de GA4 en Ajustes > General');
     }
   }
 
@@ -26,7 +27,7 @@ class AnalyticsHelper {
   initialize() {
     // Verificar si ya está cargado
     if (window.gtag) {
-      console.log('[Analytics] GA4 ya inicializado');
+      logger.debug('[Analytics] GA4 ya inicializado');
       return;
     }
 
@@ -50,7 +51,7 @@ class AnalyticsHelper {
       debug_mode: this.debug
     });
 
-    console.log('[Analytics] GA4 inicializado con ID:', this.measurementId);
+    logger.debug('[Analytics] GA4 inicializado con ID:', this.measurementId);
   }
 
   /**
@@ -61,7 +62,7 @@ class AnalyticsHelper {
 
     this.userId = userId;
     window.gtag('set', { user_id: userId });
-    console.log('[Analytics] User ID establecido:', userId);
+    logger.debug('[Analytics] User ID establecido:', userId);
   }
 
   /**
@@ -71,7 +72,7 @@ class AnalyticsHelper {
     if (!this.isEnabled || !window.gtag) return;
 
     window.gtag('set', 'user_properties', properties);
-    console.log('[Analytics] User properties:', properties);
+    logger.debug('[Analytics] User properties:', properties);
   }
 
   /**
@@ -81,7 +82,7 @@ class AnalyticsHelper {
     if (!this.isEnabled) return;
 
     if (this.debug) {
-      console.log('[Analytics] Event:', eventName, parameters);
+      logger.debug('[Analytics] Event:', eventName, parameters);
     }
 
     if (window.gtag) {
@@ -384,7 +385,7 @@ class AnalyticsHelper {
    */
   disable() {
     this.isEnabled = false;
-    console.log('[Analytics] Analytics deshabilitado');
+    logger.debug('[Analytics] Analytics deshabilitado');
   }
 
   /**
@@ -394,7 +395,7 @@ class AnalyticsHelper {
     if (!this.isEnabled) {
       this.isEnabled = true;
       this.initialize();
-      console.log('[Analytics] Analytics habilitado');
+      logger.debug('[Analytics] Analytics habilitado');
     }
   }
 

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AI BOOK FEATURES - IA para Lectura y Aprendizaje
  * Chat sobre libros, quizzes personalizados, resúmenes inteligentes
  *
@@ -26,7 +27,7 @@ class AIBookFeatures {
       return;
     }
 
-    console.log('✅ AIBookFeatures inicializado');
+    logger.debug('✅ AIBookFeatures inicializado');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -47,7 +48,7 @@ class AIBookFeatures {
       // Verificar autenticación y features
       await this.aiPremium.checkCredits(250, 'ai_chat');
 
-      console.log(`💬 Chat sobre ${bookContext.title} - Capítulo ${chapterId}`);
+      logger.debug(`💬 Chat sobre ${bookContext.title} - Capítulo ${chapterId}`);
 
       const systemPrompt = `Eres un tutor experto sobre el libro "${bookContext.title}".
 El usuario está leyendo el capítulo: "${bookContext.chapterTitle}"
@@ -104,7 +105,7 @@ RESPONDE EN ESPAÑOL Y SÉ CONVERSACIONAL
         estimatedTokens
       );
 
-      console.log(`✅ Respuesta generada (${estimatedTokens} tokens)`);
+      logger.debug(`✅ Respuesta generada (${estimatedTokens} tokens)`);
 
       return {
         success: true,
@@ -139,7 +140,7 @@ RESPONDE EN ESPAÑOL Y SÉ CONVERSACIONAL
       // Verificar permisos
       await this.aiPremium.checkCredits(400, 'ai_tutor');
 
-      console.log(
+      logger.debug(
         `📝 Generando quiz ${difficulty} con ${numQuestions} preguntas...`
       );
 
@@ -228,7 +229,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO (sin markdown):
         estimatedTokens
       );
 
-      console.log(`✅ Quiz generado con ${quiz.quiz.questions.length} preguntas`);
+      logger.debug(`✅ Quiz generado con ${quiz.quiz.questions.length} preguntas`);
 
       return {
         success: true,
@@ -265,7 +266,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO (sin markdown):
       // Feature disponible en Premium+
       await this.aiPremium.checkCredits(200, 'ai_tutor');
 
-      console.log(`📚 Generando resumen ${length}...`);
+      logger.debug(`📚 Generando resumen ${length}...`);
 
       const lengthDescriptions = {
         short: '2-3 párrafos breves',
@@ -347,7 +348,7 @@ ESCRIBIR EN ESPAÑOL, ESTILO ACADÉMICO PERO ACCESIBLE`;
       // Premium+ feature
       await this.aiPremium.checkCredits(500, 'ai_tutor');
 
-      console.log(`🎯 Generando ${numExercises} ejercicios personalizados...`);
+      logger.debug(`🎯 Generando ${numExercises} ejercicios personalizados...`);
 
       const systemPrompt = `Eres un diseñador instruccional experto en crear ejercicios personalizados.
 
@@ -424,7 +425,7 @@ RESPONDER ÚNICAMENTE EN JSON VÁLIDO:
         estimatedTokens
       );
 
-      console.log(`✅ ${exercises.exercises.length} ejercicios generados`);
+      logger.debug(`✅ ${exercises.exercises.length} ejercicios generados`);
 
       return {
         success: true,
@@ -564,4 +565,4 @@ PROPORCIONA:
 // Crear instancia global
 window.aiBookFeatures = new AIBookFeatures();
 
-console.log('✅ AIBookFeatures loaded. Use window.aiBookFeatures for book learning features.');
+logger.debug('✅ AIBookFeatures loaded. Use window.aiBookFeatures for book learning features.');

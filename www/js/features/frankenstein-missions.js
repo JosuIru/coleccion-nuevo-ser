@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN LAB - SISTEMA DE MISIONES Y ATRIBUTOS
  * Sistema de creación de "Seres Transformadores" con propósito
  *
@@ -10,9 +11,16 @@
  * @author J. Irurtzun & Claude Sonnet 4.5
  */
 
+// 🔧 REFACTORING v2.9.200 Phase 1: Data extracted to frankenstein/data/frankenstein-mission-data.js
+// NOTE: frankenstein-mission-data.js must be loaded BEFORE this file in HTML
+
 class FrankensteinMissions {
   constructor() {
+    // 🔧 REFACTORING v2.9.200: Moved to frankenstein-mission-data.js
     // Atributos que puede tener un "Ser Transformador"
+    this.attributes = window.FrankensteinMissionData?.ATTRIBUTES || {};
+
+    /* 🔧 REFACTORING v2.9.200: Original definition moved to frankenstein-mission-data.js
     this.attributes = {
       // Capacidades Intelectuales
       reflection: {
@@ -114,15 +122,25 @@ class FrankensteinMissions {
         color: '#475569'
       }
     };
+    */ // End of moved ATTRIBUTES definition
 
+    // 🔧 REFACTORING v2.9.200: Moved to frankenstein-mission-data.js
+    this.difficultyRank = window.FrankensteinMissionData?.DIFFICULTY_RANK || {};
+
+    /* 🔧 REFACTORING v2.9.200: Original definition moved to frankenstein-mission-data.js
     this.difficultyRank = {
       facil: 0,
       intermedio: 1,
       avanzado: 2,
       experto: 3
     };
+    */ // End of moved DIFFICULTY_RANK definition
 
+    // 🔧 REFACTORING v2.9.200: Moved to frankenstein-mission-data.js
     // Configuración del sistema de progresión
+    this.progressionConfig = window.FrankensteinMissionData?.PROGRESSION_CONFIG || {};
+
+    /* 🔧 REFACTORING v2.9.200: Original definition moved to frankenstein-mission-data.js
     this.progressionConfig = {
       // Turnos base por dificultad de misión
       turnsPerDifficulty: {
@@ -153,8 +171,13 @@ class FrankensteinMissions {
       // Bonus de atributos por nivel
       attributeBonusPerLevel: 2
     };
+    */ // End of moved PROGRESSION_CONFIG definition
 
+    // 🔧 REFACTORING v2.9.200: Moved to frankenstein-mission-data.js
     // Misiones disponibles
+    this.missions = window.FrankensteinMissionData?.MISSIONS || [];
+
+    /* 🔧 REFACTORING v2.9.200: Original definition moved to frankenstein-mission-data.js (lines 177-669)
     this.missions = [
       {
         id: 'curious-explorer',
@@ -648,6 +671,7 @@ class FrankensteinMissions {
         }
       }
     ];
+    */ // End of moved MISSIONS definition
 
     // Generate requirements array from requiredAttributes for UI compatibility
     this.missions.forEach(mission => {
@@ -1783,5 +1807,5 @@ class FrankensteinMissions {
 // Exportar
 if (typeof window !== 'undefined') {
   window.FrankensteinMissions = FrankensteinMissions;
-  // console.log('✅ FrankensteinMissions class registered globally');
+  // logger.debug('✅ FrankensteinMissions class registered globally');
 }

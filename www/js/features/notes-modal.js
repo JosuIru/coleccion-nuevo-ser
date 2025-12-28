@@ -21,12 +21,25 @@ class NotesModal {
   // ==========================================================================
 
   loadNotes() {
-    const stored = localStorage.getItem('coleccion_notes');
-    return stored ? JSON.parse(stored) : {};
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      const stored = localStorage.getItem('coleccion_notes');
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.error('Error cargando notas:', error);
+      return {};
+    }
   }
 
   saveNotes() {
-    localStorage.setItem('coleccion_notes', JSON.stringify(this.notes));
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('coleccion_notes', JSON.stringify(this.notes));
+    } catch (error) {
+      console.error('Error guardando notas:', error);
+      window.toast?.error('Error al guardar nota. Intenta de nuevo.');
+      return; // No intentar sincronizar si falla guardar localmente
+    }
 
     // 🔧 FIX #18: Verificación explícita de window.supabaseSyncHelper con logging
     if (window.authHelper && window.authHelper.user) {
@@ -682,10 +695,11 @@ class NotesModal {
   showConfirmModal(title, message, onConfirm) {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 animate-fade-in';
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize title and message
     modal.innerHTML = `
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 animate-scale-in">
-        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">${title}</h3>
-        <p class="text-gray-700 dark:text-gray-300 mb-6">${message}</p>
+        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">${Sanitizer.escapeHtml(title)}</h3>
+        <p class="text-gray-700 dark:text-gray-300 mb-6">${Sanitizer.escapeHtml(message)}</p>
         <div class="flex gap-3 justify-end">
           <button class="confirm-cancel px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition">
             Cancelar

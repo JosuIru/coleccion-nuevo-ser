@@ -3,6 +3,7 @@
 // ============================================================================
 // Permite descargar soundscapes para uso sin conexión usando IndexedDB
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class SoundscapeCache {
   constructor() {
     this.dbName = 'soundscape-cache-db';
@@ -28,7 +29,7 @@ class SoundscapeCache {
 
       request.onsuccess = () => {
         this.db = request.result;
-        // console.log('✅ Soundscape Cache DB inicializada');
+        // logger.debug('✅ Soundscape Cache DB inicializada');
         resolve(this.db);
       };
 
@@ -41,7 +42,7 @@ class SoundscapeCache {
           objectStore.createIndex('downloadedAt', 'downloadedAt', { unique: false });
           objectStore.createIndex('size', 'size', { unique: false });
 
-          // console.log('📦 Object store creado:', this.storeName);
+          // logger.debug('📦 Object store creado:', this.storeName);
         }
       };
     });
@@ -58,7 +59,7 @@ class SoundscapeCache {
         await this.initialize();
       }
 
-      // console.log(`⬇️ Descargando soundscape: ${name}`);
+      // logger.debug(`⬇️ Descargando soundscape: ${name}`);
 
       // Descargar usando fetch con seguimiento de progreso
       const response = await fetch(url);
@@ -107,7 +108,7 @@ class SoundscapeCache {
 
       await this.saveSoundscape(soundscapeData);
 
-      // console.log(`✅ Soundscape descargado: ${name} (${this.formatBytes(arrayBuffer.byteLength)})`);
+      // logger.debug(`✅ Soundscape descargado: ${name} (${this.formatBytes(arrayBuffer.byteLength)})`);
 
       return soundscapeData;
     } catch (error) {
@@ -143,7 +144,7 @@ class SoundscapeCache {
 
       request.onsuccess = () => {
         if (request.result) {
-          // console.log(`📦 Soundscape recuperado de cache: ${name}`);
+          // logger.debug(`📦 Soundscape recuperado de cache: ${name}`);
         }
         resolve(request.result);
       };
@@ -187,7 +188,7 @@ class SoundscapeCache {
       const request = objectStore.delete(name);
 
       request.onsuccess = () => {
-        // console.log(`🗑️ Soundscape eliminado: ${name}`);
+        // logger.debug(`🗑️ Soundscape eliminado: ${name}`);
         resolve();
       };
 
@@ -206,7 +207,7 @@ class SoundscapeCache {
       const request = objectStore.clear();
 
       request.onsuccess = () => {
-        // console.log('🗑️ Todos los soundscapes eliminados');
+        // logger.debug('🗑️ Todos los soundscapes eliminados');
         resolve();
       };
 
@@ -239,7 +240,7 @@ class SoundscapeCache {
       }
 
       // Si no está en cache, devolver URL de red
-      // console.log(`⚠️ Soundscape no está en cache, usando red: ${name}`);
+      // logger.debug(`⚠️ Soundscape no está en cache, usando red: ${name}`);
       return {
         url: url,
         source: 'network',
@@ -380,7 +381,7 @@ class SoundscapeCache {
       }
     }
 
-    // console.log(`🧹 Limpieza completada: ${deletedCount} soundscapes eliminados`);
+    // logger.debug(`🧹 Limpieza completada: ${deletedCount} soundscapes eliminados`);
     return deletedCount;
   }
 
@@ -404,7 +405,7 @@ class SoundscapeCache {
       const isCached = await this.isCached(name);
 
       if (!isCached && soundscapesConfig[name]) {
-        // console.log(`🔄 Prefetching soundscape: ${name}`);
+        // logger.debug(`🔄 Prefetching soundscape: ${name}`);
         await this.downloadSoundscape(name, soundscapesConfig[name].url);
       }
     }
@@ -425,7 +426,7 @@ class SoundscapeCache {
     });
 
     this.blobUrls.clear();
-    // console.log('🗑️ Blob URLs de soundscape limpiados');
+    // logger.debug('🗑️ Blob URLs de soundscape limpiados');
   }
 }
 

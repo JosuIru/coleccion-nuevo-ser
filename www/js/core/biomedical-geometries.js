@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Sistema de Geometrías Biomédicas
  * Crea geometrías orgánicas realistas para cada tipo de órgano
  *
@@ -773,5 +774,5 @@ class BiomedicalGeometries {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.BiomedicalGeometries = BiomedicalGeometries;
-  // console.log('✅ BiomedicalGeometries class registered globally');
+  // logger.debug('✅ BiomedicalGeometries class registered globally');
 }

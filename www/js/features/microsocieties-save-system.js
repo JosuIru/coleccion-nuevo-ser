@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE GUARDADO/CARGA DE SOCIEDADES
  * Persistencia completa con múltiples slots
  */
@@ -36,7 +37,7 @@ class SaveSystem {
     this.saves[slotId] = saveData;
     this.persistToStorage();
 
-    // console.log(`💾 Sociedad guardada en slot: ${slotId}`);
+    // logger.debug(`💾 Sociedad guardada en slot: ${slotId}`);
     return true;
   }
 
@@ -52,7 +53,7 @@ class SaveSystem {
 
     try {
       const society = this.deserializeSociety(saveData.society);
-      // console.log(`📂 Sociedad cargada desde slot: ${slotId}`);
+      // logger.debug(`📂 Sociedad cargada desde slot: ${slotId}`);
       return society;
     } catch (error) {
       console.error(`❌ Error al cargar sociedad:`, error);
@@ -145,7 +146,7 @@ class SaveSystem {
     if (this.saves[slotId]) {
       delete this.saves[slotId];
       this.persistToStorage();
-      // console.log(`🗑️ Save eliminado: ${slotId}`);
+      // logger.debug(`🗑️ Save eliminado: ${slotId}`);
       return true;
     }
     return false;
@@ -183,7 +184,7 @@ class SaveSystem {
       }
     }, this.autosaveInterval);
 
-    // console.log(`💾 Autosave activado (cada ${this.autosaveInterval / 1000}s)`);
+    // logger.debug(`💾 Autosave activado (cada ${this.autosaveInterval / 1000}s)`);
   }
 
   /**
@@ -193,7 +194,7 @@ class SaveSystem {
     if (this.autosaveTimer) {
       clearInterval(this.autosaveTimer);
       this.autosaveTimer = null;
-      // console.log('💾 Autosave detenido');
+      // logger.debug('💾 Autosave detenido');
     }
   }
 
@@ -215,7 +216,7 @@ class SaveSystem {
     a.click();
 
     URL.revokeObjectURL(url);
-    // console.log('📤 Save exportado a archivo');
+    // logger.debug('📤 Save exportado a archivo');
     return true;
   }
 
@@ -241,7 +242,7 @@ class SaveSystem {
           this.saves[targetSlot] = saveData;
           this.persistToStorage();
 
-          // console.log(`📥 Save importado a slot: ${targetSlot}`);
+          // logger.debug(`📥 Save importado a slot: ${targetSlot}`);
           resolve(targetSlot);
         } catch (error) {
           reject(error);
@@ -320,7 +321,7 @@ class SaveSystem {
       const saved = localStorage.getItem('microsocieties-saves');
       if (saved) {
         this.saves = JSON.parse(saved);
-        // console.log(`📂 ${Object.keys(this.saves).length} saves cargados`);
+        // logger.debug(`📂 ${Object.keys(this.saves).length} saves cargados`);
       }
     } catch (error) {
       console.error('❌ Error al cargar saves:', error);
@@ -342,7 +343,7 @@ class SaveSystem {
 
     toDelete.forEach(([id]) => {
       delete this.saves[id];
-      // console.log(`🗑️ Save antiguo eliminado: ${id}`);
+      // logger.debug(`🗑️ Save antiguo eliminado: ${id}`);
     });
   }
 
@@ -374,10 +375,10 @@ class SaveSystem {
     this.saves = {};
     this.stopAutosave();
     this.persistToStorage();
-    // console.log('🗑️ Todos los saves eliminados');
+    // logger.debug('🗑️ Todos los saves eliminados');
   }
 }
 
 // Exportar
 window.SaveSystem = SaveSystem;
-// console.log('💾 Sistema de Guardado cargado');
+// logger.debug('💾 Sistema de Guardado cargado');

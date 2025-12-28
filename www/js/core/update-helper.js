@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * UPDATE HELPER
  * Maneja descarga e instalación de actualizaciones
  *
@@ -73,7 +74,7 @@ class UpdateHelper {
       throw new Error('URL de descarga no disponible');
     }
 
-    console.log('[UpdateHelper] Iniciando descarga APK:', url);
+    logger.debug('[UpdateHelper] Iniciando descarga APK:', url);
     this.emit('downloadStarted', { version: updateInfo.version });
 
     // En app nativa, usar plugin de descarga
@@ -98,7 +99,7 @@ class UpdateHelper {
           directory: Directory.Documents
         });
 
-        console.log('[UpdateHelper] APK descargado:', fileName);
+        logger.debug('[UpdateHelper] APK descargado:', fileName);
         this.emit('downloadCompleted', { fileName });
 
         // Iniciar instalación
@@ -123,7 +124,7 @@ class UpdateHelper {
   async installAPK(fileName) {
     try {
       if (!window.Capacitor) {
-        console.log('[UpdateHelper] No se puede instalar APK desde web');
+        logger.debug('[UpdateHelper] No se puede instalar APK desde web');
         return false;
       }
 
@@ -153,7 +154,7 @@ class UpdateHelper {
       throw new Error('URL de App Store no disponible');
     }
 
-    console.log('[UpdateHelper] Abriendo App Store:', url);
+    logger.debug('[UpdateHelper] Abriendo App Store:', url);
 
     // Abrir URL de App Store
     if (window.cordova) {
@@ -170,7 +171,7 @@ class UpdateHelper {
    * Forzar actualización en web
    */
   async forceWebUpdate(updateInfo) {
-    console.log('[UpdateHelper] Forzando actualización web...');
+    logger.debug('[UpdateHelper] Forzando actualización web...');
 
     this.emit('downloadStarted', { version: updateInfo.version });
 
@@ -181,7 +182,7 @@ class UpdateHelper {
         for (const registration of registrations) {
           await registration.unregister();
         }
-        console.log('[UpdateHelper] Service Worker desregistrado');
+        logger.debug('[UpdateHelper] Service Worker desregistrado');
       } catch (error) {
         console.warn('[UpdateHelper] Error al desregistrar SW:', error);
       }
@@ -201,7 +202,7 @@ class UpdateHelper {
       }
     }
 
-    console.log('[UpdateHelper] Cache limpiado');
+    logger.debug('[UpdateHelper] Cache limpiado');
     this.emit('downloadCompleted', { version: updateInfo.version });
 
     // Hacer reload con cache busting

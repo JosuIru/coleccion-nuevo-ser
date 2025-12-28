@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * BASE SERVICE - Capa de abstracción para operaciones con Supabase
  * Proporciona métodos CRUD genéricos, cache en memoria y manejo de errores centralizado
  *
@@ -453,7 +454,7 @@ class BaseService {
     // Procesar cola cuando se recupera la conexión
     window.addEventListener('online', async () => {
       if (this.offlineQueue.length > 0) {
-        console.log(`[${this.tableName}] Procesando ${this.offlineQueue.length} operaciones offline...`);
+        logger.debug(`[${this.tableName}] Procesando ${this.offlineQueue.length} operaciones offline...`);
         await this.procesarColaOffline();
       }
     });
@@ -495,7 +496,7 @@ class BaseService {
     // Invalidar cache después de procesar todas las operaciones
     if (operacionesPendientes.length > 0) {
       this.invalidarCache();
-      console.log(`[${this.tableName}] ${operacionesPendientes.length} operaciones offline procesadas`);
+      logger.debug(`[${this.tableName}] ${operacionesPendientes.length} operaciones offline procesadas`);
     }
   }
 

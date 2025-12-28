@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FOCUS TRAP - Utilidad para atrapar el foco en modales
  *
  * Mantiene el foco dentro de un elemento (modal, dialog, drawer)
@@ -129,4 +130,4 @@ function createFocusTrap(element) {
 window.FocusTrap = FocusTrap;
 window.createFocusTrap = createFocusTrap;
 
-console.log('[FocusTrap] Focus trap utility loaded. Use createFocusTrap(element) to trap focus.');
+logger.debug('[FocusTrap] Focus trap utility loaded. Use createFocusTrap(element) to trap focus.');

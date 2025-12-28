@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MODO SANDBOX
  * Configuración libre y experimentación sin límites
  */
@@ -62,7 +63,7 @@ class SandboxMode {
     // Aplicar configuración inicial
     this.applySandboxConfig(society);
 
-    // console.log('🎨 Modo Sandbox activado con config:', this.config);
+    // logger.debug('🎨 Modo Sandbox activado con config:', this.config);
   }
 
   /**
@@ -70,7 +71,7 @@ class SandboxMode {
    */
   deactivate() {
     this.active = false;
-    // console.log('🎨 Modo Sandbox desactivado');
+    // logger.debug('🎨 Modo Sandbox desactivado');
   }
 
   /**
@@ -93,7 +94,7 @@ class SandboxMode {
       });
     }
 
-    // console.log('⚙️ Configuración sandbox aplicada');
+    // logger.debug('⚙️ Configuración sandbox aplicada');
   }
 
   /**
@@ -176,7 +177,7 @@ class SandboxMode {
     if (this.config.hasOwnProperty(key)) {
       this.config[key] = value;
       this.saveConfig();
-      // console.log(`⚙️ Parámetro ${key} = ${value}`);
+      // logger.debug(`⚙️ Parámetro ${key} = ${value}`);
       return true;
     }
     return false;
@@ -195,7 +196,7 @@ class SandboxMode {
   resetConfig() {
     this.config = this.getDefaultConfig();
     this.saveConfig();
-    // console.log('⚙️ Configuración reseteada');
+    // logger.debug('⚙️ Configuración reseteada');
   }
 
   /**
@@ -213,7 +214,7 @@ class SandboxMode {
       const saved = localStorage.getItem('sandbox-config');
       if (saved) {
         this.config = {...this.getDefaultConfig(), ...JSON.parse(saved)};
-        // console.log('⚙️ Configuración sandbox cargada');
+        // logger.debug('⚙️ Configuración sandbox cargada');
       }
     } catch (error) {
       console.error('❌ Error al cargar config sandbox:', error);
@@ -234,7 +235,7 @@ class SandboxMode {
     a.click();
 
     URL.revokeObjectURL(url);
-    // console.log('📤 Configuración exportada');
+    // logger.debug('📤 Configuración exportada');
   }
 
   /**
@@ -249,7 +250,7 @@ class SandboxMode {
           const imported = JSON.parse(e.target.result);
           this.config = {...this.getDefaultConfig(), ...imported};
           this.saveConfig();
-          // console.log('📥 Configuración importada');
+          // logger.debug('📥 Configuración importada');
           resolve(this.config);
         } catch (error) {
           reject(error);
@@ -356,7 +357,7 @@ class SandboxMode {
     if (preset) {
       this.config = {...this.getDefaultConfig(), ...preset.config};
       this.saveConfig();
-      // console.log(`🎨 Preset "${preset.name}" aplicado`);
+      // logger.debug(`🎨 Preset "${preset.name}" aplicado`);
       return true;
     }
 
@@ -485,4 +486,4 @@ class SandboxMode {
 
 // Exportar
 window.SandboxMode = SandboxMode;
-// console.log('🎨 Sandbox Mode cargado');
+// logger.debug('🎨 Sandbox Mode cargado');

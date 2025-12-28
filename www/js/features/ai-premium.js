@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AI PREMIUM - Sistema de Créditos y Rate Limiting
  * Gestión de créditos de IA, verificación de permisos y consumo
  *
@@ -28,13 +29,13 @@ class AIPremium {
     // Escuchar cambios de auth
     this.authHelper.onAuthStateChange((event, user) => {
       if (event === 'signed_in') {
-        console.log('🔐 AI Premium verificando permisos...');
+        logger.debug('🔐 AI Premium verificando permisos...');
       } else if (event === 'signed_out') {
         this.notifyCreditUpdate(0);
       }
     });
 
-    console.log('✅ AI Premium inicializado');
+    logger.debug('✅ AI Premium inicializado');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -175,7 +176,7 @@ class AIPremium {
       // Notificar listeners
       this.notifyCreditUpdate(result.remaining);
 
-      console.log(
+      logger.debug(
         `✅ Consumidos ${creditsAmount} créditos. Restantes: ${result.remaining}`
       );
 
@@ -493,4 +494,4 @@ class AIPremium {
 // Crear instancia global
 window.aiPremium = new AIPremium();
 
-console.log('✅ AIPremium loaded. Use window.aiPremium for credit management.');
+logger.debug('✅ AIPremium loaded. Use window.aiPremium for credit management.');

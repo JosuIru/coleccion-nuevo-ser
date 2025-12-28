@@ -2,6 +2,7 @@
 // BIOMETRIC HELPER - Autenticación Biométrica para Notas Privadas
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class BiometricHelper {
   constructor() {
     this.isCapacitor = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
@@ -34,7 +35,7 @@ class BiometricHelper {
         this.isAvailable = result.isAvailable;
         this.biometryType = result.biometryType || 'none';
 
-        // console.log('Biometric availability:', result);
+        // logger.debug('Biometric availability:', result);
         return result;
       }
     } catch (error) {

@@ -7,6 +7,7 @@
 // - No son intrusivos
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ContextualHints {
   constructor() {
     this.storageKey = 'contextual_hints_data';
@@ -483,7 +484,7 @@ class ContextualHints {
   reset() {
     localStorage.removeItem(this.storageKey);
     this.data = this.loadData();
-    console.log('[ContextualHints] Data reset');
+    logger.debug('[ContextualHints] Data reset');
   }
 }
 

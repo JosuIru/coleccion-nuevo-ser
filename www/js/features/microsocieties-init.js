@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * INICIALIZADOR DE MICROSOCIEDADES
  * Conecta todos los sistemas y proporciona panel de control unificado
  */
@@ -59,7 +60,7 @@ class MicrosocietiesInit {
       this.createMainPanel();
 
       this.isInitialized = true;
-      console.log('Microsociedades inicializado correctamente');
+      logger.debug('Microsociedades inicializado correctamente');
 
     } catch (error) {
       console.error('Error inicializando microsociedades:', error);
@@ -930,7 +931,7 @@ class MicrosocietiesInit {
     } else if (window.showToast) {
       window.showToast(message, type);
     } else {
-      console.log(`[${type}] ${message}`);
+      logger.debug(`[${type}] ${message}`);
     }
   }
 }
@@ -946,4 +947,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 500);
 });
 
-console.log('Microsocieties Init cargado');
+logger.debug('Microsocieties Init cargado');

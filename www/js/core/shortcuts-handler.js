@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ShortcutsHandler - Manejo de deep links desde Android Shortcuts y Quick Settings Tile
  *
  * Detecta cuando la app es abierta desde:
@@ -16,7 +17,7 @@ class ShortcutsHandler {
     }
 
     async init() {
-        // console.log('[ShortcutsHandler] Initializing...');
+        // logger.debug('[ShortcutsHandler] Initializing...');
 
         if (this.isCapacitor) {
             // Detectar deep link inicial (al abrir la app)
@@ -28,7 +29,7 @@ class ShortcutsHandler {
 
         // Exponer globalmente
         window.shortcutsHandler = this;
-        // console.log('[ShortcutsHandler] Ready');
+        // logger.debug('[ShortcutsHandler] Ready');
     }
 
     /**
@@ -43,7 +44,7 @@ class ShortcutsHandler {
                 const launchUrl = await App.getLaunchUrl();
 
                 if (launchUrl && launchUrl.url) {
-                    // console.log('[ShortcutsHandler] App launched with URL:', launchUrl.url);
+                    // logger.debug('[ShortcutsHandler] App launched with URL:', launchUrl.url);
                     this.pendingDeepLink = launchUrl.url;
 
                     // Esperar a que la app esté lista antes de procesar
@@ -63,11 +64,11 @@ class ShortcutsHandler {
             const { App } = window.Capacitor.Plugins;
 
             App.addListener('appUrlOpen', (data) => {
-                // console.log('[ShortcutsHandler] Deep link received:', data.url);
+                // logger.debug('[ShortcutsHandler] Deep link received:', data.url);
                 this.handleDeepLink(data.url);
             });
 
-            // console.log('[ShortcutsHandler] Deep link listener registered');
+            // logger.debug('[ShortcutsHandler] Deep link listener registered');
         }
     }
 
@@ -91,7 +92,7 @@ class ShortcutsHandler {
             return;
         }
 
-        // console.log('[ShortcutsHandler] Handling action:', action);
+        // logger.debug('[ShortcutsHandler] Handling action:', action);
 
         switch (action) {
             case 'continue-reading':
@@ -157,7 +158,7 @@ class ShortcutsHandler {
 
             if (lastBookData) {
                 const data = JSON.parse(lastBookData);
-                // console.log('[ShortcutsHandler] Opening last book:', data);
+                // logger.debug('[ShortcutsHandler] Opening last book:', data);
 
                 // Verificar que exista la función global openBook
                 if (typeof window.openBook === 'function') {
@@ -168,7 +169,7 @@ class ShortcutsHandler {
                     window.location.href = url;
                 }
             } else {
-                // console.log('[ShortcutsHandler] No last book found, showing library');
+                // logger.debug('[ShortcutsHandler] No last book found, showing library');
                 this.showLibrary();
             }
         } catch (error) {
@@ -194,7 +195,7 @@ class ShortcutsHandler {
             if (window.koansModal && typeof window.koansModal.show === 'function') {
                 setTimeout(() => {
                     window.koansModal.show();
-                    // console.log('[ShortcutsHandler] Koan modal shown');
+                    // logger.debug('[ShortcutsHandler] Koan modal shown');
                 }, 500);
             } else {
                 // console.warn('[ShortcutsHandler] Koans modal not available');
@@ -222,7 +223,7 @@ class ShortcutsHandler {
             if (window.progressDashboard && typeof window.progressDashboard.show === 'function') {
                 setTimeout(() => {
                     window.progressDashboard.show();
-                    // console.log('[ShortcutsHandler] Progress dashboard shown');
+                    // logger.debug('[ShortcutsHandler] Progress dashboard shown');
                 }, 500);
             } else {
                 // console.warn('[ShortcutsHandler] Progress dashboard not available');
@@ -238,11 +239,11 @@ class ShortcutsHandler {
      * Navega a la biblioteca (pantalla principal)
      */
     showLibrary() {
-        // console.log('[ShortcutsHandler] Navigating to library');
+        // logger.debug('[ShortcutsHandler] Navigating to library');
 
         // Si ya estamos en la biblioteca, no hacer nada
         if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-            // console.log('[ShortcutsHandler] Already in library');
+            // logger.debug('[ShortcutsHandler] Already in library');
             return;
         }
 

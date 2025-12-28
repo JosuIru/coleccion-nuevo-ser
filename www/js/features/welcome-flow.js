@@ -7,6 +7,7 @@
 // 3. Primera práctica guiada (90 segundos)
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class WelcomeFlow {
   constructor() {
     this.currentStep = 0;
@@ -105,7 +106,7 @@ class WelcomeFlow {
 
   start() {
     if (!this.shouldShow()) {
-      console.log('[WelcomeFlow] Ya completado anteriormente');
+      logger.debug('[WelcomeFlow] Ya completado anteriormente');
       return false;
     }
 
@@ -168,7 +169,7 @@ class WelcomeFlow {
     localStorage.removeItem('welcome_flow_completed');
     localStorage.removeItem('welcome_flow_date');
     localStorage.removeItem('user_primary_intent');
-    console.log('[WelcomeFlow] Reset - se mostrará en la próxima visita');
+    logger.debug('[WelcomeFlow] Reset - se mostrará en la próxima visita');
   }
 
   // ==========================================================================
@@ -638,7 +639,7 @@ class WelcomeFlow {
     this.intervals.forEach(intervalId => clearInterval(intervalId));
     this.intervals = [];
 
-    console.log('[WelcomeFlow] Cleanup completado');
+    logger.debug('[WelcomeFlow] Cleanup completado');
   }
 }
 

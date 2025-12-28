@@ -3,6 +3,7 @@
 // ============================================================================
 // Soluciona problemas de voces en Chrome/Brave Linux
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class TTSPolyfill {
   constructor() {
     this.nativeSynthesis = window.speechSynthesis;
@@ -34,11 +35,11 @@ class TTSPolyfill {
       if (voices && voices.length > 0) {
         this.voices = voices;
         this.voicesLoaded = true;
-        // console.log(`✅ Voces TTS cargadas (intento ${this.loadAttempts}): ${voices.length} voces`);
+        // logger.debug(`✅ Voces TTS cargadas (intento ${this.loadAttempts}): ${voices.length} voces`);
 
         const spanish = voices.filter(v => v.lang.startsWith('es'));
         if (spanish.length > 0) {
-          // console.log(`🇪🇸 ${spanish.length} voces en español disponibles`);
+          // logger.debug(`🇪🇸 ${spanish.length} voces en español disponibles`);
         }
 
         return true;
@@ -46,7 +47,7 @@ class TTSPolyfill {
 
       // Si no se cargaron y quedan intentos, reintentar
       if (this.loadAttempts < this.maxAttempts) {
-        // console.log(`⏳ Intento ${this.loadAttempts}/${this.maxAttempts} - Esperando voces...`);
+        // logger.debug(`⏳ Intento ${this.loadAttempts}/${this.maxAttempts} - Esperando voces...`);
         setTimeout(attemptLoad, 500);
       } else {
         // console.warn('⚠️ No se pudieron cargar voces después de', this.maxAttempts, 'intentos');
@@ -79,7 +80,7 @@ class TTSPolyfill {
 
   // Trick para forzar carga de voces en Chrome
   triggerVoiceLoad() {
-    // console.log('🔧 Intentando forzar carga de voces...');
+    // logger.debug('🔧 Intentando forzar carga de voces...');
 
     // Crear y cancelar utterance (trick conocido)
     const utterance = new SpeechSynthesisUtterance('');
@@ -95,7 +96,7 @@ class TTSPolyfill {
         if (voices && voices.length > 0) {
           this.voices = voices;
           this.voicesLoaded = true;
-          // console.log('✅ Voces cargadas después de trigger:', voices.length);
+          // logger.debug('✅ Voces cargadas después de trigger:', voices.length);
         }
       }, 500);
     }, 100);
@@ -153,12 +154,12 @@ class TTSPolyfill {
   // Diagnóstico
   diagnose() {
     // console.group('🔍 Diagnóstico TTS');
-    // console.log('speechSynthesis:', !!this.nativeSynthesis);
-    // console.log('Voces cargadas:', this.voicesLoaded);
-    // console.log('Total de voces:', this.voices.length);
-    // console.log('Voces en español:', this.getSpanishVoices().length);
-    // console.log('Mejor voz española:', this.getBestSpanishVoice()?.name);
-    // console.log('Intentos de carga:', this.loadAttempts);
+    // logger.debug('speechSynthesis:', !!this.nativeSynthesis);
+    // logger.debug('Voces cargadas:', this.voicesLoaded);
+    // logger.debug('Total de voces:', this.voices.length);
+    // logger.debug('Voces en español:', this.getSpanishVoices().length);
+    // logger.debug('Mejor voz española:', this.getBestSpanishVoice()?.name);
+    // logger.debug('Intentos de carga:', this.loadAttempts);
 
     if (this.voices.length > 0) {
       // console.table(this.voices.slice(0, 10).map(v => ({
@@ -179,4 +180,4 @@ window.ttsPolyfill = new TTSPolyfill();
 // Exponer método de diagnóstico fácil
 window.diagnosticarTTS = () => window.ttsPolyfill.diagnose();
 
-// console.log('✅ TTS Polyfill cargado. Usa diagnosticarTTS() para verificar.');
+// logger.debug('✅ TTS Polyfill cargado. Usa diagnosticarTTS() para verificar.');

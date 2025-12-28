@@ -2,6 +2,7 @@
 // REFLEXIVE MODAL - Modal de Preguntas Reflexivas al terminar capítulo
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ReflexiveModal {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -19,7 +20,7 @@ class ReflexiveModal {
     const question = window.getRandomQuestion?.(bookId, chapterId);
 
     if (!question) {
-      // console.log('No hay preguntas reflexivas para este capítulo');
+      // logger.debug('No hay preguntas reflexivas para este capítulo');
       return;
     }
 

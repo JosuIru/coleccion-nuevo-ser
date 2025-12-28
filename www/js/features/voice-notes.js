@@ -29,7 +29,13 @@ class VoiceNotes {
   }
 
   saveNotesMetadata() {
-    localStorage.setItem('voice-notes-metadata', JSON.stringify(this.notes));
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('voice-notes-metadata', JSON.stringify(this.notes));
+    } catch (error) {
+      console.error('Error guardando metadatos de notas de voz:', error);
+      window.toast?.error('Error al guardar nota de voz. Intenta de nuevo.');
+    }
   }
 
   // ==========================================================================

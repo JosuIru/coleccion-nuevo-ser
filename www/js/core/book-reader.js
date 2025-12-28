@@ -1247,14 +1247,14 @@ class BookReader {
           ${prevChapter ? `
             <button id="prev-chapter"
                     data-chapter-id="${prevChapter.id}"
-                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 sm:max-w-md"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 max-w-[50%] sm:max-w-md"
                     title="${prevChapter.title}">
               <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-slate-700/50 group-hover:bg-cyan-600/20 flex items-center justify-center transition-colors">
                 ${Icons.chevronLeft(16)}
               </div>
               <div class="flex-1 text-left min-w-0">
                 <div class="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide hidden sm:block mb-0.5">Anterior</div>
-                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${this.shortenChapterTitle(prevChapter.title)}</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${this.shortenChapterTitle(prevChapter.title, 22)}</div>
               </div>
             </button>
           ` : '<div class="hidden sm:flex flex-1"></div>'}
@@ -1263,11 +1263,11 @@ class BookReader {
           ${nextChapter ? `
             <button id="next-chapter"
                     data-chapter-id="${nextChapter.id}"
-                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-600/90 to-blue-600/90 hover:from-cyan-500/90 hover:to-blue-500/90 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/20 flex-1 sm:max-w-md"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-600/90 to-blue-600/90 hover:from-cyan-500/90 hover:to-blue-500/90 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/20 flex-1 max-w-[50%] sm:max-w-md"
                     title="${nextChapter.title}">
               <div class="flex-1 text-right min-w-0">
                 <div class="text-[10px] sm:text-xs text-cyan-100 uppercase tracking-wide hidden sm:block mb-0.5">Siguiente</div>
-                <div class="text-[11px] sm:text-sm font-semibold text-white truncate leading-tight">${this.shortenChapterTitle(nextChapter.title)}</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-white truncate leading-tight">${this.shortenChapterTitle(nextChapter.title, 22)}</div>
               </div>
               <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
                 ${Icons.chevronRight(16)}
@@ -1711,6 +1711,7 @@ class BookReader {
     // Toggle sidebar - usar referencia guardada para evitar duplicación
     if (!this._toggleSidebarHandler) {
       this._toggleSidebarHandler = (e) => {
+        console.warn('[BookReader] 📖 Click en botón TOGGLE SIDEBAR (toggle-sidebar)');
         e.stopPropagation();
         e.preventDefault();
         this.toggleSidebar();
@@ -1994,6 +1995,7 @@ class BookReader {
     // Usar referencia guardada para evitar duplicación de listeners
     if (!this._audioreaderHandler) {
       this._audioreaderHandler = async (e) => {
+        console.warn('[BookReader] 🎧 Click en botón AUDIO PRINCIPAL (audioreader-btn-mobile)');
         e.stopPropagation(); // Evitar propagación que pueda activar otros handlers
         e.preventDefault();
 
@@ -2042,21 +2044,32 @@ class BookReader {
       };
     }
 
-    // Botón expandir - muestra reproductor completo
-    const audioExpandHandler = async () => {
-      const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
-      const reader = audioReader?.baseReader || audioReader;
-      if (reader) {
-        // 🔧 FIX v2.9.174: Usar show() en lugar de showSimplePlayer() obsoleto
-        reader.isMinimized = false;
-        await reader.renderControls();
-      }
-    };
+    // 🔧 FIX v2.9.220: Logs de debugging para identificar qué botón se activa
+    if (!this._audioExpandHandler) {
+      this._audioExpandHandler = async () => {
+        console.warn('[BookReader] ▼ Click en botón EXPANDIR audio (audio-expand-btn-mobile)');
+        const audioReader = this.getDependency('audioReader'); // 🔧 FIX #87
+        const reader = audioReader?.baseReader || audioReader;
+        if (reader) {
+          console.warn('[BookReader] Estado actual:', {
+            isMinimized: reader.isMinimized,
+            isBottomSheetExpanded: reader.isBottomSheetExpanded
+          });
+          // Si está minimizado, toggle del bottom-sheet (expandir/contraer drawer)
+          // Si está expandido (full player), minimizar a bottom-sheet
+          if (reader.isMinimized) {
+            await reader.toggleBottomSheet();
+          } else {
+            reader.toggleMinimize();
+          }
+        }
+      };
+    }
 
     // 🔧 FIX #44: Audio expand button usando EventManager
     const audioExpandBtn = document.getElementById('audio-expand-btn-mobile');
     if (audioExpandBtn) {
-      this.eventManager.addEventListener(audioExpandBtn, 'click', audioExpandHandler);
+      this.eventManager.addEventListener(audioExpandBtn, 'click', this._audioExpandHandler);
     }
 
     const audioreaderBtn = document.getElementById('audioreader-btn');
@@ -2971,7 +2984,7 @@ class BookReader {
   // NAVEGACIÓN
   // ==========================================================================
 
-  navigateToChapter(chapterId) {
+  navigateToChapter(chapterId, skipAudioStop = false) {
     try {
       logger.debug('🔍 [DEBUG] navigateToChapter() llamado con chapterId:', chapterId);
       const chapter = this.bookEngine.navigateToChapter(chapterId);
@@ -2979,6 +2992,15 @@ class BookReader {
 
       if (chapter) {
         this.currentChapter = chapter;
+
+        // 🔧 FIX v2.9.208: Detener reproductor al cambiar de capítulo (SALVO si es auto-advance)
+        if (!skipAudioStop) {
+          const audioReader = this.getDependency('audioReader');
+          if (audioReader && (audioReader.isPlaying || audioReader.paragraphs.length > 0)) {
+            logger.debug('🎧 Deteniendo reproductor al cambiar de capítulo');
+            audioReader.stop();
+          }
+        }
 
         // 🔧 FIX #49 + HOTFIX: Verificar si ya existe la estructura DOM Y está visible
         // Si no existe O no está visible, hacer render completo. Si existe, actualización parcial.
@@ -3200,6 +3222,14 @@ class BookReader {
         }
         if (audioreaderBtnMobile) {
           this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
+        }
+      }
+
+      // 🔧 FIX v2.9.219: Re-adjuntar listener del botón expandir audio
+      if (this._audioExpandHandler) {
+        const audioExpandBtn = document.getElementById('audio-expand-btn-mobile');
+        if (audioExpandBtn) {
+          this.eventManager.addEventListener(audioExpandBtn, 'click', this._audioExpandHandler);
         }
       }
 

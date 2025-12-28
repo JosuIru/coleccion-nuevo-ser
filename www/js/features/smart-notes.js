@@ -496,6 +496,7 @@ Responde SOLO con la pregunta sugerida, sin explicaciones.`;
     modal.className = 'fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-50 p-4';
     modal.style.animation = 'fadeIn 0.3s ease-out';
 
+    // 🔧 FIX v2.9.198: XSS prevention - sanitize chapter title
     modal.innerHTML = `
       <div class="bg-gradient-to-br from-gray-900 to-purple-900/30 rounded-2xl shadow-2xl max-w-lg w-full border border-purple-500/30">
         <!-- Header -->
@@ -504,7 +505,7 @@ Responde SOLO con la pregunta sugerida, sin explicaciones.`;
             <span class="text-3xl">🧘</span>
             <div>
               <h2 class="text-xl font-bold text-purple-200">Reflexión Guiada</h2>
-              <p class="text-sm text-purple-300/70">${chapter.title}</p>
+              <p class="text-sm text-purple-300/70">${window.sanitizer?.sanitize(chapter.title) || Sanitizer.escapeHtml(chapter.title)}</p>
             </div>
           </div>
         </div>

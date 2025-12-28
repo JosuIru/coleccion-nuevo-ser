@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Brújula de Recursos - Sistema de Navegación Inteligente
  *
  * Sistema contemplativo y no directivo para explorar recursos del ecosistema.
@@ -75,9 +76,9 @@ class BrujulaRecursos {
   // ========== INICIALIZACIÓN ==========
 
   async init() {
-    // console.log('🧭 Inicializando Brújula de Recursos...');
+    // logger.debug('🧭 Inicializando Brújula de Recursos...');
     await this.cargarTodosRecursos();
-    // console.log(`✅ Brújula cargada con ${this.recursos.length} recursos`);
+    // logger.debug(`✅ Brújula cargada con ${this.recursos.length} recursos`);
   }
 
   async cargarTodosRecursos() {
@@ -109,7 +110,7 @@ class BrujulaRecursos {
 
       // Verificar si tiene recursos habilitados Y tiene archivo definido
       if (config.features?.resources?.enabled && config.features?.resources?.file) {
-        // console.log(`📦 Cargando recursos de ${libro.id}...`);
+        // logger.debug(`📦 Cargando recursos de ${libro.id}...`);
         const recursosResponse = await fetch(config.features.resources.file);
         const data = await recursosResponse.json();
 
@@ -151,7 +152,7 @@ class BrujulaRecursos {
           });
         }
 
-        // console.log(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
+        // logger.debug(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
       }
     } catch (error) {
       // console.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
@@ -516,8 +517,8 @@ if (typeof window !== 'undefined') {
 
   // Inicializar instancia global al cargar
   document.addEventListener('DOMContentLoaded', async () => {
-    // console.log('🧭 Preparando Brújula de Recursos...');
+    // logger.debug('🧭 Preparando Brújula de Recursos...');
     window.brujulaRecursos = await BrujulaRecursos.create();
-    // console.log('✅ Brújula lista');
+    // logger.debug('✅ Brújula lista');
   });
 }

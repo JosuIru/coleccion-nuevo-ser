@@ -50,6 +50,8 @@ const Icons = {
     sprout: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>`,
     wrench: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
     circleDot: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/></svg>`,
+    pencil: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>`,
+    bot: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>`,
     zap: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>`,
     brain: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>`,
     landmark: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
@@ -81,7 +83,7 @@ const Icons = {
   timeline: (size = 20) => Icons.create('clock', size),
   resources: (size = 20) => Icons.create('book-open', size),
   manual: (size = 20) => Icons.create('book', size),
-  meditation: (size = 20) => Icons.create('circle-dot', size),
+  meditation: (size = 20) => Icons._svg.circleDot(size),      // 🔧 FIX v2.9.211: SVG inline (no depende de Lucide)
   radical: (size = 20) => Icons.create('zap', size),
   audio: (size = 20) => Icons.create('volume-2', size),       // Audio (usando Lucide como los demás)
   headphones: (size = 20) => Icons._svg.headphones(size),     // Headphones (SVG inline para audio reader)
@@ -138,8 +140,8 @@ const Icons = {
   mail: (size = 20) => Icons.create('mail', size),             // Carta
   moonStar: (size = 20) => Icons.create('moon-star', size),    // Sombra/Noche
   fileText: (size = 20) => Icons.create('file-text', size),    // Código/Plan
-  bot: (size = 20) => Icons.create('bot', size),               // IA/Robot
-  ai: (size = 20) => Icons.create('bot', size),                // IA (alias de bot)
+  bot: (size = 20) => Icons._svg.bot(size),                    // 🔧 FIX v2.9.211: SVG inline (no depende de Lucide)
+  ai: (size = 20) => Icons._svg.bot(size),                     // 🔧 FIX v2.9.211: SVG inline (no depende de Lucide)
   sunrise: (size = 20) => Icons.create('sunrise', size),       // Síntesis/Horizonte
   bookMarked: (size = 20) => Icons.create('book-marked', size), // Referencias
   infinity: (size = 20) => Icons.create('infinity', size),     // Continuo/Espiral
@@ -151,7 +153,7 @@ const Icons = {
   route: (size = 20) => Icons.create('route', size),           // Puente/Camino
 
   // Acciones
-  edit: (size = 20) => Icons.create('pencil', size),           // Editar
+  edit: (size = 20) => Icons._svg.pencil(size),                // 🔧 FIX v2.9.211: SVG inline (no depende de Lucide)
   trash: (size = 20) => Icons.create('trash-2', size),         // Eliminar
   copy: (size = 20) => Icons.create('copy', size),             // Copiar
   play: (size = 20) => Icons._svg.play(size),                  // Reproducir (SVG inline)

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ElevenLabs TTS Provider
  * Síntesis de voz de alta calidad con voces naturales
  *
@@ -56,11 +57,17 @@ class ElevenLabsTTSProvider {
    * Carga configuración desde localStorage
    */
   loadConfig() {
-    const savedKey = localStorage.getItem('elevenlabs-personal-key');
-    if (savedKey) {
-      this.personalApiKey = savedKey;
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      const savedKey = localStorage.getItem('elevenlabs-personal-key');
+      if (savedKey) {
+        this.personalApiKey = savedKey;
+      }
+      this.usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
+    } catch (error) {
+      console.error('Error cargando configuración de ElevenLabs:', error);
+      this.usePersonalKey = false;
     }
-    this.usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
   }
 
   /**
@@ -68,10 +75,16 @@ class ElevenLabsTTSProvider {
    */
   setApiKey(key) {
     this.personalApiKey = key;
-    if (key) {
-      localStorage.setItem('elevenlabs-personal-key', key);
-    } else {
-      localStorage.removeItem('elevenlabs-personal-key');
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      if (key) {
+        localStorage.setItem('elevenlabs-personal-key', key);
+      } else {
+        localStorage.removeItem('elevenlabs-personal-key');
+      }
+    } catch (error) {
+      console.error('Error guardando API key de ElevenLabs:', error);
+      window.toast?.error('Error al guardar API key. Intenta de nuevo.');
     }
   }
 
@@ -80,7 +93,12 @@ class ElevenLabsTTSProvider {
    */
   setUsePersonalKey(use) {
     this.usePersonalKey = use;
-    localStorage.setItem('elevenlabs-use-personal-key', use.toString());
+    // 🔧 FIX v2.9.198: Error handling - prevent silent failures in localStorage operations
+    try {
+      localStorage.setItem('elevenlabs-use-personal-key', use.toString());
+    } catch (error) {
+      console.error('Error guardando configuración de ElevenLabs:', error);
+    }
   }
 
   /**
@@ -151,7 +169,7 @@ class ElevenLabsTTSProvider {
       if (response.ok) {
         const data = await response.json();
         if (data.exists && data.url) {
-          console.log('☁️ ElevenLabs: Audio encontrado en caché compartido');
+          logger.debug('☁️ ElevenLabs: Audio encontrado en caché compartido');
           return data.url;
         }
       }
@@ -198,7 +216,7 @@ class ElevenLabsTTSProvider {
       });
 
       if (response.ok) {
-        console.log('☁️ ElevenLabs: Audio subido al caché compartido');
+        logger.debug('☁️ ElevenLabs: Audio subido al caché compartido');
       }
     } catch (error) {
       console.warn('Error subiendo a caché compartido:', error);
@@ -273,7 +291,7 @@ class ElevenLabsTTSProvider {
       if (this.cacheEnabled && persistentCache) {
         const hasPersistent = await persistentCache.has(cacheKey);
         if (hasPersistent) {
-          console.log('💾 ElevenLabs: Usando audio de caché local');
+          logger.debug('💾 ElevenLabs: Usando audio de caché local');
           const audioUrl = await persistentCache.get(cacheKey);
           if (audioUrl) {
             return this.playAudio(audioUrl, onProgress, onEnd, onError);
@@ -283,20 +301,20 @@ class ElevenLabsTTSProvider {
 
       // ========== NIVEL 3: Caché en memoria ==========
       if (this.cacheEnabled && this.cache.has(cacheKey)) {
-        console.log('🎵 ElevenLabs: Usando audio de memoria');
+        logger.debug('🎵 ElevenLabs: Usando audio de memoria');
         const audioUrl = this.cache.get(cacheKey);
         return this.playAudio(audioUrl, onProgress, onEnd, onError);
       }
 
       // ========== NIVEL 4: Generar nuevo (gasta créditos) ==========
-      console.log('🎙️ ElevenLabs: Generando audio nuevo...');
+      logger.debug('🎙️ ElevenLabs: Generando audio nuevo...');
       const audioBlob = await this.generateAudioBlob(text, voice, stability, similarity_boost, model);
       const audioUrl = URL.createObjectURL(audioBlob);
 
       // Guardar en caché de memoria
       if (this.cacheEnabled) {
         this.cache.set(cacheKey, audioUrl);
-        console.log(`📦 ElevenLabs: Audio en memoria (${this.cache.size} items)`);
+        logger.debug(`📦 ElevenLabs: Audio en memoria (${this.cache.size} items)`);
       }
 
       // Guardar en caché local persistente
@@ -366,7 +384,7 @@ class ElevenLabsTTSProvider {
 
     const functionUrl = `${supabaseUrl}/functions/v1/elevenlabs-tts`;
 
-    console.log('🔗 Llamando Edge Function:', functionUrl);
+    logger.debug('🔗 Llamando Edge Function:', functionUrl);
 
     const response = await fetch(functionUrl, {
       method: 'POST',
@@ -410,7 +428,7 @@ class ElevenLabsTTSProvider {
     const creditsUsed = response.headers.get('X-Credits-Used');
     const creditsRemaining = response.headers.get('X-Credits-Remaining');
     if (creditsUsed) {
-      console.log(`💰 Créditos usados: ${creditsUsed}, restantes: ${creditsRemaining}`);
+      logger.debug(`💰 Créditos usados: ${creditsUsed}, restantes: ${creditsRemaining}`);
     }
 
     return await response.blob();
@@ -599,7 +617,7 @@ class ElevenLabsTTSProvider {
       URL.revokeObjectURL(url);
     });
     this.cache.clear();
-    console.log('🗑️ ElevenLabs: Caché limpiado');
+    logger.debug('🗑️ ElevenLabs: Caché limpiado');
   }
 }
 

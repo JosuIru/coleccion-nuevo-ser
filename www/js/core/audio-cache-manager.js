@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Audio Cache Manager
  * Sistema de caché persistente para audios generados con ElevenLabs
  *
@@ -39,7 +40,7 @@ class AudioCacheManager {
       // Inicializar IndexedDB (para metadatos y web)
       await this.initIndexedDB();
 
-      console.log('✅ AudioCacheManager inicializado');
+      logger.debug('✅ AudioCacheManager inicializado');
     } catch (error) {
       console.error('❌ Error inicializando AudioCacheManager:', error);
     }
@@ -57,7 +58,7 @@ class AudioCacheManager {
         directory: this.directory,
         recursive: true
       });
-      console.log(`📁 Directorio AudioLibros creado/verificado`);
+      logger.debug(`📁 Directorio AudioLibros creado/verificado`);
     } catch (e) {
       // El directorio ya existe, ignorar
     }
@@ -275,7 +276,7 @@ class AudioCacheManager {
           createdAt: Date.now()
         });
 
-        console.log(`💾 Audio guardado: ${filePath} (${(audioBlob.size / 1024).toFixed(1)} KB)`);
+        logger.debug(`💾 Audio guardado: ${filePath} (${(audioBlob.size / 1024).toFixed(1)} KB)`);
       } else {
         // En web, guardar blob directamente en IndexedDB
         await this.saveMetadata({
@@ -289,7 +290,7 @@ class AudioCacheManager {
           audioBlob: audioBlob,
           createdAt: Date.now()
         });
-        console.log(`💾 Audio cacheado en IndexedDB: ${cacheKey} (${(audioBlob.size / 1024).toFixed(1)} KB)`);
+        logger.debug(`💾 Audio cacheado en IndexedDB: ${cacheKey} (${(audioBlob.size / 1024).toFixed(1)} KB)`);
       }
 
       // Verificar límite de caché
@@ -503,7 +504,7 @@ class AudioCacheManager {
         const request = store.clear();
 
         request.onsuccess = () => {
-          console.log('🗑️ Caché de AudioLibros limpiado');
+          logger.debug('🗑️ Caché de AudioLibros limpiado');
           resolve();
         };
         request.onerror = () => reject(request.error);
@@ -525,7 +526,7 @@ class AudioCacheManager {
         await this.delete(item.cacheKey);
       }
 
-      console.log(`🗑️ Caché limpiado para libro: ${bookId} (${bookItems.length} items)`);
+      logger.debug(`🗑️ Caché limpiado para libro: ${bookId} (${bookItems.length} items)`);
       return bookItems.length;
     } catch (error) {
       console.error('Error limpiando caché de libro:', error);
@@ -542,7 +543,7 @@ class AudioCacheManager {
       const maxBytes = this.maxCacheSizeMB * 1024 * 1024;
 
       if (bytes > maxBytes) {
-        console.log(`⚠️ Caché excede límite (${(bytes / 1024 / 1024).toFixed(1)}MB > ${this.maxCacheSizeMB}MB)`);
+        logger.debug(`⚠️ Caché excede límite (${(bytes / 1024 / 1024).toFixed(1)}MB > ${this.maxCacheSizeMB}MB)`);
 
         // Obtener items ordenados por fecha (más antiguos primero)
         const items = await this.getAllMetadata();
@@ -556,7 +557,7 @@ class AudioCacheManager {
 
           await this.delete(item.cacheKey);
           currentSize -= item.fileSize || 0;
-          console.log(`🗑️ Eliminado del caché: ${item.cacheKey}`);
+          logger.debug(`🗑️ Eliminado del caché: ${item.cacheKey}`);
         }
       }
     } catch (error) {
@@ -678,4 +679,4 @@ class AudioCacheManager {
 // Crear instancia global
 window.audioCacheManager = new AudioCacheManager();
 
-console.log('✅ AudioCacheManager v2.0 loaded - Audios en carpeta AudioLibros');
+logger.debug('✅ AudioCacheManager v2.0 loaded - Audios en carpeta AudioLibros');

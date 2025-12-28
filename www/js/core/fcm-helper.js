@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FCMHelper - Firebase Cloud Messaging Integration
  *
  * Maneja push notifications usando Firebase Cloud Messaging:
@@ -27,7 +28,7 @@ class FCMHelper {
         this.permissionGranted = false;
         this.subscriptions = new Set();
 
-        // console.log('[FCM] Inicializando FCMHelper...');
+        // logger.debug('[FCM] Inicializando FCMHelper...');
     }
 
     /**
@@ -39,7 +40,7 @@ class FCMHelper {
      */
     async init() {
         if (!this.isCapacitor) {
-            // console.log('[FCM] No está en plataforma nativa, FCM no disponible');
+            // logger.debug('[FCM] No está en plataforma nativa, FCM no disponible');
             return;
         }
 
@@ -48,11 +49,11 @@ class FCMHelper {
             this.fcmAvailable = await this.checkAvailability();
 
             if (!this.fcmAvailable) {
-                // console.log('[FCM] Firebase Cloud Messaging no disponible en este dispositivo');
+                // logger.debug('[FCM] Firebase Cloud Messaging no disponible en este dispositivo');
                 return;
             }
 
-            // console.log('[FCM] Firebase Cloud Messaging disponible');
+            // logger.debug('[FCM] Firebase Cloud Messaging disponible');
 
             // Cargar preferencias guardadas
             await this.loadPreferences();
@@ -70,7 +71,7 @@ class FCMHelper {
 
         // Exponer globalmente
         window.fcmHelper = this;
-        // console.log('[FCM] Helper inicializado');
+        // logger.debug('[FCM] Helper inicializado');
     }
 
     /**
@@ -111,9 +112,9 @@ class FCMHelper {
             this.permissionGranted = result.granted === true;
 
             if (this.permissionGranted) {
-                // console.log('[FCM] ✓ Permisos de notificación otorgados');
+                // logger.debug('[FCM] ✓ Permisos de notificación otorgados');
             } else {
-                // console.log('[FCM] ✗ Permisos de notificación denegados');
+                // logger.debug('[FCM] ✗ Permisos de notificación denegados');
 
                 if (result.shouldShowRationale) {
                     // Mostrar explicación al usuario
@@ -143,7 +144,7 @@ class FCMHelper {
             const result = await FCMPlugin.getToken();
 
             this.fcmToken = result.token;
-            // console.log('[FCM] Token obtenido:', this.fcmToken);
+            // logger.debug('[FCM] Token obtenido:', this.fcmToken);
 
             // Guardar token localmente
             localStorage.setItem('fcm-token', this.fcmToken);
@@ -168,13 +169,13 @@ class FCMHelper {
      * - Suscribe a topics por defecto
      */
     async enablePushNotifications() {
-        // console.log('[FCM] Habilitando push notifications...');
+        // logger.debug('[FCM] Habilitando push notifications...');
 
         // Solicitar permisos
         const granted = await this.requestPermission();
 
         if (!granted) {
-            // console.log('[FCM] No se pueden habilitar push notifications sin permisos');
+            // logger.debug('[FCM] No se pueden habilitar push notifications sin permisos');
             return false;
         }
 
@@ -182,7 +183,7 @@ class FCMHelper {
         const token = await this.getToken();
 
         if (!token) {
-            // console.log('[FCM] No se pudo obtener token FCM');
+            // logger.debug('[FCM] No se pudo obtener token FCM');
             return false;
         }
 
@@ -192,7 +193,7 @@ class FCMHelper {
         // Guardar preferencia
         localStorage.setItem('push-notifications-enabled', 'true');
 
-        // console.log('[FCM] ✓ Push notifications habilitadas');
+        // logger.debug('[FCM] ✓ Push notifications habilitadas');
         return true;
     }
 
@@ -200,7 +201,7 @@ class FCMHelper {
      * Deshabilita push notifications
      */
     async disablePushNotifications() {
-        // console.log('[FCM] Deshabilitando push notifications...');
+        // logger.debug('[FCM] Deshabilitando push notifications...');
 
         // Desuscribir de todos los topics
         await this.unsubscribeFromAllTopics();
@@ -209,7 +210,7 @@ class FCMHelper {
         try {
             const { FCMPlugin } = window.Capacitor.Plugins;
             await FCMPlugin.deleteToken();
-            // console.log('[FCM] Token eliminado');
+            // logger.debug('[FCM] Token eliminado');
         } catch (error) {
             // console.warn('[FCM] Error eliminando token:', error);
         }
@@ -219,7 +220,7 @@ class FCMHelper {
         localStorage.removeItem('fcm-token');
         localStorage.setItem('push-notifications-enabled', 'false');
 
-        // console.log('[FCM] ✓ Push notifications deshabilitadas');
+        // logger.debug('[FCM] ✓ Push notifications deshabilitadas');
     }
 
     /**
@@ -228,7 +229,7 @@ class FCMHelper {
      */
     async subscribeToTopic(topic) {
         if (!this.fcmAvailable || !this.permissionGranted) {
-            // console.log('[FCM] No se puede suscribir al topic sin permisos');
+            // logger.debug('[FCM] No se puede suscribir al topic sin permisos');
             return false;
         }
 
@@ -239,7 +240,7 @@ class FCMHelper {
             this.subscriptions.add(topic);
             this.saveSubscriptions();
 
-            // console.log(`[FCM] ✓ Suscrito al topic: ${topic}`);
+            // logger.debug(`[FCM] ✓ Suscrito al topic: ${topic}`);
             return true;
 
         } catch (error) {
@@ -264,7 +265,7 @@ class FCMHelper {
             this.subscriptions.delete(topic);
             this.saveSubscriptions();
 
-            // console.log(`[FCM] ✓ Desuscrito del topic: ${topic}`);
+            // logger.debug(`[FCM] ✓ Desuscrito del topic: ${topic}`);
             return true;
 
         } catch (error) {
@@ -303,12 +304,12 @@ class FCMHelper {
      */
     async syncTokenToBackend() {
         if (!window.supabaseAuthHelper?.isAuthenticated()) {
-            // console.log('[FCM] No hay sesión activa, no se sincroniza token');
+            // logger.debug('[FCM] No hay sesión activa, no se sincroniza token');
             return;
         }
 
         if (!this.fcmToken) {
-            // console.log('[FCM] No hay token para sincronizar');
+            // logger.debug('[FCM] No hay token para sincronizar');
             return;
         }
 
@@ -331,7 +332,7 @@ class FCMHelper {
             if (error) {
                 console.error('[FCM] Error guardando token en Supabase:', error);
             } else {
-                // console.log('[FCM] ✓ Token sincronizado con Supabase');
+                // logger.debug('[FCM] ✓ Token sincronizado con Supabase');
             }
 
         } catch (error) {
@@ -344,7 +345,7 @@ class FCMHelper {
      */
     showPermissionRationale() {
         // Aquí podrías mostrar un modal explicando por qué necesitas permisos
-        // console.log('[FCM] Mostrando explicación de permisos...');
+        // logger.debug('[FCM] Mostrando explicación de permisos...');
 
         // Ejemplo: mostrar toast o modal
         if (window.showToast) {

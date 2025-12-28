@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE AUDIO AMBIENTAL FRANKENSTEIN
  * Genera sonidos de laboratorio usando Web Audio API
  * No requiere archivos de audio externos
@@ -30,7 +31,7 @@ class FrankensteinAudioSystem {
   async init() {
     try {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      // console.log('🔊 Sistema de audio Frankenstein inicializado');
+      // logger.debug('🔊 Sistema de audio Frankenstein inicializado');
     } catch (error) {
       console.error('❌ Error inicializando audio:', error);
     }
@@ -258,7 +259,7 @@ class FrankensteinAudioSystem {
     this.sounds.bubbling = this.createBubblingSound();
     this.scheduleRandomThunder();
 
-    // console.log('🔊 Audio ambiental iniciado');
+    // logger.debug('🔊 Audio ambiental iniciado');
   }
 
   /**
@@ -284,7 +285,7 @@ class FrankensteinAudioSystem {
       clearTimeout(this.thunderTimer);
     }
 
-    // console.log('🔇 Audio ambiental detenido');
+    // logger.debug('🔇 Audio ambiental detenido');
   }
 
   /**
@@ -366,7 +367,7 @@ class FrankensteinAudioSystem {
       try {
         this.audioContext.close();
         this.audioContext = null;
-        // console.log('🔇 AudioContext cerrado');
+        // logger.debug('🔇 AudioContext cerrado');
       } catch (error) {
         console.warn('[FrankensteinAudio] Error al cerrar AudioContext:', error);
       }

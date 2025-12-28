@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE RETOS PARA SERES FRANKENSTEIN
  * Juego post-creación donde el ser enfrenta desafíos basados en su misión
  */
@@ -26,7 +27,7 @@ class FrankensteinChallengesSystem {
     // Generar retos según la misión
     this.challenges = this.generateChallenges(mission);
 
-    // console.log(`🎮 Iniciando ${this.challenges.length} retos para ${being.name}`);
+    // logger.debug(`🎮 Iniciando ${this.challenges.length} retos para ${being.name}`);
     return this.challenges;
   }
 

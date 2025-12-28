@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Sistema de Providers TTS
  * Arquitectura modular para múltiples motores de síntesis de voz
  */
@@ -233,17 +234,17 @@ class OpenAITTSProvider extends TTSProvider {
       // Verificar caché
       let audioUrl;
       if (this.cacheEnabled && this.cache.has(cacheKey)) {
-        // console.log('🎵 Usando audio cacheado');
+        // logger.debug('🎵 Usando audio cacheado');
         audioUrl = this.cache.get(cacheKey);
       } else {
         // Generar audio nuevo
-        // console.log('🎙️ Generando audio con OpenAI TTS...');
+        // logger.debug('🎙️ Generando audio con OpenAI TTS...');
         audioUrl = await this.generateAudio(text, voice, speed, model);
 
         // Guardar en caché
         if (this.cacheEnabled) {
           this.cache.set(cacheKey, audioUrl);
-          // console.log(`📦 Audio cacheado (${this.cache.size} items en caché)`);
+          // logger.debug(`📦 Audio cacheado (${this.cache.size} items en caché)`);
         }
       }
 
@@ -423,7 +424,7 @@ class OpenAITTSProvider extends TTSProvider {
       }
     });
     this.cache.clear();
-    // console.log('🗑️ Caché de audio limpiado');
+    // logger.debug('🗑️ Caché de audio limpiado');
   }
 
   getCacheSize() {
@@ -469,7 +470,7 @@ class TTSManager {
       }
       const cacheEnabled = localStorage.getItem('tts-cache-enabled') !== 'false';
       this.providers.elevenlabs.setCacheEnabled(cacheEnabled);
-      console.log('✅ ElevenLabs TTS provider inicializado');
+      logger.debug('✅ ElevenLabs TTS provider inicializado');
     } else {
       // Reintentar después de que carguen todos los scripts
       setTimeout(() => {

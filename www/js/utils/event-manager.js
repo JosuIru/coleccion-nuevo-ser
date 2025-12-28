@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * EVENT MANAGER
  * Sistema centralizado para gestión de event listeners
  * Soluciona memory leaks por acumulación de listeners
@@ -153,10 +154,10 @@ class EventManager {
 
     switch (level) {
       case 'debug':
-        console.log(prefix, ...args);
+        logger.debug(prefix, ...args);
         break;
       case 'info':
-        console.info(prefix, ...args);
+        logger.info(prefix, ...args);
         break;
       case 'warn':
         console.warn(prefix, ...args);

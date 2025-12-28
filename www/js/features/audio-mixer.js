@@ -3,6 +3,7 @@
 // ============================================================================
 // Combina TTS + música ambiental + ondas binaurales con procesamiento avanzado
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioMixer {
   constructor() {
     this.audioContext = null;
@@ -56,7 +57,7 @@ class AudioMixer {
       this.initializeChannels();
 
       this.isInitialized = true;
-      // console.log('✅ AudioMixer inicializado');
+      // logger.debug('✅ AudioMixer inicializado');
     } catch (error) {
       console.error('❌ Error inicializando AudioMixer:', error);
     }
@@ -110,7 +111,7 @@ class AudioMixer {
       // Fade in
       this.fadeIn(this.channels.ambient.gainNode, this.channels.ambient.volume, 2000);
 
-      // console.log('🎵 Ambiente iniciado:', soundscapeName);
+      // logger.debug('🎵 Ambiente iniciado:', soundscapeName);
     } catch (error) {
       console.error('❌ Error cargando ambiente:', error);
     }
@@ -165,7 +166,7 @@ class AudioMixer {
       // Fade in
       this.fadeIn(this.channels.binaural.gainNode, this.channels.binaural.volume, 3000);
 
-      // console.log('🎧 Binaural iniciado:', presetName);
+      // logger.debug('🎧 Binaural iniciado:', presetName);
     } catch (error) {
       console.error('❌ Error iniciando binaural:', error);
     }
@@ -276,7 +277,7 @@ class AudioMixer {
       });
     }
 
-    // console.log('🎚️ Modo aplicado:', mode.name);
+    // logger.debug('🎚️ Modo aplicado:', mode.name);
     return mode;
   }
 

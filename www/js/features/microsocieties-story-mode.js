@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MODO HISTORIA
  * 5 capítulos narrativos con eventos scriptados y objetivos
  */
@@ -602,7 +603,7 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
     this.turnCounter = 0;
     this.scriptedEvents = chapter.scriptedEvents.map(se => ({...se, triggered: false}));
 
-    // console.log(`📖 Capítulo ${chapter.number} iniciado: ${chapter.title}`);
+    // logger.debug(`📖 Capítulo ${chapter.number} iniciado: ${chapter.title}`);
     return true;
   }
 
@@ -648,7 +649,7 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
         // Mostrar evento con modal
         if (window.eventsModal && window.eventsModal.isOpen === false) {
           window.eventsModal.show(se.event, society, (result) => {
-            // console.log(`📖 Evento scriptado resuelto:`, result);
+            // logger.debug(`📖 Evento scriptado resuelto:`, result);
           });
         }
       }
@@ -722,7 +723,7 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
     }
 
     this.saveProgress();
-    // console.log(`✅ Capítulo ${chapter.number} completado`);
+    // logger.debug(`✅ Capítulo ${chapter.number} completado`);
 
     // Mostrar pantalla de victoria
     this.showVictoryScreen(chapter);
@@ -850,4 +851,4 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
 
 // Exportar
 window.StoryMode = StoryMode;
-// console.log('📖 Story Mode cargado');
+// logger.debug('📖 Story Mode cargado');

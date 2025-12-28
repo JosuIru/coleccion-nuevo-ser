@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * VERSION MANAGER
  * Sistema integral de control de versiones y actualizaciones
  * Mantiene compatibilidad con múltiples plataformas (Web, Android, iOS)
@@ -38,7 +39,7 @@ class VersionManager {
       this.scheduleAutoCheck();
     }
 
-    console.log('[VersionManager] Inicializado', {
+    logger.debug('[VersionManager] Inicializado', {
       version: this.currentVersion,
       platform: this.config.platform
     });
@@ -112,7 +113,7 @@ class VersionManager {
    */
   async checkForUpdates() {
     if (this.isChecking) {
-      console.log('[VersionManager] Ya hay una verificación en curso');
+      logger.debug('[VersionManager] Ya hay una verificación en curso');
       return this.availableUpdate;
     }
 
@@ -138,10 +139,10 @@ class VersionManager {
       if (data.updateAvailable) {
         this.availableUpdate = data.update;
         this.emit('updateAvailable', data.update);
-        console.log('[VersionManager] Actualización disponible:', data.update);
+        logger.debug('[VersionManager] Actualización disponible:', data.update);
       } else {
         this.availableUpdate = null;
-        console.log('[VersionManager] Sistema actualizado');
+        logger.debug('[VersionManager] Sistema actualizado');
       }
 
       this.saveLastCheckTime();
@@ -188,7 +189,7 @@ class VersionManager {
       const lastCheck = this.lastCheckTime || 0;
 
       if (now - lastCheck > this.config.autoCheckInterval) {
-        console.log('[VersionManager] Auto-check programado');
+        logger.debug('[VersionManager] Auto-check programado');
         this.checkForUpdates();
       }
     }, 60000); // Revisar cada minuto si es tiempo de hacer check

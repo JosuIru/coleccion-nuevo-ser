@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE ANIMACIONES Y EFECTOS VISUALES
  * Añade "juice" al juego para mejorar feedback visual
  */
@@ -48,7 +49,7 @@ class AnimationSystem {
     this.startAnimationLoop();
     this.initialized = true;
 
-    // console.log('✨ Animation System inicializado');
+    // logger.debug('✨ Animation System inicializado');
     return true;
   }
 
@@ -90,7 +91,7 @@ class AnimationSystem {
     }
 
     this.initialized = false;
-    // console.log('✨ Animation System detenido');
+    // logger.debug('✨ Animation System detenido');
   }
 
   /**
@@ -529,4 +530,4 @@ class AnimationSystem {
 
 // Exportar
 window.AnimationSystem = AnimationSystem;
-// console.log('✨ Sistema de Animaciones cargado');
+// logger.debug('✨ Sistema de Animaciones cargado');

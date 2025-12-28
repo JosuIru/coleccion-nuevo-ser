@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * VITRUVIAN BEING VISUALIZER
  * Visualización del Hombre de Vitrubio que se va construyendo
  * según se seleccionan piezas de conocimiento
@@ -44,7 +45,7 @@ class VitruvianBeing {
     }
 
     this.createSVG();
-    // console.log('✅ Vitruvian Being inicializado');
+    // logger.debug('✅ Vitruvian Being inicializado');
   }
 
   /**
@@ -665,4 +666,4 @@ class VitruvianBeing {
 
 // Exportar globalmente
 window.VitruvianBeing = VitruvianBeing;
-// console.log('✅ VitruvianBeing cargado');
+// logger.debug('✅ VitruvianBeing cargado');

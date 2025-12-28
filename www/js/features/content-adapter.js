@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Content Adapter - Herramienta IA para adaptar contenido de capítulos
  *
  * Permite adaptar el contenido a diferentes audiencias y estilos:
@@ -159,7 +160,7 @@ class ContentAdapter {
     // Cargar preferencias guardadas
     this.loadPreferences();
 
-    console.log('[ContentAdapter] Initialized');
+    logger.debug('[ContentAdapter] Initialized');
     return this;
   }
 
@@ -320,7 +321,7 @@ Devuelve el texto adaptado:`;
     );
 
     if (cached) {
-      console.log('[ContentAdapter] Using cached adaptation');
+      logger.debug('[ContentAdapter] Using cached adaptation');
       this.currentAgeStyle = ageStyle;
       this.currentFocusStyle = focusStyle;
       this.isAdapted = true;
@@ -503,13 +504,13 @@ Devuelve el texto adaptado:`;
    * Mostrar/ocultar selector
    */
   toggleSelector() {
-    console.log('[ContentAdapter] toggleSelector() called');
+    logger.debug('[ContentAdapter] toggleSelector() called');
     let selector = document.getElementById('content-adapter-selector');
     let backdrop = document.getElementById('content-adapter-backdrop');
 
     // Si no existe el selector, crearlo como modal centrado
     if (!selector) {
-      console.log('[ContentAdapter] Creating selector...');
+      logger.debug('[ContentAdapter] Creating selector...');
 
       // Crear backdrop para cerrar al hacer clic fuera
       backdrop = document.createElement('div');
@@ -559,7 +560,7 @@ Devuelve el texto adaptado:`;
       }
 
       this.attachSelectorEvents();
-      console.log('[ContentAdapter] Selector created as centered modal');
+      logger.debug('[ContentAdapter] Selector created as centered modal');
     }
 
     // Toggle visibility
@@ -578,7 +579,7 @@ Devuelve el texto adaptado:`;
         modal.style.visibility = 'visible';
         modal.style.transform = 'translate(-50%, -50%) scale(1)';
       }
-      console.log('[ContentAdapter] Selector shown');
+      logger.debug('[ContentAdapter] Selector shown');
     } else {
       this.hideSelector();
     }
@@ -601,7 +602,7 @@ Devuelve el texto adaptado:`;
       modal.style.visibility = 'hidden';
       modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
     }
-    console.log('[ContentAdapter] Selector hidden');
+    logger.debug('[ContentAdapter] Selector hidden');
   }
 
   /**
@@ -853,7 +854,7 @@ Devuelve el texto adaptado:`;
     try {
       const keys = Object.keys(localStorage).filter(k => k.startsWith(this.CACHE_PREFIX));
       keys.forEach(k => localStorage.removeItem(k));
-      console.log(`[ContentAdapter] Cleared ${keys.length} cached adaptations`);
+      logger.debug(`[ContentAdapter] Cleared ${keys.length} cached adaptations`);
       return keys.length;
     } catch (e) {
       console.error('[ContentAdapter] Error clearing cache:', e);

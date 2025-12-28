@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Shaders Biomédicos para Tejidos Orgánicos
  * Efectos realistas: venas pulsantes, membranas iridiscentes, bioluminiscencia
  *
@@ -506,5 +507,5 @@ class BiomedicalShaders {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.BiomedicalShaders = BiomedicalShaders;
-  // console.log('✅ BiomedicalShaders class registered globally');
+  // logger.debug('✅ BiomedicalShaders class registered globally');
 }

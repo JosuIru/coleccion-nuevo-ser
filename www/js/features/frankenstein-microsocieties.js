@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE MICROSOCIEDADES AUTÓNOMAS
  * Simulación evolutiva de sociedades de seres híbridos
  */
@@ -35,7 +36,7 @@ class MicroSociety {
     // Timer
     this.intervalId = null;
 
-    // console.log(`🌍 Microsociedad "${name}" creada con ${beings.length} seres`);
+    // logger.debug(`🌍 Microsociedad "${name}" creada con ${beings.length} seres`);
   }
 
   /**
@@ -52,7 +53,7 @@ class MicroSociety {
       this.processTurn();
     }, interval);
 
-    // console.log(`▶️  Simulación iniciada (velocidad ${this.speed}x)`);
+    // logger.debug(`▶️  Simulación iniciada (velocidad ${this.speed}x)`);
   }
 
   /**
@@ -67,7 +68,7 @@ class MicroSociety {
       this.intervalId = null;
     }
 
-    // console.log('⏸️  Simulación pausada');
+    // logger.debug('⏸️  Simulación pausada');
   }
 
   /**
@@ -557,4 +558,4 @@ class MicroSocietiesManager {
 window.MicroSociety = MicroSociety;
 window.MicroSocietiesManager = MicroSocietiesManager;
 
-// console.log('🌍 Sistema de Microsociedades cargado');
+// logger.debug('🌍 Sistema de Microsociedades cargado');

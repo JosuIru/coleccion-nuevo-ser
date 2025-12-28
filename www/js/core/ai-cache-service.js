@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * AI CACHE SERVICE
  * Sistema de caché inteligente para reducir costos de IA en 40-60%
  *
@@ -47,7 +48,7 @@ class AICacheService {
     }
 
     if (this.debug) {
-      console.log('[AICache] Inicializado con stats:', this.stats);
+      logger.debug('[AICache] Inicializado con stats:', this.stats);
     }
   }
 
@@ -107,7 +108,7 @@ class AICacheService {
       this.stats.hits++;
 
       if (this.debug) {
-        console.log('[AICache] ✅ Local HIT:', cacheKey);
+        logger.debug('[AICache] ✅ Local HIT:', cacheKey);
       }
 
       return entry.response;
@@ -153,7 +154,7 @@ class AICacheService {
       this.saveToLocalCache(cacheKey, data.response, expiresAt.getTime());
 
       if (this.debug) {
-        console.log('[AICache] ✅ Remote HIT:', cacheKey);
+        logger.debug('[AICache] ✅ Remote HIT:', cacheKey);
       }
 
       return data.response;
@@ -188,7 +189,7 @@ class AICacheService {
       localStorage.setItem(cacheKey, JSON.stringify(entry));
 
       if (this.debug) {
-        console.log('[AICache] 💾 Guardado en local:', cacheKey);
+        logger.debug('[AICache] 💾 Guardado en local:', cacheKey);
       }
 
     } catch (error) {
@@ -222,7 +223,7 @@ class AICacheService {
       if (error) {
         console.error('[AICache] Error al guardar en remota:', error);
       } else if (this.debug) {
-        console.log('[AICache] 💾 Guardado en remota:', cacheKey);
+        logger.debug('[AICache] 💾 Guardado en remota:', cacheKey);
       }
 
     } catch (error) {
@@ -263,7 +264,7 @@ class AICacheService {
         });
 
         if (this.debug) {
-          console.log(`[AICache] 🗑️ Eliminadas ${toDelete.length} entradas antiguas (LRU)`);
+          logger.debug(`[AICache] 🗑️ Eliminadas ${toDelete.length} entradas antiguas (LRU)`);
         }
       }
     } catch (error) {
@@ -294,7 +295,7 @@ class AICacheService {
         localStorage.removeItem(key);
       });
 
-      console.log(`[AICache] 🗑️ Limpiadas ${toDelete.length} entradas viejas`);
+      logger.debug(`[AICache] 🗑️ Limpiadas ${toDelete.length} entradas viejas`);
     } catch (error) {
       console.error('[AICache] Error en clearOldestLocalEntries:', error);
     }
@@ -447,7 +448,7 @@ class AICacheService {
       saves: 0
     };
     this.saveStats();
-    console.log('[AICache] Stats reseteadas');
+    logger.debug('[AICache] Stats reseteadas');
   }
 
   /**
@@ -457,7 +458,7 @@ class AICacheService {
     try {
       const cacheKeys = Object.keys(localStorage).filter(key => key.startsWith('ai_cache_'));
       cacheKeys.forEach(key => localStorage.removeItem(key));
-      console.log(`[AICache] 🗑️ Limpiada caché local (${cacheKeys.length} entradas)`);
+      logger.debug(`[AICache] 🗑️ Limpiada caché local (${cacheKeys.length} entradas)`);
     } catch (error) {
       console.error('[AICache] Error al limpiar caché:', error);
     }
@@ -478,7 +479,7 @@ class AICacheService {
       if (error) {
         console.error('[AICache] Error al limpiar caché remota:', error);
       } else {
-        console.log('[AICache] 🗑️ Limpiada caché remota');
+        logger.debug('[AICache] 🗑️ Limpiada caché remota');
       }
     } catch (error) {
       console.error('[AICache] Error al limpiar caché remota:', error);
@@ -490,7 +491,7 @@ class AICacheService {
    */
   disable() {
     this.enabled = false;
-    console.log('[AICache] Caché deshabilitada');
+    logger.debug('[AICache] Caché deshabilitada');
   }
 
   /**
@@ -498,7 +499,7 @@ class AICacheService {
    */
   enable() {
     this.enabled = true;
-    console.log('[AICache] Caché habilitada');
+    logger.debug('[AICache] Caché habilitada');
   }
 }
 

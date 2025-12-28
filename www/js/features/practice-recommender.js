@@ -9,6 +9,7 @@
 // - Intereses inferidos del usuario
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class PracticeRecommender {
   constructor(practiceLibrary, bookEngine) {
     this.practiceLibrary = practiceLibrary;
@@ -657,4 +658,4 @@ class PracticeOfTheDayWidget {
 // INICIALIZACIÓN GLOBAL
 // ==========================================================================
 
-// console.log('✅ Practice Recommender System loaded');
+// logger.debug('✅ Practice Recommender System loaded');

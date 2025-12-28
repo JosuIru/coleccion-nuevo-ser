@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN BEING CARD - Ficha de Ser Mejorada v2.0
  * Muestra información completa del ser: nivel, energía, turnos, tiempo, predicciones
  *
@@ -32,7 +33,7 @@ class FrankensteinBeingCard {
       }
     }, 30000);
 
-    console.log('FrankensteinBeingCard v2.0 initialized');
+    logger.debug('FrankensteinBeingCard v2.0 initialized');
   }
 
   /**

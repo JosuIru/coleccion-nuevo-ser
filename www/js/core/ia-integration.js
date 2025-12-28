@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * IA INTEGRATION - Sistema Integrado de IA Premium
  * Conecta AI Features con UI existente
  *
@@ -19,11 +20,11 @@ class IAIntegration {
    * Inicializar integración con UI
    */
   async init() {
-    console.log('🔌 IAIntegration iniciando...');
+    logger.debug('🔌 IAIntegration iniciando...');
 
     // Esperar a que aiBookFeatures esté disponible
     if (!window.aiBookFeatures) {
-      console.log('⏳ Esperando aiBookFeatures...');
+      logger.debug('⏳ Esperando aiBookFeatures...');
       setTimeout(() => this.init(), 500);
       return;
     }
@@ -39,7 +40,7 @@ class IAIntegration {
     await this.setupCreditsWidget();
 
     this.initialized = true;
-    console.log('✅ IAIntegration inicializado completamente');
+    logger.debug('✅ IAIntegration inicializado completamente');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -50,7 +51,7 @@ class IAIntegration {
    * Integrar IA con el lector de libros
    */
   async setupBookReaderIntegration() {
-    console.log('📚 Configurando integración con Book Reader...');
+    logger.debug('📚 Configurando integración con Book Reader...');
 
     // Escuchar cambios en el capítulo actual
     if (window.bookEngine) {
@@ -63,7 +64,7 @@ class IAIntegration {
     // Attachear listeners a botones existentes
     this.attachBookReaderListeners();
 
-    console.log('✅ Book Reader integrado');
+    logger.debug('✅ Book Reader integrado');
   }
 
   attachBookReaderListeners() {
@@ -304,7 +305,7 @@ class IAIntegration {
    * Integrar Game Master IA en Frankenstein Lab
    */
   async setupFrankensteinIntegration() {
-    console.log('🎮 Configurando integración con Frankenstein Lab...');
+    logger.debug('🎮 Configurando integración con Frankenstein Lab...');
 
     // Esperar a que Frankenstein esté inicializado
     if (!window.FrankensteinLabUI) {
@@ -315,7 +316,7 @@ class IAIntegration {
     // Escuchar cuando el Lab se abre
     this.attachGameMasterButton();
 
-    console.log('✅ Frankenstein Lab integrado');
+    logger.debug('✅ Frankenstein Lab integrado');
   }
 
   /**
@@ -387,7 +388,7 @@ class IAIntegration {
    * Configurar y posicionar widget de créditos
    */
   async setupCreditsWidget() {
-    console.log('💰 Configurando widget de créditos...');
+    logger.debug('💰 Configurando widget de créditos...');
 
     // Escuchar cambios de autenticación
     if (this.authHelper) {
@@ -405,7 +406,7 @@ class IAIntegration {
       this.insertCreditsWidget();
     }
 
-    console.log('✅ Widget de créditos configurado');
+    logger.debug('✅ Widget de créditos configurado');
   }
 
   /**
@@ -436,7 +437,7 @@ class IAIntegration {
 
       header.appendChild(container);
 
-      console.log('✅ Widget de créditos insertado');
+      logger.debug('✅ Widget de créditos insertado');
     }
   }
 
@@ -762,4 +763,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   await window.iaIntegration.init();
 });
 
-console.log('✅ IAIntegration cargado. Use window.iaIntegration para integración de IA.');
+logger.debug('✅ IAIntegration cargado. Use window.iaIntegration para integración de IA.');

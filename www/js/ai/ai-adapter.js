@@ -2,6 +2,7 @@
 // ADAPTADOR DE IA - Unifica múltiples proveedores en una sola interfaz
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AIAdapter {
   constructor(config) {
     this.config = config || window.aiConfig;
@@ -183,7 +184,7 @@ class AIAdapter {
       if (!response.ok) {
         // Si es error de créditos o suscripción, no usar premium
         if (data.code === 'NO_CREDITS' || data.code === 'SUBSCRIPTION_REQUIRED') {
-          console.log('Premium proxy:', data.error);
+          logger.debug('Premium proxy:', data.error);
           // Mostrar mensaje al usuario
           if (window.toast && data.error) {
             if (data.code === 'NO_CREDITS') {
@@ -202,7 +203,7 @@ class AIAdapter {
 
       // Éxito - mostrar créditos restantes si es relevante
       if (data._credits?.remaining !== undefined && data._credits.remaining < 50) {
-        console.log(`Premium: ${data._credits.remaining} créditos restantes`);
+        logger.debug(`Premium: ${data._credits.remaining} créditos restantes`);
       }
 
       return {

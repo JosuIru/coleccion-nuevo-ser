@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * System Health Monitor
  * Real-time health dashboard for the Premium IA system
  *
@@ -18,7 +19,7 @@ class SystemHealth {
      * Run health check on all components
      */
     async checkHealth() {
-        console.log('🏥 Running system health check...\n');
+        logger.debug('🏥 Running system health check...\n');
 
         const checks = [
             { name: 'supabase', fn: () => this.checkSupabase() },
@@ -259,28 +260,28 @@ class SystemHealth {
             unknown: '⚪'
         };
 
-        console.log('\n' + '═'.repeat(50));
-        console.log(`${statusEmoji[this.status.overall]} SYSTEM HEALTH: ${this.status.overall.toUpperCase()}`);
-        console.log('═'.repeat(50));
+        logger.debug('\n' + '═'.repeat(50));
+        logger.debug(`${statusEmoji[this.status.overall]} SYSTEM HEALTH: ${this.status.overall.toUpperCase()}`);
+        logger.debug('═'.repeat(50));
 
         for (const [name, data] of Object.entries(this.status.components)) {
             const emoji = statusEmoji[data.status] || '⚪';
-            console.log(`\n${emoji} ${name.toUpperCase()}`);
+            logger.debug(`\n${emoji} ${name.toUpperCase()}`);
 
             for (const [key, value] of Object.entries(data)) {
                 if (key !== 'status') {
                     if (typeof value === 'object') {
-                        console.log(`   ${key}:`, value);
+                        logger.debug(`   ${key}:`, value);
                     } else {
-                        console.log(`   ${key}: ${value}`);
+                        logger.debug(`   ${key}: ${value}`);
                     }
                 }
             }
         }
 
-        console.log('\n' + '═'.repeat(50));
-        console.log(`Checked at: ${new Date().toLocaleString()}`);
-        console.log('═'.repeat(50) + '\n');
+        logger.debug('\n' + '═'.repeat(50));
+        logger.debug(`Checked at: ${new Date().toLocaleString()}`);
+        logger.debug('═'.repeat(50) + '\n');
     }
 
     /**
@@ -298,7 +299,7 @@ class SystemHealth {
      */
     startMonitoring(intervalMs = 60000) {
         this.stopMonitoring();
-        console.log(`🔄 Starting health monitoring (every ${intervalMs / 1000}s)`);
+        logger.debug(`🔄 Starting health monitoring (every ${intervalMs / 1000}s)`);
         this.checkHealth();
         this.checkInterval = setInterval(() => this.checkHealth(), intervalMs);
     }
@@ -310,7 +311,7 @@ class SystemHealth {
         if (this.checkInterval) {
             clearInterval(this.checkInterval);
             this.checkInterval = null;
-            console.log('⏹️ Health monitoring stopped');
+            logger.debug('⏹️ Health monitoring stopped');
         }
     }
 
@@ -422,4 +423,4 @@ class SystemHealth {
 // Create global instance
 window.systemHealth = new SystemHealth();
 
-console.log('🏥 SystemHealth loaded. Run: systemHealth.checkHealth()');
+logger.debug('🏥 SystemHealth loaded. Run: systemHealth.checkHealth()');

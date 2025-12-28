@@ -3,6 +3,7 @@
 // ============================================================================
 // Ecualizador, compresor, reverb y efectos para mejorar la voz TTS
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioProcessor {
   constructor(audioContext) {
     this.audioContext = audioContext;
@@ -89,7 +90,7 @@ class AudioProcessor {
     this.reverbMix.connect(this.output);
 
     this.initialized = true;
-    // console.log('✅ AudioProcessor inicializado');
+    // logger.debug('✅ AudioProcessor inicializado');
   }
 
   // ==========================================================================
@@ -139,7 +140,7 @@ class AudioProcessor {
       this.compressor.ratio.value = profile.compressor.ratio;
     }
 
-    // console.log('🎚️ Perfil de audio aplicado:', profile.name);
+    // logger.debug('🎚️ Perfil de audio aplicado:', profile.name);
   }
 
   getProfiles() {

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * LOADING INDICATOR - Sistema de indicadores de carga
  * Proporciona feedback visual durante operaciones asíncronas
  *
@@ -335,4 +336,4 @@ window.hideLoading = (id) => {
   }
 };
 
-console.log('[LoadingIndicator] Sistema de indicadores de carga inicializado');
+logger.debug('[LoadingIndicator] Sistema de indicadores de carga inicializado');

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Supabase Configuration
  * Configuración centralizada para Supabase
  *
@@ -81,7 +82,7 @@ supabaseConfig.debugMode = env.DEBUG_MODE === true || env.DEBUG_MODE === 'true';
 
 // Log configuration source (only in debug mode)
 if (supabaseConfig.debugMode) {
-    console.log('Supabase Config:', {
+    logger.debug('Supabase Config:', {
         source: env.SUPABASE_URL ? 'env.js' : 'fallback',
         isProduction: supabaseConfig.isProduction,
         url: supabaseConfig.url.substring(0, 30) + '...'

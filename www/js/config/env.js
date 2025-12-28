@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Environment Configuration Module
  * Centralized configuration loader for all environment variables
  *
@@ -88,7 +89,7 @@ if (!config.supabase.url || !config.supabase.anonKey) {
 
 // Debug logging in development
 if (config.app.debugMode && isDevelopment()) {
-  console.log('🔧 Environment Configuration Loaded:', {
+  logger.debug('🔧 Environment Configuration Loaded:', {
     environment: config.app.environment,
     supabaseConfigured: !!(config.supabase.url && config.supabase.anonKey),
     stripeConfigured: !!config.stripe.publishableKey,

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MOBILE GESTURES - Sistema de gestos optimizado para móvil
  * Manejo mejorado de touch, swipe, y scroll momentum
  *
@@ -32,7 +33,7 @@ class MobileGestures {
       this.optimizeScrollPerformance();
     }
 
-    console.log('📱 MobileGestures inicializado', {
+    logger.debug('📱 MobileGestures inicializado', {
       isMobile: this.isMobile,
       isIOS: this.isIOS
     });

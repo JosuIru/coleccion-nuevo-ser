@@ -2,6 +2,7 @@
 // THEME HELPER - Sistema de Dark/Light Mode con integración Android
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class ThemeHelper {
   constructor() {
     this.currentTheme = 'dark'; // dark | light | system
@@ -161,7 +162,7 @@ class ThemeHelper {
     const bookThemeClass = `theme-${bookConfig.id}`;
     document.body.classList.add(bookThemeClass);
 
-    // console.log(`✨ Applied book theme: ${bookThemeClass}`);
+    // logger.debug(`✨ Applied book theme: ${bookThemeClass}`);
   }
 
   /**

@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * ERROR BOUNDARY
  * Sistema global de manejo de errores con recuperación automática
  *
@@ -59,7 +60,7 @@ class ErrorBoundary {
       });
     });
 
-    console.log('[ErrorBoundary] Sistema de manejo de errores inicializado');
+    logger.debug('[ErrorBoundary] Sistema de manejo de errores inicializado');
   }
 
   /**
@@ -216,7 +217,7 @@ class ErrorBoundary {
    * Manejar error menor
    */
   handleMinorError(errorContext) {
-    console.log('[ErrorBoundary] ℹ️ ERROR MENOR:', errorContext);
+    logger.debug('[ErrorBoundary] ℹ️ ERROR MENOR:', errorContext);
 
     // Solo logging, no requiere acción del usuario
   }
@@ -229,14 +230,14 @@ class ErrorBoundary {
 
     // Estrategias específicas según el tipo de error
     if (message.includes('network') || message.includes('fetch')) {
-      console.log('[ErrorBoundary] Reintentando operación de red...');
+      logger.debug('[ErrorBoundary] Reintentando operación de red...');
       // La lógica de retry debe estar en el código que hace la llamada
       // Aquí solo notificamos al usuario
       if (window.toast) {
         window.toast.warning('Problema de conexión. Reintentando...');
       }
     } else if (message.includes('not found') || message.includes('undefined')) {
-      console.log('[ErrorBoundary] Intentando restaurar estado...');
+      logger.debug('[ErrorBoundary] Intentando restaurar estado...');
       // Reinicializar componente si es posible
       this.reinitializeComponent(errorContext);
     }
@@ -250,12 +251,12 @@ class ErrorBoundary {
 
     try {
       if (filename.includes('book-reader')) {
-        console.log('[ErrorBoundary] Reinicializando BookReader...');
+        logger.debug('[ErrorBoundary] Reinicializando BookReader...');
         if (window.bookReader) {
           window.bookReader.render();
         }
       } else if (filename.includes('auth')) {
-        console.log('[ErrorBoundary] Reinicializando Auth...');
+        logger.debug('[ErrorBoundary] Reinicializando Auth...');
         if (window.authModal) {
           window.authModal.init();
         }
@@ -357,22 +358,22 @@ class ErrorBoundary {
     const logStyle = this.getLogStyle(errorContext.category);
 
     console.group(`%c[ErrorBoundary] ${errorContext.category.toUpperCase()}`, logStyle);
-    console.log('Mensaje:', errorContext.message);
-    console.log('Tipo:', errorContext.type);
-    console.log('Timestamp:', errorContext.timestamp);
-    console.log('URL:', errorContext.url);
-    console.log('Versión:', errorContext.appVersion);
+    logger.debug('Mensaje:', errorContext.message);
+    logger.debug('Tipo:', errorContext.type);
+    logger.debug('Timestamp:', errorContext.timestamp);
+    logger.debug('URL:', errorContext.url);
+    logger.debug('Versión:', errorContext.appVersion);
 
     if (errorContext.filename) {
-      console.log('Archivo:', errorContext.filename);
+      logger.debug('Archivo:', errorContext.filename);
     }
 
     if (errorContext.lineno) {
-      console.log('Línea:', `${errorContext.lineno}:${errorContext.colno}`);
+      logger.debug('Línea:', `${errorContext.lineno}:${errorContext.colno}`);
     }
 
     if (errorContext.error) {
-      console.log('Stack:', errorContext.error.stack);
+      logger.debug('Stack:', errorContext.error.stack);
     }
 
     console.groupEnd();
@@ -399,7 +400,7 @@ class ErrorBoundary {
    */
   reportError(errorContext) {
     // TODO: Integrar con Sentry, LogRocket, o servicio propio
-    console.log('[ErrorBoundary] Reporting error:', errorContext);
+    logger.debug('[ErrorBoundary] Reporting error:', errorContext);
   }
 
   /**
@@ -488,7 +489,7 @@ window.errorBoundary = new ErrorBoundary({
   showUserFeedback: true
 });
 
-console.log('[ErrorBoundary] Sistema global de errores inicializado');
+logger.debug('[ErrorBoundary] Sistema global de errores inicializado');
 
 // Exportar para uso en módulos
 if (typeof module !== 'undefined' && module.exports) {

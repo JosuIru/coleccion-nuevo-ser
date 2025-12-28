@@ -3,6 +3,7 @@
 // Permite usar Claude API, APIs gratuitas o modo local
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AIConfig {
   constructor() {
     this.providers = {
@@ -105,9 +106,9 @@ class AIConfig {
     localStorage.setItem('ai_config', JSON.stringify(this.config));
 
     // Sincronizar a la nube si el usuario está autenticado
-    // console.log('[AI Config] saveConfig() called');
-    // console.log('[AI Config] supabaseSyncHelper exists?', !!window.supabaseSyncHelper);
-    // console.log('[AI Config] isAuthenticated?', window.supabaseSyncHelper?.isAuthenticated?.());
+    // logger.debug('[AI Config] saveConfig() called');
+    // logger.debug('[AI Config] supabaseSyncHelper exists?', !!window.supabaseSyncHelper);
+    // logger.debug('[AI Config] isAuthenticated?', window.supabaseSyncHelper?.isAuthenticated?.());
 
     // 🔧 FIX #99: Usar SyncManager para sincronización robusta
     if (window.syncManager) {
@@ -117,7 +118,7 @@ class AIConfig {
     } else if (window.supabaseSyncHelper?.isAuthenticated?.()) {
       // Fallback al método antiguo
       window.supabaseSyncHelper.syncSettingsToCloud(['ai_config']).then(() => {
-        // console.log('[AI Config] ✅ AI config sincronizado exitosamente');
+        // logger.debug('[AI Config] ✅ AI config sincronizado exitosamente');
       }).catch(err => {
         console.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
       });
@@ -263,7 +264,7 @@ class AIConfig {
     }
     this.config.preferences.selectedModel = modelId;
     this.saveConfig();
-    // console.log(`✅ Modelo seleccionado: ${modelId}`);
+    // logger.debug(`✅ Modelo seleccionado: ${modelId}`);
   }
 
   /**

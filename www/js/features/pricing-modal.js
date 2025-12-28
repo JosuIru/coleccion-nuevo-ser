@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * PRICING MODAL - UI de Planes y Pagos
  * Modal para seleccionar plan de suscripción y procesar pagos
  *
@@ -164,7 +165,7 @@ class PricingModal {
     // Cargar Stripe.js
     await this.loadStripe();
 
-    console.log('✅ PricingModal inicializado');
+    logger.debug('✅ PricingModal inicializado');
   }
 
   /**
@@ -394,4 +395,4 @@ class PricingModal {
 // Crear instancia global
 window.pricingModal = new PricingModal();
 
-console.log('✅ PricingModal loaded. Use window.pricingModal.showPricingModal() to open.');
+logger.debug('✅ PricingModal loaded. Use window.pricingModal.showPricingModal() to open.');

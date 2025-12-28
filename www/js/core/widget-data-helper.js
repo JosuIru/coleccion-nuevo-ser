@@ -4,6 +4,7 @@
 // Prepara y sincroniza datos de lectura para los widgets de Android
 // Los widgets nativos leen de SharedPreferences
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class WidgetDataHelper {
   constructor() {
     this.isCapacitor = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
@@ -32,7 +33,7 @@ class WidgetDataHelper {
     // Exponer globalmente
     window.widgetDataHelper = this;
 
-    // console.log('WidgetDataHelper initialized');
+    // logger.debug('WidgetDataHelper initialized');
   }
 
   // ==========================================================================
@@ -52,7 +53,7 @@ class WidgetDataHelper {
     }
 
     this.lastUpdate = Date.now();
-    // console.log('Widget data synced:', widgetData);
+    // logger.debug('Widget data synced:', widgetData);
 
     return widgetData;
   }
@@ -304,13 +305,13 @@ class WidgetDataHelper {
                 month: 'short'
               })
             });
-            // console.log('✓ Native widgets updated');
+            // logger.debug('✓ Native widgets updated');
           } catch (widgetError) {
             // console.warn('Error updating native widgets:', widgetError);
           }
         }
 
-        // console.log('Widget data synced to SharedPreferences');
+        // logger.debug('Widget data synced to SharedPreferences');
       }
     } catch (error) {
       // console.warn('Error syncing to SharedPreferences:', error);
@@ -455,7 +456,7 @@ class WidgetDataHelper {
       clearInterval(this.updateInterval);
       this.updateInterval = null;
     }
-    console.log('[WidgetDataHelper] Instancia destruida');
+    logger.debug('[WidgetDataHelper] Instancia destruida');
   }
 }
 

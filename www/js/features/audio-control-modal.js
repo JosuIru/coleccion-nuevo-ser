@@ -2,6 +2,7 @@
 // AUDIO CONTROL MODAL - Panel de control avanzado de audio
 // ============================================================================
 
+// 🔧 FIX v2.9.198: Migrated console.log to logger
 class AudioControlModal {
   constructor(enhancedAudioReader) {
     this.audioReader = enhancedAudioReader;
@@ -636,7 +637,7 @@ class AudioControlModal {
   initializeVisualizer() {
     // Solo inicializar si AudioVisualizer está disponible y hay audioMixer
     if (!window.AudioVisualizer || !this.audioReader.audioMixer) {
-      // console.log('AudioVisualizer o AudioMixer no disponible');
+      // logger.debug('AudioVisualizer o AudioMixer no disponible');
       return;
     }
 
@@ -658,7 +659,7 @@ class AudioControlModal {
         if (canvas) {
           // Iniciar visualización
           this.visualizer.start();
-          // console.log('✅ Visualizador de audio iniciado');
+          // logger.debug('✅ Visualizador de audio iniciado');
         }
       }
     } catch (error) {

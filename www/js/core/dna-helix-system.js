@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Sistema de Hélices de ADN
  * Crea dobles hélices conectando núcleos en organismos híbridos
  * Representa la fusión genética visual entre células
@@ -361,5 +362,5 @@ class DNAHelixSystem {
 // Exportar para uso en navegador
 if (typeof window !== 'undefined') {
   window.DNAHelixSystem = DNAHelixSystem;
-  // console.log('✅ DNAHelixSystem class registered globally');
+  // logger.debug('✅ DNAHelixSystem class registered globally');
 }

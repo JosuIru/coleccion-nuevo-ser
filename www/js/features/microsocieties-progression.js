@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE PROGRESIÓN Y UNLOCKS
  * Niveles, XP, achievements, y contenido desbloqueable
  */
@@ -456,4 +457,4 @@ class ProgressionSystem {
 
 // Exportar
 window.ProgressionSystem = ProgressionSystem;
-// console.log('📊 Sistema de Progresión cargado');
+// logger.debug('📊 Sistema de Progresión cargado');

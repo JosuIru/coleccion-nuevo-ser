@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SYNC MANAGER
  * Sistema robusto de sincronización con Supabase
  *
@@ -29,7 +30,7 @@ class SyncManager {
     // Cargar operaciones pendientes al iniciar
     this.loadPendingQueue();
 
-    console.log('[SyncManager] Inicializado');
+    logger.debug('[SyncManager] Inicializado');
   }
 
   /**
@@ -51,7 +52,7 @@ class SyncManager {
     this.queue.push(item);
     this.syncStats.pending = this.queue.length;
 
-    console.log('[SyncManager] Operación añadida a la cola:', operation);
+    logger.debug('[SyncManager] Operación añadida a la cola:', operation);
 
     // Iniciar procesamiento si no está activo
     if (!this.syncing) {
@@ -66,12 +67,12 @@ class SyncManager {
    */
   async processQueue() {
     if (this.syncing) {
-      console.log('[SyncManager] Ya hay un proceso de sincronización en curso');
+      logger.debug('[SyncManager] Ya hay un proceso de sincronización en curso');
       return;
     }
 
     this.syncing = true;
-    console.log('[SyncManager] Iniciando procesamiento de cola...');
+    logger.debug('[SyncManager] Iniciando procesamiento de cola...');
 
     while (this.queue.length > 0) {
       const item = this.queue[0];
@@ -85,7 +86,7 @@ class SyncManager {
         this.syncStats.successful++;
         this.syncStats.pending = this.queue.length;
 
-        console.log('[SyncManager] ✅ Operación completada:', item.operation);
+        logger.debug('[SyncManager] ✅ Operación completada:', item.operation);
 
         // Feedback al usuario (opcional)
         if (item.options.showSuccessToast && window.toast) {
@@ -116,7 +117,7 @@ class SyncManager {
         } else {
           // Reintentar después de un delay con backoff exponencial
           const delay = this.calculateBackoff(item.attempts);
-          console.log('[SyncManager] Reintentando en', delay, 'ms (intento', item.attempts + 1, '/', this.retryAttempts + ')');
+          logger.debug('[SyncManager] Reintentando en', delay, 'ms (intento', item.attempts + 1, '/', this.retryAttempts + ')');
 
           await new Promise(resolve => setTimeout(resolve, delay));
           // No remover de la cola - se volverá a intentar en el próximo ciclo
@@ -125,7 +126,7 @@ class SyncManager {
     }
 
     this.syncing = false;
-    console.log('[SyncManager] Procesamiento de cola finalizado');
+    logger.debug('[SyncManager] Procesamiento de cola finalizado');
   }
 
   /**
@@ -282,7 +283,7 @@ class SyncManager {
 
       localStorage.setItem(this.pendingQueueKey, JSON.stringify(trimmed));
 
-      console.log('[SyncManager] Operación guardada para retry posterior');
+      logger.debug('[SyncManager] Operación guardada para retry posterior');
     } catch (error) {
       console.error('[SyncManager] Error guardando operación fallida:', error);
     }
@@ -295,7 +296,7 @@ class SyncManager {
     const pending = this.loadPendingQueueFromStorage();
 
     if (pending.length > 0) {
-      console.log('[SyncManager] Cargadas', pending.length, 'operaciones pendientes');
+      logger.debug('[SyncManager] Cargadas', pending.length, 'operaciones pendientes');
 
       // Reintentar operaciones pendientes en el próximo tick
       setTimeout(() => this.retryPending(), 2000);
@@ -325,7 +326,7 @@ class SyncManager {
       return;
     }
 
-    console.log('[SyncManager] Reintentando', pending.length, 'operaciones pendientes...');
+    logger.debug('[SyncManager] Reintentando', pending.length, 'operaciones pendientes...');
 
     // Verificar autenticación antes de reintentar
     if (!window.supabaseAuthHelper?.isAuthenticated()) {
@@ -378,7 +379,7 @@ class SyncManager {
       pending: 0
     };
     localStorage.removeItem(this.pendingQueueKey);
-    console.log('[SyncManager] Todas las colas han sido limpiadas');
+    logger.debug('[SyncManager] Todas las colas han sido limpiadas');
   }
 
   /**
@@ -410,4 +411,4 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = SyncManager;
 }
 
-console.log('[SyncManager] Módulo cargado');
+logger.debug('[SyncManager] Módulo cargado');

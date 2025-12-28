@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * MODAL DE RETOS PARA SERES FRANKENSTEIN
  * UI para mostrar y resolver retos basados en la misión del ser
  */
@@ -18,7 +19,7 @@ class FrankensteinChallengesModal {
   init() {
     this.createModal();
     this.challengeSystem = new (window.FrankensteinChallengesSystem || class {})();
-    console.log('🎮 Challenges Modal inicializado');
+    logger.debug('🎮 Challenges Modal inicializado');
   }
 
   /**
@@ -665,7 +666,7 @@ class FrankensteinChallengesModal {
     } else if (window.showToast) {
       window.showToast(message, type);
     } else {
-      console.log(`[${type}] ${message}`);
+      logger.debug(`[${type}] ${message}`);
     }
   }
 
@@ -701,4 +702,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // También exportar clase
 window.FrankensteinChallengesModal = FrankensteinChallengesModal;
-console.log('🎮 Frankenstein Challenges Modal cargado');
+logger.debug('🎮 Frankenstein Challenges Modal cargado');

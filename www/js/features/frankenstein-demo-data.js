@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * FRANKENSTEIN LAB - DEMO DATA
  * Datos de ejemplo para modo demostración
  * Incluye seres y microsociedades pre-construidos
@@ -610,7 +611,7 @@ const FrankensteinDemoData = {
             missingIds.push(piece.id);
           }
         });
-        console.log(`✅ Modo demo listo. ${demoPieces.length - missingIds.length} piezas referencian el catálogo real${missingIds.length ? `, ${missingIds.length} añadidas como respaldo` : ''}.`);
+        logger.debug(`✅ Modo demo listo. ${demoPieces.length - missingIds.length} piezas referencian el catálogo real${missingIds.length ? `, ${missingIds.length} añadidas como respaldo` : ''}.`);
       }
 
       // Cargar seres de demo en localStorage con prefijo 'demo-'
@@ -625,13 +626,13 @@ const FrankensteinDemoData = {
       if (newDemoBeings.length > 0) {
         const updatedBeings = [...existingBeings, ...newDemoBeings];
         localStorage.setItem('frankenstein-saved-beings', JSON.stringify(updatedBeings));
-        console.log(`✅ ${newDemoBeings.length} seres de demo cargados`);
+        logger.debug(`✅ ${newDemoBeings.length} seres de demo cargados`);
       }
 
       // Actualizar la UI si el método existe
       if (frankensteinUI.renderPiecesTree) {
         frankensteinUI.renderPiecesTree();
-        console.log('✅ UI de piezas actualizada');
+        logger.debug('✅ UI de piezas actualizada');
       }
 
       // Auto cargar un ser demo si no hay ser activo aún
@@ -669,7 +670,7 @@ const FrankensteinDemoData = {
       const existingBeings = JSON.parse(localStorage.getItem('frankenstein-saved-beings') || '[]');
       const nonDemoBeings = existingBeings.filter(being => !being.id.startsWith('demo-'));
       localStorage.setItem('frankenstein-saved-beings', JSON.stringify(nonDemoBeings));
-      console.log('✅ Datos de demo eliminados');
+      logger.debug('✅ Datos de demo eliminados');
       return true;
     } catch (error) {
       console.error('❌ Error eliminando datos de demo:', error);

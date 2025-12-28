@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * SISTEMA DE AUDIO PARA MICROSOCIEDADES
  * Música de fondo, SFX de eventos y UI
  */
@@ -47,7 +48,7 @@ class MicroSocietiesAudio {
       this.createGenerativeMusic();
 
       this.initialized = true;
-      // console.log('🔊 MicroSocieties Audio inicializado');
+      // logger.debug('🔊 MicroSocieties Audio inicializado');
 
       return true;
     } catch (error) {
@@ -122,7 +123,7 @@ class MicroSocietiesAudio {
     this.currentMusic = track;
     track.playing = true;
 
-    // console.log(`🎵 Reproduciendo música: ${track.name}`);
+    // logger.debug(`🎵 Reproduciendo música: ${track.name}`);
   }
 
   /**
@@ -222,7 +223,7 @@ class MicroSocietiesAudio {
       this.currentMusic = null;
     }, fadeOutDuration * 1000);
 
-    // console.log('🔇 Música detenida');
+    // logger.debug('🔇 Música detenida');
   }
 
   /**
@@ -603,7 +604,7 @@ class MicroSocietiesAudio {
       this.masterGain.gain.linearRampToValueAtTime(this.enabled ? 1 : 0, now + 0.1);
     }
 
-    // console.log(`🔊 Audio ${this.enabled ? 'activado' : 'desactivado'}`);
+    // logger.debug(`🔊 Audio ${this.enabled ? 'activado' : 'desactivado'}`);
     return this.enabled;
   }
 
@@ -645,7 +646,7 @@ class MicroSocietiesAudio {
     }
 
     this.initialized = false;
-    // console.log('🔇 Audio destruido');
+    // logger.debug('🔇 Audio destruido');
   }
 
   /**
@@ -664,4 +665,4 @@ class MicroSocietiesAudio {
 
 // Exportar
 window.MicroSocietiesAudio = MicroSocietiesAudio;
-// console.log('🔊 MicroSocieties Audio System cargado');
+// logger.debug('🔊 MicroSocieties Audio System cargado');

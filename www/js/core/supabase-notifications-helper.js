@@ -1,4 +1,5 @@
 /**
+// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Supabase Notifications Helper
  * Sistema de notificaciones inteligentes basado en Supabase Realtime
  */
@@ -16,14 +17,14 @@ class SupabaseNotificationsHelper {
      */
     async init() {
         if (!window.supabaseAuthHelper?.isAuthenticated()) {
-            // console.log('Notifications: Usuario no autenticado');
+            // logger.debug('Notifications: Usuario no autenticado');
             return;
         }
 
         // Verificar permisos de notificaciones
         const hasPermission = await this.checkPermissions();
         if (!hasPermission) {
-            // console.log('Notifications: Sin permisos');
+            // logger.debug('Notifications: Sin permisos');
             return;
         }
 
@@ -33,7 +34,7 @@ class SupabaseNotificationsHelper {
         // Schedule notificaciones locales periódicas
         await this.schedulePeriodicNotifications();
 
-        // console.log('✓ Supabase Notifications inicializado');
+        // logger.debug('✓ Supabase Notifications inicializado');
     }
 
     /**
@@ -85,7 +86,7 @@ class SupabaseNotificationsHelper {
             )
             .subscribe();
 
-        // console.log('✓ Realtime notifications activo');
+        // logger.debug('✓ Realtime notifications activo');
     }
 
     /**
@@ -119,7 +120,7 @@ class SupabaseNotificationsHelper {
      */
     async sendLocalNotification({ title, body, data = {} }) {
         if (!this.isCapacitor || !window.Capacitor?.Plugins?.LocalNotifications) {
-            // console.log('Notification:', title, '-', body);
+            // logger.debug('Notification:', title, '-', body);
             return;
         }
 

@@ -14,6 +14,9 @@ class NotesModal {
 
     // 🔧 FIX #86: Usar EventManager para prevenir memory leaks
     this.eventManager = new EventManager();
+
+    // 🔧 FIX v2.9.269: Focus trap para accesibilidad
+    this.focusTrap = null;
   }
 
   // ==========================================================================
@@ -157,20 +160,26 @@ class NotesModal {
     this.render();
     this.attachEventListeners();
 
-    // Focus en textarea si está creando nueva nota, o en primer elemento focusable
+    // 🔧 FIX v2.9.269: Activar focus trap para accesibilidad
     setTimeout(() => {
+      const modal = document.getElementById('notes-modal');
+      if (modal && window.createFocusTrap) {
+        this.focusTrap = window.createFocusTrap(modal);
+      }
+      // Focus en textarea si está creando nueva nota
       const textarea = document.getElementById('note-input');
       if (textarea) {
         textarea.focus();
-      } else {
-        const modal = document.getElementById('notes-modal');
-        const firstFocusable = modal?.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (firstFocusable) firstFocusable.focus();
       }
     }, 100);
   }
 
   close() {
+    // 🔧 FIX v2.9.269: Desactivar focus trap
+    if (this.focusTrap) {
+      this.focusTrap.deactivate();
+      this.focusTrap = null;
+    }
     // 🔧 FIX #86: Limpiar todos los event listeners con EventManager
     this.eventManager.cleanup();
 

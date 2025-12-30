@@ -44,6 +44,9 @@ class SettingsModal {
         this.timers = [];
         this.intervals = [];
         this.listeners = new Map();
+
+        // 🔧 FIX v2.9.269: Focus trap para accesibilidad
+        this.focusTrap = null;
     }
 
     /**
@@ -104,6 +107,14 @@ class SettingsModal {
         if (window.lucide) {
             lucide.createIcons();
         }
+
+        // 🔧 FIX v2.9.269: Activar focus trap para accesibilidad
+        setTimeout(() => {
+            const modal = document.getElementById(this.modalId);
+            if (modal && window.createFocusTrap) {
+                this.focusTrap = window.createFocusTrap(modal);
+            }
+        }, 100);
     }
 
     /**
@@ -1565,8 +1576,8 @@ class SettingsModal {
         if (slider) {
             this._addEventListener(slider, 'input', (e) => {
                 const size = e.target.value;
-                // Actualizar UI inmediatamente
-                display.textContent = size + 'px';
+                // 🔧 FIX v2.9.268: Null check para display element
+                if (display) display.textContent = size + 'px';
                 document.documentElement.style.setProperty('--font-size-base', size + 'px');
 
                 // 🔧 FIX #83: Debounce para guardar en localStorage (evita writes excesivos)
@@ -2732,6 +2743,12 @@ class SettingsModal {
      * 🔧 FIX v2.9.197: Memory leak cleanup - timer and listener tracking
      */
     close() {
+        // 🔧 FIX v2.9.269: Desactivar focus trap
+        if (this.focusTrap) {
+            this.focusTrap.deactivate();
+            this.focusTrap = null;
+        }
+
         // 🔧 FIX #76: Cancelar carga de voces si está en progreso
         if (this.loadingVoices) {
             logger.debug('[Settings] 🛑 Cancelando carga de voces al cerrar modal');

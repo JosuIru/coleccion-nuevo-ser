@@ -1655,7 +1655,8 @@ class AudioReader {
       this.selectBestVoice();
       if (!this.selectedVoice) {
         // Usar la primera voz disponible como fallback
-        this.selectedVoice = voices.find(v => v.lang.startsWith('es')) || voices[0];
+        // 🔧 FIX v2.9.268: Null check para v.lang antes de startsWith
+        this.selectedVoice = voices.find(v => v.lang && v.lang.startsWith('es')) || voices[0];
         // console.warn('⚠️ Usando voz fallback:', this.selectedVoice?.name);
       }
     }
@@ -2798,34 +2799,38 @@ class AudioReader {
   }
 
   // ⭐ Sincronizar iconos del header con el estado actual
+  // 🔧 FIX v2.9.263: Actualizar iconos en mobile, tablet Y desktop
   updateHeaderAudioIcons() {
     const iconMobile = document.getElementById('audio-icon-mobile');
+    const iconTablet = document.getElementById('audio-icon-tablet');
+    const iconDesktop = document.getElementById('audio-icon-desktop');
     const expandBtn = document.getElementById('audio-expand-btn-mobile');
     const progressContainer = document.getElementById('audio-progress-bar-container');
     const paraInfo = document.getElementById('audio-paragraph-info');
 
-    if (!iconMobile) return; // Si no hay icono, salir
-
     // Determinar qué icono mostrar según el estado
+    let newIcon;
     if (this.paragraphs.length === 0) {
       // Sin contenido preparado → icono de auriculares
-      iconMobile.innerHTML = Icons.audio ? Icons.audio(20) : '🎧';
+      newIcon = Icons.audio ? Icons.audio(20) : '🎧';
       if (expandBtn) expandBtn.classList.add('hidden');
       if (progressContainer) progressContainer.classList.add('hidden');
-      console.warn('[AudioReader] Header: Sin contenido, botón expandir OCULTO');
     } else if (this.isPlaying && !this.isPaused) {
       // Reproduciendo → icono de pausa
-      iconMobile.innerHTML = Icons.pause ? Icons.pause(20) : '⏸';
+      newIcon = Icons.pause ? Icons.pause(20) : '⏸';
       if (expandBtn) expandBtn.classList.remove('hidden');
       if (progressContainer) progressContainer.classList.remove('hidden');
-      console.warn('[AudioReader] Header: Reproduciendo, botón expandir VISIBLE');
     } else {
       // Pausado o detenido con contenido → icono de play
-      iconMobile.innerHTML = Icons.play ? Icons.play(20) : '▶';
+      newIcon = Icons.play ? Icons.play(20) : '▶';
       if (expandBtn) expandBtn.classList.remove('hidden');
       if (progressContainer) progressContainer.classList.remove('hidden');
-      console.warn('[AudioReader] Header: Pausado/contenido, botón expandir VISIBLE');
     }
+
+    // Actualizar los 3 iconos (mobile, tablet, desktop)
+    if (iconMobile) iconMobile.innerHTML = newIcon;
+    if (iconTablet) iconTablet.innerHTML = newIcon;
+    if (iconDesktop) iconDesktop.innerHTML = newIcon;
 
     // Actualizar info de párrafo
     if (paraInfo && this.paragraphs.length > 0) {
@@ -3732,8 +3737,8 @@ class AudioReader {
             </div>
           </div>
           <div style="display:flex;gap:6px;">
-            <button id="audio-minimize-btn" style="width:36px;height:36px;background:#334155;border:none;border-radius:8px;color:#94a3b8;font-size:16px;cursor:pointer;">▼</button>
-            <button id="audio-close-btn" style="width:36px;height:36px;background:#7f1d1d;border:none;border-radius:8px;color:#fca5a5;font-size:18px;cursor:pointer;">×</button>
+            <button id="audio-minimize-btn" style="width:44px;height:44px;background:#334155;border:none;border-radius:8px;color:#94a3b8;font-size:18px;cursor:pointer;">▼</button>
+            <button id="audio-close-btn" style="width:44px;height:44px;background:#7f1d1d;border:none;border-radius:8px;color:#fca5a5;font-size:20px;cursor:pointer;">×</button>
           </div>
         </div>
 
@@ -3755,7 +3760,7 @@ class AudioReader {
         <!-- Controles secundarios -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
           <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:11px;">⚡</span>
+            <span style="font-size:14px;">⚡</span>
             <select id="audio-rate-select" style="flex:1;padding:8px;background:#334155;border:1px solid #475569;border-radius:6px;color:white;font-size:12px;">
               <option value="0.5">0.5x</option>
               <option value="0.75">0.75x</option>
@@ -3766,7 +3771,7 @@ class AudioReader {
             </select>
           </div>
           <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:11px;">😴</span>
+            <span style="font-size:14px;">😴</span>
             <select id="audio-sleep-select" style="flex:1;padding:8px;background:#334155;border:1px solid #475569;border-radius:6px;color:white;font-size:12px;">
               <option value="0">Off</option>
               <option value="15" ${this.sleepTimerMinutes === 15 ? 'selected' : ''}>15m</option>
@@ -3789,7 +3794,7 @@ class AudioReader {
           <div style="padding:12px;background:#164e63;border-radius:8px;margin-top:8px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
               <div>
-                <label style="font-size:10px;color:#94a3b8;display:block;margin-bottom:4px;">Proveedor</label>
+                <label style="font-size:12px;color:#94a3b8;display:block;margin-bottom:4px;">Proveedor</label>
                 <select id="audio-tts-provider" style="width:100%;padding:8px;background:#334155;border:1px solid #475569;border-radius:6px;color:white;font-size:11px;">
                   <option value="webSpeech" ${this.ttsProvider === 'webSpeech' ? 'selected' : ''}>Web Speech</option>
                   <option value="capacitor" ${this.ttsProvider === 'capacitor' ? 'selected' : ''}>Capacitor</option>
@@ -3797,7 +3802,7 @@ class AudioReader {
                 </select>
               </div>
               <div>
-                <label style="font-size:10px;color:#94a3b8;display:block;margin-bottom:4px;">Voz</label>
+                <label style="font-size:12px;color:#94a3b8;display:block;margin-bottom:4px;">Voz</label>
                 <select id="audio-voice-select" style="width:100%;padding:8px;background:#334155;border:1px solid #475569;border-radius:6px;color:white;font-size:11px;">
                   <option value="">Cargando voces...</option>
                 </select>
@@ -3958,7 +3963,8 @@ class AudioReader {
       try {
         let voices = [];
         if (provider === 'webSpeech') {
-          voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('es'));
+          // 🔧 FIX v2.9.268: Null check para v.lang antes de startsWith
+          voices = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('es'));
           voiceSelect.innerHTML = voices.length > 0
             ? voices.map(v => `<option value="${v.name}">${v.name.substring(0, 20)}</option>`).join('')
             : '<option value="">No hay voces ES</option>';

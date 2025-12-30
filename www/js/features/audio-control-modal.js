@@ -14,6 +14,9 @@ class AudioControlModal {
     this.eventManager = new EventManager();
     this.eventManager.setComponentName('AudioControlModal');
     this._eventListenersAttached = false;
+
+    // 🔧 FIX v2.9.269: Focus trap para accesibilidad
+    this.focusTrap = null;
   }
 
   // ==========================================================================
@@ -614,9 +617,22 @@ class AudioControlModal {
 
     // Inicializar visualizador si está disponible
     this.initializeVisualizer();
+
+    // 🔧 FIX v2.9.269: Activar focus trap para accesibilidad
+    setTimeout(() => {
+      if (this.modal && window.createFocusTrap) {
+        this.focusTrap = window.createFocusTrap(this.modal);
+      }
+    }, 100);
   }
 
   close() {
+    // 🔧 FIX v2.9.269: Desactivar focus trap
+    if (this.focusTrap) {
+      this.focusTrap.deactivate();
+      this.focusTrap = null;
+    }
+
     // 🔧 FIX: Cleanup de event listeners ANTES de ocultar
     if (this.eventManager) {
       this.eventManager.cleanup();

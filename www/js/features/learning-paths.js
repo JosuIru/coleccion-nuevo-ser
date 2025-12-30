@@ -8,6 +8,8 @@ class LearningPaths {
     this.currentPath = null;
     this.isOpen = false;
     this.userProgress = this.loadProgress();
+    // 🔧 FIX v2.9.268: Track pending timer to prevent memory leak
+    this.pendingTimer = null;
   }
 
   // ==========================================================================
@@ -48,7 +50,9 @@ class LearningPaths {
       logger.debug('[LearningPaths] 🔗 Adjuntando event listeners...');
 
       // Esperar a que el DOM esté listo antes de adjuntar listeners
-      setTimeout(() => {
+      // 🔧 FIX v2.9.268: Track timer to clear on close (prevent memory leak)
+      this.pendingTimer = setTimeout(() => {
+        this.pendingTimer = null;
         this.attachEventListeners();
         logger.debug('[LearningPaths] ✅ Learning Paths abierto correctamente');
       }, 10);
@@ -58,6 +62,11 @@ class LearningPaths {
   }
 
   close() {
+    // 🔧 FIX v2.9.268: Clear pending timer to prevent memory leak
+    if (this.pendingTimer) {
+      clearTimeout(this.pendingTimer);
+      this.pendingTimer = null;
+    }
     // 🔧 FIX #32: Cleanup escape key handler to prevent memory leaks
     if (this.handleEscape) {
       document.removeEventListener('keydown', this.handleEscape);
@@ -86,21 +95,22 @@ class LearningPaths {
     }
 
     logger.debug('[LearningPaths] 📚 bookId actual:', this.bookId);
+    // 🔧 FIX v2.9.265: Mobile-friendly modal
     const html = `
       <div id="learning-paths-modal"
-           class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-200">
-        <div class="bg-gradient-to-br from-slate-900 to-purple-950 rounded-2xl border border-purple-500/30 shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+           class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-end md:items-center justify-center md:p-4 transition-opacity duration-200">
+        <div class="bg-gradient-to-br from-slate-900 to-purple-950 rounded-t-2xl md:rounded-2xl border border-purple-500/30 shadow-2xl max-w-5xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden">
 
-          <!-- Header -->
-          <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-6 border-b border-purple-500/30">
+          <!-- Header - Compact on mobile -->
+          <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 p-3 md:p-6 border-b border-purple-500/30">
             <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-2xl font-bold text-purple-300 flex items-center gap-2">
-                  🎯 Learning Paths Personalizados
+              <div class="min-w-0 flex-1">
+                <h2 class="text-lg md:text-2xl font-bold text-purple-300 flex items-center gap-2">
+                  🎯 <span class="hidden sm:inline">Learning Paths</span><span class="sm:hidden">Paths</span>
                 </h2>
-                <p class="text-sm text-gray-400 mt-1">Rutas de aprendizaje según tus objetivos</p>
+                <p class="text-xs md:text-sm text-gray-400 mt-0.5 md:mt-1 truncate">Rutas según tus objetivos</p>
               </div>
-              <button id="close-paths" class="text-gray-400 hover:text-white transition p-2">
+              <button id="close-paths" class="text-gray-400 hover:text-white transition p-2 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -108,8 +118,8 @@ class LearningPaths {
             </div>
           </div>
 
-          <!-- Content -->
-          <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 140px)">
+          <!-- Content - Smaller padding on mobile -->
+          <div class="p-3 md:p-6 overflow-y-auto" style="max-height: calc(95vh - 80px)">
             ${this.currentPath ? this.renderActivePath() : this.renderGoalSelection()}
           </div>
 
@@ -124,56 +134,58 @@ class LearningPaths {
     }, 10);
   }
 
+  // 🔧 FIX v2.9.265: Mobile-friendly goal selection
   renderGoalSelection() {
     const paths = this.getPredefinedPaths(this.bookId);
 
     return `
-      <div class="space-y-6">
-        <div class="text-center mb-8">
-          <h3 class="text-2xl font-bold text-white mb-2">¿Cuál es tu objetivo?</h3>
-          <p class="text-gray-400">Selecciona un learning path o crea uno personalizado con IA</p>
+      <div class="space-y-4 md:space-y-6">
+        <div class="text-center mb-4 md:mb-8">
+          <h3 class="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">¿Cuál es tu objetivo?</h3>
+          <p class="text-sm md:text-base text-gray-400">Selecciona un path o crea uno con IA</p>
         </div>
 
         ${paths.length === 0 ? `
-          <div class="bg-yellow-900/30 border border-yellow-700 rounded-xl p-6 mb-6">
-            <h4 class="text-lg font-bold text-yellow-300 mb-2">📚 Este libro aún no tiene Learning Paths predefinidos</h4>
-            <p class="text-gray-300 mb-4">Pero puedes crear uno personalizado con IA o explorar las prácticas individuales.</p>
-            <button id="open-practice-library-from-paths" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-semibold text-white">
-              🧘 Explorar Biblioteca de Prácticas
+          <div class="bg-yellow-900/30 border border-yellow-700 rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+            <h4 class="text-base md:text-lg font-bold text-yellow-300 mb-2">📚 Sin Learning Paths</h4>
+            <p class="text-sm text-gray-300 mb-3 md:mb-4">Crea uno personalizado con IA o explora las prácticas individuales.</p>
+            <button id="open-practice-library-from-paths" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-semibold text-white text-sm md:text-base">
+              🧘 Ver Prácticas
             </button>
           </div>
         ` : ''}
 
         <!-- Practice Library Link (si hay paths) -->
         ${paths.length > 0 ? `
-          <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl p-4 mb-6 border border-blue-700">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-white mb-1">🧘 ¿Prefieres prácticas individuales?</h4>
-                <p class="text-sm text-gray-400">Explora todas las prácticas de la colección sin seguir un path específico</p>
+          <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl p-3 md:p-4 mb-4 md:mb-6 border border-blue-700">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-white text-sm md:text-base">🧘 ¿Prácticas individuales?</h4>
+                <p class="text-xs md:text-sm text-gray-400 hidden sm:block">Explora sin seguir un path</p>
               </div>
-              <button id="open-practice-library-from-paths" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-lg transition whitespace-nowrap ml-4">
-                Ver Prácticas →
+              <button id="open-practice-library-from-paths" class="px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-sm md:text-base font-semibold rounded-lg transition whitespace-nowrap flex-shrink-0">
+                Prácticas →
               </button>
             </div>
           </div>
         ` : ''}
 
-        <!-- Paths predefinidos -->
+        <!-- Paths predefinidos - Stack on mobile -->
         ${paths.length > 0 ? `
-        <div class="grid md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           ${paths.map(path => `
-            <button data-path-id="${path.id}"
-                    class="path-card text-left p-6 rounded-xl border-2 border-gray-700 hover:border-purple-500 hover:bg-purple-900/20 transition-all duration-200">
-              <div class="flex items-start gap-4">
-                <div class="text-4xl flex-shrink-0">${path.icon}</div>
-                <div class="flex-1">
-                  <h4 class="text-lg font-bold text-white mb-1">${path.title}</h4>
-                  <p class="text-sm text-gray-400 mb-3">${path.description}</p>
-                  <div class="flex flex-wrap gap-2 text-xs">
-                    <span class="px-2 py-1 bg-purple-600/30 rounded">${path.duration}</span>
-                    <span class="px-2 py-1 bg-pink-600/30 rounded">${path.difficulty}</span>
-                    <span class="px-2 py-1 bg-indigo-600/30 rounded">${path.steps.length} pasos</span>
+            <button data-path-id="${path.id}" ${path.sourceBook ? `data-source-book="${path.sourceBook}"` : ''}
+                    class="path-card text-left p-4 md:p-6 rounded-xl border-2 border-gray-700 hover:border-purple-500 hover:bg-purple-900/20 transition-all duration-200 active:scale-[0.98]">
+              <div class="flex items-start gap-3 md:gap-4">
+                <div class="text-3xl md:text-4xl flex-shrink-0">${path.icon}</div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-base md:text-lg font-bold text-white mb-1 line-clamp-2">${path.title}</h4>
+                  ${path.sourceBook ? `<span class="text-xs text-blue-400 mb-1 inline-block">📚 ${this.getBookTitle(path.sourceBook)}</span>` : ''}
+                  <p class="text-xs md:text-sm text-gray-400 mb-2 md:mb-3 line-clamp-2">${path.description}</p>
+                  <div class="flex flex-wrap gap-1.5 md:gap-2 text-xs">
+                    <span class="px-2 py-0.5 md:py-1 bg-purple-600/30 rounded">${path.duration}</span>
+                    <span class="px-2 py-0.5 md:py-1 bg-pink-600/30 rounded">${path.difficulty}</span>
+                    <span class="px-2 py-0.5 md:py-1 bg-indigo-600/30 rounded">${path.steps.length} pasos</span>
                   </div>
                 </div>
               </div>
@@ -183,19 +195,19 @@ class LearningPaths {
         ` : ''}
 
         <!-- Custom path con IA -->
-        <div class="mt-8 p-6 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 rounded-xl border border-indigo-500/30">
-          <h4 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
-            🤖 Crear Path Personalizado con IA
+        <div class="mt-4 md:mt-8 p-4 md:p-6 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 rounded-xl border border-indigo-500/30">
+          <h4 class="text-base md:text-lg font-bold text-white mb-2 md:mb-3 flex items-center gap-2">
+            🤖 Path Personalizado con IA
           </h4>
-          <p class="text-sm text-gray-400 mb-4">
-            Describe tu objetivo y la IA creará un plan personalizado con los recursos disponibles
+          <p class="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
+            Describe tu objetivo y la IA creará un plan personalizado
           </p>
           <textarea id="custom-goal-input"
-                    class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white resize-none focus:border-purple-500 focus:outline-none"
-                    rows="3"
-                    placeholder="Ej: Quiero iniciar una comunidad de transición en mi ciudad..."></textarea>
+                    class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm md:text-base resize-none focus:border-purple-500 focus:outline-none"
+                    rows="2"
+                    placeholder="Ej: Quiero iniciar una comunidad de transición..."></textarea>
           <button id="generate-custom-path"
-                  class="mt-3 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg transition font-semibold">
+                  class="mt-3 w-full md:w-auto px-6 py-2.5 md:py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg transition font-semibold text-sm md:text-base">
             ✨ Generar Path con IA
           </button>
         </div>
@@ -203,6 +215,7 @@ class LearningPaths {
     `;
   }
 
+  // 🔧 FIX v2.9.265: Mobile-friendly active path view
   renderActivePath() {
     const path = this.currentPath;
     const progress = this.userProgress[path.id] || { completedSteps: [] };
@@ -211,99 +224,99 @@ class LearningPaths {
     const percentage = Math.round((completedCount / totalSteps) * 100);
 
     return `
-      <div class="space-y-6">
-        <!-- Header del path -->
-        <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-xl border border-purple-500/30">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h3 class="text-2xl font-bold text-white flex items-center gap-2">
-                ${path.icon} ${path.title}
+      <div class="space-y-4 md:space-y-6">
+        <!-- Header del path - Compact on mobile -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-4 md:p-6 rounded-xl border border-purple-500/30">
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-2 mb-3 md:mb-4">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2 flex-wrap">
+                <span>${path.icon}</span> <span class="line-clamp-1">${path.title}</span>
               </h3>
-              <p class="text-gray-400 mt-1">${path.description}</p>
+              <p class="text-sm text-gray-400 mt-1 line-clamp-2">${path.description}</p>
             </div>
-            <button id="back-to-selection" class="text-purple-400 hover:text-purple-300 text-sm">
-              ← Cambiar path
+            <button id="back-to-selection" class="text-purple-400 hover:text-purple-300 text-xs md:text-sm whitespace-nowrap flex-shrink-0">
+              ← Cambiar
             </button>
           </div>
 
           <!-- Progreso general -->
-          <div class="mt-4">
-            <div class="flex justify-between text-sm text-gray-400 mb-2">
-              <span>Progreso general</span>
-              <span>${completedCount} de ${totalSteps} pasos (${percentage}%)</span>
+          <div class="mt-3 md:mt-4">
+            <div class="flex justify-between text-xs md:text-sm text-gray-400 mb-1.5 md:mb-2">
+              <span>Progreso</span>
+              <span>${completedCount}/${totalSteps} (${percentage}%)</span>
             </div>
-            <div class="w-full bg-gray-700 rounded-full h-3">
-              <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300"
+            <div class="w-full bg-gray-700 rounded-full h-2 md:h-3">
+              <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 md:h-3 rounded-full transition-all duration-300"
                    style="width: ${percentage}%"></div>
             </div>
           </div>
 
           <!-- Metadata -->
-          <div class="flex gap-4 mt-4 text-sm">
+          <div class="flex gap-3 md:gap-4 mt-3 md:mt-4 text-xs md:text-sm">
             <span class="text-gray-400">⏱️ ${path.duration}</span>
             <span class="text-gray-400">📊 ${path.difficulty}</span>
           </div>
         </div>
 
         <!-- Pasos del path -->
-        <div class="space-y-4">
+        <div class="space-y-3 md:space-y-4">
           ${path.steps.map((step, index) => {
             const isCompleted = progress.completedSteps.includes(index);
             const isCurrent = !isCompleted && progress.completedSteps.length === index;
 
             return `
-              <div class="step-card p-6 rounded-xl border-2 ${
+              <div class="step-card p-3 md:p-6 rounded-xl border-2 ${
                 isCompleted ? 'border-green-500/50 bg-green-900/10' :
                 isCurrent ? 'border-purple-500 bg-purple-900/20' :
                 'border-gray-700 bg-gray-800/30'
               }">
-                <div class="flex items-start gap-4">
+                <div class="flex items-start gap-3 md:gap-4">
                   <!-- Indicador de paso -->
                   <div class="flex-shrink-0">
                     ${isCompleted ?
-                      '<div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">✓</div>' :
-                      `<div class="w-10 h-10 rounded-full border-2 ${isCurrent ? 'border-purple-500 bg-purple-500/20' : 'border-gray-600'} flex items-center justify-center text-gray-400 font-bold">${index + 1}</div>`
+                      '<div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-sm md:text-base">✓</div>' :
+                      `<div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 ${isCurrent ? 'border-purple-500 bg-purple-500/20' : 'border-gray-600'} flex items-center justify-center text-gray-400 font-bold text-sm md:text-base">${index + 1}</div>`
                     }
                   </div>
 
                   <!-- Contenido del paso -->
-                  <div class="flex-1">
-                    <div class="flex justify-between items-start mb-2">
-                      <h4 class="text-lg font-bold text-white">${step.title}</h4>
-                      ${isCurrent ? '<span class="text-xs px-2 py-1 bg-purple-600 rounded-full text-white">Actual</span>' : ''}
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap justify-between items-start gap-1 mb-1.5 md:mb-2">
+                      <h4 class="text-base md:text-lg font-bold text-white">${step.title}</h4>
+                      ${isCurrent ? '<span class="text-xs px-2 py-0.5 bg-purple-600 rounded-full text-white">Actual</span>' : ''}
                     </div>
 
-                    <p class="text-gray-400 text-sm mb-3">${step.description}</p>
+                    <p class="text-gray-400 text-xs md:text-sm mb-2 md:mb-3">${step.description}</p>
 
                     <!-- Acción concreta -->
-                    <div class="bg-indigo-900/30 p-3 rounded-lg mb-3">
-                      <p class="text-sm font-semibold text-indigo-300 mb-1">🎯 Acción:</p>
-                      <p class="text-sm text-gray-300">${step.action}</p>
+                    <div class="bg-indigo-900/30 p-2 md:p-3 rounded-lg mb-2 md:mb-3">
+                      <p class="text-xs md:text-sm font-semibold text-indigo-300 mb-0.5 md:mb-1">🎯 Acción:</p>
+                      <p class="text-xs md:text-sm text-gray-300">${step.action}</p>
                     </div>
 
-                    <!-- Recursos -->
+                    <!-- Recursos - Collapsible on mobile -->
                     ${step.resources && step.resources.length > 0 ? `
-                      <div class="mb-3">
-                        <p class="text-xs font-semibold text-gray-500 mb-2">📚 Recursos:</p>
-                        <div class="flex flex-wrap gap-2">
+                      <details class="mb-2 md:mb-3">
+                        <summary class="text-xs font-semibold text-gray-500 cursor-pointer">📚 Recursos (${step.resources.length})</summary>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
                           ${step.resources.map(r => `
-                            <span class="text-xs px-2 py-1 bg-gray-700 rounded">${r}</span>
+                            <span class="text-xs px-2 py-0.5 bg-gray-700 rounded">${r}</span>
                           `).join('')}
                         </div>
-                      </div>
+                      </details>
                     ` : ''}
 
                     <!-- Criterio de completitud -->
                     <details class="text-xs text-gray-500">
-                      <summary class="cursor-pointer hover:text-gray-400">¿Cómo saber que completé este paso?</summary>
+                      <summary class="cursor-pointer hover:text-gray-400">¿Cómo sé que completé esto?</summary>
                       <p class="mt-2 text-gray-400">${step.completionCriteria}</p>
                     </details>
 
                     <!-- Botón de marcar completo -->
                     ${!isCompleted ? `
                       <button data-step-index="${index}"
-                              class="mark-complete-btn mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition text-sm font-semibold">
-                        ✓ Marcar como completado
+                              class="mark-complete-btn mt-3 md:mt-4 w-full md:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition text-xs md:text-sm font-semibold">
+                        ✓ Completado
                       </button>
                     ` : ''}
                   </div>
@@ -315,20 +328,44 @@ class LearningPaths {
 
         <!-- Acciones finales -->
         ${completedCount === totalSteps ? `
-          <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 p-6 rounded-xl border border-green-500/30 text-center">
-            <div class="text-6xl mb-3">🎉</div>
-            <h3 class="text-2xl font-bold text-white mb-2">¡Path Completado!</h3>
-            <p class="text-gray-400 mb-4">Has completado todos los pasos de este learning path</p>
-            <button id="reset-path" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition mr-3">
-              🔄 Reiniciar Path
-            </button>
-            <button id="back-to-selection" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition">
-              Elegir otro Path
-            </button>
+          <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 p-4 md:p-6 rounded-xl border border-green-500/30 text-center">
+            <div class="text-5xl md:text-6xl mb-2 md:mb-3">🎉</div>
+            <h3 class="text-xl md:text-2xl font-bold text-white mb-2">¡Completado!</h3>
+            <p class="text-sm text-gray-400 mb-3 md:mb-4">Has terminado este learning path</p>
+            <div class="flex flex-col sm:flex-row gap-2 justify-center">
+              <button id="reset-path" class="px-4 md:px-6 py-2.5 md:py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition text-sm md:text-base">
+                🔄 Reiniciar
+              </button>
+              <button id="back-to-selection" class="px-4 md:px-6 py-2.5 md:py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition text-sm md:text-base">
+                Otro Path
+              </button>
+            </div>
           </div>
         ` : ''}
       </div>
     `;
+  }
+
+  // ==========================================================================
+  // HELPERS
+  // ==========================================================================
+
+  // 🔧 FIX v2.9.265: Helper para mostrar nombre de libro
+  getBookTitle(bookId) {
+    const bookTitles = {
+      'tierra-que-despierta': 'Tierra que Despierta',
+      'manual-transicion': 'Manual de Transición',
+      'codigo-despertar': 'Código del Despertar',
+      'guia-acciones': 'Guía de Acciones',
+      'toolkit-transicion': 'Toolkit Transición',
+      'manual-practico': 'Manual Práctico',
+      'practicas-radicales': 'Prácticas Radicales',
+      'manifiesto': 'Manifiesto',
+      'filosofia-nuevo-ser': 'Filosofía Nuevo Ser',
+      'dialogos-maquina': 'Diálogos con la Máquina',
+      'ahora-instituciones': 'Ahora Instituciones'
+    };
+    return bookTitles[bookId] || bookId;
   }
 
   // ==========================================================================
@@ -1827,7 +1864,24 @@ class LearningPaths {
       ]
     };
 
-    return pathsDatabase[bookId] || [];
+    // 🔧 FIX v2.9.265: Si el libro tiene paths, devolverlos
+    // Si no tiene paths específicos, devolver todos los paths disponibles
+    if (bookId && pathsDatabase[bookId] && pathsDatabase[bookId].length > 0) {
+      return pathsDatabase[bookId];
+    }
+
+    // Fallback: devolver todos los paths de todos los libros
+    const allPaths = [];
+    Object.entries(pathsDatabase).forEach(([sourceBookId, paths]) => {
+      paths.forEach(path => {
+        allPaths.push({
+          ...path,
+          sourceBook: sourceBookId  // Para saber de qué libro viene
+        });
+      });
+    });
+
+    return allPaths;
   }
 
   // ==========================================================================
@@ -1858,10 +1912,12 @@ class LearningPaths {
     });
 
     // Seleccionar path predefinido
+    // 🔧 FIX v2.9.265: Soporta paths de otros libros
     document.querySelectorAll('.path-card').forEach(card => {
       card.addEventListener('click', (e) => {
         const pathId = e.currentTarget.dataset.pathId;
-        this.selectPath(pathId);
+        const sourceBook = e.currentTarget.dataset.sourceBook || null;
+        this.selectPath(pathId, sourceBook);
       });
     });
 
@@ -1909,9 +1965,16 @@ class LearningPaths {
     });
   }
 
-  selectPath(pathId) {
+  // 🔧 FIX v2.9.265: Mejorado para soportar paths de cualquier libro
+  selectPath(pathId, sourceBook = null) {
     const paths = this.getPredefinedPaths(this.bookId);
     this.currentPath = paths.find(p => p.id === pathId);
+
+    // Si se especificó sourceBook, actualizar el bookId para operaciones futuras
+    if (sourceBook) {
+      this.bookId = sourceBook;
+    }
+
     if (this.currentPath) {
       this.render();
       this.attachEventListeners();
@@ -1942,53 +2005,111 @@ class LearningPaths {
     }
   }
 
+  // 🔧 FIX v2.9.265: Mejorado para funcionar sin IA
   async generateCustomPath(goal) {
-    window.toast?.info('Generando path personalizado con IA...');
-
-    if (!window.resourceAIHelper) {
-      window.toast?.error('IA Helper no disponible');
-      return;
-    }
+    window.toast?.info('Generando path personalizado...');
 
     // Obtener recursos del libro actual
     const bookId = this.bookId;
     let resources = [];
 
-    try {
-      const response = await fetch(`books/${bookId}/assets/resources.json`);
-      if (response.ok) {
-        const data = await response.json();
-        // Extraer recursos de todas las categorías
-        Object.keys(data).forEach(key => {
-          if (Array.isArray(data[key])) {
-            resources = resources.concat(data[key]);
-          }
-        });
+    // Intentar cargar recursos del libro
+    if (bookId) {
+      try {
+        const response = await fetch(`books/${bookId}/assets/resources.json`);
+        if (response.ok) {
+          const data = await response.json();
+          Object.keys(data).forEach(key => {
+            if (Array.isArray(data[key])) {
+              resources = resources.concat(data[key]);
+            }
+          });
+        }
+      } catch (error) {
+        // No hay recursos, continuamos con fallback
       }
-    } catch (error) {
-      console.error('Error cargando recursos:', error);
     }
 
-    const customPath = await window.resourceAIHelper.generateLearningPath(goal, resources, bookId);
+    let customPath = null;
 
-    if (customPath) {
+    // Intentar con IA si está disponible
+    if (window.resourceAIHelper) {
+      try {
+        customPath = await window.resourceAIHelper.generateLearningPath(goal, resources, bookId);
+      } catch (error) {
+        console.error('Error con IA, usando fallback:', error);
+      }
+    }
+
+    // Fallback: generar path básico sin IA
+    if (!customPath) {
+      customPath = this.generateFallbackPath(goal);
+    }
+
+    if (customPath && customPath.steps && customPath.steps.length > 0) {
       this.currentPath = {
         id: 'custom-' + Date.now(),
         icon: '✨',
-        title: customPath.goal,
-        description: 'Path personalizado generado por IA',
-        duration: customPath.estimatedTime,
-        difficulty: customPath.difficulty,
+        title: customPath.goal || goal,
+        description: 'Path personalizado para tu objetivo',
+        duration: customPath.estimatedTime || '4-6 semanas',
+        difficulty: customPath.difficulty || 'intermedio',
         steps: customPath.steps
       };
 
       this.render();
       this.attachEventListeners();
 
-      window.toast?.success('Path personalizado creado!');
+      window.toast?.success('Path creado!');
     } else {
-      window.toast?.error('Error generando path. Intenta de nuevo.');
+      window.toast?.error('Error al generar path. Intenta de nuevo.');
     }
+  }
+
+  // 🔧 FIX v2.9.265: Fallback sin IA
+  generateFallbackPath(goal) {
+    return {
+      goal: goal,
+      estimatedTime: '4-6 semanas',
+      difficulty: 'intermedio',
+      steps: [
+        {
+          title: 'Definir tu objetivo',
+          description: 'Clarifica exactamente qué quieres lograr',
+          action: `Escribe en un papel: "${goal}" y desglósalo en 3 resultados específicos`,
+          resources: ['Papel y bolígrafo'],
+          completionCriteria: 'Tienes 3 resultados medibles escritos'
+        },
+        {
+          title: 'Investigar recursos',
+          description: 'Encuentra materiales que te ayuden',
+          action: 'Busca en la colección capítulos, prácticas y recursos relacionados',
+          resources: ['Biblioteca de Prácticas', 'Recursos de los libros'],
+          completionCriteria: 'Has identificado al menos 5 recursos relevantes'
+        },
+        {
+          title: 'Plan de acción semanal',
+          description: 'Crea un calendario de actividades',
+          action: 'Distribuye los recursos y prácticas en un plan de 4 semanas',
+          resources: ['Calendario', 'Lista de recursos identificados'],
+          completionCriteria: 'Tienes un plan escrito con actividades para cada semana'
+        },
+        {
+          title: 'Primera semana de práctica',
+          description: 'Comienza a ejecutar tu plan',
+          action: 'Sigue el plan de la primera semana y registra observaciones',
+          resources: ['Tu plan de acción', 'Diario de práctica'],
+          completionCriteria: 'Has completado las actividades de la semana 1'
+        },
+        {
+          title: 'Evaluación y ajuste',
+          description: 'Revisa tu progreso y ajusta el plan',
+          action: 'Evalúa qué funcionó, qué no, y ajusta las próximas semanas',
+          resources: ['Notas de la semana 1', 'Plan original'],
+          completionCriteria: 'Tienes plan ajustado para las semanas siguientes'
+        }
+      ]
+    };
   }
 }
 

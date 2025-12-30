@@ -23,6 +23,9 @@ class AIChatModal {
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
     this.eventManager = new EventManager();
     this.eventManager.setComponentName('AIChatModal');
+
+    // 🔧 FIX v2.9.269: Focus trap para accesibilidad
+    this.focusTrap = null;
   }
 
   // ==========================================================================
@@ -127,14 +130,24 @@ class AIChatModal {
     this.render();
     this.attachEventListeners();
 
-    // Focus en input
+    // 🔧 FIX v2.9.269: Activar focus trap para accesibilidad
     setTimeout(() => {
+      const modal = document.getElementById('ai-chat-modal');
+      if (modal && window.createFocusTrap) {
+        this.focusTrap = window.createFocusTrap(modal);
+      }
+      // Focus en input
       const input = document.getElementById('ai-chat-input');
       if (input) input.focus();
     }, 100);
   }
 
   close() {
+    // 🔧 FIX v2.9.269: Desactivar focus trap
+    if (this.focusTrap) {
+      this.focusTrap.deactivate();
+      this.focusTrap = null;
+    }
     // 🔧 FIX #86: Limpiar todos los event listeners con EventManager
     if (this.eventManager) {
       this.eventManager.cleanup();

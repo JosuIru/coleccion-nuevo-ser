@@ -27,29 +27,12 @@ class FrankensteinChallengesModal {
    */
   createModal() {
     const modalHTML = `
-      <div id="challenges-modal" class="challenges-modal" style="
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 10001;
-        align-items: center;
-        justify-content: center;
-        overflow-y: auto;
-        padding: 1rem;
-      ">
-        <div class="challenges-modal-content" style="
+      <div id="challenges-modal" class="challenges-modal fixed inset-0 bg-black/95 z-[10001] flex items-end sm:items-center justify-center overflow-y-auto p-0 sm:p-4" style="display: none;">
+        <div class="challenges-modal-content w-full sm:max-w-[750px] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-8 rounded-t-2xl sm:rounded-2xl m-0 sm:m-auto" style="
           background: linear-gradient(135deg, #0a0a0f 0%, #1a1520 100%);
           border: 4px solid #d4af37;
-          border-radius: 16px;
-          max-width: 750px;
-          width: 100%;
-          max-height: 90vh;
-          overflow-y: auto;
-          padding: 2rem;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
           animation: challengeSlideIn 0.4s ease-out;
-          margin: auto;
         ">
           <!-- Header -->
           <div class="challenges-header" style="
@@ -77,16 +60,10 @@ class FrankensteinChallengesModal {
                 Pon a prueba a tu ser
               </div>
             </div>
-            <button id="challenges-close" style="
+            <button id="challenges-close" class="w-11 h-11 sm:w-10 sm:h-10 rounded-full cursor-pointer text-xl transition-all duration-300 hover:scale-110" style="
               background: rgba(255, 107, 53, 0.2);
               border: 2px solid #ff6b35;
               color: #ff6b35;
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              cursor: pointer;
-              font-size: 1.2rem;
-              transition: all 0.3s ease;
             ">✕</button>
           </div>
 
@@ -253,6 +230,14 @@ class FrankensteinChallengesModal {
     this.modal.addEventListener('click', (e) => {
       if (e.target === this.modal) this.close();
     });
+
+    // 🔧 FIX v2.9.270: ESC key para cerrar modal
+    this.escHandler = (e) => {
+      if (e.key === 'Escape' && this.isOpen) {
+        this.close();
+      }
+    };
+    document.addEventListener('keydown', this.escHandler);
   }
 
   /**
@@ -674,6 +659,12 @@ class FrankensteinChallengesModal {
    * Cerrar modal
    */
   close() {
+    // 🔧 FIX v2.9.270: Limpiar ESC handler
+    if (this.escHandler) {
+      document.removeEventListener('keydown', this.escHandler);
+      this.escHandler = null;
+    }
+
     this.modal.style.display = 'none';
     this.isOpen = false;
     document.body.style.overflow = '';

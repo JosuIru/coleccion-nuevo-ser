@@ -513,6 +513,14 @@ class AudioControlModal {
       }
     });
 
+    // 🔧 FIX v2.9.270: ESC key para cerrar modal
+    this.escHandler = (e) => {
+      if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+        this.close();
+      }
+    };
+    this.eventManager.addEventListener(document, 'keydown', this.escHandler);
+
     this._eventListenersAttached = true;
   }
 

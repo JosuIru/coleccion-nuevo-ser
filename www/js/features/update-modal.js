@@ -795,12 +795,26 @@ class UpdateModal {
         }
       });
     });
+
+    // 🔧 FIX v2.9.270: ESC key para cerrar modal
+    this.escHandler = (e) => {
+      if (e.key === 'Escape' && this.isVisible) {
+        this.hide();
+      }
+    };
+    document.addEventListener('keydown', this.escHandler);
   }
 
   /**
    * Ocultar modal
    */
   hide() {
+    // 🔧 FIX v2.9.270: Limpiar ESC handler
+    if (this.escHandler) {
+      document.removeEventListener('keydown', this.escHandler);
+      this.escHandler = null;
+    }
+
     const container = document.getElementById(this.modalId);
     if (container) {
       container.innerHTML = '';

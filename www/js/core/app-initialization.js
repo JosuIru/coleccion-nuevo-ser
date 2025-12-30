@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.271: Memory leak fixes for ESC handlers
-    window.__APP_VERSION__ = '2.9.271'; // Cambiar con cada release
+    // 🔧 v2.9.272: Fix empty catch blocks in contextual-hints.js
+    window.__APP_VERSION__ = '2.9.272'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

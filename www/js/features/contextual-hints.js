@@ -456,7 +456,9 @@ class ContextualHints {
       if (window.bookEngine) {
         return window.bookEngine.getGlobalProgress().totalRead || 0;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.debug('[ContextualHints] Error getting chapters read:', e);
+    }
     return 0;
   }
 
@@ -465,7 +467,9 @@ class ContextualHints {
       if (window.bookEngine) {
         return window.bookEngine.getGlobalProgress().booksStarted || 0;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.debug('[ContextualHints] Error getting books started:', e);
+    }
     return 0;
   }
 
@@ -474,7 +478,9 @@ class ContextualHints {
       if (window.streakSystem) {
         return window.streakSystem.getStreakStatus().currentStreak || 0;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.debug('[ContextualHints] Error getting streak days:', e);
+    }
     return 0;
   }
 

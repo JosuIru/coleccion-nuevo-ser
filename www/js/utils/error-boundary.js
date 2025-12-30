@@ -281,7 +281,7 @@ class ErrorBoundary {
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.95);
-      z-index: 999999;
+      z-index: 10002;
       display: flex;
       align-items: center;
       justify-content: center;

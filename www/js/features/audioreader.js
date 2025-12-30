@@ -2196,7 +2196,7 @@ class AudioReader {
 
     const html = `
       <div id="audioreader-controls"
-           style="position:fixed !important; bottom:0 !important; left:0 !important; right:0 !important; z-index:99999 !important; display:flex !important; visibility:visible !important; opacity:1 !important; background:#1e293b !important; min-height:200px !important;"
+           style="position:fixed !important; bottom:0 !important; left:0 !important; right:0 !important; z-index:9999 !important; display:flex !important; visibility:visible !important; opacity:1 !important; background:#1e293b !important; min-height:200px !important;"
            class="fixed ${bottomOffset} left-0 right-0 sm:bottom-6 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 max-w-full sm:max-w-5xl max-h-[70vh] sm:max-h-[85vh] flex flex-col bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-slate-300 dark:border-slate-700/50 sm:rounded-2xl rounded-t-2xl shadow-2xl z-[9000] backdrop-blur-lg transition-transform duration-300">
 
         <!-- Header FIJO: Barra de arrastre, Título y botones -->
@@ -3715,7 +3715,7 @@ class AudioReader {
 
     const panel = document.createElement('div');
     panel.id = 'audioreader-controls';
-    panel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;max-height:70vh;overflow-y:auto;background:linear-gradient(to bottom right,#1e293b,#0f172a);color:white;z-index:999999;box-shadow:0 -4px 30px rgba(0,0,0,0.6);border-top:2px solid #0ea5e9;border-radius:16px 16px 0 0;';
+    panel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;max-height:70vh;overflow-y:auto;background:linear-gradient(to bottom right,#1e293b,#0f172a);color:white;z-index:9999;box-shadow:0 -4px 30px rgba(0,0,0,0.6);border-top:2px solid #0ea5e9;border-radius:16px 16px 0 0;';
 
     const isPlaying = this.isPlaying && !this.isPaused;
 

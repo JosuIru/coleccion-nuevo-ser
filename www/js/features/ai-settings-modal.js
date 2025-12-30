@@ -54,7 +54,7 @@ class AISettingsModal {
               <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 sm:gap-3">
                 ${Icons.settings(24)} ${this.i18n.t('ai.title')}
               </h2>
-              <button id="close-ai-settings" class="hover:text-red-400 transition flex items-center justify-center">
+              <button id="close-ai-settings" class="hover:text-red-400 transition flex items-center justify-center" aria-label="Cerrar configuración de IA">
                 ${Icons.close(24)}
               </button>
             </div>

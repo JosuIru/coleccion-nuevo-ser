@@ -104,8 +104,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.272: Fix empty catch blocks in contextual-hints.js
-    window.__APP_VERSION__ = '2.9.272'; // Cambiar con cada release
+    // 🔧 v2.9.273: Modal UX fixes - X buttons, aria-labels, z-index hierarchy
+    window.__APP_VERSION__ = '2.9.273'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

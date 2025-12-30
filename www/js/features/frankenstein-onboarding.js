@@ -189,7 +189,7 @@ class FrankensteinOnboarding {
         right: 0;
         bottom: 0;
         background: rgba(0, 0, 0, 0.85);
-        z-index: 20000;
+        z-index: 10003;
         animation: frFadeIn 0.3s ease-out;
       }
 
@@ -209,7 +209,7 @@ class FrankensteinOnboarding {
         padding: 24px;
         max-width: 360px;
         color: white;
-        z-index: 20001;
+        z-index: 10004;
         animation: frScaleIn 0.3s ease-out;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       }
@@ -323,7 +323,7 @@ class FrankensteinOnboarding {
 
       .fr-highlight-element {
         position: relative;
-        z-index: 20002 !important;
+        z-index: 10005 !important;
         animation: frPulseHighlight 1.5s ease-in-out infinite;
       }
 

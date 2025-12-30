@@ -46,6 +46,7 @@ class UpdateModal {
         <div class="update-modal-content">
           <!-- Header -->
           <div class="update-modal-header">
+            <button class="update-modal-close" data-action="close-modal" aria-label="Cerrar modal de actualización">×</button>
             <div class="update-icon">
               ${isCritical ? '🚨' : '📦'}
             </div>
@@ -194,6 +195,7 @@ class UpdateModal {
       <div class="update-modal-overlay">
         <div class="update-modal-content error">
           <div class="update-modal-header">
+            <button class="update-modal-close" data-action="close-modal" aria-label="Cerrar modal de error">×</button>
             <div class="update-icon error">❌</div>
             <h2>Error en la Actualización</h2>
           </div>
@@ -317,6 +319,29 @@ class UpdateModal {
         text-align: center;
         border-radius: 16px 16px 0 0;
         position: relative;
+      }
+
+      .update-modal-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .update-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
 
       .update-modal-header.error {

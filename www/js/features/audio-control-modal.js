@@ -43,7 +43,7 @@ class AudioControlModal {
               <p class="text-cyan-100 text-sm">Experiencia de escucha inmersiva</p>
             </div>
           </div>
-          <button id="audio-control-close" class="hover:bg-white/20 p-2 rounded-lg transition">
+          <button id="audio-control-close" class="hover:bg-white/20 p-2 rounded-lg transition" aria-label="Cerrar control de audio">
             ${Icons.close(24)}
           </button>
         </div>

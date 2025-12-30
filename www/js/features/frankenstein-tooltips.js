@@ -37,7 +37,7 @@ class FrankensteinTooltips {
     this.tooltip.className = 'grimoire-tooltip';
     this.tooltip.style.cssText = `
       position: fixed;
-      z-index: 999999;
+      z-index: 10500;
       pointer-events: none;
       opacity: 0;
       visibility: hidden;
@@ -428,7 +428,7 @@ class EnergyParticles {
         background: radial-gradient(circle, #d4af37 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
-        z-index: 999998;
+        z-index: 10499;
         left: ${x}px;
         top: ${y}px;
       `;

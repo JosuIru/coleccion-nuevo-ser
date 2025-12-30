@@ -10,6 +10,8 @@ class TimelineViewer {
     this.timelineData = null;
     this.selectedCategory = 'all';
     this.selectedEvent = null;
+    // 🔧 FIX v2.9.271: Track ESC handler for cleanup
+    this.escHandler = null;
   }
 
   // ==========================================================================
@@ -85,6 +87,12 @@ class TimelineViewer {
   }
 
   close() {
+    // 🔧 FIX v2.9.271: Cleanup ESC handler
+    if (this.escHandler) {
+      document.removeEventListener('keydown', this.escHandler);
+      this.escHandler = null;
+    }
+
     const modal = document.getElementById('timeline-modal');
     if (modal) {
       modal.classList.add('opacity-0');
@@ -434,14 +442,13 @@ class TimelineViewer {
       });
     }
 
-    // Close on ESC
-    const escHandler = (e) => {
+    // 🔧 FIX v2.9.271: Store ESC handler for cleanup in close()
+    this.escHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    document.addEventListener('keydown', this.escHandler);
 
     // Close on click outside
     const modal = document.getElementById('timeline-modal');

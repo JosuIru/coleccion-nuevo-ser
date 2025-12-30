@@ -10,6 +10,8 @@ class ConceptMaps {
     this.i18n = window.i18n || { t: (key) => key };
     this.maps = this.getConceptMapsData();
     this.crossReferences = this.getCrossReferencesData();
+    // 🔧 FIX v2.9.271: Track ESC handler for cleanup
+    this.escHandler = null;
   }
 
   // ==========================================================================
@@ -661,14 +663,13 @@ class ConceptMaps {
       if (svg) svg.style.transform = `scale(1)`;
     });
 
-    // ESC to close
-    const escHandler = (e) => {
+    // 🔧 FIX v2.9.271: Store ESC handler for cleanup in close()
+    this.escHandler = (e) => {
       if (e.key === 'Escape') {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    document.addEventListener('keydown', this.escHandler);
   }
 
   showNodeDetail(nodeId, mapData, bookId) {
@@ -859,6 +860,12 @@ class ConceptMaps {
   }
 
   close() {
+    // 🔧 FIX v2.9.271: Cleanup ESC handler
+    if (this.escHandler) {
+      document.removeEventListener('keydown', this.escHandler);
+      this.escHandler = null;
+    }
+
     const modal = document.getElementById('concept-map-modal');
     if (modal) {
       modal.style.animation = 'fadeOut 0.2s ease-out';

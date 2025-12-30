@@ -7,6 +7,8 @@ class ProgressDashboard {
     this.bookEngine = bookEngine;
     this.achievementSystem = achievementSystem;
     this.i18n = window.i18n || { t: (key) => key };
+    // 🔧 FIX v2.9.271: Track ESC handler for cleanup
+    this.escHandler = null;
   }
 
   // ==========================================================================
@@ -180,7 +182,7 @@ class ProgressDashboard {
 
         <!-- Footer -->
         <div class="px-6 py-4 border-t border-cyan-500/30 flex justify-between items-center">
-          <p class="text-xs text-gray-500">Sigue explorando para desbloquear más logros</p>
+          <p class="text-xs text-gray-400">Sigue explorando para desbloquear más logros</p>
           <button id="view-all-achievements" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold transition text-sm">
             Ver todos los logros
           </button>
@@ -437,14 +439,13 @@ class ProgressDashboard {
       if (e.target === modal) this.close();
     });
 
-    // ESC key
-    const escHandler = (e) => {
+    // 🔧 FIX v2.9.271: Store ESC handler for cleanup in close()
+    this.escHandler = (e) => {
       if (e.key === 'Escape') {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    document.addEventListener('keydown', this.escHandler);
 
     // View all achievements button
     document.getElementById('view-all-achievements')?.addEventListener('click', () => {
@@ -494,6 +495,12 @@ class ProgressDashboard {
   }
 
   close() {
+    // 🔧 FIX v2.9.271: Cleanup ESC handler
+    if (this.escHandler) {
+      document.removeEventListener('keydown', this.escHandler);
+      this.escHandler = null;
+    }
+
     const modal = document.getElementById('progress-dashboard-modal');
     if (modal) {
       modal.style.animation = 'fadeOut 0.2s ease-out';

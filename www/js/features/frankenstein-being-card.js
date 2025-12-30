@@ -656,18 +656,21 @@ class FrankensteinBeingCard {
 
     document.body.appendChild(modal);
 
-    // Cerrar con Escape
+    // 🔧 FIX v2.9.271: Cleanup ESC handler in all close paths
     const escHandler = (e) => {
       if (e.key === 'Escape') {
-        modal.remove();
         document.removeEventListener('keydown', escHandler);
+        modal.remove();
       }
     };
     document.addEventListener('keydown', escHandler);
 
-    // Cerrar al hacer clic fuera
+    // Cerrar al hacer clic fuera - also cleanup ESC handler
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
+      if (e.target === modal) {
+        document.removeEventListener('keydown', escHandler);
+        modal.remove();
+      }
     });
   }
 

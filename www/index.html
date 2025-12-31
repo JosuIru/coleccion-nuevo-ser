@@ -400,6 +400,8 @@
   <script src="js/core/widget-data-helper.js"></script>
   <script src="js/core/shortcuts-handler.js"></script>
   <script src="js/core/dynamic-colors-helper.js?v=2.9.176"></script>
+  <!-- Environment config (credentials) - must load before supabase-config -->
+  <script src="js/core/env.js"></script>
   <script src="js/core/supabase-config.js"></script>
   <script src="js/core/custom-captcha.js"></script>
   <!-- Auth consolidado: incluye funcionalidades de supabase-auth-helper + premium -->
@@ -1096,7 +1098,7 @@
   </script>
 
   <!-- Modal de Retos/Juego Frankenstein -->
-  <div id="challenges-modal" class="challenges-modal" style="display: none;">
+  <div id="challenges-modal" class="challenges-modal" role="dialog" aria-modal="true" aria-labelledby="challenges-being-name" style="display: none;">
     <div class="challenges-container">
       <div class="challenges-header">
         <h2 class="challenges-title">Pruebas del Ser</h2>
@@ -1104,7 +1106,7 @@
 
         <!-- Control de audio -->
         <div class="audio-control">
-          <button id="challenges-audio-toggle" class="audio-toggle" title="Toggle audio ambiental">
+          <button id="challenges-audio-toggle" class="audio-toggle" title="Toggle audio ambiental" aria-label="Activar o desactivar audio ambiental">
             🔇
           </button>
         </div>
@@ -1125,7 +1127,7 @@
   </div>
 
   <!-- Modal de Microsociedades Autónomas -->
-  <div id="microsocieties-modal" class="microsocieties-modal" style="display: none;">
+  <div id="microsocieties-modal" class="microsocieties-modal" role="dialog" aria-modal="true" aria-label="Simulador de microsociedades" style="display: none;">
     <div class="microsocieties-container">
       <!-- Header -->
       <div class="microsocieties-header">
@@ -1145,15 +1147,15 @@
           </div>
 
           <!-- Botones de FASE 3 -->
-          <button onclick="openSandboxConfig()" class="icon-button" title="Configuración Sandbox">
+          <button onclick="openSandboxConfig()" class="icon-button" title="Configuración Sandbox" aria-label="Abrir configuración sandbox">
             🎨
           </button>
 
-          <button onclick="openLeaderboards()" class="icon-button primary" title="Rankings y Compartir">
+          <button onclick="openLeaderboards()" class="icon-button primary" title="Rankings y Compartir" aria-label="Ver rankings y compartir">
             🏆
           </button>
 
-          <button id="close-microsocieties" class="microsocieties-close">×</button>
+          <button id="close-microsocieties" class="microsocieties-close" aria-label="Cerrar microsociedades">×</button>
         </div>
       </div>
 
@@ -1337,7 +1339,7 @@
   </div>
 
   <!-- Modal de Configuración Sandbox -->
-  <div id="sandbox-modal" style="
+  <div id="sandbox-modal" role="dialog" aria-modal="true" aria-label="Configuración Sandbox" style="
     display: none;
     position: fixed;
     top: 0;
@@ -1359,7 +1361,7 @@
     ">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h2 style="color: #d4af37; margin: 0;">🎨 Configuración Sandbox</h2>
-        <button onclick="closeSandboxConfig()" style="
+        <button onclick="closeSandboxConfig()" aria-label="Cerrar configuración sandbox" style="
           background: none;
           border: none;
           color: #f4e9d8;
@@ -1401,7 +1403,7 @@
   </div>
 
   <!-- Modal de Leaderboards y Compartir -->
-  <div id="leaderboards-modal" style="
+  <div id="leaderboards-modal" role="dialog" aria-modal="true" aria-label="Rankings y Compartir" style="
     display: none;
     position: fixed;
     top: 0;
@@ -1423,7 +1425,7 @@
     ">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h2 style="color: #d4af37; margin: 0;">🏆 Rankings y Compartir</h2>
-        <button onclick="closeLeaderboards()" style="
+        <button onclick="closeLeaderboards()" aria-label="Cerrar rankings" style="
           background: none;
           border: none;
           color: #f4e9d8;

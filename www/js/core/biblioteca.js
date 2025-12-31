@@ -637,14 +637,27 @@ class Biblioteca {
 
   /**
    * Abre el menú de perfil/cuenta
+   * 🔧 FIX v2.9.277: Abrir myAccountModal en lugar de settingsModal
    */
   openProfileMenu() {
     this.setActiveBottomTab('perfil');
-    // Abrir modal de cuenta o settings
-    if (window.settingsModal) {
-      window.settingsModal.open();
-    } else if (window.authHelper) {
-      window.authHelper.showAccountModal();
+    // Abrir modal de Mi Cuenta
+    if (window.myAccountModal) {
+      window.myAccountModal.show();
+    } else if (window.lazyLoader) {
+      window.lazyLoader.load('my-account').then(() => {
+        if (window.myAccountModal) {
+          window.myAccountModal.show();
+        }
+      }).catch(err => {
+        console.error('[Biblioteca] Error cargando my-account:', err);
+        // Fallback a auth modal si no está logueado
+        if (window.authModal) {
+          window.authModal.show('login');
+        }
+      });
+    } else if (window.authModal) {
+      window.authModal.show('login');
     }
   }
 

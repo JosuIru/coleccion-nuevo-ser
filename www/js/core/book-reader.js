@@ -369,11 +369,30 @@ class BookReader {
       }
     }
 
-    // Actualizar icono del botón toggle
+    // Manejar backdrop (fondo oscuro en móvil)
+    const backdrop = document.getElementById('sidebar-backdrop');
+    if (this.sidebarOpen && window.innerWidth < 768) {
+      // Crear backdrop si no existe
+      if (!backdrop) {
+        const newBackdrop = document.createElement('div');
+        newBackdrop.id = 'sidebar-backdrop';
+        newBackdrop.className = 'fixed inset-0 bg-black/60 z-40';
+        newBackdrop.onclick = () => this.toggleSidebar();
+        document.body.appendChild(newBackdrop);
+      }
+    } else if (backdrop) {
+      // Quitar backdrop al cerrar
+      backdrop.remove();
+    }
+
+    // Actualizar icono y texto del botón toggle
     const toggleBtn = document.getElementById('toggle-sidebar');
     const Icons = this.getDependency('Icons'); // 🔧 FIX #87
     if (toggleBtn && Icons) {
-      toggleBtn.innerHTML = this.sidebarOpen ? Icons.chevronLeft() : Icons.chevronRight();
+      // Preservar estructura: icono + span con texto
+      const icon = this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18);
+      const text = this.sidebarOpen ? 'Ocultar' : 'Índice';
+      toggleBtn.innerHTML = `${icon}<span class="text-xs sm:text-sm">${text}</span>`;
       toggleBtn.setAttribute('aria-label', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
       toggleBtn.setAttribute('title', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
     }
@@ -517,11 +536,11 @@ class BookReader {
       const container = document.getElementById('book-reader-view');
       if (container) {
         container.innerHTML = `
-          <div class="flex items-center justify-center h-screen bg-slate-900 text-white p-8">
+          <div class="flex items-center justify-center h-screen bg-gray-100 dark:bg-slate-900 text-gray-900 dark:text-white p-8">
             <div class="text-center max-w-md">
               <div class="text-6xl mb-4">⚠️</div>
               <h2 class="text-2xl font-bold mb-4">Error al cargar el lector</h2>
-              <p class="text-slate-400 mb-6">Ha ocurrido un error al renderizar el contenido.</p>
+              <p class="text-gray-600 dark:text-slate-400 mb-6">Ha ocurrido un error al renderizar el contenido.</p>
               <button
                 onclick="window.location.reload()"
                 class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
@@ -546,12 +565,12 @@ class BookReader {
       <!-- Sidebar: Fixed overlay en móvil, normal en desktop -->
       <div class="sidebar ${this.sidebarOpen ? 'w-full sm:w-80' : 'w-0'}
                   fixed sm:relative top-0 left-0 h-full sm:h-auto z-50 sm:z-auto
-                  flex-shrink-0 bg-gray-900/95 sm:bg-gray-900/50 border-r border-gray-700
+                  flex-shrink-0 bg-white/95 dark:bg-gray-900/95 sm:bg-white/50 dark:sm:bg-gray-900/50 border-r border-gray-200 dark:border-gray-700
                   overflow-hidden transition-all duration-300 flex flex-col">
         <!-- Fixed Header Section -->
         <div class="flex-shrink-0 p-4 sm:p-6 pb-3 sm:pb-4">
           <!-- Close Sidebar Button (visible on all screens) -->
-          <button id="close-sidebar-mobile" class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center text-2xl sm:text-3xl font-bold hover:bg-red-500/20 hover:text-red-400 text-white transition-all rounded-lg z-20 border-2 border-gray-500 bg-gray-800 shadow-lg"
+          <button id="close-sidebar-mobile" class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center text-2xl sm:text-3xl font-bold hover:bg-red-500/20 hover:text-red-400 text-gray-800 dark:text-white transition-all rounded-lg z-20 border-2 border-gray-300 dark:border-gray-500 bg-gray-100 dark:bg-gray-800 shadow-lg"
                   aria-label="Cerrar índice"
                   title="Cerrar índice de capítulos">
             ×
@@ -582,12 +601,12 @@ class BookReader {
     const progress = this.bookEngine.getProgress(bookId);
 
     return `
-      <div class="progress-box p-3 sm:p-4 rounded-lg bg-gray-800/50 border border-gray-700">
+      <div class="progress-box p-3 sm:p-4 rounded-lg bg-gray-100/80 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700">
         <div class="flex justify-between text-xs sm:text-sm mb-2">
           <span>Progreso</span>
           <span class="font-bold">${progress.percentage}%</span>
         </div>
-        <div class="w-full h-1.5 sm:h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div class="w-full h-1.5 sm:h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
           <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all"
                style="width: ${progress.percentage}%"></div>
         </div>
@@ -617,10 +636,9 @@ class BookReader {
       this.eventManager.addEventListener(area, 'click', () => {
         const chapterId = area.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
-        if (window.innerWidth < 768) {
-          this.sidebarOpen = false;
-          this.updateSidebar();
+        // Cerrar sidebar en móvil usando toggleSidebar para sincronizar estado
+        if (window.innerWidth < 768 && this.sidebarOpen) {
+          this.toggleSidebar();
         }
       });
     });
@@ -634,10 +652,9 @@ class BookReader {
         }
         const chapterId = item.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
-        if (window.innerWidth < 768) {
-          this.sidebarOpen = false;
-          this.updateSidebar();
+        // Cerrar sidebar en móvil usando toggleSidebar para sincronizar estado
+        if (window.innerWidth < 768 && this.sidebarOpen) {
+          this.toggleSidebar();
         }
       });
     });
@@ -649,11 +666,11 @@ class BookReader {
 
     return `
       <div class="chapter-item p-2 sm:p-3 rounded-lg cursor-pointer transition-all ${
-        isActive ? 'bg-cyan-600/30 border border-cyan-500' : 'hover:bg-gray-800/50'
+        isActive ? 'bg-cyan-600/30 border border-cyan-500' : 'hover:bg-gray-100 dark:hover:bg-gray-800/50'
       }"
            data-chapter-id="${chapter.id}">
         <div class="flex items-center gap-1.5 sm:gap-2">
-          <button class="chapter-read-toggle p-1.5 sm:p-2 rounded hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
+          <button class="chapter-read-toggle p-1.5 sm:p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700/50 transition ${isRead ? 'text-green-400' : 'opacity-30 hover:opacity-60'}"
                   data-chapter-id="${chapter.id}"
                   aria-label="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}"
                   title="${isRead ? this.i18n.t('reader.markUnread') : this.i18n.t('reader.markRead')}">
@@ -688,13 +705,13 @@ class BookReader {
     const hasKoan = koanBooks.includes(bookId);
 
     return `
-      <div class="header border-b border-gray-700 p-3 lg:p-4">
+      <div class="header border-b border-gray-200 dark:border-gray-700 p-3 lg:p-4">
         <!-- Primera fila: Navegación + Acciones -->
         <div class="flex items-center justify-between gap-2">
           <!-- Left: Toggle Sidebar -->
           <div class="flex items-start sm:items-center gap-1 flex-shrink-0">
             <button id="toggle-sidebar"
-                    class="p-2 sm:p-3 hover:bg-gray-800 rounded-lg transition flex items-center justify-center sm:justify-start gap-1.5"
+                    class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center justify-center sm:justify-start gap-1.5"
                     aria-label="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}"
                     title="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}">
               ${this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18)}
@@ -708,21 +725,22 @@ class BookReader {
             <!-- En Capacitor siempre usar vista móvil, en web solo < md (768px) -->
             <div class="${this.isCapacitor() ? 'flex lg:hidden' : 'flex md:hidden'} items-center gap-1">
               <button id="bookmark-btn-mobile"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
-                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      onclick="window.bookReader?.toggleBookmark()">
                 ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
               </button>
               <!-- Botón Audio mobile: cambia entre 🎧/▶/⏸ -->
               <button id="audioreader-btn-mobile"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.audio')}"
                       title="${this.i18n.t('reader.audio')}">
                 <span id="audio-icon-mobile">${Icons.audio()}</span>
               </button>
               <!-- Botón Desplegar reproductor (oculto hasta activar audio) -->
               <button id="audio-expand-btn-mobile"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition hidden"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition hidden"
                       aria-label="Ver reproductor"
                       title="Ver reproductor">
                 ${Icons.chevronDown ? Icons.chevronDown(20) : '▼'}
@@ -736,7 +754,7 @@ class BookReader {
               </button>
               <!-- More actions button -->
               <button id="mobile-menu-btn"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('menu.more') || 'Más opciones'}"
                       title="${this.i18n.t('menu.more') || 'Más'}">
                 ${Icons.moreVertical ? Icons.moreVertical() : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>`}
@@ -747,22 +765,23 @@ class BookReader {
             <!-- Solo en web, no en Capacitor -->
             <div class="${this.isCapacitor() ? 'hidden' : 'hidden md:flex lg:hidden'} items-center gap-1">
               <button id="bookmark-btn-tablet"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
-                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      onclick="window.bookReader?.toggleBookmark()">
                 ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
               </button>
               <button id="ai-chat-btn-tablet"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.chat')}"
                       title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
               <button id="audioreader-btn-tablet"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.audio')}"
                       title="${this.i18n.t('reader.audio')}">
-                ${Icons.audio()}
+                <span id="audio-icon-tablet">${Icons.audio()}</span>
               </button>
               <!-- Botón Apoyar tablet - siempre visible -->
               <button id="support-btn-tablet"
@@ -771,45 +790,45 @@ class BookReader {
                       title="${this.i18n.t('btn.support')}">
                 <span class="support-heart">❤️</span>
               </button>
-              <div class="w-px h-5 bg-gray-700 mx-1"></div>
+              <div class="w-px h-5 bg-gray-300 dark:bg-gray-700 mx-1"></div>
               <!-- More actions dropdown for tablet -->
               <div class="relative">
                 <button id="more-actions-btn"
-                        class="p-3 hover:bg-gray-800 rounded-lg transition"
+                        class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                         aria-label="${this.i18n.t('menu.more') || 'Más opciones'}"
                         title="${this.i18n.t('menu.more') || 'Más'}">
                   ${Icons.moreVertical ? Icons.moreVertical() : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>`}
                 </button>
-                <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
-                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Configuración</div>
-                  <button id="open-settings-modal-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400 font-semibold" aria-label="Configuración General">
+                <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuración</div>
+                  <button id="open-settings-modal-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400 font-semibold" aria-label="Configuración General">
                     ${Icons.settings(18)} <span>Configuración General</span>
                   </button>
-                  <button id="open-help-center-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
+                  <button id="open-help-center-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
                     ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
                   </button>
-                  <div class="border-t border-gray-700 my-1"></div>
-                  <button id="notes-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.notes')}">
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  <button id="notes-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.notes')}">
                     ${Icons.note(18)} <span>${this.i18n.t('reader.notes')}</span>
                   </button>
-                  <button id="chapter-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-blue-400" aria-label="Recursos del Capítulo">
+                  <button id="chapter-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Recursos del Capítulo">
                     ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
                   </button>
-                  <button id="learning-paths-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Learning Paths">
+                  <button id="learning-paths-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Learning Paths">
                     ${Icons.target(18)} <span>Learning Paths</span>
                   </button>
-                  ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
-                  ${hasResources ? `<button id="book-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
-                  ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
-                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
-                  ${hasKoan ? `<button id="koan-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
-                  <div class="border-t border-gray-700 my-1"></div>
-                  ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span></button>`}
-                  <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.support')}">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
-                  <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400" aria-label="${this.i18n.t('premium.title')}">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
-                  <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
-                  <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
-                  <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400" aria-label="Compartir capítulo">${Icons.create('share-2', 18)} <span>Compartir</span></button>
+                  ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
+                  ${hasResources ? `<button id="book-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
+                  ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+                  ${hasKoan ? `<button id="koan-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span></button>`}
+                  <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.support')}">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
+                  <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 flex items-center gap-3 text-amber-600 dark:text-amber-400" aria-label="${this.i18n.t('premium.title')}">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
+                  <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
+                  <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
+                  <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Compartir capítulo">${Icons.create('share-2', 18)} <span>Compartir</span></button>
                 </div>
               </div>
             </div>
@@ -818,28 +837,29 @@ class BookReader {
             <div class="hidden lg:flex items-center gap-1">
               <!-- Grupo 1: Acciones principales (siempre visibles) -->
               <button id="bookmark-btn"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
-                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}">
+                      title="${isBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark')}"
+                      onclick="window.bookReader?.toggleBookmark()">
                 ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
               </button>
               <button id="notes-btn"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.notes')}"
                       title="${this.i18n.t('reader.notes')}">
                 ${Icons.note()}
               </button>
               <button id="ai-chat-btn"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.chat')}"
                       title="${this.i18n.t('reader.chat')}">
                 ${Icons.chat()}
               </button>
               <button id="audioreader-btn"
-                      class="p-3 hover:bg-gray-800 rounded-lg transition"
+                      class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       aria-label="${this.i18n.t('reader.audio')}"
                       title="${this.i18n.t('reader.audio')}">
-                ${Icons.audio()}
+                <span id="audio-icon-desktop">${Icons.audio()}</span>
               </button>
 
               <!-- Botón Apoyar - siempre visible con animación de latido -->
@@ -850,7 +870,7 @@ class BookReader {
                 <span class="support-heart">❤️</span>
               </button>
 
-              <div class="w-px h-5 bg-gray-700 mx-1"></div>
+              <div class="w-px h-5 bg-gray-300 dark:bg-gray-700 mx-1"></div>
 
               <!-- Grupo 2: Herramientas (dropdown) -->
               <div class="relative">
@@ -861,31 +881,31 @@ class BookReader {
                   ${Icons.create('wrench', 18)}
                   <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div id="tools-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
-                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Herramientas</div>
-                  <button id="chapter-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-blue-400" aria-label="Recursos del Capítulo">
+                <div id="tools-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Herramientas</div>
+                  <button id="chapter-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Recursos del Capítulo">
                     ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
                   </button>
-                  <button id="summary-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Resumen del capítulo">
+                  <button id="summary-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Resumen del capítulo">
                     ${Icons.create('file-text', 18)} <span>Resumen del capítulo</span>
                   </button>
-                  <button id="voice-notes-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-red-400" aria-label="Notas de voz">
+                  <button id="voice-notes-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-red-600 dark:text-red-400" aria-label="Notas de voz">
                     ${Icons.create('mic', 18)} <span>Notas de voz</span>
                   </button>
-                  <button id="concept-map-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-cyan-400" aria-label="Mapa Conceptual">
+                  <button id="concept-map-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-cyan-600 dark:text-cyan-400" aria-label="Mapa Conceptual">
                     ${Icons.create('git-branch', 18)} <span>Mapa Conceptual</span>
                   </button>
-                  <button id="action-plans-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-green-400" aria-label="Planes de Acción">
+                  <button id="action-plans-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-green-600 dark:text-green-400" aria-label="Planes de Acción">
                     ${Icons.create('clipboard-list', 18)} <span>Planes de Acción</span>
                   </button>
-                  <button id="achievements-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3 text-amber-400" aria-label="Mis Logros">
+                  <button id="achievements-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-amber-600 dark:text-amber-400" aria-label="Mis Logros">
                     ${Icons.trophy(18)} <span>Mis Logros</span>
                   </button>
-                  <button id="learning-paths-btn-desktop" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Learning Paths">
+                  <button id="learning-paths-btn-desktop" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Learning Paths">
                     ${Icons.target(18)} <span>Learning Paths</span>
                   </button>
-                  <div class="border-t border-gray-700 my-1"></div>
-                  <button id="content-adapter-btn" class="w-full text-left px-4 py-2 hover:bg-purple-900/30 flex items-center gap-3 text-purple-400" aria-label="Adaptar Contenido">
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  <button id="content-adapter-btn" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Adaptar Contenido">
                     ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
                   </button>
                 </div>
@@ -901,16 +921,16 @@ class BookReader {
                   ${Icons.resources(18)}
                   <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div id="book-features-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
-                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Contenido del libro</div>
-                  <button id="quiz-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Quiz de Autoevaluación" title="Quiz de Autoevaluación">
+                <div id="book-features-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Contenido del libro</div>
+                  <button id="quiz-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Quiz de Autoevaluación" title="Quiz de Autoevaluación">
                     <span class="text-lg">🎯</span> <span>Quiz de Autoevaluación</span>
                   </button>
-                  ${hasTimeline ? `<button id="timeline-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
-                  ${hasResources ? `<button id="book-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
-                  ${hasManualPractico ? `<button id="manual-practico-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
-                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
-                  ${hasKoan ? `<button id="koan-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+                  ${hasTimeline ? `<button id="timeline-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Histórico">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
+                  ${hasResources ? `<button id="book-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
+                  ${hasManualPractico ? `<button id="manual-practico-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+                  ${hasKoan ? `<button id="koan-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
                 </div>
               </div>
               ` : ''}
@@ -918,38 +938,38 @@ class BookReader {
               <!-- Grupo 4: Configuración y más (dropdown) -->
               <div class="relative">
                 <button id="settings-dropdown-btn"
-                        class="p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-1"
+                        class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-1"
                         aria-label="Configuración"
                         title="Configuración">
                   ${Icons.settings(18)}
                   <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div id="settings-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 py-1">
-                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-700">Configuración</div>
-                  <button id="open-settings-modal-btn" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400 font-semibold" aria-label="Configuración General">
+                <div id="settings-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
+                  <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuración</div>
+                  <button id="open-settings-modal-btn" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400 font-semibold" aria-label="Configuración General">
                     ${Icons.settings(18)} <span>Configuración General</span>
                   </button>
-                  <button id="open-help-center-btn" class="w-full text-left px-4 py-2 hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
+                  <button id="open-help-center-btn" class="w-full text-left px-4 py-2 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
                     ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
                   </button>
-                  <div class="border-t border-gray-700 my-1"></div>
-                  <button id="language-selector-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  <button id="language-selector-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">
                     ${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span>
                   </button>
-                  <button id="theme-toggle-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}">
+                  <button id="theme-toggle-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}">
                     <span id="theme-icon">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
                   </button>
-                  <div class="border-t border-gray-700 my-1"></div>
-                  <button id="premium-edition-btn" class="w-full text-left px-4 py-2 hover:bg-amber-900/30 flex items-center gap-3 text-amber-400" aria-label="${this.i18n.t('premium.title')}">
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  <button id="premium-edition-btn" class="w-full text-left px-4 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 flex items-center gap-3 text-amber-600 dark:text-amber-400" aria-label="${this.i18n.t('premium.title')}">
                     ${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span>
                   </button>
                   ${this.isCapacitor() ? '' : `
-                  <button id="android-download-btn" class="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">
+                  <button id="android-download-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">
                     ${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span>
                   </button>
                   `}
-                  <div class="border-t border-gray-700 my-1"></div>
-                  <button id="share-chapter-btn" class="w-full text-left px-4 py-2 hover:bg-blue-900/30 flex items-center gap-3 text-blue-400" aria-label="Compartir capítulo">
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                  <button id="share-chapter-btn" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Compartir capítulo">
                     ${Icons.create('share-2', 18)} <span>Compartir capítulo</span>
                   </button>
                 </div>
@@ -966,10 +986,10 @@ class BookReader {
 
         <!-- Barra de progreso de audio (oculta hasta activar audio) -->
         <div id="audio-progress-bar-container" class="hidden mt-2">
-          <div class="h-1 bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-1 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
             <div id="audio-progress-bar" class="h-full bg-cyan-500 transition-all duration-300" style="width: 0%"></div>
           </div>
-          <div class="flex justify-between text-xs text-gray-400 mt-1 px-1">
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 px-1">
             <span id="audio-current-time">0:00</span>
             <span id="audio-paragraph-info">--</span>
             <span id="audio-total-time">0:00</span>
@@ -1003,7 +1023,8 @@ class BookReader {
     }
 
     // Contenido principal
-    html += `<div class="content prose prose-invert max-w-none overflow-x-hidden break-words">`;
+    // 🔧 FIX v2.9.266: prose-invert solo en dark mode
+    html += `<div class="content prose dark:prose-invert max-w-none overflow-x-hidden break-words prose-slate">`;
     html += this.bookEngine.renderContent(this.currentChapter.content);
     html += `</div>`;
 
@@ -1214,12 +1235,12 @@ class BookReader {
     const isRead = this.bookEngine.isChapterRead(this.currentChapter?.id);
 
     return `
-      <div class="mark-read-section mt-12 pt-8 border-t border-gray-700/50 text-center">
+      <div class="mark-read-section mt-12 pt-8 border-t border-gray-200 dark:border-gray-700/50 text-center">
         <button id="mark-chapter-read-btn"
                 class="inline-flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-300 ${
                   isRead
-                    ? 'bg-green-900/30 text-green-300 border border-green-500/30 hover:bg-green-900/50'
-                    : 'bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-cyan-500'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-400 dark:border-green-500/30 hover:bg-green-200 dark:hover:bg-green-900/50'
+                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:border-cyan-500'
                 }">
           ${isRead ? Icons.checkCircle(22) : Icons.circle(22)}
           <span class="font-medium">
@@ -1241,20 +1262,20 @@ class BookReader {
     logger.debug('🔍 [DEBUG] nextChapter:', nextChapter?.id, nextChapter?.title);
 
     return `
-      <div class="footer-nav border-t border-slate-700/50 bg-gradient-to-r from-slate-900/50 to-slate-800/50 backdrop-blur-sm">
+      <div class="footer-nav border-t border-gray-200 dark:border-slate-700/50 bg-gradient-to-r from-gray-100/90 dark:from-slate-900/50 to-gray-50/90 dark:to-slate-800/50 backdrop-blur-sm">
         <div class="max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-row justify-between items-center gap-2 sm:gap-4">
           <!-- Previous Button -->
           ${prevChapter ? `
             <button id="prev-chapter"
                     data-chapter-id="${prevChapter.id}"
-                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 max-w-[50%] sm:max-w-md"
+                    class="group flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-gray-100 dark:bg-slate-800/80 hover:bg-gray-200 dark:hover:bg-slate-700/80 border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 flex-1 max-w-[50%] sm:max-w-md"
                     title="${prevChapter.title}">
-              <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-slate-700/50 group-hover:bg-cyan-600/20 flex items-center justify-center transition-colors">
+              <div class="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded sm:rounded-lg bg-gray-200 dark:bg-slate-700/50 group-hover:bg-cyan-100 dark:group-hover:bg-cyan-600/20 flex items-center justify-center transition-colors">
                 ${Icons.chevronLeft(16)}
               </div>
               <div class="flex-1 text-left min-w-0">
-                <div class="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide hidden sm:block mb-0.5">Anterior</div>
-                <div class="text-[11px] sm:text-sm font-semibold text-slate-200 truncate leading-tight">${this.shortenChapterTitle(prevChapter.title, 22)}</div>
+                <div class="text-[10px] sm:text-xs text-gray-500 dark:text-slate-500 uppercase tracking-wide hidden sm:block mb-0.5">Anterior</div>
+                <div class="text-[11px] sm:text-sm font-semibold text-gray-700 dark:text-slate-200 truncate leading-tight">${this.shortenChapterTitle(prevChapter.title, 22)}</div>
               </div>
             </button>
           ` : '<div class="hidden sm:flex flex-1"></div>'}
@@ -1321,33 +1342,178 @@ class BookReader {
           </button>
 
           <!-- Dropdown Menu -->
-          <div id="bottom-nav-dropdown" class="hidden absolute bottom-full right-0 mb-2 w-56 bg-slate-800/95 backdrop-blur-lg border border-slate-700 rounded-lg shadow-2xl z-[1000] py-1">
+          <div id="bottom-nav-dropdown" class="hidden absolute bottom-full right-0 mb-2 w-56 bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg border border-gray-200 dark:border-slate-700 rounded-lg shadow-2xl z-[1000] py-1">
             ${prevChapter ? `
-              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${prevChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-slate-700 flex items-center gap-3 border-b border-slate-700/50">
+              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${prevChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-slate-700 flex items-center gap-3 border-b border-gray-200 dark:border-slate-700/50">
                 <span class="text-xl">⬅️</span>
                 <div class="flex-1 min-w-0">
-                  <div class="text-xs text-slate-400 uppercase">Anterior</div>
-                  <div class="text-sm font-semibold text-white truncate">${this.shortenChapterTitle(prevChapter.title, 40)}</div>
+                  <div class="text-xs text-gray-500 dark:text-slate-400 uppercase">Anterior</div>
+                  <div class="text-sm font-semibold text-gray-800 dark:text-white truncate">${this.shortenChapterTitle(prevChapter.title, 40)}</div>
                 </div>
               </button>
             ` : ''}
             ${nextChapter ? `
-              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${nextChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-slate-700 flex items-center gap-3 border-b border-slate-700/50">
+              <button onclick="window.bookReader?.bookEngine.navigateToChapter('${nextChapter.id}')" class="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-slate-700 flex items-center gap-3 border-b border-gray-200 dark:border-slate-700/50">
                 <span class="text-xl">➡️</span>
                 <div class="flex-1 min-w-0">
-                  <div class="text-xs text-slate-400 uppercase">Siguiente</div>
-                  <div class="text-sm font-semibold text-white truncate">${this.shortenChapterTitle(nextChapter.title, 40)}</div>
+                  <div class="text-xs text-gray-500 dark:text-slate-400 uppercase">Siguiente</div>
+                  <div class="text-sm font-semibold text-gray-800 dark:text-white truncate">${this.shortenChapterTitle(nextChapter.title, 40)}</div>
                 </div>
               </button>
             ` : ''}
-            <button onclick="window.bookReader?.toggleMobileMenu()" class="w-full text-left px-4 py-2 hover:bg-slate-700 flex items-center gap-3">
+            <button onclick="window.bookReader?.toggleMobileMenu()" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 flex items-center gap-3 border-b border-gray-200 dark:border-slate-700/50">
               <span class="text-lg">⚙️</span>
               <span class="text-sm">Opciones</span>
+            </button>
+            <button onclick="window.bookReader?.openProfile()" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 flex items-center gap-3">
+              <span class="text-lg">👤</span>
+              <span class="text-sm">Mi Cuenta</span>
             </button>
           </div>
         </div>
       </nav>
     `;
+  }
+
+  /**
+   * Toggle del marcador del capítulo actual
+   * 🔧 FIX v2.9.261: Usar onclick directo en lugar de EventManager
+   */
+  async toggleBookmark() {
+    if (!this.currentChapter?.id) {
+      this.showToast('error', 'No hay capítulo seleccionado');
+      return;
+    }
+
+    const currentBook = this.bookEngine.getCurrentBook();
+    const chapterId = this.currentChapter.id;
+
+    if (!currentBook) {
+      this.showToast('error', 'No hay libro seleccionado');
+      return;
+    }
+
+    const wasBookmarked = this.bookEngine.isBookmarked(chapterId);
+
+    if (wasBookmarked) {
+      this.bookEngine.removeBookmark(chapterId);
+      // Eliminar de Supabase directamente
+      await this.removeBookmarkFromSupabase(currentBook, chapterId);
+      this.showToast('info', 'Marcador eliminado');
+    } else {
+      this.bookEngine.addBookmark(chapterId);
+      // Añadir a Supabase directamente
+      await this.addBookmarkToSupabase(currentBook, chapterId);
+      this.showToast('success', 'Capítulo guardado en marcadores');
+    }
+
+    // Actualizar icono en todos los botones de bookmark (usar window.Icons global)
+    const isNowBookmarked = !wasBookmarked;
+    const newIcon = isNowBookmarked ? window.Icons.bookmarkFilled() : window.Icons.bookmark();
+    const newLabel = isNowBookmarked ? 'Quitar marcador' : this.i18n.t('reader.bookmark');
+
+    ['bookmark-btn', 'bookmark-btn-tablet', 'bookmark-btn-mobile'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.innerHTML = newIcon;
+        btn.setAttribute('aria-label', newLabel);
+        btn.setAttribute('title', newLabel);
+      }
+    });
+  }
+
+  /**
+   * Añadir bookmark directamente a Supabase
+   */
+  async addBookmarkToSupabase(bookId, chapterId) {
+    try {
+      if (!window.supabaseAuthHelper?.isAuthenticated()) return;
+
+      const supabase = window.supabaseAuthHelper.supabase;
+      const userId = window.supabaseAuthHelper.user?.id;
+      if (!supabase || !userId) return;
+
+      const { error } = await supabase
+        .from('bookmarks')
+        .insert({
+          user_id: userId,
+          book_id: bookId,
+          chapter_id: chapterId,
+          created_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('[Bookmark] Error añadiendo a Supabase:', error);
+      }
+    } catch (error) {
+      console.error('[Bookmark] Error:', error);
+    }
+  }
+
+  /**
+   * Eliminar bookmark de Supabase
+   */
+  async removeBookmarkFromSupabase(bookId, chapterId) {
+    try {
+      if (!window.supabaseAuthHelper?.isAuthenticated()) return;
+
+      const supabase = window.supabaseAuthHelper.supabase;
+      const userId = window.supabaseAuthHelper.user?.id;
+      if (!supabase || !userId) return;
+
+      const { error } = await supabase
+        .from('bookmarks')
+        .delete()
+        .eq('user_id', userId)
+        .eq('book_id', bookId)
+        .eq('chapter_id', chapterId);
+
+      if (error) {
+        console.error('[Bookmark] Error eliminando de Supabase:', error);
+      }
+    } catch (error) {
+      console.error('[Bookmark] Error:', error);
+    }
+  }
+
+  /**
+   * Toggle del menú móvil
+   * 🔧 FIX v2.9.263: Añadir método que faltaba
+   */
+  toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  }
+
+  /**
+   * Abre la modal de Mi Cuenta
+   * 🔧 FIX v2.9.277: Agregar acceso a perfil desde el lector
+   */
+  openProfile() {
+    // Cerrar dropdown primero
+    const dropdown = document.getElementById('bottom-nav-dropdown');
+    if (dropdown) {
+      dropdown.classList.add('hidden');
+    }
+
+    if (window.myAccountModal) {
+      window.myAccountModal.show();
+    } else if (window.lazyLoader) {
+      window.lazyLoader.load('my-account').then(() => {
+        if (window.myAccountModal) {
+          window.myAccountModal.show();
+        }
+      }).catch(err => {
+        console.error('[BookReader] Error cargando my-account:', err);
+        if (window.authModal) {
+          window.authModal.show('login');
+        }
+      });
+    } else if (window.authModal) {
+      window.authModal.show('login');
+    }
   }
 
   /**
@@ -1441,9 +1607,9 @@ class BookReader {
         <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/80"></div>
 
         <!-- Menu Panel -->
-        <div class="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-gray-900 border-l border-gray-700 shadow-2xl flex flex-col overflow-hidden">
+        <div class="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col overflow-hidden">
           <!-- Fixed Header -->
-          <div class="flex-shrink-0 p-4 border-b border-gray-700 flex justify-between items-center bg-gray-900">
+          <div class="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-900">
             <h3 class="font-bold text-lg">${this.i18n.t('menu.title')}</h3>
             <button id="close-mobile-menu" class="text-3xl hover:text-red-400 transition-colors p-2 -mr-2"
                     aria-label="${this.i18n.t('menu.close')}"
@@ -1461,108 +1627,108 @@ class BookReader {
               <span class="font-semibold">${this.i18n.t('nav.library')}</span>
             </button>
 
-            <div class="border-t border-gray-700 my-3"></div>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
             <!-- Notas (no está en header móvil, solo aquí) -->
-            <button id="notes-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="notes-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.note(24)}
               <span>${this.i18n.t('reader.notes')}</span>
             </button>
 
-            <button id="chapter-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-blue-400">
+            <button id="chapter-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400">
               ${Icons.create('link', 24)}
               <span>Recursos del Capítulo</span>
             </button>
 
             <!-- Learning Paths Button -->
-            <button id="learning-paths-btn-mobile" class="w-full text-left p-3 hover:bg-purple-900/30 rounded-lg transition flex items-center gap-3 text-purple-400 border border-purple-500/30">
+            <button id="learning-paths-btn-mobile" class="w-full text-left p-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition flex items-center gap-3 text-purple-600 dark:text-purple-400 border border-purple-300 dark:border-purple-500/30">
               ${Icons.target(24)}
               <span>Learning Paths</span>
             </button>
 
-            <div class="border-t border-gray-700 my-3"></div>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
             <!-- Feature Buttons -->
             ${hasTimeline ? `
-              <button id="timeline-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <button id="timeline-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.timeline(24)}
                 <span>Timeline Histórico</span>
               </button>
             ` : ''}
 
             ${hasResources ? `
-              <button id="book-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <button id="book-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.resources(24)}
                 <span>Recursos del Libro</span>
               </button>
             ` : ''}
 
             ${hasManualPractico ? `
-              <button id="manual-practico-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <button id="manual-practico-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.manual(24)}
                 <span>${this.i18n.t('reader.manualPractico')}</span>
               </button>
             ` : ''}
 
             ${hasPracticasRadicales ? `
-              <button id="practicas-radicales-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+              <button id="practicas-radicales-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
                 ${Icons.radical(24)}
                 <span>${this.i18n.t('reader.practicasRadicales')}</span>
               </button>
             ` : ''}
 
             ${hasKoan ? `
-            <button id="koan-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="koan-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.koan(24)}
               <span>${this.i18n.t('reader.koan')}</span>
             </button>
             ` : ''}
 
-            <div class="border-t border-gray-700 my-3"></div>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
             ${this.isCapacitor() ? '' : `
-            <button id="android-download-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="android-download-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.download(24)}
               <span>${this.i18n.t('btn.download')}</span>
             </button>
             `}
 
-            <button id="donations-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="donations-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.donate(24)}
               <span>${this.i18n.t('btn.support')}</span>
             </button>
 
-            <button id="premium-edition-btn-mobile" class="w-full text-left p-3 hover:bg-amber-900/30 rounded-lg transition flex items-center gap-3 text-amber-400 border border-amber-500/30">
+            <button id="premium-edition-btn-mobile" class="w-full text-left p-3 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition flex items-center gap-3 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30">
               ${Icons.book(24)}
               <div>
                 <span class="font-bold">${this.i18n.t('premium.title')}</span>
-                <span class="text-xs text-amber-300/70 block">${this.i18n.t('premium.contribution')}: 15€ (${this.i18n.t('premium.optional')})</span>
+                <span class="text-xs text-amber-500 dark:text-amber-300/70 block">${this.i18n.t('premium.contribution')}: 15€ (${this.i18n.t('premium.optional')})</span>
               </div>
             </button>
 
-            <button id="language-selector-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="language-selector-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               ${Icons.language(24)}
               <span>${this.i18n.t('lang.title')}</span>
             </button>
 
-            <button id="theme-toggle-btn-mobile" class="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
+            <button id="theme-toggle-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
               <span class="text-2xl" id="theme-icon-mobile">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
               <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
             </button>
 
-            <div class="border-t border-gray-700 my-3"></div>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
 
-            <button id="open-settings-modal-btn-mobile" class="w-full text-left p-3 hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-400 border border-blue-500/30 font-semibold">
+            <button id="open-settings-modal-btn-mobile" class="w-full text-left p-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30 font-semibold">
               ${Icons.settings(24)}
               <span>Configuración</span>
             </button>
 
-            <button id="open-help-center-btn-mobile" class="w-full text-left p-3 hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-400 border border-cyan-500/30 font-semibold">
+            <button id="open-help-center-btn-mobile" class="w-full text-left p-3 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-600 dark:text-cyan-400 border border-cyan-300 dark:border-cyan-500/30 font-semibold">
               ${Icons.helpCircle(24)}
               <span>Centro de Ayuda</span>
             </button>
 
-            <button id="share-chapter-btn-mobile" class="w-full text-left p-3 hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-400 border border-blue-500/30">
+            <button id="share-chapter-btn-mobile" class="w-full text-left p-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30">
               ${Icons.create('share-2', 24)}
               <span>Compartir capítulo</span>
             </button>
@@ -1853,28 +2019,7 @@ class BookReader {
       if (menu) menu.classList.add('hidden');
     };
 
-    // Bookmark button (desktop lg+ and tablet md)
-    const bookmarkHandler = () => {
-      closeMobileMenuDropdown();
-      const isBookmarked = this.bookEngine.isBookmarked(this.currentChapter.id);
-      if (isBookmarked) {
-        this.bookEngine.removeBookmark(this.currentChapter.id);
-      } else {
-        this.bookEngine.addBookmark(this.currentChapter.id);
-      }
-      // 🔧 FIX #49: Solo actualizar header y sidebar, no render completo
-      this.updateHeader();
-      this.updateSidebar();
-    };
-
-    const bookmarkBtn = document.getElementById('bookmark-btn');
-    const bookmarkBtnTablet = document.getElementById('bookmark-btn-tablet');
-    const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
-
-    // 🔧 FIX #44: Bookmark buttons usando EventManager
-    if (bookmarkBtn) this.eventManager.addEventListener(bookmarkBtn, 'click', bookmarkHandler);
-    if (bookmarkBtnTablet) this.eventManager.addEventListener(bookmarkBtnTablet, 'click', bookmarkHandler);
-    if (bookmarkBtnMobile) this.eventManager.addEventListener(bookmarkBtnMobile, 'click', bookmarkHandler);
+    // 🔧 FIX v2.9.261: Bookmark button ahora usa onclick directo (ver toggleBookmark())
 
     // AI Chat button (desktop lg+, tablet md, and mobile)
     const aiChatHandler = () => {
@@ -2543,10 +2688,9 @@ class BookReader {
       this.eventManager.addEventListener(area, 'click', () => {
         const chapterId = area.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
-        if (window.innerWidth < 768) {
-          this.sidebarOpen = false;
-          this.updateSidebar();
+        // Cerrar sidebar en móvil usando toggleSidebar para sincronizar estado
+        if (window.innerWidth < 768 && this.sidebarOpen) {
+          this.toggleSidebar();
         }
       });
     });
@@ -2561,10 +2705,9 @@ class BookReader {
         }
         const chapterId = item.getAttribute('data-chapter-id');
         this.navigateToChapter(chapterId);
-        // 🔧 FIX #49: Cerrar sidebar en móvil sin re-render completo
-        if (window.innerWidth < 768) {
-          this.sidebarOpen = false;
-          this.updateSidebar();
+        // Cerrar sidebar en móvil usando toggleSidebar para sincronizar estado
+        if (window.innerWidth < 768 && this.sidebarOpen) {
+          this.toggleSidebar();
         }
       });
     });
@@ -3150,8 +3293,8 @@ class BookReader {
       // 🔧 FIX #94: Error boundary para actualización de contenido
       console.error('[BookReader] Error actualizando contenido:', error);
       this.captureError(error, {
-        context: 'navigate_to_chapter',
-        chapterId: chapterId,
+        context: 'update_chapter_content',
+        chapterId: this.currentChapter?.id,
         filename: 'book-reader.js'
       });
     }
@@ -3180,8 +3323,8 @@ class BookReader {
       // 🔧 FIX #94: Error boundary para actualización de header
       console.error('[BookReader] Error actualizando header:', error);
       this.captureError(error, {
-        context: 'navigate_to_chapter',
-        chapterId: chapterId,
+        context: 'update_header',
+        chapterId: this.currentChapter?.id,
         filename: 'book-reader.js'
       });
     }
@@ -3233,6 +3376,8 @@ class BookReader {
         }
       }
 
+      // 🔧 FIX v2.9.261: Bookmark buttons ahora usan onclick directo (ver toggleBookmark())
+
       // =======================================================================
       // SUPPORT/DONATIONS (DONAR/APOYAR)
       // =======================================================================
@@ -3263,25 +3408,6 @@ class BookReader {
       }
       if (supportBtnMobile) {
         this.eventManager.addEventListener(supportBtnMobile, 'click', supportHandler);
-      }
-
-      // =======================================================================
-      // BOOKMARK
-      // =======================================================================
-      if (this._bookmarkHandler) {
-        const bookmarkBtn = document.getElementById('bookmark-btn');
-        const bookmarkBtnTablet = document.getElementById('bookmark-btn-tablet');
-        const bookmarkBtnMobile = document.getElementById('bookmark-btn-mobile');
-
-        if (bookmarkBtn) {
-          this.eventManager.addEventListener(bookmarkBtn, 'click', this._bookmarkHandler);
-        }
-        if (bookmarkBtnTablet) {
-          this.eventManager.addEventListener(bookmarkBtnTablet, 'click', this._bookmarkHandler);
-        }
-        if (bookmarkBtnMobile) {
-          this.eventManager.addEventListener(bookmarkBtnMobile, 'click', this._bookmarkHandler);
-        }
       }
 
       // =======================================================================
@@ -3363,6 +3489,14 @@ class BookReader {
         // 🔧 FIX #49: Re-attach listeners para chapter items en el sidebar
         this.attachChapterListeners();
 
+        // Re-attach close sidebar button
+        if (this._closeSidebarHandler) {
+          const closeBtn = document.getElementById('close-sidebar-mobile');
+          if (closeBtn) {
+            this.eventManager.addEventListener(closeBtn, 'click', this._closeSidebarHandler);
+          }
+        }
+
         // Re-inicializar iconos
         Icons.init();
       }
@@ -3370,8 +3504,8 @@ class BookReader {
       // 🔧 FIX #94: Error boundary para actualización de sidebar
       console.error('[BookReader] Error actualizando sidebar:', error);
       this.captureError(error, {
-        context: 'navigate_to_chapter',
-        chapterId: chapterId,
+        context: 'update_sidebar',
+        chapterId: this.currentChapter?.id,
         filename: 'book-reader.js'
       });
     }
@@ -3834,7 +3968,7 @@ class BookReader {
 
     iconElements.forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.textContent = icon;
+      if (el) el.innerHTML = icon;
     });
 
     labelElements.forEach(id => {

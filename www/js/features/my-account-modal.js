@@ -149,7 +149,7 @@ class MyAccountModal {
         this.supabase = window.supabase || window.supabaseClient || null;
       }
 
-      const userId = this.authHelper.getUser()?.id;
+      const userId = this.authHelper?.getUser()?.id;
 
       // 🔧 FIX v2.9.276: Cargar datos locales como fallback si no hay Supabase
       if (!userId || !this.supabase) {
@@ -390,8 +390,8 @@ class MyAccountModal {
     const existing = document.getElementById('my-account-modal');
     if (existing) existing.remove();
 
-    const profile = this.authHelper.getProfile() || {};
-    const user = this.authHelper.getUser() || {};
+    const profile = this.authHelper?.getProfile() || {};
+    const user = this.authHelper?.getUser() || {};
 
     console.log('[MyAccountModal] Rendering with profile:', profile);
     console.log('[MyAccountModal] User:', user);
@@ -468,8 +468,8 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   renderProfileTab() {
-    const profile = this.authHelper.getProfile() || {};
-    const user = this.authHelper.getUser() || {};
+    const profile = this.authHelper?.getProfile() || {};
+    const user = this.authHelper?.getUser() || {};
 
     return `
       <div class="space-y-6">
@@ -723,7 +723,7 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   renderSubscriptionTab() {
-    const profile = this.authHelper.getProfile() || {};
+    const profile = this.authHelper?.getProfile() || {};
     const tier = profile.subscription_tier || 'free';
     const status = profile.subscription_status || 'active';
 
@@ -850,7 +850,7 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   renderCreditsTab() {
-    const profile = this.authHelper.getProfile() || {};
+    const profile = this.authHelper?.getProfile() || {};
     const remaining = profile.ai_credits_remaining || 0;
     const total = profile.ai_credits_total || 10;
     const percentage = total > 0 ? Math.round((remaining / total) * 100) : 0;
@@ -1025,7 +1025,7 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   renderSettingsTab() {
-    const profile = this.authHelper.getProfile() || {};
+    const profile = this.authHelper?.getProfile() || {};
     const preferences = profile.preferences || {};
 
     return `
@@ -1166,9 +1166,10 @@ class MyAccountModal {
     if (saveProfileBtn) {
       this.eventManager.addEventListener(saveProfileBtn, 'click', async () => {
         const name = document.getElementById('profile-name')?.value;
-        if (name && this.supabase) {
+        const userId = this.authHelper?.getUser()?.id;
+        if (name && this.supabase && userId) {
           try {
-            await this.supabase.from('profiles').update({ full_name: name }).eq('id', this.authHelper.getUser().id);
+            await this.supabase.from('profiles').update({ full_name: name }).eq('id', userId);
             window.toast?.success('Perfil actualizado');
           } catch (error) {
             window.toast?.error('Error al guardar');
@@ -1323,7 +1324,7 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   showCancelConfirmation() {
-    const profile = this.authHelper.getProfile() || {};
+    const profile = this.authHelper?.getProfile() || {};
     const endDate = profile.subscription_end
       ? new Date(profile.subscription_end).toLocaleDateString('es-ES')
       : 'el final del período actual';
@@ -1340,17 +1341,22 @@ class MyAccountModal {
   }
 
   async cancelSubscription() {
+    const userId = this.authHelper?.getUser()?.id;
+    if (!userId) {
+      window.toast?.error('Error: usuario no autenticado');
+      return;
+    }
     try {
       // Llamar al endpoint de cancelación
       const response = await fetch('/api/cancel-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: this.authHelper.getUser().id })
+        body: JSON.stringify({ user_id: userId })
       });
 
       if (response.ok) {
         window.toast?.success('Suscripción cancelada. Seguirás teniendo acceso hasta el final del período.');
-        await this.authHelper.refreshProfile();
+        await this.authHelper?.refreshProfile();
         this.render();
       } else {
         throw new Error('Error al cancelar');
@@ -1369,12 +1375,13 @@ class MyAccountModal {
       analytics: document.getElementById('pref-analytics')?.checked ?? true
     };
 
+    const userId = this.authHelper?.getUser()?.id;
     try {
-      if (this.supabase) {
+      if (this.supabase && userId) {
         await this.supabase
           .from('profiles')
           .update({ preferences })
-          .eq('id', this.authHelper.getUser().id);
+          .eq('id', userId);
         window.toast?.success('Preferencias guardadas');
       }
     } catch (error) {
@@ -1385,12 +1392,12 @@ class MyAccountModal {
 
   async exportData() {
     try {
-      const profile = this.authHelper.getProfile();
-      const user = this.authHelper.getUser();
+      const profile = this.authHelper?.getProfile();
+      const user = this.authHelper?.getUser();
 
       const data = {
         profile,
-        user: { email: user.email, created_at: user.created_at },
+        user: { email: user?.email, created_at: user?.created_at },
         usage_history: this.usageHistory,
         transactions: this.transactions,
         exported_at: new Date().toISOString()
@@ -1413,15 +1420,15 @@ class MyAccountModal {
 
   async exportAllUserData() {
     try {
-      const profile = this.authHelper.getProfile();
-      const user = this.authHelper.getUser();
+      const profile = this.authHelper?.getProfile();
+      const user = this.authHelper?.getUser();
 
       const data = {
         exportDate: new Date().toISOString(),
         user: {
-          email: user.email,
-          created_at: user.created_at,
-          last_sign_in: user.last_sign_in_at
+          email: user?.email,
+          created_at: user?.created_at,
+          last_sign_in: user?.last_sign_in_at
         },
         profile: {
           full_name: profile?.full_name,
@@ -1476,7 +1483,7 @@ class MyAccountModal {
   }
 
   showDeleteConfirmation() {
-    const email = this.authHelper.getUser()?.email;
+    const email = this.authHelper?.getUser()?.email;
     const input = window.prompt(
       `⚠️ ATENCIÓN: Esta acción es IRREVERSIBLE.\n\n` +
       `Se eliminarán todos tus datos:\n` +
@@ -1495,17 +1502,22 @@ class MyAccountModal {
   }
 
   async deleteAccount() {
+    const userId = this.authHelper?.getUser()?.id;
+    if (!userId) {
+      window.toast?.error('Error: usuario no autenticado');
+      return;
+    }
     try {
       // Llamar al endpoint de eliminación
       const response = await fetch('/api/delete-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: this.authHelper.getUser().id })
+        body: JSON.stringify({ user_id: userId })
       });
 
       if (response.ok) {
         window.toast?.info('Cuenta eliminada. Hasta pronto.');
-        await this.authHelper.signOut();
+        await this.authHelper?.signOut();
         this.close();
         window.location.reload();
       } else {

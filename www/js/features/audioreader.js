@@ -1105,10 +1105,10 @@ class AudioReader {
     if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       // Premium TTS pause (OpenAI, Hugging Face o ElevenLabs)
       try {
-        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager?.providers?.elevenlabs) {
           this.ttsManager.providers.elevenlabs.pause();
         } else {
-          this.ttsManager.pause();
+          this.ttsManager?.pause();
         }
         this.isPaused = true;
         logger.log('⏸️ Audio premium pausado');
@@ -1172,10 +1172,10 @@ class AudioReader {
     if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       // Premium TTS resume (OpenAI, Hugging Face o ElevenLabs)
       try {
-        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager?.providers?.elevenlabs) {
           this.ttsManager.providers.elevenlabs.resume();
         } else {
-          this.ttsManager.resume();
+          this.ttsManager?.resume();
         }
         logger.log('▶️ Audio premium reanudado');
       } catch (e) {
@@ -1197,10 +1197,10 @@ class AudioReader {
   async stop(resetPosition = true) {
     if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface' || this.ttsProvider === 'elevenlabs') && this.ttsManager) {
       try {
-        if (this.ttsProvider === 'elevenlabs' && this.ttsManager.providers.elevenlabs) {
+        if (this.ttsProvider === 'elevenlabs' && this.ttsManager?.providers?.elevenlabs) {
           this.ttsManager.providers.elevenlabs.stop();
         } else {
-          this.ttsManager.stop();
+          this.ttsManager?.stop();
         }
       } catch (e) {
         console.error('Error deteniendo TTS premium:', e);
@@ -1313,7 +1313,7 @@ class AudioReader {
           console.error('Error deteniendo TTS para next:', e);
         }
       } else {
-        this.synthesis.cancel();
+        this.synthesis?.cancel();
       }
 
       this.currentParagraphIndex++;
@@ -1351,7 +1351,7 @@ class AudioReader {
           console.error('Error deteniendo TTS para previous:', e);
         }
       } else {
-        this.synthesis.cancel();
+        this.synthesis?.cancel();
       }
 
       this.currentParagraphIndex--;
@@ -1373,11 +1373,11 @@ class AudioReader {
     if (this.isPlaying && !this.isPaused) {
       const currentIndex = this.currentParagraphIndex;
       if ((this.ttsProvider === 'openai' || this.ttsProvider === 'huggingface') && this.ttsManager) {
-        this.ttsManager.stop();
+        this.ttsManager?.stop();
       } else if (this.nativeTTS) {
         await this.nativeTTS.stop();
       } else {
-        this.synthesis.cancel();
+        this.synthesis?.cancel();
       }
       this.speakParagraph(currentIndex);
     }

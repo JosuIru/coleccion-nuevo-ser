@@ -1300,4 +1300,73 @@ body.menu-open .franken-menu {
     width: 100%;
     max-width: 100%;
   }
+
+  /* Settings panel full width on small mobile - v2.9.274 */
+  .settings-panel {
+    max-width: 100%;
+    border-left: none;
+    border-radius: 0;
+  }
+
+  .settings-header {
+    padding: 1rem;
+  }
+
+  .settings-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .settings-content {
+    padding: 1rem;
+  }
+
+  /* Gallery modal full screen on mobile */
+  .societies-gallery-modal .modal-content,
+  .stats-modal .modal-content {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+}
+
+/* Landscape orientation for Frankenstein modals - v2.9.274 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .settings-panel {
+    max-width: 50%;
+  }
+
+  .settings-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .settings-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .settings-section {
+    padding: 0.75rem 0;
+  }
+
+  .societies-gallery-modal .modal-content,
+  .stats-modal .modal-content,
+  .help-modal-content {
+    max-height: 95vh;
+    max-height: 95dvh;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Safe area insets for Frankenstein panels - v2.9.274 */
+@supports (padding: max(0px)) {
+  .settings-panel,
+  .lab-side-menu-content {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .settings-content {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
 }

@@ -1307,3 +1307,131 @@ body, .sidebar, .book-card, input, textarea, select, button {
 .skip-link:focus {
   top: 0;
 }
+
+/* ============================================================================
+   MODAL RESPONSIVE FIXES (v2.9.274)
+   - Safe area insets for iOS notch / Android gesture nav
+   - Small mobile breakpoints (480px)
+   - Landscape orientation handling
+   - Dynamic viewport height for keyboard
+   ============================================================================ */
+
+/* Base modal improvements */
+[class*="modal-overlay"],
+[class*="-modal"][class*="fixed"],
+.fixed.inset-0[class*="bg-black"] {
+  /* Use dynamic viewport height for better mobile keyboard handling */
+  height: 100dvh;
+  height: 100vh; /* Fallback */
+}
+
+/* Safe area padding for modal content */
+@supports (padding: max(0px)) {
+  [class*="modal-content"],
+  [class*="modal-body"],
+  .modal-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* Footer buttons need extra bottom padding on notched devices */
+  [class*="modal-footer"] {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Small mobile (iPhone SE, small Android) */
+@media (max-width: 480px) {
+  [class*="modal-content"],
+  .modal-container,
+  [class*="-modal"] > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 16px 16px 0 0 !important;
+    max-height: 95vh !important;
+    max-height: 95dvh !important;
+  }
+
+  /* Reduce padding on very small screens */
+  [class*="modal-header"],
+  [class*="modal-body"],
+  [class*="modal-footer"] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Smaller fonts for headers */
+  [class*="modal-header"] h2,
+  [class*="modal-header"] h3 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Stack footer buttons vertically */
+  [class*="modal-footer"] {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  [class*="modal-footer"] button {
+    width: 100% !important;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  [class*="modal-content"],
+  .modal-container,
+  [class*="-modal"] > div:first-child {
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Reduce vertical padding in landscape */
+  [class*="modal-header"] {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  [class*="modal-body"] {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  [class*="modal-footer"] {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    flex-direction: row !important;
+  }
+
+  /* Hide large icons/emojis in landscape to save space */
+  [class*="modal-header"] .update-icon,
+  [class*="modal-header"] [class*="icon"]:not(button *) {
+    display: none !important;
+  }
+}
+
+/* Tablet improvements */
+@media (min-width: 481px) and (max-width: 768px) {
+  [class*="modal-content"],
+  .modal-container {
+    width: 90% !important;
+    max-width: 600px !important;
+  }
+}
+
+/* Ensure scrollable content doesn't overflow */
+[class*="modal-body"] {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Fix for iOS momentum scrolling */
+@supports (-webkit-touch-callout: none) {
+  [class*="modal-body"] {
+    -webkit-overflow-scrolling: touch;
+  }
+}

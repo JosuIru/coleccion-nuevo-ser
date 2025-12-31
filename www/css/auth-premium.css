@@ -710,6 +710,7 @@
     max-width: 100%;
     padding: 1.5rem;
     max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
   }
 
   .pricing-modal-container {
@@ -731,6 +732,83 @@
 
   .pricing-price {
     font-size: 1.75rem;
+  }
+}
+
+/* Small mobile (480px) - v2.9.274 */
+@media (max-width: 480px) {
+  .auth-modal-container {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 95vh;
+    max-height: 95dvh;
+    padding: 1rem;
+  }
+
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .auth-icon {
+    font-size: 2rem;
+  }
+
+  .auth-form-group input {
+    padding: 0.875rem;
+  }
+
+  .auth-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .auth-actions button {
+    width: 100%;
+  }
+}
+
+/* Landscape orientation - v2.9.274 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .auth-modal-container,
+  .pricing-modal-container {
+    max-height: 95vh;
+    max-height: 95dvh;
+    padding: 0.75rem 1rem;
+  }
+
+  .auth-header {
+    margin-bottom: 1rem;
+  }
+
+  .auth-icon {
+    display: none;
+  }
+
+  .auth-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .auth-form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .pricing-card {
+    padding: 1rem;
+  }
+}
+
+/* Safe area insets - v2.9.274 */
+@supports (padding: max(0px)) {
+  .auth-modal-container,
+  .pricing-modal-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 

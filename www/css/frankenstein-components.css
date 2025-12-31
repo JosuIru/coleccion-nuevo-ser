@@ -2108,3 +2108,118 @@ body.book-expanded .missing-requirements-quick-view {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* ==============================================
+   RESPONSIVE FIXES v2.9.274
+   480px breakpoint, landscape, safe-area
+   ============================================== */
+
+/* 480px breakpoint for small mobile */
+@media (max-width: 480px) {
+  .mission-modal-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90dvh;
+    max-height: 90vh; /* Fallback */
+  }
+
+  .mission-modal-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .mission-modal-title {
+    font-size: 1rem;
+  }
+
+  .mission-modal-body {
+    padding: 0.75rem;
+    max-height: 70dvh;
+    max-height: 70vh; /* Fallback */
+    overflow-y: auto;
+  }
+
+  .mission-modal-body .missions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .mission-modal-body .mission-card {
+    padding: 0.75rem;
+  }
+
+  .requirements-modal-content,
+  .pieces-modal-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 85dvh;
+    max-height: 85vh; /* Fallback */
+  }
+
+  .modal-actions,
+  .franken-modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-actions button,
+  .franken-modal-actions button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* Landscape orientation handling */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mission-modal-content,
+  .requirements-modal-content,
+  .pieces-modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .mission-modal-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .mission-modal-body {
+    max-height: 60vh;
+    padding: 0.5rem 1rem;
+  }
+
+  .mission-modal-body .mission-icon {
+    display: none;
+  }
+
+  .mission-modal-body .missions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Safe area inset support for iOS/Android */
+@supports (padding: max(0px)) {
+  .mission-modal-content,
+  .requirements-modal-content,
+  .pieces-modal-content {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .mission-modal-overlay,
+  .requirements-modal-overlay,
+  .pieces-modal-overlay {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+

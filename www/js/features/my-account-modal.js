@@ -10,18 +10,26 @@ class MyAccountModal {
   constructor() {
     this.authHelper = window.authHelper;
     this.aiPremium = window.aiPremium;
-    this.supabase = null;
+    // 🔧 FIX v2.9.265: Inicializar supabase desde window
+    this.supabase = window.supabase || window.supabaseClient || null;
     this.currentTab = 'profile';
     this.usageHistory = [];
     this.transactions = [];
 
     this.tabs = [
-      { id: 'profile', label: 'Perfil', icon: 'user' },
-      { id: 'subscription', label: 'Suscripción', icon: 'crown' },
-      { id: 'credits', label: 'Créditos IA', icon: 'zap' },
-      { id: 'history', label: 'Historial', icon: 'clock' },
-      { id: 'settings', label: 'Preferencias', icon: 'settings' }
+      { id: 'profile', label: 'Perfil', emoji: '👤' },
+      { id: 'mydata', label: 'Mis Datos', emoji: '📚' },
+      { id: 'subscription', label: 'Plan', emoji: '⭐' },
+      { id: 'credits', label: 'Créditos', emoji: '⚡' },
+      { id: 'history', label: 'Historial', emoji: '📋' },
+      { id: 'settings', label: 'Ajustes', emoji: '⚙️' }
     ];
+
+    // Datos del usuario
+    this.userNotes = [];
+    this.userBookmarks = [];
+    this.readingProgress = [];
+    this.aiConversations = [];
 
     // 🔧 FIX: EventManager para gestión automática de listeners
     this.eventManager = new EventManager();
@@ -67,17 +75,29 @@ class MyAccountModal {
     this.renderLoading();
 
     try {
-      await this.loadData();
+      // 🔧 FIX v2.9.275: Timeout de 5s para evitar loading infinito
+      const loadPromise = this.loadData();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout loading data')), 5000)
+      );
+
+      await Promise.race([loadPromise, timeoutPromise]).catch(err => {
+        console.warn('[MyAccount] loadData timeout o error:', err.message);
+        // Continuar con datos vacíos
+      });
+
       this.render();
       this.attachEvents();
     } catch (error) {
       console.error('[MyAccount] Error abriendo modal:', error);
-      window.toast?.error('Error al cargar datos de la cuenta');
-      this.close();
+      // 🔧 FIX v2.9.275: Renderizar de todas formas con datos vacíos
+      this.render();
+      this.attachEvents();
     }
   }
 
   // 🔧 FIX v2.9.234: Loading state para async operations
+  // 🔧 FIX v2.9.275: Añadido botón cerrar al loading
   renderLoading() {
     const existing = document.getElementById('my-account-modal');
     if (existing) existing.remove();
@@ -86,15 +106,22 @@ class MyAccountModal {
     modal.id = 'my-account-modal';
     modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4 fade-in';
     modal.innerHTML = `
-      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" id="my-account-loading-backdrop"></div>
       <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 shadow-2xl border border-white/10">
-        <div class="flex flex-col items-center gap-4">
+        <button id="my-account-loading-close" class="absolute top-2 right-2 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition" aria-label="Cerrar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="flex flex-col items-center gap-4 pt-4">
           <div class="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
           <p class="text-gray-400">Cargando tu cuenta...</p>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
+
+    // Event listeners para cerrar
+    document.getElementById('my-account-loading-close')?.addEventListener('click', () => this.close());
+    document.getElementById('my-account-loading-backdrop')?.addEventListener('click', () => this.close());
   }
 
   close() {
@@ -117,22 +144,153 @@ class MyAccountModal {
 
   async loadData() {
     try {
+      // 🔧 FIX v2.9.265: Re-verificar supabase al momento de cargar
+      if (!this.supabase) {
+        this.supabase = window.supabase || window.supabaseClient || null;
+      }
+
+      const userId = this.authHelper.getUser()?.id;
+      if (!userId || !this.supabase) {
+        console.warn('[MyAccount] No userId o supabase no disponible');
+        return;
+      }
+
+      // Cargar todo en paralelo
+      const [notesRes, bookmarksRes, progressRes, conversationsRes, transactionsRes] = await Promise.allSettled([
+        // Notas
+        this.supabase.from('notes').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
+        // Marcadores
+        this.supabase.from('bookmarks').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
+        // Progreso de lectura
+        this.supabase.from('reading_progress').select('*').eq('user_id', userId).order('updated_at', { ascending: false }),
+        // Conversaciones IA
+        this.supabase.from('ai_conversations').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
+        // Transacciones
+        this.supabase.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20)
+      ]);
+
+      this.userNotes = notesRes.status === 'fulfilled' ? (notesRes.value.data || []) : [];
+      this.userBookmarks = bookmarksRes.status === 'fulfilled' ? (bookmarksRes.value.data || []) : [];
+      this.readingProgress = progressRes.status === 'fulfilled' ? (progressRes.value.data || []) : [];
+      this.aiConversations = conversationsRes.status === 'fulfilled' ? (conversationsRes.value.data || []) : [];
+      this.transactions = transactionsRes.status === 'fulfilled' ? (transactionsRes.value.data || []) : [];
+
+      // Enriquecer bookmarks con títulos del catálogo
+      this.userBookmarks = await this.enrichBookmarksWithTitles(this.userBookmarks);
+
       // Cargar historial de uso de IA
       if (this.aiPremium) {
         this.usageHistory = await this.aiPremium.getUsageHistory(30) || [];
       }
 
-      // Cargar transacciones
-      if (this.supabase) {
-        const { data } = await this.supabase
-          .from('transactions')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(20);
-        this.transactions = data || [];
-      }
+      console.log('[MyAccount] Datos cargados:', {
+        notas: this.userNotes.length,
+        marcadores: this.userBookmarks.length,
+        progreso: this.readingProgress.length,
+        chats: this.aiConversations.length
+      });
     } catch (error) {
       console.error('[MyAccount] Error cargando datos:', error);
+    }
+  }
+
+  /**
+   * Enriquecer bookmarks con títulos del catálogo de libros
+   * @param {Array} bookmarks - Lista de bookmarks de Supabase
+   * @returns {Array} Bookmarks enriquecidos con book_title y chapter_title
+   */
+  async enrichBookmarksWithTitles(bookmarks) {
+    if (!bookmarks || bookmarks.length === 0) return [];
+
+    try {
+      // Cargar catálogo si no está disponible
+      let catalog = window.libros || [];
+      if (catalog.length === 0) {
+        try {
+          const response = await fetch('/books/catalog.json');
+          const data = await response.json();
+          catalog = data.books || [];
+          window.libros = catalog;
+        } catch (e) {
+          console.warn('[MyAccount] No se pudo cargar catálogo:', e);
+        }
+      }
+
+      const catalogMap = new Map(catalog.map(book => [book.id, book]));
+
+      console.log('[MyAccount] Enriqueciendo bookmarks:', bookmarks.length, 'Catálogo:', catalog.length);
+
+      return bookmarks.map(bm => {
+        // Supabase puede guardar chapter_id como JSON string o como objeto
+        // Formato legacy: chapter_id = '{"book":"codigo-despertar","chapter":"prologo",...}'
+        let bookId = bm.book_id || null;
+        let chapterId = bm.chapter_id || null;
+
+        // Intentar parsear chapter_id si es un JSON string
+        if (chapterId && typeof chapterId === 'string' && chapterId.startsWith('{')) {
+          try {
+            const parsed = JSON.parse(chapterId);
+            bookId = bookId || parsed.book || null;
+            chapterId = parsed.chapter || null;
+          } catch (e) {
+            // No es JSON válido, mantener como está
+          }
+        } else if (chapterId && typeof chapterId === 'object') {
+          // Ya es un objeto
+          bookId = bookId || chapterId.book || null;
+          chapterId = chapterId.chapter || null;
+        }
+
+        // Fallback a campos directos del bookmark
+        bookId = bookId || bm.book || null;
+        chapterId = chapterId || bm.chapter || null;
+
+        const book = bookId ? catalogMap.get(bookId) : null;
+
+        console.log('[MyAccount] Bookmark parsed:', { bookId, chapterId, hasBook: !!book });
+
+        // Intentar extraer número de capítulo del chapter_id (ej: "cap1" -> 1)
+        let chapterIndex = 0;
+        if (chapterId) {
+          const match = chapterId.match(/(\d+)/);
+          if (match) {
+            chapterIndex = parseInt(match[1], 10) - 1;
+            if (chapterIndex < 0) chapterIndex = 0;
+          }
+        }
+
+        // Buscar título del capítulo si tenemos el libro cargado en bookEngine
+        let chapterTitle = null;
+        if (window.bookEngine?.bookConfig?.chapters && bookId === window.bookEngine?.currentBook) {
+          const chapters = window.bookEngine.bookConfig.chapters;
+          const chapterIdx = chapters.findIndex(ch => ch.id === chapterId);
+          if (chapterIdx !== -1) {
+            chapterTitle = chapters[chapterIdx].title;
+            chapterIndex = chapterIdx;
+          }
+        }
+
+        // Determinar título del libro
+        let bookTitle = 'Libro';
+        if (book?.title) {
+          bookTitle = book.title;
+        } else if (bookId) {
+          // Formatear book_id como título legible
+          bookTitle = bookId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        return {
+          ...bm,
+          book_id: bookId,
+          book_title: bookTitle,
+          chapter_id: chapterId,
+          chapter_title: chapterTitle || `Capítulo ${chapterIndex + 1}`,
+          chapter_index: chapterIndex
+        };
+      });
+    } catch (error) {
+      console.error('[MyAccount] Error enriching bookmarks:', error);
+      return bookmarks;
     }
   }
 
@@ -147,6 +305,9 @@ class MyAccountModal {
 
     const profile = this.authHelper.getProfile() || {};
     const user = this.authHelper.getUser() || {};
+
+    console.log('[MyAccountModal] Rendering with profile:', profile);
+    console.log('[MyAccountModal] User:', user);
 
     const modal = document.createElement('div');
     modal.id = 'my-account-modal';
@@ -177,7 +338,7 @@ class MyAccountModal {
             <button class="tab-btn flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap
                           ${this.currentTab === tab.id ? 'text-cyan-400 border-b-2 border-cyan-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5'}"
                     data-tab="${tab.id}">
-              ${Icons.create(tab.icon, 18)}
+              <span>${tab.emoji}</span>
               <span class="hidden sm:inline">${tab.label}</span>
             </button>
           `).join('')}
@@ -206,6 +367,7 @@ class MyAccountModal {
   renderTabContent() {
     switch (this.currentTab) {
       case 'profile': return this.renderProfileTab();
+      case 'mydata': return this.renderMyDataTab();
       case 'subscription': return this.renderSubscriptionTab();
       case 'credits': return this.renderCreditsTab();
       case 'history': return this.renderHistoryTab();
@@ -286,6 +448,187 @@ class MyAccountModal {
         </div>
       </div>
     `;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TAB: MIS DATOS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  renderMyDataTab() {
+    const totalNotes = this.userNotes.length;
+    const totalBookmarks = this.userBookmarks.length;
+    const totalProgress = this.readingProgress.length;
+    const totalChats = this.aiConversations.length;
+
+    // Calcular estadísticas de lectura
+    const booksStarted = new Set(this.readingProgress.map(p => p.book_id)).size;
+    const booksCompleted = this.readingProgress.filter(p => p.completed).length;
+    const totalReadingTime = this.readingProgress.reduce((acc, p) => acc + (p.reading_time_minutes || 0), 0);
+
+    return `
+      <div class="space-y-6">
+        <!-- Resumen rápido -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 text-center border border-blue-500/30">
+            <div class="text-3xl font-bold text-blue-400">${totalNotes}</div>
+            <div class="text-sm text-slate-400">Notas</div>
+          </div>
+          <div class="bg-gradient-to-br from-amber-500/20 to-amber-600/10 rounded-xl p-4 text-center border border-amber-500/30">
+            <div class="text-3xl font-bold text-amber-400">${totalBookmarks}</div>
+            <div class="text-sm text-slate-400">Marcadores</div>
+          </div>
+          <div class="bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl p-4 text-center border border-green-500/30">
+            <div class="text-3xl font-bold text-green-400">${booksStarted}</div>
+            <div class="text-sm text-slate-400">Libros leídos</div>
+          </div>
+          <div class="bg-gradient-to-br from-purple-500/20 to-purple-600/10 rounded-xl p-4 text-center border border-purple-500/30">
+            <div class="text-3xl font-bold text-purple-400">${totalChats}</div>
+            <div class="text-sm text-slate-400">Chats IA</div>
+          </div>
+        </div>
+
+        <!-- Estadísticas de lectura -->
+        <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+          <h4 class="font-semibold text-white mb-3">📖 Estadísticas de Lectura</h4>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div class="text-2xl font-bold text-cyan-400">${booksStarted}</div>
+              <div class="text-xs text-slate-500">Libros iniciados</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-green-400">${booksCompleted}</div>
+              <div class="text-xs text-slate-500">Completados</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-amber-400">${Math.round(totalReadingTime / 60)}h</div>
+              <div class="text-xs text-slate-500">Tiempo lectura</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notas recientes -->
+        <div>
+          <h4 class="font-semibold text-white mb-3 flex items-center gap-2">
+            📝 Notas Recientes
+            <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-slate-400">${totalNotes}</span>
+          </h4>
+          ${this.userNotes.length > 0 ? `
+            <div class="space-y-2 max-h-48 overflow-y-auto">
+              ${this.userNotes.slice(0, 5).map(note => `
+                <div class="bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div class="flex justify-between items-start gap-2">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-white line-clamp-2">${this.escapeHtml(note.content?.substring(0, 150) || 'Sin contenido')}${note.content?.length > 150 ? '...' : ''}</p>
+                      <p class="text-xs text-slate-500 mt-1">${note.book_title || 'Libro'} • ${this.formatDate(note.created_at)}</p>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            ${totalNotes > 5 ? `<p class="text-xs text-slate-500 mt-2 text-center">+ ${totalNotes - 5} notas más</p>` : ''}
+          ` : `
+            <div class="text-center py-6 text-slate-500">
+              <p class="text-2xl mb-2">📝</p>
+              <p>No tienes notas guardadas</p>
+              <p class="text-xs mt-1">Selecciona texto en un libro para crear notas</p>
+            </div>
+          `}
+        </div>
+
+        <!-- Marcadores recientes -->
+        <div>
+          <h4 class="font-semibold text-white mb-3 flex items-center gap-2">
+            🔖 Marcadores
+            <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-slate-400">${totalBookmarks}</span>
+          </h4>
+          ${this.userBookmarks.length > 0 ? `
+            <div class="space-y-2 max-h-48 overflow-y-auto">
+              ${this.userBookmarks.slice(0, 5).map(bm => `
+                <div class="bookmark-item bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-amber-500/10 hover:border-amber-500/30 transition-colors cursor-pointer"
+                     data-bookmark-book="${bm.book_id || ''}" data-bookmark-chapter="${bm.chapter_id || ''}" title="Ir al marcador">
+                  <div class="flex items-center gap-3">
+                    <span class="text-amber-400">🔖</span>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-white truncate">${bm.book_title || 'Libro'}</p>
+                      <p class="text-xs text-slate-400">${bm.chapter_title || `Capítulo ${(bm.chapter_index || 0) + 1}`}</p>
+                      <p class="text-xs text-slate-500">${this.formatDate(bm.created_at)}</p>
+                    </div>
+                    <span class="text-slate-400 text-xs">→</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            ${totalBookmarks > 5 ? `<p class="text-xs text-slate-500 mt-2 text-center">+ ${totalBookmarks - 5} marcadores más</p>` : ''}
+          ` : `
+            <div class="text-center py-6 text-slate-500">
+              <p class="text-2xl mb-2">🔖</p>
+              <p>No tienes marcadores guardados</p>
+              <p class="text-xs mt-1">Usa el icono de marcador mientras lees</p>
+            </div>
+          `}
+        </div>
+
+        <!-- Conversaciones IA -->
+        <div>
+          <h4 class="font-semibold text-white mb-3 flex items-center gap-2">
+            🤖 Conversaciones con IA
+            <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-slate-400">${totalChats}</span>
+          </h4>
+          ${this.aiConversations.length > 0 ? `
+            <div class="space-y-2 max-h-48 overflow-y-auto">
+              ${this.aiConversations.slice(0, 5).map(chat => `
+                <div class="bg-white/5 rounded-lg p-3 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div class="flex items-start gap-3">
+                    <span class="text-purple-400">💬</span>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-white line-clamp-1">${this.escapeHtml(chat.title || chat.context || 'Conversación')}</p>
+                      <p class="text-xs text-slate-500">${chat.book_title || 'General'} • ${this.formatDate(chat.created_at)}</p>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            ${totalChats > 5 ? `<p class="text-xs text-slate-500 mt-2 text-center">+ ${totalChats - 5} conversaciones más</p>` : ''}
+          ` : `
+            <div class="text-center py-6 text-slate-500">
+              <p class="text-2xl mb-2">🤖</p>
+              <p>No hay conversaciones con IA</p>
+              <p class="text-xs mt-1">Usa el chat IA mientras lees un libro</p>
+            </div>
+          `}
+        </div>
+
+        <!-- Acciones -->
+        <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+          <button id="sync-data-btn" class="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg text-sm transition-colors flex items-center gap-2">
+            🔄 Sincronizar datos
+          </button>
+          <button id="export-all-data-btn" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition-colors flex items-center gap-2">
+            📥 Exportar todo
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Helpers para renderizado
+  escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Hoy';
+    if (diffDays === 1) return 'Ayer';
+    if (diffDays < 7) return `Hace ${diffDays} días`;
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -823,6 +1166,69 @@ class MyAccountModal {
         }
       });
     }
+
+    // Sincronizar datos (pestaña Mis Datos)
+    const syncDataBtn = document.getElementById('sync-data-btn');
+    if (syncDataBtn) {
+      this.eventManager.addEventListener(syncDataBtn, 'click', async () => {
+        syncDataBtn.disabled = true;
+        syncDataBtn.innerHTML = '⏳ Sincronizando...';
+        try {
+          await this.loadData();
+          document.getElementById('my-account-content').innerHTML = this.renderTabContent();
+          this.attachTabEvents();
+          window.toast?.success('Datos sincronizados');
+        } catch (error) {
+          window.toast?.error('Error al sincronizar');
+        }
+      });
+    }
+
+    // Exportar todos los datos (pestaña Mis Datos)
+    const exportAllBtn = document.getElementById('export-all-data-btn');
+    if (exportAllBtn) {
+      this.eventManager.addEventListener(exportAllBtn, 'click', async () => {
+        await this.exportAllUserData();
+      });
+    }
+
+    // Click handlers para marcadores - navegar al libro/capítulo
+    const bookmarkItems = document.querySelectorAll('.bookmark-item');
+    bookmarkItems.forEach(item => {
+      this.eventManager.addEventListener(item, 'click', () => {
+        const bookId = item.dataset.bookmarkBook;
+        const chapterId = item.dataset.bookmarkChapter;
+        this.navigateToBookmark(bookId, chapterId);
+      });
+    });
+  }
+
+  /**
+   * Navegar a un marcador (abrir libro en el capítulo marcado)
+   */
+  navigateToBookmark(bookId, chapterId) {
+    if (!bookId && !chapterId) {
+      window.toast?.error('Marcador inválido');
+      return;
+    }
+
+    this.close();
+
+    // Intentar usar la función global openBook si existe
+    if (typeof window.openBook === 'function') {
+      window.openBook(bookId, chapterId);
+      return;
+    }
+
+    // Fallback: navegar por URL
+    let url = '/';
+    if (bookId) {
+      url += `?book=${encodeURIComponent(bookId)}`;
+      if (chapterId) {
+        url += `&chapter=${encodeURIComponent(chapterId)}`;
+      }
+    }
+    window.location.href = url;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -914,6 +1320,70 @@ class MyAccountModal {
       window.toast?.success('Datos exportados');
     } catch (error) {
       console.error('[MyAccount] Error exportando:', error);
+      window.toast?.error('Error al exportar datos');
+    }
+  }
+
+  async exportAllUserData() {
+    try {
+      const profile = this.authHelper.getProfile();
+      const user = this.authHelper.getUser();
+
+      const data = {
+        exportDate: new Date().toISOString(),
+        user: {
+          email: user.email,
+          created_at: user.created_at,
+          last_sign_in: user.last_sign_in_at
+        },
+        profile: {
+          full_name: profile?.full_name,
+          subscription_tier: profile?.subscription_tier,
+          ai_credits_remaining: profile?.ai_credits_remaining,
+          preferences: profile?.preferences
+        },
+        notes: this.userNotes.map(n => ({
+          content: n.content,
+          book_id: n.book_id,
+          book_title: n.book_title,
+          chapter: n.chapter_index,
+          created_at: n.created_at
+        })),
+        bookmarks: this.userBookmarks.map(b => ({
+          book_id: b.book_id,
+          book_title: b.book_title,
+          chapter: b.chapter_index,
+          created_at: b.created_at
+        })),
+        reading_progress: this.readingProgress.map(p => ({
+          book_id: p.book_id,
+          chapter: p.chapter_index,
+          completed: p.completed,
+          reading_time_minutes: p.reading_time_minutes,
+          updated_at: p.updated_at
+        })),
+        ai_conversations: this.aiConversations.map(c => ({
+          title: c.title,
+          context: c.context,
+          book_id: c.book_id,
+          messages_count: c.messages?.length || 0,
+          created_at: c.created_at
+        })),
+        usage_history: this.usageHistory,
+        transactions: this.transactions
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nuevo-ser-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      window.toast?.success('Todos los datos exportados');
+    } catch (error) {
+      console.error('[MyAccount] Error exportando todos los datos:', error);
       window.toast?.error('Error al exportar datos');
     }
   }

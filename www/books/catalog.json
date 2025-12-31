@@ -34,7 +34,7 @@
       "status": "published",
       "version": "1.1.5",
       "sections": 4,
-      "chapters": 14,
+      "chapters": 16,
       "estimatedReadTime": "8-10 horas",
       "difficulty": "intermedio",
       "features": {
@@ -302,7 +302,7 @@
       "status": "published",
       "version": "1.0.0",
       "sections": 6,
-      "chapters": 50,
+      "chapters": 24,
       "estimatedReadTime": "10-15 horas de práctica",
       "difficulty": "principiante-intermedio",
       "features": {
@@ -342,7 +342,7 @@
       "status": "published",
       "version": "1.0.0",
       "sections": 5,
-      "chapters": 15,
+      "chapters": 21,
       "estimatedReadTime": "12-20 horas de práctica profunda",
       "difficulty": "avanzado",
       "features": {
@@ -462,7 +462,7 @@
       "version": "1.0.0",
       "order": 11,
       "sections": 6,
-      "chapters": 17,
+      "chapters": 18,
       "estimatedReadTime": "8-10 horas",
       "difficulty": "intermedio-avanzado",
       "features": {
@@ -539,6 +539,8 @@
       "epigraph": "No hay enseñanza sin aprendizaje ni aprendizaje sin enseñanza. — Paulo Freire",
       "tags": ["educación alternativa", "pedagogía crítica", "crianza consciente", "sistema educativo", "transformación educativa", "deschooling"],
       "version": "1.0.0",
+      "sections": 5,
+      "chapters": 19,
       "difficulty": "intermedio",
       "estimatedReadTime": "3-4 horas",
       "color": "#10b981",

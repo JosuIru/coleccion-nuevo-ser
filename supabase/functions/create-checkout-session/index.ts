@@ -92,9 +92,18 @@ serve(async (req) => {
     }
 
     // Crear sesión de checkout
+    // 🔧 v2.9.276: Habilitar Google Pay, Apple Pay y Link
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
+      payment_method_types: ['card', 'link'],
+      // Google Pay y Apple Pay se muestran automáticamente cuando están habilitados
+      // en el Dashboard de Stripe y el usuario tiene un wallet configurado
+      payment_method_options: {
+        card: {
+          request_three_d_secure: 'automatic',
+        },
+      },
       line_items: [
         {
           price: priceId || PLANS[tier as keyof typeof PLANS].priceId,
@@ -103,6 +112,7 @@ serve(async (req) => {
       ],
       success_url: `${req.headers.get("origin")}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/pricing`,
+      allow_promotion_codes: true, // Permitir códigos de descuento
       metadata: {
         supabase_user_id: userId,
         tier: tier,

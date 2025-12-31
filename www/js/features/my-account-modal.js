@@ -150,8 +150,11 @@ class MyAccountModal {
       }
 
       const userId = this.authHelper.getUser()?.id;
+
+      // 🔧 FIX v2.9.276: Cargar datos locales como fallback si no hay Supabase
       if (!userId || !this.supabase) {
-        console.warn('[MyAccount] No userId o supabase no disponible');
+        console.warn('[MyAccount] No userId o supabase, usando datos locales');
+        this.loadLocalData();
         return;
       }
 
@@ -175,6 +178,11 @@ class MyAccountModal {
       this.aiConversations = conversationsRes.status === 'fulfilled' ? (conversationsRes.value.data || []) : [];
       this.transactions = transactionsRes.status === 'fulfilled' ? (transactionsRes.value.data || []) : [];
 
+      // 🔧 FIX v2.9.276: Si Supabase no devolvió bookmarks, cargar de localStorage
+      if (this.userBookmarks.length === 0) {
+        this.loadLocalBookmarks();
+      }
+
       // Enriquecer bookmarks con títulos del catálogo
       this.userBookmarks = await this.enrichBookmarksWithTitles(this.userBookmarks);
 
@@ -191,6 +199,85 @@ class MyAccountModal {
       });
     } catch (error) {
       console.error('[MyAccount] Error cargando datos:', error);
+      // 🔧 FIX v2.9.276: Fallback a datos locales si Supabase falla
+      this.loadLocalData();
+    }
+  }
+
+  /**
+   * 🔧 FIX v2.9.276: Cargar datos desde localStorage como fallback
+   */
+  loadLocalData() {
+    this.loadLocalBookmarks();
+
+    // Cargar progreso local desde bookEngine
+    if (window.bookEngine?.readProgress) {
+      const progressEntries = Object.entries(window.bookEngine.readProgress);
+      this.readingProgress = progressEntries.map(([bookId, data]) => ({
+        book_id: bookId,
+        chapters_read: data.chaptersRead?.length || 0,
+        last_chapter: data.lastChapter,
+        updated_at: data.lastReadAt
+      }));
+    }
+
+    console.log('[MyAccount] Datos locales cargados:', {
+      marcadores: this.userBookmarks.length,
+      progreso: this.readingProgress.length
+    });
+  }
+
+  /**
+   * 🔧 FIX v2.9.276: Cargar bookmarks desde localStorage
+   */
+  loadLocalBookmarks() {
+    try {
+      // 1. Cargar audio-bookmarks (del audioreader)
+      const audioBookmarks = JSON.parse(localStorage.getItem('audio-bookmarks') || '{}');
+      const audioBookmarksList = Object.entries(audioBookmarks).map(([key, data]) => ({
+        book_id: data.idLibro || key.split(':')[1],
+        chapter_id: data.idCapitulo || key.split(':')[2],
+        book_title: data.tituloLibro || 'Libro',
+        chapter_title: data.tituloCapitulo || 'Capítulo',
+        created_at: data.timestamp || new Date().toISOString(),
+        source: 'audio'
+      }));
+
+      // 2. Cargar bookmarks del bookEngine
+      const engineBookmarks = [];
+      if (window.bookEngine?.bookmarks) {
+        Object.entries(window.bookEngine.bookmarks).forEach(([bookId, chapters]) => {
+          if (Array.isArray(chapters)) {
+            chapters.forEach(bm => {
+              engineBookmarks.push({
+                book_id: bookId,
+                chapter_id: bm.chapterId,
+                book_title: bm.bookTitle || bookId,
+                chapter_title: bm.chapterTitle || 'Capítulo',
+                created_at: bm.timestamp || new Date().toISOString(),
+                source: 'reader'
+              });
+            });
+          }
+        });
+      }
+
+      // Combinar ambas fuentes
+      this.userBookmarks = [...audioBookmarksList, ...engineBookmarks];
+
+      // Eliminar duplicados por book_id + chapter_id
+      const seen = new Set();
+      this.userBookmarks = this.userBookmarks.filter(bm => {
+        const key = `${bm.book_id}:${bm.chapter_id}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      console.log('[MyAccount] Bookmarks locales cargados:', this.userBookmarks.length);
+    } catch (error) {
+      console.error('[MyAccount] Error cargando bookmarks locales:', error);
+      this.userBookmarks = [];
     }
   }
 
@@ -327,8 +414,8 @@ class MyAccountModal {
               <p class="text-sm text-slate-400">${user.email || ''}</p>
             </div>
           </div>
-          <button id="my-account-close" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white">
-            ${Icons.create('x', 24)}
+          <button id="my-account-close" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" aria-label="Cerrar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </button>
         </div>
 

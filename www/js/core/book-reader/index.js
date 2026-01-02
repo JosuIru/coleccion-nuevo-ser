@@ -277,6 +277,30 @@ class BookReader {
     return this.content.isLastChapter();
   }
 
+  updateChapterContent() {
+    this.content.updateChapterContent();
+  }
+
+  updateHeader() {
+    const headerElement = document.querySelector('.header');
+    if (headerElement) {
+      headerElement.outerHTML = this.header.render();
+      this.events.attachHeaderListeners();
+      const Icons = this.getDependency('Icons');
+      if (Icons) Icons.init();
+    }
+  }
+
+  updateFooterNav() {
+    const footerNav = document.querySelector('.footer-nav');
+    if (footerNav) {
+      footerNav.outerHTML = this.content.renderFooterNav();
+      this.events.attachNavigationListeners();
+      const Icons = this.getDependency('Icons');
+      if (Icons) Icons.init();
+    }
+  }
+
   // ==========================================================================
   // NAVIGATION (delegado)
   // ==========================================================================

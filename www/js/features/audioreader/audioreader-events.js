@@ -171,7 +171,7 @@ class AudioReaderEvents {
         }
 
         // Pausar sleep timer
-        if (ar.sleepTimerModule && !ar.sleepTimerModule.isPaused?.()) {
+        if (ar.sleepTimerModule && !ar.sleepTimerModule.isPaused) {
           ar.sleepTimerModule.pause?.();
         }
       } else {
@@ -184,7 +184,7 @@ class AudioReaderEvents {
         }
 
         // Resumir sleep timer
-        if (ar.sleepTimerModule?.isPaused?.()) {
+        if (ar.sleepTimerModule?.isPaused) {
           ar.sleepTimerModule.resume?.();
         }
       }

@@ -30,6 +30,12 @@ class AudioReaderUI {
     try {
       const ar = this.audioReader;
 
+      // Guard clause: si audioReader fue destruido, salir
+      if (!ar) {
+        this.isRendering = false;
+        return;
+      }
+
       // Limpiar listeners anteriores
       ar.events?.detachDragListeners?.();
       ar.events?.detachKeyboardListeners?.();
@@ -387,21 +393,19 @@ class AudioReaderUI {
       });
     }
 
-    // Binaural sound selection
+    // Binaural sound selection (solo audioMixer, NO binauralModal - ese es para koans)
     if (binauralSelect) {
       binauralSelect.addEventListener('change', async (e) => {
         const value = e.target.value;
         if (window.audioMixer) {
           if (value) {
             await window.audioMixer.playBinaural(value);
+            window.toast?.success('Binaural activado');
           } else {
             window.audioMixer.stopBinaural();
           }
-        } else if (window.binauralModal) {
-          // Fallback to binaural modal if audioMixer not available
-          if (value) {
-            window.binauralModal.show();
-          }
+        } else {
+          window.toast?.warning('AudioMixer no disponible');
         }
       });
     }
@@ -438,6 +442,8 @@ class AudioReaderUI {
 
   async updateUI() {
     await this.render();
+    this.updateHeaderAudioIcons();
+    this.updateBottomNavAudioButton();
   }
 
   updateButtonStates() {
@@ -633,7 +639,7 @@ class AudioReaderUI {
     this.currentPauseEndTime = null;
 
     // Reproducir campana de fin
-    if (this.audioReader.meditationModule) {
+    if (this.audioReader?.meditationModule) {
       this.audioReader.meditationModule.playBell('soft');
     }
   }
@@ -707,19 +713,41 @@ class AudioReaderUI {
 
   updateHeaderAudioIcons() {
     const ar = this.audioReader;
-    const iconElements = document.querySelectorAll('[data-audio-icon]');
 
+    // Guard clause: si audioReader fue destruido, salir
+    if (!ar) return;
+
+    // Buscar iconos por ID específico (usados en book-reader-header.js)
+    const iconIds = ['audio-icon-mobile', 'audio-icon-tablet', 'audio-icon-desktop'];
+
+    iconIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (ar.isPlaying && !ar.isPaused) {
+          el.innerHTML = Icons?.pause?.(20) || '⏸';
+        } else {
+          el.innerHTML = Icons?.audio?.(20) || Icons?.headphones?.(20) || '🎧';
+        }
+      }
+    });
+
+    // También buscar elementos con data-audio-icon por compatibilidad
+    const iconElements = document.querySelectorAll('[data-audio-icon]');
     iconElements.forEach(el => {
       if (ar.isPlaying && !ar.isPaused) {
         el.innerHTML = Icons?.pause?.(20) || '⏸';
       } else {
-        el.innerHTML = Icons?.play?.(20) || '▶';
+        el.innerHTML = Icons?.audio?.(20) || Icons?.headphones?.(20) || '🎧';
       }
     });
   }
 
   updateBottomNavAudioButton() {
     const ar = this.audioReader;
+
+    // Guard clause: si audioReader fue destruido, salir
+    if (!ar) return;
+
     const audioTab = document.querySelector('[data-tab="audio"]');
     if (!audioTab) return;
 

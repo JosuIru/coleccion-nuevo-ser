@@ -744,9 +744,9 @@ class AIChatModal {
 
   // 🔧 FIX #25: Preguntas sugeridas dinámicas basadas en el contexto actual
   getSuggestedQuestions() {
-    const bookId = this.bookEngine.getCurrentBook();
-    const chapterId = this.bookEngine.getCurrentChapter();
-    const bookData = this.bookEngine.getCurrentBookData();
+    const bookId = this.bookEngine?.getCurrentBook();
+    const chapterId = this.bookEngine?.currentChapter;
+    const bookData = this.bookEngine?.getCurrentBookData();
 
     const questions = [];
 

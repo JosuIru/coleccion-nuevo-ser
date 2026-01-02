@@ -463,6 +463,36 @@ class BookReaderContent {
   }
 
   // ==========================================================================
+  // UPDATE METHODS (para actualización parcial sin re-render completo)
+  // ==========================================================================
+
+  /**
+   * Actualiza solo el contenido del capítulo sin re-renderizar todo el BookReader
+   * Usado para navegación rápida entre capítulos
+   */
+  updateChapterContent() {
+    const contentArea = document.querySelector('.chapter-content');
+    if (!contentArea) {
+      console.warn('[BookReaderContent] No se encontró .chapter-content para actualizar');
+      return;
+    }
+
+    // Re-renderizar el contenido del capítulo
+    contentArea.innerHTML = this.renderChapterContent();
+
+    // Re-inicializar iconos
+    const Icons = this.getDependency('Icons');
+    if (Icons) {
+      Icons.init();
+    }
+
+    // Re-adjuntar event listeners del contenido
+    if (this.bookReader.events) {
+      this.bookReader.events.attachContentEventListeners();
+    }
+  }
+
+  // ==========================================================================
   // CLEANUP
   // ==========================================================================
 

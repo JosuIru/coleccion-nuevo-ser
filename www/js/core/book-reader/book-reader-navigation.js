@@ -247,15 +247,17 @@ class BookReaderNavigation {
       this.bookReader.applyBookTheme();
 
       // Navigate usando metodo con actualizacion parcial
-      const chapter = this.bookEngine.getChapterById(exerciseId);
+      const chapter = this.bookEngine.getChapter(exerciseId);
       if (chapter) {
         this.navigateToChapter(exerciseId);
+        this.showToast('success', 'Navegando al ejercicio...');
       } else {
         this.showToast('warning', 'Ejercicio no encontrado, mostrando primer capitulo');
-        this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+        const firstChapter = this.bookEngine.getFirstChapter();
+        if (firstChapter) {
+          this.navigateToChapter(firstChapter.id);
+        }
       }
-
-      this.showToast('success', 'Navegando al ejercicio...');
 
     } catch (error) {
       console.error('[BookReaderNavigation] Error navigating to exercise:', error);
@@ -282,15 +284,17 @@ class BookReaderNavigation {
       this.bookReader.applyBookTheme();
 
       // Navigate usando metodo con actualizacion parcial
-      const chapter = this.bookEngine.getChapterById(practiceId);
+      const chapter = this.bookEngine.getChapter(practiceId);
       if (chapter) {
         this.navigateToChapter(practiceId);
+        this.showToast('success', 'Navegando a la practica...');
       } else {
         this.showToast('warning', 'Practica no encontrada, mostrando primer capitulo');
-        this.navigateToChapter(this.bookEngine.getFirstChapter().id);
+        const firstChapter = this.bookEngine.getFirstChapter();
+        if (firstChapter) {
+          this.navigateToChapter(firstChapter.id);
+        }
       }
-
-      this.showToast('success', 'Navegando a la practica...');
 
     } catch (error) {
       console.error('[BookReaderNavigation] Error navigating to practice:', error);

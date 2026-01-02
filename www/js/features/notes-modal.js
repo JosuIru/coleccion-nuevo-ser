@@ -45,23 +45,21 @@ class NotesModal {
     }
 
     // 🔧 FIX #18: Verificación explícita de window.supabaseSyncHelper con logging
-    if (window.authHelper && window.authHelper.user) {
-      if (window.supabaseSyncHelper) {
-        try {
-          window.supabaseSyncHelper.syncPreference('coleccion_notes', this.notes);
-          if (window.logger) {
-            window.logger.info('[Notes] Notas sincronizadas con Supabase');
-          }
-        } catch (error) {
-          if (window.logger) {
-            window.logger.warn('[Notes] No se pudo sincronizar notas con Supabase:', error);
-          }
-        }
-      } else {
-        // 🔧 FIX #18: Warning explícito cuando supabaseSyncHelper no está disponible
+    if (window.authHelper?.user && typeof window.supabaseSyncHelper?.syncSettingsToCloud === 'function') {
+      try {
+        window.supabaseSyncHelper.syncSettingsToCloud(['coleccion_notes']);
         if (window.logger) {
-          window.logger.warn('[Notes] Supabase sync helper not available');
+          window.logger.info('[Notes] Notas sincronizadas con Supabase');
         }
+      } catch (error) {
+        if (window.logger) {
+          window.logger.warn('[Notes] No se pudo sincronizar notas con Supabase:', error);
+        }
+      }
+    } else if (window.authHelper?.user) {
+      // 🔧 FIX #18: Warning explícito cuando supabaseSyncHelper no está disponible
+      if (window.logger) {
+        window.logger.warn('[Notes] Supabase sync helper not available');
       }
     }
   }

@@ -116,6 +116,13 @@ class BookReaderHeader {
                 onclick="window.bookReader?.toggleBookmark()">
           ${isBookmarked ? Icons.bookmarkFilled() : Icons.bookmark()}
         </button>
+        <!-- Boton AI Chat mobile -->
+        <button id="ai-chat-btn-mobile"
+                class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
+                aria-label="${this.i18n.t('reader.chat')}"
+                title="${this.i18n.t('reader.chat')}">
+          ${Icons.chat()}
+        </button>
         <!-- Boton Audio mobile: cambia entre headphones/play/pause -->
         <button id="audioreader-btn-mobile"
                 class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"

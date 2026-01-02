@@ -170,7 +170,7 @@ class IAIntegration {
       return;
     }
 
-    const chapter = window.bookEngine?.getCurrentChapter();
+    const chapter = window.bookEngine?.currentChapter;
     if (!chapter) {
       this.showNotification('Selecciona un capítulo primero', 'warning');
       return;
@@ -189,7 +189,7 @@ class IAIntegration {
       return;
     }
 
-    const chapter = window.bookEngine?.getCurrentChapter();
+    const chapter = window.bookEngine?.currentChapter;
     if (!chapter) {
       this.showNotification('Selecciona un capítulo primero', 'warning');
       return;
@@ -228,7 +228,7 @@ class IAIntegration {
       return;
     }
 
-    const chapter = window.bookEngine?.getCurrentChapter();
+    const chapter = window.bookEngine?.currentChapter;
     if (!chapter) {
       this.showNotification('Selecciona un capítulo primero', 'warning');
       return;
@@ -267,7 +267,7 @@ class IAIntegration {
       return;
     }
 
-    const chapter = window.bookEngine?.getCurrentChapter();
+    const chapter = window.bookEngine?.currentChapter;
     if (!chapter) {
       this.showNotification('Selecciona un capítulo primero', 'warning');
       return;

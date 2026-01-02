@@ -112,6 +112,7 @@ class BookReader {
     this.render();
 
     this._eventListenersAttached = false;
+    this.events.resetFlags(); // Reset events module flag too
     this.events.attachEventListeners();
 
     const mainNav = document.getElementById('main-nav');

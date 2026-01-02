@@ -162,6 +162,53 @@ class AudioReaderUI {
             </button>
           </div>
         </div>
+
+        <!-- Ambient & Binaural sounds -->
+        <div class="px-4 sm:px-6 py-3 border-t border-white/5">
+          <details class="group">
+            <summary class="text-xs font-medium text-purple-400 cursor-pointer flex items-center gap-2 py-1">
+              <span class="transition-transform group-open:rotate-90">▶</span>
+              🎵 Ambiente y Binaural
+            </summary>
+            <div class="mt-3 p-3 bg-purple-900/20 rounded-lg">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs text-slate-500 mb-1">Sonido Ambiente</label>
+                  <select id="audioreader-ambient-select"
+                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
+                    <option value="">🌊 Sin ambiente</option>
+                    <option value="rain">🌧️ Lluvia</option>
+                    <option value="forest">🌳 Bosque</option>
+                    <option value="ocean">🌊 Océano</option>
+                    <option value="fire">🔥 Fogata</option>
+                    <option value="night">🌙 Noche</option>
+                    <option value="cafe">☕ Cafetería</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs text-slate-500 mb-1">Binaural</label>
+                  <select id="audioreader-binaural-select"
+                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
+                    <option value="">🧠 Sin binaural</option>
+                    <option value="focus">🎯 Enfoque (14Hz)</option>
+                    <option value="relax">😌 Relajación (10Hz)</option>
+                    <option value="deep">🧘 Meditación (7Hz)</option>
+                    <option value="sleep">😴 Sueño (4Hz)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-center gap-3">
+                <span class="text-xs text-slate-500">Volumen</span>
+                <input type="range" id="audioreader-ambient-volume"
+                       min="0" max="100" value="30"
+                       class="flex-1 h-1 bg-slate-600 rounded-full appearance-none cursor-pointer accent-purple-500">
+                <span id="audioreader-ambient-volume-label" class="text-xs text-slate-400 w-8">30%</span>
+              </div>
+            </div>
+          </details>
+        </div>
       </div>
     `;
 
@@ -312,6 +359,66 @@ class AudioReaderUI {
     if (minimizeBtn) minimizeBtn.addEventListener('click', () => this.toggleMinimize());
     if (expandBtn) expandBtn.addEventListener('click', () => this.toggleMinimize());
     if (closeBtn) closeBtn.addEventListener('click', () => ar.hide?.());
+
+    // Ambient/Binaural controls
+    this.attachAmbientBinauralListeners();
+  }
+
+  /**
+   * Attach listeners for ambient and binaural sound controls
+   */
+  attachAmbientBinauralListeners() {
+    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    const binauralSelect = document.getElementById('audioreader-binaural-select');
+    const volumeSlider = document.getElementById('audioreader-ambient-volume');
+    const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
+
+    // Ambient sound selection
+    if (ambientSelect) {
+      ambientSelect.addEventListener('change', async (e) => {
+        const value = e.target.value;
+        if (window.audioMixer) {
+          if (value) {
+            await window.audioMixer.playAmbient(value);
+          } else {
+            window.audioMixer.stopAmbient();
+          }
+        }
+      });
+    }
+
+    // Binaural sound selection
+    if (binauralSelect) {
+      binauralSelect.addEventListener('change', async (e) => {
+        const value = e.target.value;
+        if (window.audioMixer) {
+          if (value) {
+            await window.audioMixer.playBinaural(value);
+          } else {
+            window.audioMixer.stopBinaural();
+          }
+        } else if (window.binauralModal) {
+          // Fallback to binaural modal if audioMixer not available
+          if (value) {
+            window.binauralModal.show();
+          }
+        }
+      });
+    }
+
+    // Volume control
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', (e) => {
+        const volume = parseInt(e.target.value);
+        if (volumeLabel) {
+          volumeLabel.textContent = `${volume}%`;
+        }
+        if (window.audioMixer) {
+          window.audioMixer.setAmbientVolume(volume / 100);
+          window.audioMixer.setBinauralVolume(volume / 100);
+        }
+      });
+    }
   }
 
   attachMinimizedGestures() {

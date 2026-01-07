@@ -202,7 +202,7 @@ class AISuggestions {
           `).join('')}
         </div>
 
-        <p class="text-xs text-gray-500 mt-3 text-center">
+        <p class="text-xs text-gray-400 mt-3 text-center">
           Haz clic en una sugerencia para preguntar a la IA
         </p>
       </div>
@@ -233,7 +233,7 @@ class AISuggestions {
             <span class="text-xl">💡</span>
             <span class="font-semibold text-cyan-200 text-sm">¿Quieres profundizar?</span>
           </div>
-          <button id="close-suggestions-widget" class="text-cyan-400 hover:text-white p-1 hover:bg-cyan-800/50 rounded transition">
+          <button id="close-suggestions-widget" class="text-cyan-400 hover:text-white p-2 hover:bg-cyan-800/50 rounded transition">
             ${Icons.close(16)}
           </button>
         </div>
@@ -251,7 +251,7 @@ class AISuggestions {
 
         <!-- Dismiss -->
         <div class="px-3 pb-3">
-          <button id="dismiss-suggestions" class="w-full text-xs text-gray-500 hover:text-gray-400 py-1">
+          <button id="dismiss-suggestions" class="w-full text-xs text-gray-400 hover:text-gray-300 py-1">
             No mostrar más en este capítulo
           </button>
         </div>

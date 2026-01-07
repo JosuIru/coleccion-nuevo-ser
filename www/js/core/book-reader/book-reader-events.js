@@ -798,9 +798,14 @@ class BookReaderEvents {
     // ========================================================================
     this.attachMultiDevice(
       ['open-settings-modal-btn', 'open-settings-modal-btn-mobile', 'open-settings-modal-btn-tablet'],
-      () => {
+      async () => {
         document.getElementById('mobile-menu')?.classList.add('hidden');
         document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+
+        // Lazy load Settings Modal (124KB) - loads only when user clicks
+        if (window.lazyLoader && !window.lazyLoader.isLoaded('settings-modal')) {
+          await window.lazyLoader.loadSettingsModal();
+        }
 
         const SettingsModal = this.getDependency('SettingsModal');
         if (SettingsModal) {
@@ -876,7 +881,12 @@ class BookReaderEvents {
     // ========================================================================
     this.attachMultiDeviceWithMenuClose(
       ['learning-paths-btn-desktop', 'learning-paths-btn-mobile', 'learning-paths-btn-dropdown'],
-      () => {
+      async () => {
+        // Lazy load Learning Paths (100KB) - loads only when user clicks
+        if (window.lazyLoader && !window.lazyLoader.isLoaded('learning-paths')) {
+          await window.lazyLoader.loadLearningPaths();
+        }
+
         const learningPaths = this.getDependency('learningPaths');
         if (learningPaths) {
           const currentBookId = this.bookEngine.getCurrentBook();

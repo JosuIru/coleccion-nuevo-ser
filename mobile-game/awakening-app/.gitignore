@@ -1,0 +1,249 @@
+# AWAKENING PROTOCOL - GIT IGNORE
+
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ============================================================================
+# BUILD OUTPUTS
+# ============================================================================
+
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/captures/
+android/gradle/
+android/gradlew
+android/gradlew.bat
+*.apk
+*.aab
+
+# iOS
+ios/build/
+ios/Pods/
+ios/*.pbxuser
+ios/*.perspectivev3
+ios/*.xcworkspace
+!ios/*.xcworkspace/contents.xcworkspacedata
+ios/DerivedData/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# ============================================================================
+# ENVIRONMENT & SECRETS
+# ============================================================================
+
+# Environment files (NEVER commit these!)
+.env
+.env.local
+.env.development
+.env.staging
+.env.production
+
+# Keystore files (CRITICAL - NEVER commit!)
+*.keystore
+*.jks
+keystore.properties
+google-services.json
+GoogleService-Info.plist
+
+# Firebase
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+
+# ============================================================================
+# IDE & EDITORS
+# ============================================================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+.gradle/
+local.properties
+
+# Xcode
+*.xcuserstate
+*.xcscmblueprint
+xcuserdata/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================================================
+# OS FILES
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# LOGS
+# ============================================================================
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+coverage/
+*.lcov
+.nyc_output
+.jest/
+
+# ============================================================================
+# CACHE & TEMP FILES
+# ============================================================================
+
+*.cache
+.cache/
+tmp/
+temp/
+.tmp/
+
+# Metro bundler
+.metro-health-check*
+
+# React Native
+.react-native/
+
+# Buck
+buck-out/
+
+# Watchman
+.watchman
+
+# ============================================================================
+# RELEASE ARTIFACTS
+# ============================================================================
+
+# Signed APKs
+*-release.apk
+*-release.aab
+release-builds/
+
+# ProGuard/R8 mapping files (commit these for crash reporting!)
+# Uncomment if you want to commit mapping files:
+# !android/app/build/outputs/mapping/release/mapping.txt
+
+# ============================================================================
+# SENTRY
+# ============================================================================
+
+.sentryclirc
+sentry.properties
+
+# ============================================================================
+# MISC
+# ============================================================================
+
+# Thumbnails
+thumbs/
+thumbnails/
+
+# User-specific files
+*.user
+*.suo
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================================
+# PROJECT SPECIFIC
+# ============================================================================
+
+# Generated icons
+android/app/src/main/res/mipmap-*/*.png
+android/app/src/main/res/drawable-*/*.png
+
+# Screenshots for testing (keep production ones)
+screenshots/test/
+
+# Local scripts
+scripts/local-*.sh
+
+# Documentation drafts
+docs/drafts/
+
+# Data exports
+exports/
+downloads/
+
+# Crash reports
+crashlytics/
+crashes/
+
+# Performance reports
+performance/
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+# This .gitignore is configured for maximum security.
+# Key principles:
+# 1. NEVER commit secrets (env vars, keystores, API keys)
+# 2. NEVER commit build artifacts (APKs, AABs)
+# 3. DO commit ProGuard mapping files (for crash reporting)
+# 4. Keep it simple - add only what you need

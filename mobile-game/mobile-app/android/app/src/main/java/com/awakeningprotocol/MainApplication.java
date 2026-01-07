@@ -21,6 +21,8 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
+          // Add AppVariant module to expose flavor to JavaScript
+          packages.add(new AppVariantPackage());
           return packages;
         }
 

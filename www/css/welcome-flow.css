@@ -218,6 +218,44 @@
   overflow: visible;
 }
 
+/* Tools Section - Collapsible */
+.tools-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.tools-section-header:hover {
+  opacity: 0.9;
+}
+
+.tools-section-header .chevron {
+  transition: transform 0.3s ease;
+}
+
+.tools-section-header.expanded .chevron {
+  transform: rotate(180deg);
+}
+
+.tools-section-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.tools-section-content.expanded {
+  max-height: none;
+  opacity: 1;
+  overflow: visible;
+}
+
 /* Quick filter tabs */
 .quick-filter-tabs {
   display: flex;

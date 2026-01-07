@@ -13,13 +13,20 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.awakeningprotocol"
+    namespace "com.nuevosser.trascendencia"
 
     defaultConfig {
+        applicationId "com.nuevosser.trascendencia"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.0.5"
+        resValue "string", "app_name", "Trascendencia"
+        manifestPlaceholders = [
+            MAPS_API_KEY: mapsApiKey,
+            DEEPLINK_SCHEME: "trascendencia",
+            DEEPLINK_HOST: "trascendencia.nuevosser.com"
+        ]
     }
 
     signingConfigs {
@@ -57,30 +64,6 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-        }
-    }
-
-    flavorDimensions "app"
-    productFlavors {
-        awakening {
-            dimension "app"
-            applicationId "com.awakeningprotocol"
-            resValue "string", "app_name", "Awakening Protocol"
-            manifestPlaceholders = [
-                MAPS_API_KEY: mapsApiKey,
-                DEEPLINK_SCHEME: "awakeningprotocol",
-                DEEPLINK_HOST: "awakeningprotocol.nuevosser.com"
-            ]
-        }
-        trascendencia {
-            dimension "app"
-            applicationId "com.nuevosser.trascendencia"
-            resValue "string", "app_name", "Trascendencia"
-            manifestPlaceholders = [
-                MAPS_API_KEY: mapsApiKey,
-                DEEPLINK_SCHEME: "trascendencia",
-                DEEPLINK_HOST: "trascendencia.nuevosser.com"
-            ]
         }
     }
 

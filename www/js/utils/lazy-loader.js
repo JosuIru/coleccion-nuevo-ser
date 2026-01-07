@@ -425,6 +425,58 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Learning Paths (100KB)
+   * @returns {Promise<void>}
+   */
+  async loadLearningPaths() {
+    if (this.loadedModules.has('learning-paths')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Learning Paths...');
+    }
+
+    try {
+      await this.loadScript('js/features/learning-paths.js?v=2.8.7');
+      this.loadedModules.set('learning-paths', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Learning Paths cargado (100KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Learning Paths:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Settings Modal (124KB)
+   * @returns {Promise<void>}
+   */
+  async loadSettingsModal() {
+    if (this.loadedModules.has('settings-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Settings Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/settings-modal.js?v=2.9.176');
+      this.loadedModules.set('settings-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Settings Modal cargado (124KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Settings Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -484,6 +536,10 @@ class LazyLoader {
         return await this.loadActionPlans();
       case 'learning-features':
         return await this.loadLearningFeatures();
+      case 'learning-paths':
+        return await this.loadLearningPaths();
+      case 'settings-modal':
+        return await this.loadSettingsModal();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

@@ -1,0 +1,272 @@
+{
+  "resources": {
+    "title": "Recursos para Entender el Colapso y la Transición Civilizacional",
+    "description": "Libros, artículos, documentales y organizaciones para profundizar en el análisis del colapso del viejo paradigma y la emergencia del nuevo ser"
+  },
+
+  "books": [
+    {
+      "id": "book-001",
+      "title": "Collapse: How Societies Choose to Fail or Succeed",
+      "author": "Jared Diamond",
+      "year": 2005,
+      "description": "Análisis de cómo civilizaciones pasadas colapsaron y lecciones para el presente",
+      "why": "Fundamental para entender patrones históricos de colapso civilizacional",
+      "relatedChapters": ["cap1", "cap3", "cap18"]
+    },
+    {
+      "id": "book-002",
+      "title": "The Limits to Growth",
+      "author": "Donella Meadows et al.",
+      "year": 1972,
+      "description": "Primer estudio sistémico sobre límites planetarios y crecimiento exponencial",
+      "why": "Demuestra matemáticamente la imposibilidad del crecimiento infinito en planeta finito",
+      "relatedChapters": ["cap1", "cap3", "cap5"]
+    },
+    {
+      "id": "book-003",
+      "title": "Sapiens: A Brief History of Humankind",
+      "author": "Yuval Noah Harari",
+      "year": 2011,
+      "description": "Historia de la humanidad desde perspectiva de narrativas compartidas",
+      "why": "Muestra cómo las estructuras sociales son construcciones narrativas, no inevitabilidades",
+      "relatedChapters": ["cap1", "cap2", "cap4"]
+    },
+    {
+      "id": "book-004",
+      "title": "The Structure of Scientific Revolutions",
+      "author": "Thomas Kuhn",
+      "year": 1962,
+      "description": "Cómo los paradigmas científicos cambian mediante crisis y revolución",
+      "why": "Marco conceptual para entender cambios de paradigma civilizacional",
+      "relatedChapters": ["cap5", "cap11", "cap19"]
+    },
+    {
+      "id": "book-005",
+      "title": "Braiding Sweetgrass",
+      "author": "Robin Wall Kimmerer",
+      "year": 2013,
+      "description": "Sabiduría indígena sobre relación recíproca con la tierra",
+      "why": "Ejemplo viviente de premisas del nuevo ser: valor intrínseco, reciprocidad, conciencia fundamental",
+      "relatedChapters": ["cap11", "cap12", "cap13"]
+    },
+    {
+      "id": "book-006",
+      "title": "The Dawn of Everything",
+      "author": "David Graeber & David Wengrow",
+      "year": 2021,
+      "description": "Nueva historia de la humanidad que cuestiona narrativas lineales sobre progreso",
+      "why": "Demuestra que sociedades igualitarias complejas son posibles y han existido",
+      "relatedChapters": ["cap11", "cap14", "cap21"]
+    },
+    {
+      "id": "book-007",
+      "title": "Capitalist Realism",
+      "author": "Mark Fisher",
+      "year": 2009,
+      "description": "Análisis de cómo el capitalismo captura la imaginación y neutraliza alternativas",
+      "why": "Explica mecanismos de absorción de la crítica que mantienen el viejo ser",
+      "relatedChapters": ["cap5", "cap10"]
+    },
+    {
+      "id": "book-008",
+      "title": "The Age of Surveillance Capitalism",
+      "author": "Shoshana Zuboff",
+      "year": 2019,
+      "description": "Análisis de cómo la tecnología digital extrae y monetiza comportamiento humano",
+      "why": "Documenta la estructura 7 del viejo ser: redes sociales y algoritmos como control",
+      "relatedChapters": ["cap2", "cap20"]
+    },
+    {
+      "id": "book-009",
+      "title": "Small Is Beautiful",
+      "author": "E.F. Schumacher",
+      "year": 1973,
+      "description": "Economía que reconoce límites y propone escala humana",
+      "why": "Alternativa económica basada en suficiencia y subsidiariedad",
+      "relatedChapters": ["cap11", "cap14", "cap21"]
+    },
+    {
+      "id": "book-010",
+      "title": "The Ecology of Freedom",
+      "author": "Murray Bookchin",
+      "year": 1982,
+      "description": "Análisis de cómo jerarquía y dominación emergieron históricamente",
+      "why": "Muestra que separación y dominación no son naturales sino construidas",
+      "relatedChapters": ["cap2", "cap11", "cap14"]
+    }
+  ],
+
+  "papers": [
+    {
+      "id": "paper-001",
+      "title": "Planetary Boundaries: Exploring the Safe Operating Space for Humanity",
+      "authors": "Rockström et al.",
+      "year": 2009,
+      "journal": "Nature",
+      "description": "Identifica 9 límites planetarios que no deben cruzarse",
+      "why": "Base científica del síntoma 1: crisis ecológica",
+      "url": "https://www.nature.com/articles/461472a",
+      "relatedChapters": ["cap3"]
+    },
+    {
+      "id": "paper-002",
+      "title": "The Tragedy of the Commons",
+      "authors": "Garrett Hardin",
+      "year": 1968,
+      "journal": "Science",
+      "description": "Argumento clásico sobre dilemas de recursos compartidos",
+      "why": "Premisa que justifica privatización - pero Elinor Ostrom la refutó",
+      "relatedChapters": ["cap1", "cap11"]
+    },
+    {
+      "id": "paper-003",
+      "title": "Governing the Commons",
+      "authors": "Elinor Ostrom",
+      "year": 1990,
+      "description": "Demuestra que comunidades pueden gestionar recursos compartidos sin privatización ni Estado",
+      "why": "Refuta premisa 2 del viejo ser: escasez como condición natural",
+      "relatedChapters": ["cap11", "cap12", "cap14"]
+    }
+  ],
+
+  "documentaries": [
+    {
+      "id": "doc-001",
+      "title": "The Corporation",
+      "year": 2003,
+      "description": "Análisis de la corporación como institución psicopática",
+      "why": "Documenta estructura 1: economía capitalista y sus patologías",
+      "relatedChapters": ["cap2"]
+    },
+    {
+      "id": "doc-002",
+      "title": "The Social Dilemma",
+      "year": 2020,
+      "description": "Exposición de cómo redes sociales manipulan comportamiento",
+      "why": "Evidencia de estructura 7: redes sociales como control",
+      "relatedChapters": ["cap2", "cap20"]
+    },
+    {
+      "id": "doc-003",
+      "title": "Cowspiracy",
+      "year": 2014,
+      "description": "Impacto ambiental de agricultura industrial",
+      "why": "Muestra externalización masiva de costos ecológicos",
+      "relatedChapters": ["cap3"]
+    }
+  ],
+
+  "organizations": [
+    {
+      "id": "org-001",
+      "name": "Transition Network",
+      "description": "Red global de iniciativas de transición local hacia resiliencia",
+      "url": "https://transitionnetwork.org",
+      "why": "Ejemplo de construcción activa del nuevo ser a nivel comunitario",
+      "relatedChapters": ["cap11", "cap21"]
+    },
+    {
+      "id": "org-002",
+      "name": "Degrowth Movement",
+      "description": "Movimiento que cuestiona el crecimiento como objetivo económico",
+      "url": "https://degrowth.info",
+      "why": "Alternativa a premisa 4: progreso lineal e infinito",
+      "relatedChapters": ["cap5", "cap11", "cap14"]
+    },
+    {
+      "id": "org-003",
+      "name": "P2P Foundation",
+      "description": "Investigación sobre producción entre pares y commons",
+      "url": "https://p2pfoundation.net",
+      "why": "Modelos de organización basados en cooperación y abundancia",
+      "relatedChapters": ["cap11", "cap14"]
+    },
+    {
+      "id": "org-004",
+      "name": "Fearless Cities Network",
+      "description": "Red de municipalismo radical y democracia participativa",
+      "url": "https://fearlesscities.com",
+      "why": "Gobernanza del nuevo ser: participativa, subsidiaria, no-estatal",
+      "relatedChapters": ["cap11", "cap14", "cap21"]
+    }
+  ],
+
+  "related_books_collection": [
+    {
+      "book_id": "filosofia-nuevo-ser",
+      "title": "Filosofía del Nuevo Ser",
+      "connection": "Establece las cinco premisas del nuevo paradigma (conciencia fundamental, abundancia organizable, interdependencia, madurez cíclica, valor intrínseco) que este libro presupone",
+      "related_sections": ["seccion3", "seccion4"],
+      "why_read_next": "Para entender la base filosófica de las alternativas al viejo ser"
+    },
+    {
+      "book_id": "manual-transicion",
+      "title": "Manual de Transición",
+      "connection": "Propone cómo reorganizar instituciones concretas (economía, gobernanza, educación, salud, tecnología) según las premisas del nuevo ser",
+      "related_sections": ["seccion3", "seccion4"],
+      "why_read_next": "Para pasar del análisis (este libro) a la acción institucional"
+    },
+    {
+      "book_id": "codigo-despertar",
+      "title": "El Código del Despertar",
+      "connection": "Articula la transformación vivida internamente - la experiencia de quien despierta a la conciencia fundamental",
+      "related_sections": ["seccion3", "seccion4"],
+      "why_read_next": "Para entender la dimensión experiencial del cambio de paradigma"
+    },
+    {
+      "book_id": "ahora-instituciones",
+      "title": "AHORA (Instituciones)",
+      "connection": "Propuestas prácticas inmediatas para transformar instituciones en crisis",
+      "related_sections": ["seccion4"],
+      "why_read_next": "Para acción concreta en el presente"
+    },
+    {
+      "book_id": "tierra-que-despierta",
+      "title": "La Tierra que Despierta",
+      "connection": "Reconexión con lo no-humano y ecología del nuevo ser",
+      "related_sections": ["seccion3"],
+      "why_read_next": "Para profundizar en relación regenerativa con territorio"
+    },
+    {
+      "book_id": "practicas-radicales",
+      "title": "Prácticas Radicales",
+      "connection": "Ejercicios concretos para vivir desde las premisas del nuevo ser",
+      "related_sections": ["seccion3", "seccion4"],
+      "why_read_next": "Para traducir comprensión en práctica cotidiana"
+    }
+  ],
+
+  "by_chapter": {
+    "cap1": {
+      "title": "Definición Precisa del Viejo Ser",
+      "recommended": ["book-003", "book-004", "paper-002"],
+      "key_concepts": ["cinco premisas ontológicas", "separación", "escasez", "materialismo", "progreso lineal", "valor instrumental"]
+    },
+    "cap2": {
+      "title": "Las Siete Estructuras Institucionales",
+      "recommended": ["book-007", "book-008", "doc-001", "doc-002"],
+      "key_concepts": ["economía capitalista", "religión institucional", "Estado-nación", "consumismo", "educación estandarizada", "estética normalizada", "redes sociales"]
+    },
+    "cap3": {
+      "title": "Los Síntomas de Colapso",
+      "recommended": ["book-001", "book-002", "paper-001", "doc-003"],
+      "key_concepts": ["crisis ecológica", "crisis psicosomática", "crisis de sentido", "crisis de legitimidad"]
+    },
+    "cap11": {
+      "title": "Dónde Existe Ya el Nuevo Ser",
+      "recommended": ["book-005", "book-006", "book-009", "org-001", "org-003", "org-004"],
+      "key_concepts": ["comunidades indígenas", "economías cooperativas", "gobernanza participativa", "conocimiento abierto"]
+    },
+    "cap18": {
+      "title": "2025-2035, La Década Decisiva",
+      "recommended": ["book-001", "book-006", "org-001", "org-002"],
+      "key_concepts": ["tres escenarios", "La Fortaleza", "El Colapso Caótico", "El Nacimiento"]
+    },
+    "cap20": {
+      "title": "El Rol Decisivo de la IA en la Transición",
+      "recommended": ["book-008"],
+      "key_concepts": ["IA extractiva", "IA regenerativa", "punto de decisión 2025-2030"]
+    }
+  }
+}

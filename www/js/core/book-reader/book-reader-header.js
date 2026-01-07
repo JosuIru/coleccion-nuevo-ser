@@ -128,7 +128,7 @@ class BookReaderHeader {
                 class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                 aria-label="${this.i18n.t('reader.audio')}"
                 title="${this.i18n.t('reader.audio')}">
-          <span id="audio-icon-mobile">${Icons.audio()}</span>
+          <span id="audio-icon-mobile">${Icons.headphones()}</span>
         </button>
         <!-- Boton Desplegar reproductor (oculto hasta activar audio) -->
         <button id="audio-expand-btn-mobile"
@@ -181,7 +181,7 @@ class BookReaderHeader {
                 class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                 aria-label="${this.i18n.t('reader.audio')}"
                 title="${this.i18n.t('reader.audio')}">
-          <span id="audio-icon-tablet">${Icons.audio()}</span>
+          <span id="audio-icon-tablet">${Icons.headphones()}</span>
         </button>
         <!-- Boton Apoyar tablet - siempre visible -->
         <button id="support-btn-tablet"
@@ -273,7 +273,7 @@ class BookReaderHeader {
                 class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                 aria-label="${this.i18n.t('reader.audio')}"
                 title="${this.i18n.t('reader.audio')}">
-          <span id="audio-icon-desktop">${Icons.audio()}</span>
+          <span id="audio-icon-desktop">${Icons.headphones()}</span>
         </button>
 
         <!-- Boton Apoyar - siempre visible con animacion de latido -->

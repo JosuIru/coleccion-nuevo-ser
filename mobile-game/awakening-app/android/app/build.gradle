@@ -1,0 +1,106 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.google.gms.google-services"
+
+// Habilitar ProGuard para builds de release (seguridad: ofuscación de código)
+def enableProguardInReleaseBuilds = true
+
+// Leer propiedades de gradle.properties
+def mapsApiKey = project.hasProperty('MAPS_API_KEY') ? project.property('MAPS_API_KEY') : 'MISSING_API_KEY'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.awakeningprotocol"
+
+    defaultConfig {
+        applicationId "com.awakeningprotocol"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 6
+        versionName "1.0.5"
+        resValue "string", "app_name", "Awakening Protocol"
+        manifestPlaceholders = [
+            MAPS_API_KEY: mapsApiKey,
+            DEEPLINK_SCHEME: "awakeningprotocol",
+            DEEPLINK_HOST: "awakeningprotocol.nuevosser.com"
+        ]
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("${System.properties['user.home']}/.android/debug.keystore")
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        // Release signing: usar variables de entorno o gradle.properties
+        // Para producción, crear un keystore real y configurar estas propiedades
+        release {
+            if (project.hasProperty('RELEASE_STORE_FILE') && project.property('RELEASE_STORE_FILE')) {
+                storeFile file(project.property('RELEASE_STORE_FILE'))
+                storePassword project.property('RELEASE_STORE_PASSWORD')
+                keyAlias project.property('RELEASE_KEY_ALIAS')
+                keyPassword project.property('RELEASE_KEY_PASSWORD')
+            } else {
+                // Fallback a debug keystore para desarrollo (NO USAR EN PRODUCCIÓN)
+                storeFile file("${System.properties['user.home']}/.android/debug.keystore")
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    // React Native core
+    implementation("com.facebook.react:react-android:0.73.2")
+    implementation("com.facebook.react:hermes-android:0.73.2")
+
+    // Android libraries
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.google.android.material:material:1.10.0'
+
+    // Google Maps (requerido para react-native-maps)
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:23.4.1'
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

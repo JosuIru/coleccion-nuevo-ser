@@ -88,7 +88,7 @@ class BrowserTTSProvider extends TTSProvider {
       };
 
       utterance.onerror = (event) => {
-        console.error('Browser TTS error:', event);
+        logger.error('Browser TTS error:', event);
         this.isPlaying = false;
         this.isPaused = false;
         if (onError) onError(event);
@@ -252,7 +252,7 @@ class OpenAITTSProvider extends TTSProvider {
       return this.playAudio(audioUrl, onProgress, onEnd, onError);
 
     } catch (error) {
-      console.error('OpenAI TTS error:', error);
+      logger.error('OpenAI TTS error:', error);
       if (onError) onError(error);
       throw error;
     }
@@ -420,7 +420,7 @@ class OpenAITTSProvider extends TTSProvider {
       try {
         URL.revokeObjectURL(url);
       } catch (e) {
-        // console.warn('Error revocando URL:', e);
+        // logger.warn('Error revocando URL:', e);
       }
     });
     this.cache.clear();
@@ -504,11 +504,11 @@ class TTSManager {
     try {
       return await provider.speak(text, options);
     } catch (error) {
-      console.error(`Error con provider ${this.currentProvider}:`, error);
+      logger.error(`Error con provider ${this.currentProvider}:`, error);
 
       // Fallback automático a navegador si no estamos ya usándolo
       if (this.currentProvider !== 'browser') {
-        // console.warn('⚠️ Fallback a navegador');
+        // logger.warn('⚠️ Fallback a navegador');
         const browserProvider = this.providers.browser;
         return await browserProvider.speak(text, options);
       }

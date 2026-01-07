@@ -50,7 +50,7 @@ class AIGameMaster {
         payload,
       });
     } catch (error) {
-      console.warn('AI Game Master > recordActivity falló', error);
+      logger.warn('AI Game Master > recordActivity falló', error);
     }
   }
 
@@ -62,7 +62,7 @@ class AIGameMaster {
         ...args,
       });
     } catch (error) {
-      console.warn('AI Game Master > persistConversation falló', error);
+      logger.warn('AI Game Master > persistConversation falló', error);
     }
   }
 
@@ -80,7 +80,7 @@ class AIGameMaster {
         },
       });
     } catch (error) {
-      console.warn('AI Game Master > persistMission falló', error);
+      logger.warn('AI Game Master > persistMission falló', error);
     }
   }
 
@@ -201,7 +201,7 @@ INSTRUCCIONES:
         npc: npcPersonality.name,
       };
     } catch (error) {
-      console.error('❌ Error en chat NPC:', error);
+      logger.error('❌ Error en chat NPC:', error);
       return {
         success: false,
         error: error.message,
@@ -353,7 +353,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO:
         },
       };
     } catch (error) {
-      console.error('❌ Error generando misión:', error);
+      logger.error('❌ Error generando misión:', error);
       return {
         success: false,
         error: error.message,
@@ -451,7 +451,7 @@ LONGITUD: 300-400 palabras`;
         nextChoices: this.generateNextChoices(gameState),
       };
     } catch (error) {
-      console.error('❌ Error en narrativa:', error);
+      logger.error('❌ Error en narrativa:', error);
       return {
         success: false,
         error: error.message,
@@ -542,7 +542,7 @@ Formato: Análisis conciso, tono motivador, incluir emojis`;
         analysis,
       };
     } catch (error) {
-      console.error('❌ Error en análisis:', error);
+      logger.error('❌ Error en análisis:', error);
       return {
         success: false,
         error: error.message,

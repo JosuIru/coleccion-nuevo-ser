@@ -55,7 +55,7 @@ class SupabaseNotificationsHelper {
 
             return true;
         } catch (error) {
-            console.error('Error checking notification permissions:', error);
+            logger.error('Error checking notification permissions:', error);
             return false;
         }
     }
@@ -138,7 +138,7 @@ class SupabaseNotificationsHelper {
                 }]
             });
         } catch (error) {
-            console.error('Error sending notification:', error);
+            logger.error('Error sending notification:', error);
         }
     }
 
@@ -187,7 +187,7 @@ class SupabaseNotificationsHelper {
                     }]
                 });
             } catch (error) {
-                console.error('Error scheduling reading reminder:', error);
+                logger.error('Error scheduling reading reminder:', error);
             }
         }
     }
@@ -227,7 +227,7 @@ class SupabaseNotificationsHelper {
                     }]
                 });
             } catch (error) {
-                console.error('Error scheduling streak reminder:', error);
+                logger.error('Error scheduling streak reminder:', error);
             }
         }
     }
@@ -261,7 +261,7 @@ class SupabaseNotificationsHelper {
                 }]
             });
         } catch (error) {
-            console.error('Error scheduling koan:', error);
+            logger.error('Error scheduling koan:', error);
         }
     }
 

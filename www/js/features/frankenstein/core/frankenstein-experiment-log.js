@@ -51,9 +51,9 @@ export class FrankensteinExperimentLog {
     try {
       const stored = localStorage.getItem(this.storageKey);
       this.entries = stored ? JSON.parse(stored) : [];
-      console.log(`📊 [ExperimentLog] Cargados ${this.entries.length} registros`);
+      logger.log(`📊 [ExperimentLog] Cargados ${this.entries.length} registros`);
     } catch (error) {
-      console.warn('[ExperimentLog] No se pudo leer la bitácora:', error);
+      logger.warn('[ExperimentLog] No se pudo leer la bitácora:', error);
       this.entries = [];
     }
     this.render();
@@ -83,7 +83,7 @@ export class FrankensteinExperimentLog {
    */
   record({ results, currentBeing, selectedMission, selectedPieces }) {
     if (!currentBeing) {
-      console.warn('[ExperimentLog] No se puede registrar sin un ser actual');
+      logger.warn('[ExperimentLog] No se puede registrar sin un ser actual');
       return null;
     }
 
@@ -132,9 +132,9 @@ export class FrankensteinExperimentLog {
     // Guardar en localStorage
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.entries));
-      console.log('✅ [ExperimentLog] Entrada guardada:', entry.mission, `${entry.score}%`);
+      logger.log('✅ [ExperimentLog] Entrada guardada:', entry.mission, `${entry.score}%`);
     } catch (error) {
-      console.warn('[ExperimentLog] No se pudo guardar la bitácora:', error);
+      logger.warn('[ExperimentLog] No se pudo guardar la bitácora:', error);
     }
 
     // Renderizar actualización
@@ -156,7 +156,7 @@ export class FrankensteinExperimentLog {
     const meta = this.dom.experimentLogMeta || document.getElementById('experiment-log-meta');
 
     if (!list) {
-      console.warn('[ExperimentLog] No se encontró elemento experiment-log-list');
+      logger.warn('[ExperimentLog] No se encontró elemento experiment-log-list');
       return;
     }
 
@@ -206,9 +206,9 @@ export class FrankensteinExperimentLog {
     this.entries = [];
     try {
       localStorage.removeItem(this.storageKey);
-      console.log('🗑️ [ExperimentLog] Log limpiado');
+      logger.log('🗑️ [ExperimentLog] Log limpiado');
     } catch (error) {
-      console.warn('[ExperimentLog] Error al limpiar log:', error);
+      logger.warn('[ExperimentLog] Error al limpiar log:', error);
     }
     this.render();
   }
@@ -272,7 +272,7 @@ export class FrankensteinExperimentLog {
     this.missionsSystem = null;
     this.getCurrentMissionRequirements = null;
     this.countFulfilledRequirements = null;
-    console.log('🧹 [ExperimentLog] Sistema destruido');
+    logger.log('🧹 [ExperimentLog] Sistema destruido');
   }
 }
 

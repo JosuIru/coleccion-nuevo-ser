@@ -23,7 +23,7 @@ class SoundscapeCache {
       const request = indexedDB.open(this.dbName, this.dbVersion);
 
       request.onerror = () => {
-        console.error('Error abriendo IndexedDB:', request.error);
+        logger.error('Error abriendo IndexedDB:', request.error);
         reject(request.error);
       };
 
@@ -112,7 +112,7 @@ class SoundscapeCache {
 
       return soundscapeData;
     } catch (error) {
-      console.error(`❌ Error descargando soundscape ${name}:`, error);
+      logger.error(`❌ Error descargando soundscape ${name}:`, error);
       throw error;
     }
   }
@@ -247,7 +247,7 @@ class SoundscapeCache {
         data: null
       };
     } catch (error) {
-      console.error('Error cargando soundscape:', error);
+      logger.error('Error cargando soundscape:', error);
       return {
         url: url,
         source: 'network',
@@ -287,7 +287,7 @@ class SoundscapeCache {
         completed++;
 
       } catch (error) {
-        console.error(`Error descargando ${name}:`, error);
+        logger.error(`Error descargando ${name}:`, error);
         results.push({ name, success: false, error: error.message });
         completed++;
       }
@@ -421,7 +421,7 @@ class SoundscapeCache {
       try {
         URL.revokeObjectURL(url);
       } catch (e) {
-        console.warn('Error revocando blob URL:', e);
+        logger.warn('Error revocando blob URL:', e);
       }
     });
 

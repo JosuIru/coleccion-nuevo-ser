@@ -41,13 +41,13 @@ class AudioReaderSleepTimer {
       if (remainingMinutes > 1) {
         this.minutes = minutes;
         this.startTime = startTime;
-        console.log(`[SleepTimer] Restaurado - ${Math.ceil(remainingMinutes)}m restantes`);
+        logger.log(`[SleepTimer] Restaurado - ${Math.ceil(remainingMinutes)}m restantes`);
       } else {
         // Timer expirado, limpiar storage
         localStorage.removeItem('audioreader-sleep-timer-data');
       }
     } catch (error) {
-      console.warn('[SleepTimer] Error restaurando:', error);
+      logger.warn('[SleepTimer] Error restaurando:', error);
       localStorage.removeItem('audioreader-sleep-timer-data');
     }
   }
@@ -76,12 +76,12 @@ class AudioReaderSleepTimer {
         startTime: this.startTime
       }));
     } catch (error) {
-      console.warn('[SleepTimer] Error guardando:', error);
+      logger.warn('[SleepTimer] Error guardando:', error);
     }
 
     // Crear el timer usando el método tracked del audioReader
     this.timer = this.audioReader._setTimeout(() => {
-      console.log('[SleepTimer] Finalizado, deteniendo audio...');
+      logger.log('[SleepTimer] Finalizado, deteniendo audio...');
       this.audioReader.fadeOutAndStop?.() || this.audioReader.stop?.();
       localStorage.removeItem('audioreader-sleep-timer-data');
     }, minutes * 60 * 1000);
@@ -132,12 +132,12 @@ class AudioReaderSleepTimer {
 
     // Reactivar el timer con el tiempo restante
     this.timer = this.audioReader._setTimeout(() => {
-      console.log('[SleepTimer] Finalizado, deteniendo audio...');
+      logger.log('[SleepTimer] Finalizado, deteniendo audio...');
       this.audioReader.fadeOutAndStop?.() || this.audioReader.stop?.();
       localStorage.removeItem('audioreader-sleep-timer-data');
     }, remainingMinutes * 60 * 1000);
 
-    console.log(`[SleepTimer] Reactivado - ${remainingMinutes}m restantes`);
+    logger.log(`[SleepTimer] Reactivado - ${remainingMinutes}m restantes`);
   }
 
   /**
@@ -155,7 +155,7 @@ class AudioReaderSleepTimer {
     this.timer = null;
     this.isPaused = true;
 
-    console.log(`[SleepTimer] Pausado - ${Math.ceil(this.remainingTime)}m restantes`);
+    logger.log(`[SleepTimer] Pausado - ${Math.ceil(this.remainingTime)}m restantes`);
   }
 
   /**
@@ -166,7 +166,7 @@ class AudioReaderSleepTimer {
 
     // Crear nuevo timer con el tiempo restante
     this.timer = this.audioReader._setTimeout(() => {
-      console.log('[SleepTimer] Finalizado - deteniendo reproducción');
+      logger.log('[SleepTimer] Finalizado - deteniendo reproducción');
       this.audioReader.stop?.();
     }, this.remainingTime * 60 * 1000);
 
@@ -176,7 +176,7 @@ class AudioReaderSleepTimer {
     this.isPaused = false;
     this.remainingTime = 0;
 
-    console.log(`[SleepTimer] Resumido - ${Math.ceil(this.minutes)}m restantes`);
+    logger.log(`[SleepTimer] Resumido - ${Math.ceil(this.minutes)}m restantes`);
   }
 
   /**

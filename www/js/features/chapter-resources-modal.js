@@ -29,13 +29,13 @@ class ChapterResourcesModal {
     try {
       const response = await fetch(`books/${bookId}/assets/resources.json`);
       if (!response.ok) {
-        // console.warn(`No resources.json found for ${bookId}`);
+        // logger.warn(`No resources.json found for ${bookId}`);
         return null;
       }
       this.resourcesData = await response.json();
       return this.resourcesData;
     } catch (error) {
-      // console.warn(`Error loading resources for ${bookId}:`, error);
+      // logger.warn(`Error loading resources for ${bookId}:`, error);
       return null;
     }
   }
@@ -50,13 +50,13 @@ class ChapterResourcesModal {
     try {
       const response = await fetch(`books/${bookId}/assets/chapter-metadata.json`);
       if (!response.ok) {
-        // console.warn(`No chapter-metadata.json found for ${bookId}`);
+        // logger.warn(`No chapter-metadata.json found for ${bookId}`);
         return null;
       }
       this.metadataData = await response.json();
       return this.metadataData;
     } catch (error) {
-      // console.warn(`Error loading metadata for ${bookId}:`, error);
+      // logger.warn(`Error loading metadata for ${bookId}:`, error);
       return null;
     }
   }
@@ -93,7 +93,7 @@ class ChapterResourcesModal {
       this.render();
       this.attachEventListeners();
     } catch (error) {
-      console.error('Error opening chapter resources:', error);
+      logger.error('Error opening chapter resources:', error);
       this.close();
       window.toast?.error('Error al cargar recursos');
     }
@@ -808,7 +808,7 @@ class ChapterResourcesModal {
   attachEventListeners() {
     // 🔧 FIX: Protección contra re-attach múltiple
     if (this._eventListenersAttached) {
-      console.warn('[ChapterResourcesModal] Listeners already attached, skipping');
+      logger.warn('[ChapterResourcesModal] Listeners already attached, skipping');
       return;
     }
 

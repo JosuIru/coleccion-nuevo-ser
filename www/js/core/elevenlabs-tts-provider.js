@@ -65,7 +65,7 @@ class ElevenLabsTTSProvider {
       }
       this.usePersonalKey = localStorage.getItem('elevenlabs-use-personal-key') === 'true';
     } catch (error) {
-      console.error('Error cargando configuración de ElevenLabs:', error);
+      logger.error('Error cargando configuración de ElevenLabs:', error);
       this.usePersonalKey = false;
     }
   }
@@ -83,7 +83,7 @@ class ElevenLabsTTSProvider {
         localStorage.removeItem('elevenlabs-personal-key');
       }
     } catch (error) {
-      console.error('Error guardando API key de ElevenLabs:', error);
+      logger.error('Error guardando API key de ElevenLabs:', error);
       window.toast?.error('Error al guardar API key. Intenta de nuevo.');
     }
   }
@@ -97,7 +97,7 @@ class ElevenLabsTTSProvider {
     try {
       localStorage.setItem('elevenlabs-use-personal-key', use.toString());
     } catch (error) {
-      console.error('Error guardando configuración de ElevenLabs:', error);
+      logger.error('Error guardando configuración de ElevenLabs:', error);
     }
   }
 
@@ -174,7 +174,7 @@ class ElevenLabsTTSProvider {
         }
       }
     } catch (error) {
-      console.warn('Error verificando caché compartido:', error);
+      logger.warn('Error verificando caché compartido:', error);
     }
     return null;
   }
@@ -219,7 +219,7 @@ class ElevenLabsTTSProvider {
         logger.debug('☁️ ElevenLabs: Audio subido al caché compartido');
       }
     } catch (error) {
-      console.warn('Error subiendo a caché compartido:', error);
+      logger.warn('Error subiendo a caché compartido:', error);
       // No fallar si no se puede subir
     }
   }
@@ -281,7 +281,7 @@ class ElevenLabsTTSProvider {
             const audioUrl = URL.createObjectURL(audioBlob);
             return this.playAudio(audioUrl, onProgress, onEnd, onError);
           } catch (downloadError) {
-            console.warn('Error descargando audio compartido:', downloadError);
+            logger.warn('Error descargando audio compartido:', downloadError);
             // Continuar con otros niveles de caché
           }
         }
@@ -335,7 +335,7 @@ class ElevenLabsTTSProvider {
       return this.playAudio(audioUrl, onProgress, onEnd, onError);
 
     } catch (error) {
-      console.error('ElevenLabs TTS error:', error);
+      logger.error('ElevenLabs TTS error:', error);
       if (onError) onError(error);
       throw error;
     }

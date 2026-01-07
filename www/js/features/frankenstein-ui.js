@@ -344,60 +344,60 @@ class FrankensteinLabUI {
    * Inicializar UI del laboratorio
    */
   async init() {
-    console.log('🎬 FrankensteinLabUI.init() llamado. isInitialized:', this.isInitialized, 'labStarted:', this.labStarted);
+    logger.log('🎬 FrankensteinLabUI.init() llamado. isInitialized:', this.isInitialized, 'labStarted:', this.labStarted);
 
     if (this.isInitialized) {
-      console.log('⏭️ Ya inicializado, saltando...');
+      logger.log('⏭️ Ya inicializado, saltando...');
       return;
     }
 
     // Inicializar sistema de misiones
     if (typeof FrankensteinMissions !== 'undefined') {
       this.missionsSystem = new FrankensteinMissions();
-      console.log('✅ FrankensteinMissions inicializado');
+      logger.log('✅ FrankensteinMissions inicializado');
     } else {
-      console.error('❌ FrankensteinMissions no disponible');
+      logger.error('❌ FrankensteinMissions no disponible');
       return;
     }
 
     // Inicializar sistema de avatares
     if (typeof FrankensteinAvatarSystem !== 'undefined') {
       this.avatarSystem = new FrankensteinAvatarSystem();
-      console.log('✅ FrankensteinAvatarSystem inicializado');
+      logger.log('✅ FrankensteinAvatarSystem inicializado');
     } else {
-      console.warn('⚠️ FrankensteinAvatarSystem no disponible - avatares deshabilitados');
+      logger.warn('⚠️ FrankensteinAvatarSystem no disponible - avatares deshabilitados');
     }
 
     // Cargar todas las piezas disponibles
-    console.log('📦 Cargando piezas disponibles...');
+    logger.log('📦 Cargando piezas disponibles...');
     await this.loadAvailablePieces();
-    console.log('✅ Piezas cargadas:', this.availablePieces.length);
+    logger.log('✅ Piezas cargadas:', this.availablePieces.length);
 
     // Inicializar sistema de bottom sheet móvil
     this.bottomSheet = new FrankensteinBottomSheet(this.domCache, this);
-    console.log('✅ FrankensteinBottomSheet inicializado');
+    logger.log('✅ FrankensteinBottomSheet inicializado');
 
     // Inicializar sistema de modales
     this.modals = new FrankensteinModals(this.domCache, this);
-    console.log('✅ FrankensteinModals inicializado');
+    logger.log('✅ FrankensteinModals inicializado');
 
     // Inicializar UI renderer
     this.uiRenderer = new FrankensteinUIRenderer(this, this.domCache);
-    console.log('✅ FrankensteinUIRenderer inicializado');
+    logger.log('✅ FrankensteinUIRenderer inicializado');
 
     // Si ya se inició antes, ir directo al lab, sino mostrar pantalla de inicio
     if (this.labStarted) {
-      console.log('🎮 Lab ya iniciado antes, creando UI directamente');
+      logger.log('🎮 Lab ya iniciado antes, creando UI directamente');
       this.uiRenderer.createLabUI();
       this.attachEventListeners();
     } else {
-      console.log('🌟 Primera vez, mostrando pantalla de inicio');
+      logger.log('🌟 Primera vez, mostrando pantalla de inicio');
       this.uiRenderer.createStartScreen();
 
       // Si el modo actual es demo, cargar datos automáticamente
       const currentMode = window.FrankensteinQuiz?.getMode();
       if (currentMode === 'demo' && window.FrankensteinDemoData) {
-        console.log('📦 Modo demo detectado - cargando datos automáticamente');
+        logger.log('📦 Modo demo detectado - cargando datos automáticamente');
         window.FrankensteinDemoData.loadDemoData(this);
       }
     }
@@ -408,7 +408,7 @@ class FrankensteinLabUI {
     // Inicializar sistema de recompensas
     this.initRewardsSystem();
 
-    console.log('✅ FrankensteinLabUI inicializado completamente');
+    logger.log('✅ FrankensteinLabUI inicializado completamente');
   }
 
   /**
@@ -416,7 +416,7 @@ class FrankensteinLabUI {
    */
   initRewardsSystem() {
     if (typeof FrankensteinRewards === 'undefined') {
-      console.warn('⚠️ FrankensteinRewards no disponible');
+      logger.warn('⚠️ FrankensteinRewards no disponible');
       return;
     }
 
@@ -432,7 +432,7 @@ class FrankensteinLabUI {
       }, 1500);
     }
 
-    console.log('✅ Sistema de recompensas inicializado');
+    logger.log('✅ Sistema de recompensas inicializado');
   }
 
   /**
@@ -740,7 +740,7 @@ class FrankensteinLabUI {
   _createLabUI_OLD() {
     const container = document.getElementById('organism-container');
     if (!container) {
-      console.error('❌ Contenedor del organismo no encontrado');
+      logger.error('❌ Contenedor del organismo no encontrado');
       return;
     }
 
@@ -1357,7 +1357,7 @@ class FrankensteinLabUI {
    */
   checkOnboarding() {
     if (typeof FrankensteinOnboarding === 'undefined') {
-      console.warn('⚠️ FrankensteinOnboarding no disponible');
+      logger.warn('⚠️ FrankensteinOnboarding no disponible');
       return;
     }
 
@@ -1545,7 +1545,7 @@ class FrankensteinLabUI {
    * Cambiar tab de navegación (Bottom Navigation)
    */
   switchTab(tabName) {
-    console.log('🔄 Cambiando a tab:', tabName);
+    logger.log('🔄 Cambiando a tab:', tabName);
 
     // Actualizar estado visual de tabs
     document.querySelectorAll('.awakening-tab').forEach(tab => {
@@ -1651,7 +1651,7 @@ class FrankensteinLabUI {
     if (window.FrankensteinSettings) {
       window.FrankensteinSettings.open();
     } else {
-      console.warn('FrankensteinSettings no disponible');
+      logger.warn('FrankensteinSettings no disponible');
       if (window.showToast) {
         window.showToast('Configuración no disponible', 'warning');
       }
@@ -1686,7 +1686,7 @@ class FrankensteinLabUI {
    * Mostrar sección específica
    */
   showSection(sectionId) {
-    console.log('📱 Mostrando sección:', sectionId);
+    logger.log('📱 Mostrando sección:', sectionId);
   }
 
   selectMission(mission, card, { silent = false } = {}) {
@@ -1926,7 +1926,7 @@ class FrankensteinLabUI {
    */
   populatePiecesGrid(filter = 'all') {
     if (!this.pieceCards) {
-      console.error('❌ FrankensteinPieceCards not initialized');
+      logger.error('❌ FrankensteinPieceCards not initialized');
       return;
     }
     this.pieceCards.populateGrid(filter);
@@ -1938,7 +1938,7 @@ class FrankensteinLabUI {
    */
   renderPiecesTree(filter = 'all') {
     if (!this.pieceCards) {
-      console.error('❌ FrankensteinPieceCards not initialized');
+      logger.error('❌ FrankensteinPieceCards not initialized');
       return;
     }
     this.pieceCards.renderTree(filter);
@@ -2073,18 +2073,18 @@ class FrankensteinLabUI {
     // EN MODO JUEGO: Mostrar quiz antes de añadir pieza
     if (window.FrankensteinQuiz) {
       const currentMode = window.FrankensteinQuiz.getMode();
-      console.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
+      logger.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
 
       if (currentMode === 'juego') {
         try {
-          console.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
+          logger.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
           const quizResult = await window.FrankensteinQuiz.showQuizModal(
             piece,
             piece.bookId,
             piece.chapterId
           );
 
-          console.log(`[FrankensteinUI] Quiz result:`, quizResult);
+          logger.log(`[FrankensteinUI] Quiz result:`, quizResult);
 
           if (!quizResult.skipped) {
             // Aplicar multiplicador de poder a la pieza
@@ -2095,14 +2095,14 @@ class FrankensteinLabUI {
             piece.quizTotal = quizResult.totalQuestions;
           }
         } catch (error) {
-          console.error('[FrankensteinUI] Error en quiz:', error);
+          logger.error('[FrankensteinUI] Error en quiz:', error);
           // Si hay error, continuar sin quiz
         }
       } else {
-        console.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
+        logger.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
       }
     } else {
-      console.warn('[FrankensteinUI] FrankensteinQuiz not available');
+      logger.warn('[FrankensteinUI] FrankensteinQuiz not available');
     }
 
     // Añadir pieza
@@ -2502,7 +2502,7 @@ class FrankensteinLabUI {
     navigator.clipboard.writeText(prompt).then(() => {
       this.showNotification('📋 Prompt copiado al portapapeles', 'success', 4000);
     }).catch(err => {
-      console.error('Error copiando:', err);
+      logger.error('Error copiando:', err);
     });
 
     // También mostrar en modal
@@ -2865,7 +2865,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     try {
       localStorage.setItem(this.labStateKey, JSON.stringify(record));
     } catch (error) {
-      console.warn('[FrankensteinUI] No se pudo guardar el estado del laboratorio:', error);
+      logger.warn('[FrankensteinUI] No se pudo guardar el estado del laboratorio:', error);
     }
   }
 
@@ -2901,7 +2901,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     try {
       state = JSON.parse(raw);
     } catch (error) {
-      console.warn('[FrankensteinUI] Estado del laboratorio corrupto:', error);
+      logger.warn('[FrankensteinUI] Estado del laboratorio corrupto:', error);
       return;
     }
 
@@ -3507,7 +3507,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       // Intentar guardar en Supabase si está disponible
       if (window.supabaseSyncHelper && window.supabaseSyncHelper.isAuthenticated) {
         this.saveBeingToSupabase(savedBeing).catch(err => {
-          console.warn('No se pudo sincronizar con Supabase:', err);
+          logger.warn('No se pudo sincronizar con Supabase:', err);
         });
       }
 
@@ -3516,7 +3516,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       // Sonido dramático de trueno al crear ser
       if (window.frankenAudio && window.frankenAudio.enabled) {
         window.frankenAudio.playThunder();
-        console.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
+        logger.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
       }
 
       // Recompensa por crear/guardar ser
@@ -3526,7 +3526,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
       return true;
     } catch (error) {
-      console.error('Error guardando ser:', error);
+      logger.error('Error guardando ser:', error);
       this.showNotification('❌ Error al guardar el ser', 'error');
       return false;
     }
@@ -3540,7 +3540,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       const saved = localStorage.getItem('frankenstein-saved-beings');
       return saved ? JSON.parse(saved) : [];
     } catch (error) {
-      console.error('Error cargando seres:', error);
+      logger.error('Error cargando seres:', error);
       return [];
     }
   }
@@ -3595,7 +3595,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         .filter(Boolean);
 
       if (missingPieces.length > 0) {
-        console.warn('[FrankensteinUI] Piezas no encontradas en el catálogo actual:', missingPieces.map(p => p.id));
+        logger.warn('[FrankensteinUI] Piezas no encontradas en el catálogo actual:', missingPieces.map(p => p.id));
         this.showNotification(`⚠️ ${missingPieces.length} piezas no existen en el catálogo actual. Se usaron versiones de respaldo.`, 'warning', 6000);
       }
 
@@ -3690,7 +3690,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.saveLabState();
       return true;
     } catch (error) {
-      console.error('Error cargando ser:', error);
+      logger.error('Error cargando ser:', error);
       this.showNotification('❌ Error al cargar el ser', 'error');
       return false;
     }
@@ -3715,7 +3715,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       this.showNotification('🗑️ Ser eliminado', 'info', 2000);
       return true;
     } catch (error) {
-      console.error('Error eliminando ser:', error);
+      logger.error('Error eliminando ser:', error);
       this.showNotification('❌ Error al eliminar el ser', 'error');
       return false;
     }
@@ -3740,9 +3740,9 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         }]);
 
       if (error) throw error;
-      console.log('✅ Ser sincronizado con Supabase');
+      logger.log('✅ Ser sincronizado con Supabase');
     } catch (error) {
-      console.warn('Error en Supabase sync:', error);
+      logger.warn('Error en Supabase sync:', error);
       // No lanzar error, es opcional
     }
   }
@@ -3790,7 +3790,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
 
     // Usar el sistema de gestos móviles si está disponible
     if (window.mobileGestures) {
-      console.log('🎯 Usando MobileGestures avanzado para bottom sheet');
+      logger.log('🎯 Usando MobileGestures avanzado para bottom sheet');
 
       window.mobileGestures.setupBottomSheet(bottomSheet, {
         states: {
@@ -3799,7 +3799,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
           full: 0.9        // 90% visible
         },
         onStateChange: (state) => {
-          console.log('📍 Bottom sheet state:', state);
+          logger.log('📍 Bottom sheet state:', state);
           this.currentBottomSheetState = state;
 
           // Actualizar clases CSS
@@ -3820,7 +3820,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     }
 
     // Fallback: implementación básica si mobileGestures no está disponible
-    console.log('⚠️ MobileGestures no disponible, usando implementación básica');
+    logger.log('⚠️ MobileGestures no disponible, usando implementación básica');
 
     let startY = 0;
     let currentY = 0;
@@ -5492,22 +5492,22 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       if (!bypassQuiz) {
         if (window.FrankensteinQuiz) {
           const currentMode = window.FrankensteinQuiz.getMode();
-          console.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
+          logger.log(`[FrankensteinUI] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
 
           if (currentMode === 'juego') {
             try {
-              console.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
+              logger.log(`[FrankensteinUI] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
               const quizResult = await window.FrankensteinQuiz.showQuizModal(
                 piece,
                 piece.bookId,
                 piece.chapterId
               );
 
-              console.log(`[FrankensteinUI] Quiz result:`, quizResult);
+              logger.log(`[FrankensteinUI] Quiz result:`, quizResult);
 
               // Si el usuario canceló el quiz, no añadir la pieza
               if (quizResult.cancelled) {
-                console.log(`[FrankensteinUI] Quiz cancelled, not adding piece`);
+                logger.log(`[FrankensteinUI] Quiz cancelled, not adding piece`);
                 return;
               }
 
@@ -5530,18 +5530,18 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
                 }
               }
             } catch (error) {
-              console.error('[FrankensteinUI] Error en quiz:', error);
+              logger.error('[FrankensteinUI] Error en quiz:', error);
               // Si hay error, no añadir la pieza
               return;
             }
           } else {
-            console.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
+            logger.log(`[FrankensteinUI] Skipping quiz - mode is "${currentMode}"`);
           }
         } else {
-          console.warn('[FrankensteinUI] FrankensteinQuiz not available');
+          logger.warn('[FrankensteinUI] FrankensteinQuiz not available');
         }
       } else {
-        console.log('[FrankensteinUI] Añadiendo pieza especial sin quiz.');
+        logger.log('[FrankensteinUI] Añadiendo pieza especial sin quiz.');
       }
 
       // Solo ejecutar animaciones si el quiz fue exitoso o no hay quiz
@@ -6222,7 +6222,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
       const stored = localStorage.getItem('frankenstein-experiments');
       this.experimentLog = stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.warn('[FrankensteinUI] No se pudo leer la bitácora:', error);
+      logger.warn('[FrankensteinUI] No se pudo leer la bitácora:', error);
       this.experimentLog = [];
     }
     this.renderExperimentLog();
@@ -6257,7 +6257,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
     try {
       localStorage.setItem('frankenstein-experiments', JSON.stringify(this.experimentLog));
     } catch (error) {
-      console.warn('[FrankensteinUI] No se pudo guardar la bitácora:', error);
+      logger.warn('[FrankensteinUI] No se pudo guardar la bitácora:', error);
     }
   }
 
@@ -6559,14 +6559,14 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    */
   createGameModeSelector() {
     if (!window.FrankensteinQuiz) {
-      console.warn('[FrankensteinUI] Quiz system not available');
+      logger.warn('[FrankensteinUI] Quiz system not available');
       return;
     }
 
     // Buscar el header del laboratorio
     const labHeader = document.querySelector('.lab-header');
     if (!labHeader) {
-      console.warn('[FrankensteinUI] Lab header not found');
+      logger.warn('[FrankensteinUI] Lab header not found');
       return;
     }
 
@@ -6633,15 +6633,15 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         e.stopPropagation();
 
         const mode = btn.dataset.mode;
-        console.log(`[FrankensteinUI] Changing mode to: ${mode}`);
+        logger.log(`[FrankensteinUI] Changing mode to: ${mode}`);
 
         if (!window.FrankensteinQuiz) {
-          console.error('[FrankensteinUI] FrankensteinQuiz not available');
+          logger.error('[FrankensteinUI] FrankensteinQuiz not available');
           return;
         }
 
         window.FrankensteinQuiz.setMode(mode);
-        console.log(`[FrankensteinUI] Mode changed, current mode: ${window.FrankensteinQuiz.getMode()}`);
+        logger.log(`[FrankensteinUI] Mode changed, current mode: ${window.FrankensteinQuiz.getMode()}`);
 
         // Update UI
         selector.querySelectorAll('.game-mode-option').forEach(b => b.classList.remove('active'));
@@ -6674,10 +6674,10 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         e.stopPropagation();
 
         const difficulty = btn.dataset.difficulty;
-        console.log(`[FrankensteinUI] Changing difficulty to: ${difficulty}`);
+        logger.log(`[FrankensteinUI] Changing difficulty to: ${difficulty}`);
 
         if (!window.FrankensteinQuiz) {
-          console.error('[FrankensteinUI] FrankensteinQuiz not available');
+          logger.error('[FrankensteinUI] FrankensteinQuiz not available');
           return;
         }
 
@@ -6759,7 +6759,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
    * Manejar navegación desde el menú
    */
   handleMenuNavigation(section) {
-    console.log(`[Menu] Navegando a: ${section}`);
+    logger.log(`[Menu] Navegando a: ${section}`);
     this.closeSideMenu();
 
     switch(section) {
@@ -6814,7 +6814,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         break;
 
       default:
-        console.log(`[Menu] Sección desconocida: ${section}`);
+        logger.log(`[Menu] Sección desconocida: ${section}`);
     }
   }
 
@@ -6849,7 +6849,7 @@ Cuando interactúes, habla desde tu identidad única como este ser, no como una 
         menuMicroCount.style.display = microCount > 0 ? 'inline-flex' : 'none';
       }
     } catch (e) {
-      console.warn('[Menu] Error al obtener microsociedades:', e);
+      logger.warn('[Menu] Error al obtener microsociedades:', e);
     }
   }
 

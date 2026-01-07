@@ -17,7 +17,7 @@ class TTSPolyfill {
 
   init() {
     if (!this.nativeSynthesis) {
-      // console.warn('⚠️ Web Speech API no disponible');
+      // logger.warn('⚠️ Web Speech API no disponible');
       return;
     }
 
@@ -50,7 +50,7 @@ class TTSPolyfill {
         // logger.debug(`⏳ Intento ${this.loadAttempts}/${this.maxAttempts} - Esperando voces...`);
         setTimeout(attemptLoad, 500);
       } else {
-        // console.warn('⚠️ No se pudieron cargar voces después de', this.maxAttempts, 'intentos');
+        // logger.warn('⚠️ No se pudieron cargar voces después de', this.maxAttempts, 'intentos');
         // Último recurso: trigger manual
         this.triggerVoiceLoad();
       }
@@ -153,7 +153,7 @@ class TTSPolyfill {
 
   // Diagnóstico
   diagnose() {
-    // console.group('🔍 Diagnóstico TTS');
+    // logger.group('🔍 Diagnóstico TTS');
     // logger.debug('speechSynthesis:', !!this.nativeSynthesis);
     // logger.debug('Voces cargadas:', this.voicesLoaded);
     // logger.debug('Total de voces:', this.voices.length);
@@ -162,7 +162,7 @@ class TTSPolyfill {
     // logger.debug('Intentos de carga:', this.loadAttempts);
 
     if (this.voices.length > 0) {
-      // console.table(this.voices.slice(0, 10).map(v => ({
+      // logger.table(this.voices.slice(0, 10).map(v => ({
       //   name: v.name,
       //   lang: v.lang,
       //   default: v.default,
@@ -170,7 +170,7 @@ class TTSPolyfill {
       // })));
     }
 
-    // console.groupEnd();
+    // logger.groupEnd();
   }
 }
 

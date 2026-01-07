@@ -469,22 +469,22 @@ export class FrankensteinBeingBuilder {
       if (!bypassQuiz) {
         if (window.FrankensteinQuiz) {
           const currentMode = window.FrankensteinQuiz.getMode();
-          console.log(`[BeingBuilder] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
+          logger.log(`[BeingBuilder] Quiz mode: ${currentMode}, piece: ${piece.title} (${piece.bookId}/${piece.chapterId})`);
 
           if (currentMode === 'juego') {
             try {
-              console.log(`[BeingBuilder] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
+              logger.log(`[BeingBuilder] Showing quiz for ${piece.bookId}/${piece.chapterId}`);
               const quizResult = await window.FrankensteinQuiz.showQuizModal(
                 piece,
                 piece.bookId,
                 piece.chapterId
               );
 
-              console.log(`[BeingBuilder] Quiz result:`, quizResult);
+              logger.log(`[BeingBuilder] Quiz result:`, quizResult);
 
               // Si el usuario canceló el quiz, no añadir la pieza
               if (quizResult.cancelled) {
-                console.log(`[BeingBuilder] Quiz cancelled, not adding piece`);
+                logger.log(`[BeingBuilder] Quiz cancelled, not adding piece`);
                 return;
               }
 
@@ -507,18 +507,18 @@ export class FrankensteinBeingBuilder {
                 }
               }
             } catch (error) {
-              console.error('[BeingBuilder] Error en quiz:', error);
+              logger.error('[BeingBuilder] Error en quiz:', error);
               // Si hay error, no añadir la pieza
               return;
             }
           } else {
-            console.log(`[BeingBuilder] Skipping quiz - mode is "${currentMode}"`);
+            logger.log(`[BeingBuilder] Skipping quiz - mode is "${currentMode}"`);
           }
         } else {
-          console.warn('[BeingBuilder] FrankensteinQuiz not available');
+          logger.warn('[BeingBuilder] FrankensteinQuiz not available');
         }
       } else {
-        console.log('[BeingBuilder] Añadiendo pieza especial sin quiz.');
+        logger.log('[BeingBuilder] Añadiendo pieza especial sin quiz.');
       }
 
       // Solo ejecutar animaciones si el quiz fue exitoso o no hay quiz
@@ -726,6 +726,6 @@ export class FrankensteinBeingBuilder {
     this.selectedPieces = [];
     this.currentBeing = null;
 
-    console.log('[BeingBuilder] Destroyed');
+    logger.log('[BeingBuilder] Destroyed');
   }
 }

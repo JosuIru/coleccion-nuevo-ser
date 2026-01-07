@@ -68,7 +68,7 @@ class BookReaderNavigation {
     if (errorBoundary) {
       errorBoundary.captureError(error, context);
     } else {
-      console.error('[BookReaderNavigation] Error:', error, context);
+      logger.error('[BookReaderNavigation] Error:', error, context);
     }
   }
 
@@ -152,10 +152,10 @@ class BookReaderNavigation {
           logger.debug('[DEBUG] navigateToChapter() completado');
         }
       } else {
-        console.error('[DEBUG] No se pudo obtener el chapter para:', chapterId);
+        logger.error('[DEBUG] No se pudo obtener el chapter para:', chapterId);
       }
     } catch (error) {
-      console.error('[BookReaderNavigation] Error navegando a capitulo:', error);
+      logger.error('[BookReaderNavigation] Error navegando a capitulo:', error);
       this.captureError(error, {
         context: 'navigate_to_chapter',
         chapterId: chapterId,
@@ -179,7 +179,7 @@ class BookReaderNavigation {
       const targetBook = allBooks.find(book => book.id === bookId);
 
       if (!targetBook) {
-        console.warn('[BookReaderNavigation] Libro no encontrado:', bookId);
+        logger.warn('[BookReaderNavigation] Libro no encontrado:', bookId);
         this.showToast('error', 'Libro no encontrado');
         return;
       }
@@ -214,7 +214,7 @@ class BookReaderNavigation {
 
       this.showToast('success', this.i18n?.t('reader.bookSwitched') || 'Libro cambiado exitosamente');
     } catch (error) {
-      console.error('[BookReaderNavigation] Error cambiando de libro:', error);
+      logger.error('[BookReaderNavigation] Error cambiando de libro:', error);
       this.captureError(error, {
         context: 'handle_book_switch',
         bookId: bookId,
@@ -260,7 +260,7 @@ class BookReaderNavigation {
       }
 
     } catch (error) {
-      console.error('[BookReaderNavigation] Error navigating to exercise:', error);
+      logger.error('[BookReaderNavigation] Error navigating to exercise:', error);
       this.showToast('error', 'Error al navegar al ejercicio');
     }
   }
@@ -297,7 +297,7 @@ class BookReaderNavigation {
       }
 
     } catch (error) {
-      console.error('[BookReaderNavigation] Error navigating to practice:', error);
+      logger.error('[BookReaderNavigation] Error navigating to practice:', error);
       this.showToast('error', 'Error al navegar a la practica');
     }
   }
@@ -346,7 +346,7 @@ class BookReaderNavigation {
     const targetElement = document.querySelector(selector);
 
     if (!targetElement) {
-      console.warn(`[BookReaderNavigation] Elemento no encontrado: ${selector}`);
+      logger.warn(`[BookReaderNavigation] Elemento no encontrado: ${selector}`);
       if (window.toast) {
         window.toast.warning('Referencia no encontrada');
       } else {

@@ -96,10 +96,10 @@ const AwakeningBridge = {
                     break;
 
                 default:
-                    console.warn('[AwakeningBridge] Unknown action:', action);
+                    logger.warn('[AwakeningBridge] Unknown action:', action);
             }
         } catch (error) {
-            console.error('[AwakeningBridge] Error handling deep link:', error);
+            logger.error('[AwakeningBridge] Error handling deep link:', error);
         }
     },
 
@@ -162,7 +162,7 @@ const AwakeningBridge = {
             }
 
         } catch (error) {
-            console.error('[AwakeningBridge] Error parsing being:', error);
+            logger.error('[AwakeningBridge] Error parsing being:', error);
             this.showNotification('Error al importar el ser', 'error');
         }
     },
@@ -211,7 +211,7 @@ const AwakeningBridge = {
             }
 
         } catch (error) {
-            console.error('[AwakeningBridge] Error sending being:', error);
+            logger.error('[AwakeningBridge] Error sending being:', error);
             this.showNotification('Error al enviar el ser', 'error');
             return false;
         }
@@ -341,7 +341,7 @@ const AwakeningBridge = {
             const saved = localStorage.getItem('frankenstein_beings');
             return saved ? JSON.parse(saved) : [];
         } catch (error) {
-            console.error('[AwakeningBridge] Error loading beings:', error);
+            logger.error('[AwakeningBridge] Error loading beings:', error);
             return [];
         }
     },

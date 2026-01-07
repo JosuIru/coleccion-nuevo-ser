@@ -162,7 +162,7 @@ class ContextualHints {
         return JSON.parse(saved);
       }
     } catch (e) {
-      console.error('[ContextualHints] Error loading data:', e);
+      logger.error('[ContextualHints] Error loading data:', e);
     }
 
     return {
@@ -192,7 +192,7 @@ class ContextualHints {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.data));
     } catch (e) {
-      console.error('[ContextualHints] Error saving data:', e);
+      logger.error('[ContextualHints] Error saving data:', e);
     }
   }
 
@@ -270,14 +270,14 @@ class ContextualHints {
 
       // Evaluar la expresión de forma segura sin new Function()
       if (!window.SafeExpressionEvaluator) {
-        console.error('[ContextualHints] SafeExpressionEvaluator not loaded');
+        logger.error('[ContextualHints] SafeExpressionEvaluator not loaded');
         return false;
       }
 
       const evaluator = new SafeExpressionEvaluator(false);
       return evaluator.evaluate(trigger, context);
     } catch (e) {
-      console.error('[ContextualHints] Error evaluating trigger:', e);
+      logger.error('[ContextualHints] Error evaluating trigger:', e);
       return false;
     }
   }
@@ -457,7 +457,7 @@ class ContextualHints {
         return window.bookEngine.getGlobalProgress().totalRead || 0;
       }
     } catch (e) {
-      console.debug('[ContextualHints] Error getting chapters read:', e);
+      logger.debug('[ContextualHints] Error getting chapters read:', e);
     }
     return 0;
   }
@@ -468,7 +468,7 @@ class ContextualHints {
         return window.bookEngine.getGlobalProgress().booksStarted || 0;
       }
     } catch (e) {
-      console.debug('[ContextualHints] Error getting books started:', e);
+      logger.debug('[ContextualHints] Error getting books started:', e);
     }
     return 0;
   }
@@ -479,7 +479,7 @@ class ContextualHints {
         return window.streakSystem.getStreakStatus().currentStreak || 0;
       }
     } catch (e) {
-      console.debug('[ContextualHints] Error getting streak days:', e);
+      logger.debug('[ContextualHints] Error getting streak days:', e);
     }
     return 0;
   }

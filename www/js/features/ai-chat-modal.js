@@ -54,7 +54,7 @@ class AIChatModal {
       const hasCredits = await window.aiPremium.checkCredits(estimatedTokens, 'ai_chat');
       return hasCredits;
     } catch (error) {
-      console.warn('Credit check warning:', error.message);
+      logger.warn('Credit check warning:', error.message);
       // En caso de error, permitir continuar (graceful degradation)
       return true;
     }
@@ -95,7 +95,7 @@ class AIChatModal {
 
       await window.aiPremium.consumeCredits(creditsToConsume, 'ai_chat', provider, model, totalTokens);
     } catch (error) {
-      console.warn('Credit consume warning:', error.message);
+      logger.warn('Credit consume warning:', error.message);
     }
   }
 
@@ -1042,7 +1042,7 @@ class AIChatModal {
         try {
           localStorage.setItem('ai-practical-mode', this.practicalMode ? 'true' : 'false');
         } catch (error) {
-          console.error('Error guardando modo práctico:', error);
+          logger.error('Error guardando modo práctico:', error);
         }
 
         if (window.toast) {
@@ -1363,7 +1363,7 @@ class AIChatModal {
       }
 
     } catch (error) {
-      console.error('Error getting AI response:', error);
+      logger.error('Error getting AI response:', error);
 
       // Mensaje de error detallado
       let errorContent = `❌ **Error de IA**\n\n`;
@@ -1586,7 +1586,7 @@ class AIChatModal {
     try {
       localStorage.setItem('ai-max-history', length.toString());
     } catch (error) {
-      console.error('Error guardando tamaño de historial de IA:', error);
+      logger.error('Error guardando tamaño de historial de IA:', error);
     }
   }
 

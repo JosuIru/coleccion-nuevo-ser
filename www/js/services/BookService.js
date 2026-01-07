@@ -84,7 +84,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para obtener progreso');
+      logger.warn('No hay usuario autenticado para obtener progreso');
       return null;
     }
 
@@ -175,7 +175,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para actualizar progreso');
+      logger.warn('No hay usuario autenticado para actualizar progreso');
       return null;
     }
 
@@ -270,7 +270,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para obtener marcadores');
+      logger.warn('No hay usuario autenticado para obtener marcadores');
       return [];
     }
 
@@ -328,7 +328,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para guardar marcador');
+      logger.warn('No hay usuario autenticado para guardar marcador');
       return null;
     }
 
@@ -405,7 +405,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado');
+      logger.warn('No hay usuario autenticado');
       return [];
     }
 
@@ -470,7 +470,7 @@ class BookService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado');
+      logger.warn('No hay usuario autenticado');
       return null;
     }
 

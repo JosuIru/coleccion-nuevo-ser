@@ -49,7 +49,7 @@ export class FrankensteinDragDropHandler {
    */
   init() {
     if (this.initialized) {
-      console.warn('[DragDropHandler] Ya inicializado, limpiando antes de reiniciar');
+      logger.warn('[DragDropHandler] Ya inicializado, limpiando antes de reiniciar');
       this.destroy();
     }
 
@@ -271,7 +271,7 @@ export class FrankensteinDragDropHandler {
     // ya que están registrados con labUI._addEventListener
 
     this.initialized = false;
-    console.log('[DragDropHandler] Destruido correctamente');
+    logger.log('[DragDropHandler] Destruido correctamente');
   }
 
   /**
@@ -279,7 +279,7 @@ export class FrankensteinDragDropHandler {
    * @public
    */
   reinit() {
-    console.log('[DragDropHandler] Reinicializando...');
+    logger.log('[DragDropHandler] Reinicializando...');
     this.destroy();
     this.init();
   }
@@ -309,14 +309,14 @@ export class FrankensteinDragDropHandler {
  * @deprecated Use FrankensteinDragDropHandler class instead
  */
 export function initDragAndDropEnhanced(labUIRef) {
-  console.warn('[DEPRECATED] Use FrankensteinDragDropHandler.init() instead');
+  logger.warn('[DEPRECATED] Use FrankensteinDragDropHandler.init() instead');
   const handler = new FrankensteinDragDropHandler(labUIRef, {});
   handler.init();
   return handler;
 }
 
 export function highlightCompatibleSlots(pieceType) {
-  console.warn('[DEPRECATED] Use FrankensteinDragDropHandler.highlightCompatibleSlots() instead');
+  logger.warn('[DEPRECATED] Use FrankensteinDragDropHandler.highlightCompatibleSlots() instead');
   const slots = document.querySelectorAll('.vitruvian-slot');
   slots.forEach(slot => {
     slot.classList.remove('compatible', 'incompatible', 'empty');
@@ -332,7 +332,7 @@ export function highlightCompatibleSlots(pieceType) {
 }
 
 export function clearSlotHighlights() {
-  console.warn('[DEPRECATED] Use FrankensteinDragDropHandler.clearHighlights() instead');
+  logger.warn('[DEPRECATED] Use FrankensteinDragDropHandler.clearHighlights() instead');
   const slots = document.querySelectorAll('.vitruvian-slot');
   slots.forEach(slot => {
     slot.classList.remove('compatible', 'incompatible', 'empty');
@@ -344,7 +344,7 @@ export function isSlotCompatible(tipoSlot, tipoPieza) {
 }
 
 export function getPieceData(element, availablePieces) {
-  console.warn('[DEPRECATED] Use FrankensteinDragDropHandler.getPieceData() instead');
+  logger.warn('[DEPRECATED] Use FrankensteinDragDropHandler.getPieceData() instead');
   const pieceId = element.dataset.pieceId;
   if (!pieceId) return null;
   return availablePieces.find(p => p.id === pieceId);

@@ -34,19 +34,19 @@ export default class FrankensteinUIRenderer {
   createStartScreen() {
     const container = document.getElementById('organism-container');
     if (!container) {
-      console.error('❌ Contenedor no encontrado para pantalla de inicio');
+      logger.error('❌ Contenedor no encontrado para pantalla de inicio');
       return;
     }
 
     // Establecer fondo vintage aleatorio y mantenerlo rotando
     this.startBackgroundRotation();
 
-    console.log('✅ Creando pantalla de inicio en:', container);
+    logger.log('✅ Creando pantalla de inicio en:', container);
 
     const currentMode = window.FrankensteinQuiz?.getMode() || 'juego';
     const currentDifficulty = window.FrankensteinQuiz?.getDifficulty() || 'iniciado';
 
-    console.log('📊 Modo actual:', currentMode, 'Dificultad:', currentDifficulty);
+    logger.log('📊 Modo actual:', currentMode, 'Dificultad:', currentDifficulty);
 
     const modeLabels = {
       investigacion: 'Exploración Libre',
@@ -259,7 +259,7 @@ export default class FrankensteinUIRenderer {
 
         // Si se activa modo demo, cargar datos de ejemplo
         if (mode === 'demo' && window.FrankensteinDemoData) {
-          console.log('📦 Cargando datos de demostración...');
+          logger.log('📦 Cargando datos de demostración...');
           window.FrankensteinDemoData.loadDemoData(this.labUI);
           // Mostrar notificación temporal
           if (window.toast) {
@@ -407,7 +407,7 @@ export default class FrankensteinUIRenderer {
   createLabUI() {
     const container = document.getElementById('organism-container');
     if (!container) {
-      console.error('❌ Contenedor del organismo no encontrado');
+      logger.error('❌ Contenedor del organismo no encontrado');
       return;
     }
 
@@ -1044,6 +1044,6 @@ export default class FrankensteinUIRenderer {
       this.backgroundRotationTimer = null;
     }
 
-    console.log('✅ FrankensteinUIRenderer destroyed');
+    logger.log('✅ FrankensteinUIRenderer destroyed');
   }
 }

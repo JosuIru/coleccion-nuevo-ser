@@ -56,7 +56,7 @@ class TextSelectionHelper {
     try {
       // Verificar que Icons está disponible
       if (!window.Icons) {
-        console.error('❌ Icons no disponible, reintentando en 500ms...');
+        logger.error('❌ Icons no disponible, reintentando en 500ms...');
         setTimeout(() => this.init(), 500);
         return;
       }
@@ -72,7 +72,7 @@ class TextSelectionHelper {
         logger.log('✅ Text Selection Helper inicializado');
       }
     } catch (error) {
-      console.error('❌ Error inicializando Text Selection Helper:', error);
+      logger.error('❌ Error inicializando Text Selection Helper:', error);
     }
   }
 
@@ -216,7 +216,7 @@ class TextSelectionHelper {
           this.selectedText = text;
           this.showMenu(e);
         } else {
-          // console.warn('[TextSelection] Selection not in chapter content');
+          // logger.warn('[TextSelection] Selection not in chapter content');
           this.hideMenu();
         }
       } else {
@@ -252,7 +252,7 @@ class TextSelectionHelper {
       current = current.parentElement;
       depth++;
     }
-    // console.warn('[TextSelection] No valid container found after checking', depth, 'levels');
+    // logger.warn('[TextSelection] No valid container found after checking', depth, 'levels');
     return false;
   }
 
@@ -322,9 +322,14 @@ class TextSelectionHelper {
     this.hideMenu();
   }
 
-  openAIChatWithPrompt(prompt, allowEdit = false) {
-    // Abrir el modal de IA
-    this.aiChatModal.open();
+  async openAIChatWithPrompt(prompt, allowEdit = false) {
+    // 🔧 v2.9.283: Usar AILazyLoader para carga dinámica
+    if (window.aiLazyLoader) {
+      await window.aiLazyLoader.showAIChatModal();
+    } else {
+      // Fallback
+      this.aiChatModal.open();
+    }
 
     // Esperar un momento a que el modal se renderice
     setTimeout(() => {
@@ -352,7 +357,7 @@ class TextSelectionHelper {
       await navigator.clipboard.writeText(this.selectedText);
       window.toast?.success('📋 Texto copiado al portapapeles');
     } catch (error) {
-      console.error('Error copiando al portapapeles:', error);
+      logger.error('Error copiando al portapapeles:', error);
 
       // Fallback para navegadores antiguos
       const textArea = document.createElement('textarea');

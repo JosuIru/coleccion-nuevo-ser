@@ -113,7 +113,7 @@ RESPONDE EN ESPAÑOL Y SÉ CONVERSACIONAL
         context: `${bookContext.title} - ${bookContext.chapterTitle}`,
       };
     } catch (error) {
-      console.error('❌ Error en chat:', error);
+      logger.error('❌ Error en chat:', error);
       return {
         success: false,
         error: error.message,
@@ -213,7 +213,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO (sin markdown):
           throw new Error('No se encontró JSON válido en la respuesta');
         }
       } catch (parseError) {
-        console.error('Error parseando JSON:', parseError);
+        logger.error('Error parseando JSON:', parseError);
         throw new Error(
           'Respuesta inválida del servidor de IA: ' + quizString.substring(0, 100)
         );
@@ -241,7 +241,7 @@ RESPONDE ÚNICAMENTE EN JSON VÁLIDO (sin markdown):
         },
       };
     } catch (error) {
-      console.error('❌ Error generando quiz:', error);
+      logger.error('❌ Error generando quiz:', error);
       return {
         success: false,
         error: error.message,
@@ -323,7 +323,7 @@ ESCRIBIR EN ESPAÑOL, ESTILO ACADÉMICO PERO ACCESIBLE`;
         },
       };
     } catch (error) {
-      console.error('❌ Error generando resumen:', error);
+      logger.error('❌ Error generando resumen:', error);
       return {
         success: false,
         error: error.message,
@@ -436,7 +436,7 @@ RESPONDER ÚNICAMENTE EN JSON VÁLIDO:
         },
       };
     } catch (error) {
-      console.error('❌ Error generando ejercicios:', error);
+      logger.error('❌ Error generando ejercicios:', error);
       return {
         success: false,
         error: error.message,
@@ -505,7 +505,7 @@ PROPORCIONA:
         analysis,
       };
     } catch (error) {
-      console.error('❌ Error en análisis:', error);
+      logger.error('❌ Error en análisis:', error);
       return {
         success: false,
         error: error.message,

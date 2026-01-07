@@ -137,12 +137,12 @@ class EventBus {
    */
   on(eventName, callback) {
     if (typeof eventName !== 'string' || !eventName.trim()) {
-      console.error('EventBus.on: eventName debe ser un string no vacío');
+      logger.error('EventBus.on: eventName debe ser un string no vacío');
       return this;
     }
 
     if (typeof callback !== 'function') {
-      console.error('EventBus.on: callback debe ser una función');
+      logger.error('EventBus.on: callback debe ser una función');
       return this;
     }
 
@@ -178,7 +178,7 @@ class EventBus {
    */
   off(eventName, callback) {
     if (typeof eventName !== 'string' || !eventName.trim()) {
-      console.error('EventBus.off: eventName debe ser un string no vacío');
+      logger.error('EventBus.off: eventName debe ser un string no vacío');
       return this;
     }
 
@@ -229,7 +229,7 @@ class EventBus {
    */
   emit(eventName, data) {
     if (typeof eventName !== 'string' || !eventName.trim()) {
-      console.error('EventBus.emit: eventName debe ser un string no vacío');
+      logger.error('EventBus.emit: eventName debe ser un string no vacío');
       return this;
     }
 
@@ -255,7 +255,7 @@ class EventBus {
       try {
         callback(data);
       } catch (error) {
-        console.error(`[EventBus] Error en listener ${index} de "${eventName}":`, error);
+        logger.error(`[EventBus] Error en listener ${index} de "${eventName}":`, error);
       }
     });
 
@@ -277,12 +277,12 @@ class EventBus {
    */
   once(eventName, callback) {
     if (typeof eventName !== 'string' || !eventName.trim()) {
-      console.error('EventBus.once: eventName debe ser un string no vacío');
+      logger.error('EventBus.once: eventName debe ser un string no vacío');
       return this;
     }
 
     if (typeof callback !== 'function') {
-      console.error('EventBus.once: callback debe ser una función');
+      logger.error('EventBus.once: callback debe ser una función');
       return this;
     }
 

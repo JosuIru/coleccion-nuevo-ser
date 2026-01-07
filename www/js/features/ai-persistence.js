@@ -17,7 +17,7 @@
     status = 'generated',
   }) {
     if (!userId) {
-      console.warn('AI Persistence: usuario no autenticado, la misión no se guardará');
+      logger.warn('AI Persistence: usuario no autenticado, la misión no se guardará');
       return null;
     }
     const { data, error } = await window.supabase
@@ -33,7 +33,7 @@
       .single();
 
     if (error) {
-      console.error('AI Persistence > createMission:', error);
+      logger.error('AI Persistence > createMission:', error);
       return null;
     }
 
@@ -42,7 +42,7 @@
 
   async function logConversation({ missionId = null, userId = getUserId(), message, role = 'user', metadata = {} }) {
     if (!userId) {
-      console.warn('AI Persistence: usuario no autenticado, la conversación no se guarda');
+      logger.warn('AI Persistence: usuario no autenticado, la conversación no se guarda');
       return;
     }
     const { error } = await window.supabase
@@ -56,13 +56,13 @@
       });
 
     if (error) {
-      console.error('AI Persistence > logConversation:', error);
+      logger.error('AI Persistence > logConversation:', error);
     }
   }
 
   async function logActivity({ userId = getUserId(), feature, creditsUsed, outcome = 'success', payload = {} }) {
     if (!userId) {
-      console.warn('AI Persistence: usuario no autenticado, la actividad no se guarda');
+      logger.warn('AI Persistence: usuario no autenticado, la actividad no se guarda');
       return;
     }
     const { error } = await window.supabase
@@ -76,7 +76,7 @@
       });
 
     if (error) {
-      console.error('AI Persistence > logActivity:', error);
+      logger.error('AI Persistence > logActivity:', error);
     }
   }
 
@@ -87,7 +87,7 @@
       .order('last_update', { ascending: false })
       .limit(limit);
     if (error) {
-      console.error('AI Persistence > fetchMissionSummary:', error);
+      logger.error('AI Persistence > fetchMissionSummary:', error);
       return [];
     }
     return data;
@@ -100,7 +100,7 @@
       .order('created_at', { ascending: false })
       .limit(limit);
     if (error) {
-      console.error('AI Persistence > fetchRecentActivity:', error);
+      logger.error('AI Persistence > fetchRecentActivity:', error);
       return [];
     }
     return data;
@@ -112,7 +112,7 @@
       .select('*')
       .order('mission_count', { ascending: false });
     if (error) {
-      console.error('AI Persistence > fetchActiveUsers:', error);
+      logger.error('AI Persistence > fetchActiveUsers:', error);
       return [];
     }
     return data;

@@ -312,7 +312,7 @@ class AudioEffects {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       this.createSounds();
     } catch (error) {
-      // console.warn('AudioContext no disponible para efectos');
+      // logger.warn('AudioContext no disponible para efectos');
     }
   }
 
@@ -438,7 +438,7 @@ class AudioEffects {
       try {
         soundGenerator(this.audioContext);
       } catch (error) {
-        // console.warn('Error reproduciendo efecto:', error);
+        // logger.warn('Error reproduciendo efecto:', error);
       }
     }
   }
@@ -462,7 +462,7 @@ class AudioEffects {
         this.audioContext = null;
         // logger.debug('[AudioEffects] AudioContext cerrado');
       } catch (error) {
-        console.warn('[AudioEffects] Error al cerrar AudioContext:', error);
+        logger.warn('[AudioEffects] Error al cerrar AudioContext:', error);
       }
     }
     this.sounds = {};
@@ -489,7 +489,7 @@ class VoiceCommands {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      // console.warn('Speech Recognition no disponible');
+      // logger.warn('Speech Recognition no disponible');
       return;
     }
 
@@ -506,7 +506,7 @@ class VoiceCommands {
     };
 
     this.recognition.onerror = (event) => {
-      // console.warn('Speech recognition error:', event.error);
+      // logger.warn('Speech recognition error:', event.error);
     };
 
     // logger.debug('✅ Voice Commands inicializado');
@@ -519,7 +519,7 @@ class VoiceCommands {
         this.isListening = true;
         // logger.debug('🎤 Escuchando comandos de voz...');
       } catch (error) {
-        // console.warn('Error iniciando reconocimiento:', error);
+        // logger.warn('Error iniciando reconocimiento:', error);
       }
     }
   }

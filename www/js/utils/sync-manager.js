@@ -94,13 +94,13 @@ class SyncManager {
         }
 
       } catch (error) {
-        console.error('[SyncManager] ❌ Error en operación:', item.operation, error);
+        logger.error('[SyncManager] ❌ Error en operación:', item.operation, error);
 
         item.attempts++;
 
         if (item.attempts >= this.retryAttempts) {
           // Falló después de todos los reintentos
-          console.warn('[SyncManager] Operación fallida tras', this.retryAttempts, 'intentos');
+          logger.warn('[SyncManager] Operación fallida tras', this.retryAttempts, 'intentos');
 
           this.queue.shift();
           this.syncStats.failed++;
@@ -164,7 +164,7 @@ class SyncManager {
         break;
 
       default:
-        console.warn('[SyncManager] Tipo de operación desconocida:', operation);
+        logger.warn('[SyncManager] Tipo de operación desconocida:', operation);
         // Usar syncSettingsToCloud como fallback
         if (window.supabaseSyncHelper && data.keys) {
           await window.supabaseSyncHelper.syncSettingsToCloud(data.keys);
@@ -245,10 +245,20 @@ class SyncManager {
 
   /**
    * Sincronizar streak
+   * 🔧 FIX v2.9.265: No fallar si el método no existe, guardar en localStorage
    */
   async syncStreak(data) {
-    if (!window.supabaseSyncHelper || !window.supabaseSyncHelper.syncStreakData) {
-      throw new Error('Método de sincronización de streak no disponible');
+    // El método syncStreakData no existe aún en supabase-sync-helper
+    // Guardar en localStorage como fallback temporal
+    if (!window.supabaseSyncHelper?.syncStreakData) {
+      try {
+        const existing = JSON.parse(localStorage.getItem('user-streak') || '{}');
+        const updated = { ...existing, ...data, lastSync: new Date().toISOString() };
+        localStorage.setItem('user-streak', JSON.stringify(updated));
+      } catch (e) {
+        // Ignorar errores de localStorage
+      }
+      return; // No lanzar error
     }
 
     await window.supabaseSyncHelper.syncStreakData(data);
@@ -285,7 +295,7 @@ class SyncManager {
 
       logger.debug('[SyncManager] Operación guardada para retry posterior');
     } catch (error) {
-      console.error('[SyncManager] Error guardando operación fallida:', error);
+      logger.error('[SyncManager] Error guardando operación fallida:', error);
     }
   }
 
@@ -311,7 +321,7 @@ class SyncManager {
       const stored = localStorage.getItem(this.pendingQueueKey);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('[SyncManager] Error cargando cola pendiente:', error);
+      logger.error('[SyncManager] Error cargando cola pendiente:', error);
       return [];
     }
   }
@@ -330,7 +340,7 @@ class SyncManager {
 
     // Verificar autenticación antes de reintentar
     if (!window.supabaseAuthHelper?.isAuthenticated()) {
-      console.warn('[SyncManager] Usuario no autenticado. No se pueden reintentar operaciones.');
+      logger.warn('[SyncManager] Usuario no autenticado. No se pueden reintentar operaciones.');
       return;
     }
 

@@ -27,7 +27,7 @@ class UpdateHelper {
    */
   async downloadUpdate(updateInfo) {
     if (this.isUpdating) {
-      console.warn('[UpdateHelper] Ya hay una descarga en curso');
+      logger.warn('[UpdateHelper] Ya hay una descarga en curso');
       return false;
     }
 
@@ -55,7 +55,7 @@ class UpdateHelper {
       throw new Error(`Plataforma no soportada: ${platform}`);
 
     } catch (error) {
-      console.error('[UpdateHelper] Error al descargar:', error);
+      logger.error('[UpdateHelper] Error al descargar:', error);
       this.emit('updateError', error);
       return false;
 
@@ -106,7 +106,7 @@ class UpdateHelper {
         return this.installAPK(fileName);
 
       } catch (error) {
-        console.error('[UpdateHelper] Error con Capacitor:', error);
+        logger.error('[UpdateHelper] Error con Capacitor:', error);
         // Fallback: abrir descarga en navegador
         window.location.href = url;
         return true;
@@ -139,7 +139,7 @@ class UpdateHelper {
       return true;
 
     } catch (error) {
-      console.error('[UpdateHelper] Error al instalar APK:', error);
+      logger.error('[UpdateHelper] Error al instalar APK:', error);
       throw error;
     }
   }
@@ -184,7 +184,7 @@ class UpdateHelper {
         }
         logger.debug('[UpdateHelper] Service Worker desregistrado');
       } catch (error) {
-        console.warn('[UpdateHelper] Error al desregistrar SW:', error);
+        logger.warn('[UpdateHelper] Error al desregistrar SW:', error);
       }
     }
 
@@ -232,7 +232,7 @@ class UpdateHelper {
           };
         }
       } catch (error) {
-        console.warn('[UpdateHelper] No se pudo verificar versión nativa:', error);
+        logger.warn('[UpdateHelper] No se pudo verificar versión nativa:', error);
       }
     }
 
@@ -260,7 +260,7 @@ class UpdateHelper {
         try {
           callback(data);
         } catch (error) {
-          console.error(`[UpdateHelper] Error en listener ${event}:`, error);
+          logger.error(`[UpdateHelper] Error en listener ${event}:`, error);
         }
       });
     }

@@ -40,6 +40,14 @@
                 <data android:scheme="nuevosser" />
             </intent-filter>
 
+            <!-- OAuth callback deep links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.nuevosser.coleccion" />
+            </intent-filter>
+
         </activity>
 
         <!-- Quick Settings Tile Service -->

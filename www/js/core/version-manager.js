@@ -75,8 +75,8 @@ class VersionManager {
     const stored = localStorage.getItem('app-version');
     if (stored) return stored;
 
-    // Default
-    return '2.9.31';
+    // Default (actualizado v2.9.286)
+    return '2.9.286';
   }
 
   /**

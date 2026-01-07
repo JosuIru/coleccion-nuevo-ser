@@ -33,7 +33,7 @@ class VoiceNotes {
     try {
       localStorage.setItem('voice-notes-metadata', JSON.stringify(this.notes));
     } catch (error) {
-      console.error('Error guardando metadatos de notas de voz:', error);
+      logger.error('Error guardando metadatos de notas de voz:', error);
       window.toast?.error('Error al guardar nota de voz. Intenta de nuevo.');
     }
   }
@@ -71,7 +71,7 @@ class VoiceNotes {
 
       return true;
     } catch (error) {
-      console.error('Error starting recording:', error);
+      logger.error('Error starting recording:', error);
       window.toast?.error('No se pudo acceder al micrófono');
       return false;
     }
@@ -320,8 +320,10 @@ class VoiceNotes {
           <div id="preview-area" class="hidden">
             <audio id="audio-preview" controls class="w-full mb-4"></audio>
 
+            <label for="note-title" class="sr-only">Título de la nota</label>
             <input type="text" id="note-title" placeholder="Título de la nota (opcional)"
-                   class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 mb-4">
+                   aria-label="Título de la nota de voz"
+                   class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 mb-4 focus:ring-2 focus:ring-red-500 focus:outline-none">
 
             <div class="flex gap-3">
               <button id="discard-btn" class="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
@@ -367,7 +369,7 @@ class VoiceNotes {
           <p class="text-sm text-gray-200 truncate">${note.title}</p>
           <p class="text-xs text-gray-500">${this.formatDuration(note.duration)}</p>
         </div>
-        <button class="delete-voice-note opacity-0 group-hover:opacity-100 p-1 hover:bg-red-900/50 rounded transition"
+        <button class="delete-voice-note opacity-0 group-hover:opacity-100 p-2 hover:bg-red-900/50 rounded transition"
                 data-note-id="${note.id}">
           <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>

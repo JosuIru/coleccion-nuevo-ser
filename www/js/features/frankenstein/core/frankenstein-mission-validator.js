@@ -46,7 +46,7 @@ export class FrankensteinMissionValidator {
     this.hasShownConfetti = false;
     this.pendingRequirementsUpdate = false;
 
-    console.log('[FrankensteinMissionValidator] Inicializado');
+    logger.log('[FrankensteinMissionValidator] Inicializado');
   }
 
   /**
@@ -642,6 +642,6 @@ export class FrankensteinMissionValidator {
     this.hasShownConfetti = false;
     this.pendingRequirementsUpdate = false;
 
-    console.log('[FrankensteinMissionValidator] Destruido');
+    logger.log('[FrankensteinMissionValidator] Destruido');
   }
 }

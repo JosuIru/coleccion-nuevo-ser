@@ -122,7 +122,7 @@ class AudioProcessor {
     const profile = profiles[profileName];
 
     if (!profile) {
-      // console.warn('Perfil de audio no encontrado:', profileName);
+      // logger.warn('Perfil de audio no encontrado:', profileName);
       return;
     }
 

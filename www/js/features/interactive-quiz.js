@@ -23,7 +23,7 @@ class InteractiveQuiz {
       const allQuizzes = await response.json();
       return allQuizzes.quizzes?.find(q => q.chapterId === chapterId) || null;
     } catch (error) {
-      console.error('Error cargando quiz:', error);
+      logger.error('Error cargando quiz:', error);
       return null;
     }
   }
@@ -54,7 +54,7 @@ class InteractiveQuiz {
       this.render();
       this.attachEventListeners();
     } catch (error) {
-      console.error('Error opening quiz:', error);
+      logger.error('Error opening quiz:', error);
       this.close();
       window.toast?.error('Error al cargar el quiz');
     }
@@ -80,7 +80,13 @@ class InteractiveQuiz {
     document.body.insertAdjacentHTML('beforeend', html);
   }
 
-  close() {
+  close(force = false) {
+    // 🔧 FIX v2.9.266: Confirmar si el quiz está en progreso
+    if (!force && this.answers.length > 0 && this.currentQuestionIndex < (this.currentQuiz?.questions?.length || 0)) {
+      const confirmExit = window.confirm('¿Estás seguro de que quieres salir? Perderás tu progreso en el quiz.');
+      if (!confirmExit) return;
+    }
+
     // 🔧 FIX #32: Cleanup escape key handler to prevent memory leaks
     if (this.handleEscape) {
       document.removeEventListener('keydown', this.handleEscape);
@@ -92,6 +98,10 @@ class InteractiveQuiz {
       setTimeout(() => {
         modal.remove();
         this.isOpen = false;
+        // Reset state
+        this.answers = [];
+        this.currentQuestionIndex = 0;
+        this.score = 0;
       }, 200);
     }
   }

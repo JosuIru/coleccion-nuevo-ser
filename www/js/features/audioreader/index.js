@@ -1,7 +1,7 @@
 // ============================================================================
 // AUDIOREADER - Sistema de Narración con TTS (Text-to-Speech)
 // ============================================================================
-// v2.9.278: Arquitectura modular
+// v2.9.282: Fix crítico - ambient/binaural ahora usan localStorage (funcionan minimizado)
 //
 // Módulos:
 //   - AudioReaderUtils      - Timer tracking, formateo de tiempo
@@ -68,12 +68,29 @@ class AudioReader {
   async init() {
     await this.tts.init();
 
+    // Inicializar AudioMixer para sonidos de fondo (ambient y binaural)
+    await this.initAudioMixer();
+
     // Adjuntar handlers globales
     this.events.attachVisibilityHandler();
     this.events.attachBeforeUnloadHandler();
 
     if (typeof logger !== 'undefined') {
-      logger.log('✅ AudioReader inicializado (v2.9.278 modular)');
+      logger.log('✅ AudioReader inicializado (v2.9.280 modular)');
+    }
+  }
+
+  async initAudioMixer() {
+    try {
+      if (window.AudioMixer && !window.audioMixer) {
+        window.audioMixer = new window.AudioMixer();
+        await window.audioMixer.initialize();
+        if (typeof logger !== 'undefined') {
+          logger.log('🎵 AudioMixer inicializado para ambient/binaural');
+        }
+      }
+    } catch (error) {
+      logger.warn('Error inicializando AudioMixer:', error);
     }
   }
 
@@ -167,7 +184,7 @@ class AudioReader {
       }
 
     } catch (error) {
-      console.error('Error en show():', error);
+      logger.error('Error en show():', error);
     }
   }
 

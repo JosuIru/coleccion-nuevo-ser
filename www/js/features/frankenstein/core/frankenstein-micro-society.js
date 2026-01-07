@@ -607,7 +607,7 @@ export class FrankensteinMicroSociety {
       const saved = localStorage.getItem('frankenstein-saved-beings');
       return saved ? JSON.parse(saved) : [];
     } catch (error) {
-      console.error('[FrankensteinMicroSociety] Error loading beings:', error);
+      logger.error('[FrankensteinMicroSociety] Error loading beings:', error);
       return [];
     }
   }

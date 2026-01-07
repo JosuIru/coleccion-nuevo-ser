@@ -208,7 +208,7 @@ class ReflexiveModal {
     // Sincronizar a la nube si está autenticado
     if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
       window.supabaseSyncHelper.migrateReflections().catch(err => {
-        console.error('Error sincronizando reflexión:', err);
+        logger.error('Error sincronizando reflexión:', err);
       });
     }
 

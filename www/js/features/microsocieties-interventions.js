@@ -497,7 +497,7 @@ class DivinInterventions {
         // logger.debug('👁️ Estado de intervenciones cargado');
       }
     } catch (error) {
-      console.error('❌ Error al cargar intervenciones:', error);
+      logger.error('❌ Error al cargar intervenciones:', error);
     }
   }
 

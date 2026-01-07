@@ -21,7 +21,7 @@ class FrankensteinBeingCard {
     this.missionsSystem = window.frankensteinMissions;
 
     if (!this.container) {
-      console.warn('Being card container not found:', containerId);
+      logger.warn('Being card container not found:', containerId);
       return;
     }
 

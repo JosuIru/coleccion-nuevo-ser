@@ -206,7 +206,7 @@ class AudioReaderUtils {
       localStorage.setItem(key, stringValue);
       return true;
     } catch (error) {
-      console.warn(`[AudioReaderUtils] Error guardando ${key}:`, error);
+      logger.warn(`[AudioReaderUtils] Error guardando ${key}:`, error);
       return false;
     }
   }
@@ -228,7 +228,7 @@ class AudioReaderUtils {
         return value;
       }
     } catch (error) {
-      console.warn(`[AudioReaderUtils] Error leyendo ${key}:`, error);
+      logger.warn(`[AudioReaderUtils] Error leyendo ${key}:`, error);
       return defaultValue;
     }
   }

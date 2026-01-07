@@ -26,7 +26,7 @@ const isLikelyProduction = (
 
 // Warn if missing configuration in production
 if ((!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) && isLikelyProduction) {
-  console.error(
+  logger.error(
     '❌ SUPABASE CONFIG: Credenciales no configuradas en producción.\n' +
     'CRÍTICO: La aplicación no funcionará sin credenciales válidas.\n\n' +
     'Configuración requerida:\n' +

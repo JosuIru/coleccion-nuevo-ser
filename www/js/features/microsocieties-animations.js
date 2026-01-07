@@ -20,7 +20,7 @@ class AnimationSystem {
   init(containerId = 'microsocieties-modal') {
     const container = document.getElementById(containerId);
     if (!container) {
-      console.error('❌ Container no encontrado para AnimationSystem');
+      logger.error('❌ Container no encontrado para AnimationSystem');
       return false;
     }
 

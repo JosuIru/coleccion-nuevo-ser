@@ -217,7 +217,7 @@ class SandboxMode {
         // logger.debug('⚙️ Configuración sandbox cargada');
       }
     } catch (error) {
-      console.error('❌ Error al cargar config sandbox:', error);
+      logger.error('❌ Error al cargar config sandbox:', error);
     }
   }
 

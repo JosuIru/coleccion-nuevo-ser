@@ -29,7 +29,7 @@ class NotesModal {
       const stored = localStorage.getItem('coleccion_notes');
       return stored ? JSON.parse(stored) : {};
     } catch (error) {
-      console.error('Error cargando notas:', error);
+      logger.error('Error cargando notas:', error);
       return {};
     }
   }
@@ -39,7 +39,7 @@ class NotesModal {
     try {
       localStorage.setItem('coleccion_notes', JSON.stringify(this.notes));
     } catch (error) {
-      console.error('Error guardando notas:', error);
+      logger.error('Error guardando notas:', error);
       window.toast?.error('Error al guardar nota. Intenta de nuevo.');
       return; // No intentar sincronizar si falla guardar localmente
     }

@@ -64,7 +64,7 @@ class FrankensteinSettings {
         window.enhancedToast.success('Ajustes guardados');
       }
     } catch (e) {
-      console.error('Error guardando settings:', e);
+      logger.error('Error guardando settings:', e);
     }
   }
 

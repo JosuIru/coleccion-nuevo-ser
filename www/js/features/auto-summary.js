@@ -100,7 +100,7 @@ FORMATO DE RESPUESTA:
         return response;
       }
     } catch (error) {
-      console.error('Error generando resumen:', error);
+      logger.error('Error generando resumen:', error);
     }
 
     return null;
@@ -312,19 +312,22 @@ FORMATO DE RESPUESTA:
     });
 
     // Discuss with AI button
-    document.getElementById('discuss-summary-btn')?.addEventListener('click', () => {
-      if (window.aiChatModal) {
-        this.closeModal();
+    document.getElementById('discuss-summary-btn')?.addEventListener('click', async () => {
+      // 🔧 v2.9.283: Usar AILazyLoader para carga dinámica
+      this.closeModal();
+      if (window.aiLazyLoader) {
+        await window.aiLazyLoader.showAIChatModal();
+      } else if (window.aiChatModal) {
         window.aiChatModal.open();
-        // Pre-fill con contexto del resumen
-        setTimeout(() => {
-          const input = document.getElementById('ai-chat-input');
-          if (input) {
-            input.value = `Sobre el resumen del capítulo "${chapter.title}": `;
-            input.focus();
-          }
-        }, 300);
       }
+      // Pre-fill con contexto del resumen
+      setTimeout(() => {
+        const input = document.getElementById('ai-chat-input');
+        if (input) {
+          input.value = `Sobre el resumen del capítulo "${chapter.title}": `;
+          input.focus();
+        }
+      }, 300);
     });
   }
 

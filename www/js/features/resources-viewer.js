@@ -41,7 +41,7 @@ class ResourcesViewer {
       }
       return this.resourcesData;
     } catch (error) {
-      console.error('Error cargando recursos:', error);
+      logger.error('Error cargando recursos:', error);
       if (window.toast) {
         window.toast.error('Error al cargar recursos');
       }
@@ -56,15 +56,20 @@ class ResourcesViewer {
   async open() {
     if (this.isOpen) return;
 
+    this.isOpen = true;
+    // 🔧 FIX v2.9.266: Mostrar loading mientras carga recursos
+    this.renderLoading();
+
     const data = await this.loadResourcesData();
     if (!data) {
+      this.closeLoading();
       if (window.toast) {
         window.toast.info('Recursos no disponibles para este libro');
       }
+      this.isOpen = false;
       return;
     }
 
-    this.isOpen = true;
     this.render();
 
     // Esperar a que el DOM esté listo antes de adjuntar listeners
@@ -94,8 +99,30 @@ class ResourcesViewer {
     }
   }
 
+  // 🔧 FIX v2.9.266: Loading indicator
+  renderLoading() {
+    const existing = document.getElementById('resources-loading');
+    if (existing) return;
+
+    const loadingHtml = `
+      <div id="resources-loading" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="text-center">
+          <div class="animate-spin w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p class="text-orange-300 text-lg">Cargando recursos...</p>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', loadingHtml);
+  }
+
+  closeLoading() {
+    const loading = document.getElementById('resources-loading');
+    if (loading) loading.remove();
+  }
+
   render() {
-    // Remover modal existente
+    // Remover loading y modal existente
+    this.closeLoading();
     const existing = document.getElementById('resources-modal');
     if (existing) existing.remove();
 

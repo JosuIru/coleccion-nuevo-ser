@@ -23,7 +23,7 @@ class AudioReaderBookmarks {
       const savedData = localStorage.getItem('audio-bookmarks');
       return savedData ? JSON.parse(savedData) : {};
     } catch (error) {
-      console.error('[Bookmarks] Error cargando:', error);
+      logger.error('[Bookmarks] Error cargando:', error);
       return {};
     }
   }
@@ -35,7 +35,7 @@ class AudioReaderBookmarks {
     try {
       localStorage.setItem('audio-bookmarks', JSON.stringify(this.bookmarks));
     } catch (error) {
-      console.error('[Bookmarks] Error guardando:', error);
+      logger.error('[Bookmarks] Error guardando:', error);
     }
   }
 

@@ -13,7 +13,7 @@ class BinauralModal {
   // Open modal
   open() {
     if (!this.binauralAudio) {
-      // console.warn('BinauralAudioGenerator no disponible');
+      // logger.warn('BinauralAudioGenerator no disponible');
       return;
     }
 
@@ -40,8 +40,8 @@ class BinauralModal {
     const presets = this.binauralAudio.getPresets();
 
     const html = `
-      <div id="binaural-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[10000] p-4 backdrop-blur-sm">
-        <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 rounded-2xl max-w-3xl w-full border-2 border-purple-500/30 shadow-2xl">
+      <div id="binaural-modal" class="fixed inset-0 bg-black/90 flex items-end sm:items-center justify-center z-[10000] p-0 sm:p-4 backdrop-blur-sm">
+        <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 rounded-t-2xl sm:rounded-2xl max-w-full sm:max-w-3xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border-2 border-purple-500/30 shadow-2xl">
           <!-- Header -->
           <div class="p-4 sm:p-6 border-b border-purple-500/20">
             <div class="flex items-center justify-between">
@@ -61,7 +61,7 @@ class BinauralModal {
           </div>
 
           <!-- Content -->
-          <div class="p-6">
+          <div class="p-4 sm:p-6">
             <!-- Info -->
             <div class="mb-6 p-4 bg-purple-900/30 border border-purple-500/30 rounded-lg">
               <p class="text-sm text-gray-300 flex items-start gap-2">
@@ -203,7 +203,7 @@ class BinauralModal {
 
       this.showToast(this.i18n.t('binaural.started'), 'success');
     } catch (error) {
-      console.error('Error al reproducir audio binaural:', error);
+      logger.error('Error al reproducir audio binaural:', error);
       this.showToast(this.i18n.t('binaural.error'), 'error');
     }
   }

@@ -411,7 +411,7 @@ class SystemHealth {
                     <span class="status-dot" style="background: ${statusColors[data.status]}"></span>
                 </div>
             `).join('')}
-            <button onclick="window.systemHealth.checkHealth().then(() => window.systemHealth.createDashboard()).catch(err => { console.error('Error refreshing health:', err); window.toast?.error('Error al actualizar estado'); })">
+            <button onclick="window.systemHealth.checkHealth().then(() => window.systemHealth.createDashboard()).catch(err => { logger.error('Error refreshing health:', err); window.toast?.error('Error al actualizar estado'); })">
                 🔄 Refresh
             </button>
         `;

@@ -77,7 +77,7 @@ export const config = {
 
 // Validation - warn if critical config is missing
 if (!config.supabase.url || !config.supabase.anonKey) {
-  console.warn(
+  logger.warn(
     '⚠️ CONFIGURATION ERROR: Supabase credentials not found!\n\n' +
     'Please configure environment variables. See setup instructions:\n' +
     '1. Copy www/js/core/env.example.js to www/js/core/env.js\n' +

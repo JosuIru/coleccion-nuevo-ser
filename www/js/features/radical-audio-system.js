@@ -17,7 +17,7 @@ function playRadicalAudio(practiceId) {
 
   // Verificar si hay script disponible
   if (typeof createRadicalMeditation !== 'function') {
-    // console.warn('radical-meditation-parser.js no cargado');
+    // logger.warn('radical-meditation-parser.js no cargado');
     return;
   }
 
@@ -113,7 +113,7 @@ function playRadicalStep(practiceId, stepIndex) {
   };
 
   utterance.onerror = () => {
-    console.error('Error en síntesis de voz radical');
+    logger.error('Error en síntesis de voz radical');
     stopRadicalAudio(practiceId);
   };
 

@@ -170,7 +170,7 @@ class TutorialSystem {
     const modalContainer = document.querySelector('.microsocieties-modal.active');
 
     if (!modalContainer) {
-      // console.warn('⚠️ Modal de microsociedades no está abierto. Tutorial no se puede iniciar.');
+      // logger.warn('⚠️ Modal de microsociedades no está abierto. Tutorial no se puede iniciar.');
       return;
     }
 

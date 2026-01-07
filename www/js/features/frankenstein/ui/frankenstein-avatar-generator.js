@@ -44,7 +44,7 @@ export class FrankensteinAvatarGenerator {
   updateDisplay(currentBeing, selectedPieces) {
     const container = this.dom.beingAvatar || document.getElementById('being-avatar-display');
     if (!container) {
-      console.warn('[AvatarGenerator] Contenedor de avatar no encontrado');
+      logger.warn('[AvatarGenerator] Contenedor de avatar no encontrado');
       return;
     }
 
@@ -126,7 +126,7 @@ export class FrankensteinAvatarGenerator {
    */
   regenerate(currentBeing, selectedPieces) {
     if (!this.avatarSystem || !currentBeing) {
-      console.warn('[AvatarGenerator] No se puede regenerar: sistema o ser no disponible');
+      logger.warn('[AvatarGenerator] No se puede regenerar: sistema o ser no disponible');
       return;
     }
 

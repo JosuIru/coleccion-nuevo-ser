@@ -40,7 +40,7 @@ class VitruvianBeing {
   init(containerId) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
-      console.error('❌ Contenedor de Vitruvian Being no encontrado');
+      logger.error('❌ Contenedor de Vitruvian Being no encontrado');
       return;
     }
 

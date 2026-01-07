@@ -439,7 +439,7 @@ class EventsSystem {
     }
 
     if (pool.length === 0) {
-      // console.warn('No events found for criteria');
+      // logger.warn('No events found for criteria');
       return null;
     }
 

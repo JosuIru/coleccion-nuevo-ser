@@ -245,7 +245,7 @@ class FrankensteinChallengesModal {
    */
   open(being, mission) {
     if (!being || !mission) {
-      console.error('Se requiere un ser y una misión para los retos');
+      logger.error('Se requiere un ser y una misión para los retos');
       return;
     }
 

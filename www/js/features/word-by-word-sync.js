@@ -62,7 +62,7 @@ class WordByWordSync {
 
   start(ttsRate = 1.0) {
     if (!this.currentParagraph || this.words.length === 0) {
-      // console.warn('No hay párrafo preparado para sincronizar');
+      // logger.warn('No hay párrafo preparado para sincronizar');
       return false;
     }
 

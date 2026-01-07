@@ -28,7 +28,7 @@ class TimelineViewer {
       this.timelineData = await response.json();
       return this.timelineData;
     } catch (error) {
-      console.error('Error cargando timeline:', error);
+      logger.error('Error cargando timeline:', error);
       return null;
     }
   }
@@ -60,7 +60,7 @@ class TimelineViewer {
         window.achievementSystem.trackTimelineViewed();
       }
     } catch (error) {
-      console.error('Error opening timeline:', error);
+      logger.error('Error opening timeline:', error);
       this.close();
       window.toast?.error('Error al cargar timeline');
     }

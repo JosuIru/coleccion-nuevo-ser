@@ -952,18 +952,18 @@
 
         // Función para restaurar navegación desde URL hash
         async function restoreNavigationFromHash() {
-          const hashState = bookEngine.parseUrlHash();
+          const hashState = window.bookEngine.parseUrlHash();
 
           if (hashState && hashState.bookId) {
 
             try {
-              await biblioteca.openBook(hashState.bookId);
+              await window.biblioteca.openBook(hashState.bookId);
               if (hashState.chapterId) {
-                bookReader.navigateToChapter(hashState.chapterId);
+                window.bookReader.navigateToChapter(hashState.chapterId);
               }
             } catch (error) {
 
-              bookEngine.clearUrlHash();
+              window.bookEngine.clearUrlHash();
             }
           }
         }
@@ -976,7 +976,7 @@
 
           if (bookId) {
             try {
-              await biblioteca.openBook(bookId, chapterId || null);
+              await window.biblioteca.openBook(bookId, chapterId || null);
               if (window.history && window.history.replaceState) {
                 const cleanUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState(null, '', cleanUrl);

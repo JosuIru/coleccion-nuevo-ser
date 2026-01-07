@@ -477,6 +477,58 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Welcome Flow (28KB) - Solo para nuevos usuarios
+   * @returns {Promise<void>}
+   */
+  async loadWelcomeFlow() {
+    if (this.loadedModules.has('welcome-flow')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Welcome Flow...');
+    }
+
+    try {
+      await this.loadScript('js/features/welcome-flow.js?v=1.0.0');
+      this.loadedModules.set('welcome-flow', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Welcome Flow cargado (28KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Welcome Flow:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Onboarding Tutorial (28KB) - Solo para nuevos usuarios
+   * @returns {Promise<void>}
+   */
+  async loadOnboardingTutorial() {
+    if (this.loadedModules.has('onboarding-tutorial')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Onboarding Tutorial...');
+    }
+
+    try {
+      await this.loadScript('js/features/onboarding-tutorial.js');
+      this.loadedModules.set('onboarding-tutorial', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Onboarding Tutorial cargado (28KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Onboarding Tutorial:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -540,6 +592,10 @@ class LazyLoader {
         return await this.loadLearningPaths();
       case 'settings-modal':
         return await this.loadSettingsModal();
+      case 'welcome-flow':
+        return await this.loadWelcomeFlow();
+      case 'onboarding-tutorial':
+        return await this.loadOnboardingTutorial();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

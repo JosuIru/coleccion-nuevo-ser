@@ -64,11 +64,16 @@ class AppInitialization {
         }, delay);
       }
 
-      // 7. Mostrar Welcome Flow para nuevos usuarios
-      if (window.welcomeFlow && window.welcomeFlow.shouldShow()) {
+      // 7. Mostrar Welcome Flow para nuevos usuarios (lazy load 28KB)
+      // Verificar si es nuevo usuario ANTES de cargar el módulo
+      const isNewUser = !localStorage.getItem('welcome-flow-completed');
+      if (isNewUser && window.lazyLoader) {
         // Delay pequeño para que la app cargue completamente
-        setTimeout(() => {
-          window.welcomeFlow.start();
+        setTimeout(async () => {
+          await window.lazyLoader.loadWelcomeFlow();
+          if (window.welcomeFlow && window.welcomeFlow.shouldShow()) {
+            window.welcomeFlow.start();
+          }
         }, 800);
       }
 
@@ -108,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.288: Lazy loading activated (Settings Modal 124KB + Learning Paths 100KB)
-    window.__APP_VERSION__ = '2.9.288'; // Cambiar con cada release
+    // 🔧 v2.9.289: Lazy loading expanded (Settings 124KB + Learning 100KB + Onboarding 56KB + Action Plans 28KB fix)
+    window.__APP_VERSION__ = '2.9.289'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

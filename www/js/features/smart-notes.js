@@ -237,7 +237,7 @@ Responde SOLO con la pregunta sugerida, sin explicaciones.`;
       const response = await window.aiAdapter.ask(prompt, '', []);
       return response?.trim();
     } catch (error) {
-      console.error('Error getting note suggestion:', error);
+      logger.error('Error getting note suggestion:', error);
       return null;
     }
   }

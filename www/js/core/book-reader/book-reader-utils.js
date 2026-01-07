@@ -132,7 +132,7 @@ class BookReaderUtils {
     if (errorBoundary) {
       errorBoundary.captureError(error, context);
     } else {
-      console.error('[BookReader] Error:', error, context);
+      logger.error('[BookReader] Error:', error, context);
     }
   }
 

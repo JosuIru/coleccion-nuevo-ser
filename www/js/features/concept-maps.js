@@ -838,7 +838,7 @@ class ConceptMaps {
               }
             }, 500);
           }).catch(error => {
-            console.error('Error opening book from concept map:', error);
+            logger.error('Error opening book from concept map:', error);
             window.toast?.error('Error al abrir el libro. Intenta de nuevo.');
           });
         }

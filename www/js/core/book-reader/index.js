@@ -182,7 +182,7 @@ class BookReader {
       }
 
     } catch (error) {
-      console.error('[BookReader] Error en render:', error);
+      logger.error('[BookReader] Error en render:', error);
       this.captureError(error, {
         context: 'render',
         filename: 'book-reader/index.js'

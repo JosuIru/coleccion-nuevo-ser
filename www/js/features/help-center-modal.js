@@ -1115,7 +1115,7 @@ class HelpCenterModal {
   attachEventListeners() {
     // 🔧 FIX: Protección contra re-attach múltiple
     if (this._eventListenersAttached) {
-      console.warn('[HelpCenterModal] Listeners already attached, skipping');
+      logger.warn('[HelpCenterModal] Listeners already attached, skipping');
       return;
     }
 

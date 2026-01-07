@@ -165,7 +165,7 @@ class BinauralAudioGenerator {
       return true;
 
     } catch (error) {
-      console.error('Error generando audio binaural:', error);
+      logger.error('Error generando audio binaural:', error);
       return false;
     }
   }

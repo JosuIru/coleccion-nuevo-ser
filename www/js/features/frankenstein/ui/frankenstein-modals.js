@@ -466,7 +466,7 @@ export class FrankensteinModals {
    * @public
    */
   destroy() {
-    console.log(`[FrankensteinModals] Cleaning up: ${this.timeouts.length} timeouts, ${this.eventListeners.length} listeners`);
+    logger.log(`[FrankensteinModals] Cleaning up: ${this.timeouts.length} timeouts, ${this.eventListeners.length} listeners`);
 
     // Cerrar todos los modales
     this.closeAll();

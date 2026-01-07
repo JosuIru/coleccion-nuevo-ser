@@ -196,7 +196,7 @@ export class FrankensteinValidationExport {
     navigator.clipboard.writeText(textoPrompt).then(() => {
       this.labUI?.showNotification('📋 Prompt copiado al portapapeles', 'success', 4000);
     }).catch(err => {
-      console.error('Error copiando prompt al portapapeles:', err);
+      logger.error('Error copiando prompt al portapapeles:', err);
       this.labUI?.showNotification('Error al copiar prompt', 'error');
     });
 

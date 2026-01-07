@@ -277,7 +277,7 @@ class BookReaderSidebar {
       }
     } catch (error) {
       // Error boundary para actualización de sidebar
-      console.error('[BookReaderSidebar] Error actualizando sidebar:', error);
+      logger.error('[BookReaderSidebar] Error actualizando sidebar:', error);
       if (this.bookReader.captureError) {
         this.bookReader.captureError(error, {
           context: 'update_sidebar',

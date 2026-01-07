@@ -103,7 +103,7 @@ class OfflineDetector {
       try {
         cb(status);
       } catch (e) {
-        console.error('Offline detector listener error:', e);
+        logger.error('Offline detector listener error:', e);
       }
     });
   }

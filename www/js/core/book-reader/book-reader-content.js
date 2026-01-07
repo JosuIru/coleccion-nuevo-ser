@@ -473,7 +473,7 @@ class BookReaderContent {
   updateChapterContent() {
     const contentArea = document.querySelector('.chapter-content');
     if (!contentArea) {
-      console.warn('[BookReaderContent] No se encontró .chapter-content para actualizar');
+      logger.warn('[BookReaderContent] No se encontró .chapter-content para actualizar');
       return;
     }
 

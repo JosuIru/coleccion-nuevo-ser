@@ -50,7 +50,7 @@ class DonationsModal {
       document.execCommand('copy');
       this.showCopiedFeedback(buttonId);
     } catch (err) {
-      console.error('Error copying:', err);
+      logger.error('Error copying:', err);
     }
 
     document.body.removeChild(textArea);

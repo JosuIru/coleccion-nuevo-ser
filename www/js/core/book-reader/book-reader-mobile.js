@@ -310,16 +310,16 @@ class BookReaderMobile {
 
   renderExplorationHubButton() {
     return `
-      <!-- Floating ExplorationHub Button -->
+      <!-- Floating ExplorationHub Button (semi-oculto) -->
       <button
         id="exploration-hub-floating-btn"
-        class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full shadow-2xl
+        class="fixed bottom-24 -right-8 z-40 w-14 h-14 rounded-full shadow-2xl
                bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600
                hover:from-purple-700 hover:via-pink-700 hover:to-blue-700
-               transition-all duration-300 transform hover:scale-110
+               transition-all duration-300 transform hover:-translate-x-10 hover:scale-110
                flex items-center justify-center text-white
                border-2 border-white/20
-               md:bottom-8 md:right-8"
+               md:bottom-32 md:-right-8"
         aria-label="Abrir Centro de Exploracion"
         title="Buscar, explorar temas y recursos">
         ${Icons.compass(28)}

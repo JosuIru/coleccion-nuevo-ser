@@ -366,7 +366,6 @@ class BookReaderContent {
     return `
       <div class="footer-nav border-t border-gray-200 dark:border-slate-700/50 bg-gradient-to-r from-gray-100/90 dark:from-slate-900/50 to-gray-50/90 dark:to-slate-800/50 backdrop-blur-sm">
         <div class="max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-row justify-between items-center gap-2 sm:gap-4">
-          <!-- Previous Button -->
           ${prevChapter ? `
             <button id="prev-chapter"
                     data-chapter-id="${prevChapter.id}"
@@ -381,8 +380,6 @@ class BookReaderContent {
               </div>
             </button>
           ` : '<div class="hidden sm:flex flex-1"></div>'}
-
-          <!-- Next Button -->
           ${nextChapter ? `
             <button id="next-chapter"
                     data-chapter-id="${nextChapter.id}"

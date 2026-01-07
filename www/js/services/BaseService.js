@@ -434,7 +434,7 @@ class BaseService {
    * @param {Error} error - Error a manejar
    */
   manejarError(operacion, error) {
-    console.error(`[${this.tableName}] Error en ${operacion}:`, error);
+    logger.error(`[${this.tableName}] Error en ${operacion}:`, error);
 
     // Emitir evento de error para que la UI pueda reaccionar
     window.dispatchEvent(new CustomEvent('service-error', {

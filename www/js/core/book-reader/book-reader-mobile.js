@@ -454,10 +454,10 @@ class BookReaderMobile {
         });
 
       if (error) {
-        console.error('[Bookmark] Error anadiendo a Supabase:', error);
+        logger.error('[Bookmark] Error anadiendo a Supabase:', error);
       }
     } catch (error) {
-      console.error('[Bookmark] Error:', error);
+      logger.error('[Bookmark] Error:', error);
     }
   }
 
@@ -480,10 +480,10 @@ class BookReaderMobile {
         .eq('chapter_id', chapterId);
 
       if (error) {
-        console.error('[Bookmark] Error eliminando de Supabase:', error);
+        logger.error('[Bookmark] Error eliminando de Supabase:', error);
       }
     } catch (error) {
-      console.error('[Bookmark] Error:', error);
+      logger.error('[Bookmark] Error:', error);
     }
   }
 

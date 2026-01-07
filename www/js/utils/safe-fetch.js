@@ -29,7 +29,7 @@ class SafeFetch {
       if (config.offlineCache) {
         const cached = this.getFromCache(url);
         if (cached) {
-          console.debug('[SafeFetch] Returning cached data for:', url);
+          logger.debug('[SafeFetch] Returning cached data for:', url);
           return new Response(JSON.stringify(cached), {
             status: 200,
             headers: { 'Content-Type': 'application/json', 'X-From-Cache': 'true' }
@@ -84,7 +84,7 @@ class SafeFetch {
     }
 
     // All retries failed
-    console.error('[SafeFetch] Failed after retries:', url, lastError);
+    logger.error('[SafeFetch] Failed after retries:', url, lastError);
 
     if (config.showToast && window.toast) {
       window.toast.error('Error de conexion. Intenta de nuevo.');
@@ -121,7 +121,7 @@ class SafeFetch {
     try {
       return await this.json(url, { ...options, showToast: false });
     } catch (error) {
-      console.warn('[SafeFetch] Using fallback for:', url, error.message);
+      logger.warn('[SafeFetch] Using fallback for:', url, error.message);
 
       // Try cache
       const cached = this.getFromCache(url);

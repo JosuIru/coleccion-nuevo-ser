@@ -33,7 +33,7 @@ class FrankensteinAudioSystem {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       // logger.debug('🔊 Sistema de audio Frankenstein inicializado');
     } catch (error) {
-      console.error('❌ Error inicializando audio:', error);
+      logger.error('❌ Error inicializando audio:', error);
     }
   }
 
@@ -369,7 +369,7 @@ class FrankensteinAudioSystem {
         this.audioContext = null;
         // logger.debug('🔇 AudioContext cerrado');
       } catch (error) {
-        console.warn('[FrankensteinAudio] Error al cerrar AudioContext:', error);
+        logger.warn('[FrankensteinAudio] Error al cerrar AudioContext:', error);
       }
     }
 

@@ -186,7 +186,7 @@ class AIPremium {
         percentage: this.getCreditsPercentage(),
       };
     } catch (error) {
-      console.error('❌ Error consumiendo créditos:', error);
+      logger.error('❌ Error consumiendo créditos:', error);
       throw error;
     }
   }
@@ -215,7 +215,7 @@ class AIPremium {
 
       return data || [];
     } catch (error) {
-      console.error('Error obteniendo historial:', error);
+      logger.error('Error obteniendo historial:', error);
       return [];
     }
   }
@@ -403,7 +403,7 @@ class AIPremium {
           percentage: this.getCreditsPercentage(),
         });
       } catch (error) {
-        console.error('Error en credit update listener:', error);
+        logger.error('Error en credit update listener:', error);
       }
     });
   }

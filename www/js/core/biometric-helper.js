@@ -39,7 +39,7 @@ class BiometricHelper {
         return result;
       }
     } catch (error) {
-      // console.warn('Error checking biometric availability:', error);
+      // logger.warn('Error checking biometric availability:', error);
       this.isAvailable = false;
     }
     return { isAvailable: false, biometryType: 'none' };
@@ -97,7 +97,7 @@ class BiometricHelper {
         return { success: true };
       }
     } catch (error) {
-      // console.warn('Biometric authentication failed:', error);
+      // logger.warn('Biometric authentication failed:', error);
 
       if (error.code === 'userCancel') {
         return { success: false, cancelled: true };

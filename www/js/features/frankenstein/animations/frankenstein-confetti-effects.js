@@ -213,7 +213,7 @@ export class ConfettiEffects {
   playLightning(container = null) {
     const targetContainer = container || document.querySelector('.frankenstein-laboratory');
     if (!targetContainer) {
-      console.warn('ConfettiEffects: No container found for lightning effect');
+      logger.warn('ConfettiEffects: No container found for lightning effect');
       return;
     }
 
@@ -262,7 +262,7 @@ export class ConfettiEffects {
     } = options;
 
     if (!element) {
-      console.warn('ConfettiEffects: No element provided for particle burst');
+      logger.warn('ConfettiEffects: No element provided for particle burst');
       return;
     }
 
@@ -374,7 +374,7 @@ export class ConfettiEffects {
    */
   spawnProgressReward(container, percent, label) {
     if (!container) {
-      console.warn('ConfettiEffects: No container provided for progress reward');
+      logger.warn('ConfettiEffects: No container provided for progress reward');
       return;
     }
 

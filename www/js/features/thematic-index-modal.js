@@ -21,7 +21,7 @@ class ThematicIndexModal {
       const response = await fetch('books/metadata/chapters-metadata.json');
       this.metadata = await response.json();
     } catch (error) {
-      console.error('Error loading metadata:', error);
+      logger.error('Error loading metadata:', error);
       this.metadata = null;
     }
   }
@@ -39,7 +39,7 @@ class ThematicIndexModal {
         this.attachEventListeners();
       }, 50);
     } catch (error) {
-      console.error('Error opening thematic index:', error);
+      logger.error('Error opening thematic index:', error);
       window.toast?.error('Error al cargar el indice tematico');
       this.close();
     }
@@ -361,7 +361,7 @@ class ThematicIndexModal {
           return `${book.title} - ${chapterId}`;
         }
       } catch (error) {
-        // console.warn('No se pudo obtener título del bookEngine:', error);
+        // logger.warn('No se pudo obtener título del bookEngine:', error);
       }
     }
 

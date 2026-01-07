@@ -589,7 +589,7 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
    */
   startChapter(chapterIndex, society) {
     if (!this.isChapterUnlocked(chapterIndex)) {
-      // console.warn(`⚠️ Capítulo ${chapterIndex + 1} no desbloqueado`);
+      // logger.warn(`⚠️ Capítulo ${chapterIndex + 1} no desbloqueado`);
       return false;
     }
 
@@ -834,7 +834,7 @@ Este es el capítulo final: escalar sin perder alma. Crecer sin cooptar. Transfo
       if (unlocked) this.unlockedChapters = JSON.parse(unlocked);
       if (completed) this.completedChapters = JSON.parse(completed);
     } catch (error) {
-      console.error('❌ Error al cargar progreso:', error);
+      logger.error('❌ Error al cargar progreso:', error);
     }
   }
 

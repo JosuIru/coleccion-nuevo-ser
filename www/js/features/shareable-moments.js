@@ -174,7 +174,7 @@ class ShareableMoments {
       this.trackShare('clipboard', moment.type);
       return true;
     } catch (error) {
-      console.error('Error copying to clipboard:', error);
+      logger.error('Error copying to clipboard:', error);
       return false;
     }
   }
@@ -197,7 +197,7 @@ class ShareableMoments {
       return true;
     } catch (error) {
       if (error.name !== 'AbortError') {
-        console.error('Error sharing:', error);
+        logger.error('Error sharing:', error);
       }
       return false;
     }
@@ -286,7 +286,7 @@ class ShareableMoments {
 
         <!-- Invite Friends -->
         <div class="mt-4 pt-4 border-t border-slate-700">
-          <p class="text-center text-sm text-gray-500">
+          <p class="text-center text-sm text-gray-400">
             Invita a un amigo a despertar contigo
           </p>
         </div>
@@ -415,7 +415,7 @@ class ShareableMoments {
           }
         }, 'image/png');
       } catch (error) {
-        console.error('Error generando imagen compartible:', error);
+        logger.error('Error generando imagen compartible:', error);
         resolve(null);
       }
     });

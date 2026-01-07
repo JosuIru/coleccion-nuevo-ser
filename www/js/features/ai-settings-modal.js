@@ -33,7 +33,7 @@ class AISettingsModal {
 
     // Verificar que aiConfig existe
     if (!this.aiConfig) {
-      console.error('AIConfig no está disponible');
+      logger.error('AIConfig no está disponible');
       return;
     }
 

@@ -40,7 +40,7 @@ class AudioReaderPosition {
         window.supabaseSyncHelper.syncPreference(storageKey, position);
       }
     } catch (error) {
-      console.warn('[Position] Error guardando:', error);
+      logger.warn('[Position] Error guardando:', error);
     }
   }
 
@@ -65,7 +65,7 @@ class AudioReaderPosition {
 
       return null;
     } catch (error) {
-      console.error('[Position] Error cargando:', error);
+      logger.error('[Position] Error cargando:', error);
       return null;
     }
   }
@@ -120,7 +120,7 @@ class AudioReaderPosition {
     try {
       localStorage.removeItem(this.storageKey);
     } catch (error) {
-      console.warn('[Position] Error limpiando:', error);
+      logger.warn('[Position] Error limpiando:', error);
     }
   }
 

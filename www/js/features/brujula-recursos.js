@@ -99,7 +99,7 @@ class BrujulaRecursos {
       this.enriquecerRecursos();
 
     } catch (error) {
-      console.error('Error cargando recursos:', error);
+      logger.error('Error cargando recursos:', error);
     }
   }
 
@@ -155,7 +155,7 @@ class BrujulaRecursos {
         // logger.debug(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
       }
     } catch (error) {
-      // console.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
+      // logger.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
     }
   }
 

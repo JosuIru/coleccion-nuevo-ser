@@ -107,7 +107,7 @@ class FrankensteinSyncService {
 
       // Sincronizar con la nube si está autenticado
       if (this.isAuthenticated()) {
-        this.syncBeingToCloud(being).catch(console.error);
+        this.syncBeingToCloud(being).catch(error => logger.error(error));
       }
 
       return true;
@@ -127,7 +127,7 @@ class FrankensteinSyncService {
 
       // Eliminar de la nube si está autenticado
       if (this.isAuthenticated()) {
-        this.deleteBeingFromCloud(beingId).catch(console.error);
+        this.deleteBeingFromCloud(beingId).catch(error => logger.error(error));
       }
 
       return true;
@@ -160,7 +160,7 @@ class FrankensteinSyncService {
       }));
 
       if (this.isAuthenticated()) {
-        this.syncSettingsToCloud(settings).catch(console.error);
+        this.syncSettingsToCloud(settings).catch(error => logger.error(error));
       }
 
       return true;
@@ -650,7 +650,7 @@ class FrankensteinSyncService {
 
       // Sincronizar con la nube
       if (this.isAuthenticated()) {
-        this.syncAllBeingsToCloud(merged).catch(console.error);
+        this.syncAllBeingsToCloud(merged).catch(error => logger.error(error));
       }
 
       window.toast?.success(`${imported.length} seres importados`);

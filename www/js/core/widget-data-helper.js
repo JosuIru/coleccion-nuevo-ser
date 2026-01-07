@@ -307,14 +307,14 @@ class WidgetDataHelper {
             });
             // logger.debug('✓ Native widgets updated');
           } catch (widgetError) {
-            // console.warn('Error updating native widgets:', widgetError);
+            // logger.warn('Error updating native widgets:', widgetError);
           }
         }
 
         // logger.debug('Widget data synced to SharedPreferences');
       }
     } catch (error) {
-      // console.warn('Error syncing to SharedPreferences:', error);
+      // logger.warn('Error syncing to SharedPreferences:', error);
     }
   }
 
@@ -391,7 +391,7 @@ class WidgetDataHelper {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      // console.warn('Error saving to storage:', error);
+      // logger.warn('Error saving to storage:', error);
     }
   }
 

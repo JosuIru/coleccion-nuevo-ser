@@ -74,7 +74,7 @@ class FileExportHelper {
           }
         }
       } catch (error) {
-        // console.warn(`Error loading notes for ${bookId}:`, error);
+        // logger.warn(`Error loading notes for ${bookId}:`, error);
       }
     }
 
@@ -194,7 +194,7 @@ class FileExportHelper {
           bookmarks: bookmarks ? JSON.parse(bookmarks) : []
         };
       } catch (error) {
-        // console.warn(`Error loading progress for ${bookId}:`, error);
+        // logger.warn(`Error loading progress for ${bookId}:`, error);
       }
     }
 
@@ -316,7 +316,7 @@ class FileExportHelper {
 
       return { success: true, path: result.uri };
     } catch (error) {
-      console.error('Error saving file:', error);
+      logger.error('Error saving file:', error);
       // Fallback a descarga web
       return this.saveFileWeb(content, fileName, mimeType);
     }
@@ -341,7 +341,7 @@ class FileExportHelper {
       window.toast?.success(`Descargando: ${fileName}`);
       return { success: true, path: fileName };
     } catch (error) {
-      console.error('Error downloading file:', error);
+      logger.error('Error downloading file:', error);
       window.toast?.error('Error al descargar el archivo');
       return { success: false, error: error.message };
     }

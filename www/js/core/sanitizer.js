@@ -200,7 +200,7 @@ const Sanitizer = {
     }
 
     // URL peligrosa
-    console.warn('[Sanitizer] URL bloqueada:', cleanUrl);
+    logger.warn('[Sanitizer] URL bloqueada:', cleanUrl);
     return '';
   },
 
@@ -230,7 +230,7 @@ const Sanitizer = {
         element.style.cssText = this.sanitizeStyle(value);
       } else if (key.startsWith('on')) {
         // No permitir event handlers inline
-        console.warn('[Sanitizer] Event handler bloqueado:', key);
+        logger.warn('[Sanitizer] Event handler bloqueado:', key);
       } else {
         element.setAttribute(key, this.sanitizeAttribute(value));
       }
@@ -277,7 +277,7 @@ const Sanitizer = {
 
     for (const pattern of dangerousPatterns) {
       if (pattern.test(sanitized)) {
-        console.warn('[Sanitizer] Estilo peligroso bloqueado:', style);
+        logger.warn('[Sanitizer] Estilo peligroso bloqueado:', style);
         return '';
       }
     }

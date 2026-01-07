@@ -7,7 +7,15 @@ class ResourceAIHelper {
   constructor() {
     this.summariesCache = new Map(); // Cache de resúmenes generados
     this.isGenerating = false;
-    this.aiAdapter = window.aiAdapter;
+    this.aiAdapter = window.aiAdapter || null;
+  }
+
+  // 🔧 FIX v2.9.265: Asegurar que aiAdapter esté disponible (puede cargarse después)
+  ensureAIAdapter() {
+    if (!this.aiAdapter && window.aiAdapter) {
+      this.aiAdapter = window.aiAdapter;
+    }
+    return this.aiAdapter;
   }
 
   // ==========================================================================
@@ -27,7 +35,8 @@ class ResourceAIHelper {
       return this.summariesCache.get(cacheKey);
     }
 
-    if (!this.aiAdapter) {
+    // 🔧 FIX v2.9.265: Verificar aiAdapter antes de usar
+    if (!this.ensureAIAdapter()) {
       return this.getFallbackSummary(resource);
     }
 
@@ -65,7 +74,7 @@ ${resource.author ? `- Autor: ${resource.author}` : ''}
 
       return summary;
     } catch (error) {
-      console.error('Error generando resumen IA:', error);
+      logger.error('Error generando resumen IA:', error);
       return this.getFallbackSummary(resource);
     }
   }
@@ -74,7 +83,8 @@ ${resource.author ? `- Autor: ${resource.author}` : ''}
    * Genera recomendaciones personalizadas de recursos según perfil del usuario
    */
   async generateRecommendations(resources, userContext) {
-    if (!this.aiAdapter) return resources.slice(0, 5);
+    // 🔧 FIX v2.9.265: Verificar aiAdapter
+    if (!this.ensureAIAdapter()) return resources.slice(0, 5);
 
     try {
       const resourcesList = resources.map(r => `- ${r.title} (${r.type})`).join('\n');
@@ -112,7 +122,7 @@ ${resourcesList}
       }).filter(r => r.title); // Filtrar nulls
 
     } catch (error) {
-      console.error('Error generando recomendaciones:', error);
+      logger.error('Error generando recomendaciones:', error);
       return resources.slice(0, 5);
     }
   }
@@ -121,7 +131,8 @@ ${resourcesList}
    * Explica la relación entre un recurso y el contenido del libro
    */
   async explainResourceConnection(resource, bookId, chapterId) {
-    if (!this.aiAdapter) {
+    // 🔧 FIX v2.9.265: Verificar aiAdapter
+    if (!this.ensureAIAdapter()) {
       return `Este recurso complementa los temas tratados en el capítulo.`;
     }
 
@@ -138,7 +149,7 @@ ${resourcesList}
 
       return response.trim();
     } catch (error) {
-      console.error('Error explicando conexión:', error);
+      logger.error('Error explicando conexión:', error);
       return `Este recurso complementa los temas del libro.`;
     }
   }
@@ -147,7 +158,8 @@ ${resourcesList}
    * Genera un learning path basado en un objetivo del usuario
    */
   async generateLearningPath(goal, availableResources, bookId) {
-    if (!this.aiAdapter) {
+    // 🔧 FIX v2.9.265: Verificar aiAdapter
+    if (!this.ensureAIAdapter()) {
       return this.getFallbackLearningPath(goal, availableResources);
     }
 
@@ -194,7 +206,7 @@ ${resourcesList}
 
       return this.parseJSONResponse(response);
     } catch (error) {
-      console.error('Error generando learning path:', error);
+      logger.error('Error generando learning path:', error);
       return this.getFallbackLearningPath(goal, availableResources);
     }
   }
@@ -214,7 +226,7 @@ ${resourcesList}
       // Intentar parsear directamente
       return JSON.parse(response);
     } catch (error) {
-      console.error('Error parseando JSON:', error);
+      logger.error('Error parseando JSON:', error);
       return null;
     }
   }

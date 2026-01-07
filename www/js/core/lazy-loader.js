@@ -208,7 +208,7 @@ class LazyLoader {
 
     const config = this.moduleConfig[moduleName];
     if (!config) {
-      console.error(`❌ Módulo "${moduleName}" no encontrado en configuración`);
+      logger.error(`❌ Módulo "${moduleName}" no encontrado en configuración`);
       return Promise.reject(new Error(`Módulo no encontrado: ${moduleName}`));
     }
 
@@ -233,7 +233,7 @@ class LazyLoader {
       return Promise.resolve();
     } catch (error) {
       this.loadingModules.delete(moduleName);
-      console.error(`❌ Error cargando módulo "${config.name}":`, error);
+      logger.error(`❌ Error cargando módulo "${config.name}":`, error);
 
       // Ocultar indicador de carga en error
       if (loaderId) window.loadingIndicator?.hide(loaderId);
@@ -380,7 +380,7 @@ class LazyLoader {
       };
 
       nuevoLinkTema.onerror = () => {
-        console.error(`❌ Error cargando tema: ${urlTema}`);
+        logger.error(`❌ Error cargando tema: ${urlTema}`);
         reject(new Error(`Error cargando tema: ${urlTema}`));
       };
 

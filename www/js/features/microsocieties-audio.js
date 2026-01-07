@@ -52,7 +52,7 @@ class MicroSocietiesAudio {
 
       return true;
     } catch (error) {
-      console.error('❌ Error al inicializar audio:', error);
+      logger.error('❌ Error al inicializar audio:', error);
       return false;
     }
   }
@@ -103,7 +103,7 @@ class MicroSocietiesAudio {
 
     const track = this.musicTracks[trackName];
     if (!track) {
-      // console.warn(`⚠️ Track "${trackName}" no encontrado`);
+      // logger.warn(`⚠️ Track "${trackName}" no encontrado`);
       return;
     }
 

@@ -20,7 +20,7 @@ class KoanModal {
   // Open modal with koan for current chapter
   open(chapterId) {
     if (!this.koanGenerator) {
-      // console.warn('KoanGenerator no disponible');
+      // logger.warn('KoanGenerator no disponible');
       return;
     }
 
@@ -220,7 +220,7 @@ class KoanModal {
   attachEventListeners() {
     // 🔧 FIX: Protección contra re-attach múltiple
     if (this._eventListenersAttached) {
-      console.warn('[KoanModal] Listeners already attached, skipping');
+      logger.warn('[KoanModal] Listeners already attached, skipping');
       return;
     }
 
@@ -325,7 +325,7 @@ class KoanModal {
         statusEl.textContent = `🎵 ${this.i18n.t('binaural.playing')}...`;
       }
     } catch (error) {
-      console.error('Error playing binaural audio:', error);
+      logger.error('Error playing binaural audio:', error);
       window.toast?.error('Error al reproducir audio binaural');
     }
   }

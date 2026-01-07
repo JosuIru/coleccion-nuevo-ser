@@ -357,7 +357,7 @@ class ErrorBoundary {
   logError(errorContext) {
     const logStyle = this.getLogStyle(errorContext.category);
 
-    console.group(`%c[ErrorBoundary] ${errorContext.category.toUpperCase()}`, logStyle);
+    logger.group(`%c[ErrorBoundary] ${errorContext.category.toUpperCase()}`, logStyle);
     logger.debug('Mensaje:', errorContext.message);
     logger.debug('Tipo:', errorContext.type);
     logger.debug('Timestamp:', errorContext.timestamp);
@@ -376,7 +376,7 @@ class ErrorBoundary {
       logger.debug('Stack:', errorContext.error.stack);
     }
 
-    console.groupEnd();
+    logger.groupEnd();
   }
 
   /**

@@ -241,7 +241,7 @@ class MobileGestures {
 
     const handle = bottomSheet.querySelector('[id*="handle"]') || bottomSheet.querySelector('.handle');
     if (!handle) {
-      console.warn('⚠️ No se encontró handle para bottom sheet');
+      logger.warn('⚠️ No se encontró handle para bottom sheet');
       return;
     }
 
@@ -485,7 +485,7 @@ class MobileGestures {
           refreshIndicator.style.opacity = '0';
           refreshIndicator.style.animation = '';
         }).catch(error => {
-          console.error('Error during pull-to-refresh:', error);
+          logger.error('Error during pull-to-refresh:', error);
           refreshIndicator.style.top = '-60px';
           refreshIndicator.style.opacity = '0';
           refreshIndicator.style.animation = '';

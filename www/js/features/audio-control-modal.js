@@ -413,7 +413,7 @@ class AudioControlModal {
   attachEvents() {
     // 🔧 FIX: Protección contra re-attach múltiple
     if (this._eventListenersAttached) {
-      console.warn('[AudioControlModal] Listeners already attached, skipping');
+      logger.warn('[AudioControlModal] Listeners already attached, skipping');
       return;
     }
 
@@ -687,7 +687,7 @@ class AudioControlModal {
         }
       }
     } catch (error) {
-      console.error('Error inicializando visualizador:', error);
+      logger.error('Error inicializando visualizador:', error);
     }
   }
 

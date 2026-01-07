@@ -160,10 +160,10 @@ class EventManager {
         logger.info(prefix, ...args);
         break;
       case 'warn':
-        console.warn(prefix, ...args);
+        logger.warn(prefix, ...args);
         break;
       case 'error':
-        console.error(prefix, ...args);
+        logger.error(prefix, ...args);
         break;
     }
   }

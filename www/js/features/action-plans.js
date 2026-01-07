@@ -30,7 +30,7 @@ class ActionPlans {
     try {
       localStorage.setItem('action-plans', JSON.stringify(this.plans));
     } catch (error) {
-      console.error('Error guardando planes de acción:', error);
+      logger.error('Error guardando planes de acción:', error);
       window.toast?.error('Error al guardar plan. Intenta de nuevo.');
       return; // No intentar sincronizar si falla guardar localmente
     }
@@ -38,7 +38,7 @@ class ActionPlans {
     // Sincronizar a la nube si está autenticado
     if (window.supabaseSyncHelper && window.supabaseAuthHelper?.isAuthenticated()) {
       window.supabaseSyncHelper.migrateActionPlans().catch(err => {
-        console.error('Error sincronizando planes de acción:', err);
+        logger.error('Error sincronizando planes de acción:', err);
       });
     }
   }
@@ -382,7 +382,7 @@ class ActionPlans {
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
           <h3 class="text-lg font-bold text-green-300">Crear Nuevo Plan</h3>
-          <button id="close-new-plan" class="text-gray-400 hover:text-white p-1">
+          <button id="close-new-plan" class="text-gray-400 hover:text-white p-2">
             ${Icons.close(20)}
           </button>
         </div>
@@ -686,7 +686,7 @@ class ActionPlans {
 
       localStorage.setItem('plans-reminder-shown', today);
     } catch (error) {
-      console.error('Error guardando recordatorio de planes:', error);
+      logger.error('Error guardando recordatorio de planes:', error);
       // Continuar mostrando el widget aunque falle guardar
     }
 
@@ -699,7 +699,7 @@ class ActionPlans {
       <div class="bg-green-900/95 backdrop-blur-sm rounded-xl shadow-2xl border border-green-500/30 p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-lg">📋</span>
-          <button id="close-plans-reminder" class="text-green-300 hover:text-white p-1">
+          <button id="close-plans-reminder" class="text-green-300 hover:text-white p-2">
             ${Icons.close(16)}
           </button>
         </div>

@@ -1160,7 +1160,7 @@ class BookReaderEvents {
     // ========================================================================
     const actionCards = document.querySelectorAll('.action-card');
     actionCards.forEach(card => {
-      this.eventManager.addEventListener(card, 'click', (e) => {
+      this.eventManager.addEventListener(card, 'click', async (e) => {
         const action = card.getAttribute('data-action');
 
         if (action === 'quiz') {
@@ -1170,6 +1170,11 @@ class BookReaderEvents {
             quiz.start();
           }
         } else if (action === 'resources') {
+          // Lazy load Chapter Resources Modal (36KB)
+          if (window.lazyLoader && !window.lazyLoader.isLoaded('chapter-resources-modal')) {
+            await window.lazyLoader.loadChapterResourcesModal();
+          }
+
           const chapterResourcesModal = this.getDependency('chapterResourcesModal');
           if (chapterResourcesModal) {
             const chapterId = this.currentChapter?.id || null;
@@ -1567,7 +1572,7 @@ class BookReaderEvents {
       actionCards.forEach(card => {
         const action = card.getAttribute('data-action');
         if (action) {
-          this.eventManager.addEventListener(card, 'click', (e) => {
+          this.eventManager.addEventListener(card, 'click', async (e) => {
             if (action === 'quiz') {
               const InteractiveQuiz = this.getDependency('InteractiveQuiz');
               if (InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {
@@ -1575,6 +1580,11 @@ class BookReaderEvents {
                 quiz.start();
               }
             } else if (action === 'resources') {
+              // Lazy load Chapter Resources Modal (36KB)
+              if (window.lazyLoader && !window.lazyLoader.isLoaded('chapter-resources-modal')) {
+                await window.lazyLoader.loadChapterResourcesModal();
+              }
+
               const chapterResourcesModal = this.getDependency('chapterResourcesModal');
               if (chapterResourcesModal) {
                 const chapterId = this.currentChapter?.id || null;

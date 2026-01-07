@@ -568,6 +568,9 @@ class LazyLoader {
     }
 
     try {
+      // Cargar dependencia: Thematic Index Modal
+      await this.loadThematicIndexModal();
+
       await this.loadScript('js/features/exploration-hub.js');
       this.loadedModules.set('exploration-hub', true);
 
@@ -690,6 +693,84 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Audio Control Modal (32KB)
+   * @returns {Promise<void>}
+   */
+  async loadAudioControlModal() {
+    if (this.loadedModules.has('audio-control-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Audio Control Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/audio-control-modal.js?v=3.0.0');
+      this.loadedModules.set('audio-control-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Audio Control Modal cargado (32KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Audio Control Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Thematic Index Modal
+   * @returns {Promise<void>}
+   */
+  async loadThematicIndexModal() {
+    if (this.loadedModules.has('thematic-index-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Thematic Index Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/thematic-index-modal.js');
+      this.loadedModules.set('thematic-index-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Thematic Index Modal cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Thematic Index Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Chapter Resources Modal (36KB)
+   * @returns {Promise<void>}
+   */
+  async loadChapterResourcesModal() {
+    if (this.loadedModules.has('chapter-resources-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Chapter Resources Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/chapter-resources-modal.js?v=2.9.176');
+      this.loadedModules.set('chapter-resources-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Chapter Resources Modal cargado (36KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Chapter Resources Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -769,6 +850,12 @@ class LazyLoader {
         return await this.loadVoiceNotes();
       case 'shareable-moments':
         return await this.loadShareableMoments();
+      case 'audio-control-modal':
+        return await this.loadAudioControlModal();
+      case 'thematic-index-modal':
+        return await this.loadThematicIndexModal();
+      case 'chapter-resources-modal':
+        return await this.loadChapterResourcesModal();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

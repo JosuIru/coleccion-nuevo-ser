@@ -422,7 +422,8 @@
   <script src="js/core/toast.js"></script>
   <script src="js/core/tts-providers.js"></script>
   <script src="js/core/audio-cache-manager.js"></script>
-  <script src="js/core/elevenlabs-tts-provider.js"></script>
+  <!-- LAZY LOADED: ElevenLabs TTS (20KB) -->
+  <!-- <script src="js/core/elevenlabs-tts-provider.js"></script> -->
   <script src="js/core/book-engine.js?v=2.8.6.1"></script>
   <script src="js/core/biblioteca.js?v=2.9.176"></script>
   <!-- BookReader Modular (v2.9.279) -->
@@ -437,10 +438,10 @@
 
   <!-- AI System -->
   <script src="js/ai/ai-config.js?v=2.8.6.3-debug"></script>
-  <script src="js/ai/ai-adapter.js?v=2.9.176"></script>
-  <!-- Sistema Premium IA -->
-  <script src="js/features/ai-premium.js?v=1.0.0"></script>
-  <script src="js/features/pricing-modal.js?v=1.0.0"></script>
+  <!-- LAZY LOADED: AI Chat + Premium (100KB+) -->
+  <!-- <script src="js/ai/ai-adapter.js?v=2.9.283"></script>
+  <script src="js/features/ai-premium.js?v=2.9.283"></script>
+  <script src="js/features/pricing-modal.js?v=2.9.283"></script> -->
 
   <!-- 🔧 Utilities - Memory leak fixes & Security -->
   <script src="js/utils/error-boundary.js?v=1.0.0"></script>
@@ -452,14 +453,20 @@
   <script src="js/utils/safe-fetch.js?v=1.0.0"></script>
   <script src="js/utils/offline-detector.js?v=1.0.0"></script>
   <script src="js/utils/safe-expression-evaluator.js?v=1.0.0"></script>
+  <script src="js/utils/storage-helper.js?v=2.9.283"></script>
+  <script src="js/utils/lazy-loader.js?v=2.9.283"></script>
+  <script src="js/utils/ai-lazy-loader.js?v=2.9.283"></script>
+  <script src="js/utils/learning-lazy-loader.js?v=2.9.283"></script>
 
   <!-- Features -->
   <script src="js/features/language-selector.js"></script>
-  <script src="js/features/ai-chat-modal.js?v=2.9.176"></script>
+  <!-- LAZY LOADED: AI Chat Modal (64KB) + AI Settings (24KB) -->
+  <!-- <script src="js/features/ai-chat-modal.js?v=2.9.283"></script> -->
   <script src="js/features/text-selection-helper.js"></script>
-  <script src="js/features/ai-settings-modal.js"></script>
+  <!-- <script src="js/features/ai-settings-modal.js?v=2.9.283"></script> -->
   <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
-  <script src="js/features/settings-modal.js?v=2.9.176"></script>
+  <!-- LAZY LOADED: Settings Modal (124KB) - Loaded when user opens settings -->
+  <!-- <script src="js/features/settings-modal.js?v=2.9.176"></script> -->
   <script src="js/features/notes-modal.js"></script>
   <script src="js/features/timeline-viewer.js"></script>
   <script src="js/features/resources-viewer.js"></script>
@@ -469,21 +476,21 @@
   <script src="js/core/tts-platform-helper.js?v=3.1.2"></script>
   <!-- Background Audio Helper (mantiene audio activo con pantalla apagada) -->
   <script src="js/core/background-audio-helper.js?v=1.0.0"></script>
-  <!-- AudioReader Modules (v2.9.278 full modularization) -->
+  <!-- AudioReader Modules (v2.9.283 full modularization) -->
   <!-- External modules (existing) -->
-  <script src="js/features/audioreader-sleep-timer.js?v=2.9.278"></script>
-  <script src="js/features/audioreader-bookmarks.js?v=2.9.278"></script>
-  <script src="js/features/audioreader-meditation.js?v=2.9.278"></script>
-  <script src="js/features/audioreader-position.js?v=2.9.278"></script>
+  <script src="js/features/audioreader-sleep-timer.js?v=2.9.283"></script>
+  <script src="js/features/audioreader-bookmarks.js?v=2.9.283"></script>
+  <script src="js/features/audioreader-meditation.js?v=2.9.283"></script>
+  <script src="js/features/audioreader-position.js?v=2.9.283"></script>
   <!-- Internal modules (new modular architecture) -->
-  <script src="js/features/audioreader/audioreader-utils.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-content.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-highlighter.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-tts-engine.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-playback.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-events.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/audioreader-ui.js?v=2.9.278"></script>
-  <script src="js/features/audioreader/index.js?v=2.9.278"></script>
+  <script src="js/features/audioreader/audioreader-utils.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-content.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-highlighter.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-tts-engine.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-playback.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-events.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/audioreader-ui.js?v=2.9.283"></script>
+  <script src="js/features/audioreader/index.js?v=2.9.283"></script>
   <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
   <!-- 🔧 FIX v2.9.212: Descomentar audio-mixer para habilitar sonidos binaurales y de fondo -->
   <script src="js/features/audio-mixer.js?v=3.0.0"></script>
@@ -506,17 +513,21 @@
   <script src="js/data/achievements.js"></script>
   <script src="js/features/achievements-system.js?v=2.8.6.4-a11y"></script>
   <script src="js/features/auto-summary.js?v=2.8.6.4-a11y"></script>
-  <script src="js/features/ai-suggestions.js"></script>
+  <!-- LAZY LOADED: AI Suggestions (16KB) -->
+  <!-- <script src="js/features/ai-suggestions.js?v=2.9.283"></script> -->
   <script src="js/features/progress-dashboard.js"></script>
   <script src="js/features/smart-notes.js"></script>
 
-  <!-- Interactive Learning Features (v2.8.7) -->
-  <script src="js/features/learning-paths.js?v=2.8.7"></script>
-  <!-- LAZY LOADED
-  <script src="js/features/resource-ai-helper.js?v=2.8.7"></script>
-  <script src="js/features/interactive-quiz.js?v=2.8.7"></script>
-  <script src="js/features/concept-maps.js"></script>
-  <script src="js/features/action-plans.js"></script> -->
+  <!-- Interactive Learning Features (v2.9.283) -->
+  <!-- LAZY LOADED: Learning Paths (100KB) - Loaded when user accesses learning paths -->
+    <!-- LAZY LOADED: Learning Paths (100KB) -->
+  <!-- <script src="js/features/learning-paths.js?v=2.8.7"></script> -->
+  <!-- LAZY LOADED: Learning Features (88KB total) + Resource AI Helper -->
+  <!-- Quiz (16KB) + Concept Maps (44KB) + Action Plans (28KB) -->
+  <!-- <script src="js/features/resource-ai-helper.js?v=2.9.283"></script>
+  <script src="js/features/interactive-quiz.js?v=2.9.283"></script>
+  <!-- <script src="js/features/concept-maps.js?v=2.9.283"></script> -->
+  <script src="js/features/action-plans.js?v=2.9.283"></script> -->
   <script src="js/features/voice-notes.js?v=2.8.6.4-a11y"></script>
 
   <!-- Practical Utility Features -->
@@ -531,7 +542,7 @@
   <script src="js/features/brujula-recursos-ui.js"></script>
 
   <!-- Exploration Hub - Unified Search, Themes & Resources -->
-  <script src="js/features/exploration-hub.js"></script>
+  <!-- <script src="js/features/exploration-hub.js"></script> -->
 
   <!-- Cosmos Navigation - 3D Immersive Navigation - LAZY LOADED -->
   <!-- <script src="js/features/cosmos-navigation.js?v=3.1.1"></script> -->
@@ -578,7 +589,7 @@
   <!-- <script src="js/features/organism-knowledge.js?v=2.0.3"></script> -->
 
   <!-- Help & Onboarding System -->
-  <script src="js/features/help-center-modal.js"></script>
+  <!-- <script src="js/features/help-center-modal.js"></script> -->
   <script src="js/features/onboarding-tutorial.js"></script>
   <!-- Welcome Flow - Onboarding rápido de 3 pasos -->
   <script src="js/features/welcome-flow.js?v=1.0.0"></script>
@@ -2714,6 +2725,33 @@
 
 
     };
+  </script>
+
+  <!-- Service Worker Registration - PWA & Offline Support -->
+  <script>
+    // Register Service Worker for PWA functionality
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('✅ Service Worker registrado:', registration.scope);
+
+            // Check for updates every hour
+            setInterval(() => {
+              registration.update();
+            }, 60 * 60 * 1000);
+          })
+          .catch(error => {
+            console.warn('❌ Error registrando Service Worker:', error);
+          });
+      });
+
+      // Listen for Service Worker updates
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('🔄 Service Worker actualizado - recargando página...');
+        window.location.reload();
+      });
+    }
   </script>
 
 </body>

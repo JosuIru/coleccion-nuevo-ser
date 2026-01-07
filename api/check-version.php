@@ -14,10 +14,24 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Tabla de versiones y actualizaciones disponibles
 $VERSION_DATABASE = [
     // Versión actual en producción
-    'latest' => '2.9.48',
+    'latest' => '2.9.286',
 
     // Información de cada versión
     'versions' => [
+        '2.9.286' => [
+            'release_date' => '2026-01-07',
+            'platform' => 'all',
+            'security' => false,
+            'critical' => false,
+            'features' => [
+                'Migración completa a sistema de logger',
+                'Corrección de botón sidebar intermitente',
+                'Eliminada flecha en navegación de footer',
+                'Desactivado auto-check de actualizaciones local',
+                'Optimización de lazy-loading (364KB)',
+                'Arquitectura modular BookReader y AudioReader'
+            ]
+        ],
         '2.9.48' => [
             'release_date' => '2025-12-19',
             'platform' => 'all',
@@ -69,6 +83,11 @@ $VERSION_DATABASE = [
 
     // URLs de descarga por versión y plataforma
     'downloads' => [
+        '2.9.286' => [
+            'web' => 'https://gailu.net/index.html',
+            'android' => 'https://gailu.net/downloads/coleccion-nuevo-ser-v2.9.286.apk',
+            'ios' => 'https://apps.apple.com/app/coleccion-nuevo-ser'
+        ],
         '2.9.48' => [
             'web' => '/index.html',
             'android' => '/downloads/coleccion-nuevo-ser-v2.9.48.apk',

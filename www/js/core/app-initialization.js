@@ -39,11 +39,13 @@ class AppInitialization {
       logger.log('[AppInit] Sistema de caché de IA inicializado');
       logger.log('[AppInit] Hit rate actual:', window.aiCacheService.getHitRate() + '%');
 
-      // 3. Inicializar VersionManager
+      // 3. Inicializar VersionManager (solo para apps nativas)
+      const isNativeApp = typeof capacitor !== 'undefined' || window.isNative;
+
       window.versionManager = new VersionManager({
         apiUrl: 'https://gailu.net/api/check-version.php',
         autoCheckInterval: 3600000, // 1 hora
-        enableAutoCheck: true // Habilitado para Play Store
+        enableAutoCheck: isNativeApp // Solo habilitar en apps nativas (Android/iOS)
       });
 
       // 4. Inicializar UpdateHelper
@@ -52,13 +54,15 @@ class AppInitialization {
       // 5. Inicializar UpdateModal
       window.updateModal = new UpdateModal(window.versionManager, window.updateHelper);
 
-      logger.log('[AppInit] Sistema de versiones inicializado');
+      logger.log('[AppInit] Sistema de versiones inicializado', { isNativeApp });
 
-      // 6. Verificar actualizaciones al iniciar
-      const delay = Math.random() * 3000; // 0-3 segundos de delay aleatorio
-      setTimeout(() => {
-        window.versionManager.checkForUpdates();
-      }, delay);
+      // 6. Verificar actualizaciones al iniciar (solo en apps nativas)
+      if (isNativeApp) {
+        const delay = Math.random() * 3000; // 0-3 segundos de delay aleatorio
+        setTimeout(() => {
+          window.versionManager.checkForUpdates();
+        }, delay);
+      }
 
       // 7. Mostrar Welcome Flow para nuevos usuarios
       if (window.welcomeFlow && window.welcomeFlow.shouldShow()) {

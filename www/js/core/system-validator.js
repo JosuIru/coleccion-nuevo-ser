@@ -120,7 +120,7 @@ class SystemValidator {
     }
 
     // Check if using test Supabase
-    const supabaseUrl = window.SUPABASE_CONFIG?.url || '';
+    const supabaseUrl = window.supabaseConfig?.url || '';
     if (supabaseUrl.includes('localhost')) {
       issues.push('⚠️ Usando Supabase local');
     }

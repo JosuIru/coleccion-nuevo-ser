@@ -80,3 +80,4 @@ gradle.properties.local
 
 # Mobile game specific
 mobile-game/mobile-app/android/gradle.properties.local
+tests/

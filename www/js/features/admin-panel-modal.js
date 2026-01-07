@@ -72,10 +72,10 @@ class AdminPanelModal {
 
     this.modal = document.createElement('div');
     this.modal.id = 'admin-panel-modal';
-    this.modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4';
+    this.modal.className = 'fixed inset-0 z-[10000] flex items-end sm:items-center justify-center p-0 sm:p-4';
     this.modal.innerHTML = `
       <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" id="admin-panel-backdrop"></div>
-      <div class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden shadow-2xl border border-purple-500/30">
+      <div class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-t-2xl sm:rounded-2xl w-full max-w-full sm:max-w-6xl h-[95vh] sm:max-h-[95vh] overflow-hidden shadow-2xl border border-purple-500/30">
         <!-- Header -->
         <div class="bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-b border-white/10 p-4 flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -365,14 +365,16 @@ class AdminPanelModal {
           <div class="flex flex-wrap gap-4 items-center justify-between">
             <div class="flex gap-3 items-center">
               <div class="relative">
-                <input type="text"
+                <input type="search"
                        id="user-search"
                        placeholder="Buscar usuario..."
+                       aria-label="Buscar usuario por email o nombre"
                        value="${this.searchQuery}"
                        class="pl-10 pr-4 py-2 bg-slate-700 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
               </div>
               <select id="plan-filter"
+                      aria-label="Filtrar por tipo de plan"
                       class="px-4 py-2 bg-slate-700 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option value="all" ${this.filterPlan === 'all' ? 'selected' : ''}>Todos los planes</option>
                 <option value="free" ${this.filterPlan === 'free' ? 'selected' : ''}>Gratuitos</option>
@@ -704,7 +706,7 @@ class AdminPanelModal {
             <div class="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg">
               <span class="text-slate-300">URL del proyecto</span>
               <span class="text-slate-400 text-xs truncate max-w-[200px]">
-                ${window.SUPABASE_URL || 'No configurado'}
+                ${window.supabaseConfig?.url || 'No configurado'}
               </span>
             </div>
           </div>

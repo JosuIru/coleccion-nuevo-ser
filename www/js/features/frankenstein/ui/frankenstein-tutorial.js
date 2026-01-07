@@ -32,7 +32,7 @@ export class FrankensteinTutorial {
     this.showTooltip = labUIRef.showTooltip.bind(labUIRef);
     this.hideTooltip = labUIRef.hideTooltip.bind(labUIRef);
 
-    console.log('[FrankensteinTutorial] Sistema de tutorial inicializado');
+    logger.log('[FrankensteinTutorial] Sistema de tutorial inicializado');
   }
 
   /**
@@ -42,7 +42,7 @@ export class FrankensteinTutorial {
   show() {
     // Verificar si ya se mostró
     if (localStorage.getItem('frankenstein-tutorial-shown')) {
-      console.log('[FrankensteinTutorial] Tutorial ya mostrado previamente');
+      logger.log('[FrankensteinTutorial] Tutorial ya mostrado previamente');
       return;
     }
 
@@ -129,7 +129,7 @@ export class FrankensteinTutorial {
     this._addEventListener(startButton, 'click', tutorialStartHandler);
     this.tutorialListeners.push({ element: startButton, event: 'click', handler: tutorialStartHandler });
 
-    console.log('[FrankensteinTutorial] Tutorial mostrado');
+    logger.log('[FrankensteinTutorial] Tutorial mostrado');
   }
 
   /**
@@ -138,7 +138,7 @@ export class FrankensteinTutorial {
   skip() {
     localStorage.setItem('frankenstein-tutorial-shown', 'skipped');
     this.hideTutorial();
-    console.log('[FrankensteinTutorial] Tutorial omitido');
+    logger.log('[FrankensteinTutorial] Tutorial omitido');
   }
 
   /**
@@ -162,7 +162,7 @@ export class FrankensteinTutorial {
       }
     }, 500);
 
-    console.log('[FrankensteinTutorial] Tutorial completado');
+    logger.log('[FrankensteinTutorial] Tutorial completado');
   }
 
   /**
@@ -188,7 +188,7 @@ export class FrankensteinTutorial {
   showProgressHint(hintText) {
     const progressBar = document.querySelector('.mission-progress-bar');
     if (!progressBar) {
-      console.warn('[FrankensteinTutorial] Progress bar not found');
+      logger.warn('[FrankensteinTutorial] Progress bar not found');
       return;
     }
 
@@ -209,7 +209,7 @@ export class FrankensteinTutorial {
       }, 300);
     }, 2000);
 
-    console.log(`[FrankensteinTutorial] Progress hint shown: ${hintText}`);
+    logger.log(`[FrankensteinTutorial] Progress hint shown: ${hintText}`);
   }
 
   /**
@@ -218,14 +218,14 @@ export class FrankensteinTutorial {
    */
   createModeSelector() {
     if (!window.FrankensteinQuiz) {
-      console.warn('[FrankensteinTutorial] Quiz system not available');
+      logger.warn('[FrankensteinTutorial] Quiz system not available');
       return;
     }
 
     // Buscar el header del laboratorio
     const labHeader = document.querySelector('.lab-header');
     if (!labHeader) {
-      console.warn('[FrankensteinTutorial] Lab header not found');
+      logger.warn('[FrankensteinTutorial] Lab header not found');
       return;
     }
 
@@ -293,15 +293,15 @@ export class FrankensteinTutorial {
         e.stopPropagation();
 
         const mode = btn.dataset.mode;
-        console.log(`[FrankensteinTutorial] Changing mode to: ${mode}`);
+        logger.log(`[FrankensteinTutorial] Changing mode to: ${mode}`);
 
         if (!window.FrankensteinQuiz) {
-          console.error('[FrankensteinTutorial] FrankensteinQuiz not available');
+          logger.error('[FrankensteinTutorial] FrankensteinQuiz not available');
           return;
         }
 
         window.FrankensteinQuiz.setMode(mode);
-        console.log(`[FrankensteinTutorial] Mode changed, current mode: ${window.FrankensteinQuiz.getMode()}`);
+        logger.log(`[FrankensteinTutorial] Mode changed, current mode: ${window.FrankensteinQuiz.getMode()}`);
 
         // Actualizar UI
         selector.querySelectorAll('.game-mode-option').forEach(b => b.classList.remove('active'));
@@ -335,10 +335,10 @@ export class FrankensteinTutorial {
         e.stopPropagation();
 
         const difficulty = btn.dataset.difficulty;
-        console.log(`[FrankensteinTutorial] Changing difficulty to: ${difficulty}`);
+        logger.log(`[FrankensteinTutorial] Changing difficulty to: ${difficulty}`);
 
         if (!window.FrankensteinQuiz) {
-          console.error('[FrankensteinTutorial] FrankensteinQuiz not available');
+          logger.error('[FrankensteinTutorial] FrankensteinQuiz not available');
           return;
         }
 
@@ -360,7 +360,7 @@ export class FrankensteinTutorial {
       this._addEventListener(btn, 'click', difficultyHandler);
     });
 
-    console.log('[FrankensteinTutorial] Selector de modo creado');
+    logger.log('[FrankensteinTutorial] Selector de modo creado');
   }
 
   /**
@@ -383,7 +383,7 @@ export class FrankensteinTutorial {
    */
   reset() {
     localStorage.removeItem('frankenstein-tutorial-shown');
-    console.log('[FrankensteinTutorial] Tutorial reseteado');
+    logger.log('[FrankensteinTutorial] Tutorial reseteado');
   }
 
   /**
@@ -399,7 +399,7 @@ export class FrankensteinTutorial {
    * Implementa cleanup completo para prevenir memory leaks
    */
   destroy() {
-    console.log('[FrankensteinTutorial] Destruyendo sistema de tutorial');
+    logger.log('[FrankensteinTutorial] Destruyendo sistema de tutorial');
 
     // Ocultar tutorial si está visible
     this.hideTutorial();
@@ -417,7 +417,7 @@ export class FrankensteinTutorial {
     this.labUI = null;
     this.tutorialOverlay = null;
 
-    console.log('[FrankensteinTutorial] Sistema de tutorial destruido');
+    logger.log('[FrankensteinTutorial] Sistema de tutorial destruido');
   }
 }
 

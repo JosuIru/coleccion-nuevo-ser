@@ -117,7 +117,7 @@ class OrganismKnowledge {
 
     // Fallback a Three.js si FrankensteinLabUI no está disponible
     if (typeof THREE === 'undefined') {
-      console.error('Three.js no está cargado');
+      logger.error('Three.js no está cargado');
       return;
     }
 
@@ -758,7 +758,7 @@ class OrganismKnowledge {
 
     const catalog = this.bookEngine?.catalog;
     if (!catalog || !catalog.books) {
-      console.error('Catálogo no disponible');
+      logger.error('Catálogo no disponible');
       return;
     }
 
@@ -885,14 +885,14 @@ class OrganismKnowledge {
   implantOrgan(organPiece, slotId) {
     const slotData = this.bodyAnatomy[slotId];
     if (!slotData) {
-      console.error('Slot inválido:', slotId);
+      logger.error('Slot inválido:', slotId);
       return false;
     }
 
     // Verificar si el órgano es compatible con el slot
     const book = organPiece.userData.book;
     if (!slotData.accepts.includes(book.category)) {
-      // console.warn('Órgano no compatible con slot:', book.category, '→', slotId);
+      // logger.warn('Órgano no compatible con slot:', book.category, '→', slotId);
       // Mostrar feedback visual
       this.showIncompatibilityFeedback(organPiece, slotId);
       return false;
@@ -900,7 +900,7 @@ class OrganismKnowledge {
 
     // Verificar si el slot ya está ocupado
     if (this.implantedOrgans[slotId]) {
-      // console.warn('Slot ya ocupado:', slotId);
+      // logger.warn('Slot ya ocupado:', slotId);
       return false;
     }
 
@@ -1182,7 +1182,7 @@ class OrganismKnowledge {
   async createOrgans() {
     const catalog = this.bookEngine?.catalog;
     if (!catalog || !catalog.books) {
-      console.error('Catálogo no disponible');
+      logger.error('Catálogo no disponible');
       return;
     }
 
@@ -1340,7 +1340,7 @@ class OrganismKnowledge {
     const allOrgans = [...(this.availableOrgans || []), ...(this.organs || [])];
 
     if (allOrgans.length === 0) {
-      // console.warn('⚠️ No hay órganos para crear células');
+      // logger.warn('⚠️ No hay órganos para crear células');
       return;
     }
 
@@ -1348,7 +1348,7 @@ class OrganismKnowledge {
       // organGroup ES un THREE.Group, el libro está en userData
       const book = organGroup.userData?.book || organGroup.book;
       if (!book) {
-        // console.warn('⚠️ Órgano sin libro asociado:', organGroup);
+        // logger.warn('⚠️ Órgano sin libro asociado:', organGroup);
         continue;
       }
 
@@ -1360,7 +1360,7 @@ class OrganismKnowledge {
         const chapters = this.getBookChapters(book);
 
         if (chapters.length === 0) {
-          // console.warn(`⚠️ No hay capítulos para ${book.id}`);
+          // logger.warn(`⚠️ No hay capítulos para ${book.id}`);
           continue;
         }
 
@@ -1372,7 +1372,7 @@ class OrganismKnowledge {
           organGroup.add(cell.mesh);
         });
       } catch (error) {
-        // console.warn(`Error creando células para ${book.id}:`, error);
+        // logger.warn(`Error creando células para ${book.id}:`, error);
       }
     }
 
@@ -1411,7 +1411,7 @@ class OrganismKnowledge {
     }
 
     // Fallback: crear capítulos genéricos solo si realmente no hay nada
-    // console.warn(`⚠️ [getBookChapters] ${book.id}: No se encontraron capítulos, usando fallback genérico`);
+    // logger.warn(`⚠️ [getBookChapters] ${book.id}: No se encontraron capítulos, usando fallback genérico`);
     for (let i = 0; i < 6; i++) {
       chapters.push({
         id: `cap${i + 1}`,
@@ -1433,7 +1433,7 @@ class OrganismKnowledge {
         return await response.json();
       }
     } catch (error) {
-      // console.warn(`No se pudo cargar metadata para ${bookId}:`, error);
+      // logger.warn(`No se pudo cargar metadata para ${bookId}:`, error);
     }
     return {};
   }
@@ -1824,7 +1824,7 @@ class OrganismKnowledge {
    */
   async activateBody() {
     if (this.bodyVitality < 80) {
-      // console.warn('El cuerpo no tiene suficiente vitalidad para activar');
+      // logger.warn('El cuerpo no tiene suficiente vitalidad para activar');
       return;
     }
 
@@ -2396,7 +2396,7 @@ class OrganismKnowledge {
       // Mostrar notificación
       alert('✅ ¡Ser guardado exitosamente!');
     } catch (error) {
-      console.error('Error guardando ser:', error);
+      logger.error('Error guardando ser:', error);
       window.toast?.error('Error al guardar el ser. Intenta de nuevo.');
     }
   }
@@ -2574,7 +2574,7 @@ class OrganismKnowledge {
       try {
         localStorage.setItem('organism-tutorial-seen', 'true');
       } catch (error) {
-        console.error('Error guardando estado del tutorial:', error);
+        logger.error('Error guardando estado del tutorial:', error);
       }
     });
 
@@ -2634,7 +2634,7 @@ class OrganismKnowledge {
       try {
         localStorage.setItem('organism-tutorial-seen', 'true');
       } catch (error) {
-        console.error('Error guardando estado del tutorial:', error);
+        logger.error('Error guardando estado del tutorial:', error);
       }
     }
   }
@@ -3574,7 +3574,7 @@ Formato JSON:
         this.showGeneratedKnowledge(organism, generated);
 
       } else {
-        // console.warn('IA no disponible, generando conocimiento básico...');
+        // logger.warn('IA no disponible, generando conocimiento básico...');
         // Fallback sin IA
         const basicKnowledge = {
           nombre: `Síntesis de ${concepts.slice(0, 2).join(' y ')}`,
@@ -3588,7 +3588,7 @@ Formato JSON:
       }
 
     } catch (error) {
-      console.error('Error generando conocimiento:', error);
+      logger.error('Error generando conocimiento:', error);
       if (window.toast) {
         window.toast.show('⚠️ Error al generar conocimiento. El organismo permanece en estado latente.', 'warning');
       }
@@ -3692,7 +3692,7 @@ Formato JSON:
 
       // logger.debug('✅ Organismo guardado:', organismData);
     } catch (error) {
-      console.error('Error guardando organismo:', error);
+      logger.error('Error guardando organismo:', error);
       if (window.toast) {
         window.toast.show('⚠️ Error al guardar organismo', 'error');
       }
@@ -4042,7 +4042,7 @@ if (typeof window !== 'undefined') {
     window.organismKnowledge.init().then(() => {
       logger.debug('✅ OrganismKnowledge auto-initialized and ready');
     }).catch(err => {
-      console.error('❌ Error auto-initializing OrganismKnowledge:', err);
+      logger.error('❌ Error auto-initializing OrganismKnowledge:', err);
     });
   }
 }

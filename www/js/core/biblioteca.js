@@ -438,6 +438,7 @@ class Biblioteca {
 
     // Attach listeners para secciones colapsables
     this.attachExploreLibraryListeners();
+    this.attachToolsSectionListeners();
 
     // Renderizar widget de práctica del día (asíncrono)
     this.renderPracticeWidget();
@@ -525,13 +526,8 @@ class Biblioteca {
    */
   renderBottomNav() {
     // 🔧 FIX #7: Restaurar tab activo desde localStorage
-    let activeTab = 'inicio'; // Default
-    try {
-      activeTab = localStorage.getItem('biblioteca-active-tab') || 'inicio';
-    } catch (e) {
-      // 🔧 FIX #4: Usar logger en lugar de console.log
-      logger.warn('[Biblioteca] No se pudo leer tab activo:', e);
-    }
+    // 🔧 v2.9.283: Usar StorageHelper para manejo seguro
+    const activeTab = window.StorageHelper?.get('biblioteca-active-tab', 'inicio') || 'inicio';
 
     return `
       <nav class="app-bottom-nav" id="biblioteca-bottom-nav">
@@ -650,7 +646,7 @@ class Biblioteca {
           window.myAccountModal.show();
         }
       }).catch(err => {
-        console.error('[Biblioteca] Error cargando my-account:', err);
+        logger.error('[Biblioteca] Error cargando my-account:', err);
         // Fallback a auth modal si no está logueado
         if (window.authModal) {
           window.authModal.show('login');
@@ -667,12 +663,8 @@ class Biblioteca {
    */
   setActiveBottomTab(tabName) {
     // Persistir tab activo en localStorage
-    try {
-      localStorage.setItem('biblioteca-active-tab', tabName);
-    } catch (e) {
-      // 🔧 FIX #4: Usar logger en lugar de console.log
-      logger.warn('[Biblioteca] No se pudo guardar tab activo:', e);
-    }
+    // 🔧 v2.9.283: Usar StorageHelper para manejo seguro
+    window.StorageHelper?.set('biblioteca-active-tab', tabName);
 
     document.querySelectorAll('.app-bottom-nav-tab').forEach(tab => {
       tab.classList.remove('active');
@@ -831,15 +823,10 @@ class Biblioteca {
 
   /**
    * 🔧 FIX #8: Obtiene el historial de herramientas usadas por el usuario
+   * 🔧 v2.9.283: Usar StorageHelper para manejo seguro
    */
   getUserPracticeHistory() {
-    try {
-      const history = localStorage.getItem('daily-practice-history');
-      return history ? JSON.parse(history) : {};
-    } catch (error) {
-      logger.warn('[Biblioteca] Error al leer historial de prácticas:', error);
-      return {};
-    }
+    return window.StorageHelper?.get('daily-practice-history', {}) || {};
   }
 
   /**
@@ -865,16 +852,13 @@ class Biblioteca {
 
   /**
    * 🔧 FIX #8: Registra el uso de una herramienta
+   * 🔧 v2.9.283: Usar StorageHelper para manejo seguro
    */
   trackPracticeUsage(libroId) {
-    try {
-      const history = this.getUserPracticeHistory();
-      history[libroId] = (history[libroId] || 0) + 1;
-      localStorage.setItem('daily-practice-history', JSON.stringify(history));
-      logger.debug(`[Biblioteca] Práctica registrada: ${libroId} (${history[libroId]} veces)`);
-    } catch (error) {
-      logger.warn('[Biblioteca] Error al registrar práctica:', error);
-    }
+    const history = this.getUserPracticeHistory();
+    history[libroId] = (history[libroId] || 0) + 1;
+    window.StorageHelper?.set('daily-practice-history', history);
+    logger.debug(`[Biblioteca] Práctica registrada: ${libroId} (${history[libroId]} veces)`);
   }
 
   /**
@@ -957,18 +941,13 @@ class Biblioteca {
    * Renderiza la sección "Explorar Biblioteca" (colapsable)
    */
   renderExploreLibrary() {
-    const progresoGlobal = this.bookEngine.getGlobalProgress();
-    const tieneProgreso = progresoGlobal.totalRead > 0;
-
-    // Si no tiene progreso, mostrar expandido por defecto
-    const expandidoPorDefecto = !tieneProgreso;
-
+    // Siempre expandido por defecto - los libros son el contenido principal
     return `
       <div class="explore-library-section mb-6 sm:mb-8">
         <!-- Header Colapsable -->
         <button id="explore-library-toggle"
-                class="explore-library-header w-full ${expandidoPorDefecto ? 'expanded' : ''}"
-                aria-expanded="${expandidoPorDefecto}">
+                class="explore-library-header w-full expanded"
+                aria-expanded="true">
           <div class="flex items-center gap-3">
             <span class="text-2xl">📚</span>
             <div class="text-left">
@@ -982,7 +961,7 @@ class Biblioteca {
         </button>
 
         <!-- Contenido Colapsable -->
-        <div id="explore-library-content" class="explore-library-content ${expandidoPorDefecto ? 'expanded' : ''}">
+        <div id="explore-library-content" class="explore-library-content expanded">
           <!-- Quick Filters -->
           <div class="quick-filter-tabs mb-4">
             <button class="quick-filter-tab active" data-filter="all">Todos</button>
@@ -1273,24 +1252,35 @@ class Biblioteca {
   }
 
   renderToolsSection() {
-    // Cache bust: 2025-12-14T04:50
     const herramientas = BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA;
-    // 🔧 FIX #4: Eliminar console.log de debug en producción
 
     if (!herramientas || herramientas.length === 0) return '';
 
     let html = `
       <div class="tools-section mb-8 sm:mb-12 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-900/20 via-teal-900/10 to-cyan-900/20 border border-emerald-700/30">
-        <h3 class="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-3">
-          <div class="p-2 rounded-lg bg-emerald-500/20">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-            </svg>
+        <!-- Header Colapsable -->
+        <button id="tools-section-toggle"
+                class="tools-section-header w-full"
+                aria-expanded="false">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-lg bg-emerald-500/20">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </div>
+            <div class="text-left">
+              <h3 class="text-2xl sm:text-3xl font-bold text-emerald-300">${this.i18n.t('library.tools') || 'Herramientas y Aplicaciones'}</h3>
+              <p class="text-sm opacity-60">Aplicaciones web complementarias del ecosistema Nuevo Ser</p>
+            </div>
           </div>
-          <span class="text-emerald-300">${this.i18n.t('library.tools') || 'Herramientas y Aplicaciones'}</span>
-        </h3>
-        <p class="text-sm opacity-60 mb-6 ml-14">Aplicaciones web complementarias del ecosistema Nuevo Ser</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <svg class="chevron w-6 h-6 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Contenido Colapsable -->
+        <div id="tools-section-content" class="tools-section-content">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
     `;
 
     herramientas.forEach(herramienta => {
@@ -1470,8 +1460,24 @@ class Biblioteca {
       `;
     });
 
-    html += '</div></div>';
+    html += '</div></div></div>';
     return html;
+  }
+
+  /**
+   * Attach event listeners for tools section toggle
+   */
+  attachToolsSectionListeners() {
+    const toggleBtn = document.getElementById('tools-section-toggle');
+    const contentDiv = document.getElementById('tools-section-content');
+
+    if (toggleBtn && contentDiv) {
+      this.eventManager.addEventListener(toggleBtn, 'click', () => {
+        const isExpanded = toggleBtn.classList.toggle('expanded');
+        contentDiv.classList.toggle('expanded');
+        toggleBtn.setAttribute('aria-expanded', isExpanded);
+      });
+    }
   }
 
   renderFutureBooks() {
@@ -1584,7 +1590,7 @@ class Biblioteca {
       const modalConfiguracion = new window.SettingsModal();
       modalConfiguracion.show();
     } else {
-      // console.warn('SettingsModal no está disponible');
+      // logger.warn('SettingsModal no está disponible');
     }
   }
 
@@ -1661,7 +1667,7 @@ class Biblioteca {
             window.adminPanelModal.show();
           }
         }).catch(error => {
-          console.error('Error loading admin panel:', error);
+          logger.error('Error loading admin panel:', error);
           window.toast?.error('Error al cargar el panel de administración.');
         });
       }
@@ -2708,8 +2714,9 @@ class Biblioteca {
       await this.bookEngine.applyTheme(this.bookEngine.getCurrentBookConfig());
 
       // 🔧 FIX #11: Debounce localStorage writes para reducir I/O
+      // 🔧 v2.9.283: Usar StorageHelper para manejo seguro
       this.debounce('lastReadBook', () => {
-        localStorage.setItem('lastReadBook', idLibro);
+        window.StorageHelper?.set('lastReadBook', idLibro);
       }, 500);
 
       let idCapitulo;

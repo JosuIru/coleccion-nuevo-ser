@@ -47,21 +47,21 @@ class AchievementSystem {
       localStorage.setItem('achievements-unlocked', JSON.stringify(this.unlockedAchievements));
     } catch (error) {
       if (error.name === 'QuotaExceededError') {
-        console.warn('[Achievements] localStorage quota exceeded');
+        logger.warn('[Achievements] localStorage quota exceeded');
         window.toast?.warn('Almacenamiento lleno. Algunos logros pueden no guardarse.');
       } else {
-        console.error('[Achievements] Error guardando logros:', error);
+        logger.error('[Achievements] Error guardando logros:', error);
         window.toast?.error('Error al guardar logros.');
       }
       return; // No continuar con la sincronización si falló el guardado local
     }
 
     // Sincronizar con Supabase si está logeado
-    if (window.authHelper && window.authHelper.user) {
+    if (window.authHelper?.user && typeof window.supabaseSyncHelper?.syncSettingsToCloud === 'function') {
       try {
-        window.supabaseSyncHelper?.syncPreference('achievements-unlocked', this.unlockedAchievements);
+        window.supabaseSyncHelper.syncSettingsToCloud(['achievements-unlocked']);
       } catch (error) {
-        console.warn('[Achievements] No se pudo sincronizar achievements con Supabase:', error);
+        logger.warn('[Achievements] No se pudo sincronizar achievements con Supabase:', error);
       }
     }
   }
@@ -80,20 +80,20 @@ class AchievementSystem {
       localStorage.setItem('achievements-stats', JSON.stringify(this.stats));
     } catch (error) {
       if (error.name === 'QuotaExceededError') {
-        console.warn('[Achievements] localStorage quota exceeded');
+        logger.warn('[Achievements] localStorage quota exceeded');
         window.toast?.warn('Almacenamiento lleno. Estadísticas pueden no guardarse.');
       } else {
-        console.error('[Achievements] Error guardando estadísticas:', error);
+        logger.error('[Achievements] Error guardando estadísticas:', error);
       }
       return;
     }
 
     // Sincronizar con Supabase si está logeado
-    if (window.authHelper && window.authHelper.user) {
+    if (window.authHelper?.user && typeof window.supabaseSyncHelper?.syncSettingsToCloud === 'function') {
       try {
-        window.supabaseSyncHelper?.syncPreference('achievements-stats', this.stats);
+        window.supabaseSyncHelper.syncSettingsToCloud(['achievements-stats']);
       } catch (error) {
-        console.warn('[Achievements] No se pudo sincronizar stats con Supabase:', error);
+        logger.warn('[Achievements] No se pudo sincronizar stats con Supabase:', error);
       }
     }
   }
@@ -424,7 +424,7 @@ class AchievementSystem {
       try {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       } catch (e) {
-        console.warn('[Achievements] AudioContext not supported');
+        logger.warn('[Achievements] AudioContext not supported');
         return null;
       }
     }
@@ -454,7 +454,7 @@ class AchievementSystem {
       oscillator.stop(audioContext.currentTime + 0.4);
     } catch (e) {
       // Silenciar errores de audio
-      console.warn('[Achievements] Error playing sound:', e);
+      logger.warn('[Achievements] Error playing sound:', e);
     }
   }
 
@@ -584,7 +584,7 @@ class AchievementSystem {
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                     </svg>
                   </div>
-                  <button class="share-achievement-btn absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-400 rounded-full p-1 transition"
+                  <button class="share-achievement-btn absolute -bottom-2 -right-2 bg-blue-500 hover:bg-blue-400 rounded-full p-1.5 transition"
                           data-achievement-id="${achievement.id}" title="Compartir logro">
                     <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
@@ -760,7 +760,7 @@ class AchievementSystem {
       this.audioContext.close().then(() => {
         logger.debug('[Achievements] AudioContext cerrado');
       }).catch(err => {
-        console.warn('[Achievements] Error al cerrar AudioContext:', err);
+        logger.warn('[Achievements] Error al cerrar AudioContext:', err);
       });
       this.audioContext = null;
     }

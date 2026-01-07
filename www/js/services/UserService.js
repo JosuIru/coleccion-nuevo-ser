@@ -32,7 +32,7 @@ class UserService extends BaseService {
   async getCurrentProfile() {
     const usuario = this.getCurrentUser();
     if (!usuario) {
-      console.warn('No hay usuario autenticado');
+      logger.warn('No hay usuario autenticado');
       return null;
     }
 
@@ -97,7 +97,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para actualizar perfil');
+      logger.warn('No hay usuario autenticado para actualizar perfil');
       return null;
     }
 
@@ -147,7 +147,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para obtener logros');
+      logger.warn('No hay usuario autenticado para obtener logros');
       return [];
     }
 
@@ -200,7 +200,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para desbloquear logro');
+      logger.warn('No hay usuario autenticado para desbloquear logro');
       return null;
     }
 
@@ -260,7 +260,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para obtener suscripción');
+      logger.warn('No hay usuario autenticado para obtener suscripción');
       return null;
     }
 
@@ -385,7 +385,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para decrementar créditos');
+      logger.warn('No hay usuario autenticado para decrementar créditos');
       return false;
     }
 
@@ -434,7 +434,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para actualizar preferencias');
+      logger.warn('No hay usuario autenticado para actualizar preferencias');
       return null;
     }
 
@@ -470,7 +470,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para completar onboarding');
+      logger.warn('No hay usuario autenticado para completar onboarding');
       return false;
     }
 
@@ -498,7 +498,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para obtener estadísticas');
+      logger.warn('No hay usuario autenticado para obtener estadísticas');
       return null;
     }
 
@@ -540,7 +540,7 @@ class UserService extends BaseService {
     }
 
     if (!userId) {
-      console.warn('No hay usuario autenticado para eliminar cuenta');
+      logger.warn('No hay usuario autenticado para eliminar cuenta');
       return false;
     }
 

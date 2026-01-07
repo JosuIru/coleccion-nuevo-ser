@@ -586,7 +586,7 @@ export class FrankensteinLabUI {
    * @returns {number} Timer ID
    *
    * @example
-   * this._setTimeout(() => console.log('delayed'), 1000);
+   * this._setTimeout(() => logger.log('delayed'), 1000);
    */
   _setTimeout(callback, delay) {
     const timerId = setTimeout(() => {
@@ -611,7 +611,7 @@ export class FrankensteinLabUI {
    * @returns {number} Interval ID
    *
    * @example
-   * const intervalId = this._setInterval(() => console.log('tick'), 1000);
+   * const intervalId = this._setInterval(() => logger.log('tick'), 1000);
    */
   _setInterval(callback, delay) {
     const intervalId = setInterval(callback, delay);
@@ -646,7 +646,7 @@ export class FrankensteinLabUI {
    * @param {Object} [options] - Opciones del listener
    *
    * @example
-   * this._addEventListener(button, 'click', () => console.log('clicked'));
+   * this._addEventListener(button, 'click', () => logger.log('clicked'));
    */
   _addEventListener(target, event, handler, options) {
     target.addEventListener(event, handler, options);
@@ -675,10 +675,10 @@ export class FrankensteinLabUI {
    * @public
    */
   async init() {
-    console.log('🎬 FrankensteinLabUI.init() llamado. isInitialized:', this.isInitialized, 'labStarted:', this.labStarted);
+    logger.log('🎬 FrankensteinLabUI.init() llamado. isInitialized:', this.isInitialized, 'labStarted:', this.labStarted);
 
     if (this.isInitialized) {
-      console.log('⏭️ Ya inicializado, saltando...');
+      logger.log('⏭️ Ya inicializado, saltando...');
       return;
     }
 
@@ -689,27 +689,27 @@ export class FrankensteinLabUI {
     // Sistema de misiones (global legacy)
     if (typeof FrankensteinMissions !== 'undefined') {
       this.missionsSystem = new FrankensteinMissions();
-      console.log('✅ FrankensteinMissions inicializado');
+      logger.log('✅ FrankensteinMissions inicializado');
     } else {
-      console.error('❌ FrankensteinMissions no disponible');
+      logger.error('❌ FrankensteinMissions no disponible');
       return;
     }
 
     // Sistema de avatares (global legacy)
     if (typeof FrankensteinAvatarSystem !== 'undefined') {
       this.avatarSystem = new FrankensteinAvatarSystem();
-      console.log('✅ FrankensteinAvatarSystem inicializado');
+      logger.log('✅ FrankensteinAvatarSystem inicializado');
     } else {
-      console.warn('⚠️ FrankensteinAvatarSystem no disponible - avatares deshabilitados');
+      logger.warn('⚠️ FrankensteinAvatarSystem no disponible - avatares deshabilitados');
     }
 
     // -------------------------------------------------------------------------
     // CARGAR PIEZAS DISPONIBLES
     // -------------------------------------------------------------------------
 
-    console.log('📦 Cargando piezas disponibles...');
+    logger.log('📦 Cargando piezas disponibles...');
     await this.loadAvailablePieces();
-    console.log('✅ Piezas cargadas:', this.availablePieces.length);
+    logger.log('✅ Piezas cargadas:', this.availablePieces.length);
 
     // -------------------------------------------------------------------------
     // INICIALIZAR MÓDULOS UI
@@ -717,28 +717,28 @@ export class FrankensteinLabUI {
 
     // Bottom sheet móvil
     this.bottomSheet = new FrankensteinBottomSheet(this.domCache, this);
-    console.log('✅ FrankensteinBottomSheet inicializado');
+    logger.log('✅ FrankensteinBottomSheet inicializado');
 
     // Sistema de modales
     this.modals = new FrankensteinModals(this.domCache, this);
-    console.log('✅ FrankensteinModals inicializado');
+    logger.log('✅ FrankensteinModals inicializado');
 
     // -------------------------------------------------------------------------
     // CREAR UI SEGÚN ESTADO
     // -------------------------------------------------------------------------
 
     if (this.labStarted) {
-      console.log('🎮 Lab ya iniciado antes, creando UI directamente');
+      logger.log('🎮 Lab ya iniciado antes, creando UI directamente');
       this.createLabUI();
       this.attachEventListeners();
     } else {
-      console.log('🌟 Primera vez, mostrando pantalla de inicio');
+      logger.log('🌟 Primera vez, mostrando pantalla de inicio');
       await this.createStartScreen();
 
       // Si el modo actual es demo, cargar datos automáticamente
       const currentMode = window.FrankensteinQuiz?.getMode();
       if (currentMode === 'demo' && window.FrankensteinDemoData) {
-        console.log('📦 Modo demo detectado - cargando datos automáticamente');
+        logger.log('📦 Modo demo detectado - cargando datos automáticamente');
         window.FrankensteinDemoData.loadDemoData(this);
       }
     }
@@ -750,7 +750,7 @@ export class FrankensteinLabUI {
     this.isInitialized = true;
     this.loadExperimentLog();
 
-    console.log('✅ FrankensteinLabUI inicializado completamente');
+    logger.log('✅ FrankensteinLabUI inicializado completamente');
   }
 
   /**
@@ -768,7 +768,7 @@ export class FrankensteinLabUI {
    * @public
    */
   destroy() {
-    console.log('🧹 FrankensteinLabUI.destroy() - Iniciando cleanup');
+    logger.log('🧹 FrankensteinLabUI.destroy() - Iniciando cleanup');
 
     // -------------------------------------------------------------------------
     // CLEANUP DE TIMERS E INTERVALS (v2.9.186)
@@ -777,12 +777,12 @@ export class FrankensteinLabUI {
     // Limpiar todos los timers pendientes
     this.timers.forEach(timerId => clearTimeout(timerId));
     this.timers = [];
-    console.log('✅ Timers limpiados');
+    logger.log('✅ Timers limpiados');
 
     // Limpiar todos los intervals pendientes
     this.intervals.forEach(intervalId => clearInterval(intervalId));
     this.intervals = [];
-    console.log('✅ Intervals limpiados');
+    logger.log('✅ Intervals limpiados');
 
     // -------------------------------------------------------------------------
     // CLEANUP DE EVENT LISTENERS
@@ -794,7 +794,7 @@ export class FrankensteinLabUI {
       }
     });
     this.eventListeners = [];
-    console.log('✅ Event listeners limpiados');
+    logger.log('✅ Event listeners limpiados');
 
     // -------------------------------------------------------------------------
     // CLEANUP DE TIMERS ESPECÍFICOS
@@ -818,14 +818,14 @@ export class FrankensteinLabUI {
     if (this.modals) {
       this.modals.destroy();
       this.modals = null;
-      console.log('✅ FrankensteinModals destruido');
+      logger.log('✅ FrankensteinModals destruido');
     }
 
     // Bottom sheet
     if (this.bottomSheet) {
       this.bottomSheet.destroy();
       this.bottomSheet = null;
-      console.log('✅ FrankensteinBottomSheet destruido');
+      logger.log('✅ FrankensteinBottomSheet destruido');
     }
 
     // TODO: Destruir otros módulos cuando implementen método destroy()
@@ -866,7 +866,7 @@ export class FrankensteinLabUI {
     this.lastProgressPercentage = 0;
     this.hasShownConfetti = false;
 
-    console.log('✅ FrankensteinLabUI destruido completamente');
+    logger.log('✅ FrankensteinLabUI destruido completamente');
   }
 
   // ===========================================================================
@@ -884,7 +884,7 @@ export class FrankensteinLabUI {
   async loadAvailablePieces() {
     // TODO: Implementar carga de piezas desde organism
     // Por ahora es un placeholder que mantiene compatibilidad
-    console.log('📦 loadAvailablePieces() - pendiente de implementación');
+    logger.log('📦 loadAvailablePieces() - pendiente de implementación');
   }
 
   /**
@@ -897,7 +897,7 @@ export class FrankensteinLabUI {
    */
   async createStartScreen() {
     // TODO: Implementar pantalla de inicio
-    console.log('🌟 createStartScreen() - pendiente de implementación');
+    logger.log('🌟 createStartScreen() - pendiente de implementación');
   }
 
   /**
@@ -909,7 +909,7 @@ export class FrankensteinLabUI {
    */
   createLabUI() {
     // TODO: Implementar creación de UI del lab
-    console.log('🎮 createLabUI() - pendiente de implementación');
+    logger.log('🎮 createLabUI() - pendiente de implementación');
   }
 
   /**
@@ -921,7 +921,7 @@ export class FrankensteinLabUI {
    */
   attachEventListeners() {
     // TODO: Implementar adjunto de event listeners
-    console.log('🎧 attachEventListeners() - pendiente de implementación');
+    logger.log('🎧 attachEventListeners() - pendiente de implementación');
   }
 
   /**
@@ -933,7 +933,7 @@ export class FrankensteinLabUI {
    */
   loadExperimentLog() {
     // TODO: Implementar carga de log
-    console.log('📋 loadExperimentLog() - pendiente de implementación');
+    logger.log('📋 loadExperimentLog() - pendiente de implementación');
   }
 
   /**
@@ -982,4 +982,4 @@ if (typeof window !== 'undefined') {
  */
 export default FrankensteinLabUI;
 
-console.log('✅ FrankensteinLabUI v2.9.201 cargado');
+logger.log('✅ FrankensteinLabUI v2.9.201 cargado');

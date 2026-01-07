@@ -1,0 +1,522 @@
+/**
+ * LAZY LOADER - Carga dinámica de features bajo demanda
+ * ======================================================
+ * Reduce el tiempo de carga inicial cargando features grandes solo cuando se necesitan
+ *
+ * @version 1.0.0
+ */
+
+class LazyLoader {
+  constructor() {
+    this.loadedModules = new Map();
+    this.loadingPromises = new Map();
+  }
+
+  /**
+   * Cargar múltiples scripts en orden
+   * @param {string[]} scripts - Array de URLs de scripts
+   * @returns {Promise<void>}
+   */
+  async loadScripts(scripts) {
+    for (const script of scripts) {
+      await this.loadScript(script);
+    }
+  }
+
+  /**
+   * Cargar un script individual
+   * @param {string} src - URL del script
+   * @returns {Promise<void>}
+   */
+  loadScript(src) {
+    // Si ya se cargó, devolver promise resuelta
+    if (this.loadedModules.has(src)) {
+      return Promise.resolve();
+    }
+
+    // Si está cargando, devolver la promise existente
+    if (this.loadingPromises.has(src)) {
+      return this.loadingPromises.get(src);
+    }
+
+    // Crear nueva promise de carga
+    const promise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+
+      script.onload = () => {
+        this.loadedModules.set(src, true);
+        this.loadingPromises.delete(src);
+        if (typeof logger !== 'undefined') {
+          logger.debug(`[LazyLoader] Loaded: ${src}`);
+        }
+        resolve();
+      };
+
+      script.onerror = () => {
+        this.loadingPromises.delete(src);
+        logger.error(`[LazyLoader] Failed to load: ${src}`);
+        reject(new Error(`Failed to load script: ${src}`));
+      };
+
+      document.head.appendChild(script);
+    });
+
+    this.loadingPromises.set(src, promise);
+    return promise;
+  }
+
+  /**
+   * Cargar Frankenstein Lab (31 archivos)
+   * @returns {Promise<void>}
+   */
+  async loadFrankensteinLab() {
+    if (this.loadedModules.has('frankenstein-lab')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Frankenstein Lab...');
+    }
+
+    const scripts = [
+      // Core
+      'js/features/frankenstein/core/frankenstein-constants.js?v=2.9.154',
+      'js/features/frankenstein/core/frankenstein-piece-database.js?v=2.9.154',
+      'js/features/frankenstein/core/frankenstein-mission-database.js?v=2.9.154',
+      'js/features/frankenstein/core/frankenstein-being-calculator.js?v=2.9.154',
+      'js/features/frankenstein/core/frankenstein-being-storage.js?v=2.9.154',
+      'js/features/frankenstein/core/frankenstein-micro-society.js?v=2.9.154',
+
+      // Utils
+      'js/features/frankenstein/utils/frankenstein-analytics.js?v=2.9.154',
+      'js/features/frankenstein/utils/frankenstein-drag-drop-handler.js?v=2.9.154',
+
+      // UI
+      'js/features/frankenstein/ui/frankenstein-ui-renderer.js?v=2.9.154',
+      'js/features/frankenstein/ui/frankenstein-modals.js?v=2.9.154',
+      'js/features/frankenstein/ui/frankenstein-bottom-sheet.js?v=2.9.154',
+      'js/features/frankenstein/ui/frankenstein-tutorial.js?v=2.9.154',
+      'js/features/frankenstein/ui/frankenstein-tooltips.js?v=2.9.154',
+      'js/features/frankenstein/ui/frankenstein-piece-cards.js?v=2.9.154',
+
+      // Main
+      'js/features/frankenstein/frankenstein-lab.js?v=2.9.154'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('frankenstein-lab', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Frankenstein Lab cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Frankenstein Lab:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Cosmos Navigation
+   * @returns {Promise<void>}
+   */
+  async loadCosmosNavigation() {
+    if (this.loadedModules.has('cosmos-navigation')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Cosmos Navigation...');
+    }
+
+    try {
+      await this.loadScript('js/features/cosmos-navigation.js?v=2.9.154');
+      this.loadedModules.set('cosmos-navigation', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Cosmos Navigation cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Cosmos Navigation:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar AI Chat Modal (64KB + 36KB = 100KB)
+   * @returns {Promise<void>}
+   */
+  async loadAIChatModal() {
+    if (this.loadedModules.has('ai-chat-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando AI Chat Modal...');
+    }
+
+    const scripts = [
+      'js/ai/ai-adapter.js?v=2.9.283',
+      'js/features/ai-chat-modal.js?v=2.9.283'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('ai-chat-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ AI Chat Modal cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando AI Chat Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar AI Settings Modal (24KB)
+   * @returns {Promise<void>}
+   */
+  async loadAISettings() {
+    if (this.loadedModules.has('ai-settings')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando AI Settings...');
+    }
+
+    try {
+      await this.loadScript('js/features/ai-settings-modal.js?v=2.9.283');
+      this.loadedModules.set('ai-settings', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ AI Settings cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando AI Settings:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar AI Suggestions (16KB)
+   * @returns {Promise<void>}
+   */
+  async loadAISuggestions() {
+    if (this.loadedModules.has('ai-suggestions')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando AI Suggestions...');
+    }
+
+    try {
+      await this.loadScript('js/features/ai-suggestions.js?v=2.9.283');
+      this.loadedModules.set('ai-suggestions', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ AI Suggestions cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando AI Suggestions:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar AI Premium features (16KB + pricing modal)
+   * @returns {Promise<void>}
+   */
+  async loadAIPremium() {
+    if (this.loadedModules.has('ai-premium')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando AI Premium...');
+    }
+
+    const scripts = [
+      'js/features/ai-premium.js?v=2.9.283',
+      'js/features/pricing-modal.js?v=2.9.283'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('ai-premium', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ AI Premium cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando AI Premium:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar ElevenLabs TTS Provider (20KB)
+   * @returns {Promise<void>}
+   */
+  async loadElevenLabs() {
+    if (this.loadedModules.has('elevenlabs-tts')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando ElevenLabs TTS...');
+    }
+
+    try {
+      await this.loadScript('js/core/elevenlabs-tts-provider.js?v=2.9.283');
+      this.loadedModules.set('elevenlabs-tts', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ ElevenLabs TTS cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando ElevenLabs TTS:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Resource AI Helper
+   * @returns {Promise<void>}
+   */
+  async loadResourceAIHelper() {
+    if (this.loadedModules.has('resource-ai-helper')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Resource AI Helper...');
+    }
+
+    try {
+      await this.loadScript('js/features/resource-ai-helper.js?v=2.9.283');
+      this.loadedModules.set('resource-ai-helper', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Resource AI Helper cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Resource AI Helper:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Interactive Quiz (16KB)
+   * @returns {Promise<void>}
+   */
+  async loadInteractiveQuiz() {
+    if (this.loadedModules.has('interactive-quiz')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Interactive Quiz...');
+    }
+
+    try {
+      await this.loadScript('js/features/interactive-quiz.js?v=2.9.283');
+      this.loadedModules.set('interactive-quiz', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Interactive Quiz cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Interactive Quiz:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Concept Maps (44KB)
+   * @returns {Promise<void>}
+   */
+  async loadConceptMaps() {
+    if (this.loadedModules.has('concept-maps')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Concept Maps...');
+    }
+
+    try {
+      await this.loadScript('js/features/concept-maps.js?v=2.9.283');
+      this.loadedModules.set('concept-maps', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Concept Maps cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Concept Maps:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Action Plans (28KB)
+   * @returns {Promise<void>}
+   */
+  async loadActionPlans() {
+    if (this.loadedModules.has('action-plans')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Action Plans...');
+    }
+
+    try {
+      await this.loadScript('js/features/action-plans.js?v=2.9.283');
+      this.loadedModules.set('action-plans', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Action Plans cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Action Plans:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar todas las Learning Features juntas (88KB)
+   * @returns {Promise<void>}
+   */
+  async loadLearningFeatures() {
+    if (this.loadedModules.has('learning-features-bundle')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Learning Features Bundle...');
+    }
+
+    const scripts = [
+      'js/features/interactive-quiz.js?v=2.9.283',
+      'js/features/concept-maps.js?v=2.9.283',
+      'js/features/action-plans.js?v=2.9.283'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('learning-features-bundle', true);
+      // Marcar también individualmente
+      this.loadedModules.set('interactive-quiz', true);
+      this.loadedModules.set('concept-maps', true);
+      this.loadedModules.set('action-plans', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Learning Features Bundle cargado (88KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Learning Features Bundle:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Pre-cargar módulos en segundo plano (después de carga inicial)
+   * @param {string[]} modules - Array de nombres de módulos
+   */
+  async preloadModules(modules) {
+    // Esperar a que la página esté idle
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(async () => {
+        for (const module of modules) {
+          try {
+            await this._loadModuleByName(module);
+          } catch (error) {
+            logger.warn(`[LazyLoader] Error pre-cargando ${module}:`, error);
+          }
+        }
+      }, { timeout: 5000 });
+    } else {
+      // Fallback: cargar después de 3 segundos
+      setTimeout(async () => {
+        for (const module of modules) {
+          try {
+            await this._loadModuleByName(module);
+          } catch (error) {
+            logger.warn(`[LazyLoader] Error pre-cargando ${module}:`, error);
+          }
+        }
+      }, 3000);
+    }
+  }
+
+  /**
+   * Cargar módulo por nombre (helper interno)
+   * @private
+   */
+  async _loadModuleByName(module) {
+    switch (module) {
+      case 'frankenstein-lab':
+        return await this.loadFrankensteinLab();
+      case 'cosmos-navigation':
+        return await this.loadCosmosNavigation();
+      case 'ai-chat-modal':
+        return await this.loadAIChatModal();
+      case 'ai-settings':
+        return await this.loadAISettings();
+      case 'ai-suggestions':
+        return await this.loadAISuggestions();
+      case 'ai-premium':
+        return await this.loadAIPremium();
+      case 'elevenlabs-tts':
+        return await this.loadElevenLabs();
+      case 'resource-ai-helper':
+        return await this.loadResourceAIHelper();
+      case 'interactive-quiz':
+        return await this.loadInteractiveQuiz();
+      case 'concept-maps':
+        return await this.loadConceptMaps();
+      case 'action-plans':
+        return await this.loadActionPlans();
+      case 'learning-features':
+        return await this.loadLearningFeatures();
+      default:
+        logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
+    }
+  }
+
+  /**
+   * Verificar si un módulo está cargado
+   * @param {string} module - Nombre del módulo
+   * @returns {boolean}
+   */
+  isLoaded(module) {
+    return this.loadedModules.has(module);
+  }
+
+  /**
+   * Obtener estadísticas de carga
+   * @returns {Object}
+   */
+  getStats() {
+    return {
+      loadedModules: Array.from(this.loadedModules.keys()),
+      loadingModules: Array.from(this.loadingPromises.keys()),
+      totalLoaded: this.loadedModules.size,
+      totalLoading: this.loadingPromises.size
+    };
+  }
+}
+
+// Exportar globalmente
+window.LazyLoader = LazyLoader;
+window.lazyLoader = new LazyLoader();
+
+// Exportar para módulos ES6
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = LazyLoader;
+}

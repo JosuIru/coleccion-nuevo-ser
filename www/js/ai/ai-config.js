@@ -78,7 +78,7 @@ class AIConfig {
       try {
         return JSON.parse(stored);
       } catch (error) {
-        console.error('Error loading AI config:', error);
+        logger.error('Error loading AI config:', error);
       }
     }
 
@@ -113,17 +113,17 @@ class AIConfig {
     // 🔧 FIX #99: Usar SyncManager para sincronización robusta
     if (window.syncManager) {
       window.syncManager.sync('settings', { keys: ['ai_config'] }, { showSuccessToast: false }).catch(err => {
-        console.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
+        logger.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
       });
     } else if (window.supabaseSyncHelper?.isAuthenticated?.()) {
       // Fallback al método antiguo
       window.supabaseSyncHelper.syncSettingsToCloud(['ai_config']).then(() => {
         // logger.debug('[AI Config] ✅ AI config sincronizado exitosamente');
       }).catch(err => {
-        console.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
+        logger.error('[AI Config] ❌ Error sincronizando AI config a la nube:', err);
       });
     } else {
-      // console.warn('[AI Config] ⚠️ No se puede sincronizar: usuario no autenticado o helper no disponible');
+      // logger.warn('[AI Config] ⚠️ No se puede sincronizar: usuario no autenticado o helper no disponible');
     }
   }
 
@@ -455,7 +455,7 @@ class AIConfig {
 
       return response.ok;
     } catch (error) {
-      console.error('Error validating Claude key:', error);
+      logger.error('Error validating Claude key:', error);
       return false;
     }
   }
@@ -470,7 +470,7 @@ class AIConfig {
 
       return response.ok;
     } catch (error) {
-      console.error('Error validating HuggingFace token:', error);
+      logger.error('Error validating HuggingFace token:', error);
       return false;
     }
   }
@@ -486,7 +486,7 @@ class AIConfig {
 
       return response.ok;
     } catch (error) {
-      console.error('Ollama not available:', error);
+      logger.error('Ollama not available:', error);
       return false;
     }
   }

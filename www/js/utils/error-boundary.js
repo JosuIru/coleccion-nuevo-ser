@@ -68,7 +68,7 @@ class ErrorBoundary {
    */
   handleError(errorInfo) {
     if (this.fatalErrorOccurred) {
-      console.error('[ErrorBoundary] Error ignorado (modo fatal):', errorInfo);
+      logger.error('[ErrorBoundary] Error ignorado (modo fatal):', errorInfo);
       return;
     }
 
@@ -161,7 +161,7 @@ class ErrorBoundary {
    * Manejar error fatal
    */
   handleFatalError(errorContext) {
-    console.error('[ErrorBoundary] 🔴 ERROR FATAL:', errorContext);
+    logger.error('[ErrorBoundary] 🔴 ERROR FATAL:', errorContext);
 
     this.fatalErrorOccurred = true;
 
@@ -179,7 +179,7 @@ class ErrorBoundary {
         version: errorContext.appVersion
       }));
     } catch (e) {
-      console.error('[ErrorBoundary] No se pudo guardar error:', e);
+      logger.error('[ErrorBoundary] No se pudo guardar error:', e);
     }
   }
 
@@ -187,7 +187,7 @@ class ErrorBoundary {
    * Manejar error recuperable
    */
   handleRecoverableError(errorContext) {
-    console.warn('[ErrorBoundary] 🟡 ERROR RECUPERABLE:', errorContext);
+    logger.warn('[ErrorBoundary] 🟡 ERROR RECUPERABLE:', errorContext);
 
     const errorKey = errorContext.message + errorContext.filename;
     const attempts = this.recoveryAttempts.get(errorKey) || 0;
@@ -199,7 +199,7 @@ class ErrorBoundary {
         this.attemptRecovery(errorContext);
       }
     } else {
-      console.error('[ErrorBoundary] Máximo de intentos de recuperación alcanzado');
+      logger.error('[ErrorBoundary] Máximo de intentos de recuperación alcanzado');
 
       // Mostrar mensaje al usuario
       if (window.toast) {
@@ -263,7 +263,7 @@ class ErrorBoundary {
       }
       // Agregar más casos según necesidad
     } catch (e) {
-      console.error('[ErrorBoundary] Fallo en reinicialización:', e);
+      logger.error('[ErrorBoundary] Fallo en reinicialización:', e);
     }
   }
 

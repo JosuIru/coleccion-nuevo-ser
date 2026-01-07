@@ -66,7 +66,7 @@ class AudioReaderUI {
       ar.events?.attachDragListeners?.();
 
     } catch (error) {
-      console.error('Error en renderControls:', error);
+      logger.error('Error en renderControls:', error);
     } finally {
       this.isRendering = false;
     }
@@ -83,10 +83,15 @@ class AudioReaderUI {
       ? ((ar.currentParagraphIndex + 1) / paragraphs.length * 100).toFixed(1)
       : 0;
 
+    // Calcular offset para no tapar footer-nav de capítulos
+    const footerNav = document.querySelector('.footer-nav');
+    const footerNavHeight = footerNav ? footerNav.offsetHeight : 0;
+    const bottomOffset = footerNavHeight > 0 ? `${footerNavHeight}px` : 'env(safe-area-inset-bottom, 0px)';
+
     const container = document.createElement('div');
     container.id = 'audioreader-container';
     container.innerHTML = `
-      <div id="audioreader-controls" class="fixed inset-x-0 bottom-0 z-50 bg-gradient-to-t from-slate-900 via-slate-900/95 to-slate-900/90 backdrop-blur-xl border-t border-white/10 shadow-2xl" style="padding-bottom: env(safe-area-inset-bottom, 16px);">
+      <div id="audioreader-controls" class="fixed inset-x-0 z-50 bg-gradient-to-t from-slate-900 via-slate-900/95 to-slate-900/90 backdrop-blur-xl border-t border-white/10 shadow-2xl" style="bottom: ${bottomOffset}; padding-bottom: 16px;">
         <!-- Drag handle -->
         <div class="audioreader-drag-handle w-12 h-1 bg-white/30 rounded-full mx-auto mt-2 mb-3 cursor-grab"></div>
 
@@ -215,11 +220,64 @@ class AudioReaderUI {
             </div>
           </details>
         </div>
+
+        <!-- Voice System -->
+        <div class="px-4 sm:px-6 py-3 border-t border-white/5">
+          <details class="group" open>
+            <summary class="text-xs font-medium text-cyan-400 cursor-pointer flex items-center gap-2 py-1">
+              <span class="transition-transform group-open:rotate-90">▶</span>
+              🎤 Sistema de Voz
+            </summary>
+            <div class="mt-3 p-3 bg-cyan-900/20 rounded-lg">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs text-slate-500 mb-1">Proveedor</label>
+                  <select id="audioreader-tts-provider"
+                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
+                    <option value="browser" ${ar.tts?.getProvider() === 'browser' ? 'selected' : ''}>Web Speech</option>
+                    ${ar.tts?.nativeTTS ? `<option value="native" ${ar.tts?.getProvider() === 'native' ? 'selected' : ''}>Sistema (Android)</option>` : ''}
+                    ${localStorage.getItem('openai-tts-key') ? `<option value="openai" ${ar.tts?.getProvider() === 'openai' ? 'selected' : ''}>OpenAI</option>` : ''}
+                    ${ar.tts?.ttsManager?.isElevenLabsAvailable?.() || (ar.tts?.ttsManager?.providers?.elevenlabs && window.authHelper?.isPremium?.()) ? `<option value="elevenlabs" ${ar.tts?.getProvider() === 'elevenlabs' ? 'selected' : ''}>ElevenLabs</option>` : ''}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-500 mb-1">Voz</label>
+                  <select id="audioreader-voice-select"
+                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
+                    <option value="">Cargando voces...</option>
+                  </select>
+                </div>
+              </div>
+              <button id="audioreader-test-voice"
+                      class="mt-3 w-full px-3 py-2 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white text-sm font-medium transition-colors">
+                🔊 Probar voz
+              </button>
+            </div>
+          </details>
+        </div>
       </div>
     `;
 
     document.body.appendChild(container);
     this.attachControlListeners();
+    this.loadVoicesForProvider(ar.tts?.getProvider() || 'browser');
+
+    // Restaurar preferencias de ambient/binaural desde localStorage
+    const savedAmbient = localStorage.getItem('audioreader-ambient') || '';
+    const savedBinaural = localStorage.getItem('audioreader-binaural') || '';
+    const savedVolume = localStorage.getItem('audioreader-volume') || '30';
+
+    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    const binauralSelect = document.getElementById('audioreader-binaural-select');
+    const volumeSlider = document.getElementById('audioreader-ambient-volume');
+    const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
+
+    if (ambientSelect && savedAmbient) ambientSelect.value = savedAmbient;
+    if (binauralSelect && savedBinaural) binauralSelect.value = savedBinaural;
+    if (volumeSlider) {
+      volumeSlider.value = savedVolume;
+      if (volumeLabel) volumeLabel.textContent = `${savedVolume}%`;
+    }
   }
 
   // ==========================================================================
@@ -233,6 +291,11 @@ class AudioReaderUI {
       ? ((ar.currentParagraphIndex + 1) / paragraphs.length * 100).toFixed(1)
       : 0;
 
+    // Calcular offset para no tapar footer-nav de capítulos
+    const footerNav = document.querySelector('.footer-nav');
+    const footerNavHeight = footerNav ? footerNav.offsetHeight : 0;
+    const bottomOffset = footerNavHeight > 0 ? `${footerNavHeight}px` : '0px';
+
     // Overlay
     const overlay = document.createElement('div');
     overlay.id = 'audioreader-overlay';
@@ -242,8 +305,9 @@ class AudioReaderUI {
     // Bottom sheet
     const bottomSheet = document.createElement('div');
     bottomSheet.id = 'audioreader-bottom-sheet';
-    bottomSheet.className = 'fixed inset-x-0 bottom-0 z-50 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 rounded-t-2xl transform transition-transform duration-300';
-    bottomSheet.style.paddingBottom = 'env(safe-area-inset-bottom, 16px)';
+    bottomSheet.className = 'fixed inset-x-0 z-50 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 rounded-t-2xl transform transition-transform duration-300';
+    bottomSheet.style.bottom = bottomOffset;
+    bottomSheet.style.paddingBottom = '16px';
 
     bottomSheet.innerHTML = `
       <div id="audioreader-controls">
@@ -368,6 +432,9 @@ class AudioReaderUI {
 
     // Ambient/Binaural controls
     this.attachAmbientBinauralListeners();
+
+    // Voice system controls
+    this.attachVoiceSystemListeners();
   }
 
   /**
@@ -383,12 +450,31 @@ class AudioReaderUI {
     if (ambientSelect) {
       ambientSelect.addEventListener('change', async (e) => {
         const value = e.target.value;
+        logger.log('🎵 Ambient seleccionado:', value, 'audioMixer:', !!window.audioMixer);
+
+        // Guardar preferencia en localStorage
+        try {
+          if (value) {
+            localStorage.setItem('audioreader-ambient', value);
+          } else {
+            localStorage.removeItem('audioreader-ambient');
+          }
+        } catch (err) {}
+
         if (window.audioMixer) {
           if (value) {
-            await window.audioMixer.playAmbient(value);
+            try {
+              await window.audioMixer.playAmbient(value);
+              window.toast?.success(`Ambiente: ${value}`);
+            } catch (err) {
+              logger.error('Error reproduciendo ambient:', err);
+              window.toast?.error('Error al reproducir ambiente');
+            }
           } else {
             window.audioMixer.stopAmbient();
           }
+        } else {
+          window.toast?.warning('AudioMixer no disponible');
         }
       });
     }
@@ -397,10 +483,26 @@ class AudioReaderUI {
     if (binauralSelect) {
       binauralSelect.addEventListener('change', async (e) => {
         const value = e.target.value;
+        logger.log('🧠 Binaural seleccionado:', value, 'audioMixer:', !!window.audioMixer);
+
+        // Guardar preferencia en localStorage
+        try {
+          if (value) {
+            localStorage.setItem('audioreader-binaural', value);
+          } else {
+            localStorage.removeItem('audioreader-binaural');
+          }
+        } catch (err) {}
+
         if (window.audioMixer) {
           if (value) {
-            await window.audioMixer.playBinaural(value);
-            window.toast?.success('Binaural activado');
+            try {
+              await window.audioMixer.playBinaural(value);
+              window.toast?.success('Binaural activado');
+            } catch (err) {
+              logger.error('Error reproduciendo binaural:', err);
+              window.toast?.error('Error al reproducir binaural');
+            }
           } else {
             window.audioMixer.stopBinaural();
           }
@@ -417,11 +519,120 @@ class AudioReaderUI {
         if (volumeLabel) {
           volumeLabel.textContent = `${volume}%`;
         }
+
+        // Guardar en localStorage
+        try {
+          localStorage.setItem('audioreader-volume', volume.toString());
+        } catch (err) {}
+
         if (window.audioMixer) {
           window.audioMixer.setAmbientVolume(volume / 100);
           window.audioMixer.setBinauralVolume(volume / 100);
         }
       });
+    }
+  }
+
+  /**
+   * Attach listeners for voice system controls
+   */
+  attachVoiceSystemListeners() {
+    const ar = this.audioReader;
+    const providerSelect = document.getElementById('audioreader-tts-provider');
+    const voiceSelect = document.getElementById('audioreader-voice-select');
+    const testVoiceBtn = document.getElementById('audioreader-test-voice');
+
+    // TTS Provider change
+    if (providerSelect) {
+      providerSelect.addEventListener('change', async (e) => {
+        const provider = e.target.value;
+        logger.log('🎤 Cambiando proveedor TTS a:', provider);
+
+        if (ar.tts) {
+          ar.tts.setProvider(provider);
+          await this.loadVoicesForProvider(provider);
+          window.toast?.success(`Proveedor: ${provider === 'browser' ? 'Web Speech' : 'Nativo'}`);
+        }
+      });
+    }
+
+    // Voice selection change
+    if (voiceSelect) {
+      voiceSelect.addEventListener('change', (e) => {
+        const voiceURI = e.target.value;
+        logger.log('🎤 Voz seleccionada:', voiceURI);
+
+        if (voiceURI && ar.tts) {
+          ar.tts.setVoice(voiceURI);
+          window.toast?.success('Voz actualizada');
+        }
+      });
+    }
+
+    // Test voice button
+    if (testVoiceBtn) {
+      testVoiceBtn.addEventListener('click', async () => {
+        const testText = 'Esta es una prueba del sistema de voz.';
+        logger.log('🔊 Probando voz...');
+
+        if (ar.tts) {
+          try {
+            await ar.tts.ensureInitialized();
+            ar.tts.speak(testText, 0, {
+              onEnd: () => logger.log('✅ Prueba de voz completada'),
+              onError: (err) => logger.error('❌ Error en prueba de voz:', err)
+            });
+          } catch (err) {
+            logger.error('Error al probar voz:', err);
+            window.toast?.error('Error al probar voz');
+          }
+        }
+      });
+    }
+  }
+
+  /**
+   * Load voices for the current TTS provider
+   */
+  async loadVoicesForProvider(provider) {
+    const voiceSelect = document.getElementById('audioreader-voice-select');
+    if (!voiceSelect) return;
+
+    voiceSelect.innerHTML = '<option value="">Cargando voces...</option>';
+
+    try {
+      if (provider === 'browser') {
+        // Web Speech API voices
+        const voices = await this.audioReader.tts?.getAvailableVoices() || [];
+        const spanishVoices = voices.filter(v => v.lang && v.lang.startsWith('es'));
+
+        if (spanishVoices.length > 0) {
+          voiceSelect.innerHTML = spanishVoices
+            .map(v => `<option value="${v.voiceURI}">${v.name}</option>`)
+            .join('');
+        } else {
+          voiceSelect.innerHTML = '<option value="">No hay voces en español</option>';
+        }
+      } else if (provider === 'native') {
+        // Native TTS voices (Capacitor)
+        voiceSelect.innerHTML = `
+          <option value="es-ES">Español (España)</option>
+          <option value="es-MX">Español (México)</option>
+          <option value="es-US">Español (Estados Unidos)</option>
+        `;
+      }
+
+      // Restaurar voz guardada si existe
+      const savedVoice = localStorage.getItem('preferred-tts-voice');
+      if (savedVoice) {
+        const option = voiceSelect.querySelector(`option[value="${savedVoice}"]`);
+        if (option) {
+          voiceSelect.value = savedVoice;
+        }
+      }
+    } catch (err) {
+      logger.error('Error cargando voces:', err);
+      voiceSelect.innerHTML = '<option value="">Error cargando voces</option>';
     }
   }
 
@@ -441,7 +652,42 @@ class AudioReaderUI {
   // ==========================================================================
 
   async updateUI() {
+    // Guardar valores de ambient/binaural/voice antes de re-renderizar
+    const savedAmbient = document.getElementById('audioreader-ambient-select')?.value || '';
+    const savedBinaural = document.getElementById('audioreader-binaural-select')?.value || '';
+    const savedVolume = document.getElementById('audioreader-ambient-volume')?.value || '30';
+    const savedProvider = document.getElementById('audioreader-tts-provider')?.value || '';
+    const savedVoice = document.getElementById('audioreader-voice-select')?.value || '';
+
     await this.render();
+
+    // Restaurar valores de ambient/binaural/voice después de re-renderizar
+    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    const binauralSelect = document.getElementById('audioreader-binaural-select');
+    const volumeSlider = document.getElementById('audioreader-ambient-volume');
+    const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
+    const providerSelect = document.getElementById('audioreader-tts-provider');
+    const voiceSelect = document.getElementById('audioreader-voice-select');
+
+    if (ambientSelect && savedAmbient) {
+      ambientSelect.value = savedAmbient;
+    }
+    if (binauralSelect && savedBinaural) {
+      binauralSelect.value = savedBinaural;
+    }
+    if (volumeSlider) {
+      volumeSlider.value = savedVolume;
+      if (volumeLabel) {
+        volumeLabel.textContent = `${savedVolume}%`;
+      }
+    }
+    if (providerSelect && savedProvider) {
+      providerSelect.value = savedProvider;
+    }
+    if (voiceSelect && savedVoice) {
+      voiceSelect.value = savedVoice;
+    }
+
     this.updateHeaderAudioIcons();
     this.updateBottomNavAudioButton();
   }
@@ -717,28 +963,24 @@ class AudioReaderUI {
     // Guard clause: si audioReader fue destruido, salir
     if (!ar) return;
 
+    // Usar headphones (SVG inline) en lugar de audio (Lucide) para evitar problemas de init
+    const playingIcon = Icons?.pause?.(20) || '⏸';
+    const stoppedIcon = Icons?.headphones?.(20) || '🎧';
+
     // Buscar iconos por ID específico (usados en book-reader-header.js)
     const iconIds = ['audio-icon-mobile', 'audio-icon-tablet', 'audio-icon-desktop'];
 
     iconIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
-        if (ar.isPlaying && !ar.isPaused) {
-          el.innerHTML = Icons?.pause?.(20) || '⏸';
-        } else {
-          el.innerHTML = Icons?.audio?.(20) || Icons?.headphones?.(20) || '🎧';
-        }
+        el.innerHTML = (ar.isPlaying && !ar.isPaused) ? playingIcon : stoppedIcon;
       }
     });
 
     // También buscar elementos con data-audio-icon por compatibilidad
     const iconElements = document.querySelectorAll('[data-audio-icon]');
     iconElements.forEach(el => {
-      if (ar.isPlaying && !ar.isPaused) {
-        el.innerHTML = Icons?.pause?.(20) || '⏸';
-      } else {
-        el.innerHTML = Icons?.audio?.(20) || Icons?.headphones?.(20) || '🎧';
-      }
+      el.innerHTML = (ar.isPlaying && !ar.isPaused) ? playingIcon : stoppedIcon;
     });
   }
 

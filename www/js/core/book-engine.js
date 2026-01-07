@@ -27,7 +27,7 @@ class BookEngine {
       // Cargar tema por defecto (del primer libro del catálogo o tema predeterminado)
       await this.loadDefaultTheme();
     } catch (error) {
-      console.error('Error initializing BookEngine:', error);
+      logger.error('Error initializing BookEngine:', error);
     }
   }
 
@@ -37,7 +37,7 @@ class BookEngine {
       this.catalog = await response.json();
       return this.catalog;
     } catch (error) {
-      console.error('Error loading catalog:', error);
+      logger.error('Error loading catalog:', error);
       throw error;
     }
   }
@@ -75,7 +75,7 @@ class BookEngine {
         await window.lazyLoader.loadThemeCSS(themeToLoad);
       }
     } catch (error) {
-      console.error('Error cargando tema por defecto:', error);
+      logger.error('Error cargando tema por defecto:', error);
     }
   }
 
@@ -102,7 +102,7 @@ class BookEngine {
       try {
         this.currentBookConfig = JSON.parse(configText);
       } catch (parseError) {
-        console.error('Config JSON parse error. Content preview:', configText.substring(0, 200));
+        logger.error('Config JSON parse error. Content preview:', configText.substring(0, 200));
         throw new Error(`Invalid JSON in config.json: ${parseError.message}`);
       }
 
@@ -117,7 +117,7 @@ class BookEngine {
       try {
         this.currentBookData = JSON.parse(bookText);
       } catch (parseError) {
-        console.error('Book JSON parse error. Content preview:', bookText.substring(0, 200));
+        logger.error('Book JSON parse error. Content preview:', bookText.substring(0, 200));
         throw new Error(`Invalid JSON in book.json: ${parseError.message}`);
       }
 
@@ -131,7 +131,7 @@ class BookEngine {
         data: this.currentBookData
       };
     } catch (error) {
-      console.error(`Error loading book ${bookId}:`, error);
+      logger.error(`Error loading book ${bookId}:`, error);
       throw error;
     }
   }
@@ -1136,7 +1136,7 @@ class BookEngine {
         this.notes = data.notes || {};
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      logger.error('Error loading user data:', error);
     }
   }
 
@@ -1150,7 +1150,7 @@ class BookEngine {
       };
       localStorage.setItem('coleccion-nuevo-ser-data', JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving user data:', error);
+      logger.error('Error saving user data:', error);
     }
   }
 
@@ -1230,7 +1230,7 @@ class BookEngine {
     try {
       await window.supabaseSyncHelper.migrateReadingProgress();
     } catch (error) {
-      console.error('Error sincronizando progreso:', error);
+      logger.error('Error sincronizando progreso:', error);
       // No mostrar error al usuario, es sync en background
     }
   }
@@ -1246,7 +1246,7 @@ class BookEngine {
     try {
       await window.supabaseSyncHelper.migrateNotes();
     } catch (error) {
-      console.error('Error sincronizando notas:', error);
+      logger.error('Error sincronizando notas:', error);
     }
   }
 
@@ -1261,7 +1261,7 @@ class BookEngine {
     try {
       await window.supabaseSyncHelper.migrateBookmarks();
     } catch (error) {
-      console.error('Error sincronizando bookmarks:', error);
+      logger.error('Error sincronizando bookmarks:', error);
     }
   }
 
@@ -1450,7 +1450,7 @@ class BookEngine {
       try {
         await window.lazyLoader.loadThemeCSS(bookInfo.theme);
       } catch (error) {
-        console.error(`Error cargando tema CSS: ${bookInfo.theme}`, error);
+        logger.error(`Error cargando tema CSS: ${bookInfo.theme}`, error);
       }
     }
 

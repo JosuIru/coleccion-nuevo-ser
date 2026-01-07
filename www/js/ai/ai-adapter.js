@@ -17,7 +17,7 @@ class AIAdapter {
       const response = await fetch('js/ai/fallback-responses.json');
       this.fallbackResponses = await response.json();
     } catch (error) {
-      console.error('Error loading fallback responses:', error);
+      logger.error('Error loading fallback responses:', error);
       this.fallbackResponses = null;
     }
   }
@@ -88,7 +88,7 @@ class AIAdapter {
       return response;
 
     } catch (error) {
-      console.error(`Error with ${provider}:`, error);
+      logger.error(`Error with ${provider}:`, error);
 
       // Fallback a modo local con notificación
       logger.log('Falling back to local mode...');
@@ -215,7 +215,7 @@ class AIAdapter {
       };
 
     } catch (error) {
-      console.warn('Premium proxy no disponible, usando fallback:', error.message);
+      logger.warn('Premium proxy no disponible, usando fallback:', error.message);
       return { used: false, response: null };
     }
   }
@@ -247,7 +247,7 @@ class AIAdapter {
 
       return data;
     } catch (error) {
-      console.error('Error obteniendo suscripción:', error);
+      logger.error('Error obteniendo suscripción:', error);
       return { plan: 'free' };
     }
   }
@@ -276,7 +276,7 @@ class AIAdapter {
 
       return (data.monthly_limit - data.credits_used) > 0;
     } catch (error) {
-      console.error('Error verificando créditos:', error);
+      logger.error('Error verificando créditos:', error);
       return true; // En caso de error, permitir
     }
   }
@@ -323,13 +323,13 @@ class AIAdapter {
 
       // Informar al usuario si está usando la API key de respaldo
       if (data.using_fallback_key) {
-        // console.warn('⚠️ Usando API key compartida del servidor (limitada)');
+        // logger.warn('⚠️ Usando API key compartida del servidor (limitada)');
       }
 
       return data.text;
 
     } catch (error) {
-      console.error('Error calling Claude proxy:', error);
+      logger.error('Error calling Claude proxy:', error);
 
       // Mensajes de error más amigables
       if (error.message.includes('Failed to fetch')) {
@@ -424,7 +424,7 @@ class AIAdapter {
       return data.choices[0].message.content;
 
     } catch (error) {
-      console.error('Error calling OpenAI:', error);
+      logger.error('Error calling OpenAI:', error);
 
       if (error.message.includes('Failed to fetch')) {
         throw new Error('No se pudo conectar a OpenAI. Verifica tu conexión.');
@@ -514,7 +514,7 @@ class AIAdapter {
       throw new Error('Respuesta inesperada de Gemini');
 
     } catch (error) {
-      console.error('Error calling Gemini:', error);
+      logger.error('Error calling Gemini:', error);
 
       if (error.message.includes('Failed to fetch')) {
         throw new Error('No se pudo conectar a Gemini. Verifica tu conexión.');
@@ -579,7 +579,7 @@ class AIAdapter {
       return data.choices[0].message.content;
 
     } catch (error) {
-      console.error('Error calling Mistral:', error);
+      logger.error('Error calling Mistral:', error);
 
       if (error.message.includes('Failed to fetch')) {
         throw new Error('No se pudo conectar a Mistral. Verifica tu conexión.');
@@ -650,7 +650,7 @@ class AIAdapter {
       throw new Error('Respuesta inesperada de Qwen');
 
     } catch (error) {
-      console.error('Error calling Qwen:', error);
+      logger.error('Error calling Qwen:', error);
 
       if (error.message.includes('Failed to fetch')) {
         throw new Error('No se pudo conectar a Qwen. Verifica tu conexión.');
@@ -713,7 +713,7 @@ class AIAdapter {
       return data.text || 'Lo siento, no pude generar una respuesta.';
 
     } catch (error) {
-      console.error('Error calling HuggingFace proxy:', error);
+      logger.error('Error calling HuggingFace proxy:', error);
 
       // Mensajes de error más amigables
       if (error.message.includes('Failed to fetch')) {

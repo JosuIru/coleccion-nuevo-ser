@@ -81,12 +81,12 @@ class LearningPathService {
     try {
       // Verificar dependencias
       if (!window.supabase) {
-        console.warn('[LearningPathService] Supabase no disponible');
+        logger.warn('[LearningPathService] Supabase no disponible');
         return;
       }
 
       if (!window.eventBus) {
-        console.warn('[LearningPathService] EventBus no disponible');
+        logger.warn('[LearningPathService] EventBus no disponible');
       }
 
       this.supabase = window.supabase;
@@ -105,7 +105,7 @@ class LearningPathService {
       logger.debug('[LearningPathService] ✓ Inicializado correctamente');
 
     } catch (error) {
-      console.error('[LearningPathService] Error en inicialización:', error);
+      logger.error('[LearningPathService] Error en inicialización:', error);
     }
   }
 
@@ -182,7 +182,7 @@ class LearningPathService {
       return data || [];
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo paths:', error);
+      logger.error('[LearningPathService] Error obteniendo paths:', error);
       return [];
     }
   }
@@ -212,7 +212,7 @@ class LearningPathService {
       return data;
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo path:', error);
+      logger.error('[LearningPathService] Error obteniendo path:', error);
       return null;
     }
   }
@@ -238,7 +238,7 @@ class LearningPathService {
 
       // Verificar si ya tiene este path activo
       if (pathData.user_progress) {
-        console.warn('[LearningPathService] Usuario ya tiene este path iniciado');
+        logger.warn('[LearningPathService] Usuario ya tiene este path iniciado');
         return pathData.user_progress;
       }
 
@@ -273,7 +273,7 @@ class LearningPathService {
           .insert(stageProgressRecords);
 
         if (progressError) {
-          console.warn('[LearningPathService] Error creando progreso de etapas:', progressError);
+          logger.warn('[LearningPathService] Error creando progreso de etapas:', progressError);
         }
       }
 
@@ -294,7 +294,7 @@ class LearningPathService {
       return userPath;
 
     } catch (error) {
-      console.error('[LearningPathService] Error iniciando path:', error);
+      logger.error('[LearningPathService] Error iniciando path:', error);
       return null;
     }
   }
@@ -311,7 +311,7 @@ class LearningPathService {
   async getUserProgress(pathSlug) {
     try {
       if (!this.user) {
-        console.warn('[LearningPathService] Usuario no autenticado');
+        logger.warn('[LearningPathService] Usuario no autenticado');
         return null;
       }
 
@@ -319,7 +319,7 @@ class LearningPathService {
       return pathData?.user_progress || null;
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo progreso:', error);
+      logger.error('[LearningPathService] Error obteniendo progreso:', error);
       return null;
     }
   }
@@ -349,7 +349,7 @@ class LearningPathService {
       return data || [];
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo paths activos:', error);
+      logger.error('[LearningPathService] Error obteniendo paths activos:', error);
       return [];
     }
   }
@@ -450,7 +450,7 @@ class LearningPathService {
       return true;
 
     } catch (error) {
-      console.error('[LearningPathService] Error completando etapa:', error);
+      logger.error('[LearningPathService] Error completando etapa:', error);
       return false;
     }
   }
@@ -493,7 +493,7 @@ class LearningPathService {
       return (completedStages?.length || 0) >= dayStages.length;
 
     } catch (error) {
-      console.error('[LearningPathService] Error verificando día completo:', error);
+      logger.error('[LearningPathService] Error verificando día completo:', error);
       return false;
     }
   }
@@ -528,7 +528,7 @@ class LearningPathService {
       }
 
     } catch (error) {
-      console.error('[LearningPathService] Error avanzando día:', error);
+      logger.error('[LearningPathService] Error avanzando día:', error);
       return false;
     }
   }
@@ -555,7 +555,7 @@ class LearningPathService {
       return data;
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo siguiente etapa:', error);
+      logger.error('[LearningPathService] Error obteniendo siguiente etapa:', error);
       return null;
     }
   }
@@ -612,7 +612,7 @@ class LearningPathService {
       return true;
 
     } catch (error) {
-      console.error('[LearningPathService] Error abandonando path:', error);
+      logger.error('[LearningPathService] Error abandonando path:', error);
       return false;
     }
   }
@@ -646,7 +646,7 @@ class LearningPathService {
       return true;
 
     } catch (error) {
-      console.error('[LearningPathService] Error pausando path:', error);
+      logger.error('[LearningPathService] Error pausando path:', error);
       return false;
     }
   }
@@ -683,7 +683,7 @@ class LearningPathService {
       return true;
 
     } catch (error) {
-      console.error('[LearningPathService] Error reanudando path:', error);
+      logger.error('[LearningPathService] Error reanudando path:', error);
       return false;
     }
   }
@@ -712,7 +712,7 @@ class LearningPathService {
       return data;
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo estadísticas:', error);
+      logger.error('[LearningPathService] Error obteniendo estadísticas:', error);
       return null;
     }
   }
@@ -741,7 +741,7 @@ class LearningPathService {
       return data || [];
 
     } catch (error) {
-      console.error('[LearningPathService] Error obteniendo historial:', error);
+      logger.error('[LearningPathService] Error obteniendo historial:', error);
       return [];
     }
   }

@@ -30,7 +30,7 @@ class FrankensteinSyncService {
   async init() {
     // Esperar a que Supabase esté disponible
     if (!window.supabaseAuthHelper?.supabase) {
-      console.warn('FrankensteinSyncService: Supabase no disponible, usando solo localStorage');
+      logger.warn('FrankensteinSyncService: Supabase no disponible, usando solo localStorage');
       return false;
     }
 
@@ -84,7 +84,7 @@ class FrankensteinSyncService {
       const data = localStorage.getItem(this.localStorageKey);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error('Error leyendo seres locales:', error);
+      logger.error('Error leyendo seres locales:', error);
       return [];
     }
   }
@@ -112,7 +112,7 @@ class FrankensteinSyncService {
 
       return true;
     } catch (error) {
-      console.error('Error guardando ser local:', error);
+      logger.error('Error guardando ser local:', error);
       return false;
     }
   }
@@ -132,7 +132,7 @@ class FrankensteinSyncService {
 
       return true;
     } catch (error) {
-      console.error('Error eliminando ser local:', error);
+      logger.error('Error eliminando ser local:', error);
       return false;
     }
   }
@@ -165,7 +165,7 @@ class FrankensteinSyncService {
 
       return true;
     } catch (error) {
-      console.error('Error guardando configuración:', error);
+      logger.error('Error guardando configuración:', error);
       return false;
     }
   }
@@ -209,7 +209,7 @@ class FrankensteinSyncService {
 
       window.toast?.success('Seres sincronizados correctamente');
     } catch (error) {
-      console.error('Error en sincronización:', error);
+      logger.error('Error en sincronización:', error);
       window.toast?.error('Error al sincronizar seres');
     } finally {
       this.syncInProgress = false;
@@ -232,7 +232,7 @@ class FrankensteinSyncService {
         .order('updated_at', { ascending: false });
 
       if (error) {
-        console.error('Error obteniendo seres de la nube:', error);
+        logger.error('Error obteniendo seres de la nube:', error);
         return [];
       }
 
@@ -244,7 +244,7 @@ class FrankensteinSyncService {
         syncedAt: row.updated_at
       }));
     } catch (error) {
-      console.error('Error en getCloudBeings:', error);
+      logger.error('Error en getCloudBeings:', error);
       return [];
     }
   }
@@ -276,13 +276,13 @@ class FrankensteinSyncService {
         .select();
 
       if (error) {
-        console.error('Error sincronizando ser:', error);
+        logger.error('Error sincronizando ser:', error);
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Error en syncBeingToCloud:', error);
+      logger.error('Error en syncBeingToCloud:', error);
       return false;
     }
   }
@@ -313,10 +313,10 @@ class FrankensteinSyncService {
         .upsert(rows, { onConflict: 'user_id,being_id' });
 
       if (error) {
-        console.error('Error sincronizando seres:', error);
+        logger.error('Error sincronizando seres:', error);
       }
     } catch (error) {
-      console.error('Error en syncAllBeingsToCloud:', error);
+      logger.error('Error en syncAllBeingsToCloud:', error);
     }
   }
 
@@ -335,7 +335,7 @@ class FrankensteinSyncService {
         .eq('user_id', userId)
         .eq('being_id', beingId);
     } catch (error) {
-      console.error('Error eliminando ser de la nube:', error);
+      logger.error('Error eliminando ser de la nube:', error);
     }
   }
 
@@ -452,7 +452,7 @@ class FrankensteinSyncService {
         await this.syncSettingsToCloud(localSettings);
       }
     } catch (error) {
-      console.error('Error sincronizando configuración:', error);
+      logger.error('Error sincronizando configuración:', error);
     }
   }
 
@@ -475,7 +475,7 @@ class FrankensteinSyncService {
           onConflict: 'user_id'
         });
     } catch (error) {
-      console.error('Error sincronizando configuración:', error);
+      logger.error('Error sincronizando configuración:', error);
     }
   }
 
@@ -575,7 +575,7 @@ class FrankensteinSyncService {
       try {
         cb(event, data);
       } catch (error) {
-        console.error('Error en callback de sync:', error);
+        logger.error('Error en callback de sync:', error);
       }
     });
 
@@ -656,7 +656,7 @@ class FrankensteinSyncService {
       window.toast?.success(`${imported.length} seres importados`);
       return true;
     } catch (error) {
-      console.error('Error importando seres:', error);
+      logger.error('Error importando seres:', error);
       window.toast?.error('Error al importar seres');
       return false;
     }

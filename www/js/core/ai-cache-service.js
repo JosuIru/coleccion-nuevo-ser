@@ -44,7 +44,7 @@ class AICacheService {
         this.stats = { ...this.stats, ...savedStats };
       }
     } catch (error) {
-      console.error('[AICache] Error al cargar stats:', error);
+      logger.error('[AICache] Error al cargar stats:', error);
     }
 
     if (this.debug) {
@@ -114,7 +114,7 @@ class AICacheService {
       return entry.response;
 
     } catch (error) {
-      console.error('[AICache] Error al leer cache local:', error);
+      logger.error('[AICache] Error al leer cache local:', error);
       return null;
     }
   }
@@ -160,7 +160,7 @@ class AICacheService {
       return data.response;
 
     } catch (error) {
-      console.error('[AICache] Error al leer cache remota:', error);
+      logger.error('[AICache] Error al leer cache remota:', error);
       return null;
     }
   }
@@ -194,7 +194,7 @@ class AICacheService {
 
     } catch (error) {
       // Probablemente localStorage lleno
-      console.warn('[AICache] Error al guardar en local (¿lleno?):', error);
+      logger.warn('[AICache] Error al guardar en local (¿lleno?):', error);
       this.clearOldestLocalEntries(10);
     }
   }
@@ -221,13 +221,13 @@ class AICacheService {
         });
 
       if (error) {
-        console.error('[AICache] Error al guardar en remota:', error);
+        logger.error('[AICache] Error al guardar en remota:', error);
       } else if (this.debug) {
         logger.debug('[AICache] 💾 Guardado en remota:', cacheKey);
       }
 
     } catch (error) {
-      console.error('[AICache] Error al guardar en remota:', error);
+      logger.error('[AICache] Error al guardar en remota:', error);
     }
   }
 
@@ -268,7 +268,7 @@ class AICacheService {
         }
       }
     } catch (error) {
-      console.error('[AICache] Error en enforceLocalCacheLimit:', error);
+      logger.error('[AICache] Error en enforceLocalCacheLimit:', error);
     }
   }
 
@@ -297,7 +297,7 @@ class AICacheService {
 
       logger.debug(`[AICache] 🗑️ Limpiadas ${toDelete.length} entradas viejas`);
     } catch (error) {
-      console.error('[AICache] Error en clearOldestLocalEntries:', error);
+      logger.error('[AICache] Error en clearOldestLocalEntries:', error);
     }
   }
 
@@ -317,7 +317,7 @@ class AICacheService {
         .delete()
         .eq('cache_key', cacheKey);
     } catch (error) {
-      console.error('[AICache] Error al eliminar de remota:', error);
+      logger.error('[AICache] Error al eliminar de remota:', error);
     }
   }
 
@@ -371,7 +371,7 @@ class AICacheService {
 
     // Guardar en remoto (async, no bloqueante)
     this.saveToRemoteCache(cacheKey, response, type, ttl).catch(err => {
-      console.error('[AICache] Error al guardar en remoto:', err);
+      logger.error('[AICache] Error al guardar en remoto:', err);
     });
 
     this.stats.saves++;
@@ -432,7 +432,7 @@ class AICacheService {
     try {
       localStorage.setItem('ai_cache_stats', JSON.stringify(this.stats));
     } catch (error) {
-      console.error('[AICache] Error al guardar stats:', error);
+      logger.error('[AICache] Error al guardar stats:', error);
     }
   }
 
@@ -460,7 +460,7 @@ class AICacheService {
       cacheKeys.forEach(key => localStorage.removeItem(key));
       logger.debug(`[AICache] 🗑️ Limpiada caché local (${cacheKeys.length} entradas)`);
     } catch (error) {
-      console.error('[AICache] Error al limpiar caché:', error);
+      logger.error('[AICache] Error al limpiar caché:', error);
     }
   }
 
@@ -477,12 +477,12 @@ class AICacheService {
         .neq('cache_key', ''); // Elimina todo
 
       if (error) {
-        console.error('[AICache] Error al limpiar caché remota:', error);
+        logger.error('[AICache] Error al limpiar caché remota:', error);
       } else {
         logger.debug('[AICache] 🗑️ Limpiada caché remota');
       }
     } catch (error) {
-      console.error('[AICache] Error al limpiar caché remota:', error);
+      logger.error('[AICache] Error al limpiar caché remota:', error);
     }
   }
 

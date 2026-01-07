@@ -107,7 +107,7 @@ class FrankensteinQuizSystem {
       try {
         this.piecesPower = JSON.parse(savedPower);
       } catch (e) {
-        console.error('Error loading pieces power:', e);
+        logger.error('Error loading pieces power:', e);
       }
     }
 
@@ -117,7 +117,7 @@ class FrankensteinQuizSystem {
       try {
         this.weakPieces = JSON.parse(savedWeak);
       } catch (e) {
-        console.error('Error loading weak pieces:', e);
+        logger.error('Error loading weak pieces:', e);
       }
     }
 
@@ -127,7 +127,7 @@ class FrankensteinQuizSystem {
       try {
         this.masteredPieces = JSON.parse(savedMastered);
       } catch (e) {
-        console.error('Error loading mastered pieces:', e);
+        logger.error('Error loading mastered pieces:', e);
       }
     }
 
@@ -137,7 +137,7 @@ class FrankensteinQuizSystem {
       try {
         this.quizAttempts = JSON.parse(savedAttempts);
       } catch (e) {
-        console.error('Error loading quiz attempts:', e);
+        logger.error('Error loading quiz attempts:', e);
       }
     }
 
@@ -216,7 +216,7 @@ class FrankensteinQuizSystem {
    */
   setMode(mode) {
     if (mode !== 'investigacion' && mode !== 'juego' && mode !== 'demo') {
-      console.error('Invalid mode:', mode);
+      logger.error('Invalid mode:', mode);
       return;
     }
 
@@ -235,7 +235,7 @@ class FrankensteinQuizSystem {
    */
   setDifficulty(difficulty) {
     if (!this.difficultySettings[difficulty]) {
-      console.error('Invalid difficulty:', difficulty);
+      logger.error('Invalid difficulty:', difficulty);
       return;
     }
 
@@ -303,7 +303,7 @@ class FrankensteinQuizSystem {
     this.chapterMetadataPromise = fetch('books/metadata/chapters-metadata.json')
       .then(response => (response.ok ? response.json() : null))
       .catch(error => {
-        console.warn('[FrankensteinQuiz] No se pudo cargar el metadata de capítulos:', error);
+        logger.warn('[FrankensteinQuiz] No se pudo cargar el metadata de capítulos:', error);
         return null;
       })
       .finally(() => {
@@ -426,7 +426,7 @@ class FrankensteinQuizSystem {
 
       return null;
     } catch (error) {
-      console.error(`[FrankensteinQuiz] Error loading quiz for ${bookId}/${chapterId}:`, error);
+      logger.error(`[FrankensteinQuiz] Error loading quiz for ${bookId}/${chapterId}:`, error);
       return null;
     }
   }
@@ -451,7 +451,7 @@ class FrankensteinQuizSystem {
 
     // Si no hay suficientes preguntas del nivel actual, usar todas
     if (filteredQuestions.length < count) {
-      console.warn(`[FrankensteinQuiz] Solo ${filteredQuestions.length} preguntas de nivel ${currentLevel}, usando todas las preguntas disponibles`);
+      logger.warn(`[FrankensteinQuiz] Solo ${filteredQuestions.length} preguntas de nivel ${currentLevel}, usando todas las preguntas disponibles`);
       filteredQuestions = questions;
     }
 
@@ -522,7 +522,7 @@ class FrankensteinQuizSystem {
     // Cargar quiz del capítulo
     const quizData = await this.loadQuiz(bookId, chapterId);
     if (!quizData || !quizData.questions || quizData.questions.length === 0) {
-      console.warn(`[FrankensteinQuiz] No quiz found for ${bookId}/${chapterId}, skipping`);
+      logger.warn(`[FrankensteinQuiz] No quiz found for ${bookId}/${chapterId}, skipping`);
       return {
         passed: true,
         powerMultiplier: 1.0,
@@ -785,7 +785,7 @@ class FrankensteinQuizSystem {
 
       // Guard clause si no hay container
       if (!optionsContainer) {
-        console.warn(`[FrankensteinQuiz] No options container for question ${qIndex}`);
+        logger.warn(`[FrankensteinQuiz] No options container for question ${qIndex}`);
         return;
       }
 

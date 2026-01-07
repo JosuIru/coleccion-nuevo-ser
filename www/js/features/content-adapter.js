@@ -176,7 +176,7 @@ class ContentAdapter {
         this.currentFocusStyle = prefs.focus || 'original';
       }
     } catch (e) {
-      console.warn('[ContentAdapter] Error loading preferences:', e);
+      logger.warn('[ContentAdapter] Error loading preferences:', e);
     }
   }
 
@@ -190,7 +190,7 @@ class ContentAdapter {
         focus: this.currentFocusStyle
       }));
     } catch (e) {
-      console.warn('[ContentAdapter] Error saving preferences:', e);
+      logger.warn('[ContentAdapter] Error saving preferences:', e);
     }
   }
 
@@ -239,7 +239,7 @@ class ContentAdapter {
 
       return data.content;
     } catch (e) {
-      console.warn('[ContentAdapter] Error reading cache:', e);
+      logger.warn('[ContentAdapter] Error reading cache:', e);
       return null;
     }
   }
@@ -256,7 +256,7 @@ class ContentAdapter {
         version: this.CACHE_VERSION
       }));
     } catch (e) {
-      console.warn('[ContentAdapter] Error caching adaptation:', e);
+      logger.warn('[ContentAdapter] Error caching adaptation:', e);
     }
   }
 
@@ -389,7 +389,7 @@ Devuelve el texto adaptado:`;
         throw new Error('La IA no devolvió una respuesta válida');
       }
     } catch (error) {
-      console.error('[ContentAdapter] AI error:', error);
+      logger.error('[ContentAdapter] AI error:', error);
       throw new Error(`Error al adaptar contenido: ${error.message}`);
     }
   }
@@ -664,7 +664,7 @@ Devuelve el texto adaptado:`;
         focus: this.currentFocusStyle
       }));
     } catch (e) {
-      console.warn('[ContentAdapter] Error saving preferences:', e);
+      logger.warn('[ContentAdapter] Error saving preferences:', e);
     }
   }
 
@@ -675,7 +675,7 @@ Devuelve el texto adaptado:`;
     // Obtener el contenido del capítulo actual
     const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content');
     if (!chapterContent) {
-      console.warn('[ContentAdapter] No chapter content found');
+      logger.warn('[ContentAdapter] No chapter content found');
       if (window.showToast) window.showToast('No se encontró contenido para adaptar', 'error');
       return;
     }
@@ -696,7 +696,7 @@ Devuelve el texto adaptado:`;
       }, 500);
 
     } catch (error) {
-      console.error('[ContentAdapter] Error applying adaptation:', error);
+      logger.error('[ContentAdapter] Error applying adaptation:', error);
       this.hideLoading();
       if (window.showToast) window.showToast('Error al adaptar contenido', 'error');
     }
@@ -857,7 +857,7 @@ Devuelve el texto adaptado:`;
       logger.debug(`[ContentAdapter] Cleared ${keys.length} cached adaptations`);
       return keys.length;
     } catch (e) {
-      console.error('[ContentAdapter] Error clearing cache:', e);
+      logger.error('[ContentAdapter] Error clearing cache:', e);
       return 0;
     }
   }

@@ -45,7 +45,7 @@ class BackgroundAudioHelper {
           }
         }
       } catch (error) {
-        console.warn('BackgroundAudioHelper: Plugin nativo no disponible', error);
+        logger.warn('BackgroundAudioHelper: Plugin nativo no disponible', error);
       }
     }
 
@@ -81,7 +81,7 @@ class BackgroundAudioHelper {
 
   setupMediaSession() {
     if (!('mediaSession' in navigator)) {
-      console.warn('BackgroundAudioHelper: Media Session API no disponible');
+      logger.warn('BackgroundAudioHelper: Media Session API no disponible');
       return;
     }
 
@@ -136,7 +136,7 @@ class BackgroundAudioHelper {
 
         logger.debug('[BackgroundAudioHelper] Media Session limpiada');
       } catch (error) {
-        console.warn('[BackgroundAudioHelper] Error limpiando Media Session:', error);
+        logger.warn('[BackgroundAudioHelper] Error limpiando Media Session:', error);
       }
     }
   }
@@ -203,7 +203,7 @@ class BackgroundAudioHelper {
 
       logger.debug('BackgroundAudioHelper: Audio silencioso preparado');
     } catch (error) {
-      console.warn('BackgroundAudioHelper: Error creando audio silencioso', error);
+      logger.warn('BackgroundAudioHelper: Error creando audio silencioso', error);
     }
   }
 
@@ -270,7 +270,7 @@ class BackgroundAudioHelper {
         await this.silentAudio.play();
         logger.debug('BackgroundAudioHelper: Audio silencioso iniciado');
       } catch (error) {
-        console.warn('BackgroundAudioHelper: Error iniciando audio silencioso', error);
+        logger.warn('BackgroundAudioHelper: Error iniciando audio silencioso', error);
       }
     }
 
@@ -289,7 +289,7 @@ class BackgroundAudioHelper {
       try {
         this.silentOscillator.stop();
       } catch (error) {
-        console.warn('BackgroundAudioHelper: Error deteniendo oscilador', error);
+        logger.warn('BackgroundAudioHelper: Error deteniendo oscilador', error);
       }
       try {
         this.silentOscillator.disconnect();
@@ -310,7 +310,7 @@ class BackgroundAudioHelper {
 
     if (this.audioContext) {
       this.audioContext.suspend().catch((error) => {
-        console.warn('BackgroundAudioHelper: Error suspendiendo AudioContext', error);
+        logger.warn('BackgroundAudioHelper: Error suspendiendo AudioContext', error);
       });
     }
   }
@@ -339,7 +339,7 @@ class BackgroundAudioHelper {
       this.isActive = true;
       return { success: true };
     } catch (error) {
-      console.error('BackgroundAudioHelper: Error al iniciar', error);
+      logger.error('BackgroundAudioHelper: Error al iniciar', error);
       return { success: false, error: error.message };
     }
   }
@@ -362,7 +362,7 @@ class BackgroundAudioHelper {
       this.isActive = false;
       return { success: true };
     } catch (error) {
-      console.error('BackgroundAudioHelper: Error al detener', error);
+      logger.error('BackgroundAudioHelper: Error al detener', error);
       return { success: false, error: error.message };
     }
   }
@@ -405,7 +405,7 @@ class BackgroundAudioHelper {
       this.audioContext.close().then(() => {
         logger.debug('[BackgroundAudioHelper] AudioContext cerrado correctamente');
       }).catch((err) => {
-        console.warn('[BackgroundAudioHelper] Error al cerrar AudioContext:', err);
+        logger.warn('[BackgroundAudioHelper] Error al cerrar AudioContext:', err);
       });
       this.audioContext = null;
     }

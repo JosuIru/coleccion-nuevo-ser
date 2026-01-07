@@ -67,12 +67,12 @@ class SyncBridgeService {
     try {
       // Verificar dependencias
       if (!window.supabase) {
-        console.warn('[SyncBridge] Supabase no disponible, sincronización deshabilitada');
+        logger.warn('[SyncBridge] Supabase no disponible, sincronización deshabilitada');
         return;
       }
 
       if (!window.eventBus) {
-        console.warn('[SyncBridge] EventBus no disponible');
+        logger.warn('[SyncBridge] EventBus no disponible');
         return;
       }
 
@@ -110,7 +110,7 @@ class SyncBridgeService {
       });
 
     } catch (error) {
-      console.error('[SyncBridge] Error en inicialización:', error);
+      logger.error('[SyncBridge] Error en inicialización:', error);
     }
   }
 
@@ -180,7 +180,7 @@ class SyncBridgeService {
       return syncResults;
 
     } catch (error) {
-      console.error('[SyncBridge] Error en sincronización:', error);
+      logger.error('[SyncBridge] Error en sincronización:', error);
 
       // Emitir evento de error
       window.eventBus?.emit('sync.error', {
@@ -226,7 +226,7 @@ class SyncBridgeService {
       return results;
 
     } catch (error) {
-      console.error('[SyncBridge] Error en push:', error);
+      logger.error('[SyncBridge] Error en push:', error);
       throw error;
     }
   }
@@ -273,7 +273,7 @@ class SyncBridgeService {
       return results;
 
     } catch (error) {
-      console.error('[SyncBridge] Error en pull:', error);
+      logger.error('[SyncBridge] Error en pull:', error);
       throw error;
     }
   }
@@ -315,7 +315,7 @@ class SyncBridgeService {
       return progressArray;
 
     } catch (error) {
-      console.error('[SyncBridge] Error obteniendo progreso local:', error);
+      logger.error('[SyncBridge] Error obteniendo progreso local:', error);
       return [];
     }
   }
@@ -353,7 +353,7 @@ class SyncBridgeService {
       return syncedCount;
 
     } catch (error) {
-      console.error('[SyncBridge] Error sincronizando progreso:', error);
+      logger.error('[SyncBridge] Error sincronizando progreso:', error);
       return syncedCount;
     }
   }
@@ -390,7 +390,7 @@ class SyncBridgeService {
       return appliedCount;
 
     } catch (error) {
-      console.error('[SyncBridge] Error aplicando progreso remoto:', error);
+      logger.error('[SyncBridge] Error aplicando progreso remoto:', error);
       return appliedCount;
     }
   }
@@ -443,7 +443,7 @@ class SyncBridgeService {
       return appliedCount;
 
     } catch (error) {
-      console.error('[SyncBridge] Error aplicando beings remotos:', error);
+      logger.error('[SyncBridge] Error aplicando beings remotos:', error);
       return appliedCount;
     }
   }
@@ -460,7 +460,7 @@ class SyncBridgeService {
       const achievementsStr = localStorage.getItem('achievements') || '[]';
       return JSON.parse(achievementsStr);
     } catch (error) {
-      console.error('[SyncBridge] Error obteniendo achievements locales:', error);
+      logger.error('[SyncBridge] Error obteniendo achievements locales:', error);
       return [];
     }
   }
@@ -490,7 +490,7 @@ class SyncBridgeService {
       return syncedCount;
 
     } catch (error) {
-      console.error('[SyncBridge] Error sincronizando achievements:', error);
+      logger.error('[SyncBridge] Error sincronizando achievements:', error);
       return syncedCount;
     }
   }
@@ -535,7 +535,7 @@ class SyncBridgeService {
       return appliedCount;
 
     } catch (error) {
-      console.error('[SyncBridge] Error aplicando achievements remotos:', error);
+      logger.error('[SyncBridge] Error aplicando achievements remotos:', error);
       return appliedCount;
     }
   }
@@ -571,7 +571,7 @@ class SyncBridgeService {
       try {
         await this.executeQueuedOperation(operation);
       } catch (error) {
-        console.error('[SyncBridge] Error procesando operación:', error);
+        logger.error('[SyncBridge] Error procesando operación:', error);
         operation.retryCount++;
 
         if (operation.retryCount < 3) {
@@ -664,7 +664,7 @@ class SyncBridgeService {
       if (error) throw error;
 
     } catch (error) {
-      console.error('[SyncBridge] Error actualizando sync_state:', error);
+      logger.error('[SyncBridge] Error actualizando sync_state:', error);
     }
   }
 
@@ -738,7 +738,7 @@ class SyncBridgeService {
         this.syncQueue = JSON.parse(queueStr);
       }
     } catch (error) {
-      console.error('[SyncBridge] Error cargando cola:', error);
+      logger.error('[SyncBridge] Error cargando cola:', error);
       this.syncQueue = [];
     }
   }
@@ -755,7 +755,7 @@ class SyncBridgeService {
       const beingsStr = localStorage.getItem('synced_beings') || '[]';
       return JSON.parse(beingsStr);
     } catch (error) {
-      console.error('[SyncBridge] Error obteniendo beings:', error);
+      logger.error('[SyncBridge] Error obteniendo beings:', error);
       return [];
     }
   }

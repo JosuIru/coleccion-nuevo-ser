@@ -2,12 +2,12 @@
  * APP INITIALIZATION
  * Inicializa todo el sistema de versiones y actualizaciones
  *
- * @version 1.0.0
+ * @version 2.9.283
  */
 
 class AppInitialization {
   static async initialize() {
-    console.log('[AppInit] Iniciando sistema de aplicación...');
+    logger.log('[AppInit] Iniciando sistema de aplicación...');
 
     try {
       // 1. Inyectar versión global
@@ -15,7 +15,7 @@ class AppInitialization {
 
       // 2. Inicializar Analytics (Google Analytics 4)
       // El ID se configura en localStorage o se deshabilita si no existe
-      const gaId = localStorage.getItem('analytics-ga-id') || null;
+      const gaId = window.StorageHelper?.get('analytics-ga-id') || null;
       window.analyticsHelper = new AnalyticsHelper({
         enabled: !!gaId, // Solo habilitado si hay ID configurado
         measurementId: gaId || 'disabled',
@@ -25,7 +25,7 @@ class AppInitialization {
       // Tracking inicial de page view
       window.analyticsHelper.trackPageView('Biblioteca Principal');
 
-      console.log('[AppInit] Sistema de analytics inicializado');
+      logger.log('[AppInit] Sistema de analytics inicializado');
 
       // 2.5. Inicializar AI Cache Service (reducir costos 40-60%)
       window.aiCacheService = new AICacheService({
@@ -36,8 +36,8 @@ class AppInitialization {
         debug: window.__ENVIRONMENT__ === 'development'
       });
 
-      console.log('[AppInit] Sistema de caché de IA inicializado');
-      console.log('[AppInit] Hit rate actual:', window.aiCacheService.getHitRate() + '%');
+      logger.log('[AppInit] Sistema de caché de IA inicializado');
+      logger.log('[AppInit] Hit rate actual:', window.aiCacheService.getHitRate() + '%');
 
       // 3. Inicializar VersionManager
       window.versionManager = new VersionManager({
@@ -52,7 +52,7 @@ class AppInitialization {
       // 5. Inicializar UpdateModal
       window.updateModal = new UpdateModal(window.versionManager, window.updateHelper);
 
-      console.log('[AppInit] Sistema de versiones inicializado');
+      logger.log('[AppInit] Sistema de versiones inicializado');
 
       // 6. Verificar actualizaciones al iniciar
       const delay = Math.random() * 3000; // 0-3 segundos de delay aleatorio
@@ -76,7 +76,7 @@ class AppInitialization {
       return true;
 
     } catch (error) {
-      console.error('[AppInit] Error al inicializar:', error);
+      logger.error('[AppInit] Error al inicializar:', error);
 
       // 🔧 FIX #94: Usar ErrorBoundary para capturar error
       if (window.errorBoundary) {
@@ -104,12 +104,12 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.277: Null checks + accessibility + profile in reader
-    window.__APP_VERSION__ = '2.9.277'; // Cambiar con cada release
+    // 🔧 v2.9.283: StorageHelper + LazyLoader + Service Worker PWA
+    window.__APP_VERSION__ = '2.9.283'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 
-    console.log('[AppInit] Versión:', window.__APP_VERSION__);
+    logger.log('[AppInit] Versión:', window.__APP_VERSION__);
 
     // ⭐ FIX v2.9.180: Deshabilitar console.log en producción (795 instancias)
     // Mejora performance ~5-10% y reduce overhead de debugging
@@ -119,7 +119,7 @@ class AppInitialization {
       console.debug = noop;
       console.info = noop;
       // Mantener console.warn y console.error para problemas críticos
-      console.warn('[AppInit] Console.log deshabilitado en producción para mejor performance');
+      logger.warn('[AppInit] Console.log deshabilitado en producción para mejor performance');
     }
   }
 

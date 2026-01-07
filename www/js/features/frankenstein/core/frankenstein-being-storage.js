@@ -91,7 +91,7 @@ export class FrankensteinBeingStorage {
       // Intentar guardar en Supabase si está disponible
       if (window.supabaseSyncHelper && window.supabaseSyncHelper.isAuthenticated) {
         this.saveBeingToSupabase(savedBeing).catch(err => {
-          console.warn('No se pudo sincronizar con Supabase:', err);
+          logger.warn('No se pudo sincronizar con Supabase:', err);
         });
       }
 
@@ -100,7 +100,7 @@ export class FrankensteinBeingStorage {
       // Sonido dramático de trueno al crear ser
       if (window.frankenAudio && window.frankenAudio.enabled) {
         window.frankenAudio.playThunder();
-        console.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
+        logger.log('[FrankenAudio] ⚡ Trueno reproducido al crear ser');
       }
 
       // Recompensa por crear/guardar ser
@@ -110,7 +110,7 @@ export class FrankensteinBeingStorage {
 
       return true;
     } catch (error) {
-      console.error('Error guardando ser:', error);
+      logger.error('Error guardando ser:', error);
       this.labUI.showNotification('❌ Error al guardar el ser', 'error');
       return false;
     }
@@ -126,7 +126,7 @@ export class FrankensteinBeingStorage {
       const saved = localStorage.getItem(this.storageKey);
       return saved ? JSON.parse(saved) : [];
     } catch (error) {
-      console.error('Error cargando seres:', error);
+      logger.error('Error cargando seres:', error);
       return [];
     }
   }
@@ -184,7 +184,7 @@ export class FrankensteinBeingStorage {
         .filter(Boolean);
 
       if (missingPieces.length > 0) {
-        console.warn('[FrankensteinUI] Piezas no encontradas en el catálogo actual:', missingPieces.map(p => p.id));
+        logger.warn('[FrankensteinUI] Piezas no encontradas en el catálogo actual:', missingPieces.map(p => p.id));
         this.labUI.showNotification(`⚠️ ${missingPieces.length} piezas no existen en el catálogo actual. Se usaron versiones de respaldo.`, 'warning', 6000);
       }
 
@@ -280,7 +280,7 @@ export class FrankensteinBeingStorage {
       this.saveState();
       return true;
     } catch (error) {
-      console.error('Error cargando ser:', error);
+      logger.error('Error cargando ser:', error);
       this.labUI.showNotification('❌ Error al cargar el ser', 'error');
       return false;
     }
@@ -308,7 +308,7 @@ export class FrankensteinBeingStorage {
       this.labUI.showNotification('🗑️ Ser eliminado', 'info', 2000);
       return true;
     } catch (error) {
-      console.error('Error eliminando ser:', error);
+      logger.error('Error eliminando ser:', error);
       this.labUI.showNotification('❌ Error al eliminar el ser', 'error');
       return false;
     }
@@ -336,9 +336,9 @@ export class FrankensteinBeingStorage {
         }]);
 
       if (error) throw error;
-      console.log('✅ Ser sincronizado con Supabase');
+      logger.log('✅ Ser sincronizado con Supabase');
     } catch (error) {
-      console.warn('Error en Supabase sync:', error);
+      logger.warn('Error en Supabase sync:', error);
       // No lanzar error, es opcional
     }
   }
@@ -358,7 +358,7 @@ export class FrankensteinBeingStorage {
     try {
       localStorage.setItem(this.labStateKey, JSON.stringify(record));
     } catch (error) {
-      console.warn('[FrankensteinUI] No se pudo guardar el estado del laboratorio:', error);
+      logger.warn('[FrankensteinUI] No se pudo guardar el estado del laboratorio:', error);
     }
   }
 
@@ -404,7 +404,7 @@ export class FrankensteinBeingStorage {
     try {
       state = JSON.parse(raw);
     } catch (error) {
-      console.warn('[FrankensteinUI] Estado del laboratorio corrupto:', error);
+      logger.warn('[FrankensteinUI] Estado del laboratorio corrupto:', error);
       return;
     }
 

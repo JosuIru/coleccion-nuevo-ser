@@ -42,7 +42,7 @@ class AudioCacheManager {
 
       logger.debug('✅ AudioCacheManager inicializado');
     } catch (error) {
-      console.error('❌ Error inicializando AudioCacheManager:', error);
+      logger.error('❌ Error inicializando AudioCacheManager:', error);
     }
   }
 
@@ -215,7 +215,7 @@ class AudioCacheManager {
 
       return null;
     } catch (error) {
-      console.error('Error obteniendo audio de caché:', error);
+      logger.error('Error obteniendo audio de caché:', error);
       return null;
     }
   }
@@ -235,7 +235,7 @@ class AudioCacheManager {
       });
       return result.uri;
     } catch (error) {
-      console.error('Error obteniendo ruta de archivo:', error);
+      logger.error('Error obteniendo ruta de archivo:', error);
       return null;
     }
   }
@@ -298,7 +298,7 @@ class AudioCacheManager {
 
       return true;
     } catch (error) {
-      console.error('Error guardando audio en caché:', error);
+      logger.error('Error guardando audio en caché:', error);
       return false;
     }
   }
@@ -452,7 +452,7 @@ class AudioCacheManager {
 
       return true;
     } catch (error) {
-      console.error('Error eliminando de caché:', error);
+      logger.error('Error eliminando de caché:', error);
       return false;
     }
   }
@@ -510,7 +510,7 @@ class AudioCacheManager {
         request.onerror = () => reject(request.error);
       });
     } catch (error) {
-      console.error('Error limpiando caché:', error);
+      logger.error('Error limpiando caché:', error);
     }
   }
 
@@ -529,7 +529,7 @@ class AudioCacheManager {
       logger.debug(`🗑️ Caché limpiado para libro: ${bookId} (${bookItems.length} items)`);
       return bookItems.length;
     } catch (error) {
-      console.error('Error limpiando caché de libro:', error);
+      logger.error('Error limpiando caché de libro:', error);
       return 0;
     }
   }
@@ -561,7 +561,7 @@ class AudioCacheManager {
         }
       }
     } catch (error) {
-      console.error('Error aplicando límite de caché:', error);
+      logger.error('Error aplicando límite de caché:', error);
     }
   }
 
@@ -647,7 +647,7 @@ class AudioCacheManager {
         chapterCount: book.chapters.size
       }));
     } catch (error) {
-      console.error('Error listando libros descargados:', error);
+      logger.error('Error listando libros descargados:', error);
       return [];
     }
   }
@@ -662,7 +662,7 @@ class AudioCacheManager {
         .filter(item => item.bookId === bookId && item.chapterId === chapterId)
         .sort((a, b) => (a.paragraphIndex || 0) - (b.paragraphIndex || 0));
     } catch (error) {
-      console.error('Error obteniendo audios del capítulo:', error);
+      logger.error('Error obteniendo audios del capítulo:', error);
       return [];
     }
   }

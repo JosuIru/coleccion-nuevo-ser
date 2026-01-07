@@ -218,7 +218,7 @@ class OnboardingTutorial {
       this.markAsCompleted();
       this.close();
     } catch (error) {
-      console.error('[Tutorial] Error en skip():', error);
+      logger.error('[Tutorial] Error en skip():', error);
     } finally {
       this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
     }
@@ -243,7 +243,7 @@ class OnboardingTutorial {
         window.toast.success('🎉 ¡Tutorial completado! Ya estás listo para explorar.');
       }
     } catch (error) {
-      console.error('[Tutorial] Error en finish():', error);
+      logger.error('[Tutorial] Error en finish():', error);
     } finally {
       this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
     }
@@ -262,7 +262,7 @@ class OnboardingTutorial {
         window.supabaseSyncHelper?.syncPreference('has_seen_tutorial', true);
         logger.debug('[Tutorial] ✅ Tutorial marcado como completado y sincronizado con Supabase');
       } catch (error) {
-        console.warn('[Tutorial] No se pudo sincronizar con Supabase:', error);
+        logger.warn('[Tutorial] No se pudo sincronizar con Supabase:', error);
       }
     }
 
@@ -292,7 +292,7 @@ class OnboardingTutorial {
         this.currentStep++;
         this.showStep(this.currentStep);
       } catch (error) {
-        console.error('[Tutorial] Error en next():', error);
+        logger.error('[Tutorial] Error en next():', error);
       } finally {
         this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
       }
@@ -309,7 +309,7 @@ class OnboardingTutorial {
         this.currentStep--;
         this.showStep(this.currentStep);
       } catch (error) {
-        console.error('[Tutorial] Error en previous():', error);
+        logger.error('[Tutorial] Error en previous():', error);
       } finally {
         this.isTransitioning = false; // ✅ Siempre se resetea inmediatamente
       }

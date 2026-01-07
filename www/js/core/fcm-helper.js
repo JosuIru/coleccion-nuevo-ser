@@ -66,7 +66,7 @@ class FCMHelper {
             }
 
         } catch (error) {
-            console.error('[FCM] Error inicializando:', error);
+            logger.error('[FCM] Error inicializando:', error);
         }
 
         // Exponer globalmente
@@ -90,7 +90,7 @@ class FCMHelper {
                 return result.available === true;
             }
         } catch (error) {
-            console.error('[FCM] Error verificando disponibilidad:', error);
+            logger.error('[FCM] Error verificando disponibilidad:', error);
         }
 
         return false;
@@ -125,7 +125,7 @@ class FCMHelper {
             return this.permissionGranted;
 
         } catch (error) {
-            console.error('[FCM] Error solicitando permisos:', error);
+            logger.error('[FCM] Error solicitando permisos:', error);
             return false;
         }
     }
@@ -157,7 +157,7 @@ class FCMHelper {
             return this.fcmToken;
 
         } catch (error) {
-            console.error('[FCM] Error obteniendo token:', error);
+            logger.error('[FCM] Error obteniendo token:', error);
             return null;
         }
     }
@@ -212,7 +212,7 @@ class FCMHelper {
             await FCMPlugin.deleteToken();
             // logger.debug('[FCM] Token eliminado');
         } catch (error) {
-            // console.warn('[FCM] Error eliminando token:', error);
+            // logger.warn('[FCM] Error eliminando token:', error);
         }
 
         // Limpiar estado local
@@ -244,7 +244,7 @@ class FCMHelper {
             return true;
 
         } catch (error) {
-            console.error(`[FCM] Error suscribiendo al topic ${topic}:`, error);
+            logger.error(`[FCM] Error suscribiendo al topic ${topic}:`, error);
             return false;
         }
     }
@@ -269,7 +269,7 @@ class FCMHelper {
             return true;
 
         } catch (error) {
-            console.error(`[FCM] Error desuscribiendo del topic ${topic}:`, error);
+            logger.error(`[FCM] Error desuscribiendo del topic ${topic}:`, error);
             return false;
         }
     }
@@ -330,13 +330,13 @@ class FCMHelper {
                 });
 
             if (error) {
-                console.error('[FCM] Error guardando token en Supabase:', error);
+                logger.error('[FCM] Error guardando token en Supabase:', error);
             } else {
                 // logger.debug('[FCM] ✓ Token sincronizado con Supabase');
             }
 
         } catch (error) {
-            console.error('[FCM] Error sincronizando token:', error);
+            logger.error('[FCM] Error sincronizando token:', error);
         }
     }
 
@@ -371,7 +371,7 @@ class FCMHelper {
                 const subsArray = JSON.parse(subscriptionsStr);
                 this.subscriptions = new Set(subsArray);
             } catch (error) {
-                // console.warn('[FCM] Error parseando suscripciones:', error);
+                // logger.warn('[FCM] Error parseando suscripciones:', error);
             }
         }
 

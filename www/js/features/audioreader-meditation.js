@@ -30,10 +30,10 @@ class AudioReaderMeditation {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (AudioContext) {
         this.audioContext = new AudioContext();
-        console.log('[Meditation] Audio context initialized');
+        logger.log('[Meditation] Audio context initialized');
       }
     } catch (error) {
-      console.warn('[Meditation] Could not initialize audio context:', error);
+      logger.warn('[Meditation] Could not initialize audio context:', error);
     }
   }
 
@@ -139,10 +139,10 @@ class AudioReaderMeditation {
       harmonic1.stop(now + duration);
       harmonic2.stop(now + duration);
 
-      console.log(`[Meditation] Bell: ${type} (${baseFreq}Hz)`);
+      logger.log(`[Meditation] Bell: ${type} (${baseFreq}Hz)`);
 
     } catch (error) {
-      console.warn('[Meditation] Error playing bell:', error);
+      logger.warn('[Meditation] Error playing bell:', error);
     }
   }
 

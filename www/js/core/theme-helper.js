@@ -73,12 +73,12 @@ class ThemeHelper {
       // 🔧 FIX #99: Usar SyncManager para sincronización robusta
       if (window.syncManager) {
         window.syncManager.sync('settings', { keys: ['theme-preference'] }, { showSuccessToast: false }).catch(err => {
-          console.error('Error sincronizando tema a la nube:', err);
+          logger.error('Error sincronizando tema a la nube:', err);
         });
       } else if (window.supabaseSyncHelper?.isAuthenticated?.()) {
         // Fallback al método antiguo
         window.supabaseSyncHelper.syncSettingsToCloud(['theme-preference']).catch(err => {
-          console.error('Error sincronizando tema a la nube:', err);
+          logger.error('Error sincronizando tema a la nube:', err);
         });
       }
     }
@@ -148,7 +148,7 @@ class ThemeHelper {
    */
   applyBookTheme(bookConfig) {
     if (!bookConfig || !bookConfig.id) {
-      // console.warn('No book config provided to applyBookTheme');
+      // logger.warn('No book config provided to applyBookTheme');
       return;
     }
 
@@ -263,7 +263,7 @@ class ThemeHelper {
         });
       }
     } catch (error) {
-      // console.warn('Error updating status bar:', error);
+      // logger.warn('Error updating status bar:', error);
     }
   }
 

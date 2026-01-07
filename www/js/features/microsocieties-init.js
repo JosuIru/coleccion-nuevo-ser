@@ -63,7 +63,7 @@ class MicrosocietiesInit {
       logger.debug('Microsociedades inicializado correctamente');
 
     } catch (error) {
-      console.error('Error inicializando microsociedades:', error);
+      logger.error('Error inicializando microsociedades:', error);
     }
   }
 
@@ -588,7 +588,7 @@ class MicrosocietiesInit {
         beings = JSON.parse(savedBeings);
       }
     } catch (e) {
-      console.error('Error cargando seres:', e);
+      logger.error('Error cargando seres:', e);
     }
 
     if (beings.length === 0) {
@@ -890,7 +890,7 @@ class MicrosocietiesInit {
       this.showNotification('Partida cargada', 'success');
 
     } catch (e) {
-      console.error('Error cargando partida:', e);
+      logger.error('Error cargando partida:', e);
       this.showNotification('Error al cargar partida', 'error');
     }
   }

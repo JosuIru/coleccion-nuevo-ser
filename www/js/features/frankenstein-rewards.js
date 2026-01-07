@@ -281,7 +281,7 @@ class FrankensteinRewards {
         this.data = { ...this.data, ...parsed };
       }
     } catch (error) {
-      console.warn('[FrankensteinRewards] Error loading:', error);
+      logger.warn('[FrankensteinRewards] Error loading:', error);
     }
   }
 
@@ -292,7 +292,7 @@ class FrankensteinRewards {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.data));
     } catch (error) {
-      console.warn('[FrankensteinRewards] Error saving:', error);
+      logger.warn('[FrankensteinRewards] Error saving:', error);
     }
   }
 
@@ -439,7 +439,7 @@ class FrankensteinRewards {
   giveReward(type, customMultiplier = 1) {
     const reward = this.rewards[type];
     if (!reward) {
-      console.warn(`[FrankensteinRewards] Unknown reward type: ${type}`);
+      logger.warn(`[FrankensteinRewards] Unknown reward type: ${type}`);
       return null;
     }
 
@@ -515,7 +515,7 @@ class FrankensteinRewards {
 
     const def = this.achievementDefs[achievementId];
     if (!def) {
-      console.warn(`[FrankensteinRewards] Unknown achievement: ${achievementId}`);
+      logger.warn(`[FrankensteinRewards] Unknown achievement: ${achievementId}`);
       return false;
     }
 
@@ -997,7 +997,7 @@ class FrankensteinRewards {
       }
 
       .fr-xp-text {
-        font-size: 10px;
+        font-size: 12px;
         color: #94a3b8;
       }
 

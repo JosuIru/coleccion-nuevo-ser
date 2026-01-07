@@ -69,7 +69,7 @@ class EnhancedAudioReader {
         // Guardar preferencia
         localStorage.setItem('audio-mode-preference', modeName);
       } catch (error) {
-        console.error('Error guardando modo de audio:', error);
+        logger.error('Error guardando modo de audio:', error);
       }
 
       // Toast notification
@@ -105,7 +105,7 @@ class EnhancedAudioReader {
       // Guardar preferencia
       localStorage.setItem('audio-profile-preference', profileName);
     } catch (error) {
-      console.error('Error guardando perfil de audio:', error);
+      logger.error('Error guardando perfil de audio:', error);
     }
 
     const profiles = this.audioProcessor.getProfiles();
@@ -344,7 +344,7 @@ class EnhancedAudioReader {
       this.currentProfile = localStorage.getItem('audio-profile-preference') || 'VOICE_CLARITY';
       this.isEnhanced = localStorage.getItem('audio-enhanced') !== 'false';
     } catch (error) {
-      console.error('Error cargando preferencias de audio:', error);
+      logger.error('Error cargando preferencias de audio:', error);
       // Usar valores por defecto
       this.currentMode = 'NORMAL';
       this.currentProfile = 'VOICE_CLARITY';
@@ -359,7 +359,7 @@ class EnhancedAudioReader {
       localStorage.setItem('audio-profile-preference', this.currentProfile);
       localStorage.setItem('audio-enhanced', this.isEnhanced.toString());
     } catch (error) {
-      console.error('Error guardando preferencias de audio:', error);
+      logger.error('Error guardando preferencias de audio:', error);
     }
   }
 

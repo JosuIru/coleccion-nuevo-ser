@@ -51,7 +51,7 @@ export class FrankensteinRewardsSystem {
    */
   init() {
     if (typeof FrankensteinRewards === 'undefined') {
-      console.warn('⚠️ FrankensteinRewards no disponible');
+      logger.warn('⚠️ FrankensteinRewards no disponible');
       return false;
     }
 
@@ -77,7 +77,7 @@ export class FrankensteinRewardsSystem {
       }
     }
 
-    console.log('✅ Sistema de recompensas inicializado');
+    logger.log('✅ Sistema de recompensas inicializado');
     return true;
   }
 
@@ -184,7 +184,7 @@ export class FrankensteinRewardsSystem {
    */
   initHUD() {
     if (!this.rewardsEngine) {
-      console.warn('⚠️ Sistema de recompensas no inicializado');
+      logger.warn('⚠️ Sistema de recompensas no inicializado');
       return false;
     }
 
@@ -202,7 +202,7 @@ export class FrankensteinRewardsSystem {
     // Agregar botón de logros al header si existe
     this._addAchievementsButton();
 
-    console.log('✅ HUD de recompensas inicializado');
+    logger.log('✅ HUD de recompensas inicializado');
     return true;
   }
 
@@ -276,7 +276,7 @@ export class FrankensteinRewardsSystem {
     this.labUI = null;
     this.dom = null;
 
-    console.log('✅ Sistema de recompensas destruido');
+    logger.log('✅ Sistema de recompensas destruido');
   }
 
   /**

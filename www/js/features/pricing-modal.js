@@ -28,7 +28,7 @@ class PricingModal {
   buildPlansFromConfig() {
     const config = window.PLANS_CONFIG;
     if (!config) {
-      console.warn('PLANS_CONFIG no disponible, usando configuración por defecto');
+      logger.warn('PLANS_CONFIG no disponible, usando configuración por defecto');
       return this.getDefaultPlans();
     }
 
@@ -189,7 +189,7 @@ class PricingModal {
         resolve();
       };
       script.onerror = () => {
-        console.error('❌ Error cargando Stripe.js');
+        logger.error('❌ Error cargando Stripe.js');
         resolve();
       };
       document.head.appendChild(script);
@@ -366,7 +366,7 @@ class PricingModal {
         throw result.error;
       }
     } catch (error) {
-      console.error('❌ Error en checkout:', error);
+      logger.error('❌ Error en checkout:', error);
       alert('Error al procesar el pago: ' + error.message);
 
       button.disabled = false;

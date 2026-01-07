@@ -47,7 +47,7 @@ class SaveSystem {
   loadSociety(slotId) {
     const saveData = this.saves[slotId];
     if (!saveData) {
-      console.error(`❌ No se encontró save en slot: ${slotId}`);
+      logger.error(`❌ No se encontró save en slot: ${slotId}`);
       return null;
     }
 
@@ -56,7 +56,7 @@ class SaveSystem {
       // logger.debug(`📂 Sociedad cargada desde slot: ${slotId}`);
       return society;
     } catch (error) {
-      console.error(`❌ Error al cargar sociedad:`, error);
+      logger.error(`❌ Error al cargar sociedad:`, error);
       return null;
     }
   }
@@ -304,7 +304,7 @@ class SaveSystem {
     try {
       localStorage.setItem('microsocieties-saves', JSON.stringify(this.saves));
     } catch (error) {
-      console.error('❌ Error al guardar en localStorage:', error);
+      logger.error('❌ Error al guardar en localStorage:', error);
       // Si localStorage está lleno, eliminar saves más antiguos
       if (error.name === 'QuotaExceededError') {
         this.cleanOldSaves();
@@ -324,7 +324,7 @@ class SaveSystem {
         // logger.debug(`📂 ${Object.keys(this.saves).length} saves cargados`);
       }
     } catch (error) {
-      console.error('❌ Error al cargar saves:', error);
+      logger.error('❌ Error al cargar saves:', error);
       this.saves = {};
     }
   }

@@ -236,7 +236,7 @@ class LeaderboardsSystem {
         // logger.debug('🏆 Leaderboards cargados');
       }
     } catch (error) {
-      console.error('❌ Error al cargar leaderboards:', error);
+      logger.error('❌ Error al cargar leaderboards:', error);
     }
   }
 
@@ -347,7 +347,7 @@ class LeaderboardsSystem {
         avgFitness: data.f
       };
     } catch (error) {
-      console.error('❌ Error al decodificar código:', error);
+      logger.error('❌ Error al decodificar código:', error);
       return null;
     }
   }
@@ -373,7 +373,7 @@ class LeaderboardsSystem {
       // logger.debug('📋 Copiado al portapapeles');
       return true;
     } catch (error) {
-      console.error('❌ Error al copiar:', error);
+      logger.error('❌ Error al copiar:', error);
       return false;
     }
   }

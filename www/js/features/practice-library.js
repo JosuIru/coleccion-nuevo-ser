@@ -140,7 +140,7 @@ class PracticeLibrary {
             }
           }
         } catch (error) {
-          console.error(`Error loading practices from ${book.id}:`, error);
+          logger.error(`Error loading practices from ${book.id}:`, error);
         }
       }
 
@@ -148,7 +148,7 @@ class PracticeLibrary {
       return this.practices;
 
     } catch (error) {
-      console.error('Error loading practice library:', error);
+      logger.error('Error loading practice library:', error);
       return [];
     }
   }
@@ -310,7 +310,7 @@ class PracticeLibrary {
       this.loadAllPractices().then(() => {
         this.render();
       }).catch(error => {
-        console.error('Error loading practices:', error);
+        logger.error('Error loading practices:', error);
         window.toast?.error('Error al cargar prácticas. Intenta de nuevo.');
         this.close();
       });
@@ -337,82 +337,85 @@ class PracticeLibrary {
     modal.id = 'practice-library-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4';
 
+    // 🔧 FIX v2.9.265: Mobile-friendly layout
     modal.innerHTML = `
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
-        <!-- Header -->
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              🧘 Biblioteca de Prácticas
-              <span class="text-sm font-normal text-gray-500 dark:text-gray-400">(${this.practices.length} ejercicios)</span>
+      <div class="bg-white dark:bg-gray-900 rounded-2xl md:rounded-2xl rounded-t-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] md:max-h-[90vh] flex flex-col">
+        <!-- Header - Compact for mobile -->
+        <div class="p-3 md:p-6 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-2 md:mb-4">
+            <h2 class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 md:gap-3">
+              🧘 <span class="hidden sm:inline">Biblioteca de </span>Prácticas
+              <span class="text-xs md:text-sm font-normal text-gray-500 dark:text-gray-400">(${this.practices.length})</span>
             </h2>
-            <button id="practice-library-close" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition">
+            <button id="practice-library-close" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition p-2">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
 
-          <!-- Tabs -->
-          <div class="flex gap-2 mb-4 flex-wrap">
-            <button class="practice-type-tab active" data-type="all">
+          <!-- Tabs - Scrollable on mobile -->
+          <div class="flex gap-1.5 md:gap-2 mb-3 md:mb-4 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+            <button class="practice-type-tab active whitespace-nowrap text-sm md:text-base" data-type="all">
               Todas
             </button>
-            <button class="practice-type-tab" data-type="meditation">
-              🧘 Meditaciones
+            <button class="practice-type-tab whitespace-nowrap text-sm md:text-base" data-type="meditation">
+              🧘 <span class="hidden sm:inline">Meditaciones</span><span class="sm:hidden">Med.</span>
             </button>
-            <button class="practice-type-tab" data-type="reflection">
-              💭 Reflexiones
+            <button class="practice-type-tab whitespace-nowrap text-sm md:text-base" data-type="reflection">
+              💭 <span class="hidden sm:inline">Reflexiones</span><span class="sm:hidden">Refl.</span>
             </button>
-            <button class="practice-type-tab" data-type="action">
-              🎯 Acciones
+            <button class="practice-type-tab whitespace-nowrap text-sm md:text-base" data-type="action">
+              🎯 <span class="hidden sm:inline">Acciones</span><span class="sm:hidden">Acc.</span>
             </button>
-            <button class="practice-type-tab" data-type="physical">
-              🌳 Ejercicios Físicos
+            <button class="practice-type-tab whitespace-nowrap text-sm md:text-base" data-type="physical">
+              🌳 <span class="hidden sm:inline">Ejercicios Físicos</span><span class="sm:hidden">Físico</span>
             </button>
           </div>
 
-          <!-- Learning Paths Integration -->
-          <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4 mb-4 border border-purple-200 dark:border-purple-800">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">🎯 ¿Buscas un camino estructurado?</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Explora nuestros Learning Paths: rutas guiadas paso a paso para alcanzar objetivos específicos</p>
+          <!-- Learning Paths Integration - Collapsible on mobile -->
+          <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-2.5 md:p-4 mb-3 md:mb-4 border border-purple-200 dark:border-purple-800">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">🎯 ¿Camino estructurado?</h3>
+                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Rutas guiadas paso a paso</p>
               </div>
-              <button id="open-learning-paths-from-library" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition whitespace-nowrap ml-4">
-                Ver Paths →
+              <button id="open-learning-paths-from-library" class="px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm md:text-base font-semibold rounded-lg transition whitespace-nowrap flex-shrink-0">
+                Paths →
               </button>
             </div>
           </div>
 
-          <!-- Filters -->
-          <div class="flex gap-3 flex-wrap items-center">
+          <!-- Filters - Stack on mobile -->
+          <div class="flex flex-col sm:flex-row gap-2 md:gap-3">
             <input type="text"
                    id="practice-search"
                    placeholder="Buscar práctica..."
-                   class="flex-1 min-w-[200px] px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                   class="w-full sm:flex-1 px-3 md:px-4 py-2 text-sm md:text-base bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
 
-            <select id="practice-difficulty-filter"
-                    class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
-              <option value="all">Todas las dificultades</option>
-              <option value="básico">Básico</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="avanzado">Avanzado</option>
-            </select>
+            <div class="flex gap-2">
+              <select id="practice-difficulty-filter"
+                      class="flex-1 sm:flex-none px-2 md:px-4 py-2 text-sm md:text-base bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                <option value="all">Dificultad</option>
+                <option value="básico">Básico</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
 
-            <select id="practice-duration-filter"
-                    class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
-              <option value="all">Cualquier duración</option>
-              <option value="short">< 15 min</option>
-              <option value="medium">15-30 min</option>
-              <option value="long">30-60 min</option>
-              <option value="verylong">> 60 min</option>
-            </select>
+              <select id="practice-duration-filter"
+                      class="flex-1 sm:flex-none px-2 md:px-4 py-2 text-sm md:text-base bg-gray-100 dark:bg-gray-800 rounded-lg border-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                <option value="all">Duración</option>
+                <option value="short">< 15 min</option>
+                <option value="medium">15-30 min</option>
+                <option value="long">30-60 min</option>
+                <option value="verylong">> 60 min</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Content -->
-        <div id="practice-library-content" class="flex-1 overflow-y-auto p-6">
+        <!-- Content - Smaller padding on mobile -->
+        <div id="practice-library-content" class="flex-1 overflow-y-auto p-3 md:p-6">
           ${this.renderPractices()}
         </div>
       </div>
@@ -471,6 +474,7 @@ class PracticeLibrary {
     `;
   }
 
+  // 🔧 FIX v2.9.265: Mobile-friendly cards
   renderPracticeCard(practice) {
     const typeEmoji = {
       meditation: '🧘',
@@ -486,43 +490,43 @@ class PracticeLibrary {
     };
 
     return `
-      <div class="practice-card bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
-        <!-- Type Icon -->
-        <div class="text-3xl mb-3">${typeEmoji[practice.type] || '📖'}</div>
+      <div class="practice-card bg-white dark:bg-gray-800 rounded-xl p-3 md:p-5 shadow-md hover:shadow-xl transition border border-gray-200 dark:border-gray-700">
+        <!-- Header row: Icon + Title + Meta -->
+        <div class="flex items-start gap-2 md:gap-3 mb-2">
+          <div class="text-2xl md:text-3xl flex-shrink-0">${typeEmoji[practice.type] || '📖'}</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white leading-tight line-clamp-2">
+              ${practice.title}
+            </h3>
+            <div class="flex items-center gap-2 mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+              <span>⏱️ ${practice.duration}</span>
+              <span title="Dificultad">${difficultyDots[practice.difficulty] || '●●○'}</span>
+            </div>
+          </div>
+        </div>
 
-        <!-- Title -->
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
-          ${practice.title}
-        </h3>
-
-        <!-- Book Badge -->
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+        <!-- Book Badge - Compact -->
+        <div class="mb-2">
+          <span class="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full line-clamp-1">
             📚 ${practice.book.title}
           </span>
         </div>
 
-        <!-- Meta Info -->
-        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
-          <span>⏱️ ${practice.duration}</span>
-          <span title="Dificultad">${difficultyDots[practice.difficulty] || '●●○'}</span>
-        </div>
-
-        <!-- Description -->
-        <p class="text-sm text-gray-600 dark:text-gray-200 mb-4 line-clamp-3">
+        <!-- Description - Shorter on mobile -->
+        <p class="text-xs md:text-sm text-gray-600 dark:text-gray-200 mb-3 line-clamp-2 md:line-clamp-3">
           ${practice.description}
         </p>
 
-        <!-- Actions -->
+        <!-- Actions - Full width button on mobile -->
         <div class="flex gap-2">
-          <button class="practice-do-now flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition"
+          <button class="practice-do-now flex-1 px-3 md:px-4 py-2 text-sm md:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold transition"
                   data-practice-id="${practice.id}"
                   data-book-id="${practice.book.id}"
                   data-section-id="${practice.section.id}"
                   data-chapter-id="${practice.chapter.id}">
-            Hacer ahora
+            Hacer
           </button>
-          <button class="practice-add-to-plan px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg font-semibold transition"
+          <button class="practice-add-to-plan px-3 md:px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg font-semibold transition"
                   data-practice-id="${practice.id}"
                   title="Añadir a plan">
             +
@@ -732,7 +736,7 @@ class PracticeLibrary {
         window.showToast(`"${practice.title}" añadido a tu plan`, 'success');
       }
     } catch (error) {
-      console.error('Error guardando práctica en plan de acción:', error);
+      logger.error('Error guardando práctica en plan de acción:', error);
       window.toast?.error('Error al guardar la práctica. Intenta de nuevo.');
     }
   }

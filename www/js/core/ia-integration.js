@@ -212,7 +212,7 @@ class IAIntegration {
         this.showNotification(`Error: ${result.error}`, 'error');
       }
     } catch (error) {
-      console.error('Error generando quiz:', error);
+      logger.error('Error generando quiz:', error);
       this.showNotification('No se pudo generar el quiz', 'error');
     } finally {
       this.hideProcessing();
@@ -251,7 +251,7 @@ class IAIntegration {
         this.showNotification(`Error: ${result.error}`, 'error');
       }
     } catch (error) {
-      console.error('Error generando resumen:', error);
+      logger.error('Error generando resumen:', error);
       this.showNotification('No se pudo generar el resumen', 'error');
     } finally {
       this.hideProcessing();
@@ -290,7 +290,7 @@ class IAIntegration {
         this.showNotification(`Error: ${result.error}`, 'error');
       }
     } catch (error) {
-      console.error('Error generando ejercicios:', error);
+      logger.error('Error generando ejercicios:', error);
       this.showNotification('No se pudieron generar los ejercicios', 'error');
     } finally {
       this.hideProcessing();
@@ -524,7 +524,7 @@ class IAIntegration {
         this.showNotification(`Error: ${result.error}`, 'error');
       }
     } catch (error) {
-      console.error('Error:', error);
+      logger.error('Error:', error);
       this.showNotification('Error al procesar la pregunta', 'error');
     } finally {
       this.hideProcessing();

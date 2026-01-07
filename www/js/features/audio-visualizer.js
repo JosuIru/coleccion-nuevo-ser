@@ -30,7 +30,7 @@ class AudioVisualizer {
 
   initialize(sourceNode) {
     if (!this.audioContext) {
-      // console.warn('No hay AudioContext disponible');
+      // logger.warn('No hay AudioContext disponible');
       return false;
     }
 
@@ -48,7 +48,7 @@ class AudioVisualizer {
       // logger.debug('✅ AudioVisualizer inicializado');
       return true;
     } catch (error) {
-      console.error('❌ Error inicializando AudioVisualizer:', error);
+      logger.error('❌ Error inicializando AudioVisualizer:', error);
       return false;
     }
   }
@@ -60,7 +60,7 @@ class AudioVisualizer {
   createCanvas(containerId, width = 300, height = 80) {
     const container = document.getElementById(containerId);
     if (!container) {
-      // console.warn('Contenedor no encontrado:', containerId);
+      // logger.warn('Contenedor no encontrado:', containerId);
       return null;
     }
 
@@ -92,7 +92,7 @@ class AudioVisualizer {
 
   start() {
     if (!this.analyser || !this.canvas) {
-      // console.warn('Analyser o Canvas no inicializado');
+      // logger.warn('Analyser o Canvas no inicializado');
       return;
     }
 

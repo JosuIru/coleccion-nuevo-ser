@@ -91,7 +91,7 @@ class CosmosNavigationV2 {
 
     // Verificar Three.js
     if (typeof THREE === 'undefined') {
-      console.error('Three.js no está cargado');
+      logger.error('Three.js no está cargado');
       return;
     }
 
@@ -442,7 +442,7 @@ class CosmosNavigationV2 {
   async createGalaxies() {
     const catalog = this.bookEngine?.catalog;
     if (!catalog || !catalog.books) {
-      console.error('Catálogo de libros no disponible');
+      logger.error('Catálogo de libros no disponible');
       return;
     }
 
@@ -658,7 +658,7 @@ class CosmosNavigationV2 {
         try {
           localStorage.setItem('cosmos-tutorial-seen', 'true');
         } catch (error) {
-          console.error('Error guardando estado del tutorial:', error);
+          logger.error('Error guardando estado del tutorial:', error);
         }
       });
     }

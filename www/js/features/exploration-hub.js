@@ -530,7 +530,7 @@ class ExplorationHub {
             const fakeEvent = { preventDefault: () => {} };
             await window.biblioteca.handleFrankensteinLabCard(fakeEvent);
           } else {
-            console.error('Biblioteca no está disponible');
+            logger.error('Biblioteca no está disponible');
             throw new Error('Biblioteca no disponible');
           }
           break;
@@ -561,7 +561,7 @@ class ExplorationHub {
           break;
 
         default:
-          console.warn('Laboratorio no reconocido:', labType);
+          logger.warn('Laboratorio no reconocido:', labType);
       }
 
       if (loadingToast) {
@@ -569,7 +569,7 @@ class ExplorationHub {
       }
       window.toast?.show('✅ Laboratorio cargado', 'success', 2000);
     } catch (error) {
-      console.error('Error cargando laboratorio:', error);
+      logger.error('Error cargando laboratorio:', error);
       if (loadingToast) {
         window.toast?.hide(loadingToast);
       }
@@ -887,7 +887,7 @@ class ExplorationHub {
         });
       }
     } catch (error) {
-      console.error('Error loading book options:', error);
+      logger.error('Error loading book options:', error);
     }
   }
 

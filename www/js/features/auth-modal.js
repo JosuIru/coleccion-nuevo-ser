@@ -69,7 +69,7 @@ class AuthModal {
 
       logger.debug('✅ AuthModal inicializado');
     } catch (error) {
-      console.error('[AuthModal] Error al cargar authHelper:', error);
+      logger.error('[AuthModal] Error al cargar authHelper:', error);
       // Fallback: intentar con setTimeout como antes
       if (!this.authHelper && window.authHelper) {
         this.authHelper = window.authHelper;
@@ -736,7 +736,7 @@ class AuthModal {
         throw new Error('No se pudo actualizar el perfil');
       }
     } catch (error) {
-      console.error('Error actualizando perfil:', error);
+      logger.error('Error actualizando perfil:', error);
       this.showError('Error al actualizar perfil');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Guardar Cambios';
@@ -1100,10 +1100,12 @@ class AuthModal {
    * Mostrar error
    */
   showError(message) {
-    if (typeof window.showNotification === 'function') {
+    if (window.toast) {
+      window.toast.error(message);
+    } else if (typeof window.showNotification === 'function') {
       window.showNotification(message, 'error');
     } else {
-      alert(message);
+      logger.error('[Auth]', message);
     }
   }
 
@@ -1111,10 +1113,12 @@ class AuthModal {
    * Mostrar éxito
    */
   showSuccess(message) {
-    if (typeof window.showNotification === 'function') {
+    if (window.toast) {
+      window.toast.success(message);
+    } else if (typeof window.showNotification === 'function') {
       window.showNotification(message, 'success');
     } else {
-      alert(message);
+      logger.log('[Auth]', message);
     }
   }
 }

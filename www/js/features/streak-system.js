@@ -43,7 +43,7 @@ class StreakSystem {
         return JSON.parse(saved);
       }
     } catch (e) {
-      console.error('[StreakSystem] Error loading data:', e);
+      logger.error('[StreakSystem] Error loading data:', e);
     }
 
     return {
@@ -64,7 +64,7 @@ class StreakSystem {
       // 🔧 FIX #99: Usar SyncManager para sincronización robusta
       if (window.syncManager) {
         window.syncManager.sync('streak', this.data, { showSuccessToast: false }).catch(err => {
-          console.error('[StreakSystem] Error en sincronización:', err);
+          logger.error('[StreakSystem] Error en sincronización:', err);
         });
       } else if (window.supabaseSyncHelper) {
         // Fallback al método antiguo si SyncManager no está disponible
@@ -72,10 +72,10 @@ class StreakSystem {
       }
     } catch (error) {
       if (error.name === 'QuotaExceededError') {
-        console.warn('[StreakSystem] localStorage quota exceeded');
+        logger.warn('[StreakSystem] localStorage quota exceeded');
         window.toast?.warn('Almacenamiento lleno. Racha puede no guardarse.');
       } else {
-        console.error('[StreakSystem] Error saving data:', error);
+        logger.error('[StreakSystem] Error saving data:', error);
         window.toast?.error('Error al guardar racha.');
       }
     }

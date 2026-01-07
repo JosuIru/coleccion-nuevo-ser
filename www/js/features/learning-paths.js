@@ -21,7 +21,7 @@ class LearningPaths {
     try {
       return JSON.parse(localStorage.getItem('learning-paths-progress') || '{}');
     } catch (error) {
-      console.error('Error cargando progreso de rutas de aprendizaje:', error);
+      logger.error('Error cargando progreso de rutas de aprendizaje:', error);
       return {};
     }
   }
@@ -31,7 +31,7 @@ class LearningPaths {
     try {
       localStorage.setItem('learning-paths-progress', JSON.stringify(this.userProgress));
     } catch (error) {
-      console.error('Error guardando progreso de rutas de aprendizaje:', error);
+      logger.error('Error guardando progreso de rutas de aprendizaje:', error);
       window.toast?.error('Error al guardar progreso. Intenta de nuevo.');
     }
   }
@@ -57,7 +57,7 @@ class LearningPaths {
         logger.debug('[LearningPaths] ✅ Learning Paths abierto correctamente');
       }, 10);
     } catch (error) {
-      console.error('[LearningPaths] ❌ Error al abrir:', error);
+      logger.error('[LearningPaths] ❌ Error al abrir:', error);
     }
   }
 
@@ -2037,7 +2037,7 @@ class LearningPaths {
       try {
         customPath = await window.resourceAIHelper.generateLearningPath(goal, resources, bookId);
       } catch (error) {
-        console.error('Error con IA, usando fallback:', error);
+        logger.error('Error con IA, usando fallback:', error);
       }
     }
 

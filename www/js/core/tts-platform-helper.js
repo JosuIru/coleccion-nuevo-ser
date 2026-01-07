@@ -62,7 +62,7 @@ class TTSPlatformHelper {
         }
 
         if (Date.now() - startTime > timeout) {
-          // console.warn(`⚠️ No se detectaron voces después de ${timeout}ms`);
+          // logger.warn(`⚠️ No se detectaron voces después de ${timeout}ms`);
           resolve(false);
           return;
         }
@@ -204,7 +204,7 @@ ${browser} \\
           window.toast.success('Comando copiado al portapapeles');
         }
       }).catch(err => {
-        console.error('Error copiando:', err);
+        logger.error('Error copiando:', err);
         this.fallbackCopyCommand(command);
       });
     } else {
@@ -227,7 +227,7 @@ ${browser} \\
         window.toast.success('Comando copiado');
       }
     } catch (err) {
-      console.error('Error copiando:', err);
+      logger.error('Error copiando:', err);
     }
 
     document.body.removeChild(textarea);
@@ -429,7 +429,7 @@ ${browser} \\
     const hasVoices = await this.checkVoices();
 
     if (!hasVoices) {
-      // console.warn('⚠️ No se detectaron voces TTS. Mostrando modal de ayuda...');
+      // logger.warn('⚠️ No se detectaron voces TTS. Mostrando modal de ayuda...');
 
       // Esperar un poco más por si acaso
       setTimeout(() => {

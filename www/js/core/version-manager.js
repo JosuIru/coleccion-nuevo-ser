@@ -149,7 +149,7 @@ class VersionManager {
       return this.availableUpdate;
 
     } catch (error) {
-      console.error('[VersionManager] Error al verificar actualizaciones:', error);
+      logger.error('[VersionManager] Error al verificar actualizaciones:', error);
       this.emit('updateError', error);
       return null;
 
@@ -175,7 +175,7 @@ class VersionManager {
       return data.changelog || [];
 
     } catch (error) {
-      console.warn('[VersionManager] No se pudo obtener changelog:', error);
+      logger.warn('[VersionManager] No se pudo obtener changelog:', error);
       return [];
     }
   }
@@ -221,7 +221,7 @@ class VersionManager {
       const data = localStorage.getItem(this.config.storageKey);
       return data ? JSON.parse(data) : {};
     } catch (error) {
-      console.warn('[VersionManager] Error al cargar storage:', error);
+      logger.warn('[VersionManager] Error al cargar storage:', error);
       return {};
     }
   }
@@ -247,7 +247,7 @@ class VersionManager {
         try {
           callback(data);
         } catch (error) {
-          console.error(`[VersionManager] Error en listener ${event}:`, error);
+          logger.error(`[VersionManager] Error en listener ${event}:`, error);
         }
       });
     }

@@ -592,7 +592,7 @@ const FrankensteinDemoData = {
    */
   loadDemoData(frankensteinUI) {
     if (!frankensteinUI) {
-      console.error('❌ FrankensteinUI no disponible');
+      logger.error('❌ FrankensteinUI no disponible');
       return false;
     }
 
@@ -601,7 +601,7 @@ const FrankensteinDemoData = {
       const demoPieces = this.getDemoPieces();
       if (!Array.isArray(frankensteinUI.availablePieces) || frankensteinUI.availablePieces.length === 0) {
         frankensteinUI.availablePieces = [...demoPieces];
-        console.warn('⚠️ Catálogo real no disponible. Usando piezas demo como respaldo.');
+        logger.warn('⚠️ Catálogo real no disponible. Usando piezas demo como respaldo.');
       } else {
         const catalogMap = new Map(frankensteinUI.availablePieces.map(piece => [piece.id, piece]));
         const missingIds = [];
@@ -657,7 +657,7 @@ const FrankensteinDemoData = {
 
       return true;
     } catch (error) {
-      console.error('❌ Error cargando datos de demo:', error);
+      logger.error('❌ Error cargando datos de demo:', error);
       return false;
     }
   },
@@ -673,7 +673,7 @@ const FrankensteinDemoData = {
       logger.debug('✅ Datos de demo eliminados');
       return true;
     } catch (error) {
-      console.error('❌ Error eliminando datos de demo:', error);
+      logger.error('❌ Error eliminando datos de demo:', error);
       return false;
     }
   }

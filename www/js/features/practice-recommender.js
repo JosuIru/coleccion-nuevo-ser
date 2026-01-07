@@ -28,7 +28,7 @@ class PracticeRecommender {
       try {
         return JSON.parse(stored);
       } catch (e) {
-        console.error('Error loading preferences:', e);
+        logger.error('Error loading preferences:', e);
       }
     }
 
@@ -51,7 +51,7 @@ class PracticeRecommender {
       try {
         return JSON.parse(stored);
       } catch (e) {
-        console.error('Error loading history:', e);
+        logger.error('Error loading history:', e);
       }
     }
 
@@ -364,7 +364,7 @@ class PracticeRecommender {
           }
         }
       } catch (e) {
-        console.error('Error loading practice of the day:', e);
+        logger.error('Error loading practice of the day:', e);
       }
     }
 

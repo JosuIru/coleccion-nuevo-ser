@@ -82,7 +82,7 @@ class DynamicColorsHelper {
                 return isAndroid12Plus;
             }
         } catch (error) {
-            // console.warn('[DynamicColors] Error checking Android version:', error);
+            // logger.warn('[DynamicColors] Error checking Android version:', error);
         }
 
         return false;
@@ -124,7 +124,7 @@ class DynamicColorsHelper {
                 };
             }
         } catch (error) {
-            console.error('[DynamicColors] Error fetching system colors:', error);
+            logger.error('[DynamicColors] Error fetching system colors:', error);
             // Usar colores por defecto en caso de error
             this.systemColors = {
                 accent1: '#3b82f6',
@@ -155,7 +155,7 @@ class DynamicColorsHelper {
                 };
             }
         } catch (error) {
-            // console.warn('[DynamicColors] Could not extract CSS colors:', error);
+            // logger.warn('[DynamicColors] Could not extract CSS colors:', error);
         }
 
         return null;
@@ -166,7 +166,7 @@ class DynamicColorsHelper {
      */
     applyDynamicColors() {
         if (!this.systemColors) {
-            // console.warn('[DynamicColors] No system colors available');
+            // logger.warn('[DynamicColors] No system colors available');
             return;
         }
 

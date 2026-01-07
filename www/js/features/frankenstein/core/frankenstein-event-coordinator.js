@@ -441,7 +441,7 @@ export class FrankensteinEventCoordinator {
    * @returns {void}
    */
   handleMenuNavigation(section) {
-    console.log(`[Menu] Navegando a: ${section}`);
+    logger.log(`[Menu] Navegando a: ${section}`);
     this.closeSideMenu();
 
     switch(section) {
@@ -496,7 +496,7 @@ export class FrankensteinEventCoordinator {
         break;
 
       default:
-        console.log(`[Menu] Sección desconocida: ${section}`);
+        logger.log(`[Menu] Sección desconocida: ${section}`);
     }
   }
 
@@ -538,7 +538,7 @@ export class FrankensteinEventCoordinator {
         menuMicroCount.style.display = microCount > 0 ? 'inline-flex' : 'none';
       }
     } catch (e) {
-      console.warn('[Menu] Error al obtener microsociedades:', e);
+      logger.warn('[Menu] Error al obtener microsociedades:', e);
     }
   }
 
@@ -634,7 +634,7 @@ export class FrankensteinEventCoordinator {
     // Limpiar array de listeners
     this.listeners = [];
 
-    console.log('[EventCoordinator] Event listeners limpiados');
+    logger.log('[EventCoordinator] Event listeners limpiados');
   }
 }
 

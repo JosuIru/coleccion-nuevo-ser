@@ -568,7 +568,8 @@ class LazyLoader {
     }
 
     try {
-      // Cargar dependencia: Thematic Index Modal
+      // Cargar dependencias: Search Modal y Thematic Index Modal
+      await this.loadSearchModal();
       await this.loadThematicIndexModal();
 
       await this.loadScript('js/features/exploration-hub.js');
@@ -771,6 +772,32 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Search Modal (40KB)
+   * @returns {Promise<void>}
+   */
+  async loadSearchModal() {
+    if (this.loadedModules.has('search-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Search Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/search-modal.js');
+      this.loadedModules.set('search-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Search Modal cargado (40KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Search Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -856,6 +883,8 @@ class LazyLoader {
         return await this.loadThematicIndexModal();
       case 'chapter-resources-modal':
         return await this.loadChapterResourcesModal();
+      case 'search-modal':
+        return await this.loadSearchModal();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

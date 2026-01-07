@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * ShortcutsHandler - Manejo de deep links desde Android Shortcuts y Quick Settings Tile
  *
  * Detecta cuando la app es abierta desde:
@@ -17,7 +17,7 @@ class ShortcutsHandler {
     }
 
     async init() {
-        // logger.debug('[ShortcutsHandler] Initializing...');
+        logger.log('[ShortcutsHandler] Initializing... isCapacitor:', this.isCapacitor);
 
         if (this.isCapacitor) {
             // Detectar deep link inicial (al abrir la app)
@@ -29,7 +29,7 @@ class ShortcutsHandler {
 
         // Exponer globalmente
         window.shortcutsHandler = this;
-        // logger.debug('[ShortcutsHandler] Ready');
+        logger.log('[ShortcutsHandler] Ready');
     }
 
     /**
@@ -39,20 +39,15 @@ class ShortcutsHandler {
         try {
             if (window.Capacitor?.Plugins?.App) {
                 const { App } = window.Capacitor.Plugins;
-
-                // Obtener URL de lanzamiento
                 const launchUrl = await App.getLaunchUrl();
 
                 if (launchUrl && launchUrl.url) {
-                    // logger.debug('[ShortcutsHandler] App launched with URL:', launchUrl.url);
                     this.pendingDeepLink = launchUrl.url;
-
-                    // Esperar a que la app esté lista antes de procesar
                     setTimeout(() => this.handleDeepLink(launchUrl.url), 1000);
                 }
             }
         } catch (error) {
-            // console.warn('[ShortcutsHandler] Error checking initial deep link:', error);
+            logger.warn('[ShortcutsHandler] Error checking initial deep link:', error);
         }
     }
 
@@ -64,11 +59,9 @@ class ShortcutsHandler {
             const { App } = window.Capacitor.Plugins;
 
             App.addListener('appUrlOpen', (data) => {
-                // logger.debug('[ShortcutsHandler] Deep link received:', data.url);
+                logger.log('[ShortcutsHandler] Deep link received');
                 this.handleDeepLink(data.url);
             });
-
-            // logger.debug('[ShortcutsHandler] Deep link listener registered');
         }
     }
 
@@ -78,6 +71,17 @@ class ShortcutsHandler {
      */
     handleDeepLink(url) {
         if (!url) return;
+
+        // DEBUG: Ver qué URL llega
+        logger.log('[ShortcutsHandler] handleDeepLink called with:', url);
+
+        // Manejar OAuth callback (com.nuevosser.coleccion://auth/callback#access_token=...)
+        if (url.includes('com.nuevosser.coleccion://auth/callback') ||
+            url.includes('auth/callback#access_token') ||
+            url.includes('auth/callback')) {
+            this.handleOAuthCallback(url);
+            return;
+        }
 
         // Extraer la acción del deep link
         // Formato: nuevosser://action
@@ -112,9 +116,81 @@ class ShortcutsHandler {
                 break;
 
             default:
-                // console.warn('[ShortcutsHandler] Unknown action:', action);
+                // logger.warn('[ShortcutsHandler] Unknown action:', action);
                 this.showLibrary(); // Fallback a biblioteca
                 break;
+        }
+    }
+
+    /**
+     * Maneja el callback de OAuth (Google login)
+     * @param {string} url - URL con tokens (com.nuevosser.coleccion://auth/callback#access_token=...)
+     */
+    async handleOAuthCallback(url) {
+        logger.log('[ShortcutsHandler] OAuth callback received');
+
+        try {
+            // Extraer el hash fragment con los tokens
+            const hashIndex = url.indexOf('#');
+            if (hashIndex === -1) {
+                logger.warn('[ShortcutsHandler] No hash fragment in OAuth callback');
+                return;
+            }
+
+            const hashFragment = url.substring(hashIndex + 1);
+            const params = new URLSearchParams(hashFragment);
+
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+
+            if (!accessToken) {
+                logger.error('[ShortcutsHandler] No access_token in OAuth callback');
+                window.toast?.error('Error en autenticación: token no recibido');
+                return;
+            }
+
+            // Establecer la sesión en Supabase
+            const supabase = window.supabaseClient || window.supabase;
+
+            if (supabase) {
+                const { data, error } = await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
+
+                if (error) {
+                    logger.error('[ShortcutsHandler] Error setting session:', error);
+                    window.toast?.error('Error al establecer sesión');
+                    return;
+                }
+
+                logger.log('[ShortcutsHandler] Session established for:', data?.user?.email);
+
+                // Cerrar TODOS los modales abiertos
+                document.querySelectorAll('.modal, .modal-overlay, [id*="modal"]').forEach(el => {
+                    el.style.display = 'none';
+                    el.remove();
+                });
+
+                // Cerrar my-account-modal si está abierto
+                if (window.myAccountModal) {
+                    window.myAccountModal.close?.();
+                }
+
+                // Cerrar auth modal
+                if (window.authModal) {
+                    window.authModal.closeAllModals?.();
+                }
+
+                // Recargar la página para mostrar estado logueado
+                // (el mensaje de bienvenida lo muestra auth-modal automáticamente)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        } catch (error) {
+            logger.error('[ShortcutsHandler] Error handling OAuth callback:', error);
+            window.toast?.error('Error procesando autenticación');
         }
     }
 
@@ -144,7 +220,7 @@ class ShortcutsHandler {
                 window.location.href = url;
             }
         } catch (error) {
-            console.error('[ShortcutsHandler] Error opening book:', error);
+            logger.error('[ShortcutsHandler] Error opening book:', error);
             this.showLibrary();
         }
     }
@@ -173,7 +249,7 @@ class ShortcutsHandler {
                 this.showLibrary();
             }
         } catch (error) {
-            console.error('[ShortcutsHandler] Error opening last book:', error);
+            logger.error('[ShortcutsHandler] Error opening last book:', error);
             this.showLibrary();
         }
     }
@@ -198,11 +274,11 @@ class ShortcutsHandler {
                     // logger.debug('[ShortcutsHandler] Koan modal shown');
                 }, 500);
             } else {
-                // console.warn('[ShortcutsHandler] Koans modal not available');
+                // logger.warn('[ShortcutsHandler] Koans modal not available');
                 this.showLibrary();
             }
         } catch (error) {
-            console.error('[ShortcutsHandler] Error showing koan:', error);
+            logger.error('[ShortcutsHandler] Error showing koan:', error);
             this.showLibrary();
         }
     }
@@ -226,11 +302,11 @@ class ShortcutsHandler {
                     // logger.debug('[ShortcutsHandler] Progress dashboard shown');
                 }, 500);
             } else {
-                // console.warn('[ShortcutsHandler] Progress dashboard not available');
+                // logger.warn('[ShortcutsHandler] Progress dashboard not available');
                 this.showLibrary();
             }
         } catch (error) {
-            console.error('[ShortcutsHandler] Error showing progress:', error);
+            logger.error('[ShortcutsHandler] Error showing progress:', error);
             this.showLibrary();
         }
     }

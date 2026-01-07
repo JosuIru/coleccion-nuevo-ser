@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * ADMIN PANEL MODAL - Panel de Administración
  * Gestión de usuarios, suscripciones, métricas y configuración del sistema
  *
@@ -25,14 +25,14 @@ class AdminPanelModal {
     // Verificar que el usuario es admin
     const user = window.authHelper?.getCurrentUser();
     if (!user) {
-      console.error('Usuario no autenticado');
+      logger.error('Usuario no autenticado');
       return;
     }
 
     // Verificar permisos de admin
     const isAdmin = await this.checkAdminPermissions(user.id);
     if (!isAdmin) {
-      console.error('Usuario no tiene permisos de administrador');
+      logger.error('Usuario no tiene permisos de administrador');
       return;
     }
 
@@ -57,7 +57,7 @@ class AdminPanelModal {
 
       return data?.role === 'admin';
     } catch (error) {
-      console.error('Error verificando permisos:', error);
+      logger.error('Error verificando permisos:', error);
       return false;
     }
   }
@@ -181,7 +181,7 @@ class AdminPanelModal {
 
       this.renderContent(this.renderDashboard());
     } catch (error) {
-      console.error('Error cargando dashboard:', error);
+      logger.error('Error cargando dashboard:', error);
       this.renderContent(this.renderDashboardError(error.message));
     }
   }
@@ -435,7 +435,7 @@ class AdminPanelModal {
         </div>
       `;
     } catch (error) {
-      console.error('Error cargando usuarios:', error);
+      logger.error('Error cargando usuarios:', error);
       return this.renderDashboardError(error.message);
     }
   }
@@ -678,7 +678,7 @@ class AdminPanelModal {
         </div>
       `;
     } catch (error) {
-      console.error('Error cargando uso de IA:', error);
+      logger.error('Error cargando uso de IA:', error);
       return this.renderDashboardError(error.message);
     }
   }
@@ -985,7 +985,7 @@ class AdminPanelModal {
       document.getElementById('manual-activation-notes').value = '';
 
     } catch (error) {
-      console.error('Error en activación manual:', error);
+      logger.error('Error en activación manual:', error);
       alert(`Error: ${error.message}`);
     }
   }
@@ -1051,7 +1051,7 @@ class AdminPanelModal {
       alert('Plan actualizado correctamente');
       this.switchTab('users');
     } catch (error) {
-      console.error('Error actualizando plan:', error);
+      logger.error('Error actualizando plan:', error);
       alert(`Error: ${error.message}`);
     }
   }
@@ -1072,7 +1072,7 @@ class AdminPanelModal {
       alert('Créditos reseteados');
       this.switchTab('users');
     } catch (error) {
-      console.error('Error reseteando créditos:', error);
+      logger.error('Error reseteando créditos:', error);
       alert(`Error: ${error.message}`);
     }
   }
@@ -1093,7 +1093,7 @@ class AdminPanelModal {
 
       alert('✅ Créditos mensuales reseteados para todos los usuarios');
     } catch (error) {
-      console.error('Error reseteando créditos:', error);
+      logger.error('Error reseteando créditos:', error);
       alert(`Error: ${error.message}`);
     }
   }
@@ -1139,7 +1139,7 @@ class AdminPanelModal {
       URL.revokeObjectURL(url);
 
     } catch (error) {
-      console.error('Error exportando usuarios:', error);
+      logger.error('Error exportando usuarios:', error);
       alert(`Error: ${error.message}`);
     }
   }

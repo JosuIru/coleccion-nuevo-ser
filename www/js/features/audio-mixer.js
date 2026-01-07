@@ -3,7 +3,7 @@
 // ============================================================================
 // Combina TTS + música ambiental + ondas binaurales con procesamiento avanzado
 
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
 class AudioMixer {
   constructor() {
     this.audioContext = null;
@@ -59,7 +59,7 @@ class AudioMixer {
       this.isInitialized = true;
       // logger.debug('✅ AudioMixer inicializado');
     } catch (error) {
-      console.error('❌ Error inicializando AudioMixer:', error);
+      logger.error('❌ Error inicializando AudioMixer:', error);
     }
   }
 
@@ -85,20 +85,43 @@ class AudioMixer {
   // ==========================================================================
 
   async playAmbient(soundscapeName) {
-    if (!this.isInitialized) await this.initialize();
+    logger.log('🎵 AudioMixer.playAmbient llamado:', soundscapeName);
+
+    if (!this.isInitialized) {
+      logger.log('🎵 AudioMixer no inicializado, inicializando...');
+      await this.initialize();
+    }
 
     try {
+      // Resumir AudioContext si está suspendido (necesario en móviles)
+      if (this.audioContext.state === 'suspended') {
+        logger.log('🎵 Resumiendo AudioContext suspendido...');
+        await this.audioContext.resume();
+      }
+
       // Detener ambiente anterior si existe (esperar a que termine)
       await this.stopAmbient();
 
       // Cargar nuevo sonido ambiental
       const soundscapeData = this.getSoundscapeData(soundscapeName);
-      if (!soundscapeData) return;
+      if (!soundscapeData) {
+        logger.warn('🎵 Soundscape no encontrado:', soundscapeName);
+        return;
+      }
+
+      logger.log('🎵 Cargando audio desde:', soundscapeData.url);
 
       // Crear fuente de audio
       const response = await fetch(soundscapeData.url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const arrayBuffer = await response.arrayBuffer();
+      logger.log('🎵 Audio descargado, bytes:', arrayBuffer.byteLength);
+
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+      logger.log('🎵 Audio decodificado, duración:', audioBuffer.duration, 's');
 
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
@@ -111,9 +134,9 @@ class AudioMixer {
       // Fade in
       this.fadeIn(this.channels.ambient.gainNode, this.channels.ambient.volume, 2000);
 
-      // logger.debug('🎵 Ambiente iniciado:', soundscapeName);
+      logger.log('🎵 Ambiente iniciado exitosamente:', soundscapeName);
     } catch (error) {
-      console.error('❌ Error cargando ambiente:', error);
+      logger.error('❌ Error cargando ambiente:', error);
     }
   }
 
@@ -128,14 +151,29 @@ class AudioMixer {
   }
 
   async playBinaural(presetName) {
-    if (!this.isInitialized) await this.initialize();
+    logger.log('🧠 AudioMixer.playBinaural llamado:', presetName);
+
+    if (!this.isInitialized) {
+      logger.log('🧠 AudioMixer no inicializado, inicializando...');
+      await this.initialize();
+    }
 
     try {
+      // Resumir AudioContext si está suspendido (necesario en móviles)
+      if (this.audioContext.state === 'suspended') {
+        logger.log('🧠 Resumiendo AudioContext suspendido...');
+        await this.audioContext.resume();
+      }
+
       // Detener binaural anterior si existe (esperar a que termine)
       await this.stopBinaural();
 
       const preset = this.getBinauralPreset(presetName);
-      if (!preset) return;
+      if (!preset) {
+        logger.warn('🧠 Preset binaural no encontrado:', presetName);
+        return;
+      }
+      logger.log('🧠 Usando preset:', preset);
 
       // Crear osciladores
       const leftOsc = this.audioContext.createOscillator();
@@ -168,7 +206,7 @@ class AudioMixer {
 
       // logger.debug('🎧 Binaural iniciado:', presetName);
     } catch (error) {
-      console.error('❌ Error iniciando binaural:', error);
+      logger.error('❌ Error iniciando binaural:', error);
     }
   }
 
@@ -200,6 +238,14 @@ class AudioMixer {
         this.audioContext.currentTime
       );
     }
+  }
+
+  setAmbientVolume(volume) {
+    this.setChannelVolume('ambient', volume);
+  }
+
+  setBinauralVolume(volume) {
+    this.setChannelVolume('binaural', volume);
   }
 
   setMasterVolume(volume) {
@@ -251,7 +297,7 @@ class AudioMixer {
     const mode = modes[modeName];
 
     if (!mode) {
-      // console.warn('Modo de audio no encontrado:', modeName);
+      // logger.warn('Modo de audio no encontrado:', modeName);
       return;
     }
 
@@ -481,7 +527,18 @@ class AudioMixer {
       GAMMA: { baseFreq: 200, beatFreq: 40 }
     };
 
-    return presets[name];
+    // Mapeo de nombres amigables a presets
+    const nameMapping = {
+      'focus': 'BETA',      // 14-20Hz - concentración
+      'relax': 'ALPHA',     // 10Hz - relajación
+      'deep': 'THETA',      // 6-7Hz - meditación profunda
+      'sleep': 'DELTA',     // 2-4Hz - sueño
+      'energize': 'GAMMA'   // 40Hz - energía
+    };
+
+    // Usar mapping si existe, sino usar directamente
+    const presetKey = nameMapping[name?.toLowerCase?.()] || name?.toUpperCase?.() || name;
+    return presets[presetKey];
   }
 
   // ==========================================================================

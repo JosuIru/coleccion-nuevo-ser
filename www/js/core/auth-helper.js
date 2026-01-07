@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * AUTH HELPER - Sistema de Autenticación Premium
  * Gestión completa de usuarios, suscripciones y permisos
  *
@@ -52,18 +52,18 @@ class AuthHelper {
         this.initialized = true;
         logger.debug('🔐 AuthHelper inicializado');
       } catch (error) {
-        console.error('❌ Error inicializando AuthHelper:', error);
+        logger.error('❌ Error inicializando AuthHelper:', error);
       }
     } else {
       this.initRetries++;
       if (this.initRetries < this.maxInitRetries) {
         // Solo loguear en el primer intento para evitar spam
         if (this.initRetries === 1) {
-          console.warn('⚠️ Supabase no disponible. AuthHelper esperando...');
+          logger.warn('⚠️ Supabase no disponible. AuthHelper esperando...');
         }
         setTimeout(() => this.init(), 500);
       } else {
-        console.warn('⚠️ AuthHelper: Supabase no cargó después de', this.maxInitRetries, 'intentos. Auth deshabilitado.');
+        logger.warn('⚠️ AuthHelper: Supabase no cargó después de', this.maxInitRetries, 'intentos. Auth deshabilitado.');
         this.initialized = true; // Marcar como inicializado para evitar más intentos
       }
     }
@@ -83,7 +83,7 @@ class AuthHelper {
         this.notifyAuthStateChange('signed_in', this.currentUser);
       }
     } catch (error) {
-      console.error('Error loading session:', error);
+      logger.error('Error loading session:', error);
     }
   }
 
@@ -141,7 +141,7 @@ class AuthHelper {
 
       return data;
     } catch (error) {
-      console.error('Error loading profile:', error);
+      logger.error('Error loading profile:', error);
       return null;
     }
   }
@@ -176,7 +176,7 @@ class AuthHelper {
       }
     } catch (error) {
       // 🔧 FIX #99: Capturar y reportar error
-      console.error('❌ Error reseteando créditos:', error);
+      logger.error('❌ Error reseteando créditos:', error);
       this.handleSupabaseError(error, 'checkCreditsReset');
       // No lanzar error para no bloquear la carga del perfil
     }
@@ -211,7 +211,7 @@ class AuthHelper {
 
       return { success: true, data };
     } catch (error) {
-      console.error('❌ Error en registro:', error);
+      logger.error('❌ Error en registro:', error);
       return { success: false, error: error.message };
     }
   }
@@ -231,7 +231,7 @@ class AuthHelper {
       logger.debug('✅ Sesión iniciada:', data);
       return { success: true, data };
     } catch (error) {
-      console.error('❌ Error al iniciar sesión:', error);
+      logger.error('❌ Error al iniciar sesión:', error);
       return { success: false, error: error.message };
     }
   }
@@ -241,10 +241,21 @@ class AuthHelper {
    */
   async signInWithGoogle() {
     try {
+      // Detectar si estamos en app Capacitor o web
+      const isCapacitor = window.Capacitor?.isNativePlatform?.() ||
+                          (window.location.origin.includes('localhost') && window.Capacitor);
+
+      // En Capacitor, usar el custom scheme; en web, usar origin
+      const redirectUrl = isCapacitor
+        ? 'com.nuevosser.coleccion://auth/callback'
+        : `${window.location.origin}/auth/callback`;
+
+      logger.debug('🔐 OAuth redirect URL:', redirectUrl);
+
       const { data, error } = await this.supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent'
@@ -256,7 +267,7 @@ class AuthHelper {
 
       return { success: true, data };
     } catch (error) {
-      console.error('❌ Error con Google:', error);
+      logger.error('❌ Error con Google:', error);
       return { success: false, error: error.message };
     }
   }
@@ -281,7 +292,7 @@ class AuthHelper {
       logger.debug('👋 Sesión cerrada');
       return { success: true };
     } catch (error) {
-      console.error('❌ Error al cerrar sesión:', error);
+      logger.error('❌ Error al cerrar sesión:', error);
       return { success: false, error: error.message };
     }
   }
@@ -300,7 +311,7 @@ class AuthHelper {
       this.showNotification('📧 Email de recuperación enviado. Revisa tu bandeja de entrada.', 'success');
       return { success: true };
     } catch (error) {
-      console.error('❌ Error al recuperar contraseña:', error);
+      logger.error('❌ Error al recuperar contraseña:', error);
       return { success: false, error: error.message };
     }
   }
@@ -319,7 +330,7 @@ class AuthHelper {
       this.showNotification('✅ Contraseña actualizada correctamente', 'success');
       return { success: true };
     } catch (error) {
-      console.error('❌ Error al actualizar contraseña:', error);
+      logger.error('❌ Error al actualizar contraseña:', error);
       return { success: false, error: error.message };
     }
   }
@@ -351,7 +362,7 @@ class AuthHelper {
 
       return { success: true, data };
     } catch (error) {
-      console.error('❌ Error al actualizar perfil:', error);
+      logger.error('❌ Error al actualizar perfil:', error);
       return { success: false, error: error.message };
     }
   }
@@ -390,7 +401,7 @@ class AuthHelper {
 
       return { success: true, url: urlData.publicUrl };
     } catch (error) {
-      console.error('❌ Error al subir avatar:', error);
+      logger.error('❌ Error al subir avatar:', error);
       return { success: false, error: error.message };
     }
   }
@@ -488,7 +499,7 @@ class AuthHelper {
 
       return { success: true, remaining: this.getAICredits() };
     } catch (error) {
-      console.error('❌ Error al consumir créditos:', error);
+      logger.error('❌ Error al consumir créditos:', error);
       // 🔧 FIX #99: Usar handleSupabaseError para categorización
       const category = this.handleSupabaseError(error, 'consumeCredits');
       return { success: false, error: error.message, category };
@@ -562,7 +573,7 @@ class AuthHelper {
       try {
         callback(event, user);
       } catch (error) {
-        console.error('Error in auth state listener:', error);
+        logger.error('Error in auth state listener:', error);
       }
     });
   }
@@ -584,15 +595,22 @@ class AuthHelper {
    * Mostrar notificación (integración con sistema existente)
    */
   showNotification(message, type = 'info', duration = 5000) {
+    // Usar toast si está disponible
+    if (window.toast) {
+      if (type === 'error') window.toast.error(message);
+      else if (type === 'success') window.toast.success(message);
+      else window.toast.info(message);
+      return;
+    }
+
     // Si existe el sistema de notificaciones de la app, usarlo
     if (typeof window.showNotification === 'function') {
       window.showNotification(message, type);
       return;
     }
 
-    // Fallback: alert simple
-    logger.debug(`[${type.toUpperCase()}] ${message}`);
-    alert(message);
+    // Fallback: solo log (sin alert para no molestar)
+    logger.log(`[${type.toUpperCase()}] ${message}`);
   }
 
   /**
@@ -662,7 +680,7 @@ class AuthHelper {
       window.toast?.info('Sesión anónima iniciada');
       return { data, error: null };
     } catch (error) {
-      console.error('Error en signInAnonymously:', error);
+      logger.error('Error en signInAnonymously:', error);
       window.toast?.error('Error al iniciar sesión anónima');
       return { data: null, error };
     }
@@ -704,7 +722,7 @@ class AuthHelper {
 
       return { error: null };
     } catch (error) {
-      console.error('Error en deleteAccount:', error);
+      logger.error('Error en deleteAccount:', error);
       window.toast?.error(error.message || 'Error al eliminar cuenta');
       return { error };
     }
@@ -1103,7 +1121,7 @@ class AuthHelper {
 
         // Verificar si es un error recuperable
         if (this.isRecoverableError(error) && attempt < maxRetries) {
-          console.warn(`⚠️ Intento ${attempt}/${maxRetries} falló. Reintentando en ${delayMs}ms...`);
+          logger.warn(`⚠️ Intento ${attempt}/${maxRetries} falló. Reintentando en ${delayMs}ms...`);
           await this.delay(delayMs);
           // Aumentar delay exponencialmente
           delayMs *= 2;
@@ -1160,13 +1178,13 @@ class AuthHelper {
     const category = this.categorizeSupabaseError(error);
 
     // Log estructurado
-    console.group(`%c[AuthHelper] Error en ${context}`, 'color: #ef4444; font-weight: bold;');
+    logger.group(`%c[AuthHelper] Error en ${context}`, 'color: #ef4444; font-weight: bold;');
     logger.debug('Categoría:', category);
     logger.debug('Mensaje:', error.message);
     logger.debug('Código:', error.code);
     logger.debug('Detalles:', error.details);
     logger.debug('Hint:', error.hint);
-    console.groupEnd();
+    logger.groupEnd();
 
     // Reportar a ErrorBoundary si está disponible
     if (window.errorBoundary) {
@@ -1256,7 +1274,7 @@ class AuthHelper {
     if (window.toast) {
       window.toast.error(userMessage);
     } else {
-      console.error('❌', userMessage);
+      logger.error('❌', userMessage);
     }
 
     // Para errores de sesión expirada, cerrar sesión automáticamente

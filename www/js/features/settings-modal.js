@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * SettingsModal - Modal centralizado de configuración
  *
  * Integra todos los settings de los diferentes helpers en un único modal
@@ -796,7 +796,7 @@ class SettingsModal {
             `;
             if (window.Icons) window.Icons.init();
         } catch (error) {
-            console.error('Error obteniendo estadísticas de caché:', error);
+            logger.error('Error obteniendo estadísticas de caché:', error);
             if (statsContainer) {
                 statsContainer.innerHTML = `
                     <p class="text-xs text-red-400">Error cargando estadísticas</p>
@@ -900,7 +900,7 @@ class SettingsModal {
         logger.debug('[Settings] 🎤 Cargando voces...', diagnosis);
 
         if (!audioReader || !selectElement) {
-            console.warn('[Settings] ⚠️ No se puede cargar voces', diagnosis);
+            logger.warn('[Settings] ⚠️ No se puede cargar voces', diagnosis);
             // 🔧 FIX #77: No mostrar toast diagnóstico, solo loguear
             // El usuario no necesita ver estos detalles técnicos
             this.loadingVoices = false;
@@ -984,7 +984,7 @@ class SettingsModal {
             logger.debug('[Settings] ✅ Voces cargadas correctamente');
             this.loadingVoices = false; // 🔧 FIX #76: Resetear flag al completar exitosamente
         } catch (error) {
-            console.error('[Settings] ❌ Error loading voices:', error);
+            logger.error('[Settings] ❌ Error loading voices:', error);
             // 🔧 FIX v2.9.198: XSS prevention - sanitize error message
             selectElement.innerHTML = '<option value="">Error: ' + (window.sanitizer?.sanitize(error.message) || Sanitizer.escapeHtml(error.message)) + '</option>';
             if (window.toast) {
@@ -1564,7 +1564,7 @@ class SettingsModal {
                     localStorage.setItem('app-language', e.target.value);
                     // logger.debug('[Settings] Language changed to:', e.target.value);
                 } catch (error) {
-                    console.error('Error guardando idioma:', error);
+                    logger.error('Error guardando idioma:', error);
                     window.toast?.error('Error al guardar idioma. Intenta de nuevo.');
                 }
             });
@@ -1604,7 +1604,7 @@ class SettingsModal {
                 try {
                     localStorage.setItem('auto-audio', e.target.checked);
                 } catch (error) {
-                    console.error('Error guardando auto-audio:', error);
+                    logger.error('Error guardando auto-audio:', error);
                 }
             });
         }
@@ -1620,7 +1620,7 @@ class SettingsModal {
                         window.toast.info(e.target.checked ? '✅ Notificaciones de logros activadas' : '🔕 Notificaciones de logros desactivadas');
                     }
                 } catch (error) {
-                    console.error('Error guardando notificaciones de logros:', error);
+                    logger.error('Error guardando notificaciones de logros:', error);
                 }
             });
         }
@@ -1642,7 +1642,7 @@ class SettingsModal {
                             window.toast.success('Voz cambiada correctamente');
                         }
                     } catch (error) {
-                        console.error('Error guardando voz preferida:', error);
+                        logger.error('Error guardando voz preferida:', error);
                     }
                 }
             });
@@ -1675,7 +1675,7 @@ class SettingsModal {
                     // Recargar UI para mostrar opciones
                     this.updateContent();
                 } catch (error) {
-                    console.error('Error guardando API Key de OpenAI:', error);
+                    logger.error('Error guardando API Key de OpenAI:', error);
                     window.toast?.error('Error al guardar API Key. Intenta de nuevo.');
                 }
             }
@@ -1700,7 +1700,7 @@ class SettingsModal {
                 try {
                     await this.currentTestTTSManager.stop();
                 } catch (e) {
-                    console.warn('[Settings] Error al detener test anterior:', e);
+                    logger.warn('[Settings] Error al detener test anterior:', e);
                 }
                 this.currentTestTTSManager = null;
             }
@@ -1726,7 +1726,7 @@ class SettingsModal {
                         // logger.debug('✅ Prueba de voz completada');
                     },
                     onError: (error) => {
-                        console.error('❌ Error en prueba de voz:', error);
+                        logger.error('❌ Error en prueba de voz:', error);
                     }
                 });
 
@@ -1735,7 +1735,7 @@ class SettingsModal {
                 }
 
             } catch (error) {
-                console.error('Error al probar voz:', error);
+                logger.error('Error al probar voz:', error);
                 let errorMessage = 'Error al probar la voz';
 
                 if (error.message.includes('API key')) {
@@ -1771,7 +1771,7 @@ class SettingsModal {
                         window.toast.success(`Voz cambiada a ${voice}`);
                     }
                 } catch (error) {
-                    console.error('Error guardando voz de OpenAI:', error);
+                    logger.error('Error guardando voz de OpenAI:', error);
                 }
             });
         }
@@ -1795,7 +1795,7 @@ class SettingsModal {
                         window.toast.success(enabled ? 'Caché activado' : 'Caché desactivado');
                     }
                 } catch (error) {
-                    console.error('Error guardando configuración de caché:', error);
+                    logger.error('Error guardando configuración de caché:', error);
                 }
             });
         }
@@ -1867,7 +1867,7 @@ class SettingsModal {
                 try {
                     await this.currentTestTTSManager.stop();
                 } catch (e) {
-                    console.warn('[Settings] Error al detener test anterior:', e);
+                    logger.warn('[Settings] Error al detener test anterior:', e);
                 }
                 this.currentTestTTSManager = null;
             }
@@ -1896,7 +1896,7 @@ class SettingsModal {
                             }
                         },
                         onError: (error) => {
-                            console.error('Error en prueba ElevenLabs:', error);
+                            logger.error('Error en prueba ElevenLabs:', error);
                             if (window.toast) {
                                 window.toast.error(error.message || 'Error al probar voz');
                             }
@@ -1906,7 +1906,7 @@ class SettingsModal {
                     throw new Error('ElevenLabs provider no disponible');
                 }
             } catch (error) {
-                console.error('Error al probar ElevenLabs:', error);
+                logger.error('Error al probar ElevenLabs:', error);
                 if (window.toast) {
                     window.toast.error(error.message || 'Error al probar voz ElevenLabs');
                 }
@@ -2035,7 +2035,7 @@ class SettingsModal {
                 try {
                     await this.currentTestTTSManager.stop();
                 } catch (e) {
-                    console.warn('[Settings] Error al detener test anterior:', e);
+                    logger.warn('[Settings] Error al detener test anterior:', e);
                 }
                 this.currentTestTTSManager = null;
             }
@@ -2134,7 +2134,7 @@ class SettingsModal {
                         window.toast.success('Caché de audio limpiado');
                     }
                 } catch (error) {
-                    console.error('Error limpiando caché:', error);
+                    logger.error('Error limpiando caché:', error);
                     if (window.toast) {
                         window.toast.error('Error al limpiar caché');
                     }
@@ -2388,7 +2388,7 @@ class SettingsModal {
                     this.showToast('Datos guardados localmente', 'info');
                 }
             } catch (error) {
-                console.error('Error en sincronización:', error);
+                logger.error('Error en sincronización:', error);
                 this.showToast('Error al sincronizar', 'error');
             } finally {
                 if (btn) {
@@ -2457,7 +2457,7 @@ class SettingsModal {
                 this.showToast('Datos importados correctamente', 'success');
 
             } catch (error) {
-                console.error('Error importando datos:', error);
+                logger.error('Error importando datos:', error);
                 this.showToast('Error al importar: ' + error.message, 'error');
             }
         };
@@ -2762,7 +2762,7 @@ class SettingsModal {
             try {
                 this.currentTestTTSManager.stop();
             } catch (e) {
-                console.warn('[Settings] Error al detener test:', e);
+                logger.warn('[Settings] Error al detener test:', e);
             }
             this.currentTestTTSManager = null;
         }

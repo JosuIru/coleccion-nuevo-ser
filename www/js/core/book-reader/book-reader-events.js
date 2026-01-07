@@ -439,13 +439,19 @@ class BookReaderEvents {
     // ========================================================================
     // AI CHAT
     // ========================================================================
-    const aiChatHandler = () => {
+    const aiChatHandler = async () => {
       closeMobileMenuDropdown();
-      const aiChatModal = this.getDependency('aiChatModal');
-      if (aiChatModal) {
-        aiChatModal.open();
+      // 🔧 v2.9.283: Usar AILazyLoader para carga dinámica
+      if (window.aiLazyLoader) {
+        await window.aiLazyLoader.showAIChatModal();
       } else {
-        this.showToast('error', 'error.chatNotAvailable');
+        // Fallback: intentar cargar directo
+        const aiChatModal = this.getDependency('aiChatModal');
+        if (aiChatModal) {
+          aiChatModal.open();
+        } else {
+          this.showToast('error', 'error.chatNotAvailable');
+        }
       }
     };
 
@@ -468,7 +474,7 @@ class BookReaderEvents {
           const hub = new ExplorationHub(this.bookEngine);
           hub.open('search');
         } else {
-          console.error('ExplorationHub no esta disponible');
+          logger.error('ExplorationHub no esta disponible');
         }
       });
     }
@@ -531,7 +537,12 @@ class BookReaderEvents {
           return;
         }
 
-        const interactiveQuiz = this.getDependency('interactiveQuiz');
+        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
+        if (window.learningLazyLoader) {
+          await window.learningLazyLoader.ensureInteractiveQuiz();
+        }
+
+        const interactiveQuiz = this.getDependency('interactiveQuiz') || window.interactiveQuiz;
         if (interactiveQuiz) {
           const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
           if (quiz) {
@@ -540,7 +551,7 @@ class BookReaderEvents {
             this.showToast('info', 'No hay quiz disponible para este capitulo');
           }
         } else {
-          console.error('InteractiveQuiz no esta disponible');
+          logger.error('InteractiveQuiz no esta disponible');
         }
       });
     }
@@ -720,8 +731,13 @@ class BookReaderEvents {
     // ========================================================================
     const conceptMapBtn = document.getElementById('concept-map-btn');
     if (conceptMapBtn) {
-      this.eventManager.addEventListener(conceptMapBtn, 'click', () => {
-        const conceptMaps = this.getDependency('conceptMaps');
+      this.eventManager.addEventListener(conceptMapBtn, 'click', async () => {
+        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
+        if (window.learningLazyLoader) {
+          await window.learningLazyLoader.ensureConceptMaps();
+        }
+
+        const conceptMaps = this.getDependency('conceptMaps') || window.conceptMaps;
         if (conceptMaps) {
           conceptMaps.show();
         }
@@ -733,8 +749,13 @@ class BookReaderEvents {
     // ========================================================================
     const actionPlansBtn = document.getElementById('action-plans-btn');
     if (actionPlansBtn) {
-      this.eventManager.addEventListener(actionPlansBtn, 'click', () => {
-        const actionPlans = this.getDependency('actionPlans');
+      this.eventManager.addEventListener(actionPlansBtn, 'click', async () => {
+        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
+        if (window.learningLazyLoader) {
+          await window.learningLazyLoader.ensureActionPlans();
+        }
+
+        const actionPlans = this.getDependency('actionPlans') || window.actionPlans;
         if (actionPlans) {
           actionPlans.show();
         }
@@ -1200,7 +1221,7 @@ class BookReaderEvents {
 
           this.showToast('success', `Ahora leyendo: ${this.bookEngine.getCurrentBookData()?.title || targetBook}`);
         } catch (error) {
-          console.error('Error navegando a referencia cruzada:', error);
+          logger.error('Error navegando a referencia cruzada:', error);
           this.showToast('error', 'Error al cargar el libro referenciado');
         }
       });
@@ -1274,7 +1295,7 @@ class BookReaderEvents {
             this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
         } catch (error) {
-          console.error('Error navigating to exercise:', error);
+          logger.error('Error navigating to exercise:', error);
           this.showToast('error', 'error.navigationFailed');
         }
       });
@@ -1299,7 +1320,7 @@ class BookReaderEvents {
           if (targetChapterId) {
             const chapter = this.bookEngine.getChapter(targetChapterId);
             if (!chapter) {
-              console.warn(`Cross-reference target not found: ${targetChapterId}`);
+              logger.warn(`Cross-reference target not found: ${targetChapterId}`);
               this.showToast('warning', 'Referencia no encontrada');
               this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
               return;
@@ -1309,7 +1330,7 @@ class BookReaderEvents {
             this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
           }
         } catch (error) {
-          console.error('Error navigating to cross reference:', error);
+          logger.error('Error navigating to cross reference:', error);
           this.showToast('error', 'error.navigationFailed');
         }
       });
@@ -1333,7 +1354,7 @@ class BookReaderEvents {
           const firstChapter = this.bookEngine.getFirstChapter();
           this.bookReader.navigateToChapter(firstChapter?.id || 'prologo');
         } catch (error) {
-          console.error('Error opening actions book:', error);
+          logger.error('Error opening actions book:', error);
           this.showToast('error', 'Error al abrir la Guia de Acciones');
         }
       });
@@ -1353,7 +1374,7 @@ class BookReaderEvents {
           if (targetChapterId) {
             const chapter = this.bookEngine.getChapter(targetChapterId);
             if (!chapter) {
-              console.warn(`Action detail target not found: ${targetChapterId}`);
+              logger.warn(`Action detail target not found: ${targetChapterId}`);
               this.showToast('warning', 'Referencia no encontrada');
               this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
               return;
@@ -1368,7 +1389,7 @@ class BookReaderEvents {
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
         } catch (error) {
-          console.error('Error navigating to action detail:', error);
+          logger.error('Error navigating to action detail:', error);
           this.showToast('error', 'Error al abrir la accion');
         }
       });
@@ -1388,7 +1409,7 @@ class BookReaderEvents {
           if (targetChapterId) {
             const chapter = this.bookEngine.getChapter(targetChapterId);
             if (!chapter) {
-              console.warn(`Toolkit exercise target not found: ${targetChapterId}`);
+              logger.warn(`Toolkit exercise target not found: ${targetChapterId}`);
               this.showToast('warning', 'Referencia no encontrada');
               this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
               return;
@@ -1403,7 +1424,7 @@ class BookReaderEvents {
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
         } catch (error) {
-          console.error('Error navigating to toolkit exercise:', error);
+          logger.error('Error navigating to toolkit exercise:', error);
           this.showToast('error', 'Error al abrir el ejercicio del Toolkit');
         }
       });
@@ -1421,7 +1442,7 @@ class BookReaderEvents {
           const firstChapter = this.bookEngine.getFirstChapter();
           this.bookReader.navigateToChapter(firstChapter?.id || 'toolkit-1');
         } catch (error) {
-          console.error('Error opening toolkit book:', error);
+          logger.error('Error opening toolkit book:', error);
           this.showToast('error', 'Error al abrir el Toolkit de Transicion');
         }
       });
@@ -1449,7 +1470,7 @@ class BookReaderEvents {
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
         } catch (error) {
-          console.error('Error navigating to Manifiesto:', error);
+          logger.error('Error navigating to Manifiesto:', error);
           this.showToast('error', 'Error al abrir el Manifiesto');
         }
       });
@@ -1469,7 +1490,7 @@ class BookReaderEvents {
           if (targetChapterId) {
             const chapter = this.bookEngine.getChapter(targetChapterId);
             if (!chapter) {
-              console.warn(`Parent book target not found: ${targetChapterId}`);
+              logger.warn(`Parent book target not found: ${targetChapterId}`);
               this.showToast('warning', 'Referencia no encontrada');
               this.bookReader.navigateToChapter(this.bookEngine.getFirstChapter().id);
               return;
@@ -1484,7 +1505,7 @@ class BookReaderEvents {
           const contentArea = document.querySelector('.chapter-content');
           if (contentArea) contentArea.scrollTop = 0;
         } catch (error) {
-          console.error('Error navigating to parent book:', error);
+          logger.error('Error navigating to parent book:', error);
           this.showToast('error', 'Error al abrir el libro principal');
         }
       });
@@ -1579,7 +1600,7 @@ class BookReaderEvents {
       if (Icons) Icons.init();
 
     } catch (error) {
-      console.error('[BookReaderEvents] Error adjuntando content listeners:', error);
+      logger.error('[BookReaderEvents] Error adjuntando content listeners:', error);
     }
   }
 
@@ -1659,9 +1680,14 @@ class BookReaderEvents {
 
       // AI Chat
       const aiChatHandler = async () => {
-        const modal = this.getDependency('aiChatModal');
-        if (modal && typeof modal.open === 'function') {
-          await modal.open();
+        // 🔧 v2.9.283: Usar AILazyLoader para carga dinámica
+        if (window.aiLazyLoader) {
+          await window.aiLazyLoader.showAIChatModal();
+        } else {
+          const modal = this.getDependency('aiChatModal');
+          if (modal && typeof modal.open === 'function') {
+            await modal.open();
+          }
         }
       };
 
@@ -1682,7 +1708,7 @@ class BookReaderEvents {
         logger.debug('[BookReaderEvents] Listeners del header re-adjuntados');
       }
     } catch (error) {
-      console.error('[BookReaderEvents] Error adjuntando listeners del header:', error);
+      logger.error('[BookReaderEvents] Error adjuntando listeners del header:', error);
     }
   }
 
@@ -1745,7 +1771,7 @@ class BookReaderEvents {
         }
       }, 200); // Delay para Android WebView
     } catch (error) {
-      console.error('[BookReaderEvents] Error adjuntando navigation listeners:', error);
+      logger.error('[BookReaderEvents] Error adjuntando navigation listeners:', error);
     }
   }
 

@@ -11,6 +11,8 @@ class AudioReaderTTSEngine {
     this.utterance = null;
     this.nativeTTS = null;
     this.ttsManager = null;
+    this.isInitialized = false;
+    this.initPromise = null;
 
     // Provider actual: 'browser' | 'native' | 'openai' | 'elevenlabs'
     this.provider = localStorage.getItem('tts-provider') || 'browser';
@@ -30,11 +32,38 @@ class AudioReaderTTSEngine {
   // ==========================================================================
 
   async init() {
+    return this.ensureInitialized();
+  }
+
+  async ensureInitialized() {
+    // Ya inicializado
+    if (this.isInitialized) return;
+
+    // Inicialización en progreso - esperar
+    if (this.initPromise) {
+      await this.initPromise;
+      return;
+    }
+
+    // Iniciar nueva inicialización
+    this.initPromise = this._doInit();
+
+    try {
+      await this.initPromise;
+      this.isInitialized = true;
+      logger.warn('✅ TTS Engine inicializado. nativeTTS:', !!this.nativeTTS, 'isCapacitor:', this.isCapacitor);
+    } catch (error) {
+      logger.error('❌ Error inicializando TTS:', error);
+      this.initPromise = null; // Permitir reintentos
+    }
+  }
+
+  async _doInit() {
     if (this.isCapacitor) {
       await this.initNativeTTS();
     }
 
-    // Siempre cargar voces de Web Speech API
+    // Siempre cargar voces de Web Speech API como fallback
     await this.loadVoices();
 
     // Inicializar TTSManager si está disponible
@@ -48,32 +77,35 @@ class AudioReaderTTSEngine {
 
   async initNativeTTS() {
     try {
+      logger.warn('🔍 initNativeTTS: Capacitor.Plugins.TextToSpeech =', !!window.Capacitor?.Plugins?.TextToSpeech);
+
       if (window.Capacitor?.Plugins?.TextToSpeech) {
         this.nativeTTS = window.Capacitor.Plugins.TextToSpeech;
+        logger.warn('🔍 nativeTTS asignado:', !!this.nativeTTS);
 
         const result = await this.nativeTTS.getSupportedLanguages();
         const languages = result?.languages || [];
+        logger.warn('✅ TTS nativo: idiomas disponibles:', languages.length);
 
-        if (typeof logger !== 'undefined') {
-          logger.log('✅ TTS nativo inicializado. Idiomas:', languages.length);
-        }
-
-        // Pre-calentar el TTS
-        try {
-          await this.nativeTTS.speak({
-            text: ' ',
-            lang: 'es-ES',
-            rate: 1.0,
-            pitch: 1.0,
-            volume: 0.01
-          });
-        } catch (e) {
+        // Pre-calentar el TTS (sin await para no bloquear)
+        this.nativeTTS.speak({
+          text: ' ',
+          lang: 'es-ES',
+          rate: 1.0,
+          pitch: 1.0,
+          volume: 0.01
+        }).catch(() => {
           // Normal en primer uso
-        }
+        });
+
       } else if (window.capacitorTextToSpeech?.TextToSpeech) {
         this.nativeTTS = window.capacitorTextToSpeech.TextToSpeech;
+        logger.warn('🔍 nativeTTS asignado (fallback):', !!this.nativeTTS);
+      } else {
+        logger.warn('⚠️ No se encontró plugin TextToSpeech');
       }
     } catch (error) {
+      logger.error('❌ Error en initNativeTTS:', error);
       this.nativeTTS = null;
     }
   }
@@ -118,7 +150,7 @@ class AudioReaderTTSEngine {
         }, 2000);
       }
     } catch (error) {
-      console.error('Error loading voices:', error);
+      logger.error('Error loading voices:', error);
     }
   }
 
@@ -147,7 +179,7 @@ class AudioReaderTTSEngine {
         this.selectedVoice = voices[0];
       }
     } catch (error) {
-      console.error('Error selecting voice:', error);
+      logger.error('Error selecting voice:', error);
     }
   }
 
@@ -221,7 +253,7 @@ class AudioReaderTTSEngine {
 
   setProvider(provider) {
     if (!['browser', 'native', 'openai', 'elevenlabs'].includes(provider)) {
-      console.warn('Provider no válido:', provider);
+      logger.warn('Provider no válido:', provider);
       return false;
     }
 
@@ -257,6 +289,11 @@ class AudioReaderTTSEngine {
   // ==========================================================================
 
   async speak(paragraph, index, callbacks = {}) {
+    // Asegurar que TTS está inicializado antes de hablar
+    await this.ensureInitialized();
+
+    logger.warn('🔊 speak: isInitialized=', this.isInitialized, 'nativeTTS=', !!this.nativeTTS, 'provider=', this.provider);
+
     const { onEnd, onError, showPauseIndicator } = callbacks;
 
     if (this.provider === 'elevenlabs' && this.ttsManager?.isElevenLabsAvailable?.()) {
@@ -264,10 +301,13 @@ class AudioReaderTTSEngine {
     } else if (this.provider === 'openai' && this.ttsManager && localStorage.getItem('openai-tts-key')) {
       await this.speakWithOpenAI(paragraph, index, callbacks);
     } else if (this.provider === 'native' && this.nativeTTS) {
+      logger.warn('🔊 Usando TTS nativo (provider=native)');
       await this.speakWithNativeTTS(paragraph, index, callbacks);
     } else if (this.nativeTTS) {
+      logger.warn('🔊 Usando TTS nativo (fallback)');
       await this.speakWithNativeTTS(paragraph, index, callbacks);
     } else {
+      logger.warn('🔊 Usando Web Speech API (fallback)');
       this.speakWithWebSpeechAPI(paragraph, index, callbacks);
     }
   }
@@ -276,8 +316,17 @@ class AudioReaderTTSEngine {
     const { onEnd, onError, onPauseNeeded } = callbacks;
 
     try {
+      const textToSpeak = paragraph.text || '';
+      logger.warn('🎤 speakWithNativeTTS: texto =', textToSpeak.substring(0, 50) + '...');
+
+      if (!textToSpeak || textToSpeak.trim().length === 0) {
+        logger.warn('⚠️ Texto vacío, saltando');
+        if (onEnd) onEnd(100);
+        return;
+      }
+
       const options = {
-        text: paragraph.text,
+        text: textToSpeak,
         lang: 'es-ES',
         rate: this.rate,
         pitch: 1.0,
@@ -289,7 +338,12 @@ class AudioReaderTTSEngine {
         options.voice = this.selectedVoiceURI;
       }
 
+      logger.warn('🎤 Iniciando speak nativo...');
+      const startTime = Date.now();
       await this.nativeTTS.speak(options);
+      const elapsed = Date.now() - startTime;
+      logger.warn('🎤 speak nativo completado en', elapsed, 'ms');
+
       paragraph.spoken = true;
 
       // Manejar pausa y siguiente
@@ -301,7 +355,14 @@ class AudioReaderTTSEngine {
         onEnd(pauseDuration);
       }
     } catch (error) {
-      console.error('❌ Error en TTS nativo:', error);
+      // Ignore interrupted/canceled errors (from stop/pause)
+      const errorMsg = error?.message?.toLowerCase() || '';
+      if (errorMsg.includes('interrupted') || errorMsg.includes('canceled') || errorMsg.includes('cancelled')) {
+        logger.warn('⏹️ TTS nativo interrumpido (pausa/stop)');
+        return;
+      }
+
+      logger.error('❌ Error en TTS nativo:', error);
 
       if (retryCount < 3 && error.message?.includes('not ready')) {
         setTimeout(() => {
@@ -425,7 +486,7 @@ class AudioReaderTTSEngine {
           onEnd?.(pauseDuration);
         },
         onError: (error) => {
-          console.error('❌ Error en OpenAI TTS:', error);
+          logger.error('❌ Error en OpenAI TTS:', error);
 
           // Fallback a navegador
           this.provider = 'browser';
@@ -476,7 +537,7 @@ class AudioReaderTTSEngine {
           onEnd?.(pauseDuration);
         },
         onError: (error) => {
-          console.error('❌ Error en ElevenLabs:', error);
+          logger.error('❌ Error en ElevenLabs:', error);
 
           // Fallback
           this.provider = 'browser';
@@ -501,6 +562,9 @@ class AudioReaderTTSEngine {
       this.ttsManager.providers.elevenlabs.pause?.();
     } else if (['openai', 'huggingface'].includes(this.provider) && this.ttsManager) {
       this.ttsManager.pause?.();
+    } else if (this.nativeTTS) {
+      // Native TTS can't pause - we stop it and will restart from current paragraph on resume
+      try { this.nativeTTS.stop(); } catch (e) {}
     } else if (this.synthesis?.speaking) {
       this.synthesis.pause();
     }

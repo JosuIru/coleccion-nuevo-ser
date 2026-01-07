@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * MY ACCOUNT MODAL - Pantalla de Mi Cuenta
  * Gestión completa del perfil de usuario, suscripción y créditos
  *
@@ -82,14 +82,14 @@ class MyAccountModal {
       );
 
       await Promise.race([loadPromise, timeoutPromise]).catch(err => {
-        console.warn('[MyAccount] loadData timeout o error:', err.message);
+        logger.warn('[MyAccount] loadData timeout o error:', err.message);
         // Continuar con datos vacíos
       });
 
       this.render();
       this.attachEvents();
     } catch (error) {
-      console.error('[MyAccount] Error abriendo modal:', error);
+      logger.error('[MyAccount] Error abriendo modal:', error);
       // 🔧 FIX v2.9.275: Renderizar de todas formas con datos vacíos
       this.render();
       this.attachEvents();
@@ -153,7 +153,7 @@ class MyAccountModal {
 
       // 🔧 FIX v2.9.276: Cargar datos locales como fallback si no hay Supabase
       if (!userId || !this.supabase) {
-        console.warn('[MyAccount] No userId o supabase, usando datos locales');
+        logger.warn('[MyAccount] No userId o supabase, usando datos locales');
         this.loadLocalData();
         return;
       }
@@ -191,14 +191,14 @@ class MyAccountModal {
         this.usageHistory = await this.aiPremium.getUsageHistory(30) || [];
       }
 
-      console.log('[MyAccount] Datos cargados:', {
+      logger.log('[MyAccount] Datos cargados:', {
         notas: this.userNotes.length,
         marcadores: this.userBookmarks.length,
         progreso: this.readingProgress.length,
         chats: this.aiConversations.length
       });
     } catch (error) {
-      console.error('[MyAccount] Error cargando datos:', error);
+      logger.error('[MyAccount] Error cargando datos:', error);
       // 🔧 FIX v2.9.276: Fallback a datos locales si Supabase falla
       this.loadLocalData();
     }
@@ -221,7 +221,7 @@ class MyAccountModal {
       }));
     }
 
-    console.log('[MyAccount] Datos locales cargados:', {
+    logger.log('[MyAccount] Datos locales cargados:', {
       marcadores: this.userBookmarks.length,
       progreso: this.readingProgress.length
     });
@@ -274,9 +274,9 @@ class MyAccountModal {
         return true;
       });
 
-      console.log('[MyAccount] Bookmarks locales cargados:', this.userBookmarks.length);
+      logger.log('[MyAccount] Bookmarks locales cargados:', this.userBookmarks.length);
     } catch (error) {
-      console.error('[MyAccount] Error cargando bookmarks locales:', error);
+      logger.error('[MyAccount] Error cargando bookmarks locales:', error);
       this.userBookmarks = [];
     }
   }
@@ -299,13 +299,13 @@ class MyAccountModal {
           catalog = data.books || [];
           window.libros = catalog;
         } catch (e) {
-          console.warn('[MyAccount] No se pudo cargar catálogo:', e);
+          logger.warn('[MyAccount] No se pudo cargar catálogo:', e);
         }
       }
 
       const catalogMap = new Map(catalog.map(book => [book.id, book]));
 
-      console.log('[MyAccount] Enriqueciendo bookmarks:', bookmarks.length, 'Catálogo:', catalog.length);
+      logger.log('[MyAccount] Enriqueciendo bookmarks:', bookmarks.length, 'Catálogo:', catalog.length);
 
       return bookmarks.map(bm => {
         // Supabase puede guardar chapter_id como JSON string o como objeto
@@ -334,7 +334,7 @@ class MyAccountModal {
 
         const book = bookId ? catalogMap.get(bookId) : null;
 
-        console.log('[MyAccount] Bookmark parsed:', { bookId, chapterId, hasBook: !!book });
+        logger.log('[MyAccount] Bookmark parsed:', { bookId, chapterId, hasBook: !!book });
 
         // Intentar extraer número de capítulo del chapter_id (ej: "cap1" -> 1)
         let chapterIndex = 0;
@@ -376,7 +376,7 @@ class MyAccountModal {
         };
       });
     } catch (error) {
-      console.error('[MyAccount] Error enriching bookmarks:', error);
+      logger.error('[MyAccount] Error enriching bookmarks:', error);
       return bookmarks;
     }
   }
@@ -393,8 +393,8 @@ class MyAccountModal {
     const profile = this.authHelper?.getProfile() || {};
     const user = this.authHelper?.getUser() || {};
 
-    console.log('[MyAccountModal] Rendering with profile:', profile);
-    console.log('[MyAccountModal] User:', user);
+    logger.log('[MyAccountModal] Rendering with profile:', profile);
+    logger.log('[MyAccountModal] User:', user);
 
     const modal = document.createElement('div');
     modal.id = 'my-account-modal';
@@ -1114,7 +1114,7 @@ class MyAccountModal {
   attachEvents() {
     // 🔧 FIX: Protección contra re-attach múltiple
     if (this._eventListenersAttached) {
-      console.warn('[MyAccountModal] Listeners already attached, skipping');
+      logger.warn('[MyAccountModal] Listeners already attached, skipping');
       return;
     }
 
@@ -1362,7 +1362,7 @@ class MyAccountModal {
         throw new Error('Error al cancelar');
       }
     } catch (error) {
-      console.error('[MyAccount] Error cancelando:', error);
+      logger.error('[MyAccount] Error cancelando:', error);
       window.toast?.error('Error al cancelar. Contacta con soporte.');
     }
   }
@@ -1385,7 +1385,7 @@ class MyAccountModal {
         window.toast?.success('Preferencias guardadas');
       }
     } catch (error) {
-      console.error('[MyAccount] Error guardando preferencias:', error);
+      logger.error('[MyAccount] Error guardando preferencias:', error);
       window.toast?.error('Error al guardar preferencias');
     }
   }
@@ -1413,7 +1413,7 @@ class MyAccountModal {
 
       window.toast?.success('Datos exportados');
     } catch (error) {
-      console.error('[MyAccount] Error exportando:', error);
+      logger.error('[MyAccount] Error exportando:', error);
       window.toast?.error('Error al exportar datos');
     }
   }
@@ -1477,7 +1477,7 @@ class MyAccountModal {
 
       window.toast?.success('Todos los datos exportados');
     } catch (error) {
-      console.error('[MyAccount] Error exportando todos los datos:', error);
+      logger.error('[MyAccount] Error exportando todos los datos:', error);
       window.toast?.error('Error al exportar datos');
     }
   }
@@ -1524,7 +1524,7 @@ class MyAccountModal {
         throw new Error('Error al eliminar');
       }
     } catch (error) {
-      console.error('[MyAccount] Error eliminando cuenta:', error);
+      logger.error('[MyAccount] Error eliminando cuenta:', error);
       window.toast?.error('Error al eliminar. Contacta con soporte.');
     }
   }

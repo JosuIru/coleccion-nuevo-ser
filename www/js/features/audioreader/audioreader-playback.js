@@ -23,7 +23,7 @@ class AudioReaderPlayback {
     if (window.ttsPlatformHelper) {
       const ttsIssueDetected = await window.ttsPlatformHelper.checkAndShowModalIfNeeded();
       if (ttsIssueDetected) {
-        console.warn('⚠️ TTS no disponible');
+        logger.warn('⚠️ TTS no disponible');
         return false;
       }
     }
@@ -36,7 +36,7 @@ class AudioReaderPlayback {
 
     const paragraphs = ar.content?.getParagraphs() || [];
     if (paragraphs.length === 0) {
-      console.error('❌ No hay contenido preparado para narrar');
+      logger.error('❌ No hay contenido preparado para narrar');
       return false;
     }
 
@@ -108,8 +108,7 @@ class AudioReaderPlayback {
       window.backgroundAudio.pause();
     }
 
-    // Pausar ambient/binaural
-    await this.syncAmbientAudio(false);
+    // NO pausar ambient/binaural - dejar que sigan sonando durante pausa
 
     // Ocultar indicador de pausa
     if (ar.ui) {
@@ -126,6 +125,7 @@ class AudioReaderPlayback {
     const ar = this.audioReader;
     if (!ar.isPaused) return;
 
+    ar.isPlaying = true;
     ar.isPaused = false;
 
     // Adquirir wake lock
@@ -136,23 +136,31 @@ class AudioReaderPlayback {
       window.backgroundAudio.resume();
     }
 
-    // Reanudar ambient/binaural
-    await this.syncAmbientAudio(true);
+    // NO reiniciar ambient/binaural - nunca se detuvieron durante pausa
 
-    // Reanudar TTS o reiniciar párrafo
-    if (ar.tts) {
+    // Verificar si Web Speech API puede continuar desde donde se pausó
+    const canResumeWebSpeech = ar.tts?.provider === 'browser' &&
+                               window.speechSynthesis?.paused;
+
+    if (canResumeWebSpeech) {
+      // Web Speech API soporta resume real - continuar desde donde se pausó
       ar.tts.resume();
+      if (typeof logger !== 'undefined') {
+        logger.log('▶️ Audio reanudado (Web Speech resume)');
+      }
+    } else {
+      // Otros providers no soportan resume - reiniciar párrafo actual
+      if (ar.tts) {
+        ar.tts.stop();
+      }
+      this.speakCurrentParagraph();
+      if (typeof logger !== 'undefined') {
+        logger.log('▶️ Audio reanudado (reinicio de párrafo)');
+      }
     }
-
-    // Para la mayoría de providers, reiniciar desde el párrafo actual
-    this.speakCurrentParagraph();
 
     if (ar.ui) {
       await ar.ui.updateUI();
-    }
-
-    if (typeof logger !== 'undefined') {
-      logger.log('▶️ Audio reanudado');
     }
   }
 
@@ -300,7 +308,7 @@ class AudioReaderPlayback {
           this.onParagraphEnd(paragraph, pauseDuration);
         },
         onError: (error) => {
-          console.error('Error en TTS:', error);
+          logger.error('Error en TTS:', error);
           this.stop();
           window.toast?.error('Error en reproductor de audio');
         },
@@ -439,7 +447,7 @@ class AudioReaderPlayback {
         }
       }
     } catch (error) {
-      console.warn('Error adquiriendo wake lock:', error);
+      logger.warn('Error adquiriendo wake lock:', error);
     }
   }
 
@@ -454,7 +462,7 @@ class AudioReaderPlayback {
         }
       }
     } catch (error) {
-      console.warn('Error liberando wake lock:', error);
+      logger.warn('Error liberando wake lock:', error);
     } finally {
       this.wakeLock = null;
     }
@@ -491,7 +499,7 @@ class AudioReaderPlayback {
         logger.log('🎵 Media Session configurada');
       }
     } catch (error) {
-      console.warn('Error configurando Media Session:', error);
+      logger.warn('Error configurando Media Session:', error);
     }
   }
 
@@ -516,23 +524,30 @@ class AudioReaderPlayback {
 
   async syncAmbientAudio(isPlaying) {
     try {
-      if (!window.audioMixer) return;
+      if (!window.audioMixer) {
+        logger.warn('🎵 AudioMixer no disponible para ambient/binaural');
+        return;
+      }
 
       if (isPlaying) {
-        const ambientSelect = document.getElementById('audioreader-ambient-select');
-        const binauralSelect = document.getElementById('audioreader-binaural-select');
+        // Leer preferencias desde localStorage (funcionan incluso si UI está minimizada/cerrada)
+        const savedAmbient = localStorage.getItem('audioreader-ambient') || '';
+        const savedBinaural = localStorage.getItem('audioreader-binaural') || '';
 
-        if (ambientSelect?.value) {
-          await window.audioMixer.playAmbient(ambientSelect.value);
+        if (savedAmbient) {
+          logger.log('🎵 Iniciando ambient desde localStorage:', savedAmbient);
+          await window.audioMixer.playAmbient(savedAmbient);
         }
-        if (binauralSelect?.value) {
-          await window.audioMixer.playBinaural(binauralSelect.value);
+        if (savedBinaural) {
+          logger.log('🧠 Iniciando binaural desde localStorage:', savedBinaural);
+          await window.audioMixer.playBinaural(savedBinaural);
         }
       } else {
+        logger.log('🔇 Deteniendo ambient/binaural');
         await window.audioMixer.stopAll();
       }
     } catch (error) {
-      console.warn('Error sincronizando ambient/binaural:', error);
+      logger.warn('Error sincronizando ambient/binaural:', error);
     }
   }
 

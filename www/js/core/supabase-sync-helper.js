@@ -1,5 +1,5 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
  * Supabase Sync Helper
  * Maneja sincronización de datos entre dispositivos
  */
@@ -19,7 +19,7 @@ class SupabaseSyncHelper {
     async init() {
         // Esperar a que auth esté inicializado
         if (!window.supabaseAuthHelper?.supabase) {
-            console.error('Supabase Auth no inicializado');
+            logger.error('Supabase Auth no inicializado');
             return;
         }
 
@@ -164,7 +164,7 @@ class SupabaseSyncHelper {
             window.toast?.success('Datos migrados correctamente');
 
         } catch (error) {
-            console.error('Error en migración:', error);
+            logger.error('Error en migración:', error);
             window.toast?.error('Error al migrar datos');
         }
     }
@@ -249,12 +249,12 @@ class SupabaseSyncHelper {
                     }
 
                 } catch (error) {
-                    console.error(`Error migrando progreso de ${bookId}:`, error);
+                    logger.error(`Error migrando progreso de ${bookId}:`, error);
                 }
             }
 
         } catch (error) {
-            console.error('Error general en migración de progreso:', error);
+            logger.error('Error general en migración de progreso:', error);
         }
     }
 
@@ -316,13 +316,13 @@ class SupabaseSyncHelper {
                             // logger.debug(`✓ Nota migrada: ${bookId}:${chapterId}`);
                         }
                     } catch (error) {
-                        console.error(`Error migrando nota ${note.id}:`, error);
+                        logger.error(`Error migrando nota ${note.id}:`, error);
                     }
                 }
             }
 
         } catch (error) {
-            console.error('Error general en migración de notas:', error);
+            logger.error('Error general en migración de notas:', error);
         }
     }
 
@@ -380,7 +380,7 @@ class SupabaseSyncHelper {
             }
 
         } catch (error) {
-            console.error('Error migrando achievements:', error);
+            logger.error('Error migrando achievements:', error);
         }
     }
 
@@ -410,46 +410,44 @@ class SupabaseSyncHelper {
                     const bookId = typeof bookmark === 'string' ? null : bookmark.book;
 
                     if (!chapterId) {
-                        // console.warn('Bookmark inválido:', bookmark);
+                        // logger.warn('Bookmark inválido:', bookmark);
                         continue;
                     }
 
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    const { data: existing } = await this.supabase
+                    // 🔧 FIX v2.9.244: Supabase v2 no soporta .catch() encadenado
+                    const { data: existing, error: selectError } = await this.supabase
                         .from(window.supabaseConfig.tables.bookmarks)
                         .select('*')
                         .eq('user_id', userId)
                         .eq('chapter_id', chapterId)
-                        .single()
-                        .catch(error => {
-                            logger.error('Error verificando bookmark existente:', error);
-                            return { data: null };
-                        });
+                        .maybeSingle();
+
+                    if (selectError) {
+                        logger.error('Error verificando bookmark existente:', selectError);
+                    }
 
                     if (!existing) {
-                        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                        await this.supabase
+                        // Insertar nuevo bookmark
+                        const { error: insertError } = await this.supabase
                             .from(window.supabaseConfig.tables.bookmarks)
                             .insert({
                                 user_id: userId,
                                 chapter_id: chapterId,
                                 book_id: bookId,
                                 created_at: new Date().toISOString(),
-                            })
-                            .catch(error => {
-                                logger.error(`Error insertando bookmark ${chapterId}:`, error);
-                                window.toast?.error('Error al sincronizar marcadores');
-                                throw error;
                             });
-                        // logger.debug(`✓ Bookmark migrado: ${chapterId}`);
+
+                        if (insertError) {
+                            logger.error(`Error insertando bookmark ${chapterId}:`, insertError);
+                        }
                     }
                 } catch (error) {
-                    console.error(`Error migrando bookmark:`, error);
+                    logger.error(`Error migrando bookmark:`, error);
                 }
             }
 
         } catch (error) {
-            console.error('Error general en migración de bookmarks:', error);
+            logger.error('Error general en migración de bookmarks:', error);
         }
     }
 
@@ -531,7 +529,7 @@ class SupabaseSyncHelper {
             }
 
         } catch (error) {
-            console.error('Error migrando settings:', error);
+            logger.error('Error migrando settings:', error);
         }
     }
 
@@ -543,7 +541,7 @@ class SupabaseSyncHelper {
         // logger.debug('[SyncHelper] syncSettingsToCloud() called with keys:', settingsKeys);
 
         if (!window.supabaseAuthHelper.isAuthenticated()) {
-            // console.warn('[SyncHelper] ⚠️ Usuario no autenticado, abortando sync');
+            // logger.warn('[SyncHelper] ⚠️ Usuario no autenticado, abortando sync');
             return;
         }
 
@@ -589,7 +587,7 @@ class SupabaseSyncHelper {
                 });
 
             if (queryError) {
-                // console.warn('⚠️ Error buscando settings existentes:', queryError.message);
+                // logger.warn('⚠️ Error buscando settings existentes:', queryError.message);
                 return;
             }
 
@@ -613,7 +611,7 @@ class SupabaseSyncHelper {
                     });
 
                 if (updateError) {
-                    console.error('Error actualizando settings:', updateError);
+                    logger.error('Error actualizando settings:', updateError);
                 } else {
                     // logger.debug('✓ Settings sincronizados a la nube');
                 }
@@ -630,14 +628,14 @@ class SupabaseSyncHelper {
                     });
 
                 if (insertError) {
-                    console.error('Error creando settings:', insertError);
+                    logger.error('Error creando settings:', insertError);
                 } else {
                     // logger.debug('✓ Settings creados en la nube');
                 }
             }
 
         } catch (error) {
-            console.error('Exception sincronizando settings:', error);
+            logger.error('Exception sincronizando settings:', error);
         }
     }
 
@@ -694,7 +692,7 @@ class SupabaseSyncHelper {
             if (window.biblioteca) window.biblioteca.render();
 
         } catch (error) {
-            console.error('Error en syncFromCloud:', error);
+            logger.error('Error en syncFromCloud:', error);
             window.toast?.error('Error al sincronizar');
         } finally {
             this.syncInProgress = false;
@@ -821,7 +819,7 @@ class SupabaseSyncHelper {
                 .maybeSingle(); // Cambiado de .single() a .maybeSingle() para evitar error si no existe
 
             if (error) {
-                // console.warn('⚠️ Error al sincronizar achievements desde nube:', error.message);
+                // logger.warn('⚠️ Error al sincronizar achievements desde nube:', error.message);
                 return; // No propagar el error
             }
 
@@ -835,7 +833,7 @@ class SupabaseSyncHelper {
                 // logger.debug('No hay achievements en la nube (primera vez)');
             }
         } catch (err) {
-            // console.warn('⚠️ Exception al sincronizar achievements:', err.message);
+            // logger.warn('⚠️ Exception al sincronizar achievements:', err.message);
             // No propagar para no romper el flujo de sync
         }
     }
@@ -893,7 +891,7 @@ class SupabaseSyncHelper {
                 .maybeSingle();
 
             if (error) {
-                // console.warn('⚠️ Error al sincronizar settings desde nube:', error.message);
+                // logger.warn('⚠️ Error al sincronizar settings desde nube:', error.message);
                 return;
             }
 
@@ -924,7 +922,7 @@ class SupabaseSyncHelper {
                 // logger.debug('No hay settings en la nube (primera vez)');
             }
         } catch (err) {
-            // console.warn('⚠️ Exception al sincronizar settings:', err.message);
+            // logger.warn('⚠️ Exception al sincronizar settings:', err.message);
         }
     }
 
@@ -985,7 +983,7 @@ class SupabaseSyncHelper {
                 }
             }
         } catch (error) {
-            console.error('Error migrando reflexiones:', error);
+            logger.error('Error migrando reflexiones:', error);
             throw error;
         }
     }
@@ -1076,7 +1074,7 @@ class SupabaseSyncHelper {
                 }
             }
         } catch (error) {
-            console.error('Error migrando planes de acción:', error);
+            logger.error('Error migrando planes de acción:', error);
             throw error;
         }
     }
@@ -1165,7 +1163,7 @@ class SupabaseSyncHelper {
             }
             // logger.debug(`✓ ${history.length} koans migrados`);
         } catch (error) {
-            console.error('Error migrando historial de koans:', error);
+            logger.error('Error migrando historial de koans:', error);
             throw error;
         }
     }

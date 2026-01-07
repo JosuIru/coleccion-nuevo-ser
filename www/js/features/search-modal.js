@@ -2,7 +2,7 @@
 // SEARCH MODAL - Búsqueda semántica en todos los libros
 // ============================================================================
 
-// 🔧 FIX v2.9.198: Migrated console.log to logger
+// 🔧 FIX v2.9.284: Migrated all console.* to logger
 class SearchModal {
   constructor(bookEngine) {
     this.bookEngine = bookEngine;
@@ -57,7 +57,7 @@ class SearchModal {
         this.metadata = await response.json();
       }
     } catch (error) {
-      console.error('Error loading metadata:', error);
+      logger.error('Error loading metadata:', error);
       this.metadata = null;
     }
   }
@@ -102,7 +102,7 @@ class SearchModal {
 
       logger.debug('✅ Filtros cargados desde catálogo:', this.filters);
     } catch (error) {
-      console.error('Error loading filters from catalog:', error);
+      logger.error('Error loading filters from catalog:', error);
       // Fallback a filtros vacíos
       this.filters = {
         books: [],
@@ -146,7 +146,7 @@ class SearchModal {
       // Cargar catálogo de libros
       const catalog = await this.bookEngine.loadCatalog();
       if (!catalog || !catalog.books) {
-        console.warn('No se pudo cargar el catálogo para construir el índice');
+        logger.warn('No se pudo cargar el catálogo para construir el índice');
         return;
       }
 
@@ -194,14 +194,14 @@ class SearchModal {
             }
           }
         } catch (error) {
-          console.error(`Error indexando libro ${book.id}:`, error);
+          logger.error(`Error indexando libro ${book.id}:`, error);
         }
       }
 
       this.searchIndex = index;
       logger.debug(`✅ Índice de búsqueda construido: ${index.size} términos únicos indexados`);
     } catch (error) {
-      console.error('Error construyendo índice de búsqueda:', error);
+      logger.error('Error construyendo índice de búsqueda:', error);
       this.searchIndex = null;
     }
   }
@@ -319,12 +319,12 @@ class SearchModal {
       try {
         await this.searchWithIndex(queryWords);
       } catch (error) {
-        console.error('Error en búsqueda indexada, fallback a búsqueda secuencial:', error);
+        logger.error('Error en búsqueda indexada, fallback a búsqueda secuencial:', error);
         await this.searchSequential(queryWords);
       }
     } else {
       // Fallback a búsqueda secuencial si el índice no está disponible
-      console.warn('Índice no disponible, usando búsqueda secuencial');
+      logger.warn('Índice no disponible, usando búsqueda secuencial');
       await this.searchSequential(queryWords);
     }
 
@@ -413,7 +413,7 @@ class SearchModal {
           }
         }
       } catch (error) {
-        console.error(`❌ Error procesando candidato ${candidate.bookId}/${candidate.chapterId}:`, error);
+        logger.error(`❌ Error procesando candidato ${candidate.bookId}/${candidate.chapterId}:`, error);
       }
     }
   }
@@ -427,7 +427,7 @@ class SearchModal {
     try {
       catalog = await this.bookEngine.loadCatalog();
     } catch (error) {
-      console.error('❌ Error cargando catálogo:', error);
+      logger.error('❌ Error cargando catálogo:', error);
       const loadingIndicator = document.getElementById('search-loading');
       const container = document.getElementById('search-results');
 
@@ -479,7 +479,7 @@ class SearchModal {
           }
         }
       } catch (error) {
-        console.error(`❌ Error searching in book ${book.id}:`, error);
+        logger.error(`❌ Error searching in book ${book.id}:`, error);
       }
     }
   }
@@ -490,14 +490,14 @@ class SearchModal {
       // logger.debug(`📖 Cargando: ${url}`);
       const response = await fetch(url);
       if (!response.ok) {
-        console.error(`❌ HTTP ${response.status} para ${url}`);
+        logger.error(`❌ HTTP ${response.status} para ${url}`);
         return null;
       }
       const data = await response.json();
       // logger.debug(`✅ ${bookId} cargado: ${data.sections?.length || 0} secciones`);
       return data;
     } catch (error) {
-      console.error(`❌ Error loading book ${bookId}:`, error);
+      logger.error(`❌ Error loading book ${bookId}:`, error);
       return null;
     }
   }
@@ -759,7 +759,7 @@ class SearchModal {
     // logger.debug('📊 updateResults() llamado');
     const container = document.getElementById('search-results');
     if (!container) {
-      console.error('❌ Container search-results no encontrado');
+      logger.error('❌ Container search-results no encontrado');
       return;
     }
 
@@ -919,10 +919,10 @@ class SearchModal {
           // logger.debug('✅ Ejecutando búsqueda con:', searchInputInModal.value);
           this.search(searchInputInModal.value);
         } else if (searchInputInModal) {
-          // console.warn('⚠️ Input vacío - por favor escribe algo primero');
+          // logger.warn('⚠️ Input vacío - por favor escribe algo primero');
           searchInputInModal.focus();
         } else {
-          console.error('❌ Input no encontrado en el modal');
+          logger.error('❌ Input no encontrado en el modal');
         }
       });
     }

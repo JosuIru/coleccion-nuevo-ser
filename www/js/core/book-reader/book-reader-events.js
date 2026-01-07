@@ -1617,29 +1617,48 @@ class BookReaderEvents {
         logger.debug('[BookReaderEvents] Re-adjuntando listeners del header...');
       }
 
-      // Toggle sidebar
-      if (this._toggleSidebarHandler) {
-        const toggleSidebar = document.getElementById('toggle-sidebar');
-        if (toggleSidebar) {
-          this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
-        }
+      // Toggle sidebar - Crear handler si no existe (fix v2.9.285)
+      if (!this._toggleSidebarHandler) {
+        this._toggleSidebarHandler = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.bookReader.toggleSidebar();
+        };
       }
 
-      // Audioreader
-      if (this._audioreaderHandler) {
-        const audioreaderBtn = document.getElementById('audioreader-btn');
-        const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
-        const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
+      const toggleSidebar = document.getElementById('toggle-sidebar');
+      if (toggleSidebar) {
+        this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
+      }
 
-        if (audioreaderBtn) {
-          this.eventManager.addEventListener(audioreaderBtn, 'click', this._audioreaderHandler);
-        }
-        if (audioreaderBtnTablet) {
-          this.eventManager.addEventListener(audioreaderBtnTablet, 'click', this._audioreaderHandler);
-        }
-        if (audioreaderBtnMobile) {
-          this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
-        }
+      // Audioreader - Crear handler si no existe (fix v2.9.285)
+      if (!this._audioreaderHandler) {
+        this._audioreaderHandler = async (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          const audioReader = this.getDependency('audioReader');
+          if (audioReader) {
+            if (audioReader.isPlaying) {
+              await audioReader.pause();
+            } else {
+              await audioReader.play();
+            }
+          }
+        };
+      }
+
+      const audioreaderBtn = document.getElementById('audioreader-btn');
+      const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
+      const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
+
+      if (audioreaderBtn) {
+        this.eventManager.addEventListener(audioreaderBtn, 'click', this._audioreaderHandler);
+      }
+      if (audioreaderBtnTablet) {
+        this.eventManager.addEventListener(audioreaderBtnTablet, 'click', this._audioreaderHandler);
+      }
+      if (audioreaderBtnMobile) {
+        this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
       }
 
       // Audio expand button

@@ -43,7 +43,7 @@ class AppInitialization {
       window.versionManager = new VersionManager({
         apiUrl: '/api/check-version.php',
         autoCheckInterval: 3600000, // 1 hora
-        enableAutoCheck: true
+        enableAutoCheck: false // Deshabilitado: no hay backend de actualizaciones
       });
 
       // 4. Inicializar UpdateHelper
@@ -54,11 +54,11 @@ class AppInitialization {
 
       logger.log('[AppInit] Sistema de versiones inicializado');
 
-      // 6. Verificar actualizaciones al iniciar
-      const delay = Math.random() * 3000; // 0-3 segundos de delay aleatorio
-      setTimeout(() => {
-        window.versionManager.checkForUpdates();
-      }, delay);
+      // 6. Verificar actualizaciones al iniciar (deshabilitado - no hay backend)
+      // const delay = Math.random() * 3000; // 0-3 segundos de delay aleatorio
+      // setTimeout(() => {
+      //   window.versionManager.checkForUpdates();
+      // }, delay);
 
       // 7. Mostrar Welcome Flow para nuevos usuarios
       if (window.welcomeFlow && window.welcomeFlow.shouldShow()) {

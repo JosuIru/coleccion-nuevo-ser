@@ -645,15 +645,24 @@ class Biblioteca {
         if (window.myAccountModal) {
           window.myAccountModal.show();
         }
-      }).catch(err => {
+      }).catch(async (err) => {
         logger.error('[Biblioteca] Error cargando my-account:', err);
-        // Fallback a auth modal si no está logueado
+        // Fallback a auth modal si no está logueado - lazy load
+        if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+          await window.lazyLoader.loadAuthModal();
+        }
         if (window.authModal) {
           window.authModal.show('login');
         }
       });
-    } else if (window.authModal) {
-      window.authModal.show('login');
+    } else {
+      // Lazy load Auth Modal (40KB)
+      if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+        await window.lazyLoader.loadAuthModal();
+      }
+      if (window.authModal) {
+        window.authModal.show('login');
+      }
     }
   }
 
@@ -1770,8 +1779,12 @@ class Biblioteca {
 
     // 🔧 FIX #17: Event listeners con cleanup apropiado
     this.eventManager.addEventListener(document.getElementById('login-required-backdrop'), 'click', cleanupModal);
-    this.eventManager.addEventListener(document.getElementById('login-required-login-btn'), 'click', () => {
+    this.eventManager.addEventListener(document.getElementById('login-required-login-btn'), 'click', async () => {
       cleanupModal();
+      // Lazy load Auth Modal (40KB)
+      if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+        await window.lazyLoader.loadAuthModal();
+      }
       if (window.authModal) window.authModal.show();
     });
     this.eventManager.addEventListener(document.getElementById('login-required-cancel-btn'), 'click', cleanupModal);

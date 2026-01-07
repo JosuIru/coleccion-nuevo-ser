@@ -448,8 +448,8 @@
   <script src="js/utils/dependency-injector.js?v=1.0.0"></script>
   <script src="js/utils/sync-manager.js?v=1.0.0"></script>
   <script src="js/utils/event-manager.js?v=1.0.0"></script>
-  <!-- Auth Modal - necesario globalmente para login desde cualquier parte -->
-  <script src="js/features/auth-modal.js?v=2.9.237"></script>
+  <!-- LAZY LOADED: Auth Modal (40KB) - Loaded when user needs to login -->
+  <!-- <script src="js/features/auth-modal.js?v=2.9.237"></script> -->
   <script src="js/utils/safe-fetch.js?v=1.0.0"></script>
   <script src="js/utils/offline-detector.js?v=1.0.0"></script>
   <script src="js/utils/safe-expression-evaluator.js?v=1.0.0"></script>
@@ -478,13 +478,12 @@
   <script src="js/core/tts-platform-helper.js?v=3.1.2"></script>
   <!-- Background Audio Helper (mantiene audio activo con pantalla apagada) -->
   <script src="js/core/background-audio-helper.js?v=1.0.0"></script>
-  <!-- AudioReader Modules (v2.9.283 full modularization) -->
-  <!-- External modules (existing) -->
+  <!-- LAZY LOADED: AudioReader Suite (164KB) - Loaded when user activates audio -->
+  <!--
   <script src="js/features/audioreader-sleep-timer.js?v=2.9.283"></script>
   <script src="js/features/audioreader-bookmarks.js?v=2.9.283"></script>
   <script src="js/features/audioreader-meditation.js?v=2.9.283"></script>
   <script src="js/features/audioreader-position.js?v=2.9.283"></script>
-  <!-- Internal modules (new modular architecture) -->
   <script src="js/features/audioreader/audioreader-utils.js?v=2.9.283"></script>
   <script src="js/features/audioreader/audioreader-content.js?v=2.9.283"></script>
   <script src="js/features/audioreader/audioreader-highlighter.js?v=2.9.283"></script>
@@ -493,6 +492,7 @@
   <script src="js/features/audioreader/audioreader-events.js?v=2.9.283"></script>
   <script src="js/features/audioreader/audioreader-ui.js?v=2.9.283"></script>
   <script src="js/features/audioreader/index.js?v=2.9.283"></script>
+  -->
   <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
   <!-- 🔧 FIX v2.9.212: Descomentar audio-mixer para habilitar sonidos binaurales y de fondo -->
   <script src="js/features/audio-mixer.js?v=3.0.0"></script>

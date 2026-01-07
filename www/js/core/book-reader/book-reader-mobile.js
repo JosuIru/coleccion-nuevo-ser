@@ -344,12 +344,35 @@ class BookReaderMobile {
   /**
    * Toggle del reproductor de audio
    */
-  toggleAudioPlayer() {
+  async toggleAudioPlayer() {
+    // Lazy load AudioReader Suite (164KB) si no está cargado
+    if (window.lazyLoader && !window.lazyLoader.isLoaded('audioreader-suite')) {
+      this.showToast('info', 'Cargando reproductor de audio...');
+
+      try {
+        await window.lazyLoader.loadAudioreaderSuite();
+
+        // Inicializar AudioReader después de cargar
+        if (window.AudioReader && window.bookEngine && !window.audioReader) {
+          window.audioReader = new AudioReader(window.bookEngine);
+          if (typeof logger !== 'undefined') {
+            logger.log('✅ AudioReader inicializado tras lazy loading');
+          }
+        }
+      } catch (error) {
+        this.showToast('error', 'Error cargando reproductor de audio');
+        if (typeof logger !== 'undefined') {
+          logger.error('Error lazy loading AudioReader:', error);
+        }
+        return;
+      }
+    }
+
     const audioReader = this.getDependency('audioReader');
     if (audioReader) {
       audioReader.toggle();
     } else {
-      this.showToast('info', 'Cargando reproductor de audio...');
+      this.showToast('error', 'AudioReader no disponible');
     }
     this.setReaderActiveTab('audio');
   }

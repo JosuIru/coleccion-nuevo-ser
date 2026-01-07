@@ -798,6 +798,77 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Auth Modal (40KB)
+   * @returns {Promise<void>}
+   */
+  async loadAuthModal() {
+    if (this.loadedModules.has('auth-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Auth Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/auth-modal.js?v=2.9.237');
+      this.loadedModules.set('auth-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Auth Modal cargado (40KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Auth Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar AudioReader Suite completo (164KB)
+   * Incluye: 13 módulos del sistema de narración TTS
+   * @returns {Promise<void>}
+   */
+  async loadAudioreaderSuite() {
+    if (this.loadedModules.has('audioreader-suite')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando AudioReader Suite...');
+    }
+
+    try {
+      // Cargar módulos en orden de dependencias
+      // 1. External modules
+      await this.loadScript('js/features/audioreader-sleep-timer.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader-bookmarks.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader-meditation.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader-position.js?v=2.9.283');
+
+      // 2. Internal modules (modular architecture)
+      await this.loadScript('js/features/audioreader/audioreader-utils.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-content.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-highlighter.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-tts-engine.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-playback.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-events.js?v=2.9.283');
+      await this.loadScript('js/features/audioreader/audioreader-ui.js?v=2.9.283');
+
+      // 3. Main AudioReader class (must be last)
+      await this.loadScript('js/features/audioreader/index.js?v=2.9.283');
+
+      this.loadedModules.set('audioreader-suite', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ AudioReader Suite cargado (164KB - 13 módulos)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando AudioReader Suite:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -885,6 +956,10 @@ class LazyLoader {
         return await this.loadChapterResourcesModal();
       case 'search-modal':
         return await this.loadSearchModal();
+      case 'auth-modal':
+        return await this.loadAuthModal();
+      case 'audioreader-suite':
+        return await this.loadAudioreaderSuite();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

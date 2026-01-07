@@ -468,7 +468,12 @@ class BookReaderEvents {
     // ========================================================================
     const explorationHubBtn = document.getElementById('exploration-hub-floating-btn');
     if (explorationHubBtn) {
-      this.eventManager.addEventListener(explorationHubBtn, 'click', () => {
+      this.eventManager.addEventListener(explorationHubBtn, 'click', async () => {
+        // Lazy load Exploration Hub (44KB) - loads only when user clicks
+        if (window.lazyLoader && !window.lazyLoader.isLoaded('exploration-hub')) {
+          await window.lazyLoader.loadExplorationHub();
+        }
+
         const ExplorationHub = this.getDependency('ExplorationHub');
         if (ExplorationHub && this.bookEngine) {
           const hub = new ExplorationHub(this.bookEngine);

@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.289: Lazy loading expanded (Settings 124KB + Learning 100KB + Onboarding 56KB + Action Plans 28KB fix)
-    window.__APP_VERSION__ = '2.9.289'; // Cambiar con cada release
+    // 🔧 v2.9.290: Lazy loading major expansion (488KB total lazy-loaded)
+    window.__APP_VERSION__ = '2.9.290'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

@@ -529,6 +529,167 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Notes Modal (28KB)
+   * @returns {Promise<void>}
+   */
+  async loadNotesModal() {
+    if (this.loadedModules.has('notes-modal')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Notes Modal...');
+    }
+
+    try {
+      await this.loadScript('js/features/notes-modal.js');
+      this.loadedModules.set('notes-modal', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Notes Modal cargado (28KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Notes Modal:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Exploration Hub (44KB)
+   * @returns {Promise<void>}
+   */
+  async loadExplorationHub() {
+    if (this.loadedModules.has('exploration-hub')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Exploration Hub...');
+    }
+
+    try {
+      await this.loadScript('js/features/exploration-hub.js');
+      this.loadedModules.set('exploration-hub', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Exploration Hub cargado (44KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Exploration Hub:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Brújula de Recursos (44KB total)
+   * @returns {Promise<void>}
+   */
+  async loadBrujulaRecursos() {
+    if (this.loadedModules.has('brujula-recursos')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Brújula de Recursos...');
+    }
+
+    const scripts = [
+      'js/features/brujula-recursos.js',
+      'js/features/brujula-recursos-ui.js'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('brujula-recursos', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Brújula de Recursos cargada (44KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Brújula de Recursos:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Smart Notes (24KB)
+   * @returns {Promise<void>}
+   */
+  async loadSmartNotes() {
+    if (this.loadedModules.has('smart-notes')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Smart Notes...');
+    }
+
+    try {
+      await this.loadScript('js/features/smart-notes.js');
+      this.loadedModules.set('smart-notes', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Smart Notes cargado (24KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Smart Notes:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Voice Notes (20KB)
+   * @returns {Promise<void>}
+   */
+  async loadVoiceNotes() {
+    if (this.loadedModules.has('voice-notes')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Voice Notes...');
+    }
+
+    try {
+      await this.loadScript('js/features/voice-notes.js?v=2.8.6.4-a11y');
+      this.loadedModules.set('voice-notes', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Voice Notes cargado (20KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Voice Notes:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Shareable Moments (20KB)
+   * @returns {Promise<void>}
+   */
+  async loadShareableMoments() {
+    if (this.loadedModules.has('shareable-moments')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Shareable Moments...');
+    }
+
+    try {
+      await this.loadScript('js/features/shareable-moments.js?v=1.0.0');
+      this.loadedModules.set('shareable-moments', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Shareable Moments cargado (20KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Shareable Moments:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Pre-cargar módulos en segundo plano (después de carga inicial)
    * @param {string[]} modules - Array de nombres de módulos
    */
@@ -596,6 +757,18 @@ class LazyLoader {
         return await this.loadWelcomeFlow();
       case 'onboarding-tutorial':
         return await this.loadOnboardingTutorial();
+      case 'notes-modal':
+        return await this.loadNotesModal();
+      case 'exploration-hub':
+        return await this.loadExplorationHub();
+      case 'brujula-recursos':
+        return await this.loadBrujulaRecursos();
+      case 'smart-notes':
+        return await this.loadSmartNotes();
+      case 'voice-notes':
+        return await this.loadVoiceNotes();
+      case 'shareable-moments':
+        return await this.loadShareableMoments();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }

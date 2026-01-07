@@ -993,20 +993,20 @@
 
         // Manejar cambios de hash (botones atrás/adelante del navegador)
         window.addEventListener('popstate', async () => {
-          const hashState = bookEngine.parseUrlHash();
+          const hashState = window.bookEngine.parseUrlHash();
 
           if (hashState && hashState.bookId) {
             // Si cambió el libro, abrirlo
-            if (hashState.bookId !== bookEngine.currentBook) {
-              await biblioteca.openBook(hashState.bookId);
+            if (hashState.bookId !== window.bookEngine.currentBook) {
+              await window.biblioteca.openBook(hashState.bookId);
             }
             // Navegar al capítulo si se especifica
-            if (hashState.chapterId && hashState.chapterId !== bookEngine.currentChapter) {
-              bookReader.navigateToChapter(hashState.chapterId);
+            if (hashState.chapterId && hashState.chapterId !== window.bookEngine.currentChapter) {
+              window.bookReader.navigateToChapter(hashState.chapterId);
             }
           } else {
             // Sin hash, mostrar biblioteca
-            biblioteca.show();
+            window.biblioteca?.show();
           }
         });
 

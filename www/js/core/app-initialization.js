@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.294: Optimizaciones FASE 1+2 (lazy loading + audio/CSS compression)
-    window.__APP_VERSION__ = '2.9.294'; // Cambiar con cada release
+    // 🔧 v2.9.295: Fix "biblioteca is not defined" en popstate event listener
+    window.__APP_VERSION__ = '2.9.295'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

@@ -1753,8 +1753,296 @@ class BookReaderEvents {
         this.eventManager.addEventListener(mobileMenuBtn, 'click', this._mobileMenuHandler);
       }
 
+      // ========================================================================
+      // 🔧 FIX v2.9.312: Re-adjuntar listeners de DROPDOWN MENUS
+      // Estos se pierden cuando updateHeader() re-renderiza el header
+      // ========================================================================
+
+      // Helper para cerrar dropdown del menu
+      const closeDropdownHelper = () => {
+        ['more-actions-dropdown', 'tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+          document.getElementById(id)?.classList.add('hidden');
+        });
+      };
+
+      // Setup desktop dropdown toggles
+      this.setupDropdown('tools-dropdown-btn', 'tools-dropdown');
+      this.setupDropdown('book-features-dropdown-btn', 'book-features-dropdown');
+      this.setupDropdown('settings-dropdown-btn', 'settings-dropdown');
+
+      // Cerrar dropdowns al hacer click fuera (solo si no se habia adjuntado antes)
+      if (!this._desktopDropdownsClickOutsideAttached) {
+        this._desktopDropdownsClickOutsideHandler = (e) => {
+          const dropdowns = ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'];
+          const btns = ['tools-dropdown-btn', 'book-features-dropdown-btn', 'settings-dropdown-btn'];
+
+          let clickedInside = false;
+          btns.forEach((btnId, i) => {
+            const btn = document.getElementById(btnId);
+            const dropdown = document.getElementById(dropdowns[i]);
+            if ((btn && btn.contains(e.target)) || (dropdown && dropdown.contains(e.target))) {
+              clickedInside = true;
+            }
+          });
+
+          if (!clickedInside) {
+            dropdowns.forEach(id => {
+              document.getElementById(id)?.classList.add('hidden');
+            });
+          }
+        };
+        this.eventManager.addEventListener(document, 'click', this._desktopDropdownsClickOutsideHandler);
+        this._desktopDropdownsClickOutsideAttached = true;
+      }
+
+      // CHAPTER RESOURCES
+      this.attachMultiDevice(
+        ['chapter-resources-btn'],
+        this.createModalHandler('chapterResourcesModal', closeDropdownHelper, 'open', () => this.currentChapter?.id)
+      );
+
+      // SUMMARY
+      const summaryBtn = document.getElementById('summary-btn');
+      if (summaryBtn) {
+        this.eventManager.addEventListener(summaryBtn, 'click', () => {
+          const autoSummary = this.getDependency('autoSummary');
+          if (autoSummary && this.currentChapter) {
+            const bookId = this.bookEngine.getCurrentBook();
+            autoSummary.showSummaryModal(this.currentChapter, bookId);
+          } else {
+            this.showToast('info', 'Configura la IA para generar resumenes');
+          }
+        });
+      }
+
+      // VOICE NOTES
+      const voiceNotesBtn = document.getElementById('voice-notes-btn');
+      if (voiceNotesBtn) {
+        this.eventManager.addEventListener(voiceNotesBtn, 'click', () => {
+          const voiceNotes = this.getDependency('voiceNotes');
+          if (voiceNotes) {
+            voiceNotes.showRecordingModal();
+          } else {
+            this.showToast('error', 'Notas de voz no disponibles');
+          }
+        });
+      }
+
+      // CONCEPT MAP
+      const conceptMapBtn = document.getElementById('concept-map-btn');
+      if (conceptMapBtn) {
+        this.eventManager.addEventListener(conceptMapBtn, 'click', async () => {
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureConceptMaps();
+          }
+          const conceptMaps = this.getDependency('conceptMaps') || window.conceptMaps;
+          if (conceptMaps) {
+            conceptMaps.show();
+          }
+        });
+      }
+
+      // ACTION PLANS
+      const actionPlansBtn = document.getElementById('action-plans-btn');
+      if (actionPlansBtn) {
+        this.eventManager.addEventListener(actionPlansBtn, 'click', async () => {
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureActionPlans();
+          }
+          const actionPlans = this.getDependency('actionPlans') || window.actionPlans;
+          if (actionPlans) {
+            actionPlans.show();
+          }
+        });
+      }
+
+      // ACHIEVEMENTS
+      const achievementsBtn = document.getElementById('achievements-btn');
+      if (achievementsBtn) {
+        this.eventManager.addEventListener(achievementsBtn, 'click', () => {
+          const achievementSystem = this.getDependency('achievementSystem');
+          if (achievementSystem) {
+            achievementSystem.showDashboardModal();
+          }
+        });
+      }
+
+      // LEARNING PATHS
+      const learningPathsBtnDesktop = document.getElementById('learning-paths-btn-desktop');
+      if (learningPathsBtnDesktop) {
+        this.eventManager.addEventListener(learningPathsBtnDesktop, 'click', async () => {
+          if (window.lazyLoader && !window.lazyLoader.isLoaded('learning-paths')) {
+            await window.lazyLoader.loadLearningPaths();
+          }
+          const learningPaths = this.getDependency('learningPaths');
+          if (learningPaths) {
+            const currentBookId = this.bookEngine.getCurrentBook();
+            learningPaths.open(currentBookId);
+          } else {
+            this.showToast('error', 'Learning Paths no disponible');
+          }
+        });
+      }
+
+      // CONTENT ADAPTER
+      const contentAdapterBtn = document.getElementById('content-adapter-btn');
+      if (contentAdapterBtn) {
+        this.eventManager.addEventListener(contentAdapterBtn, 'click', () => {
+          const contentAdapter = this.getDependency('contentAdapter');
+          if (contentAdapter) {
+            contentAdapter.toggleSelector();
+          } else {
+            this.showToast('info', 'Cargando adaptador de contenido...');
+            const lazyLoader = this.getDependency('lazyLoader');
+            if (lazyLoader) {
+              lazyLoader.load('contentAdapter').then(() => {
+                const loaded = this.getDependency('contentAdapter');
+                if (loaded) {
+                  loaded.toggleSelector();
+                }
+              }).catch(() => {
+                this.showToast('error', 'Error al cargar el adaptador de contenido');
+              });
+            }
+          }
+        });
+      }
+
+      // QUIZ
+      const quizBtn = document.getElementById('quiz-btn');
+      if (quizBtn) {
+        this.eventManager.addEventListener(quizBtn, 'click', async () => {
+          const bookId = this.bookEngine.getCurrentBook();
+          const chapterId = this.currentChapter?.id;
+
+          if (!chapterId) {
+            this.showToast('info', 'Selecciona un capitulo primero');
+            return;
+          }
+
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureInteractiveQuiz();
+          }
+
+          const interactiveQuiz = this.getDependency('interactiveQuiz') || window.interactiveQuiz;
+          if (interactiveQuiz) {
+            const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
+            if (quiz) {
+              interactiveQuiz.open(bookId, chapterId);
+            } else {
+              this.showToast('info', 'No hay quiz disponible para este capitulo');
+            }
+          } else {
+            logger.error('InteractiveQuiz no esta disponible');
+          }
+        });
+      }
+
+      // TIMELINE
+      const timelineBtn = document.getElementById('timeline-btn');
+      if (timelineBtn) {
+        this.eventManager.addEventListener(timelineBtn, 'click', () => {
+          const timelineViewer = this.getDependency('timelineViewer');
+          if (timelineViewer) {
+            timelineViewer.open();
+          } else {
+            this.showToast('error', 'error.timelineNotAvailable');
+          }
+        });
+      }
+
+      // BOOK RESOURCES
+      this.attachMultiDevice(
+        ['book-resources-btn'],
+        this.createModalHandler('resourcesViewer', closeDropdownHelper)
+      );
+
+      // SETTINGS MODAL
+      this.attachMultiDevice(
+        ['open-settings-modal-btn', 'open-settings-modal-btn-tablet'],
+        async () => {
+          document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+
+          if (window.lazyLoader && !window.lazyLoader.isLoaded('settings-modal')) {
+            await window.lazyLoader.loadSettingsModal();
+          }
+
+          const SettingsModal = this.getDependency('SettingsModal');
+          if (SettingsModal) {
+            const settingsModal = new SettingsModal();
+            settingsModal.show();
+          }
+        }
+      );
+
+      // HELP CENTER
+      this.attachMultiDevice(
+        ['open-help-center-btn', 'open-help-center-btn-tablet'],
+        this.createModalHandler('helpCenterModal', () => {
+          document.getElementById('more-actions-dropdown')?.classList.add('hidden');
+          document.getElementById('settings-dropdown')?.classList.add('hidden');
+        })
+      );
+
+      // MY ACCOUNT
+      const myAccountBtn = document.getElementById('my-account-btn');
+      if (myAccountBtn) {
+        this.eventManager.addEventListener(myAccountBtn, 'click', () => {
+          this.bookReader.openProfile();
+        });
+      }
+
+      // ANDROID DOWNLOAD
+      const androidBtn = document.getElementById('android-download-btn');
+      if (androidBtn) {
+        this.eventManager.addEventListener(androidBtn, 'click', () => {
+          const apkUrl = this.bookEngine.getLatestAPK();
+          window.open(apkUrl, '_blank');
+        });
+      }
+
+      // LANGUAGE SELECTOR
+      const langBtn = document.getElementById('language-selector-btn');
+      if (langBtn) {
+        this.eventManager.addEventListener(langBtn, 'click', () => {
+          const languageSelector = this.getDependency('languageSelector');
+          if (languageSelector && typeof languageSelector.open === 'function') {
+            languageSelector.open();
+          }
+        });
+      }
+
+      // THEME TOGGLE
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      if (themeBtn) {
+        this.eventManager.addEventListener(themeBtn, 'click', () => {
+          const themeHelper = this.getDependency('themeHelper');
+          if (themeHelper) {
+            themeHelper.toggle();
+            this.bookReader.updateThemeIcons();
+            this.showToast('info', `Tema: ${themeHelper.getThemeLabel()}`);
+          }
+        });
+      }
+
+      // PREMIUM EDITION
+      const premiumBtn = document.getElementById('premium-edition-btn');
+      if (premiumBtn) {
+        this.eventManager.addEventListener(premiumBtn, 'click', () => {
+          this.bookReader.showPremiumDownloadModal();
+        });
+      }
+
+      // SHARE CHAPTER
+      const shareBtn = document.getElementById('share-chapter-btn');
+      if (shareBtn) {
+        this.eventManager.addEventListener(shareBtn, 'click', () => {
+          this.bookReader.shareCurrentChapter();
+        });
+      }
+
       if (typeof logger !== 'undefined') {
-        logger.debug('[BookReaderEvents] Listeners del header re-adjuntados');
+        logger.debug('[BookReaderEvents] Listeners del header re-adjuntados (incluyendo dropdowns)');
       }
     } catch (error) {
       logger.error('[BookReaderEvents] Error adjuntando listeners del header:', error);

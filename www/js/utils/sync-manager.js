@@ -96,6 +96,15 @@ class SyncManager {
       } catch (error) {
         logger.error('[SyncManager] ❌ Error en operación:', item.operation, error);
 
+        // 🔧 FIX v2.9.309: Si usuario no autenticado, sacar de cola sin reintentar
+        if (error.message === 'Usuario no autenticado') {
+          logger.debug('[SyncManager] Usuario no autenticado - descartando operación:', item.operation);
+          this.queue.shift();
+          this.syncStats.failed++;
+          this.syncStats.pending = this.queue.length;
+          continue; // Pasar al siguiente item
+        }
+
         item.attempts++;
 
         if (item.attempts >= this.retryAttempts) {

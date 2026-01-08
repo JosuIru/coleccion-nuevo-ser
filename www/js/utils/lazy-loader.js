@@ -986,6 +986,63 @@ class LazyLoader {
       totalLoading: this.loadingPromises.size
     };
   }
+
+  /**
+   * Cargar tema CSS de forma dinámica
+   * 🔧 FIX v2.9.299: Agregado método faltante desde lazy-loader viejo
+   * @param {string} nombreTema - Nombre del tema (ej: 'codigo-despertar')
+   * @returns {Promise} Promise que se resuelve cuando el tema está cargado
+   */
+  async loadThemeCSS(nombreTema) {
+    const dataAtributoTema = 'data-theme-css';
+    const temaActual = document.querySelector(`link[${dataAtributoTema}]`);
+
+    // Si el tema actual es el mismo, no hacer nada
+    if (temaActual && temaActual.getAttribute(dataAtributoTema) === nombreTema) {
+      logger.debug(`✅ Tema "${nombreTema}" ya está cargado`);
+      return Promise.resolve();
+    }
+
+    logger.debug(`🎨 Cargando tema: ${nombreTema}...`);
+
+    // Crear la URL del CSS del tema
+    const urlTema = `css/themes/${nombreTema}.css`;
+
+    // Crear nuevo elemento link para el tema
+    const nuevoLinkTema = document.createElement('link');
+    nuevoLinkTema.rel = 'stylesheet';
+    nuevoLinkTema.href = urlTema;
+    nuevoLinkTema.setAttribute(dataAtributoTema, nombreTema);
+
+    return new Promise((resolve, reject) => {
+      nuevoLinkTema.onload = () => {
+        // Remover el tema anterior después de que el nuevo esté cargado
+        if (temaActual) {
+          temaActual.remove();
+          logger.debug(`🗑️ Tema anterior removido`);
+        }
+        logger.debug(`✅ Tema "${nombreTema}" cargado exitosamente`);
+        resolve();
+      };
+
+      nuevoLinkTema.onerror = () => {
+        logger.error(`❌ Error cargando tema: ${urlTema}`);
+        reject(new Error(`Error cargando tema: ${urlTema}`));
+      };
+
+      // Agregar el nuevo tema al head
+      document.head.appendChild(nuevoLinkTema);
+    });
+  }
+
+  /**
+   * Obtener el tema actualmente cargado
+   * @returns {string|null} Nombre del tema actual o null si no hay ninguno
+   */
+  getCurrentTheme() {
+    const temaActual = document.querySelector('link[data-theme-css]');
+    return temaActual ? temaActual.getAttribute('data-theme-css') : null;
+  }
 }
 
 // Exportar globalmente

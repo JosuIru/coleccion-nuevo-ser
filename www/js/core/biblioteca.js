@@ -634,18 +634,20 @@ class Biblioteca {
   /**
    * Abre el menú de perfil/cuenta
    * 🔧 FIX v2.9.277: Abrir myAccountModal en lugar de settingsModal
+   * 🔧 FIX v2.9.298: Función async para soportar await
    */
-  openProfileMenu() {
+  async openProfileMenu() {
     this.setActiveBottomTab('perfil');
     // Abrir modal de Mi Cuenta
     if (window.myAccountModal) {
       window.myAccountModal.show();
     } else if (window.lazyLoader) {
-      window.lazyLoader.load('my-account').then(() => {
+      try {
+        await window.lazyLoader.load('my-account');
         if (window.myAccountModal) {
           window.myAccountModal.show();
         }
-      }).catch(async (err) => {
+      } catch (err) {
         logger.error('[Biblioteca] Error cargando my-account:', err);
         // Fallback a auth modal si no está logueado - lazy load
         if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
@@ -654,7 +656,7 @@ class Biblioteca {
         if (window.authModal) {
           window.authModal.show('login');
         }
-      });
+      }
     } else {
       // Lazy load Auth Modal (40KB)
       if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {

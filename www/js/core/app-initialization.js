@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.307: REVERT scripts comentados + detección de duplicados en lazy-loader
-    window.__APP_VERSION__ = '2.9.307'; // Cambiar con cada release
+    // 🔧 v2.9.308: Diagnostic tool + análisis completo de features desktop/mobile
+    window.__APP_VERSION__ = '2.9.308'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

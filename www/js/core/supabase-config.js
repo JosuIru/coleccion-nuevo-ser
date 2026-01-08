@@ -73,6 +73,8 @@ const supabaseConfig = {
         actionPlans: 'action_plans',
         koans: 'koan_history',
         aiSignatures: 'ai_signatures', // Libro de Firmas Cósmico - Portal SETI-IA
+        chapterComments: 'chapter_comments', // 🔧 v2.9.327: Comentarios por capítulo
+        readingCircles: 'reading_circles', // 🔧 v2.9.328: Círculos de lectura compartida
     }
 };
 

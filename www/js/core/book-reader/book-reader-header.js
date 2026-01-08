@@ -298,41 +298,56 @@ class BookReaderHeader {
     `;
   }
 
+  // 🔧 v2.9.325: Mejorar hover states con transiciones y feedback visual
   renderToolsDropdown() {
+    // Clase base mejorada para botones de herramientas
+    const toolBtnBase = 'w-full text-left px-4 py-2.5 flex items-center gap-3 transition-all duration-150 hover:translate-x-1 hover:bg-gray-100 dark:hover:bg-gray-700/80 active:scale-[0.98] font-medium';
+
     return `
       <div class="relative">
         <button id="tools-dropdown-btn"
-                class="p-3 hover:bg-cyan-900/50 rounded-lg transition text-cyan-400 flex items-center gap-1"
+                class="p-3 hover:bg-cyan-900/50 hover:scale-105 rounded-lg transition-all duration-200 text-cyan-400 flex items-center gap-1"
                 aria-label="Herramientas"
                 title="Herramientas">
           ${Icons.create('wrench', 18)}
           <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        <div id="tools-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
-          <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Herramientas</div>
-          <button id="chapter-resources-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Recursos del Capitulo">
-            ${Icons.create('link', 18)} <span>Recursos del Capitulo</span>
+        <div id="tools-dropdown" class="hidden absolute right-0 top-full mt-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 py-2 backdrop-blur-sm">
+          <div class="px-4 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700 mb-1">🛠️ Herramientas IA</div>
+          <button id="chapter-resources-btn" class="${toolBtnBase} text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" aria-label="Recursos del Capítulo">
+            ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
           </button>
-          <button id="summary-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Resumen del capitulo">
-            ${Icons.create('file-text', 18)} <span>Resumen del capitulo</span>
+          <button id="summary-btn" class="${toolBtnBase} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" aria-label="Resumen del capítulo">
+            ${Icons.create('file-text', 18)} <span>Resumen del Capítulo</span>
           </button>
-          <button id="voice-notes-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-red-600 dark:text-red-400" aria-label="Notas de voz">
-            ${Icons.create('mic', 18)} <span>Notas de voz</span>
+          <button id="voice-notes-btn" class="${toolBtnBase} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30" aria-label="Notas de voz">
+            ${Icons.create('mic', 18)} <span>Notas de Voz</span>
           </button>
-          <button id="concept-map-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-cyan-600 dark:text-cyan-400" aria-label="Mapa Conceptual">
+          <button id="concept-map-btn" class="${toolBtnBase} text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/30" aria-label="Mapa Conceptual">
             ${Icons.create('git-branch', 18)} <span>Mapa Conceptual</span>
           </button>
-          <button id="action-plans-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-green-600 dark:text-green-400" aria-label="Planes de Accion">
-            ${Icons.create('clipboard-list', 18)} <span>Planes de Accion</span>
+          <button id="action-plans-btn" class="${toolBtnBase} text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30" aria-label="Planes de Acción">
+            ${Icons.create('clipboard-list', 18)} <span>Planes de Acción</span>
           </button>
-          <button id="achievements-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-amber-600 dark:text-amber-400" aria-label="Mis Logros">
+          <button id="achievements-btn" class="${toolBtnBase} text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30" aria-label="Mis Logros">
             ${Icons.trophy(18)} <span>Mis Logros</span>
           </button>
-          <button id="learning-paths-btn-desktop" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Learning Paths">
+          <button id="learning-paths-btn-desktop" class="${toolBtnBase} text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30" aria-label="Learning Paths">
             ${Icons.target(18)} <span>Learning Paths</span>
           </button>
-          <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-          <button id="content-adapter-btn" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Adaptar Contenido">
+          <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+          <div class="px-4 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">💬 Comunidad</div>
+          <button id="chapter-comments-btn" class="${toolBtnBase} text-pink-600 dark:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-900/30" aria-label="Comentarios">
+            ${Icons.create('message-circle', 18)} <span>Comentarios del Capítulo</span>
+          </button>
+          <button id="reading-circles-btn" class="${toolBtnBase} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" aria-label="Círculos de Lectura">
+            ${Icons.create('users', 18)} <span>Círculos de Lectura</span>
+          </button>
+          <button id="leaderboards-btn" class="${toolBtnBase} text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30" aria-label="Clasificación">
+            ${Icons.create('award', 18)} <span>Clasificación</span>
+          </button>
+          <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+          <button id="content-adapter-btn" class="${toolBtnBase} text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30" aria-label="Adaptar Contenido">
             ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
           </button>
         </div>

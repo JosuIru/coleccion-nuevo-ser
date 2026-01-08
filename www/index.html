@@ -124,6 +124,9 @@
   <!-- Microsocieties CSS -->
   <link rel="stylesheet" href="css/features/microsocieties.css">
 
+  <!-- Content Adapter CSS (v2.9.327) -->
+  <link rel="stylesheet" href="css/features/content-adapter.css?v=2.9.327">
+
   <!-- Learning Paths CSS -->
   <link rel="stylesheet" href="css/learning-paths.css">
 
@@ -438,9 +441,10 @@
 
   <!-- AI System -->
   <script src="js/ai/ai-config.js?v=2.8.6.3-debug"></script>
-  <!-- LAZY LOADED: AI Chat + Premium (100KB+) -->
-  <!-- <script src="js/ai/ai-adapter.js?v=2.9.283"></script>
-  <script src="js/features/ai-premium.js?v=2.9.283"></script>
+  <!-- 🔧 v2.9.327: ai-adapter.js cargado síncronamente para que aiAdapter esté disponible -->
+  <script src="js/ai/ai-adapter.js?v=2.9.327"></script>
+  <!-- LAZY LOADED: AI Premium (heavy features) -->
+  <!-- <script src="js/features/ai-premium.js?v=2.9.283"></script>
   <script src="js/features/pricing-modal.js?v=2.9.283"></script> -->
 
   <!-- 🔧 Utilities - Memory leak fixes & Security -->
@@ -456,7 +460,7 @@
   <script src="js/utils/storage-helper.js?v=2.9.283"></script>
   <!-- NEW LazyLoader with individual methods for all features -->
   <script src="js/utils/lazy-loader.js?v=2.9.283"></script>
-  <script src="js/utils/ai-lazy-loader.js?v=2.9.283"></script>
+  <script src="js/utils/ai-lazy-loader.js?v=2.9.324"></script>
   <script src="js/utils/learning-lazy-loader.js?v=2.9.283"></script>
 
   <!-- Features -->
@@ -466,6 +470,8 @@
   <script src="js/features/text-selection-helper.js"></script>
   <!-- <script src="js/features/ai-settings-modal.js?v=2.9.283"></script> -->
   <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
+  <!-- 🔧 v2.9.327: my-account-modal cargado para que Tab Perfil funcione -->
+  <script src="js/features/my-account-modal.js?v=2.9.327"></script>
   <!-- LAZY LOADED: Settings Modal (124KB) - Loaded when user opens settings -->
   <!-- <script src="js/features/settings-modal.js?v=2.9.176"></script> -->
   <!-- LAZY LOADED: Notes Modal (28KB) - Loaded when user opens notes -->
@@ -516,6 +522,9 @@
   <script src="js/features/reflexive-modal.js?v=2.8.6.4-a11y"></script>
   <script src="js/data/achievements.js"></script>
   <script src="js/features/achievements-system.js?v=2.8.6.4-a11y"></script>
+  <!-- 🔧 v2.9.327: Certificate Generator - Sistema de certificados de lectura -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script src="js/features/certificate-generator.js?v=2.9.327"></script>
   <script src="js/features/auto-summary.js?v=2.8.6.4-a11y"></script>
   <!-- LAZY LOADED: AI Suggestions (16KB) -->
   <!-- <script src="js/features/ai-suggestions.js?v=2.9.283"></script> -->
@@ -527,14 +536,13 @@
   <!-- LAZY LOADED: Learning Paths (100KB) - Loaded when user accesses learning paths -->
     <!-- LAZY LOADED: Learning Paths (100KB) -->
   <!-- <script src="js/features/learning-paths.js?v=2.8.7"></script> -->
-  <!-- LAZY LOADED: Learning Features (88KB total) + Resource AI Helper -->
-  <!-- Quiz (16KB) + Concept Maps (44KB) + Action Plans (28KB) -->
-  <!-- <script src="js/features/resource-ai-helper.js?v=2.9.283"></script>
-  <script src="js/features/interactive-quiz.js?v=2.9.283"></script>
-  <script src="js/features/concept-maps.js?v=2.9.283"></script>
-  <script src="js/features/action-plans.js?v=2.9.283"></script> -->
-  <!-- LAZY LOADED: Voice Notes (20KB) - Loaded when user uses voice notes -->
-  <!-- <script src="js/features/voice-notes.js?v=2.8.6.4-a11y"></script> -->
+  <!-- 🔧 v2.9.327: Learning Features cargados para que herramientas funcionen -->
+  <script src="js/features/resource-ai-helper.js?v=2.9.327"></script>
+  <script src="js/features/interactive-quiz.js?v=2.9.327"></script>
+  <script src="js/features/concept-maps.js?v=2.9.327"></script>
+  <script src="js/features/action-plans.js?v=2.9.327"></script>
+  <script src="js/features/voice-notes.js?v=2.9.327"></script>
+  <script src="js/features/content-adapter.js?v=2.9.327"></script>
 
   <!-- Practical Utility Features -->
   <!-- 🔧 FIX v2.9.309: Descomentar dependencias requeridas por ExplorationHub -->
@@ -544,8 +552,8 @@
   <script src="js/features/practice-recommender.js?v=2.9.176"></script>
   <!-- Thematic Index Modal - Required by Exploration Hub -->
   <script src="js/features/thematic-index-modal.js"></script>
-  <!-- LAZY LOADED: Chapter Resources Modal (36KB) - Loaded when opening resources in reader -->
-  <!-- <script src="js/features/chapter-resources-modal.js?v=2.9.176"></script> -->
+  <!-- 🔧 v2.9.327: chapter-resources-modal cargado -->
+  <script src="js/features/chapter-resources-modal.js?v=2.9.327"></script>
 
   <!-- Brújula de Recursos - Intelligent Resource Navigation -->
   <script src="js/features/brujula-recursos.js"></script>
@@ -598,8 +606,9 @@
   <!-- Organism Knowledge 3D - LAZY LOADED -->
   <!-- <script src="js/features/organism-knowledge.js?v=2.0.3"></script> -->
 
-  <!-- Help & Onboarding System - LAZY LOADED (56KB) - Only for new users -->
-  <!-- <script src="js/features/help-center-modal.js"></script> -->
+  <!-- Help & Onboarding System -->
+  <!-- 🔧 v2.9.327: help-center-modal cargado para que Centro de Ayuda funcione -->
+  <script src="js/features/help-center-modal.js?v=2.9.327"></script>
   <!-- <script src="js/features/onboarding-tutorial.js"></script> -->
   <!-- Welcome Flow - Onboarding rápido de 3 pasos (28KB) - LAZY LOADED -->
   <!-- <script src="js/features/welcome-flow.js?v=1.0.0"></script> -->
@@ -607,7 +616,14 @@
   <!-- Engagement & Growth Systems -->
   <script src="js/features/streak-system.js?v=1.0.0"></script>
   <!-- LAZY LOADED: Shareable Moments (20KB) - Loaded when user shares -->
-  <!-- <script src="js/features/shareable-moments.js?v=1.0.0"></script> -->
+  <!-- 🔧 v2.9.327: Shareable Moments habilitado para compartir en redes sociales -->
+  <script src="js/features/shareable-moments.js?v=2.9.327"></script>
+  <!-- 🔧 v2.9.327: Chapter Comments - Sistema de comentarios por capítulo -->
+  <script src="js/features/chapter-comments.js?v=2.9.327"></script>
+  <!-- 🔧 v2.9.328: Reading Circles - Círculos de lectura compartida -->
+  <script src="js/features/reading-circles.js?v=2.9.328"></script>
+  <!-- 🔧 v2.9.328: Leaderboards - Tablas de clasificación pública -->
+  <script src="js/features/leaderboards.js?v=2.9.328"></script>
   <script src="js/features/contextual-hints.js?v=1.0.0"></script>
 
   <!-- Version & Update System -->
@@ -619,6 +635,8 @@
   <script src="js/utils/diagnostic-tool.js"></script>
   <!-- 🧪 Feature Tester (pruebas automáticas) -->
   <script src="js/utils/feature-tester.js"></script>
+  <!-- 🧪 Comprehensive Test (test exhaustivo de todas las features) -->
+  <script src="js/utils/comprehensive-test.js"></script>
   <script src="js/core/app-initialization.js"></script>
   <script src="js/features/update-modal.js"></script>
 

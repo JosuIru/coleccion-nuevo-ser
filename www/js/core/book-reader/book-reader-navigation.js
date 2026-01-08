@@ -380,14 +380,14 @@ class BookReaderNavigation {
   // ==========================================================================
 
   /**
-   * Comparte el capitulo actual usando shareHelper
+   * Comparte el capitulo actual usando shareableMoments o shareHelper
+   * 🔧 v2.9.327: Mejorado con modal de redes sociales
    */
   shareCurrentChapter() {
-    const shareHelper = this.getDependency('shareHelper');
-    if (!shareHelper || !this.currentChapter) return;
+    if (!this.currentChapter) return;
 
     const bookData = this.bookEngine?.getCurrentBookData();
-    const bookTitle = bookData?.title || 'Coleccion Nuevo Ser';
+    const bookTitle = bookData?.title || 'Colección Nuevo Ser';
     const chapterTitle = this.currentChapter.title || '';
     const progress = this.bookEngine?.getProgress(this.bookEngine.getCurrentBook());
 
@@ -399,20 +399,41 @@ class BookReaderNavigation {
       quote = this.currentChapter.closingQuestion;
     }
 
+    // 🔧 v2.9.327: Usar shareableMoments si está disponible para mostrar modal con opciones
+    if (window.shareableMoments) {
+      const moment = quote
+        ? window.shareableMoments.createInsightMoment(
+            quote.substring(0, 280),
+            bookTitle,
+            chapterTitle
+          )
+        : {
+            type: 'chapter_progress',
+            title: '📖 Mi progreso de lectura',
+            message: `Estoy leyendo "${bookTitle}" - ${chapterTitle}\n\n📊 Progreso: ${progress?.percentage || 0}% completado (${progress?.chaptersRead || 0}/${progress?.totalChapters || 0} capítulos)`,
+            hashtags: ['ColeccionNuevoSer', 'Lectura', 'Transformacion']
+          };
+      window.shareableMoments.showShareModal(moment);
+      return;
+    }
+
+    // Fallback a shareHelper
+    const shareHelper = this.getDependency('shareHelper');
+    if (!shareHelper) return;
+
     if (quote) {
       shareHelper.shareQuote({
-        quote: quote.substring(0, 280), // Limit to tweet-like length
+        quote: quote.substring(0, 280),
         author: this.currentChapter.epigraph?.author || '',
         bookTitle: bookTitle,
         chapterTitle: chapterTitle
       });
     } else {
-      // Share progress instead
       shareHelper.shareProgress({
         bookTitle: bookTitle,
         progress: progress?.percentage || 0,
-        chaptersRead: progress?.read || 0,
-        totalChapters: progress?.total || 0
+        chaptersRead: progress?.chaptersRead || 0,
+        totalChapters: progress?.totalChapters || 0
       });
     }
   }

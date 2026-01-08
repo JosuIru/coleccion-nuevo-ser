@@ -68,6 +68,36 @@ class BookReaderEvents {
   }
 
   /**
+   * 🔧 v2.9.325: Helper para ejecutar acciones de herramientas con loading y error handling
+   * @param {Function} asyncFn - Función a ejecutar
+   * @param {Object} options - Opciones
+   */
+  async withToolLoading(asyncFn, { toolName = 'Herramienta', showBar = true } = {}) {
+    let loaderId = null;
+
+    try {
+      // Mostrar loading
+      if (showBar && window.loadingIndicator) {
+        loaderId = window.loadingIndicator.showBar(toolName.toLowerCase().replace(/\s+/g, '-'));
+      }
+
+      // Ejecutar acción
+      await asyncFn();
+
+    } catch (error) {
+      // Mostrar error
+      logger.error(`[${toolName}] Error:`, error);
+      this.showToast('error', `Error en ${toolName}: ${error.message || 'Error desconocido'}`);
+
+    } finally {
+      // Ocultar loading
+      if (loaderId && window.loadingIndicator) {
+        window.loadingIndicator.hide(loaderId);
+      }
+    }
+  }
+
+  /**
    * Obtener EventManager del bookReader
    */
   get eventManager() {
@@ -243,25 +273,24 @@ class BookReaderEvents {
     const btn = document.getElementById(btnId);
     const dropdown = document.getElementById(dropdownId);
     if (btn && dropdown) {
-      // 🔧 v2.9.315: FIX CRÍTICO - No cachear handlers que cierren sobre elementos DOM
-      // Cuando updateHeader() destruye/recrea elementos, los handlers cacheados
-      // referencian elementos destruidos. Solución: lookup por ID dentro del handler.
-      const handler = (e) => {
-        e.stopPropagation();
-        // Cerrar otros dropdowns
-        ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
-          if (id !== dropdownId) {
-            document.getElementById(id)?.classList.add('hidden');
-          }
-        });
-        // Lookup del elemento actual (no usar closure sobre variable destruida)
-        const currentDropdown = document.getElementById(dropdownId);
-        if (currentDropdown) {
-          currentDropdown.classList.toggle('hidden');
-        }
-      };
+      // Guardar handler para evitar duplicacion
+      if (!this._dropdownHandlers) this._dropdownHandlers = {};
 
-      this.eventManager.addEventListener(btn, 'click', handler);
+      const handlerKey = `${btnId}_${dropdownId}`;
+      if (!this._dropdownHandlers[handlerKey]) {
+        this._dropdownHandlers[handlerKey] = (e) => {
+          e.stopPropagation();
+          // Cerrar otros dropdowns
+          ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+            if (id !== dropdownId) {
+              document.getElementById(id)?.classList.add('hidden');
+            }
+          });
+          dropdown.classList.toggle('hidden');
+        };
+      }
+
+      this.eventManager.addEventListener(btn, 'click', this._dropdownHandlers[handlerKey]);
     }
   }
 
@@ -501,15 +530,18 @@ class BookReaderEvents {
     }
 
     // Voice notes
+    // 🔧 v2.9.325: Mejorar feedback con loading y error handling
     const voiceNotesBtn = document.getElementById('voice-notes-btn');
     if (voiceNotesBtn) {
-      this.eventManager.addEventListener(voiceNotesBtn, 'click', () => {
-        const voiceNotes = this.getDependency('voiceNotes');
-        if (voiceNotes) {
-          voiceNotes.showRecordingModal();
-        } else {
-          this.showToast('error', 'Notas de voz no disponibles');
-        }
+      this.eventManager.addEventListener(voiceNotesBtn, 'click', async () => {
+        await this.withToolLoading(async () => {
+          const voiceNotes = this.getDependency('voiceNotes');
+          if (voiceNotes) {
+            voiceNotes.showRecordingModal();
+          } else {
+            throw new Error('Notas de voz no disponibles');
+          }
+        }, { toolName: 'Notas de Voz' });
       });
     }
 
@@ -531,6 +563,7 @@ class BookReaderEvents {
 
     // ========================================================================
     // QUIZ
+    // 🔧 v2.9.325: Mejorar feedback con loading y error handling
     // ========================================================================
     const quizBtn = document.getElementById('quiz-btn');
     if (quizBtn) {
@@ -539,26 +572,27 @@ class BookReaderEvents {
         const chapterId = this.currentChapter?.id;
 
         if (!chapterId) {
-          this.showToast('info', 'Selecciona un capitulo primero');
+          this.showToast('info', 'Selecciona un capítulo primero');
           return;
         }
 
-        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
-        if (window.learningLazyLoader) {
-          await window.learningLazyLoader.ensureInteractiveQuiz();
-        }
-
-        const interactiveQuiz = this.getDependency('interactiveQuiz') || window.interactiveQuiz;
-        if (interactiveQuiz) {
-          const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
-          if (quiz) {
-            interactiveQuiz.open(bookId, chapterId);
-          } else {
-            this.showToast('info', 'No hay quiz disponible para este capitulo');
+        await this.withToolLoading(async () => {
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureInteractiveQuiz();
           }
-        } else {
-          logger.error('InteractiveQuiz no esta disponible');
-        }
+
+          const interactiveQuiz = this.getDependency('interactiveQuiz') || window.interactiveQuiz;
+          if (interactiveQuiz) {
+            const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
+            if (quiz) {
+              interactiveQuiz.open(bookId, chapterId);
+            } else {
+              this.showToast('info', 'No hay quiz disponible para este capítulo');
+            }
+          } else {
+            throw new Error('Quiz interactivo no disponible');
+          }
+        }, { toolName: 'Quiz' });
       });
     }
 
@@ -699,43 +733,50 @@ class BookReaderEvents {
 
     // ========================================================================
     // CONTENT ADAPTER
+    // 🔧 v2.9.325: Mejorar feedback con loading y error handling
     // ========================================================================
     const contentAdapterBtn = document.getElementById('content-adapter-btn');
     if (contentAdapterBtn) {
-      this.eventManager.addEventListener(contentAdapterBtn, 'click', () => {
-        const contentAdapter = this.getDependency('contentAdapter');
-        if (contentAdapter) {
-          contentAdapter.toggleSelector();
-        } else {
-          this.showToast('info', 'Cargando adaptador de contenido...');
-          const lazyLoader = this.getDependency('lazyLoader');
-          if (lazyLoader) {
-            lazyLoader.load('contentAdapter').then(() => {
-              const loaded = this.getDependency('contentAdapter');
-              if (loaded) {
-                loaded.toggleSelector();
-              }
-            }).catch(() => {
-              this.showToast('error', 'Error al cargar el adaptador de contenido');
-            });
+      this.eventManager.addEventListener(contentAdapterBtn, 'click', async () => {
+        await this.withToolLoading(async () => {
+          let contentAdapter = this.getDependency('contentAdapter');
+
+          // Lazy load si no está disponible
+          if (!contentAdapter) {
+            const lazyLoader = this.getDependency('lazyLoader');
+            if (lazyLoader) {
+              await lazyLoader.load('contentAdapter');
+              contentAdapter = this.getDependency('contentAdapter');
+            }
           }
-        }
+
+          if (contentAdapter) {
+            contentAdapter.toggleSelector();
+          } else {
+            throw new Error('Adaptador de contenido no disponible');
+          }
+        }, { toolName: 'Adaptar Contenido' });
       });
     }
 
     // ========================================================================
     // SUMMARY (Auto-summary with AI)
+    // 🔧 v2.9.325: Mejorar feedback con loading y error handling
     // ========================================================================
     const summaryBtn = document.getElementById('summary-btn');
     if (summaryBtn) {
-      this.eventManager.addEventListener(summaryBtn, 'click', () => {
-        const autoSummary = this.getDependency('autoSummary');
-        if (autoSummary && this.currentChapter) {
-          const bookId = this.bookEngine.getCurrentBook();
-          autoSummary.showSummaryModal(this.currentChapter, bookId);
-        } else {
-          this.showToast('info', 'Configura la IA para generar resumenes');
-        }
+      this.eventManager.addEventListener(summaryBtn, 'click', async () => {
+        await this.withToolLoading(async () => {
+          const autoSummary = this.getDependency('autoSummary');
+          if (autoSummary && this.currentChapter) {
+            const bookId = this.bookEngine.getCurrentBook();
+            autoSummary.showSummaryModal(this.currentChapter, bookId);
+          } else if (!this.currentChapter) {
+            throw new Error('Selecciona un capítulo primero');
+          } else {
+            throw new Error('Configura la IA para generar resúmenes');
+          }
+        }, { toolName: 'Resumen' });
       });
     }
 
@@ -745,15 +786,19 @@ class BookReaderEvents {
     const conceptMapBtn = document.getElementById('concept-map-btn');
     if (conceptMapBtn) {
       this.eventManager.addEventListener(conceptMapBtn, 'click', async () => {
-        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
-        if (window.learningLazyLoader) {
-          await window.learningLazyLoader.ensureConceptMaps();
-        }
+        // 🔧 v2.9.325: Agregar loading y error handling
+        await this.withToolLoading(async () => {
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureConceptMaps();
+          }
 
-        const conceptMaps = this.getDependency('conceptMaps') || window.conceptMaps;
-        if (conceptMaps) {
-          conceptMaps.show();
-        }
+          const conceptMaps = this.getDependency('conceptMaps') || window.conceptMaps;
+          if (conceptMaps) {
+            conceptMaps.show();
+          } else {
+            throw new Error('Mapa Conceptual no disponible');
+          }
+        }, { toolName: 'Mapa Conceptual' });
       });
     }
 
@@ -763,15 +808,19 @@ class BookReaderEvents {
     const actionPlansBtn = document.getElementById('action-plans-btn');
     if (actionPlansBtn) {
       this.eventManager.addEventListener(actionPlansBtn, 'click', async () => {
-        // 🔧 v2.9.283: Usar LearningLazyLoader para carga dinámica
-        if (window.learningLazyLoader) {
-          await window.learningLazyLoader.ensureActionPlans();
-        }
+        // 🔧 v2.9.325: Agregar loading y error handling
+        await this.withToolLoading(async () => {
+          if (window.learningLazyLoader) {
+            await window.learningLazyLoader.ensureActionPlans();
+          }
 
-        const actionPlans = this.getDependency('actionPlans') || window.actionPlans;
-        if (actionPlans) {
-          actionPlans.show();
-        }
+          const actionPlans = this.getDependency('actionPlans') || window.actionPlans;
+          if (actionPlans) {
+            actionPlans.show();
+          } else {
+            throw new Error('Planes de Acción no disponible');
+          }
+        }, { toolName: 'Planes de Acción' });
       });
     }
 
@@ -875,6 +924,56 @@ class BookReaderEvents {
     this.attachMultiDeviceWithMenuClose(
       ['share-chapter-btn', 'share-chapter-btn-mobile', 'share-chapter-btn-dropdown'],
       () => this.bookReader.shareCurrentChapter(),
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // CHAPTER COMMENTS (v2.9.327)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['chapter-comments-btn', 'chapter-comments-btn-mobile', 'chapter-comments-btn-dropdown'],
+      () => {
+        const bookId = this.bookEngine.getCurrentBook();
+        const chapter = this.currentChapter;
+        if (window.chapterComments) {
+          window.chapterComments.show(bookId, chapter?.id, chapter?.title);
+        } else {
+          this.showToast('error', 'Comentarios no disponibles');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // READING CIRCLES (v2.9.328)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['reading-circles-btn', 'reading-circles-btn-mobile', 'reading-circles-btn-dropdown'],
+      () => {
+        if (window.readingCircles) {
+          window.readingCircles.show();
+        } else {
+          this.showToast('error', 'Círculos de lectura no disponibles');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // LEADERBOARDS (v2.9.328)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['leaderboards-btn', 'leaderboards-btn-mobile', 'leaderboards-btn-dropdown'],
+      () => {
+        if (window.leaderboards) {
+          window.leaderboards.show();
+        } else {
+          this.showToast('error', 'Clasificación no disponible');
+        }
+      },
       closeMobileMenuDropdown,
       closeDropdownHelper
     );
@@ -1742,7 +1841,7 @@ class BookReaderEvents {
         }
       };
 
-      ['ai-chat-btn', 'ai-chat-btn-tablet'].forEach(id => {
+      ['ai-chat-btn', 'ai-chat-btn-tablet', 'ai-chat-btn-mobile'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           this.eventManager.addEventListener(btn, 'click', aiChatHandler);
@@ -2040,6 +2139,44 @@ class BookReaderEvents {
       if (shareBtn) {
         this.eventManager.addEventListener(shareBtn, 'click', () => {
           this.bookReader.shareCurrentChapter();
+        });
+      }
+
+      // CHAPTER COMMENTS (v2.9.327)
+      const chapterCommentsBtn = document.getElementById('chapter-comments-btn');
+      if (chapterCommentsBtn) {
+        this.eventManager.addEventListener(chapterCommentsBtn, 'click', () => {
+          const bookId = this.bookEngine.getCurrentBook();
+          const chapter = this.currentChapter;
+          if (window.chapterComments) {
+            window.chapterComments.show(bookId, chapter?.id, chapter?.title);
+          } else {
+            this.showToast('error', 'Comentarios no disponibles');
+          }
+        });
+      }
+
+      // READING CIRCLES (v2.9.328)
+      const readingCirclesBtn = document.getElementById('reading-circles-btn');
+      if (readingCirclesBtn) {
+        this.eventManager.addEventListener(readingCirclesBtn, 'click', () => {
+          if (window.readingCircles) {
+            window.readingCircles.show();
+          } else {
+            this.showToast('error', 'Círculos de lectura no disponibles');
+          }
+        });
+      }
+
+      // LEADERBOARDS (v2.9.328)
+      const leaderboardsBtn = document.getElementById('leaderboards-btn');
+      if (leaderboardsBtn) {
+        this.eventManager.addEventListener(leaderboardsBtn, 'click', () => {
+          if (window.leaderboards) {
+            window.leaderboards.show();
+          } else {
+            this.showToast('error', 'Clasificación no disponible');
+          }
         });
       }
 

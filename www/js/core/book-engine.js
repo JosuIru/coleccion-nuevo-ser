@@ -1206,15 +1206,38 @@ class BookEngine {
 
       // Verificar si el libro está ahora completo
       const progress = this.getProgress(this.currentBook);
-      if (progress.percentage === 100 && window.shareableMoments) {
+      if (progress.percentage === 100) {
         const bookData = this.getCurrentBookData();
-        setTimeout(() => {
-          window.shareableMoments.onBookCompleted({
-            title: bookData?.title || 'Libro',
-            chapters: progress.totalChapters,
-            estimatedReadTime: `${Math.ceil(progress.totalChapters * 10)} minutos`
-          });
-        }, 1500); // Delay para mejor UX
+
+        // 🔧 v2.9.326: Generar certificado de lectura
+        if (window.certificateGenerator) {
+          setTimeout(() => {
+            const cert = window.certificateGenerator.checkAndGenerateCertificate(this.currentBook);
+            if (cert) {
+              // Mostrar notificación de certificado ganado
+              if (window.toast) {
+                window.toast.success('🎓 ¡Felicidades! Has ganado un certificado de lectura', {
+                  duration: 6000
+                });
+                // Mostrar modal después de un momento
+                setTimeout(() => {
+                  window.certificateGenerator.showCertificateModal(this.currentBook);
+                }, 1000);
+              }
+            }
+          }, 1000);
+        }
+
+        // Shareable moments (si está disponible)
+        if (window.shareableMoments) {
+          setTimeout(() => {
+            window.shareableMoments.onBookCompleted({
+              title: bookData?.title || 'Libro',
+              chapters: progress.totalChapters,
+              estimatedReadTime: `${Math.ceil(progress.totalChapters * 10)} minutos`
+            });
+          }, 1500);
+        }
       }
     }
   }

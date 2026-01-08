@@ -173,6 +173,9 @@ class ProgressDashboard {
             </div>
           </div>
 
+          <!-- 🔧 v2.9.326: Certificates Section -->
+          ${this.renderCertificatesSection()}
+
           <!-- Recent Achievements -->
           ${this.renderRecentAchievements()}
 
@@ -373,6 +376,65 @@ class ProgressDashboard {
     return chapterId;
   }
 
+  // 🔧 v2.9.326: Sección de certificados de lectura
+  renderCertificatesSection() {
+    if (!window.certificateGenerator) return '';
+
+    const certificates = window.certificateGenerator.getAllCertificates();
+    if (certificates.length === 0) {
+      // Mostrar mensaje motivacional si no hay certificados
+      return `
+        <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-300 dark:border-gray-700/50">
+          <h3 class="text-lg font-bold text-amber-700 dark:text-amber-300 mb-4 flex items-center gap-2">
+            <span>🎓</span> Tus Certificados
+          </h3>
+          <div class="text-center py-6">
+            <div class="text-5xl mb-3 opacity-40">🎓</div>
+            <p class="text-gray-400 dark:text-gray-500 text-sm">
+              Completa un libro al 100% para obtener tu primer certificado de lectura.
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-300 dark:border-gray-700/50">
+        <h3 class="text-lg font-bold text-amber-700 dark:text-amber-300 mb-4 flex items-center gap-2">
+          <span>🎓</span> Tus Certificados (${certificates.length})
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          ${certificates.map(cert => `
+            <div class="bg-gradient-to-br from-amber-900/20 to-yellow-900/10 rounded-lg p-4 border border-amber-500/30
+                        cursor-pointer hover:border-amber-400/50 hover:scale-[1.02] transition-all"
+                 onclick="window.certificateGenerator?.showCertificateModal('${cert.bookId}')">
+              <div class="flex items-center gap-3">
+                <div class="text-3xl">${cert.bookIcon}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-amber-200 truncate">${this.escapeHtml(cert.bookTitle)}</div>
+                  <div class="text-xs text-amber-400/70">
+                    Completado el ${new Date(cert.completedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </div>
+                </div>
+                <div class="text-amber-400/50">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   renderRecentAchievements() {
     if (!this.achievementSystem) return '';
 
@@ -509,5 +571,8 @@ class ProgressDashboard {
   }
 }
 
-// Exportar
+// Exportar clase
 window.ProgressDashboard = ProgressDashboard;
+
+// 🔧 v2.9.325: Auto-instanciar para que funcione el botón
+window.progressDashboard = new ProgressDashboard();

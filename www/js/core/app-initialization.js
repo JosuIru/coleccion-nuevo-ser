@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.303: Silenciados warnings no críticos (Practice Widget, SafeExpressionEvaluator)
-    window.__APP_VERSION__ = '2.9.303'; // Cambiar con cada release
+    // 🔧 v2.9.304: Service Worker deshabilitado, console.log fallback corregido
+    window.__APP_VERSION__ = '2.9.304'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

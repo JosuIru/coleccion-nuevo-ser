@@ -8,8 +8,8 @@ android {
         applicationId "com.nuevosser.coleccion"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 260
-        versionName "2.9.303"
+        versionCode 261
+        versionName "2.9.304"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -67,7 +67,8 @@ export class FrankensteinMicroSociety {
 
     // Referencias a funciones del labUI (para backward compatibility)
     this._setTimeout = this.labUI?._setTimeout?.bind(this.labUI) || setTimeout;
-    this.showNotification = this.labUI?.showNotification?.bind(this.labUI) || console.log;
+    // 🔧 FIX v2.9.304: Usar función noop silenciosa en vez de console.log deshabilitado
+    this.showNotification = this.labUI?.showNotification?.bind(this.labUI) || (() => {});
     this.currentBeing = null;
     this.selectedMission = null;
   }

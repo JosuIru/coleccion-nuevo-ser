@@ -588,6 +588,13 @@ class BookReaderEvents {
         const menu = document.getElementById('mobile-menu');
         if (menu) menu.classList.add('hidden');
 
+        // 🔧 FIX v2.9.302: Llamar a toggleAudioPlayer que hace lazy loading
+        if (this.bookReader && typeof this.bookReader.toggleAudioPlayer === 'function') {
+          await this.bookReader.toggleAudioPlayer();
+          return;
+        }
+
+        // Fallback legacy (no debería ejecutarse)
         const audioReader = this.getDependency('audioReader');
         const reader = audioReader?.baseReader || audioReader;
         if (!reader) {
@@ -1657,17 +1664,15 @@ class BookReaderEvents {
       }
 
       // Audioreader - Crear handler si no existe (fix v2.9.285)
+      // 🔧 FIX v2.9.302: Ya se define arriba en attachEventListeners()
+      // Este bloque es redundante pero se mantiene por compatibilidad
       if (!this._audioreaderHandler) {
         this._audioreaderHandler = async (e) => {
           e.stopPropagation();
           e.preventDefault();
-          const audioReader = this.getDependency('audioReader');
-          if (audioReader) {
-            if (audioReader.isPlaying) {
-              await audioReader.pause();
-            } else {
-              await audioReader.play();
-            }
+          // Llamar a toggleAudioPlayer para lazy loading
+          if (this.bookReader && typeof this.bookReader.toggleAudioPlayer === 'function') {
+            await this.bookReader.toggleAudioPlayer();
           }
         };
       }

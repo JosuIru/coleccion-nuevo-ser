@@ -60,7 +60,7 @@ class FeatureTester {
     console.log('\n%c🌍 ENTORNO', 'background: #2196F3; color: white; padding: 5px; font-weight: bold');
 
     this.test('Versión de la app', () => {
-      return window.__APP_VERSION__ === '2.9.315';
+      return window.__APP_VERSION__ === '2.9.316';
     }, `Actual: ${window.__APP_VERSION__}`);
 
     this.test('Biblioteca disponible', () => {
@@ -570,14 +570,170 @@ class FeatureTester {
 
     return report;
   }
+
+  /**
+   * 🔍 DEBUG: Verificar listeners adjuntados a un botón
+   * USO: window.featureTester.debugButton('tools-dropdown-btn')
+   */
+  debugButton(buttonId) {
+    console.log(`\n%c🔍 DEBUG: ${buttonId}`, 'background: #FF9800; color: white; padding: 10px; font-size: 14px; font-weight: bold');
+    console.log('═══════════════════════════════════════════════════');
+
+    // 1. Verificar si el elemento existe
+    const element = document.getElementById(buttonId);
+    console.log('1️⃣ Elemento en DOM:', element ? '✅ SÍ' : '❌ NO');
+    if (element) {
+      console.log('   - Tag:', element.tagName);
+      console.log('   - Clases:', element.className);
+      console.log('   - Visible:', getComputedStyle(element).display !== 'none' ? 'SÍ' : 'NO');
+    }
+
+    // 2. Verificar EventManager
+    if (window.bookReader?.events?.eventManager) {
+      const em = window.bookReader.events.eventManager;
+      console.log('\n2️⃣ EventManager disponible: ✅ SÍ');
+
+      const stats = em.getStats();
+      console.log('   - Total listeners:', stats.total);
+      console.log('   - Por evento:', stats.byEvent);
+      console.log('   - Por target:', stats.byTarget);
+
+      // Buscar listener específico para este botón
+      const key = `${buttonId}:click`;
+      const hasListener = stats.byTarget[buttonId] > 0;
+      console.log(`\n   🎯 Listener "${key}":`, hasListener ? '✅ ENCONTRADO' : '❌ NO ENCONTRADO');
+
+      if (hasListener) {
+        console.log(`   - Cantidad de eventos en ${buttonId}:`, stats.byTarget[buttonId]);
+      }
+    } else {
+      console.log('\n2️⃣ EventManager disponible: ❌ NO');
+    }
+
+    // 3. Test de click manual
+    console.log('\n3️⃣ Test de click...');
+    if (element) {
+      try {
+        const clickEvent = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+        const result = element.dispatchEvent(clickEvent);
+        console.log('   - Click dispatched:', result ? 'SÍ' : 'NO');
+        console.log('   - ¿Algo cambió? Verifica visualmente');
+      } catch (error) {
+        console.error('   - ❌ Error al hacer click:', error.message);
+      }
+    } else {
+      console.log('   - ⚠️  No se puede hacer click (elemento no existe)');
+    }
+
+    // 4. Verificar dropdowns relacionados (si aplica)
+    if (buttonId.includes('dropdown-btn')) {
+      const dropdownId = buttonId.replace('-btn', '');
+      const dropdown = document.getElementById(dropdownId);
+      console.log(`\n4️⃣ Dropdown relacionado (${dropdownId}):`, dropdown ? '✅ EXISTE' : '❌ NO EXISTE');
+      if (dropdown) {
+        const isHidden = dropdown.classList.contains('hidden');
+        console.log('   - Estado actual:', isHidden ? 'OCULTO' : 'VISIBLE');
+        console.log('   - Clases:', dropdown.className);
+      }
+    }
+
+    console.log('\n═══════════════════════════════════════════════════');
+  }
+
+  /**
+   * 🔍 DEBUG: Ver todos los listeners activos
+   * USO: window.featureTester.debugAllListeners()
+   */
+  debugAllListeners() {
+    console.log('\n%c🔍 DEBUG: TODOS LOS LISTENERS', 'background: #673AB7; color: white; padding: 10px; font-size: 14px; font-weight: bold');
+    console.log('═══════════════════════════════════════════════════');
+
+    if (window.bookReader?.events?.eventManager) {
+      const em = window.bookReader.events.eventManager;
+      const stats = em.getStats();
+
+      console.log('📊 Estadísticas generales:');
+      console.log('   - Total listeners:', stats.total);
+      console.log('\n📁 Listeners por tipo de evento:');
+      Object.entries(stats.byEvent).forEach(([event, count]) => {
+        console.log(`   - ${event}: ${count}`);
+      });
+
+      console.log('\n🎯 Listeners por botón/elemento (primeros 50):');
+      const targets = Object.entries(stats.byTarget).slice(0, 50);
+      targets.forEach(([targetId, count]) => {
+        const element = document.getElementById(targetId);
+        const exists = element ? '✅' : '❌';
+        console.log(`   ${exists} ${targetId}: ${count} listener(s)`);
+      });
+
+      if (Object.keys(stats.byTarget).length > 50) {
+        console.log(`\n   ... y ${Object.keys(stats.byTarget).length - 50} más`);
+      }
+    } else {
+      console.log('❌ EventManager no disponible');
+    }
+
+    console.log('\n═══════════════════════════════════════════════════');
+  }
+
+  /**
+   * 🔍 DEBUG: Verificar estado de dropdowns
+   * USO: window.featureTester.debugDropdowns()
+   */
+  debugDropdowns() {
+    console.log('\n%c🔍 DEBUG: DROPDOWNS', 'background: #00BCD4; color: white; padding: 10px; font-size: 14px; font-weight: bold');
+    console.log('═══════════════════════════════════════════════════');
+
+    const dropdowns = [
+      { btn: 'tools-dropdown-btn', menu: 'tools-dropdown' },
+      { btn: 'book-features-dropdown-btn', menu: 'book-features-dropdown' },
+      { btn: 'settings-dropdown-btn', menu: 'settings-dropdown' },
+      { btn: 'more-actions-btn', menu: 'more-actions-dropdown' }
+    ];
+
+    dropdowns.forEach(({ btn, menu }) => {
+      console.log(`\n📋 ${btn} → ${menu}`);
+
+      const btnElement = document.getElementById(btn);
+      const menuElement = document.getElementById(menu);
+
+      console.log('   Botón:', btnElement ? '✅ EXISTE' : '❌ NO EXISTE');
+      console.log('   Menú:', menuElement ? '✅ EXISTE' : '❌ NO EXISTE');
+
+      if (menuElement) {
+        const isHidden = menuElement.classList.contains('hidden');
+        console.log('   Estado:', isHidden ? '🔒 OCULTO' : '👁️  VISIBLE');
+      }
+
+      // Verificar listener
+      if (window.bookReader?.events?.eventManager) {
+        const em = window.bookReader.events.eventManager;
+        const stats = em.getStats();
+        const hasListener = stats.byTarget[btn] > 0;
+        console.log('   Listener:', hasListener ? '✅ ADJUNTADO' : '❌ NO ADJUNTADO');
+      }
+    });
+
+    console.log('\n═══════════════════════════════════════════════════');
+    console.log('💡 Tip: Ejecuta window.featureTester.debugButton("tools-dropdown-btn") para más detalles');
+  }
 }
 
 // Crear instancia global
 window.featureTester = new FeatureTester();
 
 // Mensaje de ayuda
-console.log('%c🧪 Feature Tester Cargado', 'background: #FF5722; color: white; padding: 10px; font-weight: bold');
+console.log('%c🧪 Feature Tester Cargado (v2.9.316 - Debug Mode)', 'background: #FF5722; color: white; padding: 10px; font-weight: bold');
 console.log('%cEjecuta: window.featureTester.runAllTests()', 'color: #2196F3; font-size: 14px; font-weight: bold');
-console.log('Otros comandos disponibles:');
+console.log('\n📋 Comandos de testing:');
 console.log('  - window.featureTester.testButton("id-del-boton")');
 console.log('  - window.featureTester.exportReport()');
+console.log('\n🔍 Comandos de debugging (NUEVOS):');
+console.log('  - window.featureTester.debugDropdowns() - Ver estado de todos los dropdowns');
+console.log('  - window.featureTester.debugButton("tools-dropdown-btn") - Debug de un botón específico');
+console.log('  - window.featureTester.debugAllListeners() - Ver todos los listeners activos');

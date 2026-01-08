@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.315: FIX CRÍTICO setupDropdown - Closures sobre elementos destruidos
-    window.__APP_VERSION__ = '2.9.315'; // Cambiar con cada release
+    // 🔧 v2.9.316: Agregados comandos de debugging (debugDropdowns, debugButton, debugAllListeners)
+    window.__APP_VERSION__ = '2.9.316'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

@@ -447,7 +447,7 @@ class PracticeLibrary {
 
             // Abrir biblioteca para que seleccione un libro
             if (window.biblioteca) {
-              window.biblioteca.render();
+              window.biblioteca?.render();
             }
           }
         }

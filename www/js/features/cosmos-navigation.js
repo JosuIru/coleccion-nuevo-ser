@@ -943,7 +943,7 @@ class CosmosNavigationV2 {
     this.hide();
 
     if (window.biblioteca) {
-      window.biblioteca.openBook(bookId);
+      window.biblioteca?.openBook(bookId);
     }
   }
 

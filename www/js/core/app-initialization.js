@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.296: Fix "biblioteca is not defined" en navigation functions
-    window.__APP_VERSION__ = '2.9.296'; // Cambiar con cada release
+    // 🔧 v2.9.297: Fix "biblioteca is not defined" - Added optional chaining to all window.biblioteca calls
+    window.__APP_VERSION__ = '2.9.297'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

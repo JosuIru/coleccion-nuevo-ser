@@ -327,7 +327,7 @@ class WelcomeFlow {
       if (window.biblioteca && bookId) {
         // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
         this._setTimeout(() => {
-          window.biblioteca.openBook(bookId);
+          window.biblioteca?.openBook(bookId);
         }, 300);
       }
     });

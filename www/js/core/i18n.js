@@ -576,8 +576,8 @@ class I18n {
 
     // Trigger reload to apply language
     if (window.bookEngine && window.biblioteca) {
-      window.biblioteca.render();
-      window.biblioteca.attachEventListeners();
+      window.biblioteca?.render();
+      window.biblioteca?.attachEventListeners();
     }
 
     return true;

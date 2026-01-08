@@ -853,7 +853,7 @@ class ExplorationHub {
 
     return results.map(result => `
       <div class="search-result-card bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-pink-500/50 transition cursor-pointer"
-           onclick="window.biblioteca.openBook('${result.bookId}', '${result.chapterId}')">
+           onclick="window.biblioteca?.openBook('${result.bookId}', '${result.chapterId}')">
         <div class="flex items-start gap-3">
           <div class="text-2xl">${result.bookIcon || '📖'}</div>
           <div class="flex-1">

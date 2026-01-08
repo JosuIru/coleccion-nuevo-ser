@@ -689,7 +689,7 @@ class SupabaseSyncHelper {
             window.toast?.success('Sincronización completada');
 
             // Recargar UI
-            if (window.biblioteca) window.biblioteca.render();
+            if (window.biblioteca) window.biblioteca?.render();
 
         } catch (error) {
             logger.error('Error en syncFromCloud:', error);

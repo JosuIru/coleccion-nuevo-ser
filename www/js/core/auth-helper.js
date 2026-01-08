@@ -286,7 +286,7 @@ class AuthHelper {
 
       // 🔧 FIX #5: Limpiar caché de admin al hacer logout
       if (window.biblioteca && typeof window.biblioteca.clearAdminCache === 'function') {
-        window.biblioteca.clearAdminCache();
+        window.biblioteca?.clearAdminCache();
       }
 
       logger.debug('👋 Sesión cerrada');

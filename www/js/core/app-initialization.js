@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.300: Fix comentario HTML mal formado mostrando flecha
-    window.__APP_VERSION__ = '2.9.300'; // Cambiar con cada release
+    // 🔧 v2.9.301: Fix AudioReader no aparece - lazy loading completo
+    window.__APP_VERSION__ = '2.9.301'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

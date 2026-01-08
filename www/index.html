@@ -501,7 +501,8 @@
   <script src="js/features/audio-visualizer.js?v=3.0.0"></script>
   <script src="js/features/word-by-word-sync.js?v=3.0.0"></script>
   <script src="js/features/soundscape-cache.js?v=3.0.0"></script>
-  <script src="js/features/enhanced-audioreader.js?v=3.0.0"></script>
+  <!-- LAZY LOADED: Enhanced AudioReader requiere AudioReader base -->
+  <!-- <script src="js/features/enhanced-audioreader.js?v=3.0.0"></script> -->
   <!-- LAZY LOADED: Audio Control Modal (32KB) -->
   <!-- <script src="js/features/audio-control-modal.js?v=3.0.0"></script> -->
   <!-- <script src="js/features/audio-enhancements.js?v=3.1.0"></script> -->
@@ -741,30 +742,9 @@
 
         }
 
-        // Audio Reader (Enhanced)
-        if (window.EnhancedAudioReader && window.AudioReader) {
-          audioReader = new EnhancedAudioReader(bookEngine);
-          window.audioReader = audioReader;
-
-
-          // Audio Control Modal
-          if (window.AudioControlModal) {
-            window.audioControlModal = new AudioControlModal(audioReader);
-
-          }
-
-          // Audio Enhancements (Word Sync, Stats, Effects, Voice Commands)
-          if (window.AudioEnhancements) {
-            window.audioEnhancements = new AudioEnhancements(audioReader);
-            window.audioEnhancements.initialize();
-
-          }
-        } else if (window.AudioReader) {
-          // Fallback al AudioReader normal si falla Enhanced
-          audioReader = new AudioReader(bookEngine);
-          window.audioReader = audioReader;
-
-        }
+        // Audio Reader - LAZY LOADED when user activates audio player
+        // Se inicializa en book-reader-mobile.js:toggleAudioPlayer()
+        // 🔧 FIX v2.9.301: No cargar al inicio, lazy loading completo
 
         // Koan Generator
         if (window.KoanGenerator) {

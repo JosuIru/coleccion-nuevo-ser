@@ -1641,6 +1641,57 @@ class BookReaderEvents {
   // ==========================================================================
 
   /**
+   * Limpia SOLO los listeners de botones del header antes de updateHeader()
+   * 🔧 FIX v2.9.313: Necesario para evitar que listeners viejos apunten a elementos destruidos
+   */
+  cleanHeaderListeners() {
+    // Lista de TODOS los IDs de botones que están en el header
+    const headerButtonIds = [
+      // Toggle y navegación
+      'toggle-sidebar',
+      // Audio
+      'audioreader-btn', 'audioreader-btn-tablet', 'audioreader-btn-mobile',
+      'audio-expand-btn-mobile',
+      // Support
+      'support-btn', 'support-btn-tablet', 'support-btn-mobile',
+      // Notes
+      'notes-btn',
+      // AI Chat
+      'ai-chat-btn', 'ai-chat-btn-tablet', 'ai-chat-btn-mobile',
+      // Mobile menu
+      'mobile-menu-btn',
+      // Dropdowns toggles
+      'tools-dropdown-btn', 'book-features-dropdown-btn', 'settings-dropdown-btn',
+      'more-actions-btn',
+      // Tools dropdown buttons
+      'chapter-resources-btn', 'summary-btn', 'voice-notes-btn', 'concept-map-btn',
+      'action-plans-btn', 'achievements-btn', 'learning-paths-btn-desktop', 'content-adapter-btn',
+      // Book features dropdown
+      'quiz-btn', 'timeline-btn', 'book-resources-btn',
+      // Settings dropdown
+      'open-settings-modal-btn', 'open-settings-modal-btn-tablet',
+      'open-help-center-btn', 'open-help-center-btn-tablet',
+      'my-account-btn', 'android-download-btn',
+      'language-selector-btn', 'theme-toggle-btn', 'premium-edition-btn', 'share-chapter-btn',
+      // Bookmark
+      'bookmark-btn', 'bookmark-btn-tablet', 'bookmark-btn-mobile'
+    ];
+
+    // Remover listeners de cada botón del header
+    headerButtonIds.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        // Remover del EventManager
+        this.eventManager.removeEventListenersFromElement(element);
+      }
+    });
+
+    if (typeof logger !== 'undefined') {
+      logger.debug('[BookReaderEvents] Listeners del header limpiados');
+    }
+  }
+
+  /**
    * Re-adjunta event listeners del header despues de updateHeader()
    */
   attachHeaderListeners() {

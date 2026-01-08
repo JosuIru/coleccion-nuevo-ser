@@ -113,8 +113,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.312: FIX CRÍTICO - Re-adjuntar listeners de dropdown menus en updateHeader()
-    window.__APP_VERSION__ = '2.9.312'; // Cambiar con cada release
+    // 🔧 v2.9.313: FIX CRÍTICO - Limpiar listeners viejos ANTES de updateHeader()
+    window.__APP_VERSION__ = '2.9.313'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

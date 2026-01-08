@@ -284,11 +284,8 @@ class BookReader {
   updateHeader() {
     const headerElement = document.querySelector('.header');
     if (headerElement) {
-      // 🔧 FIX v2.9.313: Limpiar listeners del header ANTES de reemplazar HTML
-      // Si no se hace esto, los listeners viejos quedan apuntando a elementos destruidos
-      // y causan conflictos con los nuevos listeners
-      this.events.cleanHeaderListeners();
-
+      // 🔧 v2.9.314: EventManager ya maneja automáticamente la limpieza
+      // addEventListener() remueve listeners viejos automáticamente antes de agregar nuevos
       headerElement.outerHTML = this.header.render();
       this.events.attachHeaderListeners();
       const Icons = this.getDependency('Icons');

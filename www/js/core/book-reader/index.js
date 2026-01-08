@@ -284,22 +284,31 @@ class BookReader {
   updateHeader() {
     const headerElement = document.querySelector('.header');
     if (headerElement) {
-      // 🔧 v2.9.314: EventManager ya maneja automáticamente la limpieza
-      // addEventListener() remueve listeners viejos automáticamente antes de agregar nuevos
+      // 🔧 v2.9.317: FIX CRÍTICO timing - outerHTML necesita tiempo para parsear
+      // Los nuevos elementos no están disponibles inmediatamente después de outerHTML
       headerElement.outerHTML = this.header.render();
-      this.events.attachHeaderListeners();
-      const Icons = this.getDependency('Icons');
-      if (Icons) Icons.init();
+
+      // Esperar al siguiente tick del event loop para que los elementos estén en el DOM
+      setTimeout(() => {
+        this.events.attachHeaderListeners();
+        const Icons = this.getDependency('Icons');
+        if (Icons) Icons.init();
+      }, 0);
     }
   }
 
   updateFooterNav() {
     const footerNav = document.querySelector('.footer-nav');
     if (footerNav) {
+      // 🔧 v2.9.317: FIX CRÍTICO timing - outerHTML necesita tiempo para parsear
       footerNav.outerHTML = this.content.renderFooterNav();
-      this.events.attachNavigationListeners();
-      const Icons = this.getDependency('Icons');
-      if (Icons) Icons.init();
+
+      // Esperar al siguiente tick del event loop para que los elementos estén en el DOM
+      setTimeout(() => {
+        this.events.attachNavigationListeners();
+        const Icons = this.getDependency('Icons');
+        if (Icons) Icons.init();
+      }, 0);
     }
   }
 

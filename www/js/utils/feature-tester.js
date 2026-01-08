@@ -60,7 +60,7 @@ class FeatureTester {
     console.log('\n%c🌍 ENTORNO', 'background: #2196F3; color: white; padding: 5px; font-weight: bold');
 
     this.test('Versión de la app', () => {
-      return window.__APP_VERSION__ === '2.9.316';
+      return window.__APP_VERSION__ === '2.9.317';
     }, `Actual: ${window.__APP_VERSION__}`);
 
     this.test('Biblioteca disponible', () => {

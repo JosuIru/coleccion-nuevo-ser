@@ -470,19 +470,12 @@ class Biblioteca {
 
     // Verificar reintentos
     if (attempt >= MAX_RETRIES) {
-      // 🔧 FIX #4: Usar logger en lugar de console.log
-      logger.warn('[Biblioteca] Practice widget alcanzó MAX_RETRIES');
-      // 🔧 FIX #14: Mostrar mensaje al usuario cuando falla después de reintentos
+      // 🔧 FIX v2.9.303: Silenciar warning, no es crítico si práctica no carga
+      // logger.warn('[Biblioteca] Practice widget alcanzó MAX_RETRIES');
+      // Solo ocultar el container si no está disponible
       const container = document.getElementById('practice-widget-container');
       if (container) {
-        container.innerHTML = `
-          <div class="text-center text-gray-500 text-sm py-4">
-            <p>El sistema de prácticas no pudo cargarse.</p>
-            <button onclick="location.reload()" class="mt-2 text-cyan-400 hover:text-cyan-300 underline">
-              Recargar página
-            </button>
-          </div>
-        `;
+        container.style.display = 'none';
       }
       return;
     }

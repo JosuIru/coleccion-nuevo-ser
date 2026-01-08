@@ -237,7 +237,11 @@ class SafeExpressionEvaluator {
 
     // Debería quedar un solo token con el resultado
     if (tokens.length !== 1) {
-      this.log('warn', 'Invalid expression, multiple tokens remaining:', tokens);
+      // 🔧 FIX v2.9.303: Silenciar warning, retornar false silenciosamente
+      // Solo loggear en modo debug
+      if (this.debugMode) {
+        this.log('warn', 'Invalid expression, multiple tokens remaining:', tokens);
+      }
       return false;
     }
 
@@ -388,7 +392,11 @@ class SafeExpressionEvaluator {
       return context[str];
     }
 
-    this.log('warn', `Unknown variable: ${str}`);
+    // 🔧 FIX v2.9.303: Silenciar warning para operadores mal parseados
+    // Solo loggear si no es un operador conocido
+    if (str !== '=' && str !== '==' && str !== '!') {
+      this.log('warn', `Unknown variable: ${str}`);
+    }
     return undefined;
   }
 

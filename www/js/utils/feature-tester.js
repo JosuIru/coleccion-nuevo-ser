@@ -60,7 +60,7 @@ class FeatureTester {
     console.log('\n%c🌍 ENTORNO', 'background: #2196F3; color: white; padding: 5px; font-weight: bold');
 
     this.test('Versión de la app', () => {
-      return window.__APP_VERSION__ === '2.9.309';
+      return window.__APP_VERSION__ === '2.9.311';
     }, `Actual: ${window.__APP_VERSION__}`);
 
     this.test('Biblioteca disponible', () => {
@@ -357,22 +357,102 @@ class FeatureTester {
 
     this.pass('Book Reader', 'Vista activa');
 
-    // Verificar botones del reader
-    const readerButtons = [
-      'back-to-biblioteca-btn',
-      'toggle-sidebar-btn',
-      'audio-reader-btn',
-      'notes-btn',
-      'settings-reader-btn'
+    // Verificar botón básico
+    this.testButtonHandler('toggle-sidebar', 'Toggle Sidebar');
+
+    // Verificar botones móvil
+    console.log('  [MOBILE]');
+    const mobileButtons = [
+      { id: 'bookmark-btn-mobile', name: 'Marcador (mobile)', hasOnclick: true },
+      { id: 'ai-chat-btn-mobile', name: 'Chat IA (mobile)' },
+      { id: 'audioreader-btn-mobile', name: 'AudioReader (mobile)' },
+      { id: 'support-btn-mobile', name: 'Apoyar (mobile)' },
+      { id: 'mobile-menu-btn', name: 'Menú (mobile)' }
     ];
 
-    for (const btnId of readerButtons) {
-      const btn = document.getElementById(btnId);
-      if (btn) {
-        this.pass(`Reader: ${btnId}`, 'Presente');
-      } else {
-        this.fail(`Reader: ${btnId}`, 'NO encontrado');
-      }
+    for (const btn of mobileButtons) {
+      this.testButtonHandler(btn.id, btn.name, btn.hasOnclick);
+    }
+
+    // Verificar botones tablet
+    console.log('  [TABLET]');
+    const tabletButtons = [
+      { id: 'bookmark-btn-tablet', name: 'Marcador (tablet)', hasOnclick: true },
+      { id: 'ai-chat-btn-tablet', name: 'Chat IA (tablet)' },
+      { id: 'audioreader-btn-tablet', name: 'AudioReader (tablet)' },
+      { id: 'support-btn-tablet', name: 'Apoyar (tablet)' },
+      { id: 'more-actions-btn', name: 'Más Acciones (tablet)' }
+    ];
+
+    for (const btn of tabletButtons) {
+      this.testButtonHandler(btn.id, btn.name, btn.hasOnclick);
+    }
+
+    // Verificar botones desktop
+    console.log('  [DESKTOP]');
+    const desktopButtons = [
+      { id: 'audioreader-btn', name: 'AudioReader (desktop)' },
+      { id: 'support-btn', name: 'Apoyar (desktop)' },
+      { id: 'tools-dropdown-btn', name: 'Herramientas (desktop)' },
+      { id: 'book-features-dropdown-btn', name: 'Contenido (desktop)' },
+      { id: 'settings-dropdown-btn', name: 'Configuración (desktop)' }
+    ];
+
+    for (const btn of desktopButtons) {
+      this.testButtonHandler(btn.id, btn.name);
+    }
+
+    // Verificar items de menú dropdown
+    console.log('  [MENU ITEMS]');
+    const menuItems = [
+      'chapter-resources-btn',
+      'summary-btn',
+      'voice-notes-btn',
+      'concept-map-btn',
+      'action-plans-btn',
+      'achievements-btn',
+      'learning-paths-btn-desktop',
+      'content-adapter-btn',
+      'quiz-btn',
+      'timeline-btn',
+      'book-resources-btn',
+      'open-settings-modal-btn',
+      'open-help-center-btn',
+      'notes-btn-dropdown',
+      'my-account-btn',
+      'share-chapter-btn',
+      'theme-toggle-btn',
+      'language-selector-btn',
+      'premium-edition-btn',
+      'android-download-btn'
+    ];
+
+    for (const itemId of menuItems) {
+      this.testButtonHandler(itemId, itemId.replace(/-btn|-dropdown/g, ''));
+    }
+  }
+
+  /**
+   * Helper para probar si un botón tiene handler
+   */
+  testButtonHandler(btnId, name, expectOnclick = false) {
+    const btn = document.getElementById(btnId);
+
+    if (!btn) {
+      this.fail(name, 'NO encontrado en DOM');
+      return;
+    }
+
+    // Verificar handlers
+    const hasOnclick = btn.onclick !== null || btn.getAttribute('onclick') !== null;
+
+    if (expectOnclick && !hasOnclick) {
+      this.fail(name, 'Sin onclick (esperado)');
+    } else if (hasOnclick) {
+      this.pass(name, 'Con onclick');
+    } else {
+      // Puede tener event listener agregado dinámicamente
+      this.pass(name, 'Presente (listener dinámico?)');
     }
   }
 

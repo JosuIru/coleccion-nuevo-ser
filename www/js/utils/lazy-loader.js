@@ -960,9 +960,37 @@ class LazyLoader {
         return await this.loadAuthModal();
       case 'audioreader-suite':
         return await this.loadAudioreaderSuite();
+      // 🔧 FIX v2.9.306: Agregar módulos faltantes
+      case 'my-account':
+        return await this.loadScript('js/features/my-account-modal.js');
+      case 'admin-panel':
+        return await this.loadScript('js/features/admin-panel-modal.js?v=2.9.284');
+      case 'premium-system':
+      case 'ai-features':
+        return await this.loadAIPremium();
+      case 'cosmos-3d':
+        return await this.loadCosmosNavigation();
+      case 'contentAdapter':
+        logger.warn('[LazyLoader] contentAdapter is deprecated, module no longer exists');
+        return Promise.resolve();
       default:
         logger.warn(`[LazyLoader] Módulo desconocido: ${module}`);
     }
+  }
+
+  /**
+   * Método público para cargar módulos
+   * 🔧 FIX v2.9.306: Agregado método público .load() que faltaba
+   * @param {string|Array} modules - Nombre del módulo o array de módulos
+   * @returns {Promise}
+   */
+  async load(modules) {
+    // Si es un array, cargar todos
+    if (Array.isArray(modules)) {
+      return Promise.all(modules.map(m => this._loadModuleByName(m)));
+    }
+    // Si es un string, cargar uno solo
+    return this._loadModuleByName(modules);
   }
 
   /**

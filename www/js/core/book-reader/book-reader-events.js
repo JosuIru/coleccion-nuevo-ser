@@ -243,24 +243,25 @@ class BookReaderEvents {
     const btn = document.getElementById(btnId);
     const dropdown = document.getElementById(dropdownId);
     if (btn && dropdown) {
-      // Guardar handler para evitar duplicacion
-      if (!this._dropdownHandlers) this._dropdownHandlers = {};
+      // 🔧 v2.9.315: FIX CRÍTICO - No cachear handlers que cierren sobre elementos DOM
+      // Cuando updateHeader() destruye/recrea elementos, los handlers cacheados
+      // referencian elementos destruidos. Solución: lookup por ID dentro del handler.
+      const handler = (e) => {
+        e.stopPropagation();
+        // Cerrar otros dropdowns
+        ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+          if (id !== dropdownId) {
+            document.getElementById(id)?.classList.add('hidden');
+          }
+        });
+        // Lookup del elemento actual (no usar closure sobre variable destruida)
+        const currentDropdown = document.getElementById(dropdownId);
+        if (currentDropdown) {
+          currentDropdown.classList.toggle('hidden');
+        }
+      };
 
-      const handlerKey = `${btnId}_${dropdownId}`;
-      if (!this._dropdownHandlers[handlerKey]) {
-        this._dropdownHandlers[handlerKey] = (e) => {
-          e.stopPropagation();
-          // Cerrar otros dropdowns
-          ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
-            if (id !== dropdownId) {
-              document.getElementById(id)?.classList.add('hidden');
-            }
-          });
-          dropdown.classList.toggle('hidden');
-        };
-      }
-
-      this.eventManager.addEventListener(btn, 'click', this._dropdownHandlers[handlerKey]);
+      this.eventManager.addEventListener(btn, 'click', handler);
     }
   }
 

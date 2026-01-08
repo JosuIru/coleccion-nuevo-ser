@@ -149,7 +149,9 @@ class LazyLoader {
    * @returns {Promise<void>}
    */
   async loadAIChatModal() {
-    if (this.loadedModules.has('ai-chat-modal')) {
+    // 🔧 FIX v2.9.307: Verificar si ya está cargado (directo en HTML o lazy)
+    if (this.loadedModules.has('ai-chat-modal') || typeof window.AIChatModal !== 'undefined') {
+      this.loadedModules.set('ai-chat-modal', true);
       return Promise.resolve();
     }
 
@@ -559,7 +561,9 @@ class LazyLoader {
    * @returns {Promise<void>}
    */
   async loadExplorationHub() {
-    if (this.loadedModules.has('exploration-hub')) {
+    // 🔧 FIX v2.9.307: Verificar si ya está cargado (directo en HTML o lazy)
+    if (this.loadedModules.has('exploration-hub') || typeof window.ExplorationHub !== 'undefined') {
+      this.loadedModules.set('exploration-hub', true);
       return Promise.resolve();
     }
 
@@ -589,7 +593,9 @@ class LazyLoader {
    * @returns {Promise<void>}
    */
   async loadBrujulaRecursos() {
-    if (this.loadedModules.has('brujula-recursos')) {
+    // 🔧 FIX v2.9.307: Verificar si ya está cargado (directo en HTML o lazy)
+    if (this.loadedModules.has('brujula-recursos') || typeof window.BrujulaRecursos !== 'undefined') {
+      this.loadedModules.set('brujula-recursos', true);
       return Promise.resolve();
     }
 

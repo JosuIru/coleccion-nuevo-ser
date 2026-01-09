@@ -1530,6 +1530,56 @@ class BookReaderEvents {
     if (aiSuggestions) {
       aiSuggestions.attachToChapterContent();
     }
+
+    // ========================================================================
+    // QUICK ACCESS COMPONENTS (v2.9.354)
+    // Command Palette (Ctrl+K), FAB Menu, Radial Menu
+    // ========================================================================
+    this.initQuickAccessComponents();
+  }
+
+  // ==========================================================================
+  // QUICK ACCESS COMPONENTS INITIALIZATION (v2.9.354)
+  // ==========================================================================
+
+  /**
+   * Inicializa los componentes de acceso rápido:
+   * - Command Palette (Ctrl/Cmd+K)
+   * - FAB Menu (botón flotante)
+   * - Radial Menu (long-press/click derecho)
+   */
+  initQuickAccessComponents() {
+    try {
+      // Command Palette - siempre disponible con Ctrl+K
+      if (window.commandPalette) {
+        console.log('[BookReaderEvents] Command Palette already initialized');
+      } else if (window.CommandPalette) {
+        window.commandPalette = new window.CommandPalette();
+        console.log('[BookReaderEvents] Command Palette initialized');
+      }
+
+      // FAB Menu - mostrar solo en book-reader
+      if (window.fabMenu) {
+        window.fabMenu.show();
+        console.log('[BookReaderEvents] FAB Menu shown');
+      } else if (window.FABMenu) {
+        window.fabMenu = new window.FABMenu();
+        window.fabMenu.show();
+        console.log('[BookReaderEvents] FAB Menu initialized and shown');
+      }
+
+      // Radial Menu - attach al contenido del capítulo
+      if (window.radialMenu) {
+        window.radialMenu.attachToContent();
+        console.log('[BookReaderEvents] Radial Menu attached');
+      } else if (window.RadialMenu) {
+        window.radialMenu = new window.RadialMenu();
+        window.radialMenu.attachToContent();
+        console.log('[BookReaderEvents] Radial Menu initialized and attached');
+      }
+    } catch (error) {
+      console.error('[BookReaderEvents] Error initializing quick access components:', error);
+    }
   }
 
   // ==========================================================================

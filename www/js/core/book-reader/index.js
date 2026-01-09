@@ -129,6 +129,14 @@ class BookReader {
       container.classList.add('hidden');
     }
 
+    // 🔧 v2.9.354: Ocultar FAB y limpiar Radial Menu al salir del reader
+    if (window.fabMenu) {
+      window.fabMenu.hide();
+    }
+    if (window.radialMenu) {
+      window.radialMenu.detach();
+    }
+
     this.cleanup();
   }
 

@@ -435,8 +435,8 @@ class BookReaderContent {
           <!-- Content -->
           <div class="flex-1">
             <h3 class="text-2xl font-bold text-amber-300 mb-2">${this.i18n.t('premium.title')}</h3>
-            <p class="text-gray-300 mb-1">${this.i18n.t('premium.description')}</p>
-            <p class="text-sm text-gray-400">${this.i18n.t('premium.features')}</p>
+            <p class="text-gray-600 dark:text-gray-300 mb-1">${this.i18n.t('premium.description')}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">${this.i18n.t('premium.features')}</p>
           </div>
 
           <!-- Buttons -->
@@ -451,7 +451,7 @@ class BookReaderContent {
             </button>
             <div class="text-center">
               <span class="text-sm text-amber-400">${this.i18n.t('premium.contribution')}: <strong>15€</strong></span>
-              <span class="text-xs text-gray-500 block">${this.i18n.t('premium.optional')}</span>
+              <span class="text-xs text-gray-400 dark:text-gray-500 block">${this.i18n.t('premium.optional')}</span>
             </div>
           </div>
         </div>

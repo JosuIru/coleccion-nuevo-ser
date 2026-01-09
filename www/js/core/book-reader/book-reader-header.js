@@ -100,14 +100,14 @@ class BookReaderHeader {
               <span class="hidden xs:inline">Libros</span>
             </button>
 
-            <span class="text-gray-400 dark:text-gray-600 mx-0.5">/</span>
+            <span class="text-gray-500 mx-0.5">/</span>
 
             <!-- Título del libro (no clickeable, solo info) -->
             <span class="text-gray-600 dark:text-gray-400 truncate max-w-[120px] sm:max-w-[200px]" title="${bookData.title}">
               ${this.truncateText(bookData.title, 25)}
             </span>
 
-            <span class="text-gray-400 dark:text-gray-600 mx-0.5">/</span>
+            <span class="text-gray-500 mx-0.5">/</span>
 
             <!-- Capítulo actual (destacado) -->
             <span class="text-gray-900 dark:text-gray-100 font-semibold truncate max-w-[100px] sm:max-w-[180px]" title="${this.currentChapter?.title || ''}">
@@ -239,7 +239,7 @@ class BookReaderHeader {
   renderTabletDropdown(hasTimeline, hasResources, hasManualPractico, hasPracticasRadicales, hasKoan) {
     return `
       <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
-        <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuracion</div>
+        <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuracion</div>
         <button id="open-settings-modal-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400 font-semibold" aria-label="Configuracion General">
           ${Icons.settings(18)} <span>Configuracion General</span>
         </button>
@@ -416,7 +416,7 @@ class BookReaderHeader {
           <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="book-features-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
-          <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Contenido del libro</div>
+          <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Contenido del libro</div>
           <button id="quiz-btn" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Quiz de Autoevaluacion" title="Quiz de Autoevaluacion">
             <span class="text-lg">🎯</span> <span>Quiz de Autoevaluacion</span>
           </button>
@@ -441,7 +441,7 @@ class BookReaderHeader {
           <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="settings-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
-          <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuracion</div>
+          <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuracion</div>
           <button id="open-settings-modal-btn" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400 font-semibold" aria-label="Configuracion General">
             ${Icons.settings(18)} <span>Configuracion General</span>
           </button>
@@ -469,7 +469,7 @@ class BookReaderHeader {
             ${Icons.create('share-2', 18)} <span>Compartir capitulo</span>
           </button>
           <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-          <div class="px-3 py-1.5 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Cuenta</div>
+          <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Cuenta</div>
           <button id="my-account-btn" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400 font-semibold" aria-label="Mi Cuenta">
             ${Icons.create('user', 18)} <span>Mi Cuenta</span>
           </button>

@@ -480,33 +480,43 @@ class BookReader {
   /**
    * Abre el modal de perfil/cuenta del usuario
    * 🔧 FIX v2.9.346: Método faltante que causaba error en consola
+   * 🔧 FIX v2.9.347: Cargar authModal antes si usuario no autenticado
    */
   async openProfile() {
-    // Abrir modal de Mi Cuenta si está cargado
+    // Verificar si el usuario está autenticado
+    const isAuthenticated = window.authHelper?.isAuthenticated?.() || false;
+
+    // Si NO está autenticado, mostrar modal de login
+    if (!isAuthenticated) {
+      // Cargar authModal si no está cargado
+      if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+        await window.lazyLoader.loadAuthModal();
+      }
+      if (window.authModal) {
+        window.authModal.show('login');
+      } else {
+        window.toast?.info('Inicia sesión para acceder a tu cuenta');
+      }
+      return;
+    }
+
+    // Usuario autenticado - Abrir modal de Mi Cuenta
     if (window.myAccountModal) {
       window.myAccountModal.show();
       return;
     }
 
-    // Lazy load del modal
+    // Lazy load del modal si no está cargado
     if (window.lazyLoader) {
       try {
         await window.lazyLoader.load('my-account');
         if (window.myAccountModal) {
           window.myAccountModal.show();
-          return;
         }
       } catch (err) {
         logger.error('[BookReader] Error cargando my-account:', err);
+        window.toast?.error('Error al cargar Mi Cuenta');
       }
-    }
-
-    // Fallback a auth modal si no está logueado
-    if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
-      await window.lazyLoader.loadAuthModal();
-    }
-    if (window.authModal) {
-      window.authModal.show('login');
     }
   }
 

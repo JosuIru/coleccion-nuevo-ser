@@ -308,7 +308,7 @@ class Biblioteca {
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-gradient flex items-center justify-center gap-3">
           ${Icons.library(48)} ${datosLibreria.name}
         </h1>
-        <p class="text-lg sm:text-xl opacity-80">
+        <p class="text-lg sm:text-xl text-gray-700 dark:text-gray-300">
           ${datosLibreria.tagline}
         </p>
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -770,19 +770,19 @@ class Biblioteca {
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <div class="stat">
             <div class="text-2xl sm:text-3xl font-bold text-cyan-600 dark:text-cyan-300">${progresoGlobal.totalRead}</div>
-            <div class="text-xs sm:text-sm opacity-70 text-gray-600 dark:text-gray-200">${this.i18n.t('library.chaptersRead')}</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">${this.i18n.t('library.chaptersRead')}</div>
           </div>
           <div class="stat">
             <div class="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-300">${progresoGlobal.totalChapters}</div>
-            <div class="text-xs sm:text-sm opacity-70 text-gray-600 dark:text-gray-200">${this.i18n.t('library.totalChapters')}</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">${this.i18n.t('library.totalChapters')}</div>
           </div>
           <div class="stat">
             <div class="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-300">${progresoGlobal.percentage}%</div>
-            <div class="text-xs sm:text-sm opacity-70 text-gray-600 dark:text-gray-200">${this.i18n.t('library.completed')}</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">${this.i18n.t('library.completed')}</div>
           </div>
           <div class="stat">
             <div class="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-300">${progresoGlobal.booksStarted}</div>
-            <div class="text-xs sm:text-sm opacity-70 text-gray-600 dark:text-gray-200">${this.i18n.t('library.booksStarted')}</div>
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">${this.i18n.t('library.booksStarted')}</div>
           </div>
         </div>
 
@@ -839,26 +839,26 @@ class Biblioteca {
                 ${Icons.getBookIcon(libroActual.id, 32, libroActual.color)}
               </div>
               <div>
-                <h4 class="text-lg font-bold text-white">${libroActual.title}</h4>
-                <p class="text-sm text-gray-400">${libroActual.subtitle}</p>
+                <h4 class="text-lg font-bold text-gray-900 dark:text-white">${libroActual.title}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${libroActual.subtitle}</p>
               </div>
             </div>
 
             <!-- Progress Bar -->
             <div class="mb-3">
               <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-400">${progresoLibro.chaptersRead} de ${progresoLibro.totalChapters} capítulos</span>
+                <span class="text-gray-600 dark:text-gray-400">${progresoLibro.chaptersRead} de ${progresoLibro.totalChapters} capítulos</span>
                 <span class="font-semibold text-cyan-400">${progresoLibro.percentage}%</span>
               </div>
-              <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div class="h-full transition-all duration-500 rounded-full"
                      style="width: ${progresoLibro.percentage}%; background: linear-gradient(90deg, ${libroActual.color}, ${libroActual.secondaryColor || libroActual.color})"></div>
               </div>
             </div>
 
             ${siguienteCapitulo ? `
-              <p class="text-sm text-gray-400 mb-3">
-                Próximo: <span class="text-gray-200">${siguienteCapitulo.title}</span>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                Próximo: <span class="text-gray-800 dark:text-gray-200">${siguienteCapitulo.title}</span>
               </p>
             ` : ''}
           </div>
@@ -1089,7 +1089,7 @@ class Biblioteca {
       <div class="search-filters mb-6 space-y-4">
         <!-- Fila 1: Búsqueda -->
         <div class="relative">
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 opacity-50">
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
@@ -1337,8 +1337,8 @@ class Biblioteca {
               </svg>
             </div>
             <div class="text-left">
-              <h3 class="text-2xl sm:text-3xl font-bold text-emerald-300">${this.i18n.t('library.tools') || 'Herramientas y Aplicaciones'}</h3>
-              <p class="text-sm opacity-60">Aplicaciones web complementarias del ecosistema Nuevo Ser</p>
+              <h3 class="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-300">${this.i18n.t('library.tools') || 'Herramientas y Aplicaciones'}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Aplicaciones web complementarias del ecosistema Nuevo Ser</p>
             </div>
           </div>
           <svg class="chevron w-6 h-6 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1564,10 +1564,10 @@ class Biblioteca {
 
     librosFuturos.forEach(libroFuturo => {
       htmlSeccion += `
-        <div class="future-book p-6 rounded-xl border border-dashed border-gray-600 opacity-60">
-          <h4 class="text-xl font-bold mb-2">${libroFuturo.title}</h4>
-          <p class="text-sm mb-3">${libroFuturo.category}</p>
-          <p class="text-sm opacity-70">${libroFuturo.description}</p>
+        <div class="future-book p-6 rounded-xl border border-dashed border-gray-400 dark:border-gray-600">
+          <h4 class="text-xl font-bold mb-2 text-gray-700 dark:text-gray-300">${libroFuturo.title}</h4>
+          <p class="text-sm mb-3 text-gray-600 dark:text-gray-400">${libroFuturo.category}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-500">${libroFuturo.description}</p>
         </div>
       `;
     });
@@ -1590,7 +1590,7 @@ class Biblioteca {
         <p class="mb-4 leading-relaxed">
           ${this.bookEngine.catalog.library.description}
         </p>
-        <p class="text-sm opacity-60">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
           Versión ${this.bookEngine.catalog.library.version} •
           Última actualización: ${new Date(this.bookEngine.catalog.library.lastUpdate).toLocaleDateString('es-ES')}
         </p>
@@ -1611,7 +1611,7 @@ class Biblioteca {
             <path d="M12 17h.01"></path>
           </svg>
           <h2 class="text-2xl sm:text-3xl font-bold mb-4">${this.i18n.t('error.loadLibrary')}</h2>
-          <p class="text-base sm:text-lg opacity-70 mb-6">${error.message}</p>
+          <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6">${error.message}</p>
           <button onclick="location.reload()"
                   class="px-5 sm:px-6 py-2 sm:py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition text-sm sm:text-base">
             ${this.i18n.t('btn.retry')}

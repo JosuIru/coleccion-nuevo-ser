@@ -530,17 +530,23 @@ class VoiceNotes {
 // INICIALIZACIÓN
 // ==========================================================================
 
+// 🔧 v2.9.325: Siempre crear instancia (puede no tener bookEngine inicialmente)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     if (VoiceNotes.isSupported()) {
-      window.voiceNotes = new VoiceNotes(window.bookEngine);
+      window.voiceNotes = new VoiceNotes(window.bookEngine || window.bookReader?.bookEngine);
     }
   });
 } else {
   if (VoiceNotes.isSupported()) {
-    window.voiceNotes = new VoiceNotes(window.bookEngine);
+    window.voiceNotes = new VoiceNotes(window.bookEngine || window.bookReader?.bookEngine);
   }
 }
 
-// Exportar
+// Exportar clase y crear instancia de respaldo
 window.VoiceNotes = VoiceNotes;
+
+// Garantizar que existe la instancia
+if (!window.voiceNotes && VoiceNotes.isSupported()) {
+  window.voiceNotes = new VoiceNotes(null);
+}

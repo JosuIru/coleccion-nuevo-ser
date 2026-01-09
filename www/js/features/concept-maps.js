@@ -6,12 +6,18 @@
 
 class ConceptMaps {
   constructor(bookEngine) {
-    this.bookEngine = bookEngine;
+    // 🔧 FIX v2.9.332: Fallback a window.bookEngine si no se pasa como parámetro
+    this.bookEngine = bookEngine || window.bookEngine || null;
     this.i18n = window.i18n || { t: (key) => key };
     this.maps = this.getConceptMapsData();
     this.crossReferences = this.getCrossReferencesData();
     // 🔧 FIX v2.9.271: Track ESC handler for cleanup
     this.escHandler = null;
+  }
+
+  // 🔧 FIX v2.9.332: Método helper para obtener bookEngine
+  getBookEngine() {
+    return this.bookEngine || window.bookEngine || null;
   }
 
   // ==========================================================================
@@ -398,7 +404,9 @@ class ConceptMaps {
   // ==========================================================================
 
   show(bookId = null) {
-    const targetBookId = bookId || this.bookEngine?.getCurrentBook();
+    // 🔧 FIX v2.9.332: Usar getBookEngine() para fallback robusto
+    const engine = this.getBookEngine();
+    const targetBookId = bookId || engine?.getCurrentBook();
     const mapData = this.maps[targetBookId];
 
     if (!mapData) {
@@ -685,11 +693,13 @@ class ConceptMaps {
     if (!nodeData) return;
 
     // Find related chapters in THIS book
+    // 🔧 FIX v2.9.332: Usar getBookEngine() para fallback robusto
+    const engine = this.getBookEngine();
     const relatedChapters = [];
     if (mapData.chapters) {
       for (const [chapterId, concepts] of Object.entries(mapData.chapters)) {
         if (concepts.includes(nodeId)) {
-          const chapter = this.bookEngine?.getChapter(chapterId);
+          const chapter = engine?.getChapter(chapterId);
           if (chapter) {
             relatedChapters.push({ id: chapterId, title: chapter.title });
           }
@@ -886,5 +896,8 @@ class ConceptMaps {
   }
 }
 
-// Exportar
+// Exportar clase
 window.ConceptMaps = ConceptMaps;
+
+// 🔧 v2.9.325: Auto-instanciar para que funcione el botón
+window.conceptMaps = new ConceptMaps();

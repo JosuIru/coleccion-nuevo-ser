@@ -772,3 +772,17 @@ class NotesModal {
 
 // Exportar para uso global
 window.NotesModal = NotesModal;
+
+// 🔧 v2.9.338: Crear instancia global para que el botón de Notas funcione
+// La instancia se crea cuando el DOM está listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.notesModal) {
+      window.notesModal = new NotesModal(window.bookEngine);
+    }
+  });
+} else {
+  if (!window.notesModal) {
+    window.notesModal = new NotesModal(window.bookEngine);
+  }
+}

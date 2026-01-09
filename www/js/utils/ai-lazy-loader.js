@@ -3,7 +3,8 @@
  * ============================================================
  * Proporciona métodos convenientes para cargar features AI solo cuando se necesitan
  *
- * @version 2.9.283
+ * @version 2.9.324
+ * @fix v2.9.324: Instancia aiAdapter y aiChatModal automáticamente en lazy loading
  */
 
 class AILazyLoader {
@@ -23,6 +24,60 @@ class AILazyLoader {
           window.toast.info('Cargando Chat IA...');
         }
         await window.lazyLoader.loadAIChatModal();
+      }
+
+      // Instanciar aiAdapter si no existe
+      if (!window.aiAdapter && window.AIAdapter && window.AIConfig) {
+        logger.log('[AILazyLoader] Instanciando AIAdapter...');
+        if (!window.aiConfig) {
+          window.aiConfig = new window.AIConfig();
+          logger.log('[AILazyLoader] AIConfig instanciado');
+        }
+        window.aiAdapter = new window.AIAdapter(window.aiConfig);
+        logger.log('[AILazyLoader] AIAdapter instanciado correctamente');
+      }
+
+      // Instanciar modal si solo se cargó la clase pero no la instancia
+      if (!window.aiChatModal && window.AIChatModal) {
+        logger.log('[AILazyLoader] Instanciando AI Chat Modal...');
+
+        // Obtener bookEngine - priorizar bookReader.bookEngine
+        let bookEngine = null;
+        if (window.bookReader?.bookEngine) {
+          bookEngine = window.bookReader.bookEngine;
+          logger.log('[AILazyLoader] bookEngine obtenido desde window.bookReader');
+        } else if (window.bookEngine) {
+          bookEngine = window.bookEngine;
+          logger.log('[AILazyLoader] bookEngine obtenido desde window.bookEngine');
+        }
+
+        // Obtener aiAdapter
+        const aiAdapter = window.aiAdapter;
+
+        // Debug logging
+        logger.log('[AILazyLoader] Dependencias encontradas:', {
+          bookEngine: !!bookEngine,
+          aiAdapter: !!aiAdapter,
+          bookReader: !!window.bookReader,
+          windowBookEngine: !!window.bookEngine,
+          windowAIAdapter: !!window.aiAdapter
+        });
+
+        if (bookEngine && aiAdapter) {
+          window.aiChatModal = new window.AIChatModal(bookEngine, aiAdapter);
+          logger.log('[AILazyLoader] AI Chat Modal instanciado correctamente');
+        } else {
+          const missing = [];
+          if (!bookEngine) missing.push('bookEngine');
+          if (!aiAdapter) missing.push('aiAdapter');
+
+          logger.error('[AILazyLoader] No se encontraron dependencias:', missing.join(', '));
+
+          if (window.toast) {
+            window.toast.error('Error: Sistema IA no inicializado');
+          }
+          return;
+        }
       }
 
       // Abrir modal

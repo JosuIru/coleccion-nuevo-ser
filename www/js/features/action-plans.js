@@ -5,12 +5,18 @@
 
 class ActionPlans {
   constructor(bookEngine) {
-    this.bookEngine = bookEngine;
+    // 🔧 FIX v2.9.332: Fallback a window.bookEngine si no se pasa como parámetro
+    this.bookEngine = bookEngine || window.bookEngine || null;
     this.i18n = window.i18n || { t: (key) => key };
     this.plans = this.loadPlans();
 
     // Plantillas de planes predefinidas
     this.templates = this.getTemplates();
+  }
+
+  // 🔧 FIX v2.9.332: Método helper para obtener bookEngine
+  getBookEngine() {
+    return this.bookEngine || window.bookEngine || null;
   }
 
   // ==========================================================================
@@ -145,7 +151,8 @@ class ActionPlans {
       checkIns: [],
       createdAt: new Date().toISOString(),
       duration: template.duration,
-      bookId: this.bookEngine?.getCurrentBook(),
+      // 🔧 FIX v2.9.332: Usar getBookEngine() para fallback robusto
+      bookId: this.getBookEngine()?.getCurrentBook(),
       chapterId: (window.bookReader && window.bookReader.currentChapter) ? window.bookReader.currentChapter.id : null
     };
 
@@ -746,5 +753,8 @@ class ActionPlans {
   }
 }
 
-// Exportar
+// Exportar clase
 window.ActionPlans = ActionPlans;
+
+// 🔧 v2.9.325: Auto-instanciar para que funcione el botón
+window.actionPlans = new ActionPlans();

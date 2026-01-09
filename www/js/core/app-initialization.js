@@ -66,7 +66,8 @@ class AppInitialization {
 
       // 7. Mostrar Welcome Flow para nuevos usuarios (lazy load 28KB)
       // Verificar si es nuevo usuario ANTES de cargar el módulo
-      const isNewUser = !localStorage.getItem('welcome-flow-completed');
+      // 🔧 v2.9.325: Fix key inconsistency (welcome_flow_completed con underscore)
+      const isNewUser = !localStorage.getItem('welcome_flow_completed');
       if (isNewUser && window.lazyLoader) {
         // Delay pequeño para que la app cargue completamente
         setTimeout(async () => {
@@ -113,8 +114,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.317: FIX CRÍTICO timing outerHTML - setTimeout(0) para esperar DOM parsing
-    window.__APP_VERSION__ = '2.9.317'; // Cambiar con cada release
+    // 🔧 v2.9.325: Fix CRÍTICO - ai-adapter.js cargado síncronamente
+    window.__APP_VERSION__ = '2.9.325'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 

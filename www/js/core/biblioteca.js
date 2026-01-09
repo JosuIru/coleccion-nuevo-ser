@@ -27,16 +27,23 @@ const BIBLIOTECA_CONFIG = {
     { id: 'donations-btn-bib', icon: 'donate', labelKey: 'btn.support', cssClass: 'support-heartbeat', iconClass: 'support-heart', gradient: 'from-amber-600 to-orange-600', hoverGradient: 'from-amber-700 to-orange-700', handler: 'handleDonationsButton' }
   ],
 
-  // Botones secundarios en menú dropdown
+  // 🔧 v2.9.333: Botones secundarios organizados por grupos
   BOTONES_SECUNDARIOS: [
-    { id: 'my-account-btn-bib', icon: 'user', label: 'Mi Cuenta', handler: 'handleMyAccountButton' },
-    { id: 'settings-btn-bib', icon: 'settings', label: 'Configuración', handler: 'handleSettingsButton' },
-    { id: 'premium-btn-bib', icon: 'crown', label: 'Premium / IA', handler: 'handlePremiumButton' },
-    { id: 'language-selector-btn-bib', icon: 'language', labelKey: 'btn.language', handler: 'handleLanguageButton' },
-    { id: 'android-download-btn-bib', icon: 'download', labelKey: 'btn.download', handler: 'handleDownloadButton' },
-    { id: 'theme-toggle-btn-bib', iconDynamic: true, labelDynamic: true, handler: 'handleThemeButton' },
-    { id: 'about-btn-bib', icon: 'info', label: 'Acerca de', handler: 'handleAboutButton' },
-    { id: 'admin-panel-btn-bib', icon: 'shield', label: 'Admin Panel', handler: 'handleAdminPanelButton', adminOnly: true }
+    // Grupo: cuenta
+    { id: 'my-account-btn-bib', icon: 'user', label: 'Mi Cuenta', handler: 'handleMyAccountButton', group: 'cuenta' },
+    { id: 'settings-btn-bib', icon: 'settings', label: 'Configuración', handler: 'handleSettingsButton', group: 'cuenta' },
+    // Grupo: premium
+    { id: 'premium-btn-bib', icon: 'crown', label: 'Premium / IA', handler: 'handlePremiumButton', group: 'premium' },
+    // Grupo: app
+    { id: 'android-download-btn-bib', icon: 'download', labelKey: 'btn.download', handler: 'handleDownloadButton', group: 'app' },
+    { id: 'language-selector-btn-bib', icon: 'language', labelKey: 'btn.language', handler: 'handleLanguageButton', group: 'app' },
+    { id: 'theme-toggle-btn-bib', iconDynamic: true, labelDynamic: true, handler: 'handleThemeButton', group: 'app' },
+    // Grupo: info
+    { id: 'about-btn-bib', icon: 'info', label: 'Acerca de', handler: 'handleAboutButton', group: 'info' },
+    // Grupo: sesion (solo si autenticado)
+    { id: 'logout-btn-bib', icon: 'log-out', label: 'Cerrar Sesión', handler: 'handleLogoutButton', group: 'sesion', requiresAuth: true },
+    // Grupo: admin (solo para admins)
+    { id: 'admin-panel-btn-bib', icon: 'shield', label: 'Admin Panel', handler: 'handleAdminPanelButton', group: 'admin', adminOnly: true }
   ],
 
   // Mantener compatibilidad (incluir todos para event delegation)
@@ -115,6 +122,9 @@ class Biblioteca {
     this.i18n = window.i18n || new I18n();
     this.searchQuery = '';
     this.filterCategory = 'all';
+    // 🔧 v2.9.325: Nuevos filtros para FASE 2
+    this.filterStatus = 'all'; // all, in-progress, not-started, completed
+    this.filterDuration = 'all'; // all, short, medium, long
     this.listenersAttached = false; // Track global listeners
     this.delegatedListenersAttached = false; // Track delegated listeners
     this.menuDropdownOpen = false;
@@ -217,10 +227,25 @@ class Biblioteca {
       await this.bookEngine.loadCatalog();
       this.render();
       this.attachEventListeners();
+
+      // 🔧 v2.9.333: Pre-cargar cache de admin para filtrar menú correctamente
+      this.preloadAdminCache();
     } catch (error) {
       // 🔧 FIX #4: Usar logger en lugar de console.log
       logger.error('Error initializing Biblioteca:', error);
       this.renderError(error);
+    }
+  }
+
+  /**
+   * 🔧 v2.9.333: Pre-cargar cache de admin (fire-and-forget)
+   */
+  preloadAdminCache() {
+    const user = window.authHelper?.getCurrentUser();
+    if (user?.id) {
+      this.checkIsAdmin(user.id).catch(() => {
+        // Silently ignore errors - cache stays null (non-admin default)
+      });
     }
   }
 
@@ -261,7 +286,8 @@ class Biblioteca {
     return `
       <button id="${configuracionBoton.id}"
               class="${clasesAdicionales} px-3 sm:px-4 py-2.5 bg-gradient-to-r ${configuracionBoton.gradient} hover:${configuracionBoton.hoverGradient} text-white rounded-xl transition-all duration-200 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
-              title="${tituloBoton}">
+              title="${tituloBoton}"
+              aria-label="${tituloBoton}">
         ${iconoHTML}
         ${labelHTML}
       </button>
@@ -325,35 +351,85 @@ class Biblioteca {
   }
 
   renderOpcionesMenuDropdown() {
-    return BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS
-      .map(boton => {
-        const textoLabel = boton.labelKey
-          ? this.i18n.t(boton.labelKey)
-          : boton.label;
+    // 🔧 v2.9.333: Filtrar y agrupar botones
+    const isAdmin = this._adminCache === true;
+    const isAuthenticated = !!window.authHelper?.getCurrentUser();
 
-        let iconoHTML;
-        if (boton.iconDynamic) {
-          iconoHTML = `<span id="theme-icon-menu">${window.themeHelper?.getThemeIcon() || Icons.moon(20)}</span>`;
-        } else {
-          const iconMethod = boton.icon;
-          iconoHTML = Icons[iconMethod]
-            ? Icons[iconMethod](20)
-            : Icons.create(iconMethod, 20);
-        }
+    // Filtrar botones según permisos
+    const botonesFiltrados = BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS.filter(boton => {
+      if (boton.adminOnly && !isAdmin) return false;
+      if (boton.requiresAuth && !isAuthenticated) return false;
+      return true;
+    });
 
-        const labelHTML = boton.labelDynamic
-          ? `<span id="theme-label-menu">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>`
-          : textoLabel;
+    // Agrupar por 'group'
+    const grupos = {};
+    const ordenGrupos = ['cuenta', 'premium', 'app', 'info', 'sesion', 'admin'];
+    botonesFiltrados.forEach(boton => {
+      const grupo = boton.group || 'otros';
+      if (!grupos[grupo]) grupos[grupo] = [];
+      grupos[grupo].push(boton);
+    });
 
-        return `
-          <button id="${boton.id}"
-                  class="w-full px-4 py-3 text-left hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-200 flex items-center gap-3 text-gray-700 dark:text-gray-200 font-medium group">
-            <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors duration-200">${iconoHTML}</span>
-            <span class="group-hover:translate-x-1 transition-transform duration-200">${labelHTML}</span>
-          </button>
-        `;
-      })
-      .join('\n');
+    // Renderizar con separadores entre grupos
+    let html = '';
+    let primerGrupo = true;
+
+    ordenGrupos.forEach(nombreGrupo => {
+      const botonesGrupo = grupos[nombreGrupo];
+      if (!botonesGrupo || botonesGrupo.length === 0) return;
+
+      // Agregar separador antes de cada grupo (excepto el primero)
+      if (!primerGrupo) {
+        html += '<div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>';
+      }
+      primerGrupo = false;
+
+      // Renderizar botones del grupo
+      botonesGrupo.forEach(boton => {
+        html += this.renderBotonDropdown(boton);
+      });
+    });
+
+    return html;
+  }
+
+  /**
+   * 🔧 v2.9.333: Renderizar un botón individual del dropdown
+   */
+  renderBotonDropdown(boton) {
+    const textoLabel = boton.labelKey
+      ? this.i18n.t(boton.labelKey)
+      : boton.label;
+
+    let iconoHTML;
+    if (boton.iconDynamic) {
+      iconoHTML = `<span id="theme-icon-menu">${window.themeHelper?.getThemeIcon() || Icons.moon(20)}</span>`;
+    } else {
+      const iconMethod = boton.icon;
+      iconoHTML = Icons[iconMethod]
+        ? Icons[iconMethod](20)
+        : Icons.create(iconMethod, 20);
+    }
+
+    const labelHTML = boton.labelDynamic
+      ? `<span id="theme-label-menu">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>`
+      : textoLabel;
+
+    // Estilo especial para logout
+    const estiloEspecial = boton.id === 'logout-btn-bib'
+      ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+      : 'text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-600';
+
+    return `
+      <button id="${boton.id}"
+              class="w-full px-4 py-3 text-left ${estiloEspecial} transition-all duration-200 flex items-center gap-3 font-medium group"
+              title="${textoLabel}"
+              aria-label="${textoLabel}">
+        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors duration-200">${iconoHTML}</span>
+        <span class="group-hover:translate-x-1 transition-transform duration-200">${labelHTML}</span>
+      </button>
+    `;
   }
 
   // ==========================================================================
@@ -966,13 +1042,7 @@ class Biblioteca {
 
         <!-- Contenido Colapsable -->
         <div id="explore-library-content" class="explore-library-content expanded">
-          <!-- Quick Filters -->
-          <div class="quick-filter-tabs mb-4">
-            <button class="quick-filter-tab active" data-filter="all">Todos</button>
-            <button class="quick-filter-tab" data-filter="started">En progreso</button>
-            <button class="quick-filter-tab" data-filter="not-started">Sin empezar</button>
-            <button class="quick-filter-tab" data-filter="completed">Completados</button>
-          </div>
+          <!-- 🔧 v2.9.333: Quick tabs eliminados - usar dropdown de Estado en lugar -->
 
           <!-- Search & Filters -->
           ${this.renderSearchAndFilters()}
@@ -999,52 +1069,10 @@ class Biblioteca {
       });
     }
 
-    // Quick filter tabs usando EventManager
-    const filterTabs = document.querySelectorAll('.quick-filter-tab');
-    filterTabs.forEach(tab => {
-      this.eventManager.addEventListener(tab, 'click', (e) => {
-        // Remover active de todos
-        filterTabs.forEach(t => t.classList.remove('active'));
-        // Añadir active al clickeado
-        e.target.classList.add('active');
-
-        // Aplicar filtro
-        const filtro = e.target.dataset.filter;
-        this.applyQuickFilter(filtro);
-      });
-    });
+    // 🔧 v2.9.333: Quick filter tabs eliminados - usar dropdown de Estado
   }
 
-  /**
-   * Aplica un filtro rápido a los libros
-   */
-  applyQuickFilter(filtro) {
-    const tarjetasLibro = document.querySelectorAll('.book-card');
-
-    tarjetasLibro.forEach(tarjeta => {
-      const libroId = tarjeta.dataset.bookId;
-      const progreso = this.bookEngine.getProgress(libroId);
-
-      let mostrar = true;
-
-      switch (filtro) {
-        case 'started':
-          mostrar = progreso.chaptersRead > 0 && progreso.percentage < 100;
-          break;
-        case 'not-started':
-          mostrar = progreso.chaptersRead === 0;
-          break;
-        case 'completed':
-          mostrar = progreso.percentage === 100;
-          break;
-        case 'all':
-        default:
-          mostrar = true;
-      }
-
-      tarjeta.style.display = mostrar ? '' : 'none';
-    });
-  }
+  // 🔧 v2.9.333: applyQuickFilter eliminado - unificado con dropdown de Estado
 
   renderSearchAndFilters() {
     const opcionesCategorias = BIBLIOTECA_CONFIG.CATEGORIAS_FILTRO
@@ -1056,10 +1084,11 @@ class Biblioteca {
       })
       .join('');
 
+    // 🔧 v2.9.325: UI de filtros mejorada con más opciones
     return `
-      <div class="search-filters mb-6 flex flex-col md:flex-row gap-4">
-        <!-- Search -->
-        <div class="flex-1 relative">
+      <div class="search-filters mb-6 space-y-4">
+        <!-- Fila 1: Búsqueda -->
+        <div class="relative">
           <div class="absolute left-3 top-1/2 -translate-y-1/2 opacity-50">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
@@ -1069,18 +1098,43 @@ class Biblioteca {
           <input
             type="text"
             id="search-input"
-            placeholder="${this.i18n.t('library.search')}"
-            class="w-full pl-11 pr-4 py-3 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-cyan-500 focus:outline-none transition"
+            placeholder="Buscar por título o autor..."
+            class="w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all"
           />
         </div>
 
-        <!-- Filter by Category -->
-        <select
-          id="category-filter"
-          class="px-4 py-3 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-cyan-500 focus:outline-none cursor-pointer"
-        >
-          ${opcionesCategorias}
-        </select>
+        <!-- Fila 2: Filtros -->
+        <div class="flex flex-wrap gap-3">
+          <!-- Filtro por Estado -->
+          <select
+            id="status-filter"
+            class="flex-1 min-w-[140px] px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:border-cyan-500 focus:outline-none cursor-pointer transition-all"
+          >
+            <option value="all">📚 Todos</option>
+            <option value="in-progress">📖 En progreso</option>
+            <option value="not-started">✨ Sin empezar</option>
+            <option value="completed">✅ Completados</option>
+          </select>
+
+          <!-- Filtro por Categoría -->
+          <select
+            id="category-filter"
+            class="flex-1 min-w-[140px] px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:border-cyan-500 focus:outline-none cursor-pointer transition-all"
+          >
+            ${opcionesCategorias}
+          </select>
+
+          <!-- Filtro por Duración -->
+          <select
+            id="duration-filter"
+            class="flex-1 min-w-[140px] px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:border-cyan-500 focus:outline-none cursor-pointer transition-all"
+          >
+            <option value="all">⏱️ Cualquier duración</option>
+            <option value="short">⚡ Corto (&lt;2h)</option>
+            <option value="medium">📖 Medio (2-5h)</option>
+            <option value="long">📚 Largo (&gt;5h)</option>
+          </select>
+        </div>
       </div>
     `;
   }
@@ -1162,11 +1216,21 @@ class Biblioteca {
           ${safeSubtitle}
         </p>
 
-        <!-- Description -->
+        <!-- Description con Leer más -->
         ${safeDescription ? `
-          <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-3 leading-relaxed">
-            ${safeDescription}
-          </p>
+          <div class="book-description-wrapper mb-3">
+            <p class="book-description text-sm text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed" data-expanded="false">
+              ${safeDescription}
+            </p>
+            ${safeDescription.length > 120 ? `
+              <button class="read-more-btn text-xs font-medium mt-1 transition-colors hover:underline"
+                      style="color: ${safeColor}"
+                      data-action="toggle-description"
+                      aria-expanded="false">
+                Leer más ↓
+              </button>
+            ` : ''}
+          </div>
         ` : ''}
 
         <!-- Complementary Info -->
@@ -1571,6 +1635,46 @@ class Biblioteca {
       librosFiltrados = librosFiltrados.filter(libro => libro.category === this.filterCategory);
     }
 
+    // 🔧 v2.9.326: Filtro por estado de lectura
+    if (this.filterStatus && this.filterStatus !== 'all') {
+      librosFiltrados = librosFiltrados.filter(libro => {
+        const progreso = this.bookEngine.getProgress(libro.id);
+        const porcentaje = progreso.percentage || 0;
+
+        switch (this.filterStatus) {
+          case 'in-progress':
+            return porcentaje > 0 && porcentaje < 100;
+          case 'not-started':
+            return porcentaje === 0;
+          case 'completed':
+            return porcentaje === 100;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // 🔧 v2.9.326: Filtro por duración estimada
+    if (this.filterDuration && this.filterDuration !== 'all') {
+      librosFiltrados = librosFiltrados.filter(libro => {
+        // Extraer horas del estimatedReadTime (ej: "8-10 horas" -> 8)
+        const tiempoEstimado = libro.estimatedReadTime || '';
+        const match = tiempoEstimado.match(/(\d+)/);
+        const horasMinimas = match ? parseInt(match[1], 10) : 0;
+
+        switch (this.filterDuration) {
+          case 'short':
+            return horasMinimas < 2;
+          case 'medium':
+            return horasMinimas >= 2 && horasMinimas <= 5;
+          case 'long':
+            return horasMinimas > 5;
+          default:
+            return true;
+        }
+      });
+    }
+
     if (this.searchQuery) {
       const consultaBusqueda = this.searchQuery.toLowerCase();
       librosFiltrados = librosFiltrados.filter(libro =>
@@ -1622,6 +1726,32 @@ class Biblioteca {
   handleAboutButton(evento) {
     evento.preventDefault();
     this.showAboutModal();
+  }
+
+  /**
+   * 🔧 v2.9.333: Handler para cerrar sesión
+   */
+  async handleLogoutButton(evento) {
+    evento.preventDefault();
+    this.closeMenuDropdown();
+
+    if (window.authHelper) {
+      try {
+        await window.authHelper.signOut();
+        window.toast?.success('Sesión cerrada correctamente');
+
+        // Limpiar cache de admin
+        this.clearAdminCache();
+
+        // Re-renderizar para actualizar UI
+        this.render();
+      } catch (error) {
+        logger.error('Error al cerrar sesión:', error);
+        window.toast?.error('Error al cerrar sesión');
+      }
+    } else {
+      window.toast?.info('No hay sesión activa');
+    }
   }
 
   handleMyAccountButton(evento) {
@@ -2193,7 +2323,12 @@ class Biblioteca {
 
   handleHelpCenterButton(evento) {
     evento.preventDefault();
-    window.open('https://github.com/anthropics/claude-code/issues', '_blank');
+    // 🔧 v2.9.325: Abrir Help Center Modal en lugar de GitHub
+    if (window.helpCenterModal) {
+      window.helpCenterModal.open();
+    } else {
+      logger.warn('[Biblioteca] Help Center Modal no disponible');
+    }
   }
 
   handlePracticeLibraryButton(evento) {
@@ -2418,6 +2553,11 @@ class Biblioteca {
     this.menuDropdownOpen = !this.menuDropdownOpen;
 
     if (this.menuDropdownOpen) {
+      // 🔧 v2.9.333: Re-renderizar contenido del menú para aplicar filtro adminOnly
+      const menuContent = menu.querySelector('.py-1');
+      if (menuContent) {
+        menuContent.innerHTML = this.renderOpcionesMenuDropdown();
+      }
       menu.classList.remove('hidden');
     } else {
       menu.classList.add('hidden');
@@ -2563,6 +2703,23 @@ class Biblioteca {
         this.renderBooksGrid();
       });
     }
+
+    // 🔧 v2.9.326: Event listeners para filtros de estado y duración
+    const filtroEstado = document.getElementById('status-filter');
+    if (filtroEstado) {
+      this.eventManager.addEventListener(filtroEstado, 'change', (evento) => {
+        this.filterStatus = evento.target.value;
+        this.renderBooksGrid();
+      });
+    }
+
+    const filtroDuracion = document.getElementById('duration-filter');
+    if (filtroDuracion) {
+      this.eventManager.addEventListener(filtroDuracion, 'change', (evento) => {
+        this.filterDuration = evento.target.value;
+        this.renderBooksGrid();
+      });
+    }
   }
 
   // 🔧 FIX #10: Fallback optimizado sin re-render completo
@@ -2668,6 +2825,23 @@ class Biblioteca {
         } else {
           // 🔧 FIX #4: Usar logger en lugar de console.log
           logger.error(`Handler ${nombreHandler} not found for tool ${idHerramienta}`);
+        }
+        return;
+      }
+
+      // 🔧 v2.9.326: Handler para "Leer más" en descripciones
+      const toggleDescBtn = evento.target.closest('[data-action="toggle-description"]');
+      if (toggleDescBtn) {
+        evento.preventDefault();
+        evento.stopPropagation();
+        const wrapper = toggleDescBtn.closest('.book-description-wrapper');
+        const description = wrapper?.querySelector('.book-description');
+        if (description) {
+          const isExpanded = description.dataset.expanded === 'true';
+          description.dataset.expanded = (!isExpanded).toString();
+          description.classList.toggle('line-clamp-3', isExpanded);
+          toggleDescBtn.textContent = isExpanded ? 'Leer más ↓' : 'Leer menos ↑';
+          toggleDescBtn.setAttribute('aria-expanded', (!isExpanded).toString());
         }
         return;
       }

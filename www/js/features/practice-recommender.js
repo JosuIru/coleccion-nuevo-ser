@@ -658,4 +658,8 @@ class PracticeOfTheDayWidget {
 // INICIALIZACIÓN GLOBAL
 // ==========================================================================
 
+// 🔧 v2.9.325: Exportar clase e instancia
+window.PracticeRecommender = PracticeRecommender;
+window.practiceRecommender = new PracticeRecommender();
+
 // logger.debug('✅ Practice Recommender System loaded');

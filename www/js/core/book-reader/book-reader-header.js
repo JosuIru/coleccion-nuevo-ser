@@ -37,6 +37,14 @@ class BookReaderHeader {
     return typeof window.Capacitor !== 'undefined';
   }
 
+  /**
+   * 🔧 v2.9.334: Truncar texto para breadcrumb
+   */
+  truncateText(text, maxLength) {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  }
+
   // ==========================================================================
   // RENDER PRINCIPAL
   // ==========================================================================
@@ -67,7 +75,7 @@ class BookReaderHeader {
                     aria-label="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}"
                     title="${this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral'}">
               ${this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18)}
-              <span class="text-xs sm:text-sm">${this.sidebarOpen ? 'Ocultar' : 'Indice'}</span>
+              <span id="toggle-sidebar-text" class="text-xs sm:text-sm">${this.sidebarOpen ? 'Ocultar' : 'Índice'}</span>
             </button>
           </div>
 
@@ -79,11 +87,34 @@ class BookReaderHeader {
           </div>
         </div>
 
-        <!-- Segunda fila: Libro y Capitulo (siempre visible) -->
-        <div class="mt-2 text-center border-t border-gray-300 dark:border-gray-700/50 pt-2">
-          <div class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-500 truncate px-2">${bookData.title}</div>
-          <h3 class="text-sm lg:text-base font-bold text-gray-900 dark:text-gray-100 truncate px-2 mt-0.5" style="color: inherit;">${this.currentChapter?.title || ''}</h3>
-        </div>
+        <!-- 🔧 v2.9.334: Breadcrumb navegable -->
+        <nav class="mt-2 border-t border-gray-300 dark:border-gray-700/50 pt-2 px-2">
+          <div class="flex items-center justify-center gap-1 text-xs sm:text-sm flex-wrap">
+            <!-- Libros (clickeable → vuelve a biblioteca) -->
+            <button
+              id="breadcrumb-library-btn"
+              class="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 hover:underline font-semibold transition-colors px-1.5 py-0.5 rounded hover:bg-cyan-500/10"
+              title="Volver a la biblioteca"
+              aria-label="Volver a la biblioteca">
+              <span>📚</span>
+              <span class="hidden xs:inline">Libros</span>
+            </button>
+
+            <span class="text-gray-400 dark:text-gray-600 mx-0.5">/</span>
+
+            <!-- Título del libro (no clickeable, solo info) -->
+            <span class="text-gray-600 dark:text-gray-400 truncate max-w-[120px] sm:max-w-[200px]" title="${bookData.title}">
+              ${this.truncateText(bookData.title, 25)}
+            </span>
+
+            <span class="text-gray-400 dark:text-gray-600 mx-0.5">/</span>
+
+            <!-- Capítulo actual (destacado) -->
+            <span class="text-gray-900 dark:text-gray-100 font-semibold truncate max-w-[100px] sm:max-w-[180px]" title="${this.currentChapter?.title || ''}">
+              ${this.truncateText(this.currentChapter?.title || '', 20)}
+            </span>
+          </div>
+        </nav>
 
         <!-- Barra de progreso de audio (oculta hasta activar audio) -->
         <div id="audio-progress-bar-container" class="hidden mt-2">
@@ -335,6 +366,9 @@ class BookReaderHeader {
           <button id="learning-paths-btn-desktop" class="${toolBtnBase} text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30" aria-label="Learning Paths">
             ${Icons.target(18)} <span>Learning Paths</span>
           </button>
+          <button id="smart-reader-btn" class="${toolBtnBase} text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" aria-label="Smart Reader">
+            ${Icons.create('book-open', 18)} <span>Smart Reader</span>
+          </button>
           <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
           <div class="px-4 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">💬 Comunidad</div>
           <button id="chapter-comments-btn" class="${toolBtnBase} text-pink-600 dark:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-900/30" aria-label="Comentarios">
@@ -345,6 +379,17 @@ class BookReaderHeader {
           </button>
           <button id="leaderboards-btn" class="${toolBtnBase} text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30" aria-label="Clasificación">
             ${Icons.create('award', 18)} <span>Clasificación</span>
+          </button>
+          <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+          <div class="px-4 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">🚀 Más</div>
+          <button id="podcast-player-btn" class="${toolBtnBase} text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30" aria-label="Podcast">
+            ${Icons.create('headphones', 18)} <span>Modo Podcast</span>
+          </button>
+          <button id="micro-courses-btn" class="${toolBtnBase} text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30" aria-label="Micro-Cursos">
+            ${Icons.create('calendar', 18)} <span>Micro-Cursos</span>
+          </button>
+          <button id="integrations-btn" class="${toolBtnBase} text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" aria-label="Integraciones">
+            ${Icons.create('link', 18)} <span>Integraciones</span>
           </button>
           <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
           <button id="content-adapter-btn" class="${toolBtnBase} text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30" aria-label="Adaptar Contenido">

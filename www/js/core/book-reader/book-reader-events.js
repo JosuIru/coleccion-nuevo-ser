@@ -214,9 +214,11 @@ class BookReaderEvents {
 
   /**
    * Crea un handler para cambiar de libro
+   * 🔧 v2.9.336: Agregar logging para diagnóstico
    */
   createBookSwitchHandler(bookId, closeMenu = null) {
     return async () => {
+      console.log(`[BookReaderEvents] createBookSwitchHandler FIRED for bookId: ${bookId}`);
       if (closeMenu) closeMenu();
       await this.bookReader.handleBookSwitch(bookId);
     };
@@ -235,12 +237,19 @@ class BookReaderEvents {
 
   /**
    * Registra el mismo handler en multiples botones
+   * 🔧 v2.9.336: Agregar logging para diagnóstico
    */
   attachMultiDevice(buttonIds, handler) {
     buttonIds.forEach(id => {
       const btn = document.getElementById(id);
       if (btn) {
         this.eventManager.addEventListener(btn, 'click', handler);
+        console.log(`[attachMultiDevice] Attached listener to: ${id}`);
+      } else {
+        // Solo loguear para botones importantes que deberían existir
+        if (id.includes('practicas') || id.includes('manual') || id.includes('toggle')) {
+          console.log(`[attachMultiDevice] Button NOT FOUND: ${id}`);
+        }
       }
     });
   }
@@ -268,30 +277,37 @@ class BookReaderEvents {
 
   /**
    * Setup de dropdown toggle
+   * 🔧 v2.9.338: Fix - Buscar dropdown dinámicamente en el DOM actual
+   *              para evitar closures sobre elementos DOM destruidos tras re-render
    */
   setupDropdown(btnId, dropdownId) {
     const btn = document.getElementById(btnId);
-    const dropdown = document.getElementById(dropdownId);
-    if (btn && dropdown) {
-      // Guardar handler para evitar duplicacion
-      if (!this._dropdownHandlers) this._dropdownHandlers = {};
+    if (!btn) return;
 
-      const handlerKey = `${btnId}_${dropdownId}`;
-      if (!this._dropdownHandlers[handlerKey]) {
-        this._dropdownHandlers[handlerKey] = (e) => {
-          e.stopPropagation();
-          // Cerrar otros dropdowns
-          ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
-            if (id !== dropdownId) {
-              document.getElementById(id)?.classList.add('hidden');
-            }
-          });
-          dropdown.classList.toggle('hidden');
-        };
-      }
+    // 🔧 v2.9.338: Crear handler que busca el dropdown EN EL MOMENTO del click
+    // NO capturar referencia al dropdown en closure (se destruye tras re-render)
+    const handler = (e) => {
+      e.stopPropagation();
 
-      this.eventManager.addEventListener(btn, 'click', this._dropdownHandlers[handlerKey]);
-    }
+      // Buscar dropdown AHORA, no usar referencia capturada
+      const currentDropdown = document.getElementById(dropdownId);
+      if (!currentDropdown) return;
+
+      // Cerrar TODOS los otros dropdowns del header
+      ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
+        if (id !== dropdownId) {
+          const otherDropdown = document.getElementById(id);
+          if (otherDropdown) {
+            otherDropdown.classList.add('hidden');
+          }
+        }
+      });
+
+      // Toggle el dropdown actual
+      currentDropdown.classList.toggle('hidden');
+    };
+
+    this.eventManager.addEventListener(btn, 'click', handler);
   }
 
   // ==========================================================================
@@ -311,7 +327,20 @@ class BookReaderEvents {
     if (typeof logger !== 'undefined') {
       logger.debug('[BookReaderEvents] Ejecutando attachEventListeners');
     }
+    console.log('[BookReaderEvents] attachEventListeners() STARTED');
     this._eventListenersAttached = true;
+
+    // 🔧 v2.9.336: Listener de diagnóstico para detectar si los clics llegan al DOM
+    if (!window._bookReaderClickDiagnosticAttached) {
+      window._bookReaderClickDiagnosticAttached = true;
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        const id = target.id || '(no-id)';
+        const tagName = target.tagName;
+        console.log(`[CLICK DIAGNOSTIC] Clicked: ${tagName}#${id}`, target);
+      }, true); // useCapture=true para capturar en fase de captura
+      console.log('[BookReaderEvents] Click diagnostic listener attached to document');
+    }
 
     // Helper para cerrar dropdown del menu
     const closeDropdownHelper = () => {
@@ -328,18 +357,27 @@ class BookReaderEvents {
 
     // ========================================================================
     // SIDEBAR TOGGLE
+    // 🔧 v2.9.336: Mejorar logging y garantizar funcionamiento
     // ========================================================================
     if (!this._toggleSidebarHandler) {
       this._toggleSidebarHandler = (e) => {
+        console.log('[BookReaderEvents] _toggleSidebarHandler FIRED');
         e.stopPropagation();
         e.preventDefault();
-        this.bookReader.toggleSidebar();
+        if (this.bookReader) {
+          console.log('[BookReaderEvents] Calling bookReader.toggleSidebar()');
+          this.bookReader.toggleSidebar();
+        } else {
+          console.error('[BookReaderEvents] bookReader is null/undefined!');
+        }
       };
     }
 
     const toggleSidebar = document.getElementById('toggle-sidebar');
+    console.log('[BookReaderEvents] toggle-sidebar element:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
     if (toggleSidebar) {
       this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
+      console.log('[BookReaderEvents] Added click listener to toggle-sidebar');
     }
 
     // Close sidebar (mobile)
@@ -375,6 +413,12 @@ class BookReaderEvents {
     const backBtn = document.getElementById('back-to-biblioteca');
     if (backBtn) {
       this.eventManager.addEventListener(backBtn, 'click', this._backToBibliotecaHandler);
+    }
+
+    // 🔧 v2.9.334: Botón "← Biblioteca" en sidebar
+    const sidebarBackBtn = document.getElementById('sidebar-back-to-library');
+    if (sidebarBackBtn) {
+      this.eventManager.addEventListener(sidebarBackBtn, 'click', this._backToBibliotecaHandler);
     }
 
     // ========================================================================
@@ -516,16 +560,24 @@ class BookReaderEvents {
 
     // ========================================================================
     // NOTES
+    // 🔧 v2.9.338: Cargar notes-modal dinámicamente via lazy-loader
     // ========================================================================
     const notesBtn = document.getElementById('notes-btn');
     if (notesBtn) {
-      this.eventManager.addEventListener(notesBtn, 'click', () => {
-        const notesModal = this.getDependency('notesModal');
-        if (notesModal) {
-          notesModal.open(this.currentChapter?.id);
-        } else {
-          this.showToast('error', 'error.notesNotAvailable');
-        }
+      this.eventManager.addEventListener(notesBtn, 'click', async () => {
+        await this.withToolLoading(async () => {
+          // Cargar módulo si no está cargado
+          if (window.lazyLoader && !window.notesModal) {
+            await window.lazyLoader.loadNotesModal();
+          }
+
+          const notesModal = window.notesModal || this.getDependency('notesModal');
+          if (notesModal) {
+            notesModal.open(this.currentChapter?.id);
+          } else {
+            throw new Error('Notas no disponibles');
+          }
+        }, { toolName: 'Notas' });
       });
     }
 
@@ -929,6 +981,23 @@ class BookReaderEvents {
     );
 
     // ========================================================================
+    // SMART READER (v2.9.329)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['smart-reader-btn', 'smart-reader-btn-mobile', 'smart-reader-btn-dropdown'],
+      () => {
+        const chapter = this.currentChapter;
+        if (window.smartReader) {
+          window.smartReader.show(chapter);
+        } else {
+          this.showToast('error', 'Smart Reader no disponible');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
     // CHAPTER COMMENTS (v2.9.327)
     // ========================================================================
     this.attachMultiDeviceWithMenuClose(
@@ -972,6 +1041,54 @@ class BookReaderEvents {
           window.leaderboards.show();
         } else {
           this.showToast('error', 'Clasificación no disponible');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // PODCAST PLAYER (v2.9.330)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['podcast-player-btn', 'podcast-player-btn-mobile', 'podcast-player-btn-dropdown'],
+      () => {
+        if (window.podcastPlayer) {
+          window.podcastPlayer.show();
+        } else {
+          this.showToast('error', 'Podcast no disponible');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // MICRO COURSES (v2.9.330)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['micro-courses-btn', 'micro-courses-btn-mobile', 'micro-courses-btn-dropdown'],
+      () => {
+        if (window.microCourses) {
+          window.microCourses.show();
+        } else {
+          this.showToast('error', 'Micro-cursos no disponibles');
+        }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
+
+    // ========================================================================
+    // EXTERNAL INTEGRATIONS (v2.9.330)
+    // ========================================================================
+    this.attachMultiDeviceWithMenuClose(
+      ['integrations-btn', 'integrations-btn-mobile', 'integrations-btn-dropdown'],
+      () => {
+        if (window.externalIntegrations) {
+          window.externalIntegrations.show();
+        } else {
+          this.showToast('error', 'Integraciones no disponibles');
         }
       },
       closeMobileMenuDropdown,
@@ -1136,6 +1253,18 @@ class BookReaderEvents {
       };
       this.eventManager.addEventListener(document, 'click', this._desktopDropdownsClickOutsideHandler);
       this._desktopDropdownsClickOutsideAttached = true;
+
+      // 🔧 FIX v2.9.332: Cerrar dropdowns al hacer scroll (UX polish)
+      this._scrollCloseDropdownsHandler = () => {
+        const dropdowns = ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown', 'more-actions-dropdown', 'bottom-nav-dropdown'];
+        dropdowns.forEach(id => {
+          document.getElementById(id)?.classList.add('hidden');
+        });
+      };
+      const mainContent = document.getElementById('main-content') || document.getElementById('chapter-content');
+      if (mainContent) {
+        this.eventManager.addEventListener(mainContent, 'scroll', this._scrollCloseDropdownsHandler, { passive: true });
+      }
     }
 
     // ========================================================================
@@ -1751,17 +1880,32 @@ class BookReaderEvents {
       }
 
       // Toggle sidebar - Crear handler si no existe (fix v2.9.285)
+      // 🔧 v2.9.336: Mejorar logging
       if (!this._toggleSidebarHandler) {
         this._toggleSidebarHandler = (e) => {
+          console.log('[attachHeaderListeners] _toggleSidebarHandler FIRED');
           e.stopPropagation();
           e.preventDefault();
-          this.bookReader.toggleSidebar();
+          if (this.bookReader) {
+            console.log('[attachHeaderListeners] Calling bookReader.toggleSidebar()');
+            this.bookReader.toggleSidebar();
+          } else {
+            console.error('[attachHeaderListeners] bookReader is null!');
+          }
         };
       }
 
       const toggleSidebar = document.getElementById('toggle-sidebar');
+      console.log('[attachHeaderListeners] toggle-sidebar:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
       if (toggleSidebar) {
         this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
+        console.log('[attachHeaderListeners] Added listener to toggle-sidebar');
+      }
+
+      // 🔧 v2.9.334: Breadcrumb "Libros" - volver a biblioteca (usa mismo handler que sidebar)
+      const breadcrumbLibraryBtn = document.getElementById('breadcrumb-library-btn');
+      if (breadcrumbLibraryBtn && this._backToBibliotecaHandler) {
+        this.eventManager.addEventListener(breadcrumbLibraryBtn, 'click', this._backToBibliotecaHandler);
       }
 
       // Audioreader - Crear handler si no existe (fix v2.9.285)
@@ -1816,11 +1960,21 @@ class BookReaderEvents {
       });
 
       // Notes
+      // 🔧 v2.9.338: Cargar notes-modal dinámicamente via lazy-loader
       const notesHandler = async () => {
-        const modal = this.getDependency('notesModal');
-        if (modal && typeof modal.open === 'function') {
-          await modal.open();
-        }
+        await this.withToolLoading(async () => {
+          // Cargar módulo si no está cargado
+          if (window.lazyLoader && !window.notesModal) {
+            await window.lazyLoader.loadNotesModal();
+          }
+
+          const modal = window.notesModal || this.getDependency('notesModal');
+          if (modal && typeof modal.open === 'function') {
+            await modal.open(this.currentChapter?.id);
+          } else {
+            throw new Error('Notas no disponibles');
+          }
+        }, { toolName: 'Notas' });
       };
 
       const notesBtn = document.getElementById('notes-btn');
@@ -2142,6 +2296,19 @@ class BookReaderEvents {
         });
       }
 
+      // SMART READER (v2.9.329)
+      const smartReaderBtn = document.getElementById('smart-reader-btn');
+      if (smartReaderBtn) {
+        this.eventManager.addEventListener(smartReaderBtn, 'click', () => {
+          const chapter = this.currentChapter;
+          if (window.smartReader) {
+            window.smartReader.show(chapter);
+          } else {
+            this.showToast('error', 'Smart Reader no disponible');
+          }
+        });
+      }
+
       // CHAPTER COMMENTS (v2.9.327)
       const chapterCommentsBtn = document.getElementById('chapter-comments-btn');
       if (chapterCommentsBtn) {
@@ -2180,8 +2347,71 @@ class BookReaderEvents {
         });
       }
 
+      // PODCAST PLAYER (v2.9.330)
+      const podcastBtn = document.getElementById('podcast-player-btn');
+      if (podcastBtn) {
+        this.eventManager.addEventListener(podcastBtn, 'click', () => {
+          if (window.podcastPlayer) {
+            window.podcastPlayer.show();
+          } else {
+            this.showToast('error', 'Podcast no disponible');
+          }
+        });
+      }
+
+      // MICRO COURSES (v2.9.330)
+      const microCoursesBtn = document.getElementById('micro-courses-btn');
+      if (microCoursesBtn) {
+        this.eventManager.addEventListener(microCoursesBtn, 'click', () => {
+          if (window.microCourses) {
+            window.microCourses.show();
+          } else {
+            this.showToast('error', 'Micro-cursos no disponibles');
+          }
+        });
+      }
+
+      // EXTERNAL INTEGRATIONS (v2.9.330)
+      const integrationsBtn = document.getElementById('integrations-btn');
+      if (integrationsBtn) {
+        this.eventManager.addEventListener(integrationsBtn, 'click', () => {
+          if (window.externalIntegrations) {
+            window.externalIntegrations.show();
+          } else {
+            this.showToast('error', 'Integraciones no disponibles');
+          }
+        });
+      }
+
+      // 🔧 FIX v2.9.337: Re-adjuntar BOOK SWITCH handlers (practicas-radicales, manual-practico, koan)
+      // Estos botones están en el dropdown book-features y perdían sus listeners al re-renderizar
+      this.attachMultiDevice(
+        ['practicas-radicales-btn'],
+        this.createBookSwitchHandler('practicas-radicales', closeDropdownHelper)
+      );
+
+      this.attachMultiDevice(
+        ['manual-practico-btn'],
+        this.createBookSwitchHandler('manual-practico', closeDropdownHelper)
+      );
+
+      // KOAN button
+      const koanBtn = document.getElementById('koan-btn');
+      if (koanBtn) {
+        this.eventManager.addEventListener(koanBtn, 'click', () => {
+          closeDropdownHelper();
+          const koanModal = this.getDependency('koanModal');
+          if (koanModal) {
+            koanModal.setCurrentChapter(this.currentChapter?.id);
+            koanModal.open(this.currentChapter?.id);
+          } else {
+            this.showToast('error', 'error.koanNotAvailable');
+          }
+        });
+      }
+
       if (typeof logger !== 'undefined') {
-        logger.debug('[BookReaderEvents] Listeners del header re-adjuntados (incluyendo dropdowns)');
+        logger.debug('[BookReaderEvents] Listeners del header re-adjuntados (incluyendo dropdowns y book switch)');
       }
     } catch (error) {
       logger.error('[BookReaderEvents] Error adjuntando listeners del header:', error);

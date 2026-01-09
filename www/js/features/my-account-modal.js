@@ -8,10 +8,8 @@
 
 class MyAccountModal {
   constructor() {
-    this.authHelper = window.authHelper;
-    this.aiPremium = window.aiPremium;
-    // 🔧 FIX v2.9.265: Inicializar supabase desde window
-    this.supabase = window.supabase || window.supabaseClient || null;
+    // 🔧 FIX v2.9.332: NO guardar referencias directas, usar getters que acceden a window.*
+    // Esto permite que funcione aunque MyAccountModal se cargue antes que authHelper
     this.currentTab = 'profile';
     this.usageHistory = [];
     this.transactions = [];
@@ -39,10 +37,21 @@ class MyAccountModal {
     this.init();
   }
 
+  // 🔧 FIX v2.9.332: Getters para obtener dependencias en tiempo de ejecución
+  get authHelper() {
+    return window.authHelper || null;
+  }
+
+  get aiPremium() {
+    return window.aiPremium || null;
+  }
+
+  get supabase() {
+    return window.supabase || window.supabaseClient || null;
+  }
+
   async init() {
-    if (typeof window.supabase !== 'undefined') {
-      this.supabase = window.supabase;
-    }
+    // 🔧 FIX v2.9.332: Ya no necesitamos asignar supabase aquí porque es un getter
     logger.debug('✅ MyAccountModal inicializado');
   }
 
@@ -144,11 +153,7 @@ class MyAccountModal {
 
   async loadData() {
     try {
-      // 🔧 FIX v2.9.265: Re-verificar supabase al momento de cargar
-      if (!this.supabase) {
-        this.supabase = window.supabase || window.supabaseClient || null;
-      }
-
+      // 🔧 FIX v2.9.332: supabase ahora es un getter, no necesita re-asignación
       const userId = this.authHelper?.getUser()?.id;
 
       // 🔧 FIX v2.9.276: Cargar datos locales como fallback si no hay Supabase

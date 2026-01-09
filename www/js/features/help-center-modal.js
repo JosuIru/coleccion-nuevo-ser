@@ -872,6 +872,103 @@ class HelpCenterModal {
             tags: ['temas', 'personalización', 'dark mode', 'light mode', 'apariencia']
           }
         ]
+      },
+
+      // 🔧 v2.9.333: Nueva categoría de soporte
+      support: {
+        title: '💬 Contactar Soporte',
+        icon: '💬',
+        items: [
+          {
+            id: 'contact-form',
+            title: 'Enviar mensaje al equipo',
+            description: 'Reporta problemas, sugerencias o consultas',
+            content: `
+              <div id="support-form-container">
+                <p class="mb-4">Completa el formulario para contactar con nuestro equipo de soporte.</p>
+
+                <form id="support-form" class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input
+                      type="email"
+                      id="support-email"
+                      required
+                      placeholder="tu@email.com"
+                      class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Tipo de consulta</label>
+                    <select
+                      id="support-type"
+                      required
+                      class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:border-cyan-500 transition">
+                      <option value="">Selecciona una opción</option>
+                      <option value="bug">🐛 Reportar un error</option>
+                      <option value="feature">💡 Sugerencia de mejora</option>
+                      <option value="question">❓ Pregunta general</option>
+                      <option value="account">👤 Problema con mi cuenta</option>
+                      <option value="other">📝 Otro</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Mensaje</label>
+                    <textarea
+                      id="support-message"
+                      required
+                      rows="5"
+                      placeholder="Describe tu consulta con el mayor detalle posible..."
+                      class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition resize-none"
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2">
+                    📤 Enviar mensaje
+                  </button>
+                </form>
+
+                <p class="mt-4 text-xs text-gray-500 text-center">
+                  Normalmente respondemos en 24-48 horas hábiles.
+                </p>
+              </div>
+            `,
+            tags: ['soporte', 'contacto', 'ayuda', 'mensaje', 'email', 'bug', 'sugerencia']
+          },
+          {
+            id: 'faq',
+            title: 'Preguntas frecuentes',
+            description: 'Respuestas a las dudas más comunes',
+            content: `
+              <div class="space-y-4">
+                <div class="p-3 bg-gray-800/50 rounded-lg">
+                  <h5 class="font-bold text-cyan-300 mb-2">¿Cómo recupero mi progreso si cambié de dispositivo?</h5>
+                  <p class="text-sm">Si tienes cuenta, tu progreso se sincroniza automáticamente. Simplemente inicia sesión con la misma cuenta.</p>
+                </div>
+
+                <div class="p-3 bg-gray-800/50 rounded-lg">
+                  <h5 class="font-bold text-cyan-300 mb-2">¿Los libros funcionan sin internet?</h5>
+                  <p class="text-sm">Sí, una vez cargados los libros funcionan offline. Solo la IA y sincronización requieren conexión.</p>
+                </div>
+
+                <div class="p-3 bg-gray-800/50 rounded-lg">
+                  <h5 class="font-bold text-cyan-300 mb-2">¿Cómo configuro la IA?</h5>
+                  <p class="text-sm">Ve a Configuración - IA y selecciona un proveedor. Gemini es gratis y recomendado para empezar.</p>
+                </div>
+
+                <div class="p-3 bg-gray-800/50 rounded-lg">
+                  <h5 class="font-bold text-cyan-300 mb-2">¿Mis datos están seguros?</h5>
+                  <p class="text-sm">Sí. Usamos Supabase con encriptación. Nunca compartimos datos con terceros.</p>
+                </div>
+              </div>
+            `,
+            tags: ['faq', 'preguntas', 'frecuentes', 'dudas']
+          }
+        ]
       }
     };
   }
@@ -1211,6 +1308,21 @@ class HelpCenterModal {
       });
     }
 
+    // 🔧 v2.9.333: Formulario de soporte
+    const supportForm = document.getElementById('support-form');
+    if (supportForm) {
+      this.eventManager.addEventListener(supportForm, 'submit', (e) => {
+        e.preventDefault();
+        this.handleSupportSubmit();
+      });
+    }
+
+    // Pre-llenar email si está autenticado
+    const emailInput = document.getElementById('support-email');
+    if (emailInput && window.authHelper?.getCurrentUser()) {
+      emailInput.value = window.authHelper.getCurrentUser().email || '';
+    }
+
     this._eventListenersAttached = true;
   }
 
@@ -1221,6 +1333,108 @@ class HelpCenterModal {
       // 🔧 FIX: Resetear flag para permitir re-attach de listeners en nuevos elementos
       this._eventListenersAttached = false;
       this.attachEventListeners();
+    }
+  }
+
+  // ==========================================================================
+  // SOPORTE
+  // ==========================================================================
+
+  /**
+   * 🔧 v2.9.333: Enviar mensaje de soporte a Supabase
+   */
+  async handleSupportSubmit() {
+    const emailInput = document.getElementById('support-email');
+    const typeSelect = document.getElementById('support-type');
+    const messageInput = document.getElementById('support-message');
+    const submitBtn = document.querySelector('#support-form button[type="submit"]');
+
+    if (!emailInput || !typeSelect || !messageInput) return;
+
+    const email = emailInput.value.trim();
+    const type = typeSelect.value;
+    const message = messageInput.value.trim();
+
+    // Validación
+    if (!email || !type || !message) {
+      window.toast?.error('Por favor completa todos los campos');
+      return;
+    }
+
+    // Deshabilitar botón mientras envía
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Enviando...';
+    }
+
+    try {
+      const supabase = window.supabaseClient;
+      if (!supabase) {
+        throw new Error('Supabase no disponible');
+      }
+
+      const user = window.authHelper?.getCurrentUser();
+
+      const { error } = await supabase
+        .from('support_requests')
+        .insert({
+          email: email,
+          request_type: type,
+          message: message,
+          user_id: user?.id || null,
+          user_agent: navigator.userAgent,
+          app_version: '2.9.333',
+          created_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      // Éxito
+      window.toast?.success('Mensaje enviado correctamente');
+
+      // Limpiar formulario
+      emailInput.value = user?.email || '';
+      typeSelect.value = '';
+      messageInput.value = '';
+
+      // Mostrar confirmación en el contenedor
+      const container = document.getElementById('support-form-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">✅</div>
+            <h4 class="text-xl font-bold text-green-400 mb-2">¡Mensaje enviado!</h4>
+            <p class="text-gray-400">Te responderemos a ${email} lo antes posible.</p>
+            <button id="send-another-btn" class="mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition">
+              Enviar otro mensaje
+            </button>
+          </div>
+        `;
+
+        // Handler para "enviar otro"
+        const sendAnotherBtn = document.getElementById('send-another-btn');
+        if (sendAnotherBtn) {
+          this.eventManager.addEventListener(sendAnotherBtn, 'click', () => {
+            this._eventListenersAttached = false;
+            this.render();
+            this.attachEventListeners();
+            // Ir a la pestaña de soporte y abrir el formulario
+            setTimeout(() => {
+              const formHeader = document.querySelector('[data-item-id="contact-form"]');
+              if (formHeader) formHeader.click();
+            }, 100);
+          });
+        }
+      }
+    } catch (error) {
+      logger.error('Error enviando soporte:', error);
+      window.toast?.error('Error al enviar. Intenta de nuevo.');
+
+      // Restaurar botón
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '📤 Enviar mensaje';
+      }
     }
   }
 

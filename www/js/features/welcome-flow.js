@@ -105,6 +105,12 @@ class WelcomeFlow {
   }
 
   start() {
+    // 🔧 v2.9.325: Prevenir doble inicio
+    if (this.isActive) {
+      logger.debug('[WelcomeFlow] Ya está activo, ignorando start()');
+      return false;
+    }
+
     if (!this.shouldShow()) {
       logger.debug('[WelcomeFlow] Ya completado anteriormente');
       return false;
@@ -649,8 +655,8 @@ class WelcomeFlow {
 
 window.WelcomeFlow = WelcomeFlow;
 
-// Crear instancia global
-document.addEventListener('DOMContentLoaded', () => {
+// 🔧 v2.9.325: Fix para lazy loading - manejar caso donde DOM ya está listo
+function initWelcomeFlow() {
   window.welcomeFlow = new WelcomeFlow();
 
   // Auto-mostrar si es primera visita (después de que cargue la biblioteca)
@@ -660,4 +666,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window.welcomeFlow.start();
     }
   }, 1000);
-});
+}
+
+// Crear instancia global - soporta carga síncrona y lazy loading
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWelcomeFlow);
+} else {
+  // DOM ya cargado (lazy loading) - inicializar inmediatamente
+  initWelcomeFlow();
+}

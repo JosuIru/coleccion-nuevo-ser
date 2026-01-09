@@ -904,3 +904,6 @@ class ChapterResourcesModal {
 
 // Exportar globalmente
 window.ChapterResourcesModal = ChapterResourcesModal;
+
+// 🔧 v2.9.325: Auto-instanciar para que funcione el botón
+window.chapterResourcesModal = new ChapterResourcesModal();

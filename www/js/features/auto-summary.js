@@ -5,10 +5,20 @@
 // 🔧 FIX v2.9.198: Migrated console.log to logger
 class AutoSummary {
   constructor(bookEngine, aiAdapter) {
-    this.bookEngine = bookEngine;
-    this.aiAdapter = aiAdapter;
+    // 🔧 FIX v2.9.332: Fallback a window.* si no se pasan como parámetros
+    this.bookEngine = bookEngine || window.bookEngine || null;
+    this.aiAdapter = aiAdapter || window.aiAdapter || null;
     this.i18n = window.i18n || { t: (key) => key };
     this.summaryCache = this.loadCache();
+  }
+
+  // 🔧 FIX v2.9.332: Métodos helper para obtener dependencias
+  getBookEngine() {
+    return this.bookEngine || window.bookEngine || null;
+  }
+
+  getAIAdapter() {
+    return this.aiAdapter || window.aiAdapter || null;
   }
 
   // ==========================================================================
@@ -50,7 +60,9 @@ class AutoSummary {
   // ==========================================================================
 
   async generateSummary(chapter, bookId) {
-    if (!this.aiAdapter || !window.aiConfig?.getClaudeApiKey()) {
+    // 🔧 FIX v2.9.332: Usar getAIAdapter() para fallback robusto
+    const adapter = this.getAIAdapter();
+    if (!adapter || !window.aiConfig?.getClaudeApiKey()) {
       // logger.debug('IA no configurada para generar resumen');
       return null;
     }
@@ -92,7 +104,7 @@ FORMATO DE RESPUESTA:
 ...etc`;
 
     try {
-      const response = await this.aiAdapter.ask(prompt, '', []);
+      const response = await adapter.ask(prompt, '', []);
 
       if (response) {
         // Cachear el resumen
@@ -352,5 +364,8 @@ FORMATO DE RESPUESTA:
   }
 }
 
-// Exportar
+// Exportar clase
 window.AutoSummary = AutoSummary;
+
+// 🔧 v2.9.325: Auto-instanciar para que funcione el botón
+window.autoSummary = new AutoSummary();

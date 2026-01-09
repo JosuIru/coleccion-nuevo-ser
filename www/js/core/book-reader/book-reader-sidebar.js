@@ -69,10 +69,21 @@ class BookReaderSidebar {
         <!-- Fixed Header Section -->
         <div class="flex-shrink-0 p-4 sm:p-6 pb-3 sm:pb-4">
           <!-- Close Sidebar Button (visible on all screens) -->
+          <!-- 🔧 v2.9.325: Agregar onclick inline para garantizar funcionamiento -->
           <button id="close-sidebar-mobile" class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center text-2xl sm:text-3xl font-bold hover:bg-red-500/20 hover:text-red-400 text-gray-800 dark:text-white transition-all rounded-lg z-20 border-2 border-gray-300 dark:border-gray-500 bg-gray-100 dark:bg-gray-800 shadow-lg"
                   aria-label="Cerrar índice"
-                  title="Cerrar índice de capítulos">
+                  title="Cerrar índice de capítulos"
+                  onclick="window.bookReader?.toggleSidebar()">
             ×
+          </button>
+
+          <!-- 🔧 v2.9.334: Botón Volver a Biblioteca -->
+          <button id="sidebar-back-to-library"
+                  class="w-full mb-3 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                  title="Volver a la biblioteca"
+                  aria-label="Volver a la biblioteca">
+            <span>←</span>
+            <span>Biblioteca</span>
           </button>
 
           <!-- Book Title -->
@@ -171,6 +182,7 @@ class BookReaderSidebar {
    * Abre o cierra el sidebar, actualizando clases y backdrop
    */
   toggleSidebar() {
+    console.log('[BookReaderSidebar.toggleSidebar] CALLED, current sidebarOpen:', this.sidebarOpen);
     this.sidebarOpen = !this.sidebarOpen;
 
     // Solo actualizar las clases del sidebar sin re-renderizar todo
@@ -205,12 +217,17 @@ class BookReaderSidebar {
 
     // Actualizar icono y texto del botón toggle
     const toggleBtn = document.getElementById('toggle-sidebar');
-    const Icons = this.getDependency('Icons');
-    if (toggleBtn && Icons) {
-      // Preservar estructura: icono + span con texto
-      const icon = this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18);
+    const toggleText = document.getElementById('toggle-sidebar-text');
+
+    console.log('[toggleSidebar] sidebarOpen:', this.sidebarOpen, 'toggleBtn:', !!toggleBtn, 'toggleText:', !!toggleText);
+
+    if (toggleText) {
       const text = this.sidebarOpen ? 'Ocultar' : 'Índice';
-      toggleBtn.innerHTML = `${icon}<span class="text-xs sm:text-sm">${text}</span>`;
+      toggleText.textContent = text;
+      console.log('[toggleSidebar] Updated text to:', text);
+    }
+
+    if (toggleBtn) {
       toggleBtn.setAttribute('aria-label', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
       toggleBtn.setAttribute('title', this.sidebarOpen ? 'Contraer barra lateral' : 'Expandir barra lateral');
     }

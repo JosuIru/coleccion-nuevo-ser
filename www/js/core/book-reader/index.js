@@ -474,6 +474,43 @@ class BookReader {
   }
 
   // ==========================================================================
+  // PROFILE / ACCOUNT
+  // ==========================================================================
+
+  /**
+   * Abre el modal de perfil/cuenta del usuario
+   * 🔧 FIX v2.9.346: Método faltante que causaba error en consola
+   */
+  async openProfile() {
+    // Abrir modal de Mi Cuenta si está cargado
+    if (window.myAccountModal) {
+      window.myAccountModal.show();
+      return;
+    }
+
+    // Lazy load del modal
+    if (window.lazyLoader) {
+      try {
+        await window.lazyLoader.load('my-account');
+        if (window.myAccountModal) {
+          window.myAccountModal.show();
+          return;
+        }
+      } catch (err) {
+        logger.error('[BookReader] Error cargando my-account:', err);
+      }
+    }
+
+    // Fallback a auth modal si no está logueado
+    if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+      await window.lazyLoader.loadAuthModal();
+    }
+    if (window.authModal) {
+      window.authModal.show('login');
+    }
+  }
+
+  // ==========================================================================
   // STRING HELPERS (delegado a utils)
   // ==========================================================================
 

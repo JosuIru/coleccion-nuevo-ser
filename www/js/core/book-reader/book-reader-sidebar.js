@@ -62,7 +62,8 @@ class BookReaderSidebar {
       ${this.sidebarOpen ? '<div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-40 sm:hidden" onclick="window.bookReader?.toggleSidebar()"></div>' : ''}
 
       <!-- Sidebar: Fixed overlay en móvil, normal en desktop -->
-      <div class="sidebar ${this.sidebarOpen ? 'w-full sm:w-80' : 'w-0'}
+      <!-- 🔧 v2.9.353: Añadir -translate-x-full cuando cerrado para consistencia con toggleSidebar -->
+      <div class="sidebar ${this.sidebarOpen ? 'w-full sm:w-80' : 'w-0 -translate-x-full'}
                   fixed sm:relative top-0 left-0 h-full sm:h-auto z-50 sm:z-auto
                   flex-shrink-0 bg-white/95 dark:bg-gray-900/95 sm:bg-white/50 dark:sm:bg-gray-900/50 border-r border-gray-200 dark:border-gray-700
                   overflow-hidden transition-all duration-300 flex flex-col">
@@ -192,10 +193,15 @@ class BookReaderSidebar {
         // Abrir: ancho completo en móvil, 320px en desktop
         sidebar.className = sidebar.className.replace(/\bw-\S+/g, '');
         sidebar.classList.add('w-full', 'sm:w-80');
+        // 🔧 v2.9.353: Quitar translate para mostrar sidebar
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.style.transform = '';
       } else {
         // Cerrar: w-0 en todos los breakpoints
         sidebar.className = sidebar.className.replace(/\bw-\S+/g, '');
         sidebar.classList.add('w-0', 'sm:w-0', 'md:w-0', 'lg:w-0');
+        // 🔧 v2.9.353: Añadir translate para ocultar sidebar
+        sidebar.classList.add('-translate-x-full');
       }
     }
 

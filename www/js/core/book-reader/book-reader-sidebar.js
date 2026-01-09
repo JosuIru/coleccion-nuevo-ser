@@ -278,14 +278,15 @@ class BookReaderSidebar {
         // Re-attach listeners para chapter items en el sidebar
         this.attachChapterListeners();
 
-        // 🔧 v2.9.342: Corregir acceso a handlers - están en events, no en bookReader
+        // 🔧 v2.9.343: Usar addEventListener nativo en lugar de eventManager
+        // (eventManager no adjunta correctamente listeners a elementos re-renderizados)
         const events = this.bookReader.events;
 
         // Re-attach close sidebar button
         if (events?._closeSidebarHandler) {
           const closeBtn = document.getElementById('close-sidebar-mobile');
           if (closeBtn) {
-            this.eventManager.addEventListener(closeBtn, 'click', events._closeSidebarHandler);
+            closeBtn.addEventListener('click', events._closeSidebarHandler);
           }
         }
 
@@ -293,7 +294,7 @@ class BookReaderSidebar {
         if (events?._backToBibliotecaHandler) {
           const sidebarBackBtn = document.getElementById('sidebar-back-to-library');
           if (sidebarBackBtn) {
-            this.eventManager.addEventListener(sidebarBackBtn, 'click', events._backToBibliotecaHandler);
+            sidebarBackBtn.addEventListener('click', events._backToBibliotecaHandler);
           }
         }
 

@@ -825,10 +825,10 @@ class Biblioteca {
     const siguienteCapitulo = this.getSiguienteCapitulo(libroActual.id);
 
     return `
-      <div class="current-journey-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border border-cyan-700/30">
+      <div class="current-journey-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-cyan-100 to-purple-100 dark:from-cyan-900/20 dark:to-purple-900/20 border border-cyan-300 dark:border-cyan-700/30">
         <div class="flex items-center gap-2 mb-4">
           <span class="text-2xl">📖</span>
-          <h3 class="text-xl sm:text-2xl font-bold text-cyan-300">Tu Camino Actual</h3>
+          <h3 class="text-xl sm:text-2xl font-bold text-cyan-600 dark:text-cyan-300">Tu Camino Actual</h3>
         </div>
 
         <div class="flex flex-col sm:flex-row items-start gap-4">
@@ -848,7 +848,7 @@ class Biblioteca {
             <div class="mb-3">
               <div class="flex justify-between text-sm mb-1">
                 <span class="text-gray-600 dark:text-gray-400">${progresoLibro.chaptersRead} de ${progresoLibro.totalChapters} capítulos</span>
-                <span class="font-semibold text-cyan-400">${progresoLibro.percentage}%</span>
+                <span class="font-semibold text-cyan-600 dark:text-cyan-400">${progresoLibro.percentage}%</span>
               </div>
               <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div class="h-full transition-all duration-500 rounded-full"
@@ -984,17 +984,17 @@ class Biblioteca {
       <!-- Widget de Racha (si hay datos) -->
       ${streakWidget}
 
-      <div class="daily-practice-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-slate-800/50 to-indigo-900/30 border border-indigo-700/30">
+      <div class="daily-practice-section mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-slate-800/50 dark:to-indigo-900/30 border border-indigo-300 dark:border-indigo-700/30">
         <div class="flex items-center gap-2 mb-4">
           <span class="text-2xl">${herramientaHoy.icono}</span>
-          <h3 class="text-xl sm:text-2xl font-bold text-indigo-300">Herramienta del Día</h3>
-          <span class="ml-auto text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${herramientaHoy.categoria}</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-indigo-600 dark:text-indigo-300">Herramienta del Día</h3>
+          <span class="ml-auto text-xs px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-500/30">${herramientaHoy.categoria}</span>
         </div>
 
         <div class="flex flex-col sm:flex-row items-start gap-4">
           <div class="flex-1">
-            <h4 class="text-lg font-bold text-white mb-1">${herramientaHoy.titulo}</h4>
-            <p class="text-sm text-gray-400 mb-3">${herramientaHoy.descripcion}</p>
+            <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-1">${herramientaHoy.titulo}</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${herramientaHoy.descripcion}</p>
           </div>
 
           <button onclick="window.biblioteca?.openDailyPractice('${herramientaHoy.libroId}')"

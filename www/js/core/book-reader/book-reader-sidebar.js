@@ -162,7 +162,7 @@ class BookReaderSidebar {
             ${isRead ? Icons.checkCircle(16) : Icons.circle(16)}
           </button>
           <div class="flex-1 chapter-title-area" data-chapter-id="${chapter.id}">
-            <div class="text-xs sm:text-sm font-semibold ${isActive ? 'text-cyan-300' : ''} leading-snug">
+            <div class="text-xs sm:text-sm font-semibold ${isActive ? 'text-cyan-600 dark:text-cyan-300' : ''} leading-snug">
               ${chapter.title}
             </div>
             ${chapter.sectionTitle ? `

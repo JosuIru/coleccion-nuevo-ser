@@ -276,27 +276,41 @@ class BookReaderEvents {
   }
 
   /**
-   * Setup de dropdown toggle
-   * 🔧 v2.9.338: Fix - Buscar dropdown dinámicamente en el DOM actual
-   *              para evitar closures sobre elementos DOM destruidos tras re-render
+   * Setup de dropdown toggle usando EVENT DELEGATION
+   * 🔧 v2.9.339: Fix CRÍTICO - Usar delegation porque los botones se recrean
+   *              al re-renderizar y los listeners directos se pierden
    */
   setupDropdown(btnId, dropdownId) {
-    const btn = document.getElementById(btnId);
-    if (!btn) return;
+    // 🔧 v2.9.339: Usar event delegation en document para que funcione
+    // incluso cuando los botones se recrean tras re-render
+    if (!this._dropdownDelegationSetup) {
+      this._dropdownDelegationSetup = {};
+    }
 
-    // 🔧 v2.9.338: Crear handler que busca el dropdown EN EL MOMENTO del click
-    // NO capturar referencia al dropdown en closure (se destruye tras re-render)
+    // Solo configurar delegation una vez por par btnId/dropdownId
+    const delegationKey = `${btnId}-${dropdownId}`;
+    if (this._dropdownDelegationSetup[delegationKey]) return;
+    this._dropdownDelegationSetup[delegationKey] = true;
+
     const handler = (e) => {
+      // Buscar si el click fue en el botón o dentro de él
+      const btn = e.target.closest(`#${btnId}`);
+      if (!btn) return;
+
       e.stopPropagation();
 
-      // Buscar dropdown AHORA, no usar referencia capturada
-      const currentDropdown = document.getElementById(dropdownId);
-      if (!currentDropdown) return;
+      // Buscar dropdown HERMANO del botón clickeado (están en el mismo div.relative)
+      const currentDropdown = btn.parentElement?.querySelector(`#${dropdownId}`);
+      if (!currentDropdown) {
+        console.warn(`[setupDropdown] No se encontró #${dropdownId} como hermano de #${btnId}`);
+        return;
+      }
 
-      // Cerrar TODOS los otros dropdowns del header
+      // Cerrar TODOS los otros dropdowns del mismo contenedor padre
+      const container = btn.closest('#book-reader-view, #biblioteca-view') || document;
       ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown'].forEach(id => {
         if (id !== dropdownId) {
-          const otherDropdown = document.getElementById(id);
+          const otherDropdown = container.querySelector(`#${id}`);
           if (otherDropdown) {
             otherDropdown.classList.add('hidden');
           }
@@ -307,7 +321,8 @@ class BookReaderEvents {
       currentDropdown.classList.toggle('hidden');
     };
 
-    this.eventManager.addEventListener(btn, 'click', handler);
+    // Usar delegation en document (funciona para elementos creados dinámicamente)
+    document.addEventListener('click', handler, true);
   }
 
   // ==========================================================================

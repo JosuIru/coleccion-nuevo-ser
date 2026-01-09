@@ -286,6 +286,16 @@ class BookReaderSidebar {
           }
         }
 
+        // 🔧 v2.9.341: Re-attach sidebar-back-to-library button
+        // (se perdía al re-renderizar el sidebar)
+        const backToBibliotecaHandler = this.bookReader.events?._backToBibliotecaHandler;
+        if (backToBibliotecaHandler) {
+          const sidebarBackBtn = document.getElementById('sidebar-back-to-library');
+          if (sidebarBackBtn) {
+            this.eventManager.addEventListener(sidebarBackBtn, 'click', backToBibliotecaHandler);
+          }
+        }
+
         // Re-inicializar iconos
         const Icons = this.getDependency('Icons');
         if (Icons?.init) {

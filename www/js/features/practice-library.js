@@ -556,15 +556,18 @@ class PracticeLibrary {
     }
 
     // Type tabs
+    // 🔧 FIX v2.9.338: Usar currentTarget en vez de target para evitar que
+    // el clic en spans internos rompa el filtrado
     const typeTabs = document.querySelectorAll('.practice-type-tab');
     typeTabs.forEach(tab => {
       tab.addEventListener('click', (e) => {
         // Update active state
         typeTabs.forEach(t => t.classList.remove('active'));
-        e.target.classList.add('active');
+        // 🔧 FIX: currentTarget es siempre el botón, no el span interno
+        e.currentTarget.classList.add('active');
 
         // Update filter
-        this.filters.type = e.target.dataset.type;
+        this.filters.type = e.currentTarget.dataset.type;
         this.updateContent();
       });
     });

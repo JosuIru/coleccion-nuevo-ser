@@ -419,6 +419,9 @@ class BookEngine {
     // Títulos explícitos (## Título)
     html = html.replace(/^## (.+)$/gm, '<h3 class="text-2xl font-bold mt-8 mb-4">$1</h3>');
 
+    // 🔧 FIX v2.9.338: Subtítulos explícitos (### Subtítulo) - faltaba esta regla
+    html = html.replace(/^### (.+)$/gm, '<h4 class="text-xl font-semibold mt-6 mb-3 text-amber-300">$1</h4>');
+
     // Detectar títulos implícitos: líneas cortas que terminan sin puntuación
     // (típicos del Manifiesto y otros libros con formato texto plano)
     html = html.replace(/\n\n([A-ZÁÉÍÓÚ][^.\n]{10,80}[^.\n:])\n\n/g, '\n\n<h3 class="text-xl font-bold mt-8 mb-4 text-amber-200">$1</h3>\n\n');

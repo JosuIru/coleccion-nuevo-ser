@@ -4,6 +4,11 @@
 // Visualización de relaciones entre conceptos de cada libro
 // con referencias cruzadas a capítulos relacionados de otros libros
 
+// 🔧 FIX v2.9.338: Guard contra redeclaración si el script se carga múltiples veces
+if (typeof window.ConceptMaps !== 'undefined') {
+  console.warn('[ConceptMaps] Script ya cargado, saltando redeclaración');
+} else {
+
 class ConceptMaps {
   constructor(bookEngine) {
     // 🔧 FIX v2.9.332: Fallback a window.bookEngine si no se pasa como parámetro
@@ -901,3 +906,5 @@ window.ConceptMaps = ConceptMaps;
 
 // 🔧 v2.9.325: Auto-instanciar para que funcione el botón
 window.conceptMaps = new ConceptMaps();
+
+} // 🔧 FIX v2.9.338: Cierre del guard contra redeclaración

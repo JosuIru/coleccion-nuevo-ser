@@ -1,0 +1,122 @@
+═══════════════════════════════════════════════════════════════════
+INSTRUCCIONES PARA SUBIR v2.9.325 AL SERVIDOR WEB
+═══════════════════════════════════════════════════════════════════
+
+📦 ARCHIVOS A SUBIR:
+
+Este directorio (upload-v2.9.325/) contiene 3 archivos que debes subir al servidor:
+
+1. index.html
+   → Subir a: /www/index.html
+   → Reemplaza el archivo existente
+   → IMPORTANTE: Este archivo contiene los scripts descomentados para las 8 herramientas AI
+
+2. ai-lazy-loader.js
+   → Subir a: /www/js/utils/ai-lazy-loader.js
+   → Reemplaza el archivo existente
+
+3. app-initialization.js
+   → Subir a: /www/js/core/app-initialization.js
+   → Reemplaza el archivo existente
+
+
+═══════════════════════════════════════════════════════════════════
+⚡ PASOS PARA SUBIR AL SERVIDOR:
+═══════════════════════════════════════════════════════════════════
+
+1. Conectarte al servidor FTP/SSH donde está alojada la web
+
+2. Navegar a la carpeta /www/
+
+3. Subir index.html (reemplazar el existente)
+
+4. Navegar a /www/js/utils/
+
+5. Subir ai-lazy-loader.js (reemplazar el existente)
+
+6. Navegar a /www/js/core/
+
+7. Subir app-initialization.js (reemplazar el existente)
+
+
+═══════════════════════════════════════════════════════════════════
+🧹 DESPUÉS DE SUBIR:
+═══════════════════════════════════════════════════════════════════
+
+1. Abre la web en el navegador
+
+2. Limpia el cache del navegador:
+   - Chrome/Edge: Ctrl+Shift+R (Windows/Linux) o Cmd+Shift+R (Mac)
+   - Firefox: Ctrl+F5 (Windows/Linux) o Cmd+Shift+R (Mac)
+
+   O en DevTools:
+   - Presiona F12
+   - Ve a la pestaña "Network"
+   - Marca la casilla "Disable cache"
+   - Recarga la página (F5)
+
+3. Verifica que se cargue la nueva versión:
+   - Abre la consola del navegador (F12)
+   - Busca esta línea:
+     [AppInit] Versión: 2.9.325
+
+   Si dice "2.9.325" → ✅ Versión correcta cargada
+   Si dice otra versión → ❌ Cache no limpiado, repite paso 2
+
+
+═══════════════════════════════════════════════════════════════════
+🧪 VERIFICAR QUE FUNCIONA (8 HERRAMIENTAS):
+═══════════════════════════════════════════════════════════════════
+
+Abre un libro y verifica que las 8 herramientas AI funcionan:
+
+1. ✅ Mapa Conceptual - Debe abrir modal
+2. ✅ Resumen del capítulo - Debe generar resumen
+3. ✅ Notas de voz - Debe abrir grabador
+4. ✅ Planes de Acción - Debe abrir modal
+5. ✅ Mis Logros - Debe mostrar logros
+6. ✅ Learning Paths - Debe mostrar rutas de aprendizaje
+7. ✅ Recursos del Capítulo - Debe mostrar recursos
+8. ✅ Adaptar Contenido - Debe abrir adaptador
+
+También verificar:
+- Tab "Perfil" funciona
+- "Centro de Ayuda" funciona
+- "AI Chat" funciona
+
+
+═══════════════════════════════════════════════════════════════════
+📱 VERSIÓN ANDROID (APK):
+═══════════════════════════════════════════════════════════════════
+
+Si prefieres probar en Android directamente:
+
+APK listo: /home/josu/Documentos/guiaIT/25-11-25-version/coleccion-nuevo-ser-v2.9.325.apk
+
+Solo instálalo en tu dispositivo Android y el fix ya estará aplicado.
+
+
+═══════════════════════════════════════════════════════════════════
+📝 CAMBIOS EN ESTA VERSIÓN (v2.9.325):
+═══════════════════════════════════════════════════════════════════
+
+FIX CRÍTICO: Scripts de herramientas AI estaban COMENTADOS en index.html
+
+Scripts descomentados/agregados:
+- ai-adapter.js (línea 442) - CRÍTICO para AI Chat
+- my-account-modal.js (línea 470) - Para Tab Perfil
+- resource-ai-helper.js (línea 534)
+- interactive-quiz.js (línea 535)
+- concept-maps.js (línea 536) - Para Mapa Conceptual
+- action-plans.js (línea 537) - Para Planes de Acción
+- voice-notes.js (línea 538) - Para Notas de voz
+- content-adapter.js (línea 539) - Para Adaptar Contenido
+- chapter-resources-modal.js (línea 550) - Para Recursos del Capítulo
+- help-center-modal.js (línea 605) - Para Centro de Ayuda
+
+Mejoras en ai-lazy-loader.js:
+- Auto-instanciación de aiAdapter cuando se hace lazy loading
+- Mejor búsqueda de bookEngine (prioriza window.bookReader.bookEngine)
+- Logging detallado para debugging
+
+Esto resuelve todos los errores de herramientas que no respondían al click.

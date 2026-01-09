@@ -283,7 +283,10 @@ class BookReader {
   }
 
   updateHeader() {
-    const headerElement = document.querySelector('.header');
+    // 🔧 v2.9.341: Buscar header específicamente dentro de book-reader-view
+    // (hay otro .header en biblioteca-view que querySelector encontraba primero)
+    const container = document.getElementById('book-reader-view');
+    const headerElement = container?.querySelector('.header') || document.querySelector('#book-reader-view .header');
     if (headerElement) {
       headerElement.outerHTML = this.header.render();
       this.events.attachHeaderListeners();

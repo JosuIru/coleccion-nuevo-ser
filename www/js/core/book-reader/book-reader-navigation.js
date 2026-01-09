@@ -191,8 +191,12 @@ class BookReaderNavigation {
         return;
       }
 
-      const confirmMessage = this.i18n?.t('reader.confirmBookSwitch', { title: targetBook.title })
-        || `Cambiar a "${targetBook.title}"?`;
+      // 🔧 v2.9.341: Asegurar que confirmMessage sea siempre un string
+      // (i18n.t() podría devolver un objeto si hay problemas de configuración)
+      let confirmMessage = this.i18n?.t('reader.confirmBookSwitch', { title: targetBook.title });
+      if (typeof confirmMessage !== 'string' || !confirmMessage) {
+        confirmMessage = `¿Cambiar a "${targetBook.title}"?`;
+      }
 
       if (!confirm(confirmMessage)) {
         return;

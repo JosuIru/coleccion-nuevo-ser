@@ -75,6 +75,11 @@ class AIAdapter {
           tokensUsed = this.estimateTokens(prompt + response);
           break;
 
+        case this.config.providers.PUTER:
+          response = await this.askPuter(prompt, systemContext, conversationHistory);
+          tokensUsed = this.estimateTokens(prompt + response);
+          break;
+
         case this.config.providers.LOCAL:
         default:
           response = await this.askLocal(prompt, systemContext);
@@ -765,6 +770,73 @@ class AIAdapter {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // PUTER.JS - MISTRAL GRATIS SIN API KEY
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  async askPuter(prompt, systemContext, conversationHistory) {
+    // Verificar que Puter.js está cargado
+    if (typeof puter === 'undefined') {
+      throw new Error(
+        'Puter.js no está cargado.\n\n' +
+        'Recarga la página para usar el servicio gratuito de IA.'
+      );
+    }
+
+    // Obtener modelo seleccionado o usar el predeterminado
+    const selectedModel = this.config.getSelectedModel() || 'mistralai/mistral-large-2512';
+
+    // Construir el mensaje completo con contexto del sistema
+    let fullPrompt = '';
+
+    if (systemContext) {
+      fullPrompt += `[Sistema]: ${systemContext}\n\n`;
+    }
+
+    // Añadir historial de conversación si existe
+    if (conversationHistory && conversationHistory.length > 0) {
+      for (const msg of conversationHistory) {
+        const roleName = msg.role === 'assistant' ? 'Asistente' : 'Usuario';
+        fullPrompt += `[${roleName}]: ${msg.content}\n\n`;
+      }
+    }
+
+    // Añadir el prompt actual
+    fullPrompt += `[Usuario]: ${prompt}`;
+
+    try {
+      // Llamar a Puter AI (acceso gratuito a Mistral)
+      const response = await puter.ai.chat(fullPrompt, {
+        model: selectedModel
+      });
+
+      // Extraer respuesta
+      if (response && response.message && response.message.content) {
+        return response.message.content;
+      }
+
+      // Formato alternativo de respuesta
+      if (typeof response === 'string') {
+        return response;
+      }
+
+      throw new Error('Respuesta inesperada de Puter AI');
+
+    } catch (error) {
+      logger.error('Error calling Puter AI:', error);
+
+      if (error.message.includes('Failed to fetch') || error.message.includes('network')) {
+        throw new Error('No se pudo conectar a Puter AI. Verifica tu conexión a internet.');
+      }
+
+      if (error.message.includes('rate limit') || error.message.includes('too many')) {
+        throw new Error('Límite de uso temporal alcanzado. Espera unos segundos y vuelve a intentar.');
+      }
+
+      throw error;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // MODO LOCAL (SIN IA - RESPUESTAS PREDEFINIDAS)
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -887,6 +959,8 @@ class AIAdapter {
         return this.config.isMistralConfigured();
       case this.config.providers.HUGGINGFACE:
         return this.config.isHuggingFaceConfigured();
+      case this.config.providers.PUTER:
+        return true; // No requiere API key - siempre disponible
       case this.config.providers.OLLAMA:
       case this.config.providers.LOCAL:
         return true;

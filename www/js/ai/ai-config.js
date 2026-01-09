@@ -12,6 +12,7 @@ class AIConfig {
       GEMINI: 'gemini',        // Google Gemini
       QWEN: 'qwen',            // Alibaba Qwen (DashScope) - 1M tokens gratis/mes
       MISTRAL: 'mistral',      // Mistral AI
+      PUTER: 'puter',          // 🆓 Puter.js - Mistral GRATIS sin API key
       HUGGINGFACE: 'huggingface', // API gratuita
       OLLAMA: 'ollama', // Local gratuito
       LOCAL: 'local' // Respuestas predefinidas
@@ -62,6 +63,13 @@ class AIConfig {
         { id: 'phi3', name: 'Phi-3', description: 'Microsoft, compacto' },
         { id: 'gemma2', name: 'Gemma 2', description: 'Google, eficiente' },
         { id: 'qwen2.5', name: 'Qwen 2.5', description: 'Alibaba, multilingüe' }
+      ],
+      // 🆓 Puter.js - Mistral GRATIS sin API key (para usuarios no registrados)
+      [this.providers.PUTER]: [
+        { id: 'mistralai/mistral-large-2512', name: 'Mistral Large', description: '🆓 Gratis - Máxima calidad' },
+        { id: 'mistralai/mistral-small-2503', name: 'Mistral Small', description: '🆓 Gratis - Rápido' },
+        { id: 'mistralai/codestral-2508', name: 'Codestral', description: '🆓 Gratis - Código' },
+        { id: 'mistralai/pixtral-large-2501', name: 'Pixtral Large', description: '🆓 Gratis - Multimodal' }
       ]
     };
 
@@ -82,9 +90,9 @@ class AIConfig {
       }
     }
 
-    // Configuración por defecto (modo local gratuito)
+    // Configuración por defecto (Puter.js - Mistral GRATIS para no registrados)
     return {
-      provider: this.providers.LOCAL,
+      provider: this.providers.PUTER,  // 🆓 Mistral gratis via Puter.js
       apiKeys: {
         claude: '',
         openai: '',      // ChatGPT API key
@@ -97,7 +105,7 @@ class AIConfig {
       preferences: {
         maxTokens: 1024,
         temperature: 0.7,
-        model: 'claude-3-5-sonnet-20241022'
+        model: 'mistralai/mistral-large-2512'  // Modelo por defecto de Puter
       }
     };
   }
@@ -384,6 +392,17 @@ class AIConfig {
         cons: ['Respuestas predefinidas', 'No personalizado', 'Limitado'],
         getApiKey: null,
         estimatedCost: 'Gratis'
+      },
+      [this.providers.PUTER]: {
+        name: '🆓 Puter.js (Mistral Gratis)',
+        cost: 'Gratis',
+        quality: '★★★★★',
+        speed: '★★★★☆',
+        setup: 'No requiere configuración',
+        pros: ['100% gratis', 'Sin API key', 'Mistral Large incluido', 'Alta calidad', 'Sin registro'],
+        cons: ['Requiere conexión a internet', 'Límites de uso razonables'],
+        getApiKey: null,
+        estimatedCost: 'Gratis - cortesía de Puter.com'
       }
     };
   }
@@ -515,6 +534,7 @@ class AIConfig {
       mistral: { calls: 0, tokens: 0, estimatedCost: 0 },
       huggingface: { calls: 0, tokens: 0 },
       ollama: { calls: 0, tokens: 0 },
+      puter: { calls: 0, tokens: 0 },
       local: { calls: 0 }
     };
   }

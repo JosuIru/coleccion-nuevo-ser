@@ -311,7 +311,7 @@ class Biblioteca {
         <p class="text-lg sm:text-xl opacity-80">
           ${datosLibreria.tagline}
         </p>
-        <p class="text-sm opacity-60 mt-2">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
           Por ${datosLibreria.authors.join(' & ')}
         </p>
 
@@ -1004,13 +1004,13 @@ class Biblioteca {
         </div>
 
         <!-- Áreas de aplicación -->
-        <div class="mt-4 pt-4 border-t border-indigo-700/30">
-          <p class="text-xs text-gray-500 mb-2">Áreas de transformación:</p>
+        <div class="mt-4 pt-4 border-t border-indigo-700/30 dark:border-indigo-700/30 border-indigo-300/50">
+          <p class="text-xs text-gray-600 dark:text-gray-500 mb-2">Áreas de transformación:</p>
           <div class="flex flex-wrap gap-2">
-            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🏛️ Comunidades</span>
-            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🎓 Educación</span>
-            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🤝 Conflictos</span>
-            <span class="text-xs px-2 py-1 rounded bg-slate-700/50 text-gray-400">🏢 Organizaciones</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-gray-400">🏛️ Comunidades</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-gray-400">🎓 Educación</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-gray-400">🤝 Conflictos</span>
+            <span class="text-xs px-2 py-1 rounded bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-gray-400">🏢 Organizaciones</span>
           </div>
         </div>
       </div>

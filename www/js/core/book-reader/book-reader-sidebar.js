@@ -89,7 +89,7 @@ class BookReaderSidebar {
           <!-- Book Title -->
           <div class="mb-3 sm:mb-4 pr-12">
             <h2 class="text-lg sm:text-2xl font-bold mb-1 leading-tight">${bookData.title}</h2>
-            <p class="text-xs sm:text-sm opacity-70 leading-tight">${bookData.subtitle || ''}</p>
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-tight">${bookData.subtitle || ''}</p>
           </div>
 
           <!-- Progress -->
@@ -128,7 +128,7 @@ class BookReaderSidebar {
           <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all"
                style="width: ${progress.percentage}%"></div>
         </div>
-        <p class="text-xs opacity-60 mt-1.5 sm:mt-2">
+        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1.5 sm:mt-2">
           ${progress.chaptersRead} de ${progress.totalChapters} capítulos
         </p>
       </div>
@@ -166,7 +166,7 @@ class BookReaderSidebar {
               ${chapter.title}
             </div>
             ${chapter.sectionTitle ? `
-              <div class="text-xs opacity-50 mt-0.5 sm:mt-1 leading-tight">${chapter.sectionTitle}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-500 mt-0.5 sm:mt-1 leading-tight">${chapter.sectionTitle}</div>
             ` : ''}
           </div>
         </div>

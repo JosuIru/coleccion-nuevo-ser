@@ -494,9 +494,9 @@ class BookEngine {
     const author = typeof epigraph === 'object' ? epigraph.author : null;
 
     return `
-      <div class="epigraph my-8 px-6 py-4 border-l-4 italic opacity-80">
-        <p class="text-lg mb-2">"${text}"</p>
-        ${author ? `<p class="text-sm text-right">— ${author}</p>` : ''}
+      <div class="epigraph my-8 px-6 py-4 border-l-4 italic">
+        <p class="text-lg mb-2 text-gray-700 dark:text-gray-300">"${text}"</p>
+        ${author ? `<p class="text-sm text-right text-gray-600 dark:text-gray-400">— ${author}</p>` : ''}
       </div>
     `;
   }

@@ -196,6 +196,29 @@
   border-color: rgba(100, 116, 139, 0.4);
 }
 
+/* 🔧 FIX: Mejor contraste en modo claro */
+.theme-light .explore-library-header {
+  background: rgba(71, 85, 105, 0.15);
+  border-color: rgba(71, 85, 105, 0.3);
+}
+
+.theme-light .explore-library-header:hover {
+  background: rgba(71, 85, 105, 0.25);
+  border-color: rgba(71, 85, 105, 0.4);
+}
+
+.theme-light .explore-library-header h3 {
+  color: #1e293b !important; /* slate-800 */
+}
+
+.theme-light .explore-library-header p {
+  color: #475569 !important; /* slate-600 - mejor contraste */
+}
+
+.theme-light .explore-library-header .chevron {
+  color: #64748b !important; /* slate-500 */
+}
+
 .explore-library-header .chevron {
   transition: transform 0.3s ease;
 }

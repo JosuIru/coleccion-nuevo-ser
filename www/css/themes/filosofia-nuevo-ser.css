@@ -370,3 +370,59 @@ body.theme-light.theme-filosofia-nuevo-ser::before {
 .theme-light.theme-filosofia-nuevo-ser .inline-practice-content {
   color: #6b21a8;
 }
+
+/* ==========================================================================
+   SIDEBAR - DARK MODE
+   ========================================================================== */
+.theme-dark.theme-filosofia-nuevo-ser .sidebar {
+  background: linear-gradient(180deg,
+    rgba(30, 27, 75, 0.95) 0%,
+    rgba(49, 46, 129, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* ==========================================================================
+   SIDEBAR - LIGHT MODE
+   ========================================================================== */
+.theme-light.theme-filosofia-nuevo-ser .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(250, 245, 255, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-filosofia-nuevo-ser .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar .progress-box {
+  background: rgba(147, 51, 234, 0.1) !important;
+  border-color: rgba(147, 51, 234, 0.2) !important;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar .chapter-item:hover {
+  background: rgba(147, 51, 234, 0.1) !important;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-filosofia-nuevo-ser .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}

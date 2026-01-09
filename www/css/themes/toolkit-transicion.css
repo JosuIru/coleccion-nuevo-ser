@@ -117,3 +117,59 @@ body.theme-dark.theme-toolkit-transicion::before {
   border-left-color: #10b981;
   background: rgba(16, 185, 129, 0.05);
 }
+
+/* ==========================================================================
+   SIDEBAR - DARK MODE
+   ========================================================================== */
+.theme-dark.theme-toolkit-transicion .sidebar {
+  background: linear-gradient(180deg,
+    rgba(26, 26, 26, 0.95) 0%,
+    rgba(10, 46, 26, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* ==========================================================================
+   SIDEBAR - LIGHT MODE
+   ========================================================================== */
+.theme-light.theme-toolkit-transicion .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(240, 253, 244, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-toolkit-transicion .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-toolkit-transicion .sidebar .progress-box {
+  background: rgba(5, 150, 105, 0.1) !important;
+  border-color: rgba(5, 150, 105, 0.2) !important;
+}
+
+.theme-light.theme-toolkit-transicion .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-toolkit-transicion .sidebar .chapter-item:hover {
+  background: rgba(5, 150, 105, 0.1) !important;
+}
+
+.theme-light.theme-toolkit-transicion .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-toolkit-transicion .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-toolkit-transicion .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}

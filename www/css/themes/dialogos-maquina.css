@@ -275,3 +275,59 @@ body.theme-light.theme-dialogos-maquina::before {
   border-left-color: #0891b2;
   background: #ecfeff;
 }
+
+/* ==========================================================================
+   SIDEBAR - DARK MODE
+   ========================================================================== */
+.theme-dark.theme-dialogos-maquina .sidebar {
+  background: linear-gradient(180deg,
+    rgba(10, 10, 10, 0.95) 0%,
+    rgba(26, 26, 26, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* ==========================================================================
+   SIDEBAR - LIGHT MODE
+   ========================================================================== */
+.theme-light.theme-dialogos-maquina .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(240, 249, 255, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-dialogos-maquina .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-dialogos-maquina .sidebar .progress-box {
+  background: rgba(6, 182, 212, 0.1) !important;
+  border-color: rgba(6, 182, 212, 0.2) !important;
+}
+
+.theme-light.theme-dialogos-maquina .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-dialogos-maquina .sidebar .chapter-item:hover {
+  background: rgba(6, 182, 212, 0.1) !important;
+}
+
+.theme-light.theme-dialogos-maquina .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-dialogos-maquina .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-dialogos-maquina .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}

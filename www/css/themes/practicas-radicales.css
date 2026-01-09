@@ -99,3 +99,55 @@ body.theme-dark.theme-practicas-radicales::before {
   margin-bottom: var(--space-4);
   border-radius: var(--radius-lg);
 }
+
+/* SIDEBAR - Dark Mode */
+.theme-dark.theme-practicas-radicales .sidebar {
+  background: linear-gradient(180deg,
+    rgba(10, 10, 10, 0.95) 0%,
+    rgba(26, 10, 10, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* SIDEBAR - Light Mode */
+.theme-light.theme-practicas-radicales .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(254, 242, 242, 0.95) 100%
+  );
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-practicas-radicales .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-practicas-radicales .sidebar .progress-box {
+  background: rgba(185, 28, 28, 0.1) !important;
+  border-color: rgba(185, 28, 28, 0.2) !important;
+}
+
+.theme-light.theme-practicas-radicales .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-practicas-radicales .sidebar .chapter-item:hover {
+  background: rgba(185, 28, 28, 0.1) !important;
+}
+
+.theme-light.theme-practicas-radicales .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-practicas-radicales .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-practicas-radicales .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}

@@ -270,3 +270,59 @@
     opacity: 0.3;
   }
 }
+
+/* ==========================================================================
+   SIDEBAR - DARK MODE
+   ========================================================================== */
+.book-theme-ahora-instituciones .sidebar {
+  background: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(30, 41, 59, 0.95) 100%
+  );
+  border-right: 1px solid rgba(30, 58, 138, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* ==========================================================================
+   SIDEBAR - LIGHT MODE
+   ========================================================================== */
+.light-mode .book-theme-ahora-instituciones .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.95) 100%
+  );
+  border-right: 1px solid rgba(30, 58, 138, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.light-mode .book-theme-ahora-instituciones .sidebar h2 {
+  color: var(--text-primary) !important;
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar .progress-box {
+  background: rgba(30, 58, 138, 0.1) !important;
+  border-color: rgba(30, 58, 138, 0.2) !important;
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item {
+  color: var(--text-primary);
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item:hover {
+  background: rgba(30, 58, 138, 0.1) !important;
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item .text-cyan-600 {
+  color: var(--primary-color) !important;
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar #close-sidebar-mobile {
+  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(30, 58, 138, 0.2) !important;
+}
+
+.light-mode .book-theme-ahora-instituciones .sidebar #sidebar-back-to-library {
+  background: var(--gradient-primary) !important;
+}

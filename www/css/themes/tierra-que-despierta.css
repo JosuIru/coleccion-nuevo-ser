@@ -278,11 +278,50 @@ body.theme-light.theme-tierra-que-despierta::after {
   transition: width 0.3s ease;
 }
 
-/* Sidebar */
-.theme-tierra-que-despierta .sidebar {
+/* Sidebar - Dark Mode */
+.theme-dark.theme-tierra-que-despierta .sidebar {
   background: var(--color-background-secondary);
   border-right: 1px solid var(--color-border);
   backdrop-filter: blur(10px);
+}
+
+/* Sidebar - Light Mode */
+.theme-light.theme-tierra-que-despierta .sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-tierra-que-despierta .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar .progress-box {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar .chapter-item:hover {
+  background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-tierra-que-despierta .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
 }
 
 /* Notas de Claude y Josu */

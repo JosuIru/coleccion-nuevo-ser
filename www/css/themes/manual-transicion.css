@@ -148,14 +148,56 @@ body.theme-manual-transicion::before {
   transform: scale(1.03);
 }
 
-/* Sidebar con fluidez */
-.theme-manual-transicion .sidebar {
+/* Sidebar con fluidez - Dark Mode */
+.theme-dark.theme-manual-transicion .sidebar {
   background: linear-gradient(180deg,
     rgba(26, 26, 26, 0.95) 0%,
     rgba(45, 55, 72, 0.95) 100%
   );
   border-right: 2px solid rgba(16, 185, 129, 0.3);
   backdrop-filter: blur(10px);
+}
+
+/* Sidebar - Light Mode */
+.theme-light.theme-manual-transicion .sidebar {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(240, 253, 244, 0.95) 100%
+  );
+  border-right: 2px solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-manual-transicion .sidebar h2 {
+  color: #064e3b !important; /* emerald-900 */
+}
+
+.theme-light.theme-manual-transicion .sidebar .progress-box {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.theme-light.theme-manual-transicion .sidebar .chapter-item {
+  color: #064e3b;
+}
+
+.theme-light.theme-manual-transicion .sidebar .chapter-item:hover {
+  background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.theme-light.theme-manual-transicion .sidebar .chapter-item .text-cyan-600 {
+  color: #059669 !important;
+}
+
+.theme-light.theme-manual-transicion .sidebar #close-sidebar-mobile {
+  color: #064e3b !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.theme-light.theme-manual-transicion .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
 }
 
 /* Capítulos activos con vida */

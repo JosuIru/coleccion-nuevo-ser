@@ -157,7 +157,7 @@ body.theme-light.theme-nacimiento::before {
   text-shadow: none;
 }
 
-/* SIDEBAR */
+/* SIDEBAR - Dark Mode */
 .theme-dark.theme-nacimiento .sidebar {
   background: linear-gradient(180deg, rgba(31, 41, 55, 0.98) 0%, rgba(17, 24, 39, 0.98) 100%);
   border-right: 1px solid rgba(236, 72, 153, 0.2);
@@ -170,6 +170,44 @@ body.theme-light.theme-nacimiento::before {
 .theme-dark.theme-nacimiento .sidebar-item.active {
   background: rgba(236, 72, 153, 0.2);
   border-left: 3px solid #ec4899;
+}
+
+/* SIDEBAR - Light Mode */
+.theme-light.theme-nacimiento .sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 242, 248, 0.98) 100%);
+  border-right: 1px solid rgba(219, 39, 119, 0.2);
+}
+
+/* Sidebar elements - Light Mode overrides */
+.theme-light.theme-nacimiento .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-nacimiento .sidebar .progress-box {
+  background: rgba(219, 39, 119, 0.1) !important;
+  border-color: rgba(219, 39, 119, 0.2) !important;
+}
+
+.theme-light.theme-nacimiento .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-nacimiento .sidebar .chapter-item:hover {
+  background: rgba(219, 39, 119, 0.1) !important;
+}
+
+.theme-light.theme-nacimiento .sidebar .chapter-item .text-cyan-600 {
+  color: #be185d !important;
+}
+
+.theme-light.theme-nacimiento .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(219, 39, 119, 0.2) !important;
+}
+
+.theme-light.theme-nacimiento .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, #ec4899, #db2777) !important;
 }
 
 /* PROGRESS BAR */

@@ -1,6 +1,7 @@
 // ============================================================================
 // FAB MENU - Floating Action Button con acciones rápidas
 // ============================================================================
+// v2.9.367: Fix drag - validaciones de límites y coordenadas touch seguras
 // v2.9.366: Fix despliegue hacia abajo - usar top positioning cuando FAB arriba
 // v2.9.365: Fix iconos - usar siempre SVG inline (no depende de Lucide)
 // v2.9.363: FAB despliega hacia abajo cuando está en la parte superior
@@ -172,7 +173,11 @@ class FABMenu {
     // FAB arriba: usar TOP positioning para que crezca hacia abajo
     // Convertir bottom a top: top = windowHeight - bottom - fabSize
     const fabSize = 56;
-    const topValue = window.innerHeight - position.bottom - fabSize;
+    const margin = 8;
+    let topValue = window.innerHeight - position.bottom - fabSize;
+
+    // Validar que topValue esté dentro de límites razonables
+    topValue = Math.max(margin, Math.min(topValue, window.innerHeight - fabSize - margin));
 
     return `
       <div id="fab-menu"
@@ -575,8 +580,17 @@ class FABMenu {
     const fab = document.getElementById('fab-menu');
     if (!fab) return;
 
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    // Obtener coordenadas de forma segura
+    let clientX, clientY;
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.clientX !== undefined) {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else {
+      return; // No podemos obtener coordenadas
+    }
 
     const deltaX = this.dragStartX - clientX;
     const deltaY = this.dragStartY - clientY;
@@ -626,23 +640,35 @@ class FABMenu {
     this.isDragging = false;
 
     // Si se movió, guardar posición y prevenir click
-    if (this.hasMoved) {
+    if (this.hasMoved && fab) {
       const rect = fab.getBoundingClientRect();
-      this.savedPosition = {
-        right: window.innerWidth - rect.right,
-        bottom: window.innerHeight - rect.bottom
-      };
-      this.savePosition(this.savedPosition);
 
-      // Verificar si la dirección de despliegue cambió
-      const isTopPosition = this.savedPosition.bottom > (window.innerHeight / 2);
-      const newDirection = isTopPosition ? 'down' : 'up';
+      // Validar que el rect sea válido
+      if (rect.width > 0 && rect.height > 0) {
+        const fabSize = 56;
+        const margin = 8;
 
-      if (newDirection !== this.deployDirection) {
-        // Re-renderizar para cambiar la dirección de despliegue
-        this.render();
-        this.attachEventListeners();
-        this.attachDragListeners();
+        // Calcular posición y validar límites
+        let right = window.innerWidth - rect.right;
+        let bottom = window.innerHeight - rect.bottom;
+
+        // Asegurar que esté dentro de límites razonables
+        right = Math.max(margin, Math.min(right, window.innerWidth - fabSize - margin));
+        bottom = Math.max(margin, Math.min(bottom, window.innerHeight - fabSize - margin));
+
+        this.savedPosition = { right, bottom };
+        this.savePosition(this.savedPosition);
+
+        // Verificar si la dirección de despliegue cambió
+        const isTopPosition = bottom > (window.innerHeight / 2);
+        const newDirection = isTopPosition ? 'down' : 'up';
+
+        if (newDirection !== this.deployDirection) {
+          // Re-renderizar para cambiar la dirección de despliegue
+          this.render();
+          this.attachEventListeners();
+          this.attachDragListeners();
+        }
       }
 
       // Prevenir que se abra el menú después del drag

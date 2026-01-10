@@ -1,6 +1,7 @@
 /* ============================================================================
    QUICK ACCESS COMPONENTS - Estilos para Command Palette, FAB y Radial Menu
    ============================================================================
+   v2.9.364: Fix FAB actions no bloquean cuando están ocultos (display:none)
    v2.9.356: Fix rotación icono FAB + color pink para Exploración
    v2.9.354: Versión inicial
    ============================================================================ */
@@ -216,20 +217,28 @@
   transform: rotate(45deg);
 }
 
-/* Actions container */
+/* Actions container - OCULTO por defecto (no ocupa espacio) */
 #fab-actions {
-  display: flex;
+  display: none;
   flex-direction: column-reverse;
   gap: 12px;
   margin-bottom: 12px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--qa-transition);
 }
 
+/* Cuando se expande: mostrar y animar */
 #fab-actions.expanded {
+  display: flex;
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Para dirección hacia abajo (FAB arriba) */
+#fab-menu[data-direction="down"] #fab-actions {
+  flex-direction: column;
+  margin-bottom: 0;
+  margin-top: 12px;
 }
 
 /* Action buttons */

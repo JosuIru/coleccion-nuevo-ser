@@ -1,6 +1,7 @@
 // ============================================================================
 // RADIAL MENU - Menú circular contextual con acciones rápidas
 // ============================================================================
+// v2.9.355: Fix acciones - audio (play/pause/resume), navegación, tamaño fuente
 // v2.9.354: Nuevo componente de acceso rápido
 // Menú circular que aparece con long-press (móvil) o click derecho (desktop)
 
@@ -47,7 +48,7 @@ class RadialMenu {
         icon: 'chevron-right',
         label: 'Siguiente',
         angle: 30, // derecha-abajo
-        action: () => window.bookReader?.navigateToNext()
+        action: () => this.navigateNext()
       },
       {
         id: 'font-plus',
@@ -68,7 +69,7 @@ class RadialMenu {
         icon: 'chevron-left',
         label: 'Anterior',
         angle: 210, // izquierda-arriba
-        action: () => window.bookReader?.navigateToPrevious()
+        action: () => this.navigatePrev()
       }
     ];
   }
@@ -384,9 +385,12 @@ class RadialMenu {
   toggleAudio() {
     const audioReader = window.audioReader || window.dependencyInjector?.getSafe('audioReader');
     if (audioReader) {
-      if (audioReader.isPlaying) {
+      if (audioReader.isPlaying && !audioReader.isPaused) {
         audioReader.pause();
         this.showToast('Audio pausado');
+      } else if (audioReader.isPaused) {
+        audioReader.resume();
+        this.showToast('Reproduciendo audio');
       } else {
         audioReader.play();
         this.showToast('Reproduciendo audio');
@@ -396,22 +400,64 @@ class RadialMenu {
     }
   }
 
-  increaseFontSize() {
-    const currentSize = window.bookReader?.currentFontSize || 16;
-    const newSize = Math.min(currentSize + 2, 24);
-    if (window.bookReader?.setFontSize) {
-      window.bookReader.setFontSize(newSize);
-      this.showToast(`Fuente: ${newSize}px`);
+  navigateNext() {
+    const bookReader = window.bookReader;
+    const bookEngine = bookReader?.bookEngine || window.bookEngine;
+    if (bookReader && bookEngine) {
+      const currentChapterId = bookReader.currentChapter?.id;
+      const nextChapter = bookEngine.getNextChapter(currentChapterId);
+      if (nextChapter) {
+        bookReader.navigateToChapter(nextChapter.id);
+      } else {
+        this.showToast('Ya estás en el último capítulo');
+      }
     }
   }
 
-  decreaseFontSize() {
-    const currentSize = window.bookReader?.currentFontSize || 16;
-    const newSize = Math.max(currentSize - 2, 12);
-    if (window.bookReader?.setFontSize) {
-      window.bookReader.setFontSize(newSize);
-      this.showToast(`Fuente: ${newSize}px`);
+  navigatePrev() {
+    const bookReader = window.bookReader;
+    const bookEngine = bookReader?.bookEngine || window.bookEngine;
+    if (bookReader && bookEngine) {
+      const currentChapterId = bookReader.currentChapter?.id;
+      const prevChapter = bookEngine.getPreviousChapter(currentChapterId);
+      if (prevChapter) {
+        bookReader.navigateToChapter(prevChapter.id);
+      } else {
+        this.showToast('Ya estás en el primer capítulo');
+      }
     }
+  }
+
+  increaseFontSize() {
+    const savedSize = localStorage.getItem('font-size');
+    const currentSize = savedSize ? parseInt(savedSize) : 16;
+    const newSize = Math.min(currentSize + 2, 24);
+
+    localStorage.setItem('font-size', newSize);
+
+    // Aplicar al contenido
+    const chapterContent = document.querySelector('.chapter-content');
+    if (chapterContent) {
+      chapterContent.style.fontSize = `${newSize}px`;
+    }
+
+    this.showToast(`Fuente: ${newSize}px`);
+  }
+
+  decreaseFontSize() {
+    const savedSize = localStorage.getItem('font-size');
+    const currentSize = savedSize ? parseInt(savedSize) : 16;
+    const newSize = Math.max(currentSize - 2, 12);
+
+    localStorage.setItem('font-size', newSize);
+
+    // Aplicar al contenido
+    const chapterContent = document.querySelector('.chapter-content');
+    if (chapterContent) {
+      chapterContent.style.fontSize = `${newSize}px`;
+    }
+
+    this.showToast(`Fuente: ${newSize}px`);
   }
 
   showToast(message) {

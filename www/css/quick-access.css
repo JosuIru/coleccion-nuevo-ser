@@ -1,5 +1,8 @@
 /* ============================================================================
    QUICK ACCESS COMPONENTS - Estilos para Command Palette, FAB y Radial Menu
+   ============================================================================
+   v2.9.356: Fix rotación icono FAB + color pink para Exploración
+   v2.9.354: Versión inicial
    ============================================================================ */
 
 /* ============================================================================
@@ -196,10 +199,20 @@
 
 /* Icon rotation when expanded */
 #fab-main .fab-icon {
+  display: inline-block;
   transition: transform 0.3s ease;
 }
 
 #fab-main.expanded .fab-icon {
+  transform: rotate(45deg);
+}
+
+/* Fallback: also rotate SVG directly */
+#fab-main .fab-icon svg {
+  transition: transform 0.3s ease;
+}
+
+#fab-main.expanded .fab-icon svg {
   transform: rotate(45deg);
 }
 
@@ -264,6 +277,7 @@
 }
 
 /* Action colors */
+.fab-action[data-color="pink"] { background: linear-gradient(135deg, #9333ea, #ec4899); color: white; }
 .fab-action[data-color="cyan"] { background: #06b6d4; color: white; }
 .fab-action[data-color="purple"] { background: #8b5cf6; color: white; }
 .fab-action[data-color="amber"] { background: #f59e0b; color: white; }

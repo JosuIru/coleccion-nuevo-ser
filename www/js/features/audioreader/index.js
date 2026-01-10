@@ -1,6 +1,7 @@
 // ============================================================================
 // AUDIOREADER - Sistema de Narración con TTS (Text-to-Speech)
 // ============================================================================
+// v2.9.359: Fix show() - restaurar ui.audioReader después de destroy()
 // v2.9.282: Fix crítico - ambient/binaural ahora usan localStorage (funcionan minimizado)
 //
 // Módulos:
@@ -172,6 +173,11 @@ class AudioReader {
         if (chapterContent) {
           this.content.prepare(chapterContent.innerHTML);
         }
+      }
+
+      // Restaurar referencia si fue destruida (fix v2.9.359)
+      if (!this.ui.audioReader) {
+        this.ui.audioReader = this;
       }
 
       // Renderizar UI

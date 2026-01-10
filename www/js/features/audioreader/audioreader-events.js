@@ -1,6 +1,8 @@
 // ============================================================================
 // AUDIOREADER EVENTS - Gestión de eventos y atajos de teclado
 // ============================================================================
+// v2.9.358: Drag usa toggleMinimize() y drag handle mejorado para mejor touch
+// v2.9.357: Fix drag - ahora usa toggleMinimize() para expandir/colapsar correctamente
 // v2.9.278: Modularización del AudioReader
 // Maneja keyboard, visibility, beforeunload, gestos de drag
 
@@ -265,17 +267,13 @@ class AudioReaderEvents {
       const deltaY = this.dragCurrentY - this.dragStartY;
       this.isDragging = false;
 
-      // Si está minimizado
-      if (ar.ui?.isMinimized) {
-        // Swipe hacia arriba: expandir
-        if (deltaY < -50 && !ar.ui.isBottomSheetExpanded) {
-          ar.ui.toggleBottomSheet?.();
-        }
-      } else {
-        // Swipe hacia abajo: minimizar
-        if (deltaY > 50) {
-          ar.ui?.toggleMinimize?.();
-        }
+      // Swipe hacia arriba: expandir (pasar de minimizado a completo)
+      if (deltaY < -50 && ar.ui?.isMinimized) {
+        ar.ui.toggleMinimize?.();
+      }
+      // Swipe hacia abajo: minimizar (pasar de completo a minimizado)
+      else if (deltaY > 50 && !ar.ui?.isMinimized) {
+        ar.ui.toggleMinimize?.();
       }
     };
 

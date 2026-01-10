@@ -1,6 +1,9 @@
 // ============================================================================
 // FAB MENU - Floating Action Button con acciones rápidas
 // ============================================================================
+// v2.9.362: FAB arrastrable + posicionamiento inteligente (evita colisiones)
+// v2.9.361: Fix toggleAudio - carga lazy el AudioReader si no existe
+// v2.9.356: Añadir Exploración (brújula) al FAB, reemplaza botón flotante separado
 // v2.9.354: Nuevo componente de acceso rápido
 // Botón flotante que expande mini-botones con acciones frecuentes
 
@@ -16,8 +19,26 @@ class FABMenu {
     // i18n
     this.i18n = window.i18n || { t: (key) => key };
 
+    // Drag state
+    this.isDragging = false;
+    this.dragStartX = 0;
+    this.dragStartY = 0;
+    this.fabStartX = 0;
+    this.fabStartY = 0;
+    this.hasMoved = false;
+
+    // Posición guardada (null = usar posición inteligente)
+    this.savedPosition = this.loadPosition();
+
     // Acciones del FAB
     this.actions = [
+      {
+        id: 'explore',
+        icon: 'compass',
+        label: 'Explorar',
+        color: 'pink',
+        action: () => this.openExplorationHub()
+      },
       {
         id: 'ai-chat',
         icon: 'bot',
@@ -63,14 +84,17 @@ class FABMenu {
   show() {
     if (this.isVisible) return;
 
-    // Solo mostrar si estamos en book-reader
-    if (!document.getElementById('book-reader-view')?.classList.contains('active')) {
+    // Solo mostrar si estamos en book-reader (no tiene clase 'hidden')
+    const bookReaderView = document.getElementById('book-reader-view');
+    if (!bookReaderView || bookReaderView.classList.contains('hidden')) {
       return;
     }
 
     this.isVisible = true;
     this.render();
     this.attachEventListeners();
+    this.attachDragListeners();
+    this.startPositionObserver();
   }
 
   hide() {
@@ -79,6 +103,7 @@ class FABMenu {
     this.isVisible = false;
     this.isExpanded = false;
     this.eventManager.cleanup();
+    this.stopPositionObserver();
 
     const fab = document.getElementById('fab-menu');
     if (fab) {
@@ -95,9 +120,13 @@ class FABMenu {
     const existing = document.getElementById('fab-menu');
     if (existing) existing.remove();
 
+    // Calcular posición (guardada o inteligente)
+    const position = this.savedPosition || this.calculateSmartPosition();
+
     const html = `
       <div id="fab-menu"
-           class="fixed right-4 bottom-20 sm:bottom-6 z-[9000]"
+           class="fixed z-[9000] touch-none select-none"
+           style="right: ${position.right}px; bottom: ${position.bottom}px;"
            role="group"
            aria-label="Acciones rápidas">
 
@@ -108,11 +137,11 @@ class FABMenu {
 
         <!-- Botón Principal -->
         <button id="fab-main"
-                class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
+                class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 cursor-grab active:cursor-grabbing"
                 aria-label="Menú de acciones rápidas"
                 aria-expanded="false"
                 aria-haspopup="true">
-          <span class="fab-icon transition-transform duration-300">
+          <span class="fab-icon transition-transform duration-300 pointer-events-none">
             ${this.getSparklesIcon()}
           </span>
         </button>
@@ -154,6 +183,7 @@ class FABMenu {
 
     // Fallback SVG icons
     const icons = {
+      'compass': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
       'bot': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><circle cx="8" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></svg>',
       'headphones': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>',
       'file-text': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
@@ -281,13 +311,72 @@ class FABMenu {
   // ACCIONES HELPERS
   // ==========================================================================
 
-  toggleAudio() {
-    const audioReader = window.audioReader || window.dependencyInjector?.getSafe('audioReader');
+  async openExplorationHub() {
+    // Lazy load exploration hub si no está cargado
+    if (window.lazyLoader && !window.lazyLoader.isLoaded('exploration-hub')) {
+      try {
+        await window.lazyLoader.loadExplorationHub();
+      } catch (error) {
+        console.error('[FABMenu] Error cargando ExplorationHub:', error);
+        this.showToast('Error cargando exploración');
+        return;
+      }
+    }
+
+    // Crear instancia y abrir
+    const ExplorationHub = window.ExplorationHub;
+    const bookEngine = window.bookEngine || window.bookReader?.bookEngine;
+
+    if (ExplorationHub && bookEngine) {
+      const hub = new ExplorationHub(bookEngine);
+      hub.open('search');
+    } else {
+      this.showToast('Exploración no disponible');
+    }
+  }
+
+  async toggleAudio() {
+    let audioReader = window.audioReader || window.dependencyInjector?.getSafe('audioReader');
+
+    // Si no existe, intentar cargarlo
+    if (!audioReader) {
+      try {
+        // Cargar AudioReader suite via lazy loader
+        if (window.lazyLoader && !window.lazyLoader.isLoaded('audioreader-suite')) {
+          this.showToast('Cargando reproductor...');
+          await window.lazyLoader.loadAudioreaderSuite();
+        }
+
+        // Crear instancia si la clase existe
+        if (window.AudioReader && window.bookEngine) {
+          window.audioReader = new window.AudioReader(window.bookEngine);
+          audioReader = window.audioReader;
+        }
+      } catch (error) {
+        console.error('[FABMenu] Error cargando AudioReader:', error);
+        this.showToast('Error cargando reproductor');
+        return;
+      }
+    }
+
     if (audioReader) {
-      if (audioReader.isPlaying) {
+      // Verificar si el reproductor está visible
+      const isVisible = document.getElementById('audioreader-controls') ||
+                        document.getElementById('audioreader-bottom-sheet');
+
+      if (audioReader.isPlaying && !audioReader.isPaused) {
+        // Está reproduciendo: pausar
         audioReader.pause();
         this.showToast('Audio pausado');
+      } else if (audioReader.isPaused) {
+        // Está pausado: reanudar
+        audioReader.resume();
+        this.showToast('Reproduciendo audio');
+      } else if (!isVisible) {
+        // No está visible: mostrar reproductor
+        await audioReader.show();
       } else {
+        // Está visible pero no reproduciendo: iniciar reproducción
         audioReader.play();
         this.showToast('Reproduciendo audio');
       }
@@ -328,11 +417,243 @@ class FABMenu {
   }
 
   // ==========================================================================
+  // POSICIONAMIENTO INTELIGENTE
+  // ==========================================================================
+
+  calculateSmartPosition() {
+    const margin = 16;
+    const fabSize = 56;
+
+    // Detectar elementos que podrían colisionar
+    const audioPlayer = document.getElementById('audioreader-controls') ||
+                        document.getElementById('audioreader-bottom-sheet');
+    const footerNav = document.querySelector('.footer-nav');
+    const chapterNav = document.querySelector('[class*="chapter-navigation"]');
+
+    // Calcular altura de elementos inferiores
+    let bottomOffset = margin;
+
+    if (audioPlayer) {
+      const rect = audioPlayer.getBoundingClientRect();
+      const playerHeight = window.innerHeight - rect.top;
+      bottomOffset = Math.max(bottomOffset, playerHeight + margin);
+    }
+
+    if (footerNav) {
+      const rect = footerNav.getBoundingClientRect();
+      const navHeight = window.innerHeight - rect.top;
+      bottomOffset = Math.max(bottomOffset, navHeight + margin);
+    }
+
+    if (chapterNav) {
+      const rect = chapterNav.getBoundingClientRect();
+      const navHeight = window.innerHeight - rect.top;
+      bottomOffset = Math.max(bottomOffset, navHeight + margin);
+    }
+
+    // Asegurar mínimo y máximo razonables
+    bottomOffset = Math.max(margin, Math.min(bottomOffset, window.innerHeight - fabSize - 100));
+
+    return {
+      right: margin,
+      bottom: bottomOffset
+    };
+  }
+
+  updatePosition() {
+    if (!this.isVisible || this.savedPosition) return;
+
+    const fab = document.getElementById('fab-menu');
+    if (!fab) return;
+
+    const position = this.calculateSmartPosition();
+    fab.style.right = `${position.right}px`;
+    fab.style.bottom = `${position.bottom}px`;
+  }
+
+  // ==========================================================================
+  // DRAG & DROP
+  // ==========================================================================
+
+  attachDragListeners() {
+    const fab = document.getElementById('fab-menu');
+    const mainBtn = document.getElementById('fab-main');
+    if (!fab || !mainBtn) return;
+
+    // Touch events
+    this.eventManager.addEventListener(mainBtn, 'touchstart', (e) => this.onDragStart(e), { passive: false });
+    this.eventManager.addEventListener(document, 'touchmove', (e) => this.onDragMove(e), { passive: false });
+    this.eventManager.addEventListener(document, 'touchend', (e) => this.onDragEnd(e));
+
+    // Mouse events
+    this.eventManager.addEventListener(mainBtn, 'mousedown', (e) => this.onDragStart(e));
+    this.eventManager.addEventListener(document, 'mousemove', (e) => this.onDragMove(e));
+    this.eventManager.addEventListener(document, 'mouseup', (e) => this.onDragEnd(e));
+  }
+
+  onDragStart(e) {
+    // Solo iniciar drag con botón izquierdo o touch
+    if (e.type === 'mousedown' && e.button !== 0) return;
+
+    const fab = document.getElementById('fab-menu');
+    if (!fab) return;
+
+    this.isDragging = true;
+    this.hasMoved = false;
+
+    // Posición inicial del toque/click
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    this.dragStartX = clientX;
+    this.dragStartY = clientY;
+
+    // Posición actual del FAB (convertir right/bottom a valores numéricos)
+    const rect = fab.getBoundingClientRect();
+    this.fabStartX = window.innerWidth - rect.right;
+    this.fabStartY = window.innerHeight - rect.bottom;
+
+    // Añadir clase visual
+    fab.classList.add('dragging');
+  }
+
+  onDragMove(e) {
+    if (!this.isDragging) return;
+
+    const fab = document.getElementById('fab-menu');
+    if (!fab) return;
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    const deltaX = this.dragStartX - clientX;
+    const deltaY = this.dragStartY - clientY;
+
+    // Detectar si se ha movido lo suficiente para considerarlo drag
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      this.hasMoved = true;
+      e.preventDefault();
+    }
+
+    if (!this.hasMoved) return;
+
+    // Calcular nueva posición
+    let newRight = this.fabStartX + deltaX;
+    let newBottom = this.fabStartY + deltaY;
+
+    // Limitar a los bordes de la pantalla
+    const fabSize = 56;
+    const margin = 8;
+    newRight = Math.max(margin, Math.min(newRight, window.innerWidth - fabSize - margin));
+    newBottom = Math.max(margin, Math.min(newBottom, window.innerHeight - fabSize - margin));
+
+    // Aplicar posición
+    fab.style.right = `${newRight}px`;
+    fab.style.bottom = `${newBottom}px`;
+  }
+
+  onDragEnd(e) {
+    if (!this.isDragging) return;
+
+    const fab = document.getElementById('fab-menu');
+    if (fab) {
+      fab.classList.remove('dragging');
+    }
+
+    this.isDragging = false;
+
+    // Si se movió, guardar posición y prevenir click
+    if (this.hasMoved) {
+      const rect = fab.getBoundingClientRect();
+      this.savedPosition = {
+        right: window.innerWidth - rect.right,
+        bottom: window.innerHeight - rect.bottom
+      };
+      this.savePosition(this.savedPosition);
+
+      // Prevenir que se abra el menú después del drag
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    this.hasMoved = false;
+  }
+
+  // ==========================================================================
+  // OBSERVER PARA CAMBIOS DE LAYOUT
+  // ==========================================================================
+
+  startPositionObserver() {
+    // Observar cambios en el DOM que puedan afectar la posición
+    this.positionObserver = new MutationObserver(() => {
+      this.updatePosition();
+    });
+
+    this.positionObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+
+    // También observar resize
+    this.resizeHandler = () => this.updatePosition();
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  stopPositionObserver() {
+    if (this.positionObserver) {
+      this.positionObserver.disconnect();
+      this.positionObserver = null;
+    }
+
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+      this.resizeHandler = null;
+    }
+  }
+
+  // ==========================================================================
+  // PERSISTENCIA DE POSICIÓN
+  // ==========================================================================
+
+  loadPosition() {
+    try {
+      const saved = localStorage.getItem('fab-position');
+      if (saved) {
+        const position = JSON.parse(saved);
+        // Validar que la posición guardada es razonable
+        if (position.right >= 0 && position.bottom >= 0 &&
+            position.right < window.innerWidth &&
+            position.bottom < window.innerHeight) {
+          return position;
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  savePosition(position) {
+    try {
+      localStorage.setItem('fab-position', JSON.stringify(position));
+    } catch (e) {}
+  }
+
+  resetPosition() {
+    try {
+      localStorage.removeItem('fab-position');
+    } catch (e) {}
+    this.savedPosition = null;
+    this.updatePosition();
+  }
+
+  // ==========================================================================
   // CLEANUP
   // ==========================================================================
 
   destroy() {
     this.eventManager.cleanup();
+    this.stopPositionObserver();
     this.hide();
   }
 }

@@ -1,6 +1,8 @@
 // ============================================================================
 // AUDIOREADER UI - Interfaz de usuario del reproductor
 // ============================================================================
+// v2.9.358: Drag handle mejorado con touch-action:none y user-select:none
+// v2.9.357: Drag handle más grande (área táctil h-6) para mejor usabilidad
 // v2.9.278: Modularización del AudioReader
 // Maneja renderizado de controles, progress, pause indicator, minimized player
 
@@ -92,8 +94,10 @@ class AudioReaderUI {
     container.id = 'audioreader-container';
     container.innerHTML = `
       <div id="audioreader-controls" class="fixed inset-x-0 z-50 bg-gradient-to-t from-slate-900 via-slate-900/95 to-slate-900/90 backdrop-blur-xl border-t border-white/10 shadow-2xl" style="bottom: ${bottomOffset}; padding-bottom: 16px;">
-        <!-- Drag handle -->
-        <div class="audioreader-drag-handle w-12 h-1 bg-white/30 rounded-full mx-auto mt-2 mb-3 cursor-grab"></div>
+        <!-- Drag handle - área táctil grande, evita selección de texto -->
+        <div class="audioreader-drag-handle w-full h-8 flex items-center justify-center cursor-grab select-none touch-none" style="user-select: none; -webkit-user-select: none; touch-action: none;">
+          <div class="w-16 h-1.5 bg-white/50 rounded-full"></div>
+        </div>
 
         <!-- Header -->
         <div class="px-4 sm:px-6 pb-2 border-b border-white/10">
@@ -311,8 +315,10 @@ class AudioReaderUI {
 
     bottomSheet.innerHTML = `
       <div id="audioreader-controls">
-        <!-- Drag handle -->
-        <div class="audioreader-drag-handle w-12 h-1 bg-white/30 rounded-full mx-auto mt-2 mb-2 cursor-grab"></div>
+        <!-- Drag handle - área táctil grande, evita selección de texto -->
+        <div class="audioreader-drag-handle w-full h-8 flex items-center justify-center cursor-grab select-none touch-none" style="user-select: none; -webkit-user-select: none; touch-action: none;">
+          <div class="w-16 h-1.5 bg-white/50 rounded-full"></div>
+        </div>
 
         <!-- Mini player -->
         <div class="px-4 py-2 flex items-center gap-3">

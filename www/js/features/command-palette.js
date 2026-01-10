@@ -1,6 +1,7 @@
 // ============================================================================
 // COMMAND PALETTE - Paleta de comandos con Ctrl/Cmd+K
 // ============================================================================
+// v2.9.355: Fix acciones - audio, navegación, tamaño fuente; condición visibilidad
 // v2.9.354: Nuevo componente de acceso rápido
 // Permite buscar y ejecutar comandos con el teclado
 
@@ -202,8 +203,9 @@ class CommandPalette {
   open() {
     if (this.isOpen) return;
 
-    // Solo abrir si estamos en book-reader
-    if (!document.getElementById('book-reader-view')?.classList.contains('active')) {
+    // Solo abrir si estamos en book-reader (no tiene clase 'hidden')
+    const bookReaderView = document.getElementById('book-reader-view');
+    if (!bookReaderView || bookReaderView.classList.contains('hidden')) {
       return;
     }
 
@@ -503,11 +505,13 @@ class CommandPalette {
   // ==========================================================================
 
   navigatePrev() {
-    const nav = window.bookReader?.navigation;
-    if (nav) {
-      const prevChapter = nav.getPreviousChapter();
+    const bookReader = window.bookReader;
+    const bookEngine = bookReader?.bookEngine || window.bookEngine;
+    if (bookReader && bookEngine) {
+      const currentChapterId = bookReader.currentChapter?.id;
+      const prevChapter = bookEngine.getPreviousChapter(currentChapterId);
       if (prevChapter) {
-        window.bookReader.navigateToChapter(prevChapter.id);
+        bookReader.navigateToChapter(prevChapter.id);
       } else {
         this.showToast('Ya estás en el primer capítulo');
       }
@@ -515,11 +519,13 @@ class CommandPalette {
   }
 
   navigateNext() {
-    const nav = window.bookReader?.navigation;
-    if (nav) {
-      const nextChapter = nav.getNextChapter();
+    const bookReader = window.bookReader;
+    const bookEngine = bookReader?.bookEngine || window.bookEngine;
+    if (bookReader && bookEngine) {
+      const currentChapterId = bookReader.currentChapter?.id;
+      const nextChapter = bookEngine.getNextChapter(currentChapterId);
       if (nextChapter) {
-        window.bookReader.navigateToChapter(nextChapter.id);
+        bookReader.navigateToChapter(nextChapter.id);
       } else {
         this.showToast('Ya estás en el último capítulo');
       }
@@ -537,8 +543,10 @@ class CommandPalette {
   toggleAudio() {
     const audioReader = window.audioReader || window.dependencyInjector?.getSafe('audioReader');
     if (audioReader) {
-      if (audioReader.isPlaying) {
+      if (audioReader.isPlaying && !audioReader.isPaused) {
         audioReader.pause();
+      } else if (audioReader.isPaused) {
+        audioReader.resume();
       } else {
         audioReader.play();
       }
@@ -548,17 +556,19 @@ class CommandPalette {
   }
 
   adjustFontSize(delta) {
+    const savedSize = localStorage.getItem('font-size');
+    const currentSize = savedSize ? parseInt(savedSize) : 16;
+    const newSize = Math.max(12, Math.min(24, currentSize + delta));
+
+    localStorage.setItem('font-size', newSize);
+
+    // Aplicar al contenido
     const contentArea = document.querySelector('.chapter-content');
     if (contentArea) {
-      const currentSize = parseFloat(getComputedStyle(contentArea).fontSize);
-      const newSize = Math.max(12, Math.min(24, currentSize + delta));
       contentArea.style.fontSize = `${newSize}px`;
-
-      // Guardar preferencia
-      localStorage.setItem('reader-font-size', newSize);
-
-      this.showToast(`Tamaño de fuente: ${Math.round(newSize)}px`);
     }
+
+    this.showToast(`Tamaño de fuente: ${newSize}px`);
   }
 
   toggleTheme() {

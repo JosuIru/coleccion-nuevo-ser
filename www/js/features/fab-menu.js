@@ -1,6 +1,7 @@
 // ============================================================================
 // FAB MENU - Floating Action Button con acciones rápidas
 // ============================================================================
+// v2.9.366: Fix despliegue hacia abajo - usar top positioning cuando FAB arriba
 // v2.9.365: Fix iconos - usar siempre SVG inline (no depende de Lucide)
 // v2.9.363: FAB despliega hacia abajo cuando está en la parte superior
 // v2.9.362: FAB arrastrable + posicionamiento inteligente (evita colisiones)
@@ -168,12 +169,17 @@ class FABMenu {
   }
 
   renderTopLayout(position) {
-    // FAB arriba: acciones se despliegan hacia abajo
+    // FAB arriba: usar TOP positioning para que crezca hacia abajo
+    // Convertir bottom a top: top = windowHeight - bottom - fabSize
+    const fabSize = 56;
+    const topValue = window.innerHeight - position.bottom - fabSize;
+
     return `
       <div id="fab-menu"
            class="fixed z-[9000] touch-none select-none"
-           style="right: ${position.right}px; bottom: ${position.bottom}px;"
+           style="right: ${position.right}px; top: ${topValue}px;"
            data-direction="down"
+           data-bottom="${position.bottom}"
            role="group"
            aria-label="Acciones rápidas">
 
@@ -542,6 +548,9 @@ class FABMenu {
     this.isDragging = true;
     this.hasMoved = false;
 
+    // Detectar si estamos usando top o bottom positioning
+    this.usingTopPositioning = fab.dataset.direction === 'down';
+
     // Posición inicial del toque/click
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -549,10 +558,12 @@ class FABMenu {
     this.dragStartX = clientX;
     this.dragStartY = clientY;
 
-    // Posición actual del FAB (convertir right/bottom a valores numéricos)
+    // Posición actual del FAB
     const rect = fab.getBoundingClientRect();
     this.fabStartX = window.innerWidth - rect.right;
-    this.fabStartY = window.innerHeight - rect.bottom;
+    // Guardar tanto top como bottom para flexibilidad
+    this.fabStartTop = rect.top;
+    this.fabStartBottom = window.innerHeight - rect.bottom;
 
     // Añadir clase visual
     fab.classList.add('dragging');
@@ -579,18 +590,29 @@ class FABMenu {
     if (!this.hasMoved) return;
 
     // Calcular nueva posición
-    let newRight = this.fabStartX + deltaX;
-    let newBottom = this.fabStartY + deltaY;
-
-    // Limitar a los bordes de la pantalla
     const fabSize = 56;
     const margin = 8;
-    newRight = Math.max(margin, Math.min(newRight, window.innerWidth - fabSize - margin));
-    newBottom = Math.max(margin, Math.min(newBottom, window.innerHeight - fabSize - margin));
 
-    // Aplicar posición
+    let newRight = this.fabStartX + deltaX;
+    newRight = Math.max(margin, Math.min(newRight, window.innerWidth - fabSize - margin));
+
+    // Aplicar posición horizontal
     fab.style.right = `${newRight}px`;
-    fab.style.bottom = `${newBottom}px`;
+
+    // Posición vertical depende del tipo de positioning
+    if (this.usingTopPositioning) {
+      // Usando top positioning
+      let newTop = this.fabStartTop - deltaY;
+      newTop = Math.max(margin, Math.min(newTop, window.innerHeight - fabSize - margin));
+      fab.style.top = `${newTop}px`;
+      fab.style.bottom = 'auto';
+    } else {
+      // Usando bottom positioning
+      let newBottom = this.fabStartBottom + deltaY;
+      newBottom = Math.max(margin, Math.min(newBottom, window.innerHeight - fabSize - margin));
+      fab.style.bottom = `${newBottom}px`;
+      fab.style.top = 'auto';
+    }
   }
 
   onDragEnd(e) {

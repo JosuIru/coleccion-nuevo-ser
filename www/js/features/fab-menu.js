@@ -1,6 +1,7 @@
 // ============================================================================
 // FAB MENU - Floating Action Button con acciones rápidas
 // ============================================================================
+// v2.9.363: FAB despliega hacia abajo cuando está en la parte superior
 // v2.9.362: FAB arrastrable + posicionamiento inteligente (evita colisiones)
 // v2.9.361: Fix toggleAudio - carga lazy el AudioReader si no existe
 // v2.9.356: Añadir Exploración (brújula) al FAB, reemplaza botón flotante separado
@@ -123,14 +124,29 @@ class FABMenu {
     // Calcular posición (guardada o inteligente)
     const position = this.savedPosition || this.calculateSmartPosition();
 
-    const html = `
+    // Determinar dirección de despliegue según posición vertical
+    // Si bottom > 50% de la pantalla, el FAB está arriba → desplegar hacia abajo
+    const isTopPosition = position.bottom > (window.innerHeight / 2);
+    this.deployDirection = isTopPosition ? 'down' : 'up';
+
+    const html = isTopPosition
+      ? this.renderTopLayout(position)
+      : this.renderBottomLayout(position);
+
+    document.body.insertAdjacentHTML('beforeend', html);
+  }
+
+  renderBottomLayout(position) {
+    // FAB abajo: acciones se despliegan hacia arriba
+    return `
       <div id="fab-menu"
            class="fixed z-[9000] touch-none select-none"
            style="right: ${position.right}px; bottom: ${position.bottom}px;"
+           data-direction="up"
            role="group"
            aria-label="Acciones rápidas">
 
-        <!-- Mini-botones (ocultos por defecto) -->
+        <!-- Mini-botones (despliegan hacia arriba) -->
         <div id="fab-actions" class="flex flex-col-reverse gap-3 mb-3">
           ${this.renderActions()}
         </div>
@@ -148,8 +164,36 @@ class FABMenu {
 
       </div>
     `;
+  }
 
-    document.body.insertAdjacentHTML('beforeend', html);
+  renderTopLayout(position) {
+    // FAB arriba: acciones se despliegan hacia abajo
+    return `
+      <div id="fab-menu"
+           class="fixed z-[9000] touch-none select-none"
+           style="right: ${position.right}px; bottom: ${position.bottom}px;"
+           data-direction="down"
+           role="group"
+           aria-label="Acciones rápidas">
+
+        <!-- Botón Principal (primero cuando está arriba) -->
+        <button id="fab-main"
+                class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 cursor-grab active:cursor-grabbing"
+                aria-label="Menú de acciones rápidas"
+                aria-expanded="false"
+                aria-haspopup="true">
+          <span class="fab-icon transition-transform duration-300 pointer-events-none">
+            ${this.getSparklesIcon()}
+          </span>
+        </button>
+
+        <!-- Mini-botones (despliegan hacia abajo) -->
+        <div id="fab-actions" class="flex flex-col gap-3 mt-3">
+          ${this.renderActions()}
+        </div>
+
+      </div>
+    `;
   }
 
   renderActions() {
@@ -570,6 +614,17 @@ class FABMenu {
         bottom: window.innerHeight - rect.bottom
       };
       this.savePosition(this.savedPosition);
+
+      // Verificar si la dirección de despliegue cambió
+      const isTopPosition = this.savedPosition.bottom > (window.innerHeight / 2);
+      const newDirection = isTopPosition ? 'down' : 'up';
+
+      if (newDirection !== this.deployDirection) {
+        // Re-renderizar para cambiar la dirección de despliegue
+        this.render();
+        this.attachEventListeners();
+        this.attachDragListeners();
+      }
 
       // Prevenir que se abra el menú después del drag
       e.preventDefault();

@@ -871,7 +871,8 @@ const CommandCenterScreen = ({ navigation }) => {
 
   const handleCrisisSelect = (crisis) => {
     setSelectedCrisis(crisis);
-    if (viewMode === 'map') {
+    // Mostrar modal en modo mapa y 3D
+    if (viewMode === 'map' || viewMode === '3d') {
       setShowDetailModal(true);
     }
   };

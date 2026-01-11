@@ -2014,8 +2014,19 @@ const useGameStore = create((set, get) => ({
         xp: 0,
         energy: RESOURCES.ENERGY.DEFAULT,
         maxEnergy: RESOURCES.ENERGY.MAX_BASE,
-        consciousnessPoints: 0,
-        maxBeings: 3
+        consciousnessPoints: 100, // 100 puntos iniciales para poder crear seres
+        maxBeings: 3,
+        stats: {
+          crisesResolved: 0,
+          fractalsCollected: 0,
+          missionsCompleted: 0,
+          beingsCreated: 1, // El ser inicial cuenta
+          fusionsPerformed: 0,
+          createdAt: new Date().toISOString()
+        },
+        // Flag para onboarding
+        onboardingCompleted: false,
+        tutorialStep: 'completed'
       },
       beings: [starterBeing],
       pieces: [],
@@ -2025,7 +2036,7 @@ const useGameStore = create((set, get) => ({
       error: null
     });
 
-    logger.info('✅ Nuevo jugador inicializado con ser inicial y crisis', '');
+    logger.info('✅ Nuevo jugador inicializado con ser "Primer Despertar" y 100 puntos de consciencia', '');
 
     // Guardar inmediatamente
     get().saveToStorage();

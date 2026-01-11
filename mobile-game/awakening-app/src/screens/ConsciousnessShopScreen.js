@@ -24,6 +24,8 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import useGameStore from '../stores/gameStore';
 import { COLORS } from '../config/constants';
+import { CardRevealModal } from '../components/cards';
+import soundService from '../services/SoundService';
 
 // Catálogo de la tienda (Precios reducidos 50% para mejor progresión)
 const SHOP_CATALOG = {
@@ -156,6 +158,8 @@ const AVATAR_MAP = {
 const ConsciousnessShopScreen = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState('energy');
   const [purchasedItems, setPurchasedItems] = useState({});
+  const [showCardReveal, setShowCardReveal] = useState(false);
+  const [revealedBeing, setRevealedBeing] = useState(null);
 
   const {
     user,
@@ -281,17 +285,44 @@ const ConsciousnessShopScreen = ({ navigation }) => {
         });
         break;
 
-      case 'being_basic':
-        state.addBeing(generateShopBeing('basic'));
+      case 'being_basic': {
+        const newBeing = generateShopBeing('basic');
+        state.addBeing(newBeing);
+        // Mostrar animación de carta
+        setRevealedBeing({
+          ...newBeing,
+          power: newBeing.totalPower
+        });
+        soundService.playReward();
+        setTimeout(() => setShowCardReveal(true), 200);
         break;
+      }
 
-      case 'being_specialized':
-        state.addBeing(generateShopBeing('specialized'));
+      case 'being_specialized': {
+        const newBeing = generateShopBeing('specialized');
+        state.addBeing(newBeing);
+        // Mostrar animación de carta
+        setRevealedBeing({
+          ...newBeing,
+          power: newBeing.totalPower
+        });
+        soundService.playReward();
+        setTimeout(() => setShowCardReveal(true), 200);
         break;
+      }
 
-      case 'being_legendary':
-        state.addBeing(generateShopBeing('legendary'));
+      case 'being_legendary': {
+        const newBeing = generateShopBeing('legendary');
+        state.addBeing(newBeing);
+        // Mostrar animación de carta épica
+        setRevealedBeing({
+          ...newBeing,
+          power: newBeing.totalPower
+        });
+        soundService.playLevelUp();
+        setTimeout(() => setShowCardReveal(true), 200);
         break;
+      }
 
       case 'upgrade_max_energy':
         // Incrementar energía máxima
@@ -471,6 +502,16 @@ const ConsciousnessShopScreen = ({ navigation }) => {
         </View>
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      {/* Modal de revelación de carta */}
+      <CardRevealModal
+        visible={showCardReveal}
+        being={revealedBeing}
+        onClose={() => {
+          setShowCardReveal(false);
+          setRevealedBeing(null);
+        }}
+      />
     </View>
   );
 };

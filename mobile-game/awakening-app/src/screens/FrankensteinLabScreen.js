@@ -22,6 +22,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { COLORS } from '../config/constants';
 import useGameStore from '../stores/gameStore';
+import { CardRevealModal } from '../components/cards';
+import soundService from '../services/SoundService';
 
 // URL del laboratorio - cargado desde assets locales
 const LAB_URL = 'file:///android_asset/frankenstein/index.html';
@@ -31,6 +33,8 @@ const FrankensteinLabScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [canGoBack, setCanGoBack] = useState(false);
   const [error, setError] = useState(null);
+  const [showCardReveal, setShowCardReveal] = useState(false);
+  const [revealedBeing, setRevealedBeing] = useState(null);
 
   // Store
   const { addBeing } = useGameStore();
@@ -318,25 +322,19 @@ const FrankensteinLabScreen = ({ navigation }) => {
     // Agregar al store
     addBeing(newBeing);
 
-    // Mostrar confirmación con info de nivel
-    Alert.alert(
-      '¡Ser Creado!',
-      `"${newBeing.name}" ${avatar} ha sido agregado a tu colección.\n\n` +
-      `⚡ Poder: ${newBeing.totalPower}\n` +
-      `📊 Nivel: ${newBeing.level}\n` +
-      `🔋 Energía: ${newBeing.energy}/${newBeing.maxEnergy}\n\n` +
-      `¡Ya puedes usarlo en misiones!`,
-      [
-        {
-          text: 'Ver Mis Seres',
-          onPress: () => navigation.navigate('Beings')
-        },
-        {
-          text: 'Seguir Creando',
-          style: 'cancel'
-        }
-      ]
-    );
+    // Mostrar animación de carta en lugar de Alert
+    setRevealedBeing({
+      ...newBeing,
+      power: newBeing.totalPower
+    });
+    soundService.playReward();
+    setTimeout(() => setShowCardReveal(true), 200);
+  };
+
+  // Callback cuando se cierra el modal de carta
+  const handleCardRevealClose = () => {
+    setShowCardReveal(false);
+    setRevealedBeing(null);
   };
 
   /**
@@ -475,6 +473,13 @@ const FrankensteinLabScreen = ({ navigation }) => {
           <Text style={styles.loadingText}>Preparando el laboratorio...</Text>
         </View>
       )}
+
+      {/* Modal de revelación de carta */}
+      <CardRevealModal
+        visible={showCardReveal}
+        being={revealedBeing}
+        onClose={handleCardRevealClose}
+      />
     </View>
   );
 };

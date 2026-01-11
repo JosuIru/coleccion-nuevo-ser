@@ -56,6 +56,16 @@ import guardiansService from '../services/GuardiansService';
 import institutionsService from '../services/InstitutionsService';
 import transitionService from '../services/TransitionService';
 
+// Animaciones de celebración
+import { CelebrationOverlay, LevelUpOverlay } from '../components/animations';
+import soundService from '../services/SoundService';
+
+// Sistema de combate
+import { BattleScreen } from '../components/combat';
+
+// Globo 3D
+import Globe3D from '../components/Globe3D';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // ============================================================================
@@ -655,6 +665,38 @@ const CommandCenterScreen = ({ navigation }) => {
   const [filterType, setFilterType] = useState(null);
   const [showFirstMissionTutorial, setShowFirstMissionTutorial] = useState(false);
 
+  // Modal de bienvenida para nuevos usuarios
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  // Estados para animaciones de celebración
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationType, setCelebrationType] = useState('confetti');
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [newLevel, setNewLevel] = useState(1);
+  const [missionResult, setMissionResult] = useState(null);
+
+  // Estados para combate de crisis
+  const [showCrisisBattle, setShowCrisisBattle] = useState(false);
+  const [battleCrisis, setBattleCrisis] = useState(null);
+  const [battleBeing, setBattleBeing] = useState(null);
+  const [pendingBattleRewards, setPendingBattleRewards] = useState(null);
+
+  // Detección de orientación usando Dimensions API con listener
+  const [screenDimensions, setScreenDimensions] = useState(() => {
+    const { width, height } = Dimensions.get('screen');
+    return { width, height };
+  });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ screen }) => {
+      setScreenDimensions({ width: screen.width, height: screen.height });
+    });
+    return () => subscription?.remove();
+  }, []);
+
+  // Detectar landscape basado en dimensiones de pantalla
+  const isLandscape = screenDimensions.width > screenDimensions.height;
+
   // New features state
   const [activeTab, setActiveTab] = useState('crisis'); // 'crisis' | 'explore' | 'sanctuary' | 'guardians' | 'institutions' | 'gaia'
 
@@ -716,7 +758,31 @@ const CommandCenterScreen = ({ navigation }) => {
     loadCrises();
     checkFirstMissionTutorial();
     initializeNewSystems();
+    checkWelcomeModal();
   }, []);
+
+  // Verificar si mostrar modal de bienvenida (usuarios nuevos)
+  const checkWelcomeModal = async () => {
+    try {
+      const welcomeShown = await AsyncStorage.getItem('welcome_modal_shown');
+      // Mostrar si: no se ha mostrado antes Y tiene el ser inicial (tutorial completado)
+      if (!welcomeShown && beings.length > 0 && (user.stats?.beingsCreated || 0) <= 1) {
+        // Mostrar después de 1 segundo
+        setTimeout(() => {
+          setShowWelcomeModal(true);
+        }, 1000);
+      }
+    } catch (error) {
+      logger.warn('CommandCenter', 'Error checking welcome modal:', error);
+    }
+  };
+
+  const handleWelcomeComplete = async () => {
+    setShowWelcomeModal(false);
+    try {
+      await AsyncStorage.setItem('welcome_modal_shown', 'true');
+    } catch (e) {}
+  };
 
   // Initialize new game systems
   const initializeNewSystems = async () => {
@@ -811,37 +877,95 @@ const CommandCenterScreen = ({ navigation }) => {
   };
 
   const handleDeploy = async (crisis, selectedBeings, probability) => {
-    // Simular resultado de misión
-    const roll = Math.random() * 100;
-    const success = roll <= probability;
+    // Cerrar modal de detalle
+    setShowDetailModal(false);
+    setShowFullscreenMap(false);
 
-    // Calcular recompensas
+    // Guardar contexto de la batalla
+    setBattleCrisis(crisis);
+    setBattleBeing(selectedBeings[0]); // Usar el primer ser seleccionado
+    setPendingBattleRewards({
+      baseXp: crisis.rewards.xp,
+      baseConsciousness: crisis.rewards.consciousness,
+      selectedBeings,
+      probability
+    });
+
+    // Iniciar combate interactivo
+    setTimeout(() => {
+      setShowCrisisBattle(true);
+    }, 300);
+  };
+
+  // Manejar resultado del combate
+  const handleBattleComplete = (success, rewards) => {
+    setShowCrisisBattle(false);
+
+    const pendingRewards = pendingBattleRewards;
+    if (!pendingRewards) return;
+
+    // Calcular recompensas finales basadas en resultado de batalla
     const multiplier = success ? 1.0 : 0.3;
-    const xpGained = Math.round(crisis.rewards.xp * multiplier);
-    const consciousnessGained = Math.round(crisis.rewards.consciousness * multiplier);
+    const xpGained = Math.round(pendingRewards.baseXp * multiplier);
+    const consciousnessGained = Math.round(pendingRewards.baseConsciousness * multiplier);
 
     // Aplicar recompensas
     addXP(xpGained);
     addConsciousness(consciousnessGained);
 
     // Actualizar estado de seres
-    selectedBeings.forEach(being => {
-      deployBeing(being.id, crisis.id);
+    pendingRewards.selectedBeings.forEach(being => {
+      deployBeing(being.id, battleCrisis.id);
     });
 
     // Remover crisis de la lista
-    setCrises(prev => prev.filter(c => c.id !== crisis.id));
+    setCrises(prev => prev.filter(c => c.id !== battleCrisis.id));
 
-    // Mostrar resultado (en producción, esto sería un modal/toast)
-    alert(
-      success
-        ? `¡Misión exitosa! Ganaste ${xpGained} XP y ${consciousnessGained} consciencia.`
-        : `Misión fallida. Ganaste ${xpGained} XP y ${consciousnessGained} consciencia (parcial).`
-    );
+    // Guardar resultado y mostrar animación
+    const previousLevel = user.level || 1;
+    setMissionResult({
+      success,
+      xpGained,
+      consciousnessGained
+    });
+
+    // Reproducir sonido y vibración
+    if (success) {
+      soundService.playSuccess();
+      setCelebrationType('confetti');
+    } else {
+      soundService.playError();
+      setCelebrationType('sparkles');
+    }
+    setShowCelebration(true);
+
+    // Verificar si subió de nivel (después de actualizar el store)
+    setTimeout(() => {
+      const currentLevel = useGameStore.getState().user?.level || 1;
+      if (currentLevel > previousLevel) {
+        soundService.playLevelUp();
+        setNewLevel(currentLevel);
+        setShowLevelUp(true);
+      }
+    }, 500);
 
     // Update transition stats
     updateTransitionStat('crisesResolved', 1);
     updateTransitionStat('missionsCompleted', 1);
+
+    // Limpiar estado de batalla
+    setBattleCrisis(null);
+    setBattleBeing(null);
+    setPendingBattleRewards(null);
+  };
+
+  const handleBattleCancel = () => {
+    setShowCrisisBattle(false);
+    setBattleCrisis(null);
+    setBattleBeing(null);
+    setPendingBattleRewards(null);
+    // Reabrir modal de detalle
+    setShowDetailModal(true);
   };
 
   // ========== NEW FEATURE HANDLERS ==========
@@ -951,100 +1075,117 @@ const CommandCenterScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Header siempre compacto para funcionar en ambas orientaciones */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Icon name="shield-star" size={28} color={COLORS.accent.primary} />
-          <Text style={styles.headerTitle}>Centro de Comando</Text>
+          <Icon name="shield-star" size={20} color={COLORS.accent.primary} />
+          <Text style={styles.headerTitle}>Comando</Text>
         </View>
         <View style={styles.headerRight}>
-          {/* Energy Indicator */}
           <EnergyIndicator
             compact
             onPress={() => navigation.navigate('ConsciousnessShop')}
           />
           <TouchableOpacity
             style={styles.headerButton}
-            onPress={() => navigation.navigate('DailyMissions')}
-          >
-            <Icon name="calendar-check" size={24} color="#22c55e" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => navigation.navigate('League')}
-          >
-            <Icon name="trophy" size={24} color="#eab308" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.headerButton}
             onPress={handleRefresh}
           >
-            <Icon name="refresh" size={24} color={COLORS.text.secondary} />
+            <Icon name="refresh" size={18} color={COLORS.text.secondary} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Barra de estadísticas */}
-      <StatsBar stats={stats} user={user} />
+      {/* Stats compactos inline */}
+      <View style={styles.statsBarCompact}>
+        <View style={styles.statItemCompact}>
+          <Icon name="earth" size={14} color={COLORS.accent.primary} />
+          <Text style={styles.statValueCompact}>{crises.length}</Text>
+          <Text style={styles.statLabelCompact}>Crisis</Text>
+        </View>
+        <View style={styles.statItemCompact}>
+          <Icon name="fire" size={14} color="#ef4444" />
+          <Text style={styles.statValueCompact}>{stats.byUrgency?.critical || 0}</Text>
+          <Text style={styles.statLabelCompact}>Críticas</Text>
+        </View>
+        <View style={styles.statItemCompact}>
+          <Icon name="star" size={14} color="#eab308" />
+          <Text style={styles.statValueCompact}>{user.consciousnessPoints || 0}</Text>
+          <Text style={styles.statLabelCompact}>Consc.</Text>
+        </View>
+        <View style={styles.statItemCompact}>
+          <Icon name="lightning-bolt" size={14} color="#22c55e" />
+          <Text style={styles.statValueCompact}>{user.energy || 0}</Text>
+          <Text style={styles.statLabelCompact}>Energía</Text>
+        </View>
+      </View>
 
-      {/* Transition Progress Card - Compact */}
-      <TransitionProgressCard
-        currentTitle={transition?.currentTitle || 'Dormido'}
-        overallProgress={getTransitionProgress()?.overallProgress || 0}
-        compact={true}
-        onPillarPress={() => navigation.navigate('Profile')}
-      />
+      {/* Main Feature Tabs - Solo en portrait mode */}
+      {!isLandscape && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.mainTabsScroll}
+          contentContainerStyle={styles.mainTabs}
+        >
+          {/* Tab Crisis - Siempre visible (principal) */}
+          <TouchableOpacity
+            style={[styles.mainTab, activeTab === 'crisis' && styles.mainTabActive]}
+            onPress={() => setActiveTab('crisis')}
+          >
+            <Icon name="earth" size={16} color={activeTab === 'crisis' ? '#fff' : COLORS.text.secondary} />
+            <Text style={[styles.mainTabText, activeTab === 'crisis' && styles.mainTabTextActive]}>Crisis</Text>
+          </TouchableOpacity>
 
-      {/* Main Feature Tabs - Scrollable */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.mainTabsScroll}
-        contentContainerStyle={styles.mainTabs}
-      >
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'crisis' && styles.mainTabActive]}
-          onPress={() => setActiveTab('crisis')}
-        >
-          <Icon name="earth" size={16} color={activeTab === 'crisis' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'crisis' && styles.mainTabTextActive]}>Crisis</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'guardians' && styles.mainTabActive]}
-          onPress={() => setActiveTab('guardians')}
-        >
-          <Icon name="sword-cross" size={16} color={activeTab === 'guardians' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'guardians' && styles.mainTabTextActive]}>Guardianes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'institutions' && styles.mainTabActive]}
-          onPress={() => setActiveTab('institutions')}
-        >
-          <Icon name="domain" size={16} color={activeTab === 'institutions' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'institutions' && styles.mainTabTextActive]}>Instituciones</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'gaia' && styles.mainTabActive]}
-          onPress={() => setActiveTab('gaia')}
-        >
-          <Icon name="earth-plus" size={16} color={activeTab === 'gaia' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'gaia' && styles.mainTabTextActive]}>Gaia</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'explore' && styles.mainTabActive]}
-          onPress={() => setActiveTab('explore')}
-        >
-          <Icon name="compass" size={16} color={activeTab === 'explore' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'explore' && styles.mainTabTextActive]}>Explorar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.mainTab, activeTab === 'sanctuary' && styles.mainTabActive]}
-          onPress={() => setActiveTab('sanctuary')}
-        >
-          <Icon name="star-four-points" size={16} color={activeTab === 'sanctuary' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.mainTabText, activeTab === 'sanctuary' && styles.mainTabTextActive]}>Nodos</Text>
-        </TouchableOpacity>
-      </ScrollView>
+          {/* Tabs avanzados - Solo visibles a partir de nivel 3 */}
+          {(user.level || 1) >= 3 && (
+            <>
+              <TouchableOpacity
+                style={[styles.mainTab, activeTab === 'guardians' && styles.mainTabActive]}
+                onPress={() => setActiveTab('guardians')}
+              >
+                <Icon name="sword-cross" size={16} color={activeTab === 'guardians' ? '#fff' : COLORS.text.secondary} />
+                <Text style={[styles.mainTabText, activeTab === 'guardians' && styles.mainTabTextActive]}>Guardianes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.mainTab, activeTab === 'institutions' && styles.mainTabActive]}
+                onPress={() => setActiveTab('institutions')}
+              >
+                <Icon name="domain" size={16} color={activeTab === 'institutions' ? '#fff' : COLORS.text.secondary} />
+                <Text style={[styles.mainTabText, activeTab === 'institutions' && styles.mainTabTextActive]}>Instituciones</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.mainTab, activeTab === 'gaia' && styles.mainTabActive]}
+                onPress={() => setActiveTab('gaia')}
+              >
+                <Icon name="earth-plus" size={16} color={activeTab === 'gaia' ? '#fff' : COLORS.text.secondary} />
+                <Text style={[styles.mainTabText, activeTab === 'gaia' && styles.mainTabTextActive]}>Gaia</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.mainTab, activeTab === 'explore' && styles.mainTabActive]}
+                onPress={() => setActiveTab('explore')}
+              >
+                <Icon name="compass" size={16} color={activeTab === 'explore' ? '#fff' : COLORS.text.secondary} />
+                <Text style={[styles.mainTabText, activeTab === 'explore' && styles.mainTabTextActive]}>Explorar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.mainTab, activeTab === 'sanctuary' && styles.mainTabActive]}
+                onPress={() => setActiveTab('sanctuary')}
+              >
+                <Icon name="star-four-points" size={16} color={activeTab === 'sanctuary' ? '#fff' : COLORS.text.secondary} />
+                <Text style={[styles.mainTabText, activeTab === 'sanctuary' && styles.mainTabTextActive]}>Nodos</Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+          {/* Indicador de desbloqueo para usuarios nivel 1-2 */}
+          {(user.level || 1) < 3 && (
+            <View style={styles.lockedTabIndicator}>
+              <Icon name="lock" size={14} color={COLORS.text.dim} />
+              <Text style={styles.lockedTabText}>+5 tabs en nivel 3</Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
 
       {/* Being Selector for Actions (shown in explore/sanctuary tabs) */}
       {(activeTab === 'explore' || activeTab === 'sanctuary') && (
@@ -1069,60 +1210,94 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Render content based on active tab */}
-      {activeTab === 'crisis' && (
+      {(activeTab === 'crisis' || isLandscape) && (
         <>
-          {/* Toggle de vista */}
-          <View style={styles.viewToggle}>
-        <TouchableOpacity
-          style={[styles.toggleButton, viewMode === 'map' && styles.toggleButtonActive]}
-          onPress={() => setViewMode('map')}
-        >
-          <Icon name="earth" size={18} color={viewMode === 'map' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.toggleText, viewMode === 'map' && styles.toggleTextActive]}>Mapa</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.toggleButton, viewMode === 'list' && styles.toggleButtonActive]}
-          onPress={() => setViewMode('list')}
-        >
-          <Icon name="format-list-bulleted" size={18} color={viewMode === 'list' ? '#fff' : COLORS.text.secondary} />
-          <Text style={[styles.toggleText, viewMode === 'list' && styles.toggleTextActive]}>Lista</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Toggle y filtros - Layout compacto en landscape */}
+          <View style={[styles.viewToggle, isLandscape && styles.viewToggleLandscape]}>
+            <TouchableOpacity
+              style={[styles.toggleButton, isLandscape && styles.toggleButtonLandscape, viewMode === 'map' && styles.toggleButtonActive]}
+              onPress={() => setViewMode('map')}
+            >
+              <Icon name="earth" size={isLandscape ? 14 : 18} color={viewMode === 'map' ? '#fff' : COLORS.text.secondary} />
+              {!isLandscape && <Text style={[styles.toggleText, viewMode === 'map' && styles.toggleTextActive]}>Mapa</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleButton, isLandscape && styles.toggleButtonLandscape, viewMode === 'list' && styles.toggleButtonActive]}
+              onPress={() => setViewMode('list')}
+            >
+              <Icon name="format-list-bulleted" size={isLandscape ? 14 : 18} color={viewMode === 'list' ? '#fff' : COLORS.text.secondary} />
+              {!isLandscape && <Text style={[styles.toggleText, viewMode === 'list' && styles.toggleTextActive]}>Lista</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleButton, isLandscape && styles.toggleButtonLandscape, viewMode === '3d' && styles.toggleButtonActive]}
+              onPress={() => setViewMode('3d')}
+            >
+              <Icon name="rotate-3d-variant" size={isLandscape ? 14 : 18} color={viewMode === '3d' ? '#fff' : COLORS.text.secondary} />
+              {!isLandscape && <Text style={[styles.toggleText, viewMode === '3d' && styles.toggleTextActive]}>3D</Text>}
+            </TouchableOpacity>
 
-      {/* Filtros de tipo */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
-        <TouchableOpacity
-          style={[styles.filterChip, !filterType && styles.filterChipActive]}
-          onPress={() => setFilterType(null)}
-        >
-          <Text style={[styles.filterChipText, !filterType && styles.filterChipTextActive]}>Todas</Text>
-        </TouchableOpacity>
-        {Object.entries(CRISIS_TYPES).map(([type, config]) => (
-          <TouchableOpacity
-            key={type}
-            style={[styles.filterChip, filterType === type && styles.filterChipActive]}
-            onPress={() => setFilterType(filterType === type ? null : type)}
-          >
-            <Text style={styles.filterChipIcon}>{config.icon}</Text>
-            <Text style={[styles.filterChipText, filterType === type && styles.filterChipTextActive]}>
-              {config.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            {/* Filtros inline en landscape */}
+            {isLandscape && (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScrollLandscape}>
+                {Object.entries(CRISIS_TYPES).slice(0, 4).map(([type, config]) => (
+                  <TouchableOpacity
+                    key={type}
+                    style={[styles.filterChipLandscape, filterType === type && styles.filterChipActive]}
+                    onPress={() => setFilterType(filterType === type ? null : type)}
+                  >
+                    <Text style={styles.filterChipIcon}>{config.icon}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
 
-      {/* Contenido principal */}
-      {viewMode === 'map' ? (
-        <WorldMapView
-          crises={filteredCrises}
-          onCrisisSelect={handleCrisisSelect}
-          selectedCrisis={selectedCrisis}
-        />
-      ) : (
-        <FlatList
-          data={filteredCrises}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
+          {/* Filtros de tipo - Solo en portrait */}
+          {!isLandscape && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+              <TouchableOpacity
+                style={[styles.filterChip, !filterType && styles.filterChipActive]}
+                onPress={() => setFilterType(null)}
+              >
+                <Text style={[styles.filterChipText, !filterType && styles.filterChipTextActive]}>Todas</Text>
+              </TouchableOpacity>
+              {Object.entries(CRISIS_TYPES).map(([type, config]) => (
+                <TouchableOpacity
+                  key={type}
+                  style={[styles.filterChip, filterType === type && styles.filterChipActive]}
+                  onPress={() => setFilterType(filterType === type ? null : type)}
+                >
+                  <Text style={styles.filterChipIcon}>{config.icon}</Text>
+                  <Text style={[styles.filterChipText, filterType === type && styles.filterChipTextActive]}>
+                    {config.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+
+          {/* Contenido principal */}
+          {viewMode === 'map' ? (
+            <WorldMapView
+              crises={filteredCrises}
+              onCrisisSelect={handleCrisisSelect}
+              selectedCrisis={selectedCrisis}
+            />
+          ) : viewMode === '3d' ? (
+            <View style={styles.globe3DContainer}>
+              <Globe3D
+                crises={filteredCrises}
+                onCrisisSelect={handleCrisisSelect}
+                selectedCrisis={selectedCrisis}
+              />
+            </View>
+          ) : (
+            <FlatList
+              data={filteredCrises}
+              keyExtractor={item => item.id}
+              numColumns={isLandscape ? 2 : 1}
+              key={isLandscape ? 'landscape' : 'portrait'}
+              renderItem={({ item }) => (
             <CrisisCard
               crisis={item}
               onPress={handleCrisisSelect}
@@ -1339,6 +1514,99 @@ const CommandCenterScreen = ({ navigation }) => {
           setAvailableEvolutions([]);
         }}
       />
+
+      {/* Sistema de combate por turnos */}
+      <BattleScreen
+        visible={showCrisisBattle}
+        being={battleBeing}
+        crisis={battleCrisis}
+        onComplete={handleBattleComplete}
+        onCancel={handleBattleCancel}
+      />
+
+      {/* Animación de celebración (confetti/estrellas) */}
+      <CelebrationOverlay
+        visible={showCelebration}
+        type={celebrationType}
+        particleCount={celebrationType === 'confetti' ? 60 : 30}
+        onComplete={() => {
+          setShowCelebration(false);
+          // Mostrar resultado después de la animación
+          if (missionResult) {
+            setTimeout(() => {
+              // Toast o pequeño modal con resultado (opcional)
+            }, 200);
+          }
+        }}
+      />
+
+      {/* Animación de Level Up */}
+      <LevelUpOverlay
+        visible={showLevelUp}
+        level={newLevel}
+        onComplete={() => setShowLevelUp(false)}
+      />
+
+      {/* Modal de bienvenida para nuevos usuarios */}
+      <Modal
+        visible={showWelcomeModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleWelcomeComplete}
+      >
+        <View style={styles.welcomeOverlay}>
+          <View style={styles.welcomeModal}>
+            <Text style={styles.welcomeIcon}>🎉</Text>
+            <Text style={styles.welcomeTitle}>¡Bienvenido al Despertar!</Text>
+
+            <View style={styles.welcomeContent}>
+              <Text style={styles.welcomeText}>
+                Ya tienes tu primer ser: <Text style={styles.welcomeHighlight}>"Primer Despertar"</Text>
+              </Text>
+
+              <View style={styles.welcomeSteps}>
+                <View style={styles.welcomeStep}>
+                  <Text style={styles.welcomeStepNumber}>1</Text>
+                  <Text style={styles.welcomeStepText}>Selecciona una crisis en el mapa</Text>
+                </View>
+                <View style={styles.welcomeStep}>
+                  <Text style={styles.welcomeStepNumber}>2</Text>
+                  <Text style={styles.welcomeStepText}>Elige tu ser para desplegarla</Text>
+                </View>
+                <View style={styles.welcomeStep}>
+                  <Text style={styles.welcomeStepNumber}>3</Text>
+                  <Text style={styles.welcomeStepText}>¡Resuelve la crisis y gana recompensas!</Text>
+                </View>
+              </View>
+
+              <View style={styles.welcomeResources}>
+                <View style={styles.welcomeResource}>
+                  <Text style={styles.welcomeResourceIcon}>⚡</Text>
+                  <Text style={styles.welcomeResourceValue}>{user.energy || 100}</Text>
+                  <Text style={styles.welcomeResourceLabel}>Energía</Text>
+                </View>
+                <View style={styles.welcomeResource}>
+                  <Text style={styles.welcomeResourceIcon}>💎</Text>
+                  <Text style={styles.welcomeResourceValue}>{user.consciousnessPoints || 100}</Text>
+                  <Text style={styles.welcomeResourceLabel}>Consciencia</Text>
+                </View>
+                <View style={styles.welcomeResource}>
+                  <Text style={styles.welcomeResourceIcon}>🧬</Text>
+                  <Text style={styles.welcomeResourceValue}>{beings.length}</Text>
+                  <Text style={styles.welcomeResourceLabel}>Seres</Text>
+                </View>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.welcomeButton}
+              onPress={handleWelcomeComplete}
+            >
+              <Text style={styles.welcomeButtonText}>¡Empezar a Jugar!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -1358,20 +1626,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.bg.elevated
+  },
+  headerCompact: {
+    paddingVertical: 4,
+    paddingHorizontal: 8
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 8
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.text.primary
+  },
+  headerTitleCompact: {
+    fontSize: 14
   },
   headerRight: {
     flexDirection: 'row',
@@ -1385,7 +1660,16 @@ const styles = StyleSheet.create({
   statsBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 12,
+    paddingVertical: 8,
+    backgroundColor: COLORS.bg.elevated,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.bg.card
+  },
+  statsBarCompact: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     backgroundColor: COLORS.bg.elevated,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.bg.card
@@ -1393,6 +1677,20 @@ const styles = StyleSheet.create({
   statItem: {
     alignItems: 'center',
     gap: 2
+  },
+  statItemCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  statValueCompact: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.text.primary
+  },
+  statLabelCompact: {
+    fontSize: 9,
+    color: COLORS.text.secondary
   },
   statValue: {
     fontSize: 16,
@@ -1407,7 +1705,8 @@ const styles = StyleSheet.create({
   // View Toggle
   viewToggle: {
     flexDirection: 'row',
-    margin: 12,
+    marginHorizontal: 8,
+    marginVertical: 4,
     backgroundColor: COLORS.bg.elevated,
     borderRadius: 8,
     padding: 4
@@ -1433,11 +1732,75 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
 
+  // Landscape Layout Styles
+  landscapeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: COLORS.bg.elevated,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.bg.card
+  },
+  landscapeHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6
+  },
+  landscapeTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.text.primary
+  },
+  landscapeStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12
+  },
+  landscapeStat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  landscapeStatValue: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.text.primary
+  },
+  landscapeActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10
+  },
+  viewToggleLandscape: {
+    margin: 6,
+    padding: 2,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  toggleButtonLandscape: {
+    flex: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 4
+  },
+  filtersScrollLandscape: {
+    flex: 1,
+    marginLeft: 8
+  },
+  filterChipLandscape: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: COLORS.bg.card,
+    borderRadius: 12,
+    marginRight: 6
+  },
+
   // Filters
   filtersScroll: {
-    maxHeight: 44,
-    paddingHorizontal: 12,
-    marginBottom: 8
+    maxHeight: 36,
+    paddingHorizontal: 8,
+    marginBottom: 4
   },
   filterChip: {
     flexDirection: 'row',
@@ -1467,10 +1830,23 @@ const styles = StyleSheet.create({
   // Map
   mapContainer: {
     flex: 1,
-    margin: 12,
+    minHeight: 250,
+    margin: 6,
+    marginTop: 2,
     backgroundColor: COLORS.bg.elevated,
     borderRadius: 12,
     overflow: 'hidden'
+  },
+  globe3DContainer: {
+    flex: 1,
+    minHeight: 280,
+    margin: 6,
+    marginTop: 2,
+    backgroundColor: '#0a1628',
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)'
   },
   expandButton: {
     position: 'absolute',
@@ -2083,6 +2459,25 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
 
+  // Indicador de tabs bloqueados
+  lockedTabIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: COLORS.bg.elevated,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.text.dim + '30'
+  },
+
+  lockedTabText: {
+    fontSize: 11,
+    color: COLORS.text.dim,
+    fontStyle: 'italic'
+  },
+
   // Being Selector
   beingSelectorContainer: {
     paddingHorizontal: 12,
@@ -2117,6 +2512,133 @@ const styles = StyleSheet.create({
     color: COLORS.text.primary,
     textAlign: 'center',
     maxWidth: 70
+  },
+
+  // Welcome Modal Styles
+  welcomeOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+
+  welcomeModal: {
+    backgroundColor: COLORS.bg.secondary,
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.accent.primary + '40'
+  },
+
+  welcomeIcon: {
+    fontSize: 64,
+    marginBottom: 16
+  },
+
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: COLORS.text.primary,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+
+  welcomeContent: {
+    width: '100%'
+  },
+
+  welcomeText: {
+    fontSize: 15,
+    color: COLORS.text.secondary,
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 22
+  },
+
+  welcomeHighlight: {
+    color: COLORS.accent.primary,
+    fontWeight: '600'
+  },
+
+  welcomeSteps: {
+    backgroundColor: COLORS.bg.elevated,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20
+  },
+
+  welcomeStep: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+
+  welcomeStepNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.accent.primary,
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 28,
+    fontSize: 14,
+    fontWeight: '700',
+    marginRight: 12
+  },
+
+  welcomeStepText: {
+    flex: 1,
+    fontSize: 14,
+    color: COLORS.text.primary
+  },
+
+  welcomeResources: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 8
+  },
+
+  welcomeResource: {
+    alignItems: 'center'
+  },
+
+  welcomeResourceIcon: {
+    fontSize: 28,
+    marginBottom: 4
+  },
+
+  welcomeResourceValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.accent.primary
+  },
+
+  welcomeResourceLabel: {
+    fontSize: 11,
+    color: COLORS.text.secondary
+  },
+
+  welcomeButton: {
+    backgroundColor: COLORS.accent.primary,
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    borderRadius: 16,
+    marginTop: 16,
+    shadowColor: COLORS.accent.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8
+  },
+
+  welcomeButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700'
   }
 });
 

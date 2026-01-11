@@ -314,9 +314,12 @@ const LabStack = () => (
 
 /**
  * TAB NAVIGATOR: Navegación principal con tabs
+ * NOTA: El tab por defecto es "Command" (Centro de Comando) para que usuarios
+ * nuevos puedan jugar sin necesidad de GPS/ubicación.
  */
 const TabNavigator = () => (
   <Tab.Navigator
+    initialRouteName="Command"
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarShowLabel: true,
@@ -361,13 +364,13 @@ const TabNavigator = () => (
       }
     })}
   >
-    {/* Mapa - Pantalla principal */}
+    {/* Centro de Comando - PRIMERO: Modo Estrategia con Noticias Reales (no requiere GPS) */}
     <Tab.Screen
-      name="Map"
-      component={MapStack}
+      name="Command"
+      component={CommandStack}
       options={{
-        title: 'Mapa',
-        tabBarLabel: 'Mapa'
+        title: 'Comando',
+        tabBarLabel: 'Comando'
       }}
     />
 
@@ -391,13 +394,13 @@ const TabNavigator = () => (
       }}
     />
 
-    {/* Centro de Comando - Modo Estrategia con Noticias Reales */}
+    {/* Mapa - Requiere GPS */}
     <Tab.Screen
-      name="Command"
-      component={CommandStack}
+      name="Map"
+      component={MapStack}
       options={{
-        title: 'Comando',
-        tabBarLabel: 'Comando'
+        title: 'Mapa',
+        tabBarLabel: 'Mapa'
       }}
     />
 

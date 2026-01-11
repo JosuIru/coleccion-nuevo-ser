@@ -332,6 +332,32 @@ const BeingsScreen = ({ navigation }) => {
                 : `No hay seres en estado "${getStatusText(filterStatus)}"`
               }
             </Text>
+            {filterStatus === 'all' && (
+              <>
+                <Text style={styles.emptyStateHint}>
+                  Los seres son tus agentes de cambio para resolver crisis mundiales
+                </Text>
+
+                {/* Botón prominente para crear ser */}
+                <TouchableOpacity
+                  style={styles.createBeingButton}
+                  onPress={() => navigation.navigate('Lab')}
+                >
+                  <Text style={styles.createBeingIcon}>🔬</Text>
+                  <Text style={styles.createBeingText}>Crear mi primer Ser</Text>
+                </TouchableOpacity>
+
+                {/* Opción alternativa: tienda */}
+                <TouchableOpacity
+                  style={styles.alternativeButton}
+                  onPress={() => navigation.navigate('Command', { screen: 'Shop' })}
+                >
+                  <Text style={styles.alternativeText}>
+                    💫 O comprar en la Tienda ({user.consciousnessPoints || 0} pts disponibles)
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         )
       )}
@@ -1250,6 +1276,46 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
     paddingHorizontal: 32
+  },
+
+  // Botón crear ser prominente
+  createBeingButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.accent.primary,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    marginTop: 24,
+    gap: 12,
+    shadowColor: COLORS.accent.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8
+  },
+
+  createBeingIcon: {
+    fontSize: 28
+  },
+
+  createBeingText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#fff'
+  },
+
+  alternativeButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24
+  },
+
+  alternativeText: {
+    fontSize: 14,
+    color: COLORS.accent.secondary,
+    textAlign: 'center'
   }
 });
 

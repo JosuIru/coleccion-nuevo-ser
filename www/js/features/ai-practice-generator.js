@@ -540,30 +540,38 @@ class AIPracticeGenerator {
         ]);
       };
 
-      // Detectar si estamos en Capacitor/Android
-      const isCapacitor = !!window.Capacitor;
+      // Detectar si estamos en Capacitor/Android/Cordova
+      const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
       const aiConfig = window.aiConfig?.getConfig?.() || {};
       const currentProvider = aiConfig.provider || 'puter';
 
-      // Si estamos en Capacitor y el proveedor es Puter, usar práctica de fallback
-      // porque Puter SDK no funciona bien en Android WebView
-      if (isCapacitor && currentProvider === 'puter' && !window.aiAdapter) {
-        console.warn('[AIPracticeGenerator] Capacitor detectado con Puter - usando práctica local');
+      console.log('[AIPracticeGenerator] Entorno:', {
+        isNativeApp,
+        currentProvider,
+        hasAiAdapter: !!window.aiAdapter,
+        hasPuter: !!window.puter?.ai
+      });
+
+      // En app nativa: usar fallback local siempre que el proveedor sea Puter
+      // porque Puter SDK requiere navegador web real
+      if (isNativeApp && (currentProvider === 'puter' || !window.aiAdapter)) {
+        console.warn('[AIPracticeGenerator] App nativa detectada - usando práctica local');
         const practice = this.createFallbackPractice(userInput);
-        practice.note = 'Práctica generada localmente. Para prácticas con IA, configura otro proveedor en Ajustes > IA.';
+        practice.note = 'Práctica generada localmente. Para IA, configura OpenAI/Gemini en Ajustes > Inteligencia Artificial.';
         this.currentPractice = practice;
         this.savePracticeToHistory(practice);
         this.showResult(practice);
         return;
       }
 
-      if (window.aiAdapter) {
+      if (window.aiAdapter && currentProvider !== 'puter') {
+        // Usar aiAdapter solo si NO es Puter
         response = await withTimeout(
           window.aiAdapter.ask(prompt, systemContext, [], 'practice-generator'),
           30000
         );
-      } else if (window.puter?.ai && !isCapacitor) {
-        // Puter solo en navegador web, no en Capacitor
+      } else if (window.puter?.ai && !isNativeApp) {
+        // Puter SOLO en navegador web real
         try {
           const result = await withTimeout(
             window.puter.ai.chat(prompt, { system: systemContext }),
@@ -572,19 +580,22 @@ class AIPracticeGenerator {
           response = result?.message?.content || result;
         } catch (puterError) {
           console.error('[AIPracticeGenerator] Error con Puter:', puterError);
-          throw new Error('Puter AI no disponible. Verifica tu conexión a internet.');
-        }
-      } else {
-        // En APK sin aiAdapter configurado, usar fallback
-        if (isCapacitor) {
+          // En vez de error, usar fallback
           const practice = this.createFallbackPractice(userInput);
-          practice.note = 'Para prácticas personalizadas con IA, configura un proveedor en Ajustes > Inteligencia Artificial.';
+          practice.note = 'No se pudo conectar con IA. Práctica generada localmente.';
           this.currentPractice = practice;
           this.savePracticeToHistory(practice);
           this.showResult(practice);
           return;
         }
-        throw new Error('No hay proveedor de IA disponible. Configura la IA en ajustes.');
+      } else {
+        // Fallback para cualquier otro caso
+        const practice = this.createFallbackPractice(userInput);
+        practice.note = 'Configura un proveedor de IA en Ajustes para prácticas personalizadas.';
+        this.currentPractice = practice;
+        this.savePracticeToHistory(practice);
+        this.showResult(practice);
+        return;
       }
 
       // Parsear la respuesta

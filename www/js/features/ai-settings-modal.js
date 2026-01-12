@@ -60,6 +60,9 @@ class AISettingsModal {
             <p class="text-xs text-gray-400">
               Con un plan Premium tienes IA ilimitada sin necesidad de API keys
             </p>
+            <p class="text-xs text-emerald-400/80 mt-1">
+              💚 Los fondos recaudados apoyan el desarrollo del ecosistema y proyectos libres y gratuitos
+            </p>
           </div>
         </div>
 

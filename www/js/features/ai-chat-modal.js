@@ -783,6 +783,7 @@ class AIChatModal {
                 <div>
                   <p class="font-semibold text-amber-300">Plan Premium</p>
                   <p class="text-xs text-gray-400 mb-2">IA ilimitada sin configuración</p>
+                  <p class="text-xs text-emerald-400/80 mb-2">💚 Los fondos apoyan el desarrollo de proyectos libres y gratuitos</p>
                   ${!isAuthenticated ? `
                     <button id="ai-chat-login-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold transition">
                       Iniciar Sesión / Registrarse

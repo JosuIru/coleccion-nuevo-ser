@@ -144,10 +144,58 @@ class AIPracticeGenerator {
   }
 
   /**
+   * Renderiza banner de info cuando no hay IA disponible
+   */
+  renderAIInfoBanner() {
+    const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+    const aiConfig = window.aiConfig;
+    const currentProvider = aiConfig?.getCurrentProvider?.() || 'local';
+    const isAuthenticated = !!window.authHelper?.user;
+    const profile = window.authHelper?.getProfile?.();
+    const isPremium = profile && ['premium', 'pro'].includes(profile.subscription_tier);
+
+    const hasConfiguredAI = currentProvider !== 'local' && currentProvider !== 'puter' ||
+                            (currentProvider === 'puter' && !isNativeApp);
+    const isAIAvailable = isPremium || hasConfiguredAI;
+
+    if (isAIAvailable) return '';
+
+    return `
+      <div class="bg-gradient-to-r from-amber-900/20 to-gray-800/50 rounded-xl p-4 mb-4 border border-amber-500/30">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🤖</span>
+          <div class="flex-1">
+            <p class="font-semibold text-amber-300 text-sm mb-1">IA no disponible</p>
+            <p class="text-xs text-gray-400 mb-2">
+              Las prácticas se generarán de forma local. Para prácticas personalizadas con IA:
+            </p>
+            <div class="flex flex-wrap gap-2">
+              ${!isAuthenticated ? `
+                <button type="button" id="practice-login-btn" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-xs font-semibold transition">
+                  ⭐ Iniciar sesión
+                </button>
+              ` : `
+                <button type="button" id="practice-plans-btn" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-xs font-semibold transition">
+                  ⭐ Ver planes
+                </button>
+              `}
+              <button type="button" id="practice-settings-btn" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-semibold transition">
+                ⚙️ Configurar IA
+              </button>
+            </div>
+            <p class="text-xs text-emerald-400/70 mt-2">💚 Los fondos apoyan proyectos libres y gratuitos</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * Renderiza la vista del formulario
    */
   renderFormView() {
     return `
+      ${this.renderAIInfoBanner()}
       <form id="practice-generator-form" class="space-y-6">
         <!-- Estado emocional -->
         <div>
@@ -404,6 +452,25 @@ class AIPracticeGenerator {
 
     // Radio button styling
     this.setupRadioStyling();
+
+    // Botones del banner de IA
+    document.getElementById('practice-login-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.authModal) window.authModal.open();
+      else if (window.openAuthModal) window.openAuthModal();
+    });
+
+    document.getElementById('practice-plans-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.openPremiumModal) window.openPremiumModal();
+      else window.location.hash = '#premium';
+    });
+
+    document.getElementById('practice-settings-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.aiSettingsModal) window.aiSettingsModal.open();
+      else if (window.aiLazyLoader?.showAISettings) window.aiLazyLoader.showAISettings();
+    });
   }
 
   /**

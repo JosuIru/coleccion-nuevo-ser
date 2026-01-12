@@ -10,7 +10,26 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeModules, Platform } from 'react-native';
 import translationService from './TranslationService';
+import { logger } from '../utils/logger';
+
+// Detectar idioma del dispositivo
+const getDeviceLanguage = () => {
+  let language = 'es'; // Default español
+  try {
+    if (Platform.OS === 'ios') {
+      language = NativeModules.SettingsManager?.settings?.AppleLocale ||
+                 NativeModules.SettingsManager?.settings?.AppleLanguages?.[0] || 'es';
+    } else {
+      language = NativeModules.I18nManager?.localeIdentifier || 'es';
+    }
+  } catch (e) {
+    logger.warn('RealNewsCrisisService', 'Error detecting language:', e);
+  }
+  // Extraer código de idioma (ej: "es_ES" -> "es")
+  return language.split(/[-_]/)[0].toLowerCase();
+};
 
 // ============================================================================
 // CONFIGURACIÓN
@@ -164,7 +183,9 @@ const RSS_SOURCES = {
     description: 'Desarrollo global y pobreza'
   },
 
-  // Fuentes en español
+  // ========== FUENTES EN ESPAÑOL ==========
+
+  // España
   eldiario: {
     name: 'elDiario.es',
     url: 'https://www.eldiario.es/rss/',
@@ -183,13 +204,80 @@ const RSS_SOURCES = {
     description: 'Periodismo independiente en español',
     language: 'es'
   },
-  veinteminutos: {
-    name: '20 Minutos',
-    url: 'https://www.20minutos.es/rss/',
-    icon: '📰',
+  publico: {
+    name: 'Público',
+    url: 'https://www.publico.es/rss/',
+    icon: '📢',
     reliability: 'medium',
+    focus: ['social', 'humanitarian', 'environmental'],
+    description: 'Noticias progresistas España',
+    language: 'es'
+  },
+  rtve: {
+    name: 'RTVE Noticias',
+    url: 'https://www.rtve.es/api/noticias.rss',
+    icon: '📺',
+    reliability: 'high',
     focus: ['social', 'humanitarian'],
-    description: 'Noticias generales en español',
+    description: 'Radiotelevisión Española',
+    language: 'es'
+  },
+
+  // Latinoamérica
+  telesur: {
+    name: 'TeleSUR',
+    url: 'https://www.telesurtv.net/rss/news.xml',
+    icon: '🌎',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian', 'economic'],
+    description: 'Noticias de Latinoamérica',
+    language: 'es'
+  },
+  pagina12: {
+    name: 'Página 12',
+    url: 'https://www.pagina12.com.ar/rss/portada',
+    icon: '🇦🇷',
+    reliability: 'medium',
+    focus: ['social', 'economic', 'humanitarian'],
+    description: 'Periodismo argentino',
+    language: 'es'
+  },
+  laJornada: {
+    name: 'La Jornada',
+    url: 'https://www.jornada.com.mx/rss/edicion.xml',
+    icon: '🇲🇽',
+    reliability: 'medium',
+    focus: ['social', 'humanitarian', 'environmental'],
+    description: 'Periodismo mexicano independiente',
+    language: 'es'
+  },
+  rebelion: {
+    name: 'Rebelión',
+    url: 'https://rebelion.org/feed/',
+    icon: '✊',
+    reliability: 'medium',
+    focus: ['social', 'economic', 'humanitarian'],
+    description: 'Medio alternativo en español',
+    language: 'es'
+  },
+  ecologistasenaccion: {
+    name: 'Ecologistas en Acción',
+    url: 'https://www.ecologistasenaccion.org/feed/',
+    icon: '🌿',
+    reliability: 'medium',
+    focus: ['environmental'],
+    description: 'Noticias medioambientales España',
+    language: 'es'
+  },
+
+  // ONU en español
+  un_spanish: {
+    name: 'ONU Noticias',
+    url: 'https://news.un.org/feed/subscribe/es/news/all/rss.xml',
+    icon: '🇺🇳',
+    reliability: 'high',
+    focus: ['humanitarian', 'social', 'environmental'],
+    description: 'Naciones Unidas en español',
     language: 'es'
   }
 };
@@ -407,12 +495,12 @@ class RealNewsCrisisService {
   async getRealWorldCrises(options = {}) {
     const { limit = 20 } = options;
 
-    console.log('[RealNewsCrisisService] Iniciando fetch de noticias reales...');
+    logger.info('RealNewsCrisisService', 'Iniciando fetch de noticias reales...');
 
     try {
       // Intentar obtener noticias reales
       const crises = await this.fetchAndProcessNews();
-      console.log(`[RealNewsCrisisService] Obtenidas ${crises.length} crisis reales`);
+      logger.info('RealNewsCrisisService', `Obtenidas ${crises.length} crisis reales`);
 
       // Si no hay crisis, lanzar error para usar fallback
       if (!crises || crises.length === 0) {
@@ -427,7 +515,7 @@ class RealNewsCrisisService {
       return crises.slice(0, limit);
 
     } catch (error) {
-      console.warn('Error fetching real news, using fallback:', error);
+      logger.warn('RealNewsCrisisService', 'Error fetching real news, using fallback:', error);
 
       // Generar crisis procedurales simples directamente
       const proceduralCrises = [];
@@ -531,40 +619,79 @@ class RealNewsCrisisService {
 
   async fetchAndProcessNews() {
     const allArticles = [];
+    const deviceLanguage = getDeviceLanguage();
 
-    // DEBUG: Probar con UN solo feed primero
-    console.log('[RSS] Iniciando fetch de noticias...');
+    logger.debug('RealNewsCrisisService', `RSS: Iniciando fetch. Idioma detectado: ${deviceLanguage}`);
 
-    try {
-      // Usar directamente rss2json con UN feed confiable
-      const testUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.un.org/feed/subscribe/en/news/all/rss.xml');
-      console.log('[RSS] Fetching:', testUrl);
+    // Organizar fuentes por idioma
+    const spanishSources = [
+      'un_spanish', 'eldiario', 'publico', 'telesur', 'pagina12', 'laJornada',
+      'rebelion', 'ecologistasenaccion', 'lamarea', 'rtve'
+    ];
 
-      const response = await fetch(testUrl);
-      const data = await response.json();
+    const englishSources = [
+      'un_news', 'bbc_world', 'aljazeera', 'guardian_global_dev',
+      'democracynow', 'theintercept', 'commondreams', 'grist', 'mongabay'
+    ];
 
-      console.log('[RSS] Response status:', data.status);
-      console.log('[RSS] Items count:', data.items?.length || 0);
+    // Priorizar según idioma del dispositivo
+    let prioritySources;
+    if (deviceLanguage === 'es') {
+      // Español: 6 fuentes en español + 2 internacionales
+      prioritySources = [...spanishSources.slice(0, 6), ...englishSources.slice(0, 2)];
+    } else {
+      // Otros idiomas: mezcla con más internacionales
+      prioritySources = [...englishSources.slice(0, 5), ...spanishSources.slice(0, 3)];
+    }
 
-      if (data.status === 'ok' && data.items) {
-        data.items.forEach(item => {
-          allArticles.push({
+    logger.debug('RealNewsCrisisService', `RSS: Fuentes seleccionadas: ${prioritySources.join(', ')}`);
+
+    // Fetch de múltiples fuentes en paralelo (máximo 8)
+    const sourcesToFetch = prioritySources.slice(0, 8);
+    const fetchPromises = sourcesToFetch.map(async (sourceId) => {
+      const source = RSS_SOURCES[sourceId];
+      if (!source) return [];
+
+      try {
+        const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
+        const response = await fetch(proxyUrl, { timeout: 10000 });
+        const data = await response.json();
+
+        if (data.status === 'ok' && data.items) {
+          logger.debug('RealNewsCrisisService', `RSS ${sourceId}: ${data.items.length} artículos`);
+          return data.items.slice(0, 10).map(item => ({
             title: item.title,
             description: item.description?.replace(/<[^>]*>/g, '').slice(0, 500) || '',
             link: item.link,
             pubDate: item.pubDate,
-            sourceId: 'un_news',
-            sourceName: 'Naciones Unidas',
-            sourceLanguage: 'en',
-            sourceIcon: '🇺🇳'
-          });
-        });
+            sourceId: sourceId,
+            sourceName: source.name,
+            sourceLanguage: source.language || 'en',
+            sourceIcon: source.icon
+          }));
+        }
+        return [];
+      } catch (error) {
+        logger.warn('RealNewsCrisisService', `RSS Error en ${sourceId}:`, error.message);
+        return [];
       }
+    });
+
+    // Esperar a todas las fuentes (con timeout de 15 segundos)
+    try {
+      const results = await Promise.race([
+        Promise.all(fetchPromises),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+      ]);
+
+      results.forEach(articles => {
+        allArticles.push(...articles);
+      });
     } catch (error) {
-      console.error('[RSS] Error en fetch directo:', error.message);
+      logger.warn('RealNewsCrisisService', 'RSS Timeout o error general:', error.message);
     }
 
-    console.log('[RSS] Total articles:', allArticles.length);
+    logger.debug('RealNewsCrisisService', 'RSS Total artículos obtenidos:', allArticles.length);
 
     // Deduplicar por título similar
     const deduplicated = this.deduplicateArticles(allArticles);
@@ -579,7 +706,7 @@ class RealNewsCrisisService {
         const crisesEnIngles = crises.filter(c => c.sourceLanguage !== 'es');
         const crisesEnEspanol = crises.filter(c => c.sourceLanguage === 'es');
 
-        console.log(`[RealNewsCrisisService] ${crisesEnEspanol.length} crisis ya en español, ${crisesEnIngles.length} para traducir`);
+        logger.debug('RealNewsCrisisService', `${crisesEnEspanol.length} crisis ya en español, ${crisesEnIngles.length} para traducir`);
 
         // Solo traducir las que están en inglés
         if (crisesEnIngles.length > 0) {
@@ -589,9 +716,9 @@ class RealNewsCrisisService {
           crises = crisesEnEspanol.map(c => ({ ...c, translated: true }));
         }
 
-        console.log('[RealNewsCrisisService] Traducción completada');
+        logger.debug('RealNewsCrisisService', 'Traducción completada');
       } catch (translationError) {
-        console.warn('[RealNewsCrisisService] Error en traducción:', translationError);
+        logger.warn('RealNewsCrisisService', 'Error en traducción:', translationError);
         // Continuar con textos originales si falla la traducción
       }
     }
@@ -627,13 +754,13 @@ class RealNewsCrisisService {
     try {
       // Usar rss2json como proxy público gratuito
       const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
-      console.log(`[RSS] Fetching ${sourceId} via rss2json...`);
+      logger.debug('RealNewsCrisisService', `RSS: Fetching ${sourceId} via rss2json...`);
       const response = await fetch(proxyUrl);
 
       if (!response.ok) throw new Error('Proxy fetch failed');
 
       const data = await response.json();
-      console.log(`[RSS] ${sourceId} status: ${data.status}, items: ${data.items?.length || 0}`);
+      logger.debug('RealNewsCrisisService', `RSS ${sourceId} status: ${data.status}, items: ${data.items?.length || 0}`);
 
       if (data.status !== 'ok' || !data.items) {
         throw new Error('Invalid RSS response');
@@ -649,7 +776,7 @@ class RealNewsCrisisService {
       }));
 
     } catch (error) {
-      console.warn(`[RSS] Proxy fetch failed for ${sourceId}:`, error.message);
+      logger.warn('RealNewsCrisisService', `RSS Proxy fetch failed for ${sourceId}:`, error.message);
       return [];
     }
   }
@@ -1019,7 +1146,7 @@ class RealNewsCrisisService {
         lastFetch: this.cache.lastFetch
       }));
     } catch (error) {
-      console.warn('Error persisting cache:', error);
+      logger.warn('RealNewsCrisisService', 'Error persisting cache:', error);
     }
   }
 
@@ -1033,7 +1160,7 @@ class RealNewsCrisisService {
         return this.cache.crises;
       }
     } catch (error) {
-      console.warn('Error loading cache:', error);
+      logger.warn('RealNewsCrisisService', 'Error loading cache:', error);
     }
     return [];
   }

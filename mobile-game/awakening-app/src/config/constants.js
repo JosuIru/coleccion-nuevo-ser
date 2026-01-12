@@ -30,11 +30,20 @@ export const RESOURCES = {
     DEFAULT: 100,
     MAX_BASE: 100,
     REGEN_PER_MINUTE: 5, // Aumentado de 1 a 5 para mejor experiencia de juego
-    COST_DEPLOY_BEING: 10
+    COST_DEPLOY_BEING: 10,
+    COST_EXPLORATION: 15,
+    COST_GUARDIAN_BATTLE: 20
   },
 
   CONSCIOUSNESS: {
     DEFAULT: 200 // Consciencia inicial para nuevos jugadores
+  },
+
+  // Constantes de exploración
+  EXPLORATION: {
+    ENERGY_COST: 15,
+    BASE_XP_REWARD: 30,
+    DISCOVERY_CHANCE_BASE: 0.7
   }
 };
 
@@ -82,6 +91,47 @@ export const ATTRIBUTES = {
   organization: { name: 'Organización', icon: '📋', color: '#64748b' },
   collaboration: { name: 'Colaboración', icon: '🤝', color: '#0ea5e9' },
   technical: { name: 'Técnica', icon: '🔧', color: '#475569' }
+};
+
+// ═══════════════════════════════════════════════════════════
+// ESTADOS DE SERES
+// ═══════════════════════════════════════════════════════════
+
+export const BEING_STATUS = {
+  available: { name: 'Disponible', color: '#22c55e' },
+  deployed: { name: 'Desplegado', color: '#3b82f6' },
+  resting: { name: 'Descansando', color: '#f59e0b' },
+  training: { name: 'Entrenando', color: '#8b5cf6' },
+  exploring: { name: 'Explorando', color: '#06b6d4' }
+};
+
+// ═══════════════════════════════════════════════════════════
+// RAREZAS
+// ═══════════════════════════════════════════════════════════
+
+export const RARITY = {
+  common: { name: 'Común', color: '#95A5A6', multiplier: 1.0 },
+  rare: { name: 'Raro', color: '#3498DB', multiplier: 1.2 },
+  epic: { name: 'Épico', color: '#9B59B6', multiplier: 1.5 },
+  legendary: { name: 'Legendario', color: '#FFD700', multiplier: 2.0 }
+};
+
+// ═══════════════════════════════════════════════════════════
+// DURACIONES DE MISIONES (minutos)
+// ═══════════════════════════════════════════════════════════
+
+export const MISSION_DURATIONS = {
+  BASE: {
+    local: 15,
+    regional: 30,
+    nacional: 60,
+    global: 120
+  },
+  URGENCY_MULTIPLIER: {
+    low: 1.5,
+    medium: 1.0,
+    high: 0.7
+  }
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -248,6 +298,32 @@ export const NOTIFICATIONS = {
     start: 22, // 22:00
     end: 8 // 08:00
   }
+};
+
+// ═══════════════════════════════════════════════════════════
+// UI TIMING (milisegundos)
+// ═══════════════════════════════════════════════════════════
+
+export const UI_TIMING = {
+  // Modales y transiciones
+  MODAL_DELAY: 1000,
+  TUTORIAL_DELAY: 2000,
+  CELEBRATION_DURATION: 1500,
+
+  // Feedback de acciones
+  ACTION_FEEDBACK: 2000,
+  TOAST_DURATION: 3000,
+  ERROR_DISPLAY: 5000,
+
+  // Debounce
+  SEARCH_DEBOUNCE: 300,
+  SAVE_DEBOUNCE: 500,
+  INPUT_DEBOUNCE: 150,
+
+  // Animaciones
+  ANIMATION_FAST: 200,
+  ANIMATION_NORMAL: 300,
+  ANIMATION_SLOW: 500
 };
 
 // ═══════════════════════════════════════════════════════════

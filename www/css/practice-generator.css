@@ -1,0 +1,313 @@
+/**
+ * Practice Generator - Estilos
+ * Generador de Prácticas con IA y Timer
+ * @version 1.0.0
+ */
+
+/* ========================================
+   VARIABLES
+   ======================================== */
+
+:root {
+  --pg-primary: #8b5cf6;
+  --pg-primary-light: #a78bfa;
+  --pg-primary-dark: #7c3aed;
+  --pg-secondary: #a855f7;
+  --pg-bg-dark: #0f172a;
+  --pg-bg-card: rgba(30, 41, 59, 0.5);
+}
+
+/* ========================================
+   MODAL BASE
+   ======================================== */
+
+#ai-practice-generator-modal,
+#practice-timer-modal {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+
+/* Radio button cards */
+.state-card,
+.type-card,
+.focus-card {
+  transition: all 0.2s ease;
+}
+
+.state-card:hover,
+.type-card:hover,
+.focus-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+input[type="radio"]:checked + .state-card,
+input[type="radio"]:checked + .type-card,
+input[type="radio"]:checked + .focus-card {
+  border-color: var(--pg-primary);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* Range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 8px;
+  background: #334155;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--pg-primary);
+  border-radius: 50%;
+  margin-top: -8px;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.4);
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 8px;
+  background: #334155;
+  border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--pg-primary);
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.4);
+}
+
+/* ========================================
+   LOADING ANIMATION
+   ======================================== */
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.2);
+  }
+}
+
+#practice-loading-view .animate-pulse {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+#practice-loading-view .animate-bounce {
+  animation: float 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   PRACTICE RESULT
+   ======================================== */
+
+.practice-result {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   TIMER MODAL
+   ======================================== */
+
+#practice-timer-modal {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+}
+
+/* Timer circle animation */
+#timer-progress-circle {
+  transition: stroke-dashoffset 1s linear;
+}
+
+/* Timer display */
+#timer-display {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+/* Step indicators */
+.step-indicator {
+  transition: all 0.3s ease;
+}
+
+.step-indicator div {
+  transition: all 0.3s ease;
+}
+
+/* Control buttons */
+#timer-play-pause {
+  transition: all 0.2s ease;
+}
+
+#timer-play-pause:hover {
+  transform: scale(1.05);
+}
+
+#timer-play-pause:active {
+  transform: scale(0.95);
+}
+
+#timer-prev:hover,
+#timer-next:hover {
+  background: #475569;
+}
+
+/* ========================================
+   RATING BUTTONS
+   ======================================== */
+
+.rating-btn {
+  transition: all 0.2s ease;
+}
+
+.rating-btn:hover {
+  transform: scale(1.1);
+}
+
+.rating-btn.ring-2 {
+  background: rgba(139, 92, 246, 0.2);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 640px) {
+  #ai-practice-generator-modal .text-2xl {
+    font-size: 1.25rem;
+  }
+
+  #ai-practice-generator-modal .text-xl {
+    font-size: 1rem;
+  }
+
+  /* Smaller timer circle on mobile */
+  #practice-timer-modal svg.w-64 {
+    width: 200px;
+    height: 200px;
+  }
+
+  #timer-display {
+    font-size: 2.5rem;
+  }
+
+  #timer-current-step .text-xl {
+    font-size: 1rem;
+  }
+
+  /* Rating buttons smaller on mobile */
+  .rating-btn {
+    padding: 0.75rem;
+    font-size: 1.5rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+#ai-practice-generator-modal button:focus-visible,
+#practice-timer-modal button:focus-visible,
+.state-card:focus-visible,
+.type-card:focus-visible,
+.focus-card:focus-visible {
+  outline: 2px solid var(--pg-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .practice-result,
+  .state-card,
+  .type-card,
+  .focus-card,
+  #timer-progress-circle,
+  #timer-play-pause,
+  .rating-btn,
+  #practice-loading-view .animate-pulse,
+  #practice-loading-view .animate-bounce {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ========================================
+   DARK MODE (default)
+   ======================================== */
+
+/* Already dark by default, but ensure consistency */
+.dark #ai-practice-generator-modal,
+.dark #practice-timer-modal {
+  color-scheme: dark;
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+#practice-generator-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+#practice-generator-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#practice-generator-content::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+#practice-generator-content::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  #ai-practice-generator-modal,
+  #practice-timer-modal {
+    display: none !important;
+  }
+}

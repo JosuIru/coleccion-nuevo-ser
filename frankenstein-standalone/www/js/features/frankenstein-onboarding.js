@@ -187,30 +187,37 @@ class FrankensteinOnboarding {
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
         z-index: 20000;
-        animation: frFadeIn 0.3s ease-out;
+        animation: frFadeIn 0.4s ease-out;
       }
 
       .fr-onboarding-spotlight {
         position: absolute;
-        border-radius: 8px;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
-        transition: all 0.4s ease-out;
+        border-radius: 12px;
+        box-shadow:
+          0 0 0 9999px rgba(0, 0, 0, 0.9),
+          0 0 30px rgba(245, 158, 11, 0.5),
+          inset 0 0 20px rgba(245, 158, 11, 0.2);
+        transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         pointer-events: none;
       }
 
       .fr-onboarding-tooltip {
         position: absolute;
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border: 2px solid #3b82f6;
-        border-radius: 16px;
-        padding: 24px;
-        max-width: 360px;
+        background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+        border: 2px solid rgba(245, 158, 11, 0.6);
+        border-radius: 20px;
+        padding: 1.5rem;
+        max-width: 380px;
         color: white;
         z-index: 20001;
-        animation: frScaleIn 0.3s ease-out;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        animation: frScaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow:
+          0 25px 60px rgba(0, 0, 0, 0.6),
+          0 0 40px rgba(245, 158, 11, 0.15);
       }
 
       .fr-tooltip-header {
@@ -221,64 +228,70 @@ class FrankensteinOnboarding {
       }
 
       .fr-tooltip-icon {
-        font-size: 32px;
+        font-size: 2.5rem;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       }
 
       .fr-tooltip-step {
-        background: rgba(59, 130, 246, 0.2);
-        color: #60a5fa;
-        padding: 4px 12px;
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+        padding: 6px 14px;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
+        border: 1px solid rgba(245, 158, 11, 0.3);
       }
 
       .fr-tooltip-title {
         margin: 0 0 8px;
-        font-size: 20px;
-        font-weight: bold;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #f59e0b;
       }
 
       .fr-tooltip-desc {
         margin: 0 0 20px;
-        color: #94a3b8;
-        font-size: 14px;
-        line-height: 1.5;
+        color: #e5e7eb;
+        font-size: 0.95rem;
+        line-height: 1.6;
       }
 
       .fr-tooltip-actions {
         display: flex;
         gap: 12px;
-        justify-content: flex-end;
+        justify-content: center;
       }
 
       .fr-tooltip-btn {
-        padding: 10px 20px;
-        border-radius: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.25s ease;
         border: none;
-        font-size: 14px;
+        font-size: 0.9rem;
       }
 
       .fr-tooltip-btn.fr-skip {
-        background: transparent;
-        color: #64748b;
+        background: rgba(255, 255, 255, 0.1);
+        color: #9ca3af;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .fr-tooltip-btn.fr-skip:hover {
-        color: #94a3b8;
+        background: rgba(255, 255, 255, 0.15);
+        color: #e5e7eb;
       }
 
       .fr-tooltip-btn.fr-next {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #0a0a0f;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
       }
 
       .fr-tooltip-btn.fr-next:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
       }
 
       .fr-tooltip-progress {
@@ -297,17 +310,17 @@ class FrankensteinOnboarding {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        transition: all 0.3s;
+        background: rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
       }
 
       .fr-progress-dot.active {
-        background: #3b82f6;
-        transform: scale(1.2);
+        background: #f59e0b;
+        transform: scale(1.3);
       }
 
       .fr-progress-dot.completed {
-        background: #22c55e;
+        background: #10b981;
       }
 
       @keyframes frFadeIn {

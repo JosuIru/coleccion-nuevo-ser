@@ -18,15 +18,18 @@ import {
 const GuardianBattleModal = ({
   visible,
   battle,
-  onPlayerAction,
+  guardian: guardianProp, // Puede venir por separado
+  onAction, // Renombrado para coincidir con CommandCenterScreen
   onFlee,
   onClose,
+  playerBeings = [],
   newPremises = []
 }) => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [animating, setAnimating] = useState(false);
   const [lastLog, setLastLog] = useState(null);
   const [shakeAnim] = useState(new Animated.Value(0));
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (battle?.log?.length > 0) {
@@ -48,21 +51,36 @@ const GuardianBattleModal = ({
 
     setAnimating(true);
     setSelectedAction(actionType);
+    setError(null);
 
-    const result = await onPlayerAction?.(actionType, details);
+    try {
+      const result = await onAction?.(actionType, details);
 
-    if (result?.guardianAttack) {
-      triggerShake();
+      if (result?.guardianAttack) {
+        triggerShake();
+      }
+
+      if (result?.error) {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Error al ejecutar acción');
+      console.error('Guardian battle action error:', err);
+    } finally {
+      setAnimating(false);
+      setSelectedAction(null);
     }
-
-    setAnimating(false);
-    setSelectedAction(null);
   };
 
-  if (!battle?.guardian) return null;
+  // Obtener guardian de battle o del prop directo
+  const guardian = battle?.guardian || guardianProp;
 
-  const guardian = battle.guardian;
-  const healthPercentage = (guardian.currentHealth / guardian.stats.health) * 100;
+  if (!visible || !guardian) return null;
+
+  // Calcular salud con valores por defecto seguros
+  const currentHealth = guardian.currentHealth ?? guardian.stats?.health ?? 100;
+  const maxHealth = guardian.stats?.health ?? 100;
+  const healthPercentage = Math.max(0, Math.min(100, (currentHealth / maxHealth) * 100));
   const isPlayerTurn = battle.phase === 'player';
 
   const renderHealthBar = () => (
@@ -72,14 +90,14 @@ const GuardianBattleModal = ({
           style={[
             styles.healthBarFill,
             {
-              width: `${Math.max(0, healthPercentage)}%`,
+              width: `${healthPercentage}%`,
               backgroundColor: healthPercentage > 50 ? '#EF4444' : healthPercentage > 25 ? '#F59E0B' : '#DC2626'
             }
           ]}
         />
       </View>
       <Text style={styles.healthText}>
-        {Math.max(0, guardian.currentHealth)} / {guardian.stats.health}
+        {currentHealth} / {maxHealth}
       </Text>
     </View>
   );
@@ -240,15 +258,29 @@ const GuardianBattleModal = ({
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContainer, { borderColor: guardian.color + '50' }]}>
           {/* Header */}
-          <View style={[styles.header, { backgroundColor: guardian.color + '20' }]}>
+          <View style={[styles.header, { backgroundColor: (guardian.color || '#EF4444') + '20' }]}>
             <View style={styles.headerInfo}>
               <Text style={styles.headerTitle}>BATALLA</Text>
-              <Text style={styles.turnInfo}>Turno {battle.turn}</Text>
+              <Text style={styles.turnInfo}>Turno {battle?.turn || 1}</Text>
             </View>
             <TouchableOpacity style={styles.fleeButton} onPress={onFlee}>
               <Text style={styles.fleeText}>Huir</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Error display */}
+          {error && (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorText}>⚠️ {error}</Text>
+            </View>
+          )}
+
+          {/* Loading indicator */}
+          {animating && (
+            <View style={styles.loadingBanner}>
+              <Text style={styles.loadingText}>⏳ Ejecutando acción...</Text>
+            </View>
+          )}
 
           <ScrollView style={styles.content}>
             {/* Guardián */}
@@ -271,19 +303,19 @@ const GuardianBattleModal = ({
           <View style={styles.statsBar}>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>POW</Text>
-              <Text style={styles.statValue}>{guardian.stats.power}</Text>
+              <Text style={styles.statValue}>{guardian.stats?.power ?? '?'}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>DEF</Text>
-              <Text style={styles.statValue}>{guardian.stats.defense}</Text>
+              <Text style={styles.statValue}>{guardian.stats?.defense ?? '?'}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>SPD</Text>
-              <Text style={styles.statValue}>{guardian.stats.speed}</Text>
+              <Text style={styles.statValue}>{guardian.stats?.speed ?? '?'}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>Daño Total</Text>
-              <Text style={styles.statValue}>{battle.damage?.toGuardian || 0}</Text>
+              <Text style={styles.statValue}>{battle?.damage?.toGuardian || 0}</Text>
             </View>
           </View>
         </View>
@@ -340,6 +372,28 @@ const styles = StyleSheet.create({
   fleeText: {
     color: '#EF4444',
     fontWeight: '600'
+  },
+  errorBanner: {
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(239, 68, 68, 0.5)'
+  },
+  errorText: {
+    color: '#EF4444',
+    textAlign: 'center',
+    fontWeight: '600'
+  },
+  loadingBanner: {
+    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(59, 130, 246, 0.5)'
+  },
+  loadingText: {
+    color: '#3B82F6',
+    textAlign: 'center',
+    fontWeight: '500'
   },
   content: {
     flex: 1,

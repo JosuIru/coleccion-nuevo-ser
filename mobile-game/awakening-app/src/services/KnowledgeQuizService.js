@@ -12,6 +12,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { REAL_QUIZ_DATA, LEGENDARY_BEINGS } from '../data/realQuizzes';
+import { logger } from '../utils/logger';
 
 // ============================================================================
 // CONFIGURACIÓN
@@ -45,7 +46,7 @@ class KnowledgeQuizService {
 
   async initialize() {
     await this.loadState();
-    console.log('[KnowledgeQuiz] Inicializado con', Object.keys(REAL_QUIZ_DATA).length, 'libros');
+    logger.info('KnowledgeQuizService', `Inicializado con ${Object.keys(REAL_QUIZ_DATA).length} libros`);
     return true;
   }
 
@@ -170,7 +171,7 @@ class KnowledgeQuizService {
     try {
       return this.generateQuiz(bookId, QUIZ_CONFIG.QUESTIONS_PER_QUIZ);
     } catch (error) {
-      console.error('Error getting quiz:', error);
+      logger.error('KnowledgeQuizService', 'Error getting quiz:', error);
       return null;
     }
   }
@@ -551,7 +552,7 @@ class KnowledgeQuizService {
         wisdomFragments: this.wisdomFragments
       }));
     } catch (error) {
-      console.error('Error saving KnowledgeQuiz state:', error);
+      logger.error('KnowledgeQuizService', 'Error saving state:', error);
     }
   }
 
@@ -574,7 +575,7 @@ class KnowledgeQuizService {
         this.wisdomFragments = parsed.wisdomFragments || 0;
       }
     } catch (error) {
-      console.error('Error loading KnowledgeQuiz state:', error);
+      logger.error('KnowledgeQuizService', 'Error loading state:', error);
     }
   }
 

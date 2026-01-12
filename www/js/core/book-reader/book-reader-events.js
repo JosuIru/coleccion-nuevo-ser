@@ -1568,14 +1568,10 @@ class BookReaderEvents {
         console.log('[BookReaderEvents] FAB Menu initialized and shown');
       }
 
-      // Radial Menu - attach al contenido del capítulo
+      // Radial Menu - attach al contenido del capítulo (deshabilitado en APK)
       if (window.radialMenu) {
         window.radialMenu.attachToContent();
         console.log('[BookReaderEvents] Radial Menu attached');
-      } else if (window.RadialMenu) {
-        window.radialMenu = new window.RadialMenu();
-        window.radialMenu.attachToContent();
-        console.log('[BookReaderEvents] Radial Menu initialized and attached');
       }
     } catch (error) {
       console.error('[BookReaderEvents] Error initializing quick access components:', error);

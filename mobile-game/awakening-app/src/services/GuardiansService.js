@@ -12,6 +12,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logger from '../utils/logger';
 
 // ============================================================================
 // LOS 7 GUARDIANES DEL VIEJO PARADIGMA
@@ -458,7 +459,7 @@ class GuardiansService {
 
   async initialize() {
     await this.loadState();
-    console.log('[Guardians] Inicializado con', Object.keys(GUARDIANS).length, 'guardianes');
+    logger.info('GuardiansService', `Inicializado con ${Object.keys(GUARDIANS).length} guardianes`);
     return true;
   }
 
@@ -924,7 +925,7 @@ class GuardiansService {
         transformedGuardians: this.transformedGuardians
       }));
     } catch (error) {
-      console.error('Error saving Guardians state:', error);
+      logger.error('GuardiansService', 'Error saving Guardians state:', error);
     }
   }
 
@@ -938,7 +939,7 @@ class GuardiansService {
         this.transformedGuardians = parsed.transformedGuardians || [];
       }
     } catch (error) {
-      console.error('Error loading Guardians state:', error);
+      logger.error('GuardiansService', 'Error loading Guardians state:', error);
     }
   }
 

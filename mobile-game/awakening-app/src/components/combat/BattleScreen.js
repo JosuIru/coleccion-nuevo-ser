@@ -12,7 +12,8 @@ import {
   Animated,
   TouchableOpacity,
   Modal,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,35 +22,57 @@ import { COLORS } from '../../config/constants';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// Tipos de ataques disponibles
+// Acciones basadas en las 5 Premisas del Nuevo Ser
 const ATTACK_TYPES = {
-  CONSCIOUSNESS: {
-    name: 'Despertar',
-    icon: '🧠',
+  // Premisa 1: Abundancia vs Escasez
+  ABUNDANCE: {
+    name: 'Abundancia',
+    icon: '🌊',
+    color: '#22C55E',
+    description: 'Transforma la escasez en abundancia compartida',
+    statKey: 'empathy',
+    premise: 'abundance',
+    effectText: 'genera recursos compartidos'
+  },
+  // Premisa 2: Valor Intrínseco vs Valor Instrumental
+  INTRINSIC: {
+    name: 'Valor Intrínseco',
+    icon: '💎',
     color: '#8B5CF6',
-    description: 'Eleva la consciencia',
-    statKey: 'consciousness'
+    description: 'Revela el valor inherente de cada ser',
+    statKey: 'consciousness',
+    premise: 'intrinsic_value',
+    effectText: 'reconoce la dignidad de todo'
   },
-  ACTION: {
-    name: 'Acción',
-    icon: '⚡',
+  // Premisa 3: Unidad vs Separación
+  UNITY: {
+    name: 'Unidad',
+    icon: '🔗',
+    color: '#06B6D4',
+    description: 'Conecta lo que parecía separado',
+    statKey: 'connection',
+    premise: 'unity',
+    effectText: 'crea puentes de entendimiento'
+  },
+  // Premisa 4: Presencia vs Tiempo Lineal
+  PRESENCE: {
+    name: 'Presencia',
+    icon: '⏳',
     color: '#F59E0B',
-    description: 'Actúa con determinación',
-    statKey: 'action'
+    description: 'Actúa desde el ahora eterno',
+    statKey: 'reflection',
+    premise: 'presence',
+    effectText: 'disuelve la urgencia ilusoria'
   },
-  TECHNIQUE: {
-    name: 'Técnica',
-    icon: '🔧',
-    color: '#3B82F6',
-    description: 'Aplica conocimiento',
-    statKey: 'technique'
-  },
-  DEFEND: {
-    name: 'Defender',
-    icon: '🛡️',
+  // Acción de defensa/sanación
+  REGENERATE: {
+    name: 'Regenerar',
+    icon: '🌱',
     color: '#10B981',
-    description: 'Protege y recupera',
-    statKey: null
+    description: 'Sana y fortalece desde la raíz',
+    statKey: null,
+    premise: 'creativity',
+    effectText: 'regenera lo dañado'
   }
 };
 
@@ -60,11 +83,53 @@ const BattleScreen = ({
   onComplete, // (success: boolean, rewards: object) => void
   onCancel
 }) => {
+  // Calcular HP máximo basado en stats del ser y dificultad de la crisis
+  const calculateMaxHP = useCallback(() => {
+    const beingLevel = being?.level || 1;
+    const beingResilience = being?.attributes?.resilience || 30;
+    // HP base: 80 + nivel*5 + resiliencia/2
+    const playerMaxHP = Math.floor(80 + beingLevel * 5 + beingResilience / 2);
+
+    // HP de crisis basado en dificultad y escala
+    const difficultyMultiplier = {
+      easy: 0.7,
+      medium: 1.0,
+      hard: 1.3,
+      extreme: 1.6
+    };
+    const scaleMultiplier = {
+      local: 0.8,
+      regional: 1.0,
+      nacional: 1.2,
+      global: 1.5
+    };
+    const baseCrisisHP = 100;
+    const diff = difficultyMultiplier[crisis?.difficulty] || 1.0;
+    const scale = scaleMultiplier[crisis?.scale] || 1.0;
+    const crisisMaxHP = Math.floor(baseCrisisHP * diff * scale);
+
+    return { playerMaxHP, crisisMaxHP };
+  }, [being, crisis]);
+
+  // Calcular turnos máximos según dificultad
+  const calculateMaxTurns = useCallback(() => {
+    const difficultyTurns = {
+      easy: 6,
+      medium: 5,
+      hard: 4,
+      extreme: 3
+    };
+    return difficultyTurns[crisis?.difficulty] || 5;
+  }, [crisis]);
+
+  const { playerMaxHP, crisisMaxHP } = calculateMaxHP();
+  const calculatedMaxTurns = calculateMaxTurns();
+
   // Estado de batalla
   const [turn, setTurn] = useState(1);
-  const [maxTurns] = useState(5);
-  const [playerHP, setPlayerHP] = useState(100);
-  const [crisisHP, setCrisisHP] = useState(100);
+  const [maxTurns] = useState(calculatedMaxTurns);
+  const [playerHP, setPlayerHP] = useState(playerMaxHP);
+  const [crisisHP, setCrisisHP] = useState(crisisMaxHP);
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [battleLog, setBattleLog] = useState([]);
   const [battleEnded, setBattleEnded] = useState(false);
@@ -72,6 +137,7 @@ const BattleScreen = ({
   const [selectedAction, setSelectedAction] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [defenseBonus, setDefenseBonus] = useState(0);
+  const [turnsUsed, setTurnsUsed] = useState(0);
 
   // Animaciones
   const playerShake = useRef(new Animated.Value(0)).current;
@@ -81,36 +147,56 @@ const BattleScreen = ({
   const actionFlash = useRef(new Animated.Value(0)).current;
   const turnIndicator = useRef(new Animated.Value(0)).current;
 
-  // Calcular stats base
+  // Calcular stats base del ser (incluye nivel)
   const getBeingStats = useCallback(() => {
     const attrs = being?.attributes || {};
+    const level = being?.level || 1;
+    // Bonus por nivel: +10% por nivel
+    const levelBonus = 1 + (level - 1) * 0.1;
     return {
-      consciousness: attrs.consciousness || 30,
-      action: attrs.action || 30,
-      technique: attrs.technique || 30,
-      resilience: attrs.resilience || 30,
-      organization: attrs.organization || 30
+      consciousness: Math.floor((attrs.consciousness || 30) * levelBonus),
+      action: Math.floor((attrs.action || 30) * levelBonus),
+      technique: Math.floor((attrs.technique || 30) * levelBonus),
+      resilience: Math.floor((attrs.resilience || 30) * levelBonus),
+      organization: Math.floor((attrs.organization || 30) * levelBonus),
+      empathy: Math.floor((attrs.empathy || 30) * levelBonus),
+      connection: Math.floor((attrs.connection || 30) * levelBonus),
+      reflection: Math.floor((attrs.reflection || 30) * levelBonus),
+      level: level
     };
   }, [being]);
 
   const getCrisisStats = useCallback(() => {
     const attrs = crisis?.requiredAttributes || {};
+    const difficultyBonus = {
+      easy: 0.8,
+      medium: 1.0,
+      hard: 1.3,
+      extreme: 1.6
+    };
+    const bonus = difficultyBonus[crisis?.difficulty] || 1.0;
     return {
-      consciousness: attrs.consciousness || 50,
-      action: attrs.action || 50,
-      technique: attrs.technique || 50,
-      difficulty: crisis?.difficulty || 'medium'
+      consciousness: Math.floor((attrs.consciousness || 50) * bonus),
+      action: Math.floor((attrs.action || 50) * bonus),
+      technique: Math.floor((attrs.technique || 50) * bonus),
+      difficulty: crisis?.difficulty || 'medium',
+      scale: crisis?.scale || 'local'
     };
   }, [crisis]);
 
   // Resetear batalla cuando se abre
   useEffect(() => {
     if (visible) {
+      const { playerMaxHP: newPlayerHP, crisisMaxHP: newCrisisHP } = calculateMaxHP();
       setTurn(1);
-      setPlayerHP(100);
-      setCrisisHP(100);
+      setTurnsUsed(0);
+      setPlayerHP(newPlayerHP);
+      setCrisisHP(newCrisisHP);
       setIsPlayerTurn(true);
-      setBattleLog([{ text: '¡La batalla comienza!', type: 'system' }]);
+      setBattleLog([{
+        text: `¡Batalla iniciada! ${being?.name || 'Tu Ser'} (Nv.${being?.level || 1}) vs ${crisis?.title || 'Crisis'}`,
+        type: 'system'
+      }]);
       setBattleEnded(false);
       setVictory(false);
       setSelectedAction(null);
@@ -123,7 +209,7 @@ const BattleScreen = ({
         useNativeDriver: true
       }).start();
     }
-  }, [visible]);
+  }, [visible, calculateMaxHP, being, crisis]);
 
   // Verificar fin de batalla
   useEffect(() => {
@@ -142,6 +228,7 @@ const BattleScreen = ({
 
     setIsAnimating(true);
     setSelectedAction(attackType);
+    setTurnsUsed(prev => prev + 1);
     soundService.play('tap');
 
     const stats = getBeingStats();
@@ -150,29 +237,55 @@ const BattleScreen = ({
     let logMessage = '';
 
     if (attackType.statKey) {
-      // Ataque
-      const baseDamage = stats[attackType.statKey] || 30;
+      // Ataque basado en premisa del Nuevo Ser
+      const baseStat = stats[attackType.statKey] || 30;
+      const levelBonus = stats.level || 1;
       const crisisDefense = crisisStats[attackType.statKey] || 50;
-      const effectiveness = Math.max(0.5, Math.min(2, baseDamage / crisisDefense));
-      damage = Math.floor(baseDamage * effectiveness * (0.8 + Math.random() * 0.4));
 
-      logMessage = `${attackType.icon} ${being?.name} usa ${attackType.name}! -${damage} HP`;
+      // Daño = (stat del ser * bonus de nivel) vs defensa de crisis
+      // Mínimo 50% efectividad, máximo 200%
+      const effectiveness = Math.max(0.5, Math.min(2, baseStat / crisisDefense));
+
+      // Daño base + bonus por nivel + variación aleatoria
+      const baseDamage = baseStat * effectiveness;
+      const levelDamageBonus = levelBonus * 2; // +2 daño por nivel
+      const randomMultiplier = 0.85 + Math.random() * 0.3; // 85%-115%
+
+      damage = Math.floor((baseDamage + levelDamageBonus) * randomMultiplier);
+
+      // Crítico si el stat es muy superior (25% chance si stat > defensa * 1.5)
+      const isCritical = baseStat > crisisDefense * 1.5 && Math.random() < 0.25;
+      if (isCritical) {
+        damage = Math.floor(damage * 1.5);
+        logMessage = `💥 ¡CRÍTICO! ${attackType.icon} ${being?.name} ${attackType.effectText}! -${damage}`;
+      } else {
+        logMessage = `${attackType.icon} ${being?.name} ${attackType.effectText}! -${damage}`;
+      }
 
       // Animación de ataque
       animateAttack(crisisShake, crisisScale, () => {
         setCrisisHP(prev => Math.max(0, prev - damage));
-        addBattleLog(logMessage, 'player');
+        addBattleLog(logMessage, isCritical ? 'critical' : 'player');
         soundService.play('success');
 
         // Turno de la crisis
         setTimeout(() => executeCrisisTurn(), 1000);
       });
     } else {
-      // Defender
-      setDefenseBonus(30);
-      const heal = Math.floor(10 + Math.random() * 10);
-      setPlayerHP(prev => Math.min(100, prev + heal));
-      logMessage = `${attackType.icon} ${being?.name} defiende y recupera +${heal} HP`;
+      // Regenerar (sanación basada en resiliencia + organización)
+      const resilience = stats.resilience || 30;
+      const organization = stats.organization || 30;
+
+      // Defensa escala con resiliencia
+      const scaledDefense = Math.floor(20 + resilience / 3);
+      setDefenseBonus(scaledDefense);
+
+      // Sanación escala con organización
+      const baseHeal = 10 + organization / 4;
+      const heal = Math.floor(baseHeal + Math.random() * 10);
+
+      setPlayerHP(prev => Math.min(playerMaxHP, prev + heal));
+      logMessage = `${attackType.icon} ${being?.name} ${attackType.effectText}. +${heal} HP, +🛡️${scaledDefense}`;
 
       animateDefend(() => {
         addBattleLog(logMessage, 'player');
@@ -191,16 +304,31 @@ const BattleScreen = ({
 
     setIsPlayerTurn(false);
 
+    const stats = getBeingStats();
     const crisisStats = getCrisisStats();
-    const attackPower = Math.floor(
-      (crisisStats.action || 50) * (0.3 + Math.random() * 0.4)
-    );
-    const actualDamage = Math.max(5, attackPower - defenseBonus);
+
+    // Daño de crisis escala con dificultad
+    const difficultyDamage = {
+      easy: 0.6,
+      medium: 0.8,
+      hard: 1.0,
+      extreme: 1.3
+    };
+    const diffMult = difficultyDamage[crisisStats.difficulty] || 0.8;
+
+    const baseAttack = (crisisStats.action || 50) * diffMult;
+    const attackPower = Math.floor(baseAttack * (0.7 + Math.random() * 0.3));
+
+    // Reducción por resiliencia del ser
+    const resilienceReduction = Math.floor(stats.resilience / 10);
+    const actualDamage = Math.max(5, attackPower - defenseBonus - resilienceReduction);
 
     // Animación de ataque de crisis
     animateAttack(playerShake, playerScale, () => {
       setPlayerHP(prev => Math.max(0, prev - actualDamage));
-      addBattleLog(`🔥 La crisis ataca! -${actualDamage} HP`, 'enemy');
+
+      const blockText = defenseBonus > 0 ? ` (bloqueado: ${defenseBonus + resilienceReduction})` : '';
+      addBattleLog(`🔥 La crisis ataca! -${actualDamage} HP${blockText}`, 'enemy');
       soundService.play('error');
 
       setDefenseBonus(0); // Reset defensa
@@ -258,46 +386,72 @@ const BattleScreen = ({
     setBattleEnded(true);
     setVictory(isVictory);
 
+    // Calcular bonus por rendimiento
+    const difficultyBonus = {
+      easy: 1.0,
+      medium: 1.2,
+      hard: 1.5,
+      extreme: 2.0
+    };
+    const diffMult = difficultyBonus[crisis?.difficulty] || 1.0;
+
+    // Bonus por velocidad (menos turnos = más bonus)
+    const speedBonus = isVictory ? Math.max(1, 1.5 - (turnsUsed * 0.1)) : 1;
+
+    // Bonus por HP restante
+    const hpRatio = playerHP / playerMaxHP;
+    const survivalBonus = isVictory ? (1 + hpRatio * 0.3) : 1;
+
     if (isVictory) {
       soundService.playLevelUp();
-      addBattleLog('🎉 ¡VICTORIA! Crisis resuelta', 'victory');
+      const bonusText = speedBonus > 1.2 ? ' ¡Victoria rápida!' : (survivalBonus > 1.2 ? ' ¡Victoria dominante!' : '');
+      addBattleLog(`🎉 ¡VICTORIA! Crisis resuelta${bonusText}`, 'victory');
     } else {
       soundService.play('error');
       addBattleLog('💔 Derrota... La crisis persiste', 'defeat');
     }
 
-    // Calcular recompensas
+    // Calcular recompensas con todos los bonus
     const baseXP = crisis?.rewards?.xp || 50;
     const baseCons = crisis?.rewards?.consciousness || 25;
-    const multiplier = isVictory ? 1 : 0.3;
+    const baseMultiplier = isVictory ? 1 : 0.3;
+    const totalMultiplier = baseMultiplier * diffMult * speedBonus * survivalBonus;
 
     setTimeout(() => {
       onComplete?.(isVictory, {
-        xp: Math.floor(baseXP * multiplier),
-        consciousness: Math.floor(baseCons * multiplier),
-        turnsUsed: turn
+        xp: Math.floor(baseXP * totalMultiplier),
+        consciousness: Math.floor(baseCons * totalMultiplier),
+        turnsUsed: turnsUsed,
+        bonuses: {
+          difficulty: diffMult,
+          speed: speedBonus,
+          survival: survivalBonus
+        }
       });
     }, 2000);
   };
 
-  // Renderizar barra de HP
-  const renderHPBar = (hp, maxHP, color, label) => (
-    <View style={styles.hpContainer}>
-      <Text style={styles.hpLabel}>{label}</Text>
-      <View style={styles.hpBarBg}>
-        <Animated.View
-          style={[
-            styles.hpBarFill,
-            {
-              width: `${hp}%`,
-              backgroundColor: hp > 50 ? color : hp > 25 ? '#F59E0B' : '#EF4444'
-            }
-          ]}
-        />
+  // Renderizar barra de HP con porcentaje dinámico
+  const renderHPBar = (hp, maxHP, color, label) => {
+    const hpPercent = Math.max(0, Math.min(100, (hp / maxHP) * 100));
+    return (
+      <View style={styles.hpContainer}>
+        <Text style={styles.hpLabel}>{label}</Text>
+        <View style={styles.hpBarBg}>
+          <Animated.View
+            style={[
+              styles.hpBarFill,
+              {
+                width: `${hpPercent}%`,
+                backgroundColor: hpPercent > 50 ? color : hpPercent > 25 ? '#F59E0B' : '#EF4444'
+              }
+            ]}
+          />
+        </View>
+        <Text style={styles.hpText}>{hp}/{maxHP}</Text>
       </View>
-      <Text style={styles.hpText}>{hp}/{maxHP}</Text>
-    </View>
-  );
+    );
+  };
 
   if (!visible) return null;
 
@@ -333,9 +487,9 @@ const BattleScreen = ({
           >
             <Text style={styles.crisisIcon}>🔥</Text>
             <Text style={styles.crisisName} numberOfLines={2}>
-              {crisis?.title || 'Crisis'}
+              {crisis?.title || crisis?.name || 'Crisis'}
             </Text>
-            {renderHPBar(crisisHP, 100, '#EF4444', 'Crisis')}
+            {renderHPBar(crisisHP, crisisMaxHP, '#EF4444', 'Crisis')}
           </Animated.View>
 
           {/* VS */}
@@ -362,7 +516,7 @@ const BattleScreen = ({
           >
             <Text style={styles.playerIcon}>🧬</Text>
             <Text style={styles.playerName}>{being?.name || 'Tu Ser'}</Text>
-            {renderHPBar(playerHP, 100, '#10B981', 'Ser')}
+            {renderHPBar(playerHP, playerMaxHP, '#10B981', `Ser Nv.${being?.level || 1}`)}
             {defenseBonus > 0 && (
               <View style={styles.defenseBadge}>
                 <Text style={styles.defenseBadgeText}>🛡️ +{defenseBonus}</Text>
@@ -381,7 +535,8 @@ const BattleScreen = ({
                 log.type === 'player' && styles.logPlayer,
                 log.type === 'enemy' && styles.logEnemy,
                 log.type === 'victory' && styles.logVictory,
-                log.type === 'defeat' && styles.logDefeat
+                log.type === 'defeat' && styles.logDefeat,
+                log.type === 'critical' && styles.logCritical
               ]}
             >
               {log.text}
@@ -569,6 +724,11 @@ const styles = StyleSheet.create({
   logDefeat: {
     color: '#EF4444',
     fontWeight: 'bold'
+  },
+  logCritical: {
+    color: '#F59E0B',
+    fontWeight: 'bold',
+    fontSize: 14
   },
   actionsContainer: {
     padding: 20

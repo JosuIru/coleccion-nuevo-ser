@@ -1040,8 +1040,8 @@ class FrankensteinLabUI {
     const loading = container.querySelector('#organism-loading');
     if (loading) loading.remove();
 
-    // Alternar imagen de fondo de Leonardo da Vinci aleatoriamente
-    this.startBackgroundRotation();
+    // Fondo optimizado - ya no usamos rotación de imágenes externas
+    // this.startBackgroundRotation();
 
     container.innerHTML = `
       <div class="frankenstein-laboratory awakening-theme">
@@ -1337,10 +1337,10 @@ class FrankensteinLabUI {
                   <button class="lab-button" id="btn-export-being" disabled>
                     📤 Exportar Prompt
                   </button>
-                  <button class="lab-button primary" id="btn-validate-being" disabled>
+                  <button class="lab-button primary btn-validate-mission" id="btn-validate-being" disabled>
                     ✨ Validar misión
                   </button>
-                  <button class="lab-button primary" id="btn-talk-to-being" disabled>
+                  <button class="lab-button primary btn-create-being" id="btn-talk-to-being" disabled>
                     💬 Hablar con el Ser
                   </button>
                 </div>

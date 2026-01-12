@@ -16,7 +16,8 @@ import {
   Dimensions
 } from 'react-native';
 import useGameStore from '../stores/gameStore';
-import { COLORS, ATTRIBUTES } from '../config/constants';
+import { COLORS, ATTRIBUTES, BEING_STATUS, RARITY } from '../config/constants';
+import AnimatedBeing from '../components/AnimatedBeing';
 
 const { width } = Dimensions.get('window');
 
@@ -111,31 +112,11 @@ const BeingsScreen = ({ navigation }) => {
   };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case 'available':
-        return 'Disponible';
-      case 'deployed':
-        return 'Desplegado';
-      case 'resting':
-        return 'Descansando';
-      case 'training':
-        return 'Entrenando';
-      default:
-        return 'Desconocido';
-    }
+    return BEING_STATUS[status]?.name || 'Desconocido';
   };
 
   const getRarityColor = (rarity) => {
-    switch (rarity) {
-      case 'legendary':
-        return '#FFD700'; // Dorado
-      case 'epic':
-        return '#9B59B6'; // Púrpura
-      case 'rare':
-        return '#3498DB'; // Azul
-      default:
-        return '#95A5A6'; // Gris
-    }
+    return RARITY[rarity]?.color || RARITY.common.color;
   };
 
   // ═══════════════════════════════════════════════════════════

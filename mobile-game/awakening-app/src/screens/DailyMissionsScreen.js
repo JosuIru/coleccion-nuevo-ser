@@ -19,6 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import useGameStore from '../stores/gameStore';
 import dailyMissionService from '../services/DailyMissionService';
 import { COLORS } from '../config/constants';
+import logger from '../utils/logger';
 
 const DailyMissionsScreen = ({ navigation }) => {
   const [missions, setMissions] = useState([]);
@@ -61,7 +62,7 @@ const DailyMissionsScreen = ({ navigation }) => {
       setAllCompleted(data.allCompleted);
       setAllClaimed(data.allClaimed);
     } catch (error) {
-      console.error('Error loading daily missions:', error);
+      logger.error('DailyMissionsScreen', 'Error loading daily missions:', error);
     }
   };
 

@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import logger from '../utils/logger';
 
 import { leagueService } from '../services/LeagueService';
 import useGameStore from '../stores/gameStore';
@@ -269,7 +270,7 @@ const LeagueScreen = ({ navigation }) => {
       // Cargar todos los datos
       await loadAllData();
     } catch (error) {
-      console.error('Error initializing league:', error);
+      logger.error('LeagueScreen', 'Error initializing league:', error);
     } finally {
       setLoading(false);
     }
@@ -290,7 +291,7 @@ const LeagueScreen = ({ navigation }) => {
       setSeasonInfo(leagueService.getSeasonInfo());
       setChallengeCrises(crises);
     } catch (error) {
-      console.error('Error loading league data:', error);
+      logger.error('LeagueScreen', 'Error loading league data:', error);
     }
   };
 

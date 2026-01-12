@@ -11,6 +11,7 @@
 
 import { Linking, Alert, Platform } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
+import logger from '../utils/logger';
 
 const COLECCION_DEEP_LINK = 'nuevosser://lab';
 const AWAKENING_SCHEME = 'awakeningprotocol://';
@@ -40,7 +41,7 @@ class DeepLinkService {
                 this.handleDeepLink(initialUrl);
             }
         } catch (error) {
-            console.error('[DeepLinkService] Error getting initial URL:', error);
+            logger.error('DeepLinkService', 'Error getting initial URL:', error);
         }
 
         // Listen for incoming deep links while app is running
@@ -48,7 +49,7 @@ class DeepLinkService {
             this.handleDeepLink(url);
         });
 
-        console.log('[DeepLinkService] Initialized');
+        logger.info('DeepLinkService', 'Initialized');
     }
 
     /**
@@ -57,13 +58,13 @@ class DeepLinkService {
     handleDeepLink(url) {
         if (!url) return;
 
-        console.log('[DeepLinkService] Received deep link:', url);
+        logger.info('DeepLinkService', 'Received deep link:', url);
 
         try {
             // Parse URL
             const parsed = this.parseDeepLink(url);
             if (!parsed) {
-                console.warn('[DeepLinkService] Invalid deep link format:', url);
+                logger.warn('DeepLinkService', 'Invalid deep link format:', url);
                 return;
             }
 
@@ -83,10 +84,10 @@ class DeepLinkService {
                     break;
 
                 default:
-                    console.warn('[DeepLinkService] Unknown action:', action);
+                    logger.warn('DeepLinkService', 'Unknown action:', action);
             }
         } catch (error) {
-            console.error('[DeepLinkService] Error handling deep link:', error);
+            logger.error('DeepLinkService', 'Error handling deep link:', error);
             Alert.alert(
                 'Error',
                 'No se pudo procesar el enlace. Por favor intenta de nuevo.'
@@ -186,9 +187,9 @@ class DeepLinkService {
                 ]
             );
 
-            console.log('[DeepLinkService] Being imported successfully:', newBeing.name, newBeing.id);
+            logger.info('DeepLinkService', 'Being imported successfully:', newBeing.name, newBeing.id);
         } catch (error) {
-            console.error('[DeepLinkService] Error parsing being data:', error);
+            logger.error('DeepLinkService', 'Error parsing being data:', error);
             Alert.alert('Error', 'No se pudo importar el ser. Formato de datos inválido.');
         }
     }
@@ -354,7 +355,7 @@ class DeepLinkService {
                 return false;
             }
         } catch (error) {
-            console.error('[DeepLinkService] Error opening Frankenstein Lab:', error);
+            logger.error('DeepLinkService', 'Error opening Frankenstein Lab:', error);
             return false;
         }
     }
@@ -387,7 +388,7 @@ class DeepLinkService {
                 return false;
             }
         } catch (error) {
-            console.error('[DeepLinkService] Error sending being:', error);
+            logger.error('DeepLinkService', 'Error sending being:', error);
             return false;
         }
     }

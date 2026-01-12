@@ -9,7 +9,7 @@
  * @date 2025-12-17
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,8 @@ import {
   Linking,
   ActivityIndicator,
   FlatList,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -65,6 +66,12 @@ import { BattleScreen } from '../components/combat';
 
 // Globo 3D
 import Globe3D from '../components/Globe3D';
+
+// Santuario de Seres
+import SanctuaryPanel from '../components/SanctuaryPanel';
+
+// Mensajes de Gaia
+import GaiaMessageBanner from '../components/GaiaMessageBanner';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -344,16 +351,22 @@ const CrisisDetailModal = ({ crisis, visible, onClose, onDeploy, beings }) => {
   }, [selectedBeings, crisis]);
 
   const toggleBeingSelection = (being) => {
-    if (being.status !== 'available') return;
+    if (being.status !== 'available') {
+      Alert.alert('No disponible', `${being.name} está en misión o descansando`);
+      return;
+    }
 
-    setSelectedBeings(prev => {
-      const isSelected = prev.find(b => b.id === being.id);
-      if (isSelected) {
-        return prev.filter(b => b.id !== being.id);
-      } else if (prev.length < 4) { // Máximo 4 seres
-        return [...prev, being];
+    setSelectedBeings(currentSelected => {
+      const isAlreadySelected = currentSelected.some(b => b.id === being.id);
+
+      if (isAlreadySelected) {
+        return currentSelected.filter(b => b.id !== being.id);
+      } else if (currentSelected.length < 4) {
+        return [...currentSelected, being];
+      } else {
+        Alert.alert('Límite alcanzado', 'Máximo 4 seres por misión');
+        return currentSelected;
       }
-      return prev;
     });
   };
 
@@ -417,9 +430,52 @@ const CrisisDetailModal = ({ crisis, visible, onClose, onDeploy, beings }) => {
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.modalScroll}>
+          <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled" nestedScrollEnabled={true}>
             {/* Título y descripción */}
             <Text style={styles.modalTitle}>{crisis.title}</Text>
+
+            {/* Indicadores de dificultad y escala */}
+            <View style={styles.difficultyRow}>
+              <View style={[
+                styles.difficultyBadge,
+                {
+                  backgroundColor:
+                    crisis.difficulty === 'easy' ? '#22c55e30' :
+                    crisis.difficulty === 'hard' ? '#f59e0b30' :
+                    crisis.difficulty === 'extreme' ? '#ef444430' : '#3b82f630'
+                }
+              ]}>
+                <Text style={[
+                  styles.difficultyText,
+                  {
+                    color:
+                      crisis.difficulty === 'easy' ? '#22c55e' :
+                      crisis.difficulty === 'hard' ? '#f59e0b' :
+                      crisis.difficulty === 'extreme' ? '#ef4444' : '#3b82f6'
+                  }
+                ]}>
+                  {crisis.difficulty === 'easy' ? '⚡ Fácil' :
+                   crisis.difficulty === 'hard' ? '🔥 Difícil' :
+                   crisis.difficulty === 'extreme' ? '💀 Extremo' : '⚔️ Normal'}
+                </Text>
+              </View>
+              <View style={styles.scaleBadge}>
+                <Text style={styles.scaleText}>
+                  {crisis.scale === 'local' ? '📍 Local' :
+                   crisis.scale === 'regional' ? '🗺️ Regional' :
+                   crisis.scale === 'nacional' ? '🏛️ Nacional' :
+                   crisis.scale === 'global' ? '🌍 Global' : '📍 Local'}
+                </Text>
+              </View>
+              <View style={styles.turnsBadge}>
+                <Text style={styles.turnsText}>
+                  ⏱️ {crisis.difficulty === 'easy' ? '6' :
+                      crisis.difficulty === 'hard' ? '4' :
+                      crisis.difficulty === 'extreme' ? '3' : '5'} turnos
+                </Text>
+              </View>
+            </View>
+
             <Text style={styles.modalDescription}>{crisis.description}</Text>
 
             {/* Fuente */}
@@ -668,12 +724,18 @@ const CommandCenterScreen = ({ navigation }) => {
   // Modal de bienvenida para nuevos usuarios
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
+  // Santuario expandido/colapsado
+  const [sanctuaryExpanded, setSanctuaryExpanded] = useState(false);
+
   // Estados para animaciones de celebración
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationType, setCelebrationType] = useState('confetti');
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [newLevel, setNewLevel] = useState(1);
   const [missionResult, setMissionResult] = useState(null);
+
+  // Estado para operaciones async (instituciones, guardianes, etc.)
+  const [asyncOperationLoading, setAsyncOperationLoading] = useState(false);
 
   // Estados para combate de crisis
   const [showCrisisBattle, setShowCrisisBattle] = useState(false);
@@ -759,6 +821,17 @@ const CommandCenterScreen = ({ navigation }) => {
     checkFirstMissionTutorial();
     initializeNewSystems();
     checkWelcomeModal();
+
+    // Liberar seres que estén en misión sin misión activa real
+    // (limpieza de estados huérfanos por batallas interrumpidas)
+    beings.forEach(being => {
+      if (being.status === 'deployed' || being.status === 'on_mission') {
+        useGameStore.getState().updateBeing(being.id, {
+          status: 'available',
+          currentMission: null
+        });
+      }
+    });
   }, []);
 
   // Verificar si mostrar modal de bienvenida (usuarios nuevos)
@@ -781,7 +854,10 @@ const CommandCenterScreen = ({ navigation }) => {
     setShowWelcomeModal(false);
     try {
       await AsyncStorage.setItem('welcome_modal_shown', 'true');
-    } catch (e) {}
+    } catch (e) {
+      // Non-critical: welcome modal flag storage failed
+      logger.debug('CommandCenter', 'Failed to save welcome modal state', e);
+    }
   };
 
   // Initialize new game systems
@@ -871,6 +947,8 @@ const CommandCenterScreen = ({ navigation }) => {
 
   const handleCrisisSelect = (crisis) => {
     setSelectedCrisis(crisis);
+    // Limpiar selección de seres al cambiar de crisis
+    setSelectedBeings([]);
     // Mostrar modal en modo mapa y 3D
     if (viewMode === 'map' || viewMode === '3d') {
       setShowDetailModal(true);
@@ -878,24 +956,28 @@ const CommandCenterScreen = ({ navigation }) => {
   };
 
   const handleDeploy = async (crisis, selectedBeings, probability) => {
-    // Cerrar modal de detalle
-    setShowDetailModal(false);
-    setShowFullscreenMap(false);
+    try {
+      // Cerrar modal de detalle
+      setShowDetailModal(false);
 
-    // Guardar contexto de la batalla
-    setBattleCrisis(crisis);
-    setBattleBeing(selectedBeings[0]); // Usar el primer ser seleccionado
-    setPendingBattleRewards({
-      baseXp: crisis.rewards.xp,
-      baseConsciousness: crisis.rewards.consciousness,
-      selectedBeings,
-      probability
-    });
+      // Guardar contexto de la batalla con valores por defecto
+      const rewards = crisis?.rewards || { xp: 50, consciousness: 25 };
 
-    // Iniciar combate interactivo
-    setTimeout(() => {
+      setBattleCrisis(crisis);
+      setBattleBeing(selectedBeings[0]);
+      setPendingBattleRewards({
+        baseXp: rewards.xp || 50,
+        baseConsciousness: rewards.consciousness || 25,
+        selectedBeings,
+        probability
+      });
+
+      // Iniciar batalla
       setShowCrisisBattle(true);
-    }, 300);
+    } catch (error) {
+      logger.error('CommandCenter', 'Error al iniciar batalla:', error);
+      Alert.alert('Error', 'No se pudo iniciar la batalla');
+    }
   };
 
   // Manejar resultado del combate
@@ -909,14 +991,28 @@ const CommandCenterScreen = ({ navigation }) => {
     const multiplier = success ? 1.0 : 0.3;
     const xpGained = Math.round(pendingRewards.baseXp * multiplier);
     const consciousnessGained = Math.round(pendingRewards.baseConsciousness * multiplier);
+    const fragmentsGained = success ? Math.round(5 + Math.random() * 10) : 0; // 5-15 fragmentos por victoria
 
     // Aplicar recompensas
     addXP(xpGained);
     addConsciousness(consciousnessGained);
 
-    // Actualizar estado de seres
+    // Dar fragmentos de sabiduría por victoria (para construir instituciones)
+    if (fragmentsGained > 0) {
+      useGameStore.setState((state) => ({
+        knowledge: {
+          ...state.knowledge,
+          wisdomFragments: (state.knowledge.wisdomFragments || 0) + fragmentsGained
+        }
+      }));
+    }
+
+    // Liberar seres después de la batalla
     pendingRewards.selectedBeings.forEach(being => {
-      deployBeing(being.id, battleCrisis.id);
+      useGameStore.getState().updateBeing(being.id, {
+        status: 'available',
+        currentMission: null
+      });
     });
 
     // Remover crisis de la lista
@@ -927,7 +1023,8 @@ const CommandCenterScreen = ({ navigation }) => {
     setMissionResult({
       success,
       xpGained,
-      consciousnessGained
+      consciousnessGained,
+      fragmentsGained
     });
 
     // Reproducir sonido y vibración
@@ -950,8 +1047,73 @@ const CommandCenterScreen = ({ navigation }) => {
       }
     }, 500);
 
-    // Update transition stats
-    updateTransitionStat('crisesResolved', 1);
+    // Update transition stats y Consciencia Global
+    if (success) {
+      updateTransitionStat('crisesResolved', 1);
+
+      // Actualizar Índice de Consciencia Global
+      transitionService.updateGlobalConsciousness({
+        crisesResolved: (useGameStore.getState().transition?.statistics?.crisesResolved || 0) + 1,
+        guardiansTransformed: guardians?.transformed?.length || 0,
+        institutionsBuilt: institutions?.built?.length || 0,
+        quizzesCompleted: useGameStore.getState().transition?.statistics?.quizzesCompleted || 0,
+        legendaryBeingsUnlocked: useGameStore.getState().transition?.statistics?.legendaryBeingsUnlocked || 0,
+        totalBeingsAwakened: beings?.length || 0
+      }).then(result => {
+        // Actualizar estado local de Gaia
+        if (result) {
+          setGaiaStatus(transitionService.getGaiaStatus());
+
+          // Si hay mensaje de Gaia por nuevo nivel, mostrarlo
+          if (result.gaiaMessage) {
+            setTimeout(() => {
+              Alert.alert(
+                '🌍 Mensaje de Gaia',
+                result.gaiaMessage.text + '\n\n' +
+                (result.powers?.length > 0 ? '✨ Nuevos poderes:\n• ' + result.powers.join('\n• ') : ''),
+                [{ text: 'Continuar', style: 'default' }]
+              );
+            }, 2000);
+          }
+        }
+      });
+
+      // Dar XP a los seres participantes (usa addBeingXP para level-up automático)
+      pendingRewards.selectedBeings.forEach(being => {
+        const beingXp = Math.round(xpGained * 0.5);
+        useGameStore.getState().addBeingXP(being.id, beingXp);
+      });
+
+      // Verificar si Gaia ha despertado completamente (100% consciencia)
+      const newGaiaStatus = transitionService.getGaiaStatus();
+      if (newGaiaStatus?.isAwakened && !gaiaStatus?.isAwakened) {
+        // ¡VICTORIA! Gaia ha despertado
+        setTimeout(() => {
+          soundService.playLevelUp();
+          setCelebrationType('confetti');
+          setShowCelebration(true);
+
+          Alert.alert(
+            '🌟 ¡LA GRAN TRANSICIÓN COMPLETADA! 🌟',
+            'Gaia ha despertado completamente. La consciencia global ha alcanzado el 100%.\n\n' +
+            '🌍 Un nuevo paradigma ha emergido.\n' +
+            '💚 La abundancia reemplaza la escasez.\n' +
+            '🔗 La unidad reemplaza la separación.\n' +
+            '✨ El valor intrínseco es reconocido en todo.\n\n' +
+            '¡Felicidades, Guardián del Nuevo Ser! Tu misión continúa en el mundo real.',
+            [
+              {
+                text: '¡Celebrar!',
+                onPress: () => {
+                  setCelebrationType('confetti');
+                  setShowCelebration(true);
+                }
+              }
+            ]
+          );
+        }, 3000);
+      }
+    }
     updateTransitionStat('missionsCompleted', 1);
 
     // Limpiar estado de batalla
@@ -962,6 +1124,17 @@ const CommandCenterScreen = ({ navigation }) => {
 
   const handleBattleCancel = () => {
     setShowCrisisBattle(false);
+
+    // Liberar seres si se cancela la batalla
+    if (pendingBattleRewards?.selectedBeings) {
+      pendingBattleRewards.selectedBeings.forEach(being => {
+        useGameStore.getState().updateBeing(being.id, {
+          status: 'available',
+          currentMission: null
+        });
+      });
+    }
+
     setBattleCrisis(null);
     setBattleBeing(null);
     setPendingBattleRewards(null);
@@ -1057,10 +1230,22 @@ const CommandCenterScreen = ({ navigation }) => {
     return result;
   };
 
-  // Filtrar crisis por tipo
-  const filteredCrises = filterType
-    ? crises.filter(c => c.type === filterType)
-    : crises;
+  // Filtrar crisis por tipo (memoizado para evitar recálculos innecesarios)
+  const filteredCrises = useMemo(() =>
+    filterType ? crises.filter(c => c.type === filterType) : crises,
+    [crises, filterType]
+  );
+
+  // Seres desplegados y disponibles (memoizados)
+  const deployedBeings = useMemo(() =>
+    beings.filter(b => b.status === 'deployed'),
+    [beings]
+  );
+
+  const availableBeingsCount = useMemo(() =>
+    beings.filter(b => b.status === 'available').length,
+    [beings]
+  );
 
   // Render
   if (loading) {
@@ -1120,8 +1305,25 @@ const CommandCenterScreen = ({ navigation }) => {
         </View>
       </View>
 
+      {/* Panel del Santuario - Seres animados */}
+      {beings.length > 0 && !sanctuaryExpanded && (
+        <SanctuaryPanel
+          beings={beings}
+          expanded={false}
+          onToggleExpand={() => setSanctuaryExpanded(true)}
+          onBeingPress={(being) => setSelectedBeingForAction(being)}
+          onDeployPress={(being) => {
+            setSelectedBeingForAction(being);
+            // Navegar a crisis si hay una seleccionada
+            if (selectedCrisis) {
+              handleCrisisSelect(selectedCrisis);
+            }
+          }}
+        />
+      )}
+
       {/* Main Feature Tabs - Solo en portrait mode */}
-      {!isLandscape && (
+      {!isLandscape && !sanctuaryExpanded && (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -1189,7 +1391,7 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Being Selector for Actions (shown in explore/sanctuary tabs) */}
-      {(activeTab === 'explore' || activeTab === 'sanctuary') && (
+      {!sanctuaryExpanded && (activeTab === 'explore' || activeTab === 'sanctuary') && (
         <View style={styles.beingSelectorContainer}>
           <Text style={styles.beingSelectorLabel}>Ser activo:</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -1210,8 +1412,26 @@ const CommandCenterScreen = ({ navigation }) => {
         </View>
       )}
 
+      {/* Santuario Expandido - Vista completa de seres animados */}
+      {sanctuaryExpanded && (
+        <SanctuaryPanel
+          beings={beings}
+          expanded={true}
+          onToggleExpand={() => setSanctuaryExpanded(false)}
+          onBeingPress={(being) => setSelectedBeingForAction(being)}
+          onDeployPress={(being) => {
+            setSelectedBeingForAction(being);
+            setSanctuaryExpanded(false);
+            // Navegar a crisis si hay una seleccionada
+            if (selectedCrisis) {
+              handleCrisisSelect(selectedCrisis);
+            }
+          }}
+        />
+      )}
+
       {/* Render content based on active tab */}
-      {(activeTab === 'crisis' || isLandscape) && (
+      {!sanctuaryExpanded && (activeTab === 'crisis' || isLandscape) && (
         <>
           {/* Toggle y filtros - Layout compacto en landscape */}
           <View style={[styles.viewToggle, isLandscape && styles.viewToggleLandscape]}>
@@ -1290,6 +1510,7 @@ const CommandCenterScreen = ({ navigation }) => {
                 crises={filteredCrises}
                 onCrisisSelect={handleCrisisSelect}
                 selectedCrisis={selectedCrisis}
+                deployedBeings={deployedBeings}
               />
             </View>
           ) : (
@@ -1336,7 +1557,7 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Exploration Tab Content */}
-      {activeTab === 'explore' && (
+      {!sanctuaryExpanded && activeTab === 'explore' && (
         <ExplorationPanel
           regions={explorationRegions}
           exploredRegions={exploration?.exploredRegions || []}
@@ -1349,7 +1570,7 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Sanctuary/Power Nodes Tab Content */}
-      {activeTab === 'sanctuary' && (
+      {!sanctuaryExpanded && activeTab === 'sanctuary' && (
         <PowerNodesPanel
           sanctuaries={powerNodes?.sanctuaries || []}
           corruptionZones={powerNodes?.corruptionZones || []}
@@ -1360,7 +1581,7 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Guardians Tab Content */}
-      {activeTab === 'guardians' && (
+      {!sanctuaryExpanded && activeTab === 'guardians' && (
         <GuardiansPanel
           guardians={allGuardians}
           playerLevel={user.level || 1}
@@ -1376,7 +1597,7 @@ const CommandCenterScreen = ({ navigation }) => {
       )}
 
       {/* Institutions Tab Content */}
-      {activeTab === 'institutions' && (
+      {!sanctuaryExpanded && activeTab === 'institutions' && (
         <InstitutionsPanel
           institutions={allInstitutions}
           gameState={{
@@ -1388,31 +1609,61 @@ const CommandCenterScreen = ({ navigation }) => {
             transformedGuardians: guardians?.transformed || []
           }}
           onBuild={async (institutionId) => {
-            const result = await buildInstitution(institutionId);
-            if (result.success) {
-              const updated = institutionsService.getAllInstitutions();
-              setAllInstitutions(updated);
+            setAsyncOperationLoading(true);
+            try {
+              const result = await buildInstitution(institutionId);
+              if (result.success) {
+                const updated = institutionsService.getAllInstitutions();
+                setAllInstitutions(updated);
+                setCelebrationType('confetti');
+                setShowCelebration(true);
+                Alert.alert('🏛️ ¡Institución Construida!', `${result.institution?.name || 'Nueva institución'} ha sido establecida.`);
+              } else {
+                Alert.alert('Error', result.error || 'No se pudo construir la institución');
+              }
+            } finally {
+              setAsyncOperationLoading(false);
             }
           }}
           onUpgrade={async (institutionId) => {
-            const result = await upgradeInstitution(institutionId);
-            if (result.success) {
-              const updated = institutionsService.getAllInstitutions();
-              setAllInstitutions(updated);
+            setAsyncOperationLoading(true);
+            try {
+              const result = await upgradeInstitution(institutionId);
+              if (result.success) {
+                const updated = institutionsService.getAllInstitutions();
+                setAllInstitutions(updated);
+                Alert.alert('⬆️ ¡Institución Mejorada!', `Ahora es nivel ${result.newLevel || 2}`);
+              } else {
+                Alert.alert('Error', result.error || 'No se pudo mejorar la institución');
+              }
+            } finally {
+              setAsyncOperationLoading(false);
             }
           }}
           onCollectResources={async () => {
-            const result = await collectInstitutionResources();
-            if (result.success && result.hasResources) {
-              // Show collected resources feedback
-              logger.info('CommandCenter', `Resources collected: ${JSON.stringify(result.collected)}`);
+            setAsyncOperationLoading(true);
+            try {
+              const result = await collectInstitutionResources();
+              if (result.success && result.hasResources) {
+                const collected = result.collected;
+                const parts = [];
+                if (collected.wisdomFragments) parts.push(`+${collected.wisdomFragments} fragmentos`);
+                if (collected.consciousness) parts.push(`+${collected.consciousness} consciencia`);
+                if (collected.healingEnergy) parts.push(`+${collected.healingEnergy} energía`);
+                Alert.alert('💰 ¡Recursos Recolectados!', parts.join('\n') || 'Recursos obtenidos');
+              } else if (!result.hasResources) {
+                Alert.alert('⏳ Sin Recursos', 'Aún no hay recursos disponibles. Vuelve más tarde.');
+              }
+            } finally {
+              setAsyncOperationLoading(false);
             }
           }}
+          loading={asyncOperationLoading}
         />
       )}
 
       {/* Gaia/Consciousness Tab Content */}
-      {activeTab === 'gaia' && (
+      {!sanctuaryExpanded && activeTab === 'gaia' && (
         <ConsciousnessIndexPanel
           gaiaStatus={gaiaStatus || {}}
           guardiansProgress={{
@@ -1470,19 +1721,63 @@ const CommandCenterScreen = ({ navigation }) => {
         battle={currentBattle}
         playerBeings={beings.filter(b => b.status === 'available').slice(0, 3)}
         onAction={async (actionType, details) => {
-          const result = await executeGuardianBattleAction(actionType, details);
-          if (result.battle) {
-            setCurrentBattle(result.battle);
+          try {
+            const result = await executeGuardianBattleAction(actionType, details);
+            if (result.battle) {
+              setCurrentBattle(result.battle);
+            }
+            if (result.victory !== undefined) {
+              // Battle ended
+              const updatedGuardians = guardiansService.getAllGuardians();
+              setAllGuardians(updatedGuardians);
+              setShowGuardianBattle(false);
+              setSelectedGuardian(null);
+              setCurrentBattle(null);
+
+              if (result.victory) {
+                // ¡Victoria! Actualizar estadísticas de transición
+                soundService.playLevelUp();
+                setCelebrationType('confetti');
+                setShowCelebration(true);
+
+                // Actualizar índice de consciencia global
+                await transitionService.updateGlobalConsciousness({
+                  crisesResolved: useGameStore.getState().transition?.statistics?.crisesResolved || 0,
+                  guardiansTransformed: (guardians?.transformed?.length || 0) + 1,
+                  institutionsBuilt: institutions?.built?.length || 0,
+                  quizzesCompleted: useGameStore.getState().transition?.statistics?.quizzesCompleted || 0,
+                  legendaryBeingsUnlocked: useGameStore.getState().transition?.statistics?.legendaryBeingsUnlocked || 0,
+                  totalBeingsAwakened: beings?.length || 0
+                });
+
+                // Actualizar estado de Gaia
+                setGaiaStatus(transitionService.getGaiaStatus());
+
+                // Mostrar alerta de victoria
+                setTimeout(() => {
+                  Alert.alert(
+                    '⚔️ ¡Guardián Transformado!',
+                    `Has transformado a ${selectedGuardian?.name || 'el Guardián'}!\n\n` +
+                    '🌟 La consciencia global ha aumentado.\n' +
+                    '✨ Nuevas posibilidades se abren.',
+                    [{ text: '¡Adelante!', style: 'default' }]
+                  );
+                }, 1500);
+              } else {
+                // Derrota
+                soundService.play('error');
+                Alert.alert(
+                  '💫 Retirada Táctica',
+                  'El Guardián ha resistido este intento. Fortalece a tus seres y vuelve a intentarlo.',
+                  [{ text: 'Entendido', style: 'default' }]
+                );
+              }
+            }
+            return result;
+          } catch (error) {
+            logger.error('Guardian battle error:', error);
+            return { error: 'Error en la batalla' };
           }
-          if (result.victory !== undefined) {
-            // Battle ended
-            const updatedGuardians = guardiansService.getAllGuardians();
-            setAllGuardians(updatedGuardians);
-            setShowGuardianBattle(false);
-            setSelectedGuardian(null);
-            setCurrentBattle(null);
-          }
-          return result;
         }}
         onFlee={async () => {
           await fleeGuardianBattle();
@@ -1535,7 +1830,21 @@ const CommandCenterScreen = ({ navigation }) => {
           // Mostrar resultado después de la animación
           if (missionResult) {
             setTimeout(() => {
-              // Toast o pequeño modal con resultado (opcional)
+              const rewardsText = missionResult.success
+                ? `¡Victoria!\n\n` +
+                  `⭐ +${missionResult.xpGained} XP\n` +
+                  `🧠 +${missionResult.consciousnessGained} Consciencia\n` +
+                  (missionResult.fragmentsGained > 0 ? `💎 +${missionResult.fragmentsGained} Fragmentos de Sabiduría` : '')
+                : `Crisis resistida...\n\n` +
+                  `⭐ +${missionResult.xpGained} XP (parcial)\n` +
+                  `🧠 +${missionResult.consciousnessGained} Consciencia`;
+
+              Alert.alert(
+                missionResult.success ? '🎉 Batalla Completada' : '💫 Experiencia Ganada',
+                rewardsText,
+                [{ text: 'Continuar', style: 'default' }]
+              );
+              setMissionResult(null);
             }, 200);
           }
         }}
@@ -1608,6 +1917,17 @@ const CommandCenterScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Banner de mensajes de Gaia */}
+      <GaiaMessageBanner
+        visible={!showWelcomeModal && !showCrisisBattle}
+        autoShow={true}
+        intervalMinutes={3}
+        onPress={() => {
+          // Abrir el panel de consciencia al tocar el mensaje
+          setActiveTab('gaia');
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -2123,6 +2443,43 @@ const styles = StyleSheet.create({
     color: COLORS.text.secondary,
     lineHeight: 20,
     marginBottom: 16
+  },
+  difficultyRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12
+  },
+  difficultyBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  difficultyText: {
+    fontSize: 12,
+    fontWeight: '600'
+  },
+  scaleBadge: {
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  scaleText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#a78bfa'
+  },
+  turnsBadge: {
+    backgroundColor: 'rgba(107, 114, 128, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12
+  },
+  turnsText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#9ca3af'
   },
   sourceLink: {
     flexDirection: 'row',

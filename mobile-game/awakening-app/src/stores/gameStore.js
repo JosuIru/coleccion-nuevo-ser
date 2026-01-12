@@ -9,7 +9,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { RESOURCES, LEVELS } from '../config/constants';
+import { RESOURCES, LEVELS, UI_TIMING } from '../config/constants';
 import logger from '../utils/logger';
 import soundService from '../services/SoundService';
 
@@ -26,19 +26,33 @@ import institutionsService from '../services/InstitutionsService';
 
 // Lock para prevenir race conditions
 let saveLock = false;
+let pendingSave = false;
 
 // Debounce timer para auto-save
 let saveDebounceTimer = null;
-const SAVE_DEBOUNCE_MS = 500;
+const SAVE_DEBOUNCE_MS = UI_TIMING.SAVE_DEBOUNCE;
 
-// Función debounced para guardar
+// Función debounced para guardar con protección contra race conditions
 const debouncedSave = (saveFunction) => {
   if (saveDebounceTimer) {
     clearTimeout(saveDebounceTimer);
   }
-  saveDebounceTimer = setTimeout(() => {
-    saveFunction();
+
+  // Si hay un guardado en progreso, marcar como pendiente
+  if (saveLock) {
+    pendingSave = true;
+    return;
+  }
+
+  saveDebounceTimer = setTimeout(async () => {
     saveDebounceTimer = null;
+    await saveFunction();
+
+    // Si hubo saves pendientes mientras guardábamos, ejecutar uno más
+    if (pendingSave) {
+      pendingSave = false;
+      debouncedSave(saveFunction);
+    }
   }, SAVE_DEBOUNCE_MS);
 };
 
@@ -1178,8 +1192,8 @@ const useGameStore = create((set, get) => ({
     const being = get().beings.find(b => b.id === beingId);
     if (!being) return null;
 
-    // Check energy
-    const energyCost = 15;
+    // Check energy - use centralized constant
+    const energyCost = RESOURCES.EXPLORATION.ENERGY_COST;
     if (get().user.energy < energyCost) {
       return { error: 'No hay suficiente energía para explorar' };
     }

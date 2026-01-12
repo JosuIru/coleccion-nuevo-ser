@@ -105,7 +105,7 @@ class NotificationService {
       this.permissionGranted = await this.requestPermissions();
 
       if (!this.permissionGranted) {
-        console.warn('⚠️ Permisos de notificaciones no concedidos');
+        logger.warn('NotificationService', '⚠️ Permisos de notificaciones no concedidos');
         return false;
       }
 
@@ -170,7 +170,7 @@ class NotificationService {
         return new Promise((resolve) => {
           PushNotification.requestPermissions()
             .then((permissions) => {
-              console.log('✅ Permisos iOS concedidos:', permissions);
+              logger.info('NotificationService', '✅ Permisos iOS concedidos:', permissions);
               resolve(permissions.alert || permissions.badge);
             })
             .catch((error) => {
@@ -263,7 +263,7 @@ class NotificationService {
     PushNotification.configure({
       // Cuando llega una notificación (app en foreground o background)
       onNotification: (notification) => {
-        console.log('📬 Notificación recibida:', notification);
+        logger.info('NotificationService', '📬 Notificación recibida:', notification);
 
         // Registrar en analytics
         if (notification.userInteraction) {
@@ -283,7 +283,7 @@ class NotificationService {
 
       // Cuando se registra el token (para push notifications remotas)
       onRegister: (token) => {
-        console.log('🔑 Token de notificaciones push:', token);
+        logger.info('NotificationService', '🔑 Token de notificaciones push:', token);
         this.saveDeviceToken(token);
       },
 
@@ -334,7 +334,7 @@ class NotificationService {
     const notification = this.buildNotification(type, data, options);
 
     if (!notification) {
-      console.error('❌ Error construyendo notificación');
+      logger.error('NotificationService', '❌ Error construyendo notificación');
       return false;
     }
 
@@ -349,7 +349,7 @@ class NotificationService {
       // Registrar en analytics
       this.trackNotificationSent(type);
 
-      console.log(`✅ Notificación enviada: ${type}`, notification);
+      logger.info('NotificationService', `✅ Notificación enviada: ${type}`, notification);
       return true;
 
     } catch (error) {
@@ -483,7 +483,7 @@ class NotificationService {
         };
 
       default:
-        console.warn(`⚠️ Tipo de notificación desconocido: ${type}`);
+        logger.warn('NotificationService', `⚠️ Tipo de notificación desconocido: ${type}`);
         return null;
     }
   }
@@ -516,7 +516,7 @@ class NotificationService {
     const notification = this.buildNotification(type, data, options);
 
     if (!notification) {
-      console.error('❌ Error construyendo notificación programada');
+      logger.error('NotificationService', '❌ Error construyendo notificación programada');
       return false;
     }
 
@@ -539,7 +539,7 @@ class NotificationService {
 
       await this.saveScheduledNotifications();
 
-      console.log(`⏰ Notificación programada para ${scheduledDate}:`, type);
+      logger.info('NotificationService', `⏰ Notificación programada para ${scheduledDate}:`, type);
       return notificationId;
 
     } catch (error) {
@@ -882,7 +882,7 @@ class NotificationService {
   handleNotificationAction(notification) {
     const { type, data } = notification.userInfo || {};
 
-    console.log(`👆 Usuario tocó notificación tipo: ${type}`, data);
+    logger.info('NotificationService', `👆 Usuario tocó notificación tipo: ${type}`, data);
 
     // Aquí se debe navegar a la pantalla correspondiente
     // Esto se implementa mejor desde el componente raíz de la app
@@ -932,7 +932,7 @@ class NotificationService {
     }
 
     this.saveAnalytics();
-    console.log('📊 Analytics: Notificación abierta', type);
+    logger.debug('NotificationService', '📊 Analytics: Notificación abierta', type);
   }
 
   /**
@@ -957,7 +957,7 @@ class NotificationService {
   async updateConfig(updates) {
     this.config = { ...this.config, ...updates };
     await this.saveConfig();
-    console.log('⚙️ Configuración actualizada:', updates);
+    logger.info('NotificationService', '⚙️ Configuración actualizada:', updates);
   }
 
   /**

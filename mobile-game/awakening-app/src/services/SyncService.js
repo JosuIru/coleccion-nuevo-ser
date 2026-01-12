@@ -118,7 +118,7 @@ class SyncService {
         new Date().toISOString()
       );
 
-      console.log('✅ Sincronización completada:', result);
+      logger.info('SyncService', 'Sincronización completada:', result);
 
       this.syncInProgress = false;
       return { success: true, result };
@@ -409,7 +409,7 @@ class SyncService {
     const canWrite = await this.canWriteToWeb(userId);
 
     if (!canWrite) {
-      console.warn('⚠️ Sincronización a web desactivada');
+      logger.warn('SyncService', 'Sincronización a web desactivada');
       return {
         success: false,
         reason: 'write_to_web_disabled',
@@ -472,7 +472,7 @@ class SyncService {
       const data = await response.json();
       return data.status === 'success';
     } catch (error) {
-      console.log('No internet connection:', error.message);
+      logger.debug('SyncService', 'No internet connection:', error.message);
       return false;
     }
   }
@@ -486,7 +486,7 @@ class SyncService {
       const parsed = stored ? JSON.parse(stored) : [];
 
       if (!Array.isArray(parsed)) {
-        console.warn('Invalid beings data structure, resetting to empty array');
+        logger.warn('SyncService', 'Invalid beings data structure, resetting to empty array');
         return [];
       }
 

@@ -10,6 +10,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { realNewsCrisisService } from './RealNewsCrisisService';
+import logger from '../utils/logger';
 
 // ============================================================================
 // CONFIGURACIÓN DE LA LIGA
@@ -145,7 +146,7 @@ class LeagueService {
       const data = await AsyncStorage.getItem(`league_player_${userId}`);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.warn('Error loading league player data:', error);
+      logger.warn('LeagueService', 'Error loading league player data:', error);
       return null;
     }
   }
@@ -158,7 +159,7 @@ class LeagueService {
         JSON.stringify(this.playerData)
       );
     } catch (error) {
-      console.warn('Error saving league player data:', error);
+      logger.warn('LeagueService', 'Error saving league player data:', error);
     }
   }
 
@@ -368,7 +369,7 @@ class LeagueService {
       this.weeklyChallengeCrises = await realNewsCrisisService.getWeeklyLeagueCrises();
       return this.weeklyChallengeCrises;
     } catch (error) {
-      console.warn('Error getting weekly challenge crises:', error);
+      logger.warn('LeagueService', 'Error getting weekly challenge crises:', error);
       return [];
     }
   }

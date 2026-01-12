@@ -9,6 +9,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logger } from '../utils/logger';
 
 // ============================================================================
 // ÁRBOL DE EVOLUCIONES
@@ -737,7 +738,7 @@ class EvolutionService {
         pendingEvolutions: this.pendingEvolutions
       }));
     } catch (error) {
-      console.error('Error saving Evolution state:', error);
+      logger.error('EvolutionService', 'Error saving state:', error);
     }
   }
 
@@ -750,7 +751,7 @@ class EvolutionService {
         this.pendingEvolutions = parsed.pendingEvolutions || {};
       }
     } catch (error) {
-      console.error('Error loading Evolution state:', error);
+      logger.error('EvolutionService', 'Error loading state:', error);
     }
   }
 }

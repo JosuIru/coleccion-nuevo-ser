@@ -12,6 +12,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logger from '../utils/logger';
 
 // ═══════════════════════════════════════════════════════════
 // CONSTANTS
@@ -103,12 +104,12 @@ class AnalyticsService {
 
       this.isInitialized = true;
 
-      console.log('[Analytics] Initialized', {
+      logger.info('Analytics', 'Initialized', {
         abGroup: this.abGroup,
         cohort: this.userCohort
       });
     } catch (error) {
-      console.error('[Analytics] Initialization error:', error);
+      logger.error('Analytics', 'Initialization error:', error);
     }
   }
 
@@ -126,13 +127,13 @@ class AnalyticsService {
         group = Math.random() < 0.5 ? AB_GROUPS.CONTROL : AB_GROUPS.VARIANT_A;
         await AsyncStorage.setItem(STORAGE_KEYS.AB_GROUP, group);
 
-        console.log('[Analytics] AB Group assigned:', group);
+        logger.info('Analytics', 'AB Group assigned:', group);
       }
 
       this.abGroup = group;
       return group;
     } catch (error) {
-      console.error('[Analytics] Error assigning AB group:', error);
+      logger.error('Analytics', 'Error assigning AB group:', error);
       this.abGroup = AB_GROUPS.VARIANT_A; // Default a variant con mejoras
       return this.abGroup;
     }
@@ -168,7 +169,7 @@ class AnalyticsService {
       this.userCohort = cohort;
       return cohort;
     } catch (error) {
-      console.error('[Analytics] Error loading cohort:', error);
+      logger.error('Analytics', 'Error loading cohort:', error);
       return null;
     }
   }
@@ -201,9 +202,9 @@ class AnalyticsService {
         await this.persistEvents();
       }
 
-      console.log('[Analytics] Event tracked:', eventType, metadata);
+      logger.info('Analytics', 'Event tracked:', eventType, metadata);
     } catch (error) {
-      console.error('[Analytics] Error tracking event:', error);
+      logger.error('Analytics', 'Error tracking event:', error);
     }
   }
 
@@ -225,7 +226,7 @@ class AnalyticsService {
       // Limpiar buffer
       this.eventsBuffer = [];
     } catch (error) {
-      console.error('[Analytics] Error persisting events:', error);
+      logger.error('Analytics', 'Error persisting events:', error);
     }
   }
 
@@ -387,7 +388,7 @@ class AnalyticsService {
 
       return metrics;
     } catch (error) {
-      console.error('[Analytics] Error getting metrics:', error);
+      logger.error('Analytics', 'Error getting metrics:', error);
       return null;
     }
   }
@@ -450,9 +451,9 @@ SESIONES:
       this.userCohort = null;
       this.isInitialized = false;
 
-      console.log('[Analytics] All data cleared');
+      logger.info('Analytics', 'All data cleared');
     } catch (error) {
-      console.error('[Analytics] Error clearing data:', error);
+      logger.error('Analytics', 'Error clearing data:', error);
     }
   }
 
@@ -461,7 +462,7 @@ SESIONES:
       const eventsJson = await AsyncStorage.getItem(STORAGE_KEYS.EVENTS);
       return eventsJson ? JSON.parse(eventsJson) : [];
     } catch (error) {
-      console.error('[Analytics] Error exporting events:', error);
+      logger.error('Analytics', 'Error exporting events:', error);
       return [];
     }
   }

@@ -8,6 +8,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logger } from '../utils/logger';
 
 // ============================================================================
 // CONFIGURACIÓN DE LUGARES DE PODER
@@ -519,7 +520,7 @@ class PowerNodesService {
         corruptionZones: this.corruptionZones
       }));
     } catch (error) {
-      console.error('Error saving PowerNodes state:', error);
+      logger.error('PowerNodesService', 'Error saving state:', error);
     }
   }
 
@@ -534,7 +535,7 @@ class PowerNodesService {
         this.corruptionZones = parsed.corruptionZones || [];
       }
     } catch (error) {
-      console.error('Error loading PowerNodes state:', error);
+      logger.error('PowerNodesService', 'Error loading state:', error);
     }
   }
 }

@@ -18,7 +18,8 @@ import {
 import { SafeMapView as MapView, Marker } from '../components/SafeMapView';
 import useGameStore from '../stores/gameStore';
 import MissionService from '../services/MissionService';
-import { COLORS, ATTRIBUTES, CRISIS_TYPES, RESOURCES } from '../config/constants';
+import BattleScreen from '../components/combat/BattleScreen';
+import { COLORS, ATTRIBUTES, CRISIS_TYPES, RESOURCES, MISSION_DURATIONS } from '../config/constants';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +31,8 @@ const CrisisDetailScreen = ({ route, navigation }) => {
   const { crisis } = route.params || {};
   const [selectedBeings, setSelectedBeings] = useState([]);
   const [deploymentInProgress, setDeploymentInProgress] = useState(false);
+  const [showBattle, setShowBattle] = useState(false);
+  const [currentBattleBeing, setCurrentBattleBeing] = useState(null);
 
   // Zustand store
   const {
@@ -130,26 +133,15 @@ const CrisisDetailScreen = ({ route, navigation }) => {
 
   // Calcular tiempo estimado de misión
   const calculateMissionDuration = () => {
-    if (!crisis) return 30; // default 30 minutos
+    if (!crisis) return MISSION_DURATIONS.BASE.regional; // default 30 minutos
 
-    // Duración base según escala
-    const baseDuration = {
-      'local': 15,
-      'regional': 30,
-      'nacional': 60,
-      'global': 120
-    };
-
-    const duration = baseDuration[crisis.scale] || 30;
+    // Duración base según escala (usar constantes centralizadas)
+    const duration = MISSION_DURATIONS.BASE[crisis.scale] || MISSION_DURATIONS.BASE.regional;
 
     // Ajustar según urgencia
-    const urgencyMultiplier = {
-      'low': 1.5,
-      'medium': 1.0,
-      'high': 0.7
-    };
+    const multiplier = MISSION_DURATIONS.URGENCY_MULTIPLIER[crisis.urgency] || 1.0;
 
-    return Math.round(duration * (urgencyMultiplier[crisis.urgency] || 1.0));
+    return Math.round(duration * multiplier);
   };
 
   const calculateEnergyCost = () => {
@@ -167,9 +159,9 @@ const CrisisDetailScreen = ({ route, navigation }) => {
     const isSelected = selectedBeings.find(b => b.id === being.id);
 
     if (isSelected) {
-      setSelectedBeings(selectedBeings.filter(b => b.id !== being.id));
+      setSelectedBeings(prev => prev.filter(b => b.id !== being.id));
     } else {
-      setSelectedBeings([...selectedBeings, being]);
+      setSelectedBeings(prev => [...prev, being]);
     }
   };
 
@@ -211,73 +203,103 @@ const CrisisDetailScreen = ({ route, navigation }) => {
   const handleDeployment = async () => {
     setDeploymentInProgress(true);
 
-    try {
-      // Usar MissionService para el despliegue completo
-      const beingIds = selectedBeings.map(b => b.id);
+    // Consumir energía del usuario
+    consumeEnergy(energyCost);
 
-      const resultado = await MissionService.desplegarSeres(
-        user.id,
-        crisis.id,
-        beingIds,
-        useGameStore
-      );
+    // Usar el primer ser seleccionado para la batalla
+    const beingForBattle = selectedBeings[0];
+    setCurrentBattleBeing(beingForBattle);
 
-      if (resultado.exito) {
-        // Misión creada exitosamente
-        const duracionMinutos = resultado.tiempoMinutos || crisis.duration || 30;
-        const probabilidad = resultado.probabilidad?.probabilidad || successProbability / 100;
+    // Marcar el ser como desplegado
+    selectedBeings.forEach(being => {
+      deployBeing(being.id, crisis.id);
+    });
 
-        Alert.alert(
-          '¡Misión Iniciada!',
-          `${selectedBeings.length} ser(es) han sido desplegados.\n\n` +
-          `⏱️ Duración: ${duracionMinutos} minutos\n` +
-          `🎲 Probabilidad: ${(probabilidad * 100).toFixed(0)}%\n\n` +
-          `📋 ¿Qué hacer ahora?\n` +
-          `• Ve a "Misiones Activas" (Tab 3) para ver el progreso\n` +
-          `• La misión se resolverá automáticamente cuando termine el tiempo\n` +
-          `• Tus seres recuperarán energía gradualmente\n` +
-          `• Puedes desplegar otros seres en nuevas misiones mientras esperas\n\n` +
-          `Mientras tanto, puedes:\n` +
-          `• Crear nuevos seres en "Seres" (Tab 2)\n` +
-          `• Explorar el mapa para encontrar más crisis\n` +
-          `• Gestionar tu microsociedad`,
-          [
-            {
-              text: 'Ver Misiones',
-              onPress: () => navigation.navigate('ActiveMissions')
-            },
-            {
-              text: 'Explorar Mapa',
-              onPress: () => navigation.goBack()
-            }
-          ]
-        );
-      } else {
-        // Error en el despliegue
-        Alert.alert(
-          'Error en el despliegue',
-          resultado.error || 'No se pudo iniciar la misión',
-          [
-            {
-              text: 'OK',
-              onPress: () => setDeploymentInProgress(false)
-            }
-          ]
-        );
-      }
-    } catch (error) {
-      console.error('Error en handleDeployment:', error);
+    // Iniciar la batalla
+    setShowBattle(true);
+    setDeploymentInProgress(false);
+  };
+
+  // Manejar el resultado de la batalla
+  const handleBattleComplete = (isVictory, rewards) => {
+    setShowBattle(false);
+
+    // Devolver seres a estado disponible
+    selectedBeings.forEach(being => {
+      useGameStore.getState().updateBeing(being.id, {
+        status: 'available',
+        currentMission: null
+      });
+    });
+
+    // Aplicar recompensas
+    if (rewards) {
+      if (rewards.xp > 0) addXP(rewards.xp);
+      if (rewards.consciousness > 0) addConsciousness(rewards.consciousness);
+    }
+
+    // Resolver crisis si fue victoria
+    if (isVictory) {
+      resolveCrisis(crisis.id);
+
       Alert.alert(
-        'Error',
-        'Ocurrió un error inesperado. Inténtalo de nuevo.',
+        '🎉 ¡Victoria!',
+        `Has resuelto la crisis "${crisis.name || crisis.title}".\n\n` +
+        `Recompensas:\n` +
+        `• +${rewards?.xp || 0} XP\n` +
+        `• +${rewards?.consciousness || 0} Consciencia`,
         [
           {
-            text: 'OK',
-            onPress: () => setDeploymentInProgress(false)
+            text: 'Explorar Mapa',
+            onPress: () => navigation.goBack()
+          }
+        ]
+      );
+    } else {
+      Alert.alert(
+        '💔 Derrota',
+        `La crisis persiste, pero ganaste algo de experiencia.\n\n` +
+        `Recompensas:\n` +
+        `• +${rewards?.xp || 0} XP\n` +
+        `• +${rewards?.consciousness || 0} Consciencia`,
+        [
+          {
+            text: 'Volver',
+            onPress: () => navigation.goBack()
+          },
+          {
+            text: 'Reintentar',
+            onPress: () => {
+              setSelectedBeings([]);
+              setCurrentBattleBeing(null);
+            }
           }
         ]
       );
     }
+  };
+
+  // Manejar cancelación de batalla (huir)
+  const handleBattleCancel = () => {
+    setShowBattle(false);
+
+    // Devolver seres a estado disponible
+    selectedBeings.forEach(being => {
+      useGameStore.getState().updateBeing(being.id, {
+        status: 'available',
+        currentMission: null
+      });
+    });
+
+    // Devolver algo de energía al usuario (penalización por huir)
+    const energiaDevuelta = Math.floor(energyCost * 0.5);
+    useGameStore.getState().addEnergy(energiaDevuelta);
+
+    Alert.alert(
+      'Retirada',
+      `Te has retirado de la batalla. Se te ha devuelto ${energiaDevuelta} de energía.`,
+      [{ text: 'OK' }]
+    );
   };
 
   // ═══════════════════════════════════════════════════════════
@@ -659,6 +681,15 @@ const CrisisDetailScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       )}
+
+      {/* BATTLE SCREEN MODAL */}
+      <BattleScreen
+        visible={showBattle}
+        being={currentBattleBeing}
+        crisis={crisis}
+        onComplete={handleBattleComplete}
+        onCancel={handleBattleCancel}
+      />
     </View>
   );
 };

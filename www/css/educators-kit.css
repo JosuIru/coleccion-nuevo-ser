@@ -1,0 +1,447 @@
+/**
+ * Educators Kit - Estilos específicos
+ * Kit para Educadores - Colección Nuevo Ser v3
+ * @version 1.0.0
+ */
+
+/* ========================================
+   VARIABLES Y CONFIGURACIÓN
+   ======================================== */
+
+:root {
+  --edu-primary: #f59e0b;
+  --edu-primary-light: #fbbf24;
+  --edu-primary-dark: #d97706;
+  --edu-secondary: #10b981;
+  --edu-accent: #8b5cf6;
+  --edu-bg-dark: #0f172a;
+  --edu-bg-card: rgba(30, 41, 59, 0.5);
+  --edu-border: rgba(148, 163, 184, 0.1);
+  --edu-text-primary: #f1f5f9;
+  --edu-text-secondary: #94a3b8;
+  --edu-text-muted: #64748b;
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+.educators-kit {
+  min-height: 100vh;
+  background: var(--edu-bg-dark);
+}
+
+/* ========================================
+   HERO SECTION
+   ======================================== */
+
+.kit-hero {
+  position: relative;
+  padding: 4rem 0;
+}
+
+.kit-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ========================================
+   SECTION HEADERS
+   ======================================== */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-icon {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   AGE TABS
+   ======================================== */
+
+.age-tab {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.age-tab:hover:not(.active) {
+  background: rgba(71, 85, 105, 0.5);
+  color: #e2e8f0;
+}
+
+.age-tab.active {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* ========================================
+   ACTIVITY CARDS
+   ======================================== */
+
+.activity-card {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.activity-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+}
+
+.activity-card .activity-icon {
+  transition: transform 0.3s ease;
+}
+
+.activity-card:hover .activity-icon {
+  transform: scale(1.1);
+}
+
+/* ========================================
+   DOWNLOAD BUTTONS
+   ======================================== */
+
+.download-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.download-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.download-btn:hover::after {
+  transform: translateX(100%);
+}
+
+/* ========================================
+   RESOURCE CARDS
+   ======================================== */
+
+.resource-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.resource-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--edu-primary), var(--edu-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.resource-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* ========================================
+   TEMPLATES GRID
+   ======================================== */
+
+.template-card {
+  transition: all 0.2s ease;
+}
+
+.template-card:hover {
+  transform: scale(1.02);
+}
+
+.template-card svg {
+  transition: transform 0.3s ease;
+}
+
+.template-card:hover svg {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+/* ========================================
+   BOOK LINKS
+   ======================================== */
+
+.book-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.book-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.book-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ========================================
+   STATS SECTION
+   ======================================== */
+
+.stat-item {
+  position: relative;
+}
+
+.stat-item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40%;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.stat-item:last-child::after {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .stat-item::after {
+    display: none;
+  }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(245, 158, 11, 0.2);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Animation delays */
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }
+.animate-delay-500 { animation-delay: 0.5s; }
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 640px) {
+  .kit-hero h2 {
+    font-size: 2rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .age-tab {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .activity-card {
+    padding: 1rem;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .educators-kit {
+    background: white;
+    color: black;
+  }
+
+  .download-btn,
+  .age-tab,
+  header,
+  footer {
+    display: none;
+  }
+
+  .activity-card,
+  .resource-card,
+  .template-card {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    background: white;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.age-tab:focus-visible,
+.download-btn:focus-visible,
+.activity-card:focus-visible {
+  outline: 2px solid var(--edu-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .activity-card,
+  .template-card,
+  .download-btn::after,
+  .age-tab,
+  .animate-fadeInUp,
+  .animate-slideInLeft {
+    animation: none;
+    transition: none;
+  }
+
+  .activity-card:hover {
+    transform: none;
+  }
+}
+
+/* ========================================
+   DARK MODE ENHANCEMENTS
+   ======================================== */
+
+.dark .activity-card {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.dark .activity-card:hover {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.loading-skeleton {
+  background: linear-gradient(90deg,
+    rgba(148, 163, 184, 0.1) 25%,
+    rgba(148, 163, 184, 0.2) 50%,
+    rgba(148, 163, 184, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+
+.edu-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   SCROLL BEHAVIOR
+   ======================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll padding for fixed header */
+section[id] {
+  scroll-margin-top: 5rem;
+}

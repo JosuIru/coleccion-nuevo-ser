@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <meta name="description" content="Kit para Educadores - Recursos y herramientas para llevar la transformación al aula. Guías, actividades por edad y plantillas descargables.">
+  <meta name="author" content="Colección Nuevo Ser">
+  <meta name="keywords" content="educación, transformación, nuevo ser, facilitadores, actividades, meditación, escuela">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kit para Educadores - Colección Nuevo Ser">
+  <meta property="og:description" content="Recursos para llevar la transformación al aula. Guías, actividades y plantillas.">
+  <meta property="og:image" content="../assets/icons/og-image.png">
+
+  <title>Kit para Educadores - Colección Nuevo Ser</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS local -->
+  <script src="../js/vendor/tailwind.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              900: '#0f172a',
+              800: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../css/design-tokens.css">
+  <link rel="stylesheet" href="../css/core.css">
+  <link rel="stylesheet" href="../css/educators-kit.css">
+
+  <style>
+    /* Animaciones específicas */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .animate-delay-100 { animation-delay: 0.1s; }
+    .animate-delay-200 { animation-delay: 0.2s; }
+    .animate-delay-300 { animation-delay: 0.3s; }
+    .animate-delay-400 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body class="dark bg-slate-900 text-gray-100 min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo/Back -->
+        <a href="../index.html" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span class="font-semibold">Volver a la Biblioteca</span>
+        </a>
+
+        <!-- Title -->
+        <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+          Kit para Educadores
+        </h1>
+
+        <!-- Placeholder for balance -->
+        <div class="w-32"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden py-16 sm:py-24">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-slate-900 to-orange-900/20"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="animate-fadeInUp opacity-0">
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-sm font-medium mb-6">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          Recursos Educativos
+        </span>
+      </div>
+
+      <h2 class="animate-fadeInUp opacity-0 animate-delay-100 text-4xl sm:text-5xl lg:text-6xl font-black mb-6">
+        Lleva la <span class="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Transformación</span> al Aula
+      </h2>
+
+      <p class="animate-fadeInUp opacity-0 animate-delay-200 text-xl text-gray-400 max-w-3xl mx-auto mb-8">
+        Guías, actividades y plantillas diseñadas para facilitadores que quieren integrar los principios del Nuevo Ser en contextos educativos.
+      </p>
+
+      <div class="animate-fadeInUp opacity-0 animate-delay-300 flex flex-wrap justify-center gap-4">
+        <a href="#guia" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 rounded-xl font-semibold transition-all shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40">
+          Ver Guía del Facilitador
+        </a>
+        <a href="#actividades" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl font-semibold transition-all">
+          Explorar Actividades
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-12 border-y border-slate-700/50 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-3xl font-black text-amber-400" id="stat-activities">15+</div>
+          <div class="text-sm text-gray-400 mt-1">Actividades</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-orange-400" id="stat-ages">3</div>
+          <div class="text-sm text-gray-400 mt-1">Grupos de Edad</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-yellow-400" id="stat-templates">5+</div>
+          <div class="text-sm text-gray-400 mt-1">Plantillas</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-red-400" id="stat-downloads">Gratis</div>
+          <div class="text-sm text-gray-400 mt-1">Descarga</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- Guía del Facilitador -->
+    <section id="guia" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30">
+          <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Guía del Facilitador</h3>
+          <p class="text-gray-400">Todo lo que necesitas para empezar</p>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-2xl border border-amber-500/20 p-6 sm:p-8">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h4 class="text-xl font-semibold mb-4 text-amber-300">Contenido de la Guía:</h4>
+            <ul class="space-y-3 text-gray-300">
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>Introducción a la filosofía del Nuevo Ser</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>El rol del facilitador transformador</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>Estructura de una sesión (apertura, desarrollo, cierre)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>Adaptación por contexto (formal, no formal, online)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>FAQ y resolución de resistencias</span>
+              </li>
+            </ul>
+          </div>
+          <div class="text-center">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+              <svg class="w-20 h-20 mx-auto text-amber-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              <p class="text-gray-400 text-sm mb-4">PDF - 30+ páginas</p>
+              <div class="flex gap-2">
+                <button
+                  onclick="window.educatorsKit?.viewResource('guia-facilitador')"
+                  class="flex-1 px-4 py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  Ver Online
+                </button>
+                <button
+                  onclick="window.educatorsKit?.downloadResource('guia-facilitador')"
+                  class="flex-1 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                  </svg>
+                  PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actividades por Edad -->
+    <section id="actividades" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30">
+          <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Actividades por Edad</h3>
+          <p class="text-gray-400">Recursos adaptados a cada etapa</p>
+        </div>
+      </div>
+
+      <!-- Age Tabs -->
+      <div class="flex flex-wrap gap-2 mb-8" id="age-tabs">
+        <button data-age="primaria" class="age-tab active px-5 py-2.5 rounded-xl font-medium transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          Primaria (6-12)
+        </button>
+        <button data-age="secundaria" class="age-tab px-5 py-2.5 rounded-xl font-medium transition-all bg-slate-800 text-gray-400 border border-slate-700 hover:bg-slate-700">
+          Secundaria (12-18)
+        </button>
+        <button data-age="adultos" class="age-tab px-5 py-2.5 rounded-xl font-medium transition-all bg-slate-800 text-gray-400 border border-slate-700 hover:bg-slate-700">
+          Adultos
+        </button>
+      </div>
+
+      <!-- Activities Grid -->
+      <div id="activities-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Populated by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Generador de Recursos con IA -->
+    <section id="generador-ia" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30">
+          <svg class="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Generador de Recursos con IA</h3>
+          <p class="text-gray-400">Crea actividades y materiales personalizados</p>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-violet-900/20 via-slate-800/50 to-fuchsia-900/20 rounded-2xl border border-violet-500/20 p-6 sm:p-8">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h4 class="text-xl font-semibold mb-4 text-violet-300">¿Qué puede generar?</h4>
+            <ul class="space-y-3 text-gray-300">
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-violet-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span><strong>Actividades</strong> adaptadas a tu grupo y contexto</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-fuchsia-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span><strong>Preguntas de reflexión</strong> para cualquier tema</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span><strong>Planes de sesión</strong> completos y estructurados</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                <span><strong>Textos explicativos</strong> sobre temas del Nuevo Ser</span>
+              </li>
+            </ul>
+          </div>
+          <div class="text-center">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+              <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 flex items-center justify-center">
+                <svg class="w-10 h-10 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+              </div>
+              <p class="text-gray-400 text-sm mb-4">Responde unas preguntas y la IA genera recursos únicos para ti</p>
+              <button
+                onclick="window.educatorsKit?.openAIGenerator()"
+                class="w-full px-6 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-600 hover:from-violet-400 hover:to-fuchsia-500 rounded-xl font-semibold transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                Generar Recurso con IA
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Material Visual -->
+    <section id="material" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-purple-500/20 border border-purple-500/30">
+          <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Material Visual</h3>
+          <p class="text-gray-400">Pósters, tarjetas e infografías</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6" id="materials-grid">
+        <!-- Pósters -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 hover:border-purple-500/30 transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 rounded-lg bg-purple-500/20">
+              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+              </svg>
+            </div>
+            <h4 class="font-semibold text-white">Pósters A3</h4>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Visuales para el aula con conceptos clave del Nuevo Ser</p>
+          <ul class="text-sm text-gray-500 space-y-1 mb-4">
+            <li>- Los 5 Principios</li>
+            <li>- Ciclo de Transformación</li>
+            <li>- Preguntas para el Alma</li>
+          </ul>
+          <button
+            onclick="window.educatorsKit?.downloadResource('posters-pack')"
+            class="w-full px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 rounded-lg text-purple-300 text-sm font-medium transition-all">
+            Descargar Pack
+          </button>
+        </div>
+
+        <!-- Tarjetas -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 hover:border-pink-500/30 transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 rounded-lg bg-pink-500/20">
+              <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+            </div>
+            <h4 class="font-semibold text-white">Tarjetas de Reflexión</h4>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">30 tarjetas con conceptos y preguntas para dinámicas</p>
+          <ul class="text-sm text-gray-500 space-y-1 mb-4">
+            <li>- Recortables PDF</li>
+            <li>- Útiles para sorteos</li>
+            <li>- Reflexiones rápidas</li>
+          </ul>
+          <button
+            onclick="window.educatorsKit?.downloadResource('tarjetas-reflexion')"
+            class="w-full px-4 py-2 bg-pink-500/20 hover:bg-pink-500/30 border border-pink-500/30 rounded-lg text-pink-300 text-sm font-medium transition-all">
+            Descargar Tarjetas
+          </button>
+        </div>
+
+        <!-- Infografías -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 hover:border-cyan-500/30 transition-all">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="p-2 rounded-lg bg-cyan-500/20">
+              <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <h4 class="font-semibold text-white">Infografías</h4>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Visualizaciones de datos y conceptos complejos</p>
+          <ul class="text-sm text-gray-500 space-y-1 mb-4">
+            <li>- Crisis Múltiple</li>
+            <li>- Economías Alternativas</li>
+            <li>- Lectura Crítica</li>
+          </ul>
+          <button
+            onclick="window.educatorsKit?.downloadResource('infografias-pack')"
+            class="w-full px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-lg text-cyan-300 text-sm font-medium transition-all">
+            Descargar Pack
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plantillas -->
+    <section id="plantillas" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-blue-500/20 border border-blue-500/30">
+          <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Plantillas Descargables</h3>
+          <p class="text-gray-400">Documentos listos para usar</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" id="templates-grid">
+        <!-- Plan de Sesión -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5 hover:border-blue-500/30 transition-all group">
+          <div class="flex items-center gap-3 mb-3">
+            <svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+            <div>
+              <h4 class="font-semibold text-white text-sm">Plan de Sesión</h4>
+              <p class="text-xs text-gray-500">90 min estructura</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="window.educatorsKit?.viewResource('plan-sesion')"
+              class="flex-1 px-2 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-lg text-white text-xs font-medium transition-all">
+              Ver
+            </button>
+            <button
+              onclick="window.educatorsKit?.downloadResource('plan-sesion')"
+              class="flex-1 px-2 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded-lg text-blue-300 text-xs font-medium transition-all">
+              PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Evaluación -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5 hover:border-green-500/30 transition-all group">
+          <div class="flex items-center gap-3 mb-3">
+            <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+              <h4 class="font-semibold text-white text-sm">Evaluación</h4>
+              <p class="text-xs text-gray-500">Feedback participantes</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="window.educatorsKit?.viewResource('evaluacion')"
+              class="flex-1 px-2 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-lg text-white text-xs font-medium transition-all">
+              Ver
+            </button>
+            <button
+              onclick="window.educatorsKit?.downloadResource('evaluacion')"
+              class="flex-1 px-2 py-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 rounded-lg text-green-300 text-xs font-medium transition-all">
+              PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Carta Familias -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5 hover:border-yellow-500/30 transition-all group">
+          <div class="flex items-center gap-3 mb-3">
+            <svg class="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <div>
+              <h4 class="font-semibold text-white text-sm">Carta Familias</h4>
+              <p class="text-xs text-gray-500">Comunicación padres</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="window.educatorsKit?.viewResource('carta-familias')"
+              class="flex-1 px-2 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-lg text-white text-xs font-medium transition-all">
+              Ver
+            </button>
+            <button
+              onclick="window.educatorsKit?.downloadResource('carta-familias')"
+              class="flex-1 px-2 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/30 rounded-lg text-yellow-300 text-xs font-medium transition-all">
+              PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Certificado -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5 hover:border-red-500/30 transition-all group">
+          <div class="flex items-center gap-3 mb-3">
+            <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+            <div>
+              <h4 class="font-semibold text-white text-sm">Certificado</h4>
+              <p class="text-xs text-gray-500">Participación</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="window.educatorsKit?.viewResource('certificado')"
+              class="flex-1 px-2 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-lg text-white text-xs font-medium transition-all">
+              Ver
+            </button>
+            <button
+              onclick="window.educatorsKit?.downloadResource('certificado')"
+              class="flex-1 px-2 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded-lg text-red-300 text-xs font-medium transition-all">
+              PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Libros Recomendados -->
+    <section id="libros" class="mb-20">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-3 rounded-xl bg-indigo-500/20 border border-indigo-500/30">
+          <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">Libros Recomendados</h3>
+          <p class="text-gray-400">De la Colección Nuevo Ser</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Educación Nuevo Ser -->
+        <a href="../index.html?book=educacion-nuevo-ser" class="block bg-gradient-to-br from-indigo-900/30 to-purple-900/30 rounded-xl border border-indigo-500/20 p-6 hover:border-indigo-500/40 transition-all group">
+          <h4 class="font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">Educar para el Nuevo Ser</h4>
+          <p class="text-gray-400 text-sm mb-4">Fundamentos filosóficos y metodológicos para una educación transformadora.</p>
+          <span class="text-indigo-400 text-sm font-medium flex items-center gap-1">
+            Ir al libro
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Manual Práctico -->
+        <a href="../index.html?book=manual-practico" class="block bg-gradient-to-br from-emerald-900/30 to-teal-900/30 rounded-xl border border-emerald-500/20 p-6 hover:border-emerald-500/40 transition-all group">
+          <h4 class="font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">Manual Práctico</h4>
+          <p class="text-gray-400 text-sm mb-4">Ejercicios y prácticas concretas para integrar en tus sesiones educativas.</p>
+          <span class="text-emerald-400 text-sm font-medium flex items-center gap-1">
+            Ir al libro
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+
+        <!-- Código del Despertar -->
+        <a href="../index.html?book=codigo-despertar" class="block bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-xl border border-cyan-500/20 p-6 hover:border-cyan-500/40 transition-all group">
+          <h4 class="font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">El Código del Despertar</h4>
+          <p class="text-gray-400 text-sm mb-4">Meditaciones y contemplaciones para despertar la conciencia colectiva.</p>
+          <span class="text-cyan-400 text-sm font-medium flex items-center gap-1">
+            Ir al libro
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-700/50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-500 text-sm">
+        Colección Nuevo Ser - Co-creado entre humano e IA para la transformación colectiva
+      </p>
+      <p class="text-gray-600 text-xs mt-2">
+        Todos los recursos son de libre uso con atribución
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/features/educators-kit.js"></script>
+  <script>
+    // Initialize Lucide icons
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+
+    // Initialize Educators Kit
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.EducatorsKit) {
+        window.educatorsKit = new EducatorsKit();
+        window.educatorsKit.init();
+      }
+    });
+  </script>
+</body>
+</html>

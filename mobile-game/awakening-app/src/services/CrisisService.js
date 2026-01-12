@@ -45,7 +45,7 @@ class CrisisService {
         const cachedCrises = await this.getFromCache();
 
         if (cachedCrises && cachedCrises.length > 0) {
-          console.log('✅ Crisis cargadas desde caché:', cachedCrises.length);
+          logger.debug('CrisisService', '✅ Crisis cargadas desde caché:', cachedCrises.length);
           return this.filterCrises(cachedCrises, type, limit);
         }
       }
@@ -546,7 +546,7 @@ class CrisisService {
       };
 
       await AsyncStorage.setItem(this.cacheKey, JSON.stringify(data));
-      console.log('💾 Crisis guardadas en caché:', crises.length);
+      logger.debug('CrisisService', '💾 Crisis guardadas en caché:', crises.length);
 
     } catch (error) {
       logger.error('Error guardando en caché:', error);
@@ -644,7 +644,7 @@ class CrisisService {
 
       await AsyncStorage.setItem(completedKey, JSON.stringify(completed));
 
-      console.log('✅ Crisis marcada como completada:', crisisId);
+      logger.debug('CrisisService', '✅ Crisis marcada como completada:', crisisId);
 
     } catch (error) {
       logger.error('Error guardando crisis completada:', error);

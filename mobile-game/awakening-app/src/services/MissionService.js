@@ -23,10 +23,11 @@ import rewardService from './RewardService';
 // ═══════════════════════════════════════════════════════════
 
 const MISSION_CONSTANTS = {
-  // Recuperación de energía
-  ENERGY_RECOVERY_RATE: 1, // punto de energía cada X minutos
-  ENERGY_RECOVERY_INTERVAL_MINUTES: 5,
+  // Recuperación de energía (mejorado para mejor gameplay)
+  ENERGY_RECOVERY_RATE: 5, // puntos base de energía cada intervalo
+  ENERGY_RECOVERY_INTERVAL_MINUTES: 3, // cada 3 minutos
   LOW_ENERGY_THRESHOLD: 30, // % mínimo para misiones
+  ENERGY_RECOVERY_LEVEL_BONUS: 0.5, // +0.5 energía por nivel del ser
 
   // Probabilidades
   MAX_SUCCESS_PROBABILITY: 0.95, // 95% máximo
@@ -72,10 +73,10 @@ class MissionService {
   /**
    * Inicializar servicio de misiones
    * - Recuperar misiones activas
-   * - Restaurar timers
+   * - Restaurar timers (FIX: ahora reinicia timers correctamente)
    * - Iniciar recuperación de energía
    */
-  async initialize(userId) {
+  async initialize(userId, gameStore = null) {
     if (this.initialized) {
       logger.info('⚠️ MissionService ya inicializado', '');
       return;
@@ -85,7 +86,13 @@ class MissionService {
 
     try {
       // Recuperar misiones activas desde AsyncStorage
-      await this.recuperarMisionesActivas(userId);
+      const misionesActivas = await this.recuperarMisionesActivas(userId);
+
+      // FIX: Reiniciar timers para misiones que no han terminado
+      // y resolver inmediatamente las que deberían haber terminado
+      if (misionesActivas.length > 0 && gameStore) {
+        await this.restaurarTimersMisiones(userId, misionesActivas, gameStore);
+      }
 
       // Iniciar sistema de recuperación de energía
       await this.iniciarRecuperacionEnergia(userId);
@@ -103,12 +110,47 @@ class MissionService {
   }
 
   /**
+   * FIX: Restaurar timers para misiones activas al reiniciar la app
+   * Resuelve inmediatamente las misiones que ya deberían haber terminado
+   */
+  async restaurarTimersMisiones(userId, misiones, gameStore) {
+    const ahora = Date.now();
+    let misionesResueltas = 0;
+    let timersReiniciados = 0;
+
+    for (const mision of misiones) {
+      const tiempoFinalizacion = new Date(mision.endsAt).getTime();
+      const tiempoRestante = tiempoFinalizacion - ahora;
+
+      if (tiempoRestante <= 0) {
+        // Misión ya debería haber terminado - resolver inmediatamente
+        logger.info(`⏰ Misión ${mision.id} expirada - resolviendo...`, '');
+        try {
+          await this.resolverMision(mision.id, gameStore);
+          misionesResueltas++;
+        } catch (error) {
+          logger.error(`Error resolviendo misión expirada ${mision.id}:`, error);
+        }
+      } else {
+        // Misión aún en progreso - reiniciar timer
+        logger.info(`⏱️ Reiniciando timer para misión ${mision.id} (${Math.round(tiempoRestante / 60000)} min restantes)`, '');
+        this.iniciarTimerMision(mision, gameStore);
+        timersReiniciados++;
+      }
+    }
+
+    if (misionesResueltas > 0 || timersReiniciados > 0) {
+      logger.info(`📋 Timers restaurados: ${timersReiniciados} activos, ${misionesResueltas} resueltas`, '');
+    }
+  }
+
+  /**
    * Configurar sistema de notificaciones
    */
   configurarNotificaciones() {
     PushNotification.configure({
       onNotification: function (notification) {
-        console.log('📬 Notificación recibida:', notification);
+        logger.info('MissionService', '📬 Notificación recibida:', notification);
       },
       permissions: {
         alert: true,
@@ -429,7 +471,7 @@ class MissionService {
       }
     };
 
-    console.log('✅ Probabilidad calculada:', detalles.desglose);
+    logger.debug('MissionService', '✅ Probabilidad calculada:', detalles.desglose);
 
     return detalles;
   }
@@ -653,7 +695,7 @@ class MissionService {
       const stored = await AsyncStorage.getItem(misionesKey);
 
       if (!stored) {
-        console.error('No hay misiones guardadas');
+        logger.warn('MissionService', 'resolverMision: No hay misiones guardadas para usuario');
         return;
       }
 
@@ -661,7 +703,7 @@ class MissionService {
       const mision = misiones.find(m => m.id === misionId);
 
       if (!mision) {
-        console.error(`Misión ${misionId} no encontrada`);
+        logger.warn('MissionService', `resolverMision: Misión ${misionId} no encontrada`);
         return;
       }
 
@@ -670,7 +712,7 @@ class MissionService {
       const exito = roll <= mision.successProbability;
 
       logger.info(`🎲 Roll: ${(roll * 100).toFixed(1)}% vs Probabilidad: ${(mision.successProbability * 100).toFixed(1)}%`, '');
-      console.log(exito ? '✅ ¡ÉXITO!' : '❌ FALLO');
+      logger.info('MissionService', exito ? '✅ ¡ÉXITO!' : '❌ FALLO');
 
       // 2. Calcular recompensas
       const recompensas = await this.calcularRecompensas(mision, exito, userId, gameStore);
@@ -802,7 +844,7 @@ class MissionService {
       }
     }
 
-    console.log('💰 Recompensas calculadas:', recompensas);
+    logger.debug('MissionService', '💰 Recompensas calculadas:', recompensas);
 
     return recompensas;
   }
@@ -930,15 +972,29 @@ class MissionService {
       const gameStore = require('../stores/gameStore').default;
       const estado = gameStore.getState();
 
+      // Recuperar energía de seres en resting (recuperación rápida)
       const seresEnResting = estado.beings.filter(b => b.status === 'resting');
 
-      if (seresEnResting.length === 0) return;
+      // También recuperar seres disponibles pero con menos energía (recuperación lenta)
+      const seresDisponibles = estado.beings.filter(b =>
+        b.status === 'available' && (b.energy || 100) < 100
+      );
 
-      logger.info(`⚡ Recuperando energía de ${seresEnResting.length} seres...`, '');
+      const totalSeresRecuperando = seresEnResting.length + seresDisponibles.length;
+      if (totalSeresRecuperando === 0) return;
 
+      logger.info(`⚡ Recuperando energía de ${totalSeresRecuperando} seres...`, '');
+
+      // Seres en resting: recuperación completa con bonus por nivel
       seresEnResting.forEach(ser => {
         const energiaActual = ser.energy || 0;
-        const nuevaEnergia = Math.min(100, energiaActual + MISSION_CONSTANTS.ENERGY_RECOVERY_RATE);
+        const nivel = ser.level || 1;
+        // Base + bonus por nivel
+        const recuperacion = Math.floor(
+          MISSION_CONSTANTS.ENERGY_RECOVERY_RATE +
+          (nivel * MISSION_CONSTANTS.ENERGY_RECOVERY_LEVEL_BONUS)
+        );
+        const nuevaEnergia = Math.min(100, energiaActual + recuperacion);
 
         gameStore.updateBeing(ser.id, { energy: nuevaEnergia });
 
@@ -950,6 +1006,18 @@ class MissionService {
           // Enviar notificación
           this.enviarNotificacionSerRecuperado(ser);
         }
+      });
+
+      // Seres disponibles: recuperación pasiva lenta (30% de la tasa normal)
+      seresDisponibles.forEach(ser => {
+        const energiaActual = ser.energy || 0;
+        const nivel = ser.level || 1;
+        const recuperacionBase = MISSION_CONSTANTS.ENERGY_RECOVERY_RATE +
+          (nivel * MISSION_CONSTANTS.ENERGY_RECOVERY_LEVEL_BONUS);
+        const recuperacion = Math.floor(recuperacionBase * 0.3);
+        const nuevaEnergia = Math.min(100, energiaActual + Math.max(1, recuperacion));
+
+        gameStore.updateBeing(ser.id, { energy: nuevaEnergia });
       });
 
     } catch (error) {
@@ -1445,9 +1513,9 @@ export const testingHelpers = {
     logger.info('═══════════════════════════════════════', '');
     logger.info('TEST: CÁLCULO DE PROBABILIDAD', '');
     logger.info('═══════════════════════════════════════', '');
-    console.log('Atributos Requeridos:', atributosRequeridos);
-    console.log('Seres desplegados:', seres.length);
-    console.log('\nResultado:', JSON.stringify(resultado, null, 2));
+    logger.debug('MissionService', 'Atributos Requeridos:', atributosRequeridos);
+    logger.debug('MissionService', 'Seres desplegados:', seres.length);
+    logger.debug('MissionService', 'Resultado:', resultado);
     logger.info('═══════════════════════════════════════', '');
 
     return resultado;

@@ -10,15 +10,14 @@
  * @version 1.0.0
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   Text,
   ScrollView,
   TouchableOpacity,
-  Alert,
-  Animated
+  Alert
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import useGameStore from '../stores/gameStore';
@@ -105,13 +104,16 @@ const PieceFusionScreen = ({ navigation }) => {
     setSelectedPieces([]);
   };
 
-  const handleSelectPiece = (piece) => {
-    if (selectedPieces.find(p => p.id === piece.id)) {
+  // IDs de piezas seleccionadas (más eficiente para comparación)
+  const selectedIds = selectedPieces.map(p => p.id);
+
+  const togglePieceSelection = (piece) => {
+    if (selectedIds.includes(piece.id)) {
       // Deseleccionar
-      setSelectedPieces(prev => prev.filter(p => p.id !== piece.id));
+      setSelectedPieces(selectedPieces.filter(p => p.id !== piece.id));
     } else if (selectedPieces.length < FUSION_CONFIG.requiredPieces) {
       // Seleccionar
-      setSelectedPieces(prev => [...prev, piece]);
+      setSelectedPieces([...selectedPieces, piece]);
     }
   };
 
@@ -219,8 +221,10 @@ const PieceFusionScreen = ({ navigation }) => {
     );
   };
 
-  const renderPieceForSelection = (piece) => {
-    const isSelected = selectedPieces.find(p => p.id === piece.id);
+  // Función para renderizar cada pieza
+  const renderPieceCard = (piece) => {
+    const isSelected = selectedIds.includes(piece.id);
+    const canSelect = selectedPieces.length < FUSION_CONFIG.requiredPieces || isSelected;
 
     return (
       <TouchableOpacity
@@ -228,11 +232,16 @@ const PieceFusionScreen = ({ navigation }) => {
         style={[
           styles.pieceCard,
           isSelected && styles.pieceCardSelected,
+          !canSelect && styles.pieceCardDisabled,
           { borderColor: RARITY_COLORS[piece.rarity || 'common'] }
         ]}
-        onPress={() => handleSelectPiece(piece)}
+        onPress={() => togglePieceSelection(piece)}
+        activeOpacity={0.7}
       >
         <Text style={styles.pieceIcon}>{piece.icon || '✨'}</Text>
+        <Text style={styles.pieceName} numberOfLines={1}>
+          {ATTRIBUTE_NAMES[piece.attribute] || piece.attribute}
+        </Text>
         <Text style={styles.piecePower}>+{piece.power || 10}</Text>
         <Text style={[
           styles.pieceRarity,
@@ -259,16 +268,20 @@ const PieceFusionScreen = ({ navigation }) => {
         </Text>
       </View>
 
-      {/* Instrucciones */}
+      {/* Explicación del sistema */}
       <View style={styles.instructions}>
+        <Text style={styles.instructionTitle}>¿Cómo funciona?</Text>
         <Text style={styles.instructionText}>
-          1. Selecciona un atributo con 3+ fragmentos
+          • Combina <Text style={styles.highlight}>3 fragmentos iguales</Text> para crear uno más fuerte
         </Text>
         <Text style={styles.instructionText}>
-          2. Elige 3 fragmentos para fusionar
+          • El nuevo fragmento tendrá <Text style={styles.highlight}>+50% de poder</Text>
         </Text>
         <Text style={styles.instructionText}>
-          3. Obtén un fragmento más poderoso
+          • Posibilidad de <Text style={styles.highlightRare}>subir de rareza</Text> (Común → Raro → Épico)
+        </Text>
+        <Text style={styles.instructionSmall}>
+          💡 Consigue fragmentos completando misiones
         </Text>
       </View>
 
@@ -291,6 +304,7 @@ const PieceFusionScreen = ({ navigation }) => {
               </Text>
             </View>
           )}
+
         </ScrollView>
       ) : (
         // Vista de selección de piezas
@@ -311,7 +325,9 @@ const PieceFusionScreen = ({ navigation }) => {
 
           <ScrollView style={styles.pieceList}>
             <View style={styles.pieceGrid}>
-              {groupedPieces[selectedAttribute]?.map(renderPieceForSelection)}
+              {(groupedPieces[selectedAttribute] || []).map(piece =>
+                renderPieceCard(piece)
+              )}
             </View>
           </ScrollView>
 
@@ -394,11 +410,32 @@ const styles = StyleSheet.create({
   instructions: {
     padding: 16,
     backgroundColor: COLORS.bg.card,
-    gap: 4
+    gap: 6
+  },
+  instructionTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.text.primary,
+    marginBottom: 6
   },
   instructionText: {
     fontSize: 13,
-    color: COLORS.text.secondary
+    color: COLORS.text.secondary,
+    lineHeight: 20
+  },
+  instructionSmall: {
+    fontSize: 12,
+    color: COLORS.text.muted,
+    marginTop: 8,
+    fontStyle: 'italic'
+  },
+  highlight: {
+    color: COLORS.accent.primary,
+    fontWeight: '600'
+  },
+  highlightRare: {
+    color: '#a855f7',
+    fontWeight: '600'
   },
 
   // Sección
@@ -492,47 +529,62 @@ const styles = StyleSheet.create({
   pieceGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingBottom: 16
   },
   pieceCard: {
-    width: '31%',
+    width: '48%',
     backgroundColor: COLORS.bg.elevated,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-    borderWidth: 2
+    borderWidth: 2,
+    minHeight: 130,
+    marginBottom: 12
   },
   pieceCardSelected: {
-    backgroundColor: COLORS.accent.primary + '30'
+    backgroundColor: COLORS.accent.primary + '30',
+    borderWidth: 3
+  },
+  pieceCardDisabled: {
+    opacity: 0.4
   },
   pieceIcon: {
-    fontSize: 28,
-    marginBottom: 4
+    fontSize: 36,
+    marginBottom: 6
+  },
+  pieceName: {
+    fontSize: 12,
+    color: COLORS.text.secondary,
+    marginBottom: 4,
+    textAlign: 'center'
   },
   piecePower: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.text.primary
   },
   pieceRarity: {
-    fontSize: 10,
-    fontWeight: '600'
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 4
   },
   selectedBadge: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    top: 8,
+    right: 8,
     backgroundColor: COLORS.accent.success,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff'
   },
   selectedText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold'
   },
 

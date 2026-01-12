@@ -9,6 +9,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logger from '../utils/logger';
 
 // ============================================================================
 // TIPOS DE CORRUPCIÓN
@@ -549,7 +550,7 @@ class CorruptionService {
         corruptionHistory: this.corruptionHistory.slice(-100) // Últimos 100 eventos
       }));
     } catch (error) {
-      console.error('Error saving Corruption state:', error);
+      logger.error('CorruptionService', 'Error saving state:', error);
     }
   }
 
@@ -563,7 +564,7 @@ class CorruptionService {
         this.corruptionHistory = parsed.corruptionHistory || [];
       }
     } catch (error) {
-      console.error('Error loading Corruption state:', error);
+      logger.error('CorruptionService', 'Error loading state:', error);
     }
   }
 }

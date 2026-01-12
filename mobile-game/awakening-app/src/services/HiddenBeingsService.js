@@ -9,6 +9,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LEGENDARY_BEINGS as QUIZ_LEGENDARY_BEINGS } from '../data/realQuizzes';
+import { logger } from '../utils/logger';
 
 // ============================================================================
 // TIPOS DE SERES OCULTOS
@@ -660,7 +661,7 @@ class HiddenBeingsService {
         legendaryProgress: this.legendaryProgress
       }));
     } catch (error) {
-      console.error('Error saving HiddenBeings state:', error);
+      logger.error('HiddenBeingsService', 'Error saving state:', error);
     }
   }
 
@@ -674,7 +675,7 @@ class HiddenBeingsService {
         this.legendaryProgress = parsed.legendaryProgress || {};
       }
     } catch (error) {
-      console.error('Error loading HiddenBeings state:', error);
+      logger.error('HiddenBeingsService', 'Error loading state:', error);
     }
   }
 }

@@ -56,6 +56,12 @@ const Icons = {
     zap: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>`,
     brain: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>`,
     landmark: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
+    // Icono calendario/timeline
+    calendar: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>`,
+    // Icono bebé/nacimiento
+    baby: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>`,
+    // Icono graduación/educación
+    graduationCap: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>`,
 
     // Theme Icons - iconos para el sistema de temas
     moon: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
@@ -163,7 +169,7 @@ const Icons = {
   loader: (size = 20) => Icons._svg.loader(size),              // Spinner/Cargando (SVG inline)
   info: (size = 20) => Icons.create('info', size),             // Información
   user: (size = 20) => Icons.create('user', size),             // Usuario
-  calendar: (size = 20) => Icons.create('calendar', size),     // Calendario
+  calendar: (size = 20) => Icons._svg.calendar(size),          // Calendario (SVG inline)
   volume: (size = 20) => Icons._svg.volume2(size),             // Volumen (SVG inline)
   wrench: (size = 20) => Icons.create('wrench', size),         // Herramientas
   mapPin: (size = 20) => Icons.create('map-pin', size),        // Ubicación
@@ -195,6 +201,8 @@ const Icons = {
   wrench: (size = 20) => Icons._svg.wrench(size),              // Herramientas/Toolkit
   circleDot: (size = 20) => Icons._svg.circleDot(size),        // Meditación/Práctica
   landmark: (size = 20) => Icons._svg.landmark(size),          // Instituciones/Edificio
+  baby: (size = 20) => Icons._svg.baby(size),                  // Nacimiento
+  graduationCap: (size = 20) => Icons._svg.graduationCap(size), // Educación
 
   /**
    * Obtiene el icono SVG apropiado para un libro según su ID
@@ -215,7 +223,9 @@ const Icons = {
       'practicas-radicales': 'zap',
       'filosofia-nuevo-ser': 'brain',
       'ahora-instituciones': 'landmark',
-      'dialogos-maquina': 'brain',
+      'dialogos-maquina': 'bot',
+      'nacimiento': 'baby',
+      'educacion-nuevo-ser': 'graduationCap',
     };
 
     const iconName = iconMap[bookId] || 'book';

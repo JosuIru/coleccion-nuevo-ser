@@ -13,6 +13,8 @@
  * @date 2025-12-23
  */
 
+import { logger } from '../utils/logger';
+
 // Caché en memoria para traducciones
 const translationCache = new Map();
 
@@ -143,7 +145,7 @@ const cleanCacheIfNeeded = () => {
   if (translationCache.size > CONFIG.CACHE_SIZE_LIMIT) {
     const keysToDelete = Array.from(translationCache.keys()).slice(0, 100);
     keysToDelete.forEach(key => translationCache.delete(key));
-    console.log('[TranslationService] Cache cleaned');
+    logger.debug('TranslationService', 'Cache cleaned');
   }
 };
 
@@ -189,7 +191,7 @@ export const translateText = async (text, targetLang = CONFIG.TARGET_LANG) => {
     const api = TRANSLATION_APIS[apiKey];
 
     try {
-      console.log(`[TranslationService] Trying ${api.name}...`);
+      logger.debug('TranslationService', `Trying ${api.name}...`);
 
       const translatedText = await api.translate(
         textToTranslate,
@@ -201,11 +203,11 @@ export const translateText = async (text, targetLang = CONFIG.TARGET_LANG) => {
       cleanCacheIfNeeded();
       translationCache.set(cacheKey, translatedText);
 
-      console.log(`[TranslationService] Success with ${api.name}`);
+      logger.debug('TranslationService', `Success with ${api.name}`);
       return translatedText;
 
     } catch (error) {
-      console.warn(`[TranslationService] ${api.name} failed:`, error.message);
+      logger.warn('TranslationService', `${api.name} failed:`, error.message);
       lastError = error;
 
       // Pequeño delay antes de intentar siguiente API
@@ -214,7 +216,7 @@ export const translateText = async (text, targetLang = CONFIG.TARGET_LANG) => {
   }
 
   // Si todas las APIs fallan, devolver texto original
-  console.error('[TranslationService] All APIs failed, returning original text');
+  logger.error('TranslationService', 'All APIs failed, returning original text');
   return trimmedText;
 };
 
@@ -242,7 +244,7 @@ export const translateCrisis = async (crisis) => {
       translated: true
     };
   } catch (error) {
-    console.error('[TranslationService] Crisis translation error:', error);
+    logger.error('TranslationService', 'Crisis translation error:', error);
     return {
       ...crisis,
       translated: false
@@ -259,7 +261,7 @@ export const translateCrisis = async (crisis) => {
 export const translateCrises = async (crises, maxConcurrent = 2) => {
   if (!crises || crises.length === 0) return crises;
 
-  console.log('[TranslationService] Translating', crises.length, 'crises...');
+  logger.debug('TranslationService', `Translating ${crises.length} crises...`);
 
   const results = [];
 
@@ -275,11 +277,11 @@ export const translateCrises = async (crises, maxConcurrent = 2) => {
     }
 
     // Log progreso
-    console.log(`[TranslationService] Progress: ${results.length}/${crises.length}`);
+    logger.debug('TranslationService', `Progress: ${results.length}/${crises.length}`);
   }
 
   const successCount = results.filter(c => c.translated).length;
-  console.log(`[TranslationService] Complete: ${successCount}/${crises.length} translated`);
+  logger.info('TranslationService', `Complete: ${successCount}/${crises.length} translated`);
 
   return results;
 };
@@ -339,7 +341,7 @@ export const getCacheStats = () => {
  */
 export const clearCache = () => {
   translationCache.clear();
-  console.log('[TranslationService] Cache cleared');
+  logger.debug('TranslationService', 'Cache cleared');
 };
 
 /**

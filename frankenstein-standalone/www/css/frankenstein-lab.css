@@ -19,35 +19,16 @@
   --franken-purple: #4a235a;
   --franken-lightning: #e0f7ff;
 
-  /* Texturas */
-  --paper-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+  /* Texturas - Optimizadas para rendimiento */
+  --paper-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence baseFrequency="0.5" numOctaves="2"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.03"/></svg>');
 
-  /* Textura de pergamino vintage */
-  --parchment-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><defs><filter id="parchment"><feTurbulence baseFrequency="0.02" numOctaves="5" seed="2"/><feColorMatrix values="1 0 0 0 0.9 0 1 0 0 0.85 0 0 1 0 0.7 0 0 0 1 0"/></filter></defs><rect width="200" height="200" fill="%23f4e9d8" filter="url(%23parchment)"/></svg>');
-
-  /* Cuadrícula técnica estilo Leonardo da Vinci */
+  /* Cuadrícula técnica simplificada */
   --technical-grid:
-    repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.12) 0px, transparent 1px, transparent 40px, rgba(139, 115, 85, 0.12) 41px),
-    repeating-linear-gradient(90deg, rgba(139, 115, 85, 0.12) 0px, transparent 1px, transparent 40px, rgba(139, 115, 85, 0.12) 41px),
-    repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.05) 0px, transparent 1px, transparent 10px, rgba(139, 115, 85, 0.05) 11px),
-    repeating-linear-gradient(90deg, rgba(139, 115, 85, 0.05) 0px, transparent 1px, transparent 10px, rgba(139, 115, 85, 0.05) 11px);
+    repeating-linear-gradient(0deg, rgba(139, 115, 85, 0.08) 0px, transparent 1px, transparent 50px),
+    repeating-linear-gradient(90deg, rgba(139, 115, 85, 0.08) 0px, transparent 1px, transparent 50px);
 
-  /* Imágenes de Leonardo da Vinci (se alterna aleatoriamente) */
-  --da-vinci-bg: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Da_Vinci_Vitruve_Luc_Viatour.jpg/800px-Da_Vinci_Vitruve_Luc_Viatour.jpg');
-
-  /* Manchas de tinta más sutiles */
-  --ink-stains: radial-gradient(ellipse at 15% 20%, rgba(139, 115, 85, 0.06) 0%, transparent 40%),
-                radial-gradient(ellipse at 85% 75%, rgba(139, 115, 85, 0.04) 0%, transparent 35%),
-                radial-gradient(ellipse at 50% 90%, rgba(139, 115, 85, 0.03) 0%, transparent 30%);
-
-  /* Patrón de papel viejo con líneas de escritura */
-  --old-paper-pattern: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 24px,
-    rgba(139, 115, 85, 0.03) 24px,
-    rgba(139, 115, 85, 0.03) 25px
-  );
+  /* Viñeta sutil para enmarcar el contenido */
+  --vignette: radial-gradient(ellipse at center, transparent 40%, rgba(10, 10, 15, 0.6) 100%);
 
   /* Sombras Victorianas */
   --shadow-deep: 0 8px 20px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -62,38 +43,27 @@
   position: fixed;
   inset: 0;
   background:
-    /* Cuadrícula técnica de Leonardo da Vinci */
+    /* Viñeta para profundidad */
+    var(--vignette),
+    /* Cuadrícula técnica sutil */
     var(--technical-grid),
-    /* Dibujos técnicos de Leonardo (alterna aleatoriamente) */
-    var(--da-vinci-bg),
-    /* Manchas de tinta sutiles */
-    var(--ink-stains),
-    /* Textura de pergamino */
-    var(--parchment-texture),
-    /* Patrón de líneas de escritura */
-    var(--old-paper-pattern),
-    /* Gradiente base oscuro */
+    /* Textura de papel muy sutil */
+    var(--paper-texture),
+    /* Gradiente base - gótico pero legible */
     linear-gradient(180deg,
-      rgba(26, 26, 46, 0.92) 0%,
-      rgba(10, 10, 15, 0.95) 50%,
-      rgba(26, 26, 46, 0.92) 100%
+      #1a1a2e 0%,
+      #0f0f1a 40%,
+      #0a0a12 60%,
+      #1a1a2e 100%
     );
   background-size:
-    40px 40px,
-    contain,
     100% 100%,
-    400px 400px,
-    100% 100%,
+    50px 50px,
+    100px 100px,
     100% 100%;
-  background-position:
-    center,
-    center,
-    center,
-    center,
-    center,
-    center;
-  background-repeat: repeat, no-repeat, repeat, repeat, repeat, no-repeat;
-  background-blend-mode: overlay, luminosity, multiply, overlay, overlay, normal;
+  background-position: center;
+  background-repeat: no-repeat, repeat, repeat, no-repeat;
+  background-blend-mode: normal, overlay, soft-light, normal;
   font-family: 'Crimson Text', 'Garamond', 'Georgia', serif;
   color: var(--franken-parchment);
   overflow: hidden;
@@ -8071,14 +8041,13 @@ body.book-expanded .missing-requirements-quick-view {
   position: fixed;
   inset: 0;
   background:
+    var(--vignette),
     var(--technical-grid),
-    var(--da-vinci-bg),
-    var(--ink-stains),
-    linear-gradient(135deg, rgba(26, 11, 46, 0.9) 0%, rgba(45, 27, 78, 0.95) 50%, rgba(26, 11, 46, 0.9) 100%);
-  background-size: 40px 40px, cover, 100% 100%, 100% 100%;
+    linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 50%, #1a0b2e 100%);
+  background-size: 100% 100%, 50px 50px, 100% 100%;
   background-position: center;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-  background-blend-mode: overlay, luminosity, screen, normal;
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-blend-mode: normal, overlay, normal;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10116,9 +10085,10 @@ body.book-expanded .missing-requirements-quick-view {
   border-radius: 22px;
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(10, 10, 15, 0.85), rgba(32, 32, 55, 0.85)),
-    var(--da-vinci-bg);
-  background-size: cover;
+    var(--technical-grid),
+    linear-gradient(135deg, #0a0a0f 0%, #1a1a30 50%, #0a0a0f 100%);
+  background-size: 50px 50px, cover;
+  background-blend-mode: overlay, normal;
   border: 2px solid rgba(212, 175, 55, 0.3);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
 }

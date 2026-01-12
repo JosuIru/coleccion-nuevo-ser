@@ -16,6 +16,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logger from '../utils/logger';
 
 const TRANSITION_STORAGE_KEY = '@awakening_transition_progress';
 
@@ -352,7 +353,7 @@ class TransitionService {
       }
       return this.transitionProgress;
     } catch (error) {
-      console.error('[TransitionService] Error initializing:', error);
+      logger.error('TransitionService', 'Error initializing:', error);
       this.transitionProgress = this.createInitialProgress();
       return this.transitionProgress;
     }
@@ -506,7 +507,7 @@ class TransitionService {
         this.transitionProgress.realWorldChallengesUnlocked = true;
       }
 
-      console.log(`[TransitionService] Milestone completed: ${milestone.name}`);
+      logger.info('TransitionService', ` Milestone completed: ${milestone.name}`);
     }
   }
 
@@ -919,7 +920,7 @@ class TransitionService {
         JSON.stringify(this.transitionProgress)
       );
     } catch (error) {
-      console.error('[TransitionService] Error saving:', error);
+      logger.error('TransitionService', 'Error saving:', error);
     }
   }
 

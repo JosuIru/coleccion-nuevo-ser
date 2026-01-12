@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView
 } from 'react-native';
+import { RESOURCES } from '../config/constants';
 
 const ExplorationPanel = ({
   regions = [],
@@ -20,7 +21,7 @@ const ExplorationPanel = ({
   onExplore,
   onCompleteExpedition
 }) => {
-  const ENERGY_COST = 15;
+  const ENERGY_COST = RESOURCES.EXPLORATION.ENERGY_COST;
 
   const continentColors = {
     europe: '#3B82F6',

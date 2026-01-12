@@ -13,9 +13,15 @@ const BIBLIOTECA_CONFIG = {
     { value: 'all', label: 'library.allCategories' },
     { value: 'Espiritualidad & Ciencia', label: 'Espiritualidad & Ciencia' },
     { value: 'Filosofía Política', label: 'Filosofía Política' },
+    { value: 'Filosofía & Ontología', label: 'Filosofía & Ontología' },
     { value: 'Activismo & Transformación Social', label: 'Activismo & Transformación Social' },
     { value: 'Prácticas & Ejercicios', label: 'Prácticas & Ejercicios' },
-    { value: 'Prácticas Avanzadas', label: 'Prácticas Avanzadas' }
+    { value: 'Prácticas Avanzadas', label: 'Prácticas Avanzadas' },
+    { value: 'Ecología Profunda', label: 'Ecología Profunda' },
+    { value: 'Tecnología & Filosofía', label: 'Tecnología & Filosofía' },
+    { value: 'Análisis Civilizatorio', label: 'Análisis Civilizatorio' },
+    { value: 'Educación & Transformación', label: 'Educación & Transformación' },
+    { value: 'Instituciones & Sociedad', label: 'Instituciones & Sociedad' }
   ],
 
   // Botones destacados siempre visibles
@@ -112,6 +118,41 @@ const BIBLIOTECA_CONFIG = {
       tags: ['juego', 'transformacion', 'meditacion', 'misiones', 'android'],
       isInternal: false,
       hasApk: true
+    },
+    {
+      id: 'educators-kit',
+      name: 'Kit para Educadores',
+      description: 'Recursos para facilitadores: guías, actividades por edad, plantillas y material visual',
+      icon: '📚',
+      url: './educadores/index.html',
+      color: '#F59E0B',
+      tags: ['educación', 'facilitadores', 'actividades', 'recursos'],
+      isInternal: false,
+      isNew: true
+    },
+    {
+      id: 'ai-practice-generator',
+      name: 'Generador de Prácticas IA',
+      description: 'Crea prácticas personalizadas con inteligencia artificial según tu estado y necesidades',
+      icon: '✨',
+      url: '#practice-generator',
+      color: '#8B5CF6',
+      tags: ['IA', 'prácticas', 'personalizado', 'meditación'],
+      isInternal: true,
+      isNew: true,
+      handler: 'handleAIPracticeGenerator',
+      actionText: '✨ Crear Práctica'
+    },
+    {
+      id: 'transition-map',
+      name: 'Mapa de Transición',
+      description: 'Explora proyectos y comunidades del Nuevo Ser en un globo 3D interactivo',
+      icon: '🌍',
+      url: './transition-map.html',
+      color: '#10B981',
+      tags: ['mapa', '3D', 'proyectos', 'comunidades', 'global'],
+      isInternal: false,
+      isNew: true
     }
   ]
 };
@@ -1130,9 +1171,9 @@ class Biblioteca {
             class="flex-1 min-w-[140px] px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm focus:border-cyan-500 focus:outline-none cursor-pointer transition-all"
           >
             <option value="all">⏱️ Cualquier duración</option>
-            <option value="short">⚡ Corto (&lt;2h)</option>
-            <option value="medium">📖 Medio (2-5h)</option>
-            <option value="long">📚 Largo (&gt;5h)</option>
+            <option value="short">⚡ Corto (≤5h)</option>
+            <option value="medium">📖 Medio (6-10h)</option>
+            <option value="long">📚 Largo (&gt;10h)</option>
           </select>
         </div>
       </div>
@@ -1360,7 +1401,9 @@ class Biblioteca {
       }
 
       const isInternal = herramienta.isInternal || false;
-      const badgeText = isInternal ? '🎮 Juego' : '🌐 Web App';
+      const isNew = herramienta.isNew || false;
+      // Badge text: priorizar "Nuevo" si aplica
+      const badgeText = isNew ? '✨ Nuevo' : (isInternal ? '🎮 Juego' : '🌐 Web App');
 
       // Asignar color tema por herramienta
       let colorTheme = 'emerald';
@@ -1368,6 +1411,9 @@ class Biblioteca {
       else if (herramienta.id === 'cosmos-navigation') colorTheme = 'indigo';
       else if (herramienta.id === 'coleccion-nuevo-ser') colorTheme = 'pink';
       else if (herramienta.id === 'truk') colorTheme = 'blue';
+      else if (herramienta.id === 'educators-kit') colorTheme = 'amber';
+      else if (herramienta.id === 'ai-practice-generator') colorTheme = 'violet';
+      else if (herramienta.id === 'transition-map') colorTheme = 'teal';
       // Mapeo de colores para cada herramienta
       const colorMap = {
         'purple': {
@@ -1444,6 +1490,51 @@ class Biblioteca {
           tagBorder: 'border-emerald-300 dark:border-emerald-700/30',
           btnGradient: 'from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500',
           btnShadow: 'group-hover:shadow-emerald-500/25'
+        },
+        'amber': {
+          gradientFrom: 'from-amber-500/20 to-orange-500/20',
+          borderColor: 'border-amber-500/30',
+          hoverBorderColor: 'hover:border-amber-500/50',
+          hoverShadow: 'hover:shadow-amber-500/20',
+          hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-300',
+          badgeBg: 'bg-amber-100 dark:bg-amber-500/20',
+          badgeText: 'text-amber-700 dark:text-amber-300',
+          badgeBorder: 'border-amber-300 dark:border-amber-500/30',
+          tagBg: 'bg-amber-100 dark:bg-amber-900/30',
+          tagText: 'text-amber-700 dark:text-amber-400',
+          tagBorder: 'border-amber-300 dark:border-amber-700/30',
+          btnGradient: 'from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500',
+          btnShadow: 'group-hover:shadow-amber-500/25'
+        },
+        'violet': {
+          gradientFrom: 'from-violet-500/20 to-purple-500/20',
+          borderColor: 'border-violet-500/30',
+          hoverBorderColor: 'hover:border-violet-500/50',
+          hoverShadow: 'hover:shadow-violet-500/20',
+          hoverTextColor: 'group-hover:text-violet-600 dark:group-hover:text-violet-300',
+          badgeBg: 'bg-violet-100 dark:bg-violet-500/20',
+          badgeText: 'text-violet-700 dark:text-violet-300',
+          badgeBorder: 'border-violet-300 dark:border-violet-500/30',
+          tagBg: 'bg-violet-100 dark:bg-violet-900/30',
+          tagText: 'text-violet-700 dark:text-violet-400',
+          tagBorder: 'border-violet-300 dark:border-violet-700/30',
+          btnGradient: 'from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500',
+          btnShadow: 'group-hover:shadow-violet-500/25'
+        },
+        'teal': {
+          gradientFrom: 'from-teal-500/20 to-cyan-500/20',
+          borderColor: 'border-teal-500/30',
+          hoverBorderColor: 'hover:border-teal-500/50',
+          hoverShadow: 'hover:shadow-teal-500/20',
+          hoverTextColor: 'group-hover:text-teal-600 dark:group-hover:text-teal-300',
+          badgeBg: 'bg-teal-100 dark:bg-teal-500/20',
+          badgeText: 'text-teal-700 dark:text-teal-300',
+          badgeBorder: 'border-teal-300 dark:border-teal-500/30',
+          tagBg: 'bg-teal-100 dark:bg-teal-900/30',
+          tagText: 'text-teal-700 dark:text-teal-400',
+          tagBorder: 'border-teal-300 dark:border-teal-700/30',
+          btnGradient: 'from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500',
+          btnShadow: 'group-hover:shadow-teal-500/25'
         }
       };
 
@@ -1520,7 +1611,7 @@ class Biblioteca {
               <div class="mt-2 text-xs text-center text-gray-600 dark:text-gray-400 tool-device-info" id="device-info-${herramienta.id}"></div>
             ` : `
               <div class="w-full py-3 px-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 text-center bg-gradient-to-r ${btnGradient} text-white shadow-lg hover:shadow-xl ${btnShadow}">
-                ${isInternal ? '🎮 Jugar Ahora' : '🚀 Abrir Aplicación'}
+                ${herramienta.actionText || (isInternal ? '🎮 Jugar Ahora' : '🚀 Abrir Aplicación')}
               </div>
             `}
           </div>
@@ -1654,21 +1745,21 @@ class Biblioteca {
       });
     }
 
-    // 🔧 v2.9.326: Filtro por duración estimada
+    // 🔧 v2.9.332: Filtro por duración estimada - rangos ajustados a contenido real
     if (this.filterDuration && this.filterDuration !== 'all') {
       librosFiltrados = librosFiltrados.filter(libro => {
-        // Extraer horas del estimatedReadTime (ej: "8-10 horas" -> 8)
-        const tiempoEstimado = libro.estimatedReadTime || '';
+        // Extraer horas - soporta ambos campos del catálogo
+        const tiempoEstimado = libro.estimatedReadingTime || libro.estimatedReadTime || '';
         const match = tiempoEstimado.match(/(\d+)/);
         const horasMinimas = match ? parseInt(match[1], 10) : 0;
 
         switch (this.filterDuration) {
           case 'short':
-            return horasMinimas < 2;
+            return horasMinimas <= 5;  // Hasta 5 horas
           case 'medium':
-            return horasMinimas >= 2 && horasMinimas <= 5;
+            return horasMinimas >= 6 && horasMinimas <= 10;  // 6-10 horas
           case 'long':
-            return horasMinimas > 5;
+            return horasMinimas > 10;  // Más de 10 horas
           default:
             return true;
         }
@@ -2335,6 +2426,15 @@ class Biblioteca {
     evento.preventDefault();
     // 🔧 FIX #7: Usar método wrapper que actualiza tab activo
     this.openPracticeLibrary();
+  }
+
+  handleAIPracticeGenerator(evento) {
+    evento.preventDefault();
+    if (window.aiPracticeGenerator) {
+      window.aiPracticeGenerator.open();
+    } else {
+      logger.warn('[Biblioteca] AI Practice Generator no disponible');
+    }
   }
 
   handleExplorationHub(evento) {

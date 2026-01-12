@@ -485,4 +485,15 @@ class RadialMenu {
 
 // Exportar como global
 window.RadialMenu = RadialMenu;
-window.radialMenu = new RadialMenu();
+
+// No inicializar en APK (Capacitor/Cordova) - problemas con long-press en móvil
+const isNativeApp = window.Capacitor?.isNativePlatform?.() ||
+                    window.cordova ||
+                    document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;
+
+if (!isNativeApp) {
+  window.radialMenu = new RadialMenu();
+} else {
+  console.log('[RadialMenu] Deshabilitado en app nativa');
+  window.radialMenu = null;
+}

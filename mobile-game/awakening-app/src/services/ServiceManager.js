@@ -49,6 +49,7 @@ import realtimeManager from './RealtimeManager';
 import eventsService from './EventsService';
 import achievementsService from './AchievementsService';
 import clansService from './ClansService';
+import missionService from './MissionService';
 import logger from '../utils/logger';
 import useGameStore from '../stores/gameStore';
 
@@ -61,7 +62,8 @@ class ServiceManager {
       realtime: false,
       achievements: false,
       events: false,
-      clans: false
+      clans: false,
+      missions: false
     };
 
     // Promesas de inicialización en progreso (evitar múltiples inits)
@@ -100,20 +102,69 @@ class ServiceManager {
   async initCritical() {
     logger.info('ServiceManager', '⚡ Inicializando servicios críticos...');
 
-    // Por ahora, solo registramos que la app arrancó
-    // No inicializamos ningún servicio pesado
-
     // Verificar si hay usuario autenticado
     const user = useGameStore.getState().user;
 
     if (user && user.id) {
       logger.info('ServiceManager', `Usuario autenticado: ${user.id}`);
-      // Si hay usuario, podemos pre-inicializar algunos servicios en background
-      // pero sin bloquear el arranque
+
+      // CRÍTICO: Inicializar MissionService para restaurar timers de misiones
+      // Esto asegura que las misiones que deberían haber terminado se resuelvan
+      try {
+        await this.getMissions();
+      } catch (error) {
+        logger.warn('ServiceManager', 'MissionService init falló (no crítico):', error);
+      }
+
+      // Pre-inicializar otros servicios en background
       this.preloadServicesInBackground();
     }
 
-    logger.info('ServiceManager', '✓ Servicios críticos inicializados (0ms)');
+    logger.info('ServiceManager', '✓ Servicios críticos inicializados');
+  }
+
+  /**
+   * Obtiene MissionService (lazy init)
+   * CRÍTICO: Restaura timers de misiones que no terminaron
+   * @returns {Promise<MissionService>}
+   */
+  async getMissions() {
+    if (this.initialized.missions) {
+      return missionService;
+    }
+
+    // Si ya hay una inicialización en progreso, esperar
+    if (this.initPromises.missions) {
+      await this.initPromises.missions;
+      return missionService;
+    }
+
+    // Inicializar
+    this.initPromises.missions = (async () => {
+      try {
+        logger.info('ServiceManager', '🎯 Inicializando MissionService...');
+
+        const user = useGameStore.getState().user;
+        if (!user || !user.id) {
+          logger.warn('ServiceManager', 'No hay usuario, MissionService desactivado');
+          return;
+        }
+
+        // Inicializar con gameStore para que pueda resolver misiones expiradas
+        const gameStore = useGameStore;
+        await missionService.initialize(user.id, gameStore);
+
+        this.initialized.missions = true;
+        logger.info('ServiceManager', '✓ MissionService inicializado');
+      } catch (error) {
+        logger.warn('ServiceManager', 'MissionService init falló:', error);
+      } finally {
+        delete this.initPromises.missions;
+      }
+    })();
+
+    await this.initPromises.missions;
+    return missionService;
   }
 
   /**
@@ -523,7 +574,8 @@ class ServiceManager {
       this.getRealtime(),
       this.getAchievements(),
       this.getEvents(),
-      this.getClans()
+      this.getClans(),
+      this.getMissions()
     ]);
 
     logger.info('ServiceManager', '✓ Todos los servicios inicializados');
@@ -563,6 +615,11 @@ class ServiceManager {
     // Limpiar Clans
     if (this.initialized.clans) {
       clansService.cleanup();
+    }
+
+    // Limpiar MissionService (detener timers)
+    if (this.initialized.missions) {
+      missionService.cleanup();
     }
 
     // Reset estado

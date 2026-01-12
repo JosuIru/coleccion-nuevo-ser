@@ -9,6 +9,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logger from '../utils/logger';
 
 // ============================================================================
 // REGIONES EXPLORABLES
@@ -574,7 +575,7 @@ class ExplorationService {
         unlockedRegions: this.unlockedRegions
       }));
     } catch (error) {
-      console.error('Error saving Exploration state:', error);
+      logger.error('ExplorationService', 'Error saving Exploration state:', error);
     }
   }
 
@@ -589,7 +590,7 @@ class ExplorationService {
         this.unlockedRegions = parsed.unlockedRegions || {};
       }
     } catch (error) {
-      console.error('Error loading Exploration state:', error);
+      logger.error('ExplorationService', 'Error loading Exploration state:', error);
     }
   }
 }

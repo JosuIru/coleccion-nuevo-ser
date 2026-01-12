@@ -517,16 +517,38 @@ class AIPracticeGenerator {
       const prompt = this.buildPrompt(userInput);
       const systemContext = this.buildSystemContext();
 
-      // Llamar a la IA
+      // Llamar a la IA con timeout
       let response;
+
+      // Helper para timeout
+      const withTimeout = (promise, ms) => {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout: La IA tardó demasiado en responder')), ms)
+          )
+        ]);
+      };
+
       if (window.aiAdapter) {
-        response = await window.aiAdapter.ask(prompt, systemContext, [], 'practice-generator');
+        response = await withTimeout(
+          window.aiAdapter.ask(prompt, systemContext, [], 'practice-generator'),
+          30000
+        );
       } else if (window.puter?.ai) {
-        // Fallback a Puter directamente
-        const result = await window.puter.ai.chat(prompt, { system: systemContext });
-        response = result?.message?.content || result;
+        // Fallback a Puter directamente con timeout
+        try {
+          const result = await withTimeout(
+            window.puter.ai.chat(prompt, { system: systemContext }),
+            30000
+          );
+          response = result?.message?.content || result;
+        } catch (puterError) {
+          console.error('[AIPracticeGenerator] Error con Puter:', puterError);
+          throw new Error('Puter AI no disponible. Verifica tu conexión a internet.');
+        }
       } else {
-        throw new Error('No hay proveedor de IA disponible');
+        throw new Error('No hay proveedor de IA disponible. Configura la IA en ajustes.');
       }
 
       // Parsear la respuesta

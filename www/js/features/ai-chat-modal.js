@@ -722,6 +722,24 @@ class AIChatModal {
   renderWelcomeMessage() {
     const bookData = this.bookEngine.getCurrentBookData();
 
+    // Detectar entorno y estado de IA
+    const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+    const aiConfig = window.aiConfig;
+    const currentProvider = aiConfig?.getCurrentProvider?.() || 'local';
+    const isAuthenticated = !!window.authHelper?.user;
+    const profile = window.authHelper?.getProfile?.();
+    const isPremium = profile && ['premium', 'pro'].includes(profile.subscription_tier);
+
+    // Verificar si hay IA disponible
+    const hasConfiguredAI = currentProvider !== 'local' && currentProvider !== 'puter' ||
+                            (currentProvider === 'puter' && !isNativeApp);
+    const isAIAvailable = isPremium || hasConfiguredAI;
+
+    // Si no hay IA disponible, mostrar mensaje informativo
+    if (!isAIAvailable) {
+      return this.renderNoAIMessage(isAuthenticated, isPremium, isNativeApp);
+    }
+
     return `
       <div class="welcome-message text-center py-12 opacity-70">
         <div class="text-6xl mb-4">💭</div>
@@ -737,6 +755,86 @@ class AIChatModal {
               💬 ${q}
             </button>
           `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Mensaje cuando no hay IA disponible
+   */
+  renderNoAIMessage(isAuthenticated, isPremium, isNativeApp) {
+    return `
+      <div class="no-ai-message text-center py-8 px-4">
+        <div class="text-6xl mb-4">🤖</div>
+        <h3 class="text-xl font-bold mb-3 text-cyan-300">Chat con IA</h3>
+
+        <div class="max-w-md mx-auto space-y-4">
+          <!-- Info principal -->
+          <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+            <p class="text-gray-300 mb-3">
+              Para usar el chat con inteligencia artificial necesitas:
+            </p>
+
+            <div class="space-y-3 text-left">
+              <!-- Opción 1: Planes Premium -->
+              <div class="flex items-start gap-3 p-3 bg-gradient-to-r from-amber-900/30 to-amber-800/20 rounded-lg border border-amber-500/30">
+                <span class="text-2xl">⭐</span>
+                <div>
+                  <p class="font-semibold text-amber-300">Plan Premium</p>
+                  <p class="text-xs text-gray-400 mb-2">IA ilimitada sin configuración</p>
+                  ${!isAuthenticated ? `
+                    <button id="ai-chat-login-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold transition">
+                      Iniciar Sesión / Registrarse
+                    </button>
+                  ` : `
+                    <button id="ai-chat-plans-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold transition">
+                      Ver Planes Premium
+                    </button>
+                  `}
+                </div>
+              </div>
+
+              <!-- Separador -->
+              <div class="flex items-center gap-2 text-gray-500">
+                <div class="flex-1 h-px bg-gray-700"></div>
+                <span class="text-xs">o bien</span>
+                <div class="flex-1 h-px bg-gray-700"></div>
+              </div>
+
+              <!-- Opción 2: Configurar propia -->
+              <div class="flex items-start gap-3 p-3 bg-gray-700/30 rounded-lg border border-gray-600">
+                <span class="text-2xl">⚙️</span>
+                <div>
+                  <p class="font-semibold text-cyan-300">Configura tu propia IA</p>
+                  <p class="text-xs text-gray-400 mb-2">Usa tu API key de OpenAI, Gemini, etc.</p>
+                  <button id="ai-chat-settings-btn" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-semibold transition">
+                    Abrir Ajustes IA
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info adicional para móvil -->
+          ${isNativeApp ? `
+            <div class="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
+              <p class="text-xs text-blue-300 flex items-start gap-2">
+                <span>ℹ️</span>
+                <span>En la app móvil, Puter AI no está disponible. Usa Gemini (gratis) o un plan Premium.</span>
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Proveedores gratuitos recomendados -->
+          <div class="text-xs text-gray-500">
+            <p class="mb-2">🆓 Proveedores gratuitos recomendados:</p>
+            <div class="flex flex-wrap justify-center gap-2">
+              <span class="px-2 py-1 bg-gray-800 rounded">Gemini (Google)</span>
+              <span class="px-2 py-1 bg-gray-800 rounded">Qwen (1M tokens/mes)</span>
+              <span class="px-2 py-1 bg-gray-800 rounded">HuggingFace</span>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -968,6 +1066,56 @@ class AIChatModal {
     const closeBtn = document.getElementById('close-ai-chat');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.close());
+    }
+
+    // Botón de Login (cuando no hay IA disponible)
+    const loginBtn = document.getElementById('ai-chat-login-btn');
+    if (loginBtn) {
+      loginBtn.addEventListener('click', () => {
+        this.close();
+        // Abrir modal de autenticación
+        if (window.authModal) {
+          window.authModal.open();
+        } else if (window.openAuthModal) {
+          window.openAuthModal();
+        } else {
+          window.toast?.info('Función de login no disponible');
+        }
+      });
+    }
+
+    // Botón de Ver Planes (cuando está autenticado pero sin premium)
+    const plansBtn = document.getElementById('ai-chat-plans-btn');
+    if (plansBtn) {
+      plansBtn.addEventListener('click', () => {
+        this.close();
+        // Abrir sección de planes/premium
+        if (window.openPremiumModal) {
+          window.openPremiumModal();
+        } else if (window.showPremiumPlans) {
+          window.showPremiumPlans();
+        } else {
+          // Intentar abrir ajustes de perfil
+          window.location.hash = '#premium';
+          window.toast?.info('Ve a tu perfil para ver los planes disponibles');
+        }
+      });
+    }
+
+    // Botón de Ajustes IA (para configurar propia API key)
+    const settingsBtn = document.getElementById('ai-chat-settings-btn');
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', () => {
+        this.close();
+        // Abrir ajustes de IA
+        if (window.aiSettingsModal) {
+          window.aiSettingsModal.open();
+        } else if (window.aiLazyLoader?.showAISettings) {
+          window.aiLazyLoader.showAISettings();
+        } else {
+          window.toast?.info('Cargando ajustes de IA...');
+        }
+      });
     }
 
     // Click outside modal

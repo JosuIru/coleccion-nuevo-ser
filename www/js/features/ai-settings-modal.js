@@ -26,6 +26,73 @@ class AISettingsModal {
     if (modal) modal.remove();
   }
 
+  /**
+   * Renderizar sección de planes Premium
+   */
+  renderPremiumSection() {
+    const isAuthenticated = !!window.authHelper?.user;
+    const profile = window.authHelper?.getProfile?.();
+    const isPremium = profile && ['premium', 'pro'].includes(profile.subscription_tier);
+    const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+
+    // Si ya es premium, mostrar badge
+    if (isPremium) {
+      return `
+        <div class="bg-gradient-to-r from-amber-900/30 to-amber-800/20 rounded-xl p-4 border border-amber-500/30">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">⭐</span>
+            <div>
+              <p class="font-bold text-amber-300">Plan ${profile.subscription_tier === 'pro' ? 'Pro' : 'Premium'} Activo</p>
+              <p class="text-xs text-gray-400">Tienes acceso ilimitado a la IA sin necesidad de configurar API keys</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Si no es premium, mostrar opciones
+    return `
+      <div class="bg-gradient-to-r from-gray-800/50 to-gray-700/30 rounded-xl p-4 border border-gray-600">
+        <div class="flex items-start gap-3 mb-3">
+          <span class="text-2xl">💡</span>
+          <div class="flex-1">
+            <p class="font-bold text-white mb-1">¿Prefieres no configurar nada?</p>
+            <p class="text-xs text-gray-400">
+              Con un plan Premium tienes IA ilimitada sin necesidad de API keys
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          ${!isAuthenticated ? `
+            <button id="ai-settings-login-btn" class="flex-1 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2">
+              <span>👤</span> Iniciar Sesión
+            </button>
+          ` : `
+            <button id="ai-settings-plans-btn" class="flex-1 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2">
+              <span>⭐</span> Ver Planes Premium
+            </button>
+          `}
+        </div>
+
+        ${isNativeApp ? `
+          <div class="mt-3 p-2 bg-blue-900/20 rounded-lg border border-blue-500/20">
+            <p class="text-xs text-blue-300 flex items-start gap-2">
+              <span>ℹ️</span>
+              <span>En la app móvil necesitas Premium o configurar tu propia API key (recomendamos Gemini gratis).</span>
+            </p>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="flex items-center gap-2 text-gray-500 text-xs">
+        <div class="flex-1 h-px bg-gray-700"></div>
+        <span>o configura tu propia IA</span>
+        <div class="flex-1 h-px bg-gray-700"></div>
+      </div>
+    `;
+  }
+
   render() {
     // Remover modal anterior si existe
     const existing = document.getElementById('ai-settings-modal');
@@ -65,6 +132,9 @@ class AISettingsModal {
 
           <!-- Content -->
           <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+
+            <!-- Premium Section -->
+            ${this.renderPremiumSection()}
 
             <!-- Provider Selector -->
             <div>
@@ -316,6 +386,31 @@ class AISettingsModal {
     // Close buttons
     document.getElementById('close-ai-settings')?.addEventListener('click', () => this.close());
     document.getElementById('cancel-ai-settings')?.addEventListener('click', () => this.close());
+
+    // Login button (para usuarios no autenticados)
+    document.getElementById('ai-settings-login-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.authModal) {
+        window.authModal.open();
+      } else if (window.openAuthModal) {
+        window.openAuthModal();
+      } else {
+        window.toast?.info('Función de login no disponible');
+      }
+    });
+
+    // Plans button (para usuarios autenticados sin premium)
+    document.getElementById('ai-settings-plans-btn')?.addEventListener('click', () => {
+      this.close();
+      if (window.openPremiumModal) {
+        window.openPremiumModal();
+      } else if (window.showPremiumPlans) {
+        window.showPremiumPlans();
+      } else {
+        window.location.hash = '#premium';
+        window.toast?.info('Ve a tu perfil para ver los planes disponibles');
+      }
+    });
 
     // Save button
     document.getElementById('save-ai-settings')?.addEventListener('click', () => this.save());

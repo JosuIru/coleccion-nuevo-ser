@@ -29,6 +29,19 @@ class AIAdapter {
   async ask(prompt, systemContext = '', conversationHistory = [], feature = 'chat') {
     const provider = this.config.getCurrentProvider();
 
+    // Detectar si estamos en app nativa (Capacitor/Cordova)
+    const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+
+    // En app nativa con Puter: usar modo local directamente
+    // Puter SDK no funciona en Android WebView
+    if (isNativeApp && provider === this.config.providers.PUTER) {
+      logger.warn('[AIAdapter] App nativa detectada con Puter - usando modo local');
+      if (window.toast) {
+        window.toast.info('IA local activa. Configura OpenAI/Gemini en Ajustes para IA avanzada.', 4000);
+      }
+      return await this.askLocal(prompt, systemContext);
+    }
+
     // Verificar si el usuario tiene suscripción premium y usar el proxy del admin
     const premiumResult = await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature);
     if (premiumResult.used) {

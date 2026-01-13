@@ -131,6 +131,15 @@ class AudioReaderUI {
         <!-- Main controls -->
         <div class="px-4 sm:px-6 py-3">
           <div class="flex items-center justify-center gap-4">
+            <!-- Wave indicator -->
+            <div id="main-wave" class="flex items-end gap-0.5 h-6 w-8 ${ar.isPlaying && !ar.isPaused ? '' : 'wave-paused'}">
+              <span class="wave-bar w-1 bg-cyan-400 rounded-full"></span>
+              <span class="wave-bar w-1 bg-cyan-400 rounded-full"></span>
+              <span class="wave-bar w-1 bg-cyan-400 rounded-full"></span>
+              <span class="wave-bar w-1 bg-cyan-400 rounded-full"></span>
+              <span class="wave-bar w-1 bg-cyan-400 rounded-full"></span>
+            </div>
+
             <button id="audioreader-prev" class="w-12 h-12 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors flex items-center justify-center text-white disabled:opacity-50" title="Anterior">
               ${Icons?.skipBack?.(24) || '⏮'}
             </button>
@@ -154,27 +163,70 @@ class AudioReaderUI {
           </div>
         </div>
 
-        <!-- Secondary controls -->
+        <!-- Secondary controls - Mejorado -->
         <div class="px-4 sm:px-6 py-3 border-t border-white/5">
-          <div class="grid grid-cols-2 gap-3">
-            <!-- Rate -->
-            <div>
-              <label class="block text-xs text-slate-500 mb-1">Velocidad</label>
-              <select id="audioreader-rate" class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
-                <option value="0.5" ${ar.tts?.getRate() === 0.5 ? 'selected' : ''}>0.5x</option>
-                <option value="0.75" ${ar.tts?.getRate() === 0.75 ? 'selected' : ''}>0.75x</option>
-                <option value="1" ${ar.tts?.getRate() === 1 ? 'selected' : ''}>1x</option>
-                <option value="1.25" ${ar.tts?.getRate() === 1.25 ? 'selected' : ''}>1.25x</option>
-                <option value="1.5" ${ar.tts?.getRate() === 1.5 ? 'selected' : ''}>1.5x</option>
-                <option value="2" ${ar.tts?.getRate() === 2 ? 'selected' : ''}>2x</option>
-              </select>
+          <!-- Velocidad slider -->
+          <div class="mb-3">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs text-slate-500">Velocidad</span>
+              <span id="speed-value" class="text-sm font-mono text-cyan-400">${ar.tts?.getRate() || 1}x</span>
             </div>
+            <input type="range" id="speed-slider"
+                   min="0" max="6" value="${[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].indexOf(ar.tts?.getRate() || 1)}"
+                   class="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer accent-cyan-500">
+            <div class="flex text-[10px] text-slate-600 mt-1">
+              <span class="w-[14.28%] text-left">0.5</span>
+              <span class="w-[14.28%] text-center">0.75</span>
+              <span class="w-[14.28%] text-center">1x</span>
+              <span class="w-[14.28%] text-center">1.25</span>
+              <span class="w-[14.28%] text-center">1.5</span>
+              <span class="w-[14.28%] text-center">1.75</span>
+              <span class="w-[14.28%] text-right">2x</span>
+            </div>
+          </div>
 
+          <!-- Controles rápidos -->
+          <div class="grid grid-cols-2 gap-2">
             <!-- Auto-advance -->
             <button id="audioreader-auto-advance" class="px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${ar.playback?.isAutoAdvanceEnabled() ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-300'}">
-              <span>Auto-avance</span>
+              <span>↪️ Auto</span>
               <span>${ar.playback?.isAutoAdvanceEnabled() ? 'ON' : 'OFF'}</span>
             </button>
+
+            <!-- Night mode -->
+            <button id="night-mode-toggle" class="px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${localStorage.getItem('audioreader-night-mode') === 'true' ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-300'}">
+              <span>🌙 Noche</span>
+              <span>${localStorage.getItem('audioreader-night-mode') === 'true' ? 'ON' : 'OFF'}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sleep Timer Quick Access -->
+        <div class="px-4 sm:px-6 py-2 border-t border-white/5">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-slate-500">💤 Apagar en:</span>
+            <div class="flex gap-1 flex-wrap">
+              <button class="sleep-quick-btn px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-300" data-minutes="5">5m</button>
+              <button class="sleep-quick-btn px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-300" data-minutes="15">15m</button>
+              <button class="sleep-quick-btn px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-300" data-minutes="30">30m</button>
+              <button class="sleep-quick-btn px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-300" data-minutes="60">1h</button>
+              <button id="sleep-cancel-btn" class="px-2 py-1 text-xs rounded bg-red-900/50 hover:bg-red-800 text-red-400 hidden">✕</button>
+            </div>
+            <span id="sleep-countdown" class="text-xs text-amber-400 ml-auto hidden"></span>
+          </div>
+        </div>
+
+        <!-- Bookmarks -->
+        <div class="px-4 sm:px-6 py-2 border-t border-white/5">
+          <div class="flex gap-2">
+            <button id="bookmark-save" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm transition-colors">
+              📖 Guardar posición
+            </button>
+            ${ar.uxEnhancements?.hasBookmark?.() ? `
+              <button id="bookmark-restore" class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-sm transition-colors">
+                ↩️ Continuar
+              </button>
+            ` : ''}
           </div>
         </div>
 
@@ -448,6 +500,81 @@ class AudioReaderUI {
 
     // Voice system controls
     this.attachVoiceSystemListeners();
+
+    // UX Enhancements listeners
+    this.attachUXEnhancementsListeners();
+  }
+
+  /**
+   * Attach listeners for UX enhancements
+   */
+  attachUXEnhancementsListeners() {
+    const ar = this.audioReader;
+
+    // Speed slider
+    const speedSlider = document.getElementById('speed-slider');
+    const speedValue = document.getElementById('speed-value');
+    const rates = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
+    if (speedSlider) {
+      speedSlider.addEventListener('input', (e) => {
+        const rate = rates[parseInt(e.target.value)];
+        if (speedValue) speedValue.textContent = `${rate}x`;
+        ar.tts?.setRate(rate);
+      });
+    }
+
+    // Night mode toggle
+    const nightModeToggle = document.getElementById('night-mode-toggle');
+    if (nightModeToggle) {
+      nightModeToggle.addEventListener('click', () => {
+        if (ar.uxEnhancements) {
+          const newState = !ar.uxEnhancements.isNightModeActive;
+          ar.uxEnhancements.toggleNightMode(newState);
+          nightModeToggle.className = `px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${newState ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-300'}`;
+          nightModeToggle.querySelector('span:last-child').textContent = newState ? 'ON' : 'OFF';
+        }
+      });
+    }
+
+    // Sleep timer quick buttons
+    document.querySelectorAll('.sleep-quick-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const minutes = parseInt(btn.dataset.minutes);
+        if (ar.uxEnhancements) {
+          ar.uxEnhancements.startSleepTimer(minutes);
+        }
+      });
+    });
+
+    const sleepCancelBtn = document.getElementById('sleep-cancel-btn');
+    if (sleepCancelBtn) {
+      sleepCancelBtn.addEventListener('click', () => {
+        if (ar.uxEnhancements) {
+          ar.uxEnhancements.cancelSleepTimer();
+        }
+      });
+    }
+
+    // Bookmarks
+    const bookmarkSaveBtn = document.getElementById('bookmark-save');
+    const bookmarkRestoreBtn = document.getElementById('bookmark-restore');
+
+    if (bookmarkSaveBtn) {
+      bookmarkSaveBtn.addEventListener('click', () => {
+        if (ar.uxEnhancements) {
+          ar.uxEnhancements.saveBookmark();
+        }
+      });
+    }
+
+    if (bookmarkRestoreBtn) {
+      bookmarkRestoreBtn.addEventListener('click', () => {
+        if (ar.uxEnhancements?.restoreBookmark()) {
+          this.updateUI();
+        }
+      });
+    }
   }
 
   /**
@@ -712,17 +839,23 @@ class AudioReaderUI {
       const grid = document.getElementById('audioreader-ambient-grid');
       if (!grid) return;
 
-      // 🔧 FIX: Restaurar volumen guardado ANTES de añadir sonidos
-      if (window.audioMixer) {
+      const ar = this.audioReader;
+
+      // 🔧 FIX v2.9.378: NO restaurar volumen si está en pausa
+      if (window.audioMixer && !ar?.isPaused) {
         const savedVolume = localStorage.getItem('audioreader-volume');
         const volume = savedVolume ? parseInt(savedVolume) / 100 : 0.3;
         window.audioMixer.setAmbientVolume(volume);
       }
 
-      // Restaurar sonidos y UI
+      // Restaurar sonidos y UI (solo añadir si no están ya activos)
       for (const soundName of ambients) {
-        if (window.audioMixer) {
+        if (window.audioMixer && !window.audioMixer.channels?.ambient?.sources?.has(soundName)) {
           await window.audioMixer.addAmbient(soundName);
+          // Si está pausado, silenciar inmediatamente después de añadir
+          if (ar?.isPaused) {
+            window.audioMixer.setAmbientVolume(0);
+          }
         }
         const btn = grid.querySelector(`[data-sound="${soundName}"]`);
         if (btn) {
@@ -776,6 +909,13 @@ class AudioReaderUI {
 
     this.updateHeaderAudioIcons();
     this.updateBottomNavAudioButton();
+
+    // Actualizar indicadores de onda
+    const ar = this.audioReader;
+    if (ar.uxEnhancements) {
+      ar.uxEnhancements.updateWaveState(ar.isPlaying && !ar.isPaused);
+      ar.uxEnhancements.updateFloatingPlayer();
+    }
   }
 
   updateButtonStates() {

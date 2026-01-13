@@ -385,10 +385,36 @@ class AudioMixer {
 
     this.channels[channel].volume = volume;
     if (this.channels[channel].gainNode) {
-      this.channels[channel].gainNode.gain.setValueAtTime(
-        volume,
-        this.audioContext.currentTime
-      );
+      // Cancelar transiciones programadas y asignar directamente
+      const gainParam = this.channels[channel].gainNode.gain;
+      gainParam.cancelScheduledValues(this.audioContext?.currentTime || 0);
+      gainParam.value = volume;
+    }
+
+    // Para ambient: también ajustar los gain nodes individuales
+    if (channel === 'ambient' && this.channels.ambient.sources?.size > 0) {
+      try {
+        if (volume === 0) {
+          // Silenciar todos - cancelar transiciones primero
+          for (const [name, data] of this.channels.ambient.sources) {
+            if (data?.gainNode) {
+              data.gainNode.gain.cancelScheduledValues(this.audioContext?.currentTime || 0);
+              data.gainNode.gain.value = 0;
+            }
+          }
+        } else {
+          // Restaurar volúmenes individuales - cancelar transiciones primero
+          const individualVol = this.calculateIndividualVolume();
+          for (const [name, data] of this.channels.ambient.sources) {
+            if (data?.gainNode) {
+              data.gainNode.gain.cancelScheduledValues(this.audioContext?.currentTime || 0);
+              data.gainNode.gain.value = individualVol;
+            }
+          }
+        }
+      } catch (e) {
+        // Ignorar errores
+      }
     }
   }
 

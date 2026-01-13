@@ -108,12 +108,12 @@ class AudioReaderPlayback {
       window.backgroundAudio.pause();
     }
 
-    // Silenciar ambient/binaural durante pausa (fade out rápido)
+    // Silenciar ambient/binaural durante pausa
     if (window.audioMixer) {
       // Guardar volumen actual para restaurar después
       ar._pausedAmbientVolume = window.audioMixer.channels?.ambient?.volume || 0.3;
       ar._pausedBinauralVolume = window.audioMixer.channels?.binaural?.volume || 0.2;
-      // Silenciar con fade
+      // Silenciar
       window.audioMixer.setAmbientVolume(0);
       window.audioMixer.setBinauralVolume(0);
     }

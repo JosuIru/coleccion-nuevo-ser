@@ -859,10 +859,13 @@ class LazyLoader {
       await this.loadScript('js/features/audioreader/audioreader-tts-engine.js?v=2.9.283');
       await this.loadScript('js/features/audioreader/audioreader-playback.js?v=2.9.283');
       await this.loadScript('js/features/audioreader/audioreader-events.js?v=2.9.358');
-      await this.loadScript('js/features/audioreader/audioreader-ui.js?v=2.9.358');
+      await this.loadScript('js/features/audioreader/audioreader-ui.js?v=2.9.377');
 
-      // 3. Main AudioReader class (must be last)
-      await this.loadScript('js/features/audioreader/index.js?v=2.9.359');
+      // 3. UX Enhancements (debe cargarse antes de index.js)
+      await this.loadScript('js/features/audioreader/audioreader-ux-enhancements.js?v=2.9.377');
+
+      // 4. Main AudioReader class (must be last)
+      await this.loadScript('js/features/audioreader/index.js?v=2.9.377');
 
       this.loadedModules.set('audioreader-suite', true);
 

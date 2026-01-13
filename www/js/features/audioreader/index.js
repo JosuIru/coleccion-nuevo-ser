@@ -55,6 +55,11 @@ class AudioReader {
       this.positionModule = new window.AudioReaderPosition(this);
     }
 
+    // Inicializar mejoras UX
+    if (window.AudioReaderUXEnhancements) {
+      this.uxEnhancements = new window.AudioReaderUXEnhancements(this);
+    }
+
     // Cargar preferencia de palabra por palabra
     this.highlighter.loadPreference();
 
@@ -76,8 +81,13 @@ class AudioReader {
     this.events.attachVisibilityHandler();
     this.events.attachBeforeUnloadHandler();
 
+    // Inicializar mejoras UX
+    if (this.uxEnhancements) {
+      this.uxEnhancements.init();
+    }
+
     if (typeof logger !== 'undefined') {
-      logger.log('✅ AudioReader inicializado (v2.9.280 modular)');
+      logger.log('✅ AudioReader inicializado (v2.9.377 con mejoras UX)');
     }
   }
 

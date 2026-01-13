@@ -62,6 +62,11 @@ const Icons = {
     baby: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>`,
     // Icono graduación/educación
     graduationCap: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>`,
+    // Iconos adicionales para libros (SVG inline)
+    heartPulse: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>`,
+    leaf: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
+    palette: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z"/></svg>`,
+    feather: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>`,
 
     // Theme Icons - iconos para el sistema de temas
     moon: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
@@ -126,8 +131,8 @@ const Icons = {
   smartphone: (size = 20) => Icons.create('smartphone', size), // Límite borroso
   refreshCw: (size = 20) => Icons.create('refresh-cw', size),  // Autopoiesis/Ciclos
   zap: (size = 20) => Icons._svg.zap(size),                    // Sorpresa/Energía (SVG inline)
-  palette: (size = 20) => Icons.create('palette', size),       // Creatividad
-  heartPulse: (size = 20) => Icons.create('heart-pulse', size), // Emociones/Somático
+  palette: (size = 20) => Icons._svg.palette(size),            // Creatividad (SVG inline)
+  heartPulse: (size = 20) => Icons._svg.heartPulse(size),       // Emociones/Somático (SVG inline)
   eye: (size = 20) => Icons.create('eye', size),               // Observación/Umwelt
   helpCircle: (size = 20) => Icons.create('help-circle', size), // Preguntas
   alertTriangle: (size = 20) => Icons.create('alert-triangle', size), // Miedo
@@ -143,7 +148,7 @@ const Icons = {
   drama: (size = 20) => Icons.create('drama', size),           // Emociones/Máscaras
   gem: (size = 20) => Icons.create('gem', size),               // Materia/Cristal
   activity: (size = 20) => Icons.create('activity', size),     // Escaneo/Vida
-  feather: (size = 20) => Icons.create('feather', size),       // Transformación/Ligereza
+  feather: (size = 20) => Icons._svg.feather(size),            // Transformación/Ligereza (SVG inline)
   mail: (size = 20) => Icons.create('mail', size),             // Carta
   moonStar: (size = 20) => Icons.create('moon-star', size),    // Sombra/Noche
   fileText: (size = 20) => Icons.create('file-text', size),    // Código/Plan
@@ -154,7 +159,7 @@ const Icons = {
   infinity: (size = 20) => Icons.create('infinity', size),     // Continuo/Espiral
   target: (size = 20) => Icons._svg.target(size),              // Objetivo/Foco (SVG inline)
   flame: (size = 20) => Icons._svg.flame(size),                // Radical/Fuego (SVG inline)
-  leaf: (size = 20) => Icons.create('leaf', size),             // Impermanencia/Naturaleza
+  leaf: (size = 20) => Icons._svg.leaf(size),                  // Impermanencia/Naturaleza (SVG inline)
   network: (size = 20) => Icons.create('network', size),       // Conexión/Red
   lightbulb: (size = 20) => Icons.create('lightbulb', size),   // Iluminación/Idea
   route: (size = 20) => Icons.create('route', size),           // Puente/Camino
@@ -226,6 +231,10 @@ const Icons = {
       'dialogos-maquina': 'bot',
       'nacimiento': 'baby',
       'educacion-nuevo-ser': 'graduationCap',
+      'arte-relacion-consciente': 'heartPulse',
+      'ecologia-profunda': 'leaf',
+      'revolucion-creativa': 'palette',
+      'simplicidad-radical': 'feather',
     };
 
     const iconName = iconMap[bookId] || 'book';

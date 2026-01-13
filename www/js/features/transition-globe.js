@@ -579,12 +579,17 @@ class TransitionGlobe {
 
     #zoom-controls {
       position: absolute;
-      bottom: 20px;
-      right: 16px;
+      bottom: 80px;
+      left: 16px;
       display: flex;
       flex-direction: column;
       gap: 8px;
       z-index: 100;
+    }
+    @media (max-width: 768px) {
+      #zoom-controls {
+        bottom: 100px;
+      }
     }
     .zoom-btn {
       width: 44px;

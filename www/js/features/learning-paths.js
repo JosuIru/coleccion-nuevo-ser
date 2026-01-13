@@ -1,15 +1,16 @@
 // ============================================================================
 // LEARNING PATHS - Rutas de aprendizaje personalizadas
+// v2.9.372: Mejoras visuales, preview de AI paths, timeline visual
 // ============================================================================
 
-// 🔧 FIX v2.9.198: Migrated console.log to logger
 class LearningPaths {
   constructor() {
     this.currentPath = null;
     this.isOpen = false;
     this.userProgress = this.loadProgress();
-    // 🔧 FIX v2.9.268: Track pending timer to prevent memory leak
     this.pendingTimer = null;
+    // v2.9.372: Estado de preview AI
+    this.aiPreviewPath = null;
   }
 
   // ==========================================================================
@@ -2005,9 +2006,13 @@ class LearningPaths {
     }
   }
 
-  // 🔧 FIX v2.9.265: Mejorado para funcionar sin IA
+  // v2.9.372: Mejorado con preview antes de confirmar
   async generateCustomPath(goal) {
-    window.toast?.info('Generando path personalizado...');
+    const btn = document.getElementById('generate-custom-path');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-pulse">🔄 Generando...</span>';
+    }
 
     // Obtener recursos del libro actual
     const bookId = this.bookId;
@@ -2046,8 +2051,14 @@ class LearningPaths {
       customPath = this.generateFallbackPath(goal);
     }
 
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '✨ Generar Path con IA';
+    }
+
     if (customPath && customPath.steps && customPath.steps.length > 0) {
-      this.currentPath = {
+      // v2.9.372: Mostrar preview en lugar de aplicar directamente
+      this.aiPreviewPath = {
         id: 'custom-' + Date.now(),
         icon: '✨',
         title: customPath.goal || goal,
@@ -2057,12 +2068,114 @@ class LearningPaths {
         steps: customPath.steps
       };
 
-      this.render();
-      this.attachEventListeners();
-
-      window.toast?.success('Path creado!');
+      this.showAIPreview();
     } else {
       window.toast?.error('Error al generar path. Intenta de nuevo.');
+    }
+  }
+
+  // v2.9.372: Mostrar preview del path generado por IA
+  showAIPreview() {
+    if (!this.aiPreviewPath) return;
+
+    const path = this.aiPreviewPath;
+
+    // Crear modal de preview
+    document.getElementById('ai-preview-modal')?.remove();
+
+    const previewModal = document.createElement('div');
+    previewModal.id = 'ai-preview-modal';
+    previewModal.className = 'fixed inset-0 bg-black/95 z-[60] flex items-center justify-center p-4';
+    previewModal.innerHTML = `
+      <div class="bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-purple-500/30">
+        <!-- Header -->
+        <div class="p-4 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-b border-purple-500/30">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              🤖 Preview del Path IA
+            </h3>
+            <button onclick="document.getElementById('ai-preview-modal')?.remove()"
+                    class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto p-4">
+          <!-- Path Info -->
+          <div class="bg-purple-900/20 rounded-xl p-4 mb-4 border border-purple-500/20">
+            <h4 class="text-lg font-bold text-white mb-2">${path.icon} ${path.title}</h4>
+            <div class="flex gap-3 text-sm">
+              <span class="text-purple-300">⏱️ ${path.duration}</span>
+              <span class="text-pink-300">📊 ${path.difficulty}</span>
+              <span class="text-indigo-300">📋 ${path.steps.length} pasos</span>
+            </div>
+          </div>
+
+          <!-- Timeline visual de pasos -->
+          <div class="relative">
+            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-pink-500"></div>
+
+            ${path.steps.map((step, index) => `
+              <div class="relative pl-10 pb-4">
+                <div class="absolute left-2 w-5 h-5 rounded-full bg-purple-600 border-2 border-purple-400 flex items-center justify-center text-xs text-white font-bold">
+                  ${index + 1}
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                  <h5 class="font-semibold text-white mb-1">${step.title}</h5>
+                  <p class="text-sm text-gray-400 mb-2">${step.description}</p>
+                  <p class="text-xs text-indigo-400">🎯 ${step.action.substring(0, 100)}${step.action.length > 100 ? '...' : ''}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="p-4 border-t border-gray-700 flex gap-3">
+          <button onclick="window.learningPaths?.confirmAIPath()"
+                  class="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-bold text-white transition">
+            ✅ Comenzar este Path
+          </button>
+          <button onclick="window.learningPaths?.regeneratePath()"
+                  class="px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold text-white transition">
+            🔄 Regenerar
+          </button>
+          <button onclick="document.getElementById('ai-preview-modal')?.remove()"
+                  class="px-4 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl text-gray-300 transition">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(previewModal);
+  }
+
+  // v2.9.372: Confirmar y usar el path de preview
+  confirmAIPath() {
+    if (!this.aiPreviewPath) return;
+
+    this.currentPath = this.aiPreviewPath;
+    this.aiPreviewPath = null;
+
+    document.getElementById('ai-preview-modal')?.remove();
+
+    this.render();
+    this.attachEventListeners();
+
+    window.toast?.success('¡Path activado! Comienza tu recorrido.');
+  }
+
+  // v2.9.372: Regenerar path con IA
+  regeneratePath() {
+    document.getElementById('ai-preview-modal')?.remove();
+    this.aiPreviewPath = null;
+
+    const goal = document.getElementById('custom-goal-input')?.value.trim();
+    if (goal) {
+      this.generateCustomPath(goal);
     }
   }
 

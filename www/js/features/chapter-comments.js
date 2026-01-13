@@ -1,6 +1,7 @@
 // ============================================================================
 // CHAPTER COMMENTS - Sistema de Comentarios por Capítulo
 // ============================================================================
+// v2.9.371: Sistema anti-spam, likes, reportes y moderación
 // v2.9.327: Permite a los usuarios dejar y ver comentarios públicos en capítulos
 // v2.9.368: Sistema de threads (respuestas anidadas)
 // Funciona offline-first con localStorage, sincroniza con Supabase cuando disponible
@@ -21,6 +22,406 @@ class ChapterComments {
       commentsPerPage: 20,
       maxThreadDepth: 3 // v2.9.368: Profundidad máxima de threads
     };
+
+    // v2.9.371: Sistema anti-spam
+    this.spamConfig = {
+      maxCommentsPerMinute: 3,
+      maxCommentsPerHour: 15,
+      minTimeBetweenComments: 10000, // 10 segundos
+      suspiciousPatterns: [
+        /(.)\1{5,}/gi,           // Caracteres repetidos (aaaaaaaa)
+        /https?:\/\/[^\s]+/gi,    // URLs
+        /(compra|gratis|oferta|descuento|gana dinero|bitcoin|crypto)/gi, // Spam comercial
+        /[A-Z\s]{20,}/g,          // Todo mayúsculas
+        /(.+)\1{3,}/gi            // Frases repetidas
+      ],
+      blockedWords: ['spam', 'viagra', 'casino', 'xxx', 'porn'],
+      warningThreshold: 2,        // Advertencias antes de bloqueo temporal
+      tempBlockDuration: 3600000  // 1 hora de bloqueo temporal
+    };
+
+    // v2.9.371: Estado de anti-spam
+    this.spamState = this.loadSpamState();
+
+    // v2.9.371: Likes y reportes
+    this.likes = this.loadLikes();
+    this.reports = this.loadReports();
+  }
+
+  // ==========================================================================
+  // v2.9.371: SISTEMA ANTI-SPAM
+  // ==========================================================================
+
+  loadSpamState() {
+    try {
+      return JSON.parse(localStorage.getItem('comments-spam-state')) || {
+        commentTimestamps: [],
+        warnings: 0,
+        blockedUntil: null
+      };
+    } catch {
+      return { commentTimestamps: [], warnings: 0, blockedUntil: null };
+    }
+  }
+
+  saveSpamState() {
+    localStorage.setItem('comments-spam-state', JSON.stringify(this.spamState));
+  }
+
+  /**
+   * Verifica si el usuario puede comentar (anti-spam)
+   * @returns {{canComment: boolean, reason: string|null}}
+   */
+  checkSpamStatus() {
+    const now = Date.now();
+
+    // Verificar bloqueo temporal
+    if (this.spamState.blockedUntil && now < this.spamState.blockedUntil) {
+      const remaining = Math.ceil((this.spamState.blockedUntil - now) / 60000);
+      return {
+        canComment: false,
+        reason: `Temporalmente bloqueado. Intenta en ${remaining} minutos.`
+      };
+    }
+
+    // Limpiar timestamps antiguos (más de 1 hora)
+    this.spamState.commentTimestamps = this.spamState.commentTimestamps
+      .filter(ts => now - ts < 3600000);
+
+    // Verificar límite por minuto
+    const lastMinute = this.spamState.commentTimestamps.filter(ts => now - ts < 60000);
+    if (lastMinute.length >= this.spamConfig.maxCommentsPerMinute) {
+      return {
+        canComment: false,
+        reason: 'Has comentado demasiado rápido. Espera un momento.'
+      };
+    }
+
+    // Verificar límite por hora
+    if (this.spamState.commentTimestamps.length >= this.spamConfig.maxCommentsPerHour) {
+      return {
+        canComment: false,
+        reason: 'Has alcanzado el límite de comentarios por hora.'
+      };
+    }
+
+    // Verificar tiempo entre comentarios
+    const lastComment = this.spamState.commentTimestamps[this.spamState.commentTimestamps.length - 1];
+    if (lastComment && now - lastComment < this.spamConfig.minTimeBetweenComments) {
+      const wait = Math.ceil((this.spamConfig.minTimeBetweenComments - (now - lastComment)) / 1000);
+      return {
+        canComment: false,
+        reason: `Espera ${wait} segundos antes de comentar de nuevo.`
+      };
+    }
+
+    return { canComment: true, reason: null };
+  }
+
+  /**
+   * Analiza el contenido en busca de spam
+   * @returns {{isSpam: boolean, reason: string|null, score: number}}
+   */
+  analyzeContent(text) {
+    let spamScore = 0;
+    const reasons = [];
+
+    // Verificar palabras bloqueadas
+    const lowerText = text.toLowerCase();
+    for (const word of this.spamConfig.blockedWords) {
+      if (lowerText.includes(word)) {
+        spamScore += 3;
+        reasons.push('Contiene palabras no permitidas');
+        break;
+      }
+    }
+
+    // Verificar patrones sospechosos
+    for (const pattern of this.spamConfig.suspiciousPatterns) {
+      if (pattern.test(text)) {
+        spamScore += 2;
+        if (pattern.source.includes('http')) {
+          reasons.push('No se permiten enlaces');
+        } else if (pattern.source.includes('A-Z')) {
+          reasons.push('Evita escribir todo en mayúsculas');
+        } else {
+          reasons.push('Contenido sospechoso detectado');
+        }
+      }
+      // Reset lastIndex for global patterns
+      pattern.lastIndex = 0;
+    }
+
+    // Verificar proporción de caracteres especiales
+    const specialChars = text.replace(/[a-záéíóúüñ\s]/gi, '').length;
+    if (specialChars / text.length > 0.3) {
+      spamScore += 1;
+      reasons.push('Demasiados caracteres especiales');
+    }
+
+    // Verificar comentario muy corto pero con intención de spam
+    if (text.length < 20 && spamScore > 0) {
+      spamScore += 1;
+    }
+
+    const isSpam = spamScore >= 3;
+
+    return {
+      isSpam,
+      reason: reasons.length > 0 ? reasons[0] : null,
+      score: spamScore
+    };
+  }
+
+  /**
+   * Registra un comentario para tracking anti-spam
+   */
+  recordComment() {
+    this.spamState.commentTimestamps.push(Date.now());
+    this.saveSpamState();
+  }
+
+  /**
+   * Añade una advertencia al usuario
+   */
+  addWarning() {
+    this.spamState.warnings++;
+    if (this.spamState.warnings >= this.spamConfig.warningThreshold) {
+      this.spamState.blockedUntil = Date.now() + this.spamConfig.tempBlockDuration;
+      this.spamState.warnings = 0;
+      this.saveSpamState();
+      return true; // Usuario bloqueado
+    }
+    this.saveSpamState();
+    return false;
+  }
+
+  // ==========================================================================
+  // v2.9.371: SISTEMA DE LIKES
+  // ==========================================================================
+
+  loadLikes() {
+    try {
+      return JSON.parse(localStorage.getItem('comments-likes')) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveLikes() {
+    localStorage.setItem('comments-likes', JSON.stringify(this.likes));
+  }
+
+  /**
+   * Da like a un comentario
+   */
+  async toggleLike(commentId) {
+    const userId = this.getUserId();
+    const likeKey = `${commentId}:${userId}`;
+
+    if (this.likes[likeKey]) {
+      // Unlike
+      delete this.likes[likeKey];
+      this.updateCommentLikeCount(commentId, -1);
+    } else {
+      // Like
+      this.likes[likeKey] = Date.now();
+      this.updateCommentLikeCount(commentId, 1);
+    }
+
+    this.saveLikes();
+
+    // Sync con Supabase si disponible
+    if (this.isSupabaseAvailable()) {
+      try {
+        await this.syncLikeToCloud(commentId, !this.likes[likeKey]);
+      } catch (error) {
+        logger.warn('[ChapterComments] Error syncing like:', error);
+      }
+    }
+
+    return !this.likes[likeKey]; // Retorna si ahora tiene like
+  }
+
+  hasLiked(commentId) {
+    const userId = this.getUserId();
+    return !!this.likes[`${commentId}:${userId}`];
+  }
+
+  updateCommentLikeCount(commentId, delta) {
+    // Buscar comentario en todos los capítulos
+    for (const key of Object.keys(this.comments)) {
+      const comment = this.comments[key].find(c => c.id === commentId);
+      if (comment) {
+        comment.likeCount = (comment.likeCount || 0) + delta;
+        this.saveLocalComments();
+        break;
+      }
+    }
+  }
+
+  getCommentLikeCount(commentId) {
+    for (const key of Object.keys(this.comments)) {
+      const comment = this.comments[key].find(c => c.id === commentId);
+      if (comment) {
+        return comment.likeCount || 0;
+      }
+    }
+    return 0;
+  }
+
+  // ==========================================================================
+  // v2.9.371: SISTEMA DE REPORTES
+  // ==========================================================================
+
+  loadReports() {
+    try {
+      return JSON.parse(localStorage.getItem('comments-reports')) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveReports() {
+    localStorage.setItem('comments-reports', JSON.stringify(this.reports));
+  }
+
+  /**
+   * Reporta un comentario
+   */
+  async reportComment(commentId, reason) {
+    const userId = this.getUserId();
+    const reportKey = `${commentId}:${userId}`;
+
+    // No permitir reportar el mismo comentario dos veces
+    if (this.reports[reportKey]) {
+      window.toast?.info('Ya has reportado este comentario');
+      return false;
+    }
+
+    const report = {
+      commentId,
+      userId,
+      reason,
+      createdAt: new Date().toISOString()
+    };
+
+    this.reports[reportKey] = report;
+    this.saveReports();
+
+    // Marcar comentario como reportado
+    this.markCommentReported(commentId);
+
+    // Sync con Supabase
+    if (this.isSupabaseAvailable()) {
+      try {
+        await this.syncReportToCloud(report);
+      } catch (error) {
+        logger.warn('[ChapterComments] Error syncing report:', error);
+      }
+    }
+
+    window.toast?.success('Comentario reportado. Gracias por ayudar a mantener la comunidad.');
+    return true;
+  }
+
+  markCommentReported(commentId) {
+    for (const key of Object.keys(this.comments)) {
+      const comment = this.comments[key].find(c => c.id === commentId);
+      if (comment) {
+        comment.reportCount = (comment.reportCount || 0) + 1;
+        // Auto-ocultar si tiene muchos reportes
+        if (comment.reportCount >= 3) {
+          comment.hidden = true;
+        }
+        this.saveLocalComments();
+        break;
+      }
+    }
+  }
+
+  hasReported(commentId) {
+    const userId = this.getUserId();
+    return !!this.reports[`${commentId}:${userId}`];
+  }
+
+  /**
+   * Muestra el modal de reporte
+   */
+  showReportModal(commentId) {
+    const existing = document.getElementById('report-comment-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'report-comment-modal';
+    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4';
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl max-w-md w-full p-6 border border-red-500/30">
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          🚩 Reportar comentario
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Selecciona el motivo del reporte:
+        </p>
+        <div class="space-y-2 mb-4">
+          <label class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+            <input type="radio" name="report-reason" value="spam" class="text-red-500">
+            <span class="text-gray-200">Spam o publicidad</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+            <input type="radio" name="report-reason" value="offensive" class="text-red-500">
+            <span class="text-gray-200">Contenido ofensivo</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+            <input type="radio" name="report-reason" value="harassment" class="text-red-500">
+            <span class="text-gray-200">Acoso o intimidación</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+            <input type="radio" name="report-reason" value="misinformation" class="text-red-500">
+            <span class="text-gray-200">Información falsa</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+            <input type="radio" name="report-reason" value="other" class="text-red-500">
+            <span class="text-gray-200">Otro motivo</span>
+          </label>
+        </div>
+        <div class="flex gap-3">
+          <button id="cancel-report" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition">
+            Cancelar
+          </button>
+          <button id="submit-report" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-bold transition">
+            Reportar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    modal.querySelector('#cancel-report')?.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+
+    modal.querySelector('#submit-report')?.addEventListener('click', () => {
+      const selectedReason = modal.querySelector('input[name="report-reason"]:checked')?.value;
+      if (!selectedReason) {
+        window.toast?.error('Selecciona un motivo');
+        return;
+      }
+      this.reportComment(commentId, selectedReason);
+      modal.remove();
+      this.updateUI?.();
+    });
+  }
+
+  async syncLikeToCloud(commentId, isUnlike) {
+    // Implementar sincronización con Supabase cuando esté disponible
+  }
+
+  async syncReportToCloud(report) {
+    // Implementar sincronización con Supabase cuando esté disponible
   }
 
   // ==========================================================================
@@ -73,12 +474,31 @@ class ChapterComments {
    * @param {string} parentId - v2.9.368: ID del comentario padre (para threads)
    */
   async addComment(bookId, chapterId, text, isPublic = false, parentId = null) {
+    // v2.9.371: Verificar anti-spam antes de procesar
+    const spamStatus = this.checkSpamStatus();
+    if (!spamStatus.canComment) {
+      throw new Error(spamStatus.reason);
+    }
+
+    // Analizar contenido
+    const contentAnalysis = this.analyzeContent(text);
+    if (contentAnalysis.isSpam) {
+      const wasBlocked = this.addWarning();
+      if (wasBlocked) {
+        throw new Error('Tu cuenta ha sido temporalmente bloqueada por actividad sospechosa.');
+      }
+      throw new Error(contentAnalysis.reason || 'El comentario no cumple con las normas de la comunidad.');
+    }
+
     if (text.length < this.config.minCommentLength) {
       throw new Error(`El comentario debe tener al menos ${this.config.minCommentLength} caracteres`);
     }
     if (text.length > this.config.maxCommentLength) {
       throw new Error(`El comentario no puede exceder ${this.config.maxCommentLength} caracteres`);
     }
+
+    // v2.9.371: Registrar comentario para tracking anti-spam
+    this.recordComment();
 
     const comment = {
       id: `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -91,7 +511,9 @@ class ChapterComments {
       isPublic,
       synced: false,
       parentId: parentId || null, // v2.9.368: Thread support
-      replies: [] // v2.9.368: Array de IDs de respuestas
+      replies: [], // v2.9.368: Array de IDs de respuestas
+      likeCount: 0, // v2.9.371: Contador de likes
+      reportCount: 0 // v2.9.371: Contador de reportes
     };
 
     // Guardar localmente

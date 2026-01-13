@@ -1,7 +1,7 @@
 // ============================================================================
 // SMART READER - Panel Contextual Inteligente
 // ============================================================================
-// v2.9.331: Enriquece la experiencia de lectura con información contextual
+// v2.9.372: Guardar términos favoritos, highlights persistentes
 // - Glosario expandido de 75+ términos filosóficos/científicos
 // - Contexto histórico detallado
 // - Conexiones entre libros de la colección
@@ -28,6 +28,10 @@ class SmartReader {
     // Citas por tema
     this.thematicQuotes = this.initThematicQuotes();
 
+    // v2.9.372: Términos guardados y highlights
+    this.savedTerms = this.loadSavedTerms();
+    this.userHighlights = this.loadUserHighlights();
+
     // Configuración
     this.config = {
       autoShowPanel: true,
@@ -36,6 +40,321 @@ class SmartReader {
       showAuthorBio: true,
       showRelatedQuotes: true
     };
+  }
+
+  // ==========================================================================
+  // v2.9.372: TÉRMINOS GUARDADOS
+  // ==========================================================================
+
+  loadSavedTerms() {
+    try {
+      return JSON.parse(localStorage.getItem('smart-reader-saved-terms') || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  saveSavedTerms() {
+    localStorage.setItem('smart-reader-saved-terms', JSON.stringify(this.savedTerms));
+  }
+
+  /**
+   * Guarda un término como favorito
+   */
+  saveTerm(termKey) {
+    if (this.savedTerms.includes(termKey)) {
+      window.toast?.info('Término ya guardado');
+      return;
+    }
+
+    const term = this.glossary[termKey.toLowerCase()];
+    if (!term) {
+      window.toast?.error('Término no encontrado');
+      return;
+    }
+
+    this.savedTerms.push(termKey.toLowerCase());
+    this.saveSavedTerms();
+    window.toast?.success(`"${term.term}" guardado en tu glosario personal`);
+  }
+
+  /**
+   * Elimina un término de favoritos
+   */
+  removeSavedTerm(termKey) {
+    const index = this.savedTerms.indexOf(termKey.toLowerCase());
+    if (index > -1) {
+      this.savedTerms.splice(index, 1);
+      this.saveSavedTerms();
+      window.toast?.info('Término eliminado');
+    }
+  }
+
+  /**
+   * Verifica si un término está guardado
+   */
+  isTermSaved(termKey) {
+    return this.savedTerms.includes(termKey.toLowerCase());
+  }
+
+  /**
+   * Obtiene todos los términos guardados con su información
+   */
+  getSavedTermsWithInfo() {
+    return this.savedTerms
+      .map(key => {
+        const term = this.glossary[key];
+        return term ? { key, ...term } : null;
+      })
+      .filter(Boolean);
+  }
+
+  /**
+   * Muestra modal con términos guardados
+   */
+  showSavedTermsModal() {
+    document.getElementById('saved-terms-modal')?.remove();
+
+    const savedTerms = this.getSavedTermsWithInfo();
+
+    const modal = document.createElement('div');
+    modal.id = 'saved-terms-modal';
+    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[60] p-4';
+    modal.innerHTML = `
+      <div class="bg-slate-900 rounded-2xl max-w-lg w-full max-h-[80vh] overflow-hidden flex flex-col border border-cyan-500/30">
+        <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            📚 Mi Glosario Personal
+          </h3>
+          <button onclick="document.getElementById('saved-terms-modal')?.remove()"
+                  class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+            ✕
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+          ${savedTerms.length === 0 ? `
+            <div class="text-center py-8 text-gray-500">
+              <div class="text-4xl mb-2">📖</div>
+              <p>No tienes términos guardados</p>
+              <p class="text-sm mt-1">Haz clic en ⭐ junto a cualquier término para guardarlo</p>
+            </div>
+          ` : `
+            <div class="space-y-3">
+              ${savedTerms.map(term => `
+                <div class="bg-slate-800/50 rounded-xl p-4 group">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex-1">
+                      <h4 class="font-bold text-cyan-300">${term.term}</h4>
+                      <p class="text-sm text-gray-300 mt-1">${term.definition}</p>
+                      <span class="text-xs text-gray-500 mt-2 inline-block px-2 py-0.5 bg-gray-700 rounded">${term.category}</span>
+                    </div>
+                    <button onclick="window.smartReader?.removeSavedTerm('${term.key}'); window.smartReader?.showSavedTermsModal()"
+                            class="p-2 hover:bg-red-900/50 rounded-lg text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <div class="p-3 border-t border-gray-700 text-center text-sm text-gray-500">
+          ${savedTerms.length} término${savedTerms.length !== 1 ? 's' : ''} guardado${savedTerms.length !== 1 ? 's' : ''}
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  // ==========================================================================
+  // v2.9.372: HIGHLIGHTS PERSISTENTES
+  // ==========================================================================
+
+  loadUserHighlights() {
+    try {
+      return JSON.parse(localStorage.getItem('smart-reader-highlights') || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  saveUserHighlights() {
+    localStorage.setItem('smart-reader-highlights', JSON.stringify(this.userHighlights));
+  }
+
+  /**
+   * Guarda un highlight del usuario
+   */
+  addHighlight(bookId, chapterId, text, color = 'yellow') {
+    const key = `${bookId}:${chapterId}`;
+    if (!this.userHighlights[key]) {
+      this.userHighlights[key] = [];
+    }
+
+    const highlight = {
+      id: `hl-${Date.now()}`,
+      text: text.substring(0, 500),
+      color,
+      createdAt: new Date().toISOString()
+    };
+
+    this.userHighlights[key].push(highlight);
+    this.saveUserHighlights();
+
+    return highlight;
+  }
+
+  /**
+   * Elimina un highlight
+   */
+  removeHighlight(bookId, chapterId, highlightId) {
+    const key = `${bookId}:${chapterId}`;
+    if (this.userHighlights[key]) {
+      this.userHighlights[key] = this.userHighlights[key].filter(h => h.id !== highlightId);
+      this.saveUserHighlights();
+    }
+  }
+
+  /**
+   * Obtiene highlights de un capítulo
+   */
+  getChapterHighlights(bookId, chapterId) {
+    const key = `${bookId}:${chapterId}`;
+    return this.userHighlights[key] || [];
+  }
+
+  /**
+   * Obtiene todos los highlights
+   */
+  getAllHighlights() {
+    const all = [];
+    for (const [key, highlights] of Object.entries(this.userHighlights)) {
+      const [bookId, chapterId] = key.split(':');
+      for (const hl of highlights) {
+        all.push({ ...hl, bookId, chapterId });
+      }
+    }
+    return all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  /**
+   * Muestra modal con todos los highlights
+   */
+  showHighlightsModal() {
+    document.getElementById('highlights-modal')?.remove();
+
+    const highlights = this.getAllHighlights();
+
+    const colors = {
+      yellow: 'bg-yellow-500/30 border-yellow-500/50',
+      green: 'bg-green-500/30 border-green-500/50',
+      blue: 'bg-blue-500/30 border-blue-500/50',
+      pink: 'bg-pink-500/30 border-pink-500/50'
+    };
+
+    const modal = document.createElement('div');
+    modal.id = 'highlights-modal';
+    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[60] p-4';
+    modal.innerHTML = `
+      <div class="bg-slate-900 rounded-2xl max-w-lg w-full max-h-[80vh] overflow-hidden flex flex-col border border-yellow-500/30">
+        <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            🖍️ Mis Subrayados
+          </h3>
+          <button onclick="document.getElementById('highlights-modal')?.remove()"
+                  class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+            ✕
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+          ${highlights.length === 0 ? `
+            <div class="text-center py-8 text-gray-500">
+              <div class="text-4xl mb-2">🖍️</div>
+              <p>No tienes subrayados guardados</p>
+              <p class="text-sm mt-1">Selecciona texto para subrayar pasajes importantes</p>
+            </div>
+          ` : `
+            <div class="space-y-3">
+              ${highlights.map(hl => `
+                <div class="rounded-xl p-4 border ${colors[hl.color] || colors.yellow} group">
+                  <p class="text-gray-200 text-sm">"${hl.text}"</p>
+                  <div class="flex items-center justify-between mt-2">
+                    <span class="text-xs text-gray-500">${new Date(hl.createdAt).toLocaleDateString()}</span>
+                    <button onclick="window.smartReader?.removeHighlight('${hl.bookId}', '${hl.chapterId}', '${hl.id}'); window.smartReader?.showHighlightsModal()"
+                            class="p-1 hover:bg-red-900/50 rounded text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-xs">
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <div class="p-3 border-t border-gray-700 text-center text-sm text-gray-500">
+          ${highlights.length} subrayado${highlights.length !== 1 ? 's' : ''}
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  /**
+   * Aplica highlights guardados al contenido del capítulo
+   */
+  applyStoredHighlights(bookId, chapterId) {
+    const highlights = this.getChapterHighlights(bookId, chapterId);
+    if (highlights.length === 0) return;
+
+    const content = document.querySelector('.chapter-content, .prose, [data-chapter-content]');
+    if (!content) return;
+
+    const colors = {
+      yellow: 'bg-yellow-400/30',
+      green: 'bg-green-400/30',
+      blue: 'bg-blue-400/30',
+      pink: 'bg-pink-400/30'
+    };
+
+    // Aplicar cada highlight al texto
+    for (const hl of highlights) {
+      const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+      let node;
+
+      while (node = walker.nextNode()) {
+        if (node.textContent.includes(hl.text)) {
+          const span = document.createElement('span');
+          span.className = `${colors[hl.color] || colors.yellow} rounded px-0.5`;
+          span.setAttribute('data-highlight-id', hl.id);
+
+          const parts = node.textContent.split(hl.text);
+          if (parts.length > 1) {
+            const fragment = document.createDocumentFragment();
+            parts.forEach((part, i) => {
+              if (part) fragment.appendChild(document.createTextNode(part));
+              if (i < parts.length - 1) {
+                const hlSpan = span.cloneNode();
+                hlSpan.textContent = hl.text;
+                fragment.appendChild(hlSpan);
+              }
+            });
+            node.parentNode.replaceChild(fragment, node);
+            break; // Solo aplicar una vez por highlight
+          }
+        }
+      }
+    }
   }
 
   // ==========================================================================

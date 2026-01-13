@@ -1,6 +1,7 @@
 // ============================================================================
 // CONCEPT MAPS - Mapas Conceptuales Interactivos Mejorados
 // ============================================================================
+// v2.9.371: Export imagen, pinch-zoom, búsqueda, mejoras UX
 // Visualización de relaciones entre conceptos de cada libro
 // con referencias cruzadas a capítulos relacionados de otros libros
 
@@ -18,6 +19,16 @@ class ConceptMaps {
     this.crossReferences = this.getCrossReferencesData();
     // 🔧 FIX v2.9.271: Track ESC handler for cleanup
     this.escHandler = null;
+
+    // v2.9.371: Estado del mapa
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    this.isDragging = false;
+    this.lastTouchDistance = 0;
+    this.searchQuery = '';
+    this.highlightedNodes = new Set();
+    this.isFullscreen = false;
   }
 
   // 🔧 FIX v2.9.332: Método helper para obtener bookEngine
@@ -428,61 +439,111 @@ class ConceptMaps {
     modal.style.animation = 'fadeIn 0.3s ease-out';
 
     modal.innerHTML = `
-      <div class="bg-gray-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col border border-cyan-500/30 overflow-hidden">
+      <div id="concept-map-container" class="bg-gray-900 rounded-2xl shadow-2xl max-w-6xl w-full max-h-[95vh] flex flex-col border border-cyan-500/30 overflow-hidden transition-all duration-300">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-cyan-900/50 to-purple-900/50 px-6 py-4 border-b border-cyan-500/30 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-3xl">🗺️</span>
-            <div>
-              <h2 class="text-xl font-bold text-cyan-200">${mapData.title}</h2>
-              <p class="text-sm text-cyan-400/70">${mapData.subtitle || 'Explora las conexiones entre conceptos'}</p>
+        <div class="bg-gradient-to-r from-cyan-900/50 to-purple-900/50 px-4 md:px-6 py-3 md:py-4 border-b border-cyan-500/30">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-2xl md:text-3xl">🗺️</span>
+              <div class="min-w-0">
+                <h2 class="text-lg md:text-xl font-bold text-cyan-200 truncate">${mapData.title}</h2>
+                <p class="text-xs md:text-sm text-cyan-400/70 hidden md:block">${mapData.subtitle || 'Explora las conexiones entre conceptos'}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="close-concept-map" class="text-cyan-300 hover:text-white p-2 hover:bg-cyan-800/50 rounded-lg transition" aria-label="Cerrar">
+                ${Icons.close(24)}
+              </button>
             </div>
           </div>
-          <button id="close-concept-map" class="text-cyan-300 hover:text-white p-2 hover:bg-cyan-800/50 rounded-lg transition">
-            ${Icons.close(24)}
-          </button>
+
+          <!-- v2.9.371: Search Bar & Actions -->
+          <div class="mt-3 flex flex-col md:flex-row gap-2 md:gap-3">
+            <div class="flex-1 relative">
+              <input type="text" id="concept-search-input"
+                     placeholder="Buscar concepto..."
+                     class="w-full pl-10 pr-4 py-2 bg-gray-800/80 border border-cyan-500/30 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <div id="search-results-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-cyan-500/30 rounded-lg shadow-xl max-h-48 overflow-y-auto z-20"></div>
+            </div>
+            <div class="flex gap-2">
+              <button id="export-map-btn" class="px-3 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Exportar como imagen">
+                ${Icons.download ? Icons.download(16) : '📥'} <span class="hidden md:inline">Exportar</span>
+              </button>
+              <button id="fullscreen-map-btn" class="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pantalla completa">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Map Container -->
-        <div class="flex-1 overflow-hidden relative min-h-[400px]">
-          <div id="concept-map-canvas" class="w-full h-full" style="min-height: 500px;">
+        <div id="map-viewport" class="flex-1 overflow-hidden relative min-h-[350px] md:min-h-[400px] touch-none">
+          <div id="concept-map-canvas" class="w-full h-full cursor-grab active:cursor-grabbing" style="min-height: 500px;">
             ${this.renderSVGMap(mapData)}
           </div>
 
-          <!-- Legend -->
-          <div class="absolute bottom-4 left-4 bg-gray-900/95 backdrop-blur-sm rounded-lg p-3 border border-gray-700/50 max-w-xs">
-            <p class="text-xs font-semibold text-cyan-300 mb-2">Cómo usar</p>
-            <ul class="text-xs text-gray-400 space-y-1">
-              <li>• Haz clic en un concepto para ver detalles</li>
-              <li>• Descubre capítulos relacionados</li>
-              <li>• Navega a otros libros de la colección</li>
-            </ul>
-            <div class="flex items-center gap-3 mt-2 pt-2 border-t border-gray-700">
-              <span class="flex items-center gap-1 text-xs text-gray-500">
-                <span class="w-6 h-0.5 bg-cyan-500"></span> Directa
-              </span>
-              <span class="flex items-center gap-1 text-xs text-gray-500">
-                <span class="w-6 h-0.5 bg-cyan-500/50" style="border-bottom: 2px dashed rgba(6,182,212,0.5)"></span> Emergente
-              </span>
+          <!-- v2.9.371: Improved Legend (collapsible on mobile) -->
+          <div id="map-legend" class="absolute bottom-4 left-4 bg-gray-900/95 backdrop-blur-sm rounded-lg border border-gray-700/50 max-w-xs transition-all">
+            <button id="toggle-legend" class="md:hidden w-full px-3 py-2 text-left text-xs font-semibold text-cyan-300 flex items-center justify-between">
+              <span>ℹ️ Cómo usar</span>
+              <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div id="legend-content" class="p-3 pt-0 md:pt-3 hidden md:block">
+              <p class="text-xs font-semibold text-cyan-300 mb-2 hidden md:block">Cómo usar</p>
+              <ul class="text-xs text-gray-400 space-y-1">
+                <li>• Arrastra para mover el mapa</li>
+                <li>• Pellizca o usa +/- para zoom</li>
+                <li>• Clic en concepto para detalles</li>
+                <li>• Busca conceptos con el buscador</li>
+              </ul>
+              <div class="flex items-center gap-3 mt-2 pt-2 border-t border-gray-700">
+                <span class="flex items-center gap-1 text-xs text-gray-500">
+                  <span class="w-6 h-0.5 bg-cyan-500"></span> Directa
+                </span>
+                <span class="flex items-center gap-1 text-xs text-gray-500">
+                  <span class="w-6 h-0.5 bg-purple-500" style="border-bottom: 2px dashed"></span> Emergente
+                </span>
+              </div>
             </div>
           </div>
 
-          <!-- Zoom controls -->
-          <div class="absolute top-4 right-4 flex flex-col gap-2">
-            <button id="zoom-in-map" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition text-xl font-bold">
+          <!-- v2.9.371: Improved Zoom Controls -->
+          <div class="absolute top-4 right-4 flex flex-col gap-2 bg-gray-900/80 backdrop-blur-sm rounded-xl p-2 border border-gray-700/50">
+            <button id="zoom-in-map" class="w-10 h-10 bg-gray-800 hover:bg-cyan-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition text-xl font-bold" aria-label="Aumentar zoom">
               +
             </button>
-            <button id="zoom-out-map" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition text-xl font-bold">
+            <div class="text-center text-xs text-gray-500 py-1" id="zoom-level">100%</div>
+            <button id="zoom-out-map" class="w-10 h-10 bg-gray-800 hover:bg-cyan-600 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition text-xl font-bold" aria-label="Reducir zoom">
               −
             </button>
-            <button id="reset-map" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition text-lg">
-              ↺
+            <div class="border-t border-gray-700 my-1"></div>
+            <button id="reset-map" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition" title="Resetear vista" aria-label="Resetear vista">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
             </button>
+            <button id="center-map" class="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition" title="Centrar mapa" aria-label="Centrar mapa">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- v2.9.371: Mini-map indicator -->
+          <div id="mini-map-indicator" class="hidden md:block absolute bottom-4 right-4 w-24 h-16 bg-gray-900/80 rounded-lg border border-gray-700/50 overflow-hidden">
+            <div id="mini-map-viewport" class="absolute border-2 border-cyan-400 rounded transition-all pointer-events-none" style="width: 50%; height: 50%; left: 25%; top: 25%;"></div>
           </div>
         </div>
 
         <!-- Detail Panel -->
-        <div id="concept-detail-panel" class="hidden px-6 py-4 border-t border-cyan-500/30 bg-gradient-to-r from-gray-800/80 to-gray-900/80 max-h-[40vh] overflow-y-auto">
+        <div id="concept-detail-panel" class="hidden px-4 md:px-6 py-4 border-t border-cyan-500/30 bg-gradient-to-r from-gray-800/80 to-gray-900/80 max-h-[40vh] overflow-y-auto">
           <div id="concept-detail-content"></div>
         </div>
       </div>
@@ -642,6 +703,11 @@ class ConceptMaps {
     const modal = document.getElementById('concept-map-modal');
     if (!modal) return;
 
+    // Reset state
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+
     // Close
     document.getElementById('close-concept-map')?.addEventListener('click', () => this.close());
     modal.addEventListener('click', (e) => {
@@ -651,38 +717,431 @@ class ConceptMaps {
     // Node clicks
     const nodes = document.querySelectorAll('.concept-node, .central-node');
     nodes.forEach(node => {
-      node.addEventListener('click', () => {
+      node.addEventListener('click', (e) => {
+        e.stopPropagation();
         const nodeId = node.dataset.nodeId;
         this.showNodeDetail(nodeId, mapData, bookId);
       });
     });
 
-    // Zoom controls
-    let scale = 1;
-    const svg = document.getElementById('concept-map-svg');
-
-    document.getElementById('zoom-in-map')?.addEventListener('click', () => {
-      scale = Math.min(2, scale + 0.2);
-      if (svg) svg.style.transform = `scale(${scale})`;
-    });
-
-    document.getElementById('zoom-out-map')?.addEventListener('click', () => {
-      scale = Math.max(0.5, scale - 0.2);
-      if (svg) svg.style.transform = `scale(${scale})`;
-    });
-
-    document.getElementById('reset-map')?.addEventListener('click', () => {
-      scale = 1;
-      if (svg) svg.style.transform = `scale(1)`;
-    });
+    // v2.9.371: Setup all new interactions
+    this.setupZoomControls();
+    this.setupPanAndPinch();
+    this.setupSearch(mapData, bookId);
+    this.setupExport(mapData);
+    this.setupFullscreen();
+    this.setupLegendToggle();
 
     // 🔧 FIX v2.9.271: Store ESC handler for cleanup in close()
     this.escHandler = (e) => {
       if (e.key === 'Escape') {
-        this.close();
+        if (this.isFullscreen) {
+          this.toggleFullscreen();
+        } else {
+          this.close();
+        }
       }
     };
     document.addEventListener('keydown', this.escHandler);
+  }
+
+  // ==========================================================================
+  // v2.9.371: ZOOM CONTROLS
+  // ==========================================================================
+
+  setupZoomControls() {
+    const svg = document.getElementById('concept-map-svg');
+    const zoomLevelEl = document.getElementById('zoom-level');
+
+    const updateTransform = () => {
+      if (svg) {
+        svg.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+      }
+      if (zoomLevelEl) {
+        zoomLevelEl.textContent = `${Math.round(this.scale * 100)}%`;
+      }
+      this.updateMiniMap();
+    };
+
+    document.getElementById('zoom-in-map')?.addEventListener('click', () => {
+      this.scale = Math.min(3, this.scale + 0.25);
+      updateTransform();
+    });
+
+    document.getElementById('zoom-out-map')?.addEventListener('click', () => {
+      this.scale = Math.max(0.3, this.scale - 0.25);
+      updateTransform();
+    });
+
+    document.getElementById('reset-map')?.addEventListener('click', () => {
+      this.scale = 1;
+      this.translateX = 0;
+      this.translateY = 0;
+      updateTransform();
+    });
+
+    document.getElementById('center-map')?.addEventListener('click', () => {
+      this.translateX = 0;
+      this.translateY = 0;
+      updateTransform();
+    });
+
+    // Mouse wheel zoom
+    const viewport = document.getElementById('map-viewport');
+    viewport?.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      this.scale = Math.max(0.3, Math.min(3, this.scale + delta));
+      updateTransform();
+    }, { passive: false });
+
+    this.updateTransform = updateTransform;
+  }
+
+  // ==========================================================================
+  // v2.9.371: PAN & PINCH-TO-ZOOM
+  // ==========================================================================
+
+  setupPanAndPinch() {
+    const viewport = document.getElementById('map-viewport');
+    const canvas = document.getElementById('concept-map-canvas');
+    if (!viewport || !canvas) return;
+
+    let startX, startY, startTranslateX, startTranslateY;
+
+    // Mouse drag
+    canvas.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.node')) return;
+      this.isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startTranslateX = this.translateX;
+      startTranslateY = this.translateY;
+      canvas.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!this.isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      this.translateX = startTranslateX + dx;
+      this.translateY = startTranslateY + dy;
+      this.updateTransform?.();
+    });
+
+    document.addEventListener('mouseup', () => {
+      this.isDragging = false;
+      if (canvas) canvas.style.cursor = 'grab';
+    });
+
+    // Touch events for mobile
+    let lastTouchX, lastTouchY;
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        // Single touch - pan
+        lastTouchX = e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
+        startTranslateX = this.translateX;
+        startTranslateY = this.translateY;
+      } else if (e.touches.length === 2) {
+        // Two touches - pinch zoom
+        this.lastTouchDistance = this.getTouchDistance(e.touches);
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) {
+        // Pan
+        const dx = e.touches[0].clientX - lastTouchX;
+        const dy = e.touches[0].clientY - lastTouchY;
+        this.translateX = startTranslateX + dx;
+        this.translateY = startTranslateY + dy;
+        this.updateTransform?.();
+      } else if (e.touches.length === 2) {
+        // Pinch zoom
+        const newDistance = this.getTouchDistance(e.touches);
+        const scaleChange = newDistance / this.lastTouchDistance;
+        this.scale = Math.max(0.3, Math.min(3, this.scale * scaleChange));
+        this.lastTouchDistance = newDistance;
+        this.updateTransform?.();
+      }
+    }, { passive: true });
+  }
+
+  getTouchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  updateMiniMap() {
+    const miniViewport = document.getElementById('mini-map-viewport');
+    if (!miniViewport) return;
+
+    // Calculate viewport position based on translate and scale
+    const viewportSize = 100 / this.scale;
+    const offsetX = 50 - (this.translateX / 10) - viewportSize / 2;
+    const offsetY = 50 - (this.translateY / 10) - viewportSize / 2;
+
+    miniViewport.style.width = `${Math.min(100, viewportSize)}%`;
+    miniViewport.style.height = `${Math.min(100, viewportSize)}%`;
+    miniViewport.style.left = `${Math.max(0, Math.min(100 - viewportSize, offsetX))}%`;
+    miniViewport.style.top = `${Math.max(0, Math.min(100 - viewportSize, offsetY))}%`;
+  }
+
+  // ==========================================================================
+  // v2.9.371: SEARCH FUNCTIONALITY
+  // ==========================================================================
+
+  setupSearch(mapData, bookId) {
+    const searchInput = document.getElementById('concept-search-input');
+    const dropdown = document.getElementById('search-results-dropdown');
+    if (!searchInput || !dropdown) return;
+
+    // Get all searchable concepts
+    const concepts = [
+      { id: mapData.central.id, label: mapData.central.label, icon: mapData.central.icon, isCentral: true },
+      ...mapData.nodes.map(n => ({ id: n.id, label: n.label, icon: n.icon, color: n.color }))
+    ];
+
+    let debounceTimer;
+
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const query = e.target.value.toLowerCase().trim();
+        this.searchQuery = query;
+
+        if (!query) {
+          dropdown.classList.add('hidden');
+          this.clearHighlights();
+          return;
+        }
+
+        const results = concepts.filter(c =>
+          c.label.toLowerCase().includes(query) || c.id.toLowerCase().includes(query)
+        );
+
+        if (results.length === 0) {
+          dropdown.innerHTML = '<div class="p-3 text-gray-500 text-sm">No se encontraron conceptos</div>';
+        } else {
+          dropdown.innerHTML = results.map(r => `
+            <button class="search-result-item w-full px-3 py-2 text-left hover:bg-cyan-900/30 flex items-center gap-2 transition"
+                    data-node-id="${r.id}">
+              <span class="text-lg">${r.icon || '•'}</span>
+              <span style="color: ${r.color || '#06b6d4'}">${r.label}</span>
+              ${r.isCentral ? '<span class="text-xs text-gray-500">(central)</span>' : ''}
+            </button>
+          `).join('');
+        }
+
+        dropdown.classList.remove('hidden');
+        this.highlightNodes(results.map(r => r.id));
+      }, 200);
+    });
+
+    // Click on search result
+    dropdown.addEventListener('click', (e) => {
+      const item = e.target.closest('.search-result-item');
+      if (item) {
+        const nodeId = item.dataset.nodeId;
+        dropdown.classList.add('hidden');
+        searchInput.value = '';
+        this.focusOnNode(nodeId);
+        this.showNodeDetail(nodeId, mapData, bookId);
+      }
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#concept-search-input') && !e.target.closest('#search-results-dropdown')) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  }
+
+  highlightNodes(nodeIds) {
+    this.clearHighlights();
+    this.highlightedNodes = new Set(nodeIds);
+
+    document.querySelectorAll('.node').forEach(node => {
+      const nodeId = node.dataset.nodeId;
+      if (this.highlightedNodes.has(nodeId)) {
+        node.classList.add('highlighted');
+        const circle = node.querySelector('circle');
+        if (circle) {
+          circle.style.filter = 'url(#glow)';
+          circle.style.strokeWidth = '4';
+        }
+      } else {
+        node.style.opacity = '0.3';
+      }
+    });
+  }
+
+  clearHighlights() {
+    this.highlightedNodes.clear();
+    document.querySelectorAll('.node').forEach(node => {
+      node.classList.remove('highlighted');
+      node.style.opacity = '1';
+      const circle = node.querySelector('circle');
+      if (circle) {
+        circle.style.filter = '';
+        circle.style.strokeWidth = '';
+      }
+    });
+  }
+
+  focusOnNode(nodeId) {
+    const node = document.querySelector(`.node[data-node-id="${nodeId}"]`);
+    if (!node) return;
+
+    // Get node position from transform
+    const transform = node.getAttribute('transform');
+    const match = transform?.match(/translate\(([^,]+),\s*([^)]+)\)/);
+    if (match) {
+      const nodeX = parseFloat(match[1]);
+      const nodeY = parseFloat(match[2]);
+
+      // Center on this node
+      const viewport = document.getElementById('map-viewport');
+      if (viewport) {
+        const rect = viewport.getBoundingClientRect();
+        this.translateX = rect.width / 2 - nodeX;
+        this.translateY = rect.height / 2 - nodeY;
+        this.scale = 1.5;
+        this.updateTransform?.();
+      }
+    }
+
+    // Pulse animation
+    const circle = node.querySelector('circle');
+    if (circle) {
+      circle.style.animation = 'pulse 0.5s ease-in-out 3';
+      setTimeout(() => circle.style.animation = '', 1500);
+    }
+  }
+
+  // ==========================================================================
+  // v2.9.371: EXPORT TO IMAGE
+  // ==========================================================================
+
+  setupExport(mapData) {
+    document.getElementById('export-map-btn')?.addEventListener('click', () => {
+      this.exportAsImage(mapData);
+    });
+  }
+
+  async exportAsImage(mapData) {
+    const svg = document.getElementById('concept-map-svg');
+    if (!svg) {
+      window.toast?.error('No se pudo encontrar el mapa');
+      return;
+    }
+
+    try {
+      window.toast?.info('Generando imagen...');
+
+      // Create a canvas from SVG
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = 2; // High resolution
+        canvas.width = svg.viewBox.baseVal.width * scale;
+        canvas.height = svg.viewBox.baseVal.height * scale;
+
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Add title watermark
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.5)';
+        ctx.font = `${24 * scale}px sans-serif`;
+        ctx.fillText(mapData.title, 20 * scale, 30 * scale);
+        ctx.font = `${12 * scale}px sans-serif`;
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.5)';
+        ctx.fillText('Colección Nuevo Ser', 20 * scale, 50 * scale);
+
+        // Download
+        const link = document.createElement('a');
+        link.download = `mapa-conceptual-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        URL.revokeObjectURL(svgUrl);
+        window.toast?.success('Imagen descargada');
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(svgUrl);
+        window.toast?.error('Error al generar imagen');
+      };
+
+      img.src = svgUrl;
+    } catch (error) {
+      logger.error('[ConceptMaps] Export error:', error);
+      window.toast?.error('Error al exportar');
+    }
+  }
+
+  // ==========================================================================
+  // v2.9.371: FULLSCREEN MODE
+  // ==========================================================================
+
+  setupFullscreen() {
+    document.getElementById('fullscreen-map-btn')?.addEventListener('click', () => {
+      this.toggleFullscreen();
+    });
+  }
+
+  toggleFullscreen() {
+    const container = document.getElementById('concept-map-container');
+    const btn = document.getElementById('fullscreen-map-btn');
+    if (!container) return;
+
+    this.isFullscreen = !this.isFullscreen;
+
+    if (this.isFullscreen) {
+      container.classList.remove('max-w-6xl', 'max-h-[95vh]', 'rounded-2xl');
+      container.classList.add('fixed', 'inset-0', 'rounded-none', 'z-[100]');
+      btn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      `;
+    } else {
+      container.classList.add('max-w-6xl', 'max-h-[95vh]', 'rounded-2xl');
+      container.classList.remove('fixed', 'inset-0', 'rounded-none', 'z-[100]');
+      btn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+        </svg>
+      `;
+    }
+  }
+
+  // ==========================================================================
+  // v2.9.371: LEGEND TOGGLE (mobile)
+  // ==========================================================================
+
+  setupLegendToggle() {
+    const toggleBtn = document.getElementById('toggle-legend');
+    const content = document.getElementById('legend-content');
+    if (!toggleBtn || !content) return;
+
+    toggleBtn.addEventListener('click', () => {
+      content.classList.toggle('hidden');
+      const arrow = toggleBtn.querySelector('svg');
+      if (arrow) {
+        arrow.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+      }
+    });
   }
 
   showNodeDetail(nodeId, mapData, bookId) {

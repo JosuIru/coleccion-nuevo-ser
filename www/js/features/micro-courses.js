@@ -1,6 +1,7 @@
 // ============================================================================
 // MICRO-COURSES - Sistema de Cursos de 30 Días
 // ============================================================================
+// v2.9.371: Notificaciones web mejoradas, compartir progreso, recordatorios
 // v2.9.331: Cursos estructurados con lecciones diarias detalladas
 // Notificaciones, tracking de progreso, streaks por curso
 // Contenido expandido con 6+ cursos y lecciones completas
@@ -11,8 +12,271 @@ class MicroCourses {
     this.enrolledCourses = this.loadEnrolledCourses();
     this.courseProgress = this.loadCourseProgress();
 
+    // v2.9.371: Configuración de recordatorios
+    this.reminderSettings = this.loadReminderSettings();
+    this.notificationCheckInterval = null;
+
     // Cursos disponibles
     this.courses = this.initCourses();
+
+    // v2.9.371: Iniciar sistema de recordatorios
+    this.initReminderSystem();
+  }
+
+  // ==========================================================================
+  // v2.9.371: SISTEMA DE RECORDATORIOS MEJORADO
+  // ==========================================================================
+
+  loadReminderSettings() {
+    try {
+      return JSON.parse(localStorage.getItem('micro-courses-reminders')) || {
+        enabled: true,
+        time: '09:00',
+        lastShown: null
+      };
+    } catch {
+      return { enabled: true, time: '09:00', lastShown: null };
+    }
+  }
+
+  saveReminderSettings() {
+    localStorage.setItem('micro-courses-reminders', JSON.stringify(this.reminderSettings));
+  }
+
+  initReminderSystem() {
+    // Verificar cada minuto si es hora del recordatorio
+    this.notificationCheckInterval = setInterval(() => {
+      this.checkDailyReminder();
+    }, 60000);
+
+    // Verificar inmediatamente al cargar
+    setTimeout(() => this.checkDailyReminder(), 5000);
+  }
+
+  checkDailyReminder() {
+    if (!this.reminderSettings.enabled) return;
+
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const today = now.toISOString().split('T')[0];
+
+    // Solo mostrar una vez al día a la hora configurada
+    if (currentTime === this.reminderSettings.time && this.reminderSettings.lastShown !== today) {
+      const pendingCourses = this.getCoursesWithPendingLessons();
+      if (pendingCourses.length > 0) {
+        this.showDailyReminder(pendingCourses);
+        this.reminderSettings.lastShown = today;
+        this.saveReminderSettings();
+      }
+    }
+  }
+
+  getCoursesWithPendingLessons() {
+    const pending = [];
+    for (const [courseId, enrollment] of Object.entries(this.enrolledCourses)) {
+      const course = this.courses[courseId];
+      if (!course) continue;
+
+      const progress = this.courseProgress[courseId] || {};
+      const today = new Date().toISOString().split('T')[0];
+
+      // Verificar si ya completó la lección de hoy
+      const todayLessons = Object.entries(progress).filter(([day, data]) =>
+        data.completedAt?.startsWith(today)
+      );
+
+      const dayNumber = Object.keys(progress).filter(k => progress[k]?.completed).length + 1;
+
+      if (todayLessons.length === 0 && dayNumber <= course.duration) {
+        pending.push({ course, dayNumber });
+      }
+    }
+    return pending;
+  }
+
+  showDailyReminder(pendingCourses) {
+    // Web Notification si está permitido
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const course = pendingCourses[0].course;
+      new Notification(`${course.icon} ${course.title}`, {
+        body: `¡Es hora de tu lección del día ${pendingCourses[0].dayNumber}!`,
+        icon: 'assets/icons/icon-192x192.png',
+        tag: 'micro-course-reminder',
+        requireInteraction: true
+      });
+    }
+
+    // Toast in-app
+    const courseNames = pendingCourses.map(p => p.course.title).join(', ');
+    window.toast?.info(`📚 Tienes lecciones pendientes en: ${courseNames}`, { duration: 8000 });
+  }
+
+  async requestNotificationPermission() {
+    if (!('Notification' in window)) {
+      window.toast?.info('Tu navegador no soporta notificaciones');
+      return false;
+    }
+
+    if (Notification.permission === 'granted') {
+      return true;
+    }
+
+    if (Notification.permission !== 'denied') {
+      const permission = await Notification.requestPermission();
+      return permission === 'granted';
+    }
+
+    return false;
+  }
+
+  setReminderTime(time) {
+    this.reminderSettings.time = time;
+    this.reminderSettings.enabled = true;
+    this.saveReminderSettings();
+    window.toast?.success(`Recordatorio configurado para las ${time}`);
+  }
+
+  toggleReminders(enabled) {
+    this.reminderSettings.enabled = enabled;
+    this.saveReminderSettings();
+    window.toast?.info(enabled ? 'Recordatorios activados' : 'Recordatorios desactivados');
+  }
+
+  // ==========================================================================
+  // v2.9.371: COMPARTIR PROGRESO
+  // ==========================================================================
+
+  async shareProgress(courseId) {
+    const course = this.courses[courseId];
+    const progress = this.courseProgress[courseId] || {};
+    const stats = this.calculateCourseStats(courseId);
+
+    if (!course || !stats) {
+      window.toast?.error('No hay progreso para compartir');
+      return;
+    }
+
+    const shareData = {
+      title: `Mi progreso en ${course.title}`,
+      text: `🎯 He completado el ${stats.percentage}% del curso "${course.title}"\n` +
+            `📆 ${stats.completedLessons} de ${course.duration} lecciones\n` +
+            `🔥 Racha actual: ${stats.currentStreak} días\n\n` +
+            `#ColecciónNuevoSer #Despertar #Consciencia`
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        window.toast?.success('¡Progreso compartido!');
+
+        // Track achievement
+        if (window.achievementSystem) {
+          window.achievementSystem.stats.sharedProgress =
+            (window.achievementSystem.stats.sharedProgress || 0) + 1;
+          window.achievementSystem.saveStats();
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.copyProgressToClipboard(shareData.text);
+        }
+      }
+    } else {
+      this.copyProgressToClipboard(shareData.text);
+    }
+  }
+
+  copyProgressToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      window.toast?.success('Progreso copiado al portapapeles');
+    }).catch(() => {
+      window.toast?.error('Error al copiar');
+    });
+  }
+
+  async generateProgressImage(courseId) {
+    const course = this.courses[courseId];
+    const stats = this.calculateCourseStats(courseId);
+    if (!course || !stats) return null;
+
+    // Create canvas for progress card
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 600, 400);
+    gradient.addColorStop(0, '#1f2937');
+    gradient.addColorStop(1, '#111827');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 600, 400);
+
+    // Course icon
+    ctx.font = '60px sans-serif';
+    ctx.fillText(course.icon, 40, 80);
+
+    // Title
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText(course.title, 120, 70);
+
+    // Progress bar background
+    ctx.fillStyle = '#374151';
+    ctx.fillRect(40, 140, 520, 30);
+
+    // Progress bar fill
+    const progressGradient = ctx.createLinearGradient(40, 140, 560, 170);
+    progressGradient.addColorStop(0, '#06b6d4');
+    progressGradient.addColorStop(1, '#8b5cf6');
+    ctx.fillStyle = progressGradient;
+    ctx.fillRect(40, 140, 520 * (stats.percentage / 100), 30);
+
+    // Stats
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '20px sans-serif';
+    ctx.fillText(`${stats.percentage}% completado`, 40, 210);
+    ctx.fillText(`${stats.completedLessons}/${course.duration} lecciones`, 40, 250);
+    ctx.fillText(`🔥 ${stats.currentStreak} días de racha`, 40, 290);
+
+    // Watermark
+    ctx.fillStyle = 'rgba(156, 163, 175, 0.5)';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Colección Nuevo Ser', 40, 370);
+
+    return canvas.toDataURL('image/png');
+  }
+
+  calculateCourseStats(courseId) {
+    const course = this.courses[courseId];
+    const progress = this.courseProgress[courseId] || {};
+
+    if (!course) return null;
+
+    const completedLessons = Object.values(progress).filter(p => p.completed).length;
+    const percentage = Math.round((completedLessons / course.duration) * 100);
+
+    // Calculate streak
+    let currentStreak = 0;
+    const dates = Object.values(progress)
+      .filter(p => p.completedAt)
+      .map(p => p.completedAt.split('T')[0])
+      .sort()
+      .reverse();
+
+    if (dates.length > 0) {
+      let checkDate = new Date();
+      for (const date of dates) {
+        const dateStr = checkDate.toISOString().split('T')[0];
+        if (date === dateStr) {
+          currentStreak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+    }
+
+    return { completedLessons, percentage, currentStreak };
   }
 
   // ==========================================================================

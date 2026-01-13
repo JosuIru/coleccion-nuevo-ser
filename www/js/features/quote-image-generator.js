@@ -1,7 +1,7 @@
 // ============================================================================
 // QUOTE IMAGE GENERATOR - Generador de Imágenes de Citas
 // ============================================================================
-// v2.9.369: Crear imágenes compartibles desde texto seleccionado
+// v2.9.372: Más estilos, formato cuadrado e historia, preview en tiempo real
 // ============================================================================
 
 class QuoteImageGenerator {
@@ -11,8 +11,16 @@ class QuoteImageGenerator {
     this.currentQuote = '';
     this.currentSource = '';
     this.selectedStyle = 'cosmic';
+    this.selectedFormat = 'square'; // v2.9.372: formato seleccionable
 
-    // Estilos de fondo disponibles
+    // v2.9.372: Formatos disponibles
+    this.formats = {
+      square: { name: 'Cuadrado', width: 1080, height: 1080 },
+      story: { name: 'Historia', width: 1080, height: 1920 },
+      landscape: { name: 'Apaisado', width: 1920, height: 1080 }
+    };
+
+    // Estilos de fondo disponibles (v2.9.372: añadidos 3 más)
     this.styles = {
       cosmic: {
         name: 'Cósmico',
@@ -49,6 +57,24 @@ class QuoteImageGenerator {
         gradient: ['#0f2027', '#203a43', '#2c5364'],
         textColor: '#ffffff',
         accentColor: '#a5b4fc'
+      },
+      aurora: {
+        name: 'Aurora',
+        gradient: ['#00c6ff', '#0072ff', '#7209b7'],
+        textColor: '#ffffff',
+        accentColor: '#c4b5fd'
+      },
+      warmth: {
+        name: 'Calidez',
+        gradient: ['#834d9b', '#d04ed6', '#f0a500'],
+        textColor: '#ffffff',
+        accentColor: '#fef08a'
+      },
+      earth: {
+        name: 'Tierra',
+        gradient: ['#3d2c1f', '#5c4033', '#8b5e3c'],
+        textColor: '#ffffff',
+        accentColor: '#d97706'
       }
     };
   }
@@ -64,12 +90,17 @@ class QuoteImageGenerator {
   }
 
   createCanvas() {
+    // v2.9.372: Usar formato seleccionado
+    const format = this.formats[this.selectedFormat] || this.formats.square;
+
     if (!this.canvas) {
       this.canvas = document.createElement('canvas');
-      this.canvas.width = 1080;
-      this.canvas.height = 1080;
       this.ctx = this.canvas.getContext('2d');
     }
+
+    this.canvas.width = format.width;
+    this.canvas.height = format.height;
+
     return this.canvas;
   }
 
@@ -223,6 +254,22 @@ class QuoteImageGenerator {
             <div>
               <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">Personalizar</h3>
 
+              <!-- v2.9.372: Format selector -->
+              <div class="mb-4">
+                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-2">Formato</label>
+                <div class="flex gap-2">
+                  ${Object.entries(this.formats).map(([key, format]) => `
+                    <button class="format-btn flex-1 px-3 py-2 rounded-lg text-sm font-medium transition ${
+                      this.selectedFormat === key
+                        ? 'ring-2 ring-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                        : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
+                    }" data-format="${key}">
+                      ${format.name}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
               <!-- Style selector -->
               <div class="mb-6">
                 <label class="block text-sm text-gray-700 dark:text-gray-300 mb-2">Estilo de fondo</label>
@@ -287,6 +334,15 @@ class QuoteImageGenerator {
       if (e.target.id === 'quote-generator-modal') this.closeModal();
     });
 
+    // v2.9.372: Cambiar formato
+    document.querySelectorAll('.format-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.selectedFormat = e.currentTarget.dataset.format;
+        this.updateFormatButtons();
+        this.updatePreview();
+      });
+    });
+
     // Cambiar estilo
     document.querySelectorAll('.style-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -323,6 +379,21 @@ class QuoteImageGenerator {
       if (e.key === 'Escape') this.closeModal();
     };
     document.addEventListener('keydown', this.escHandler);
+  }
+
+  // v2.9.372: Actualizar botones de formato
+  updateFormatButtons() {
+    document.querySelectorAll('.format-btn').forEach(btn => {
+      const isSelected = btn.dataset.format === this.selectedFormat;
+      btn.classList.toggle('ring-2', isSelected);
+      btn.classList.toggle('ring-purple-500', isSelected);
+      btn.classList.toggle('bg-purple-50', isSelected);
+      btn.classList.toggle('dark:bg-purple-900/30', isSelected);
+      btn.classList.toggle('text-purple-700', isSelected);
+      btn.classList.toggle('dark:text-purple-300', isSelected);
+      btn.classList.toggle('bg-gray-100', !isSelected);
+      btn.classList.toggle('dark:bg-slate-800', !isSelected);
+    });
   }
 
   updateStyleButtons() {

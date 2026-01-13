@@ -1,7 +1,7 @@
 // ============================================================================
 // PODCAST PLAYER - Reproductor de Podcast Auto-Generado
 // ============================================================================
-// v2.9.330: Presenta los capítulos como episodios de podcast
+// v2.9.372: Cola de reproducción, seek mejorado con scrubber
 // Usa el sistema de AudioReader existente con interfaz de podcast
 
 class PodcastPlayer {
@@ -15,12 +15,255 @@ class PodcastPlayer {
     this.downloadedEpisodes = this.loadDownloadedEpisodes();
     this.bookmarks = this.loadBookmarks(); // v2.9.368: Sistema de marcadores
 
+    // v2.9.372: Cola de reproducción
+    this.queue = this.loadQueue();
+    this.queueIndex = 0;
+
+    // v2.9.372: Estado de seek
+    this.currentTime = 0;
+    this.duration = 0;
+    this.seekUpdateInterval = null;
+
     // Configuración
     this.config = {
       speeds: [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
       autoAdvance: true,
       showMiniPlayer: true
     };
+
+    // v2.9.372: Iniciar listener de tiempo
+    this.initTimeListener();
+  }
+
+  // ==========================================================================
+  // LISTENER DE TIEMPO (v2.9.372)
+  // ==========================================================================
+
+  initTimeListener() {
+    // Escuchar eventos del AudioReader para actualizar tiempo
+    document.addEventListener('audioReaderProgress', (e) => {
+      if (e.detail) {
+        this.currentTime = e.detail.currentTime || 0;
+        this.duration = e.detail.duration || 0;
+        this.updateSeekUI();
+      }
+    });
+
+    // Polling como fallback
+    this.seekUpdateInterval = setInterval(() => {
+      if (this.isPlaying && window.audioReader) {
+        const position = window.audioReader.getCurrentPosition?.() || 0;
+        const total = window.audioReader.getTotalDuration?.() || 0;
+        if (position !== this.currentTime || total !== this.duration) {
+          this.currentTime = position;
+          this.duration = total;
+          this.updateSeekUI();
+        }
+      }
+    }, 1000);
+  }
+
+  updateSeekUI() {
+    // Actualizar scrubber en mini player
+    const scrubber = document.getElementById('podcast-scrubber');
+    const timeDisplay = document.getElementById('podcast-time-display');
+
+    if (scrubber && this.duration > 0) {
+      scrubber.value = (this.currentTime / this.duration) * 100;
+    }
+
+    if (timeDisplay) {
+      timeDisplay.textContent = `${this.formatTime(this.currentTime)} / ${this.formatTime(this.duration)}`;
+    }
+  }
+
+  // ==========================================================================
+  // COLA DE REPRODUCCIÓN (v2.9.372)
+  // ==========================================================================
+
+  loadQueue() {
+    try {
+      return JSON.parse(localStorage.getItem('podcast-queue')) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveQueue() {
+    localStorage.setItem('podcast-queue', JSON.stringify(this.queue));
+  }
+
+  /**
+   * Añade un episodio a la cola
+   */
+  addToQueue(bookId, episodeId) {
+    const exists = this.queue.some(item =>
+      item.bookId === bookId && item.episodeId === episodeId
+    );
+
+    if (exists) {
+      window.toast?.info('Este episodio ya está en la cola');
+      return;
+    }
+
+    const episodes = this.getEpisodes(bookId);
+    const episode = episodes.find(ep => ep.id === episodeId);
+
+    if (episode) {
+      this.queue.push({
+        bookId,
+        episodeId,
+        title: episode.title,
+        number: episode.number,
+        addedAt: Date.now()
+      });
+      this.saveQueue();
+      window.toast?.success(`Añadido a la cola: Ep. ${episode.number}`);
+      this.updateUI();
+    }
+  }
+
+  /**
+   * Elimina un episodio de la cola
+   */
+  removeFromQueue(index) {
+    if (index >= 0 && index < this.queue.length) {
+      const removed = this.queue.splice(index, 1)[0];
+      this.saveQueue();
+      window.toast?.info(`Eliminado de la cola: Ep. ${removed.number}`);
+      this.updateUI();
+    }
+  }
+
+  /**
+   * Mueve un episodio en la cola
+   */
+  moveInQueue(fromIndex, toIndex) {
+    if (fromIndex < 0 || fromIndex >= this.queue.length) return;
+    if (toIndex < 0 || toIndex >= this.queue.length) return;
+
+    const item = this.queue.splice(fromIndex, 1)[0];
+    this.queue.splice(toIndex, 0, item);
+    this.saveQueue();
+    this.updateUI();
+  }
+
+  /**
+   * Limpia la cola
+   */
+  clearQueue() {
+    this.queue = [];
+    this.queueIndex = 0;
+    this.saveQueue();
+    window.toast?.info('Cola vaciada');
+    this.updateUI();
+  }
+
+  /**
+   * Reproduce el siguiente en la cola
+   */
+  playNextInQueue() {
+    if (this.queue.length === 0) {
+      window.toast?.info('La cola está vacía');
+      return;
+    }
+
+    const nextItem = this.queue.shift();
+    this.saveQueue();
+    this.play(nextItem.bookId, nextItem.episodeId);
+    this.updateUI();
+  }
+
+  /**
+   * Muestra el modal de la cola
+   */
+  showQueueModal() {
+    document.getElementById('podcast-queue-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'podcast-queue-modal';
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[10001] p-4';
+    modal.innerHTML = `
+      <div class="bg-slate-900 rounded-2xl max-w-md w-full max-h-[80vh] flex flex-col border border-purple-500/30">
+        <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            Cola de reproducción
+          </h3>
+          <button onclick="document.getElementById('podcast-queue-modal')?.remove()"
+                  class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+            ${Icons?.close?.(20) || '✕'}
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+          ${this.queue.length === 0 ? `
+            <div class="text-center py-8 text-gray-500">
+              <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+              <p>La cola está vacía</p>
+              <p class="text-sm mt-1">Añade episodios desde la lista</p>
+            </div>
+          ` : `
+            <div class="space-y-2">
+              ${this.queue.map((item, index) => `
+                <div class="flex items-center gap-3 p-3 bg-slate-800 rounded-lg group">
+                  <span class="text-gray-500 text-sm w-6">${index + 1}.</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white font-medium truncate">Ep. ${item.number}: ${this.escapeHtml(item.title)}</p>
+                  </div>
+                  <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    ${index > 0 ? `
+                      <button onclick="window.podcastPlayer?.moveInQueue(${index}, ${index - 1})"
+                              class="p-1 hover:bg-slate-700 rounded text-gray-400 hover:text-white" title="Subir">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                        </svg>
+                      </button>
+                    ` : ''}
+                    ${index < this.queue.length - 1 ? `
+                      <button onclick="window.podcastPlayer?.moveInQueue(${index}, ${index + 1})"
+                              class="p-1 hover:bg-slate-700 rounded text-gray-400 hover:text-white" title="Bajar">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                      </button>
+                    ` : ''}
+                    <button onclick="window.podcastPlayer?.removeFromQueue(${index})"
+                            class="p-1 hover:bg-red-900/50 rounded text-gray-400 hover:text-red-400" title="Eliminar">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        ${this.queue.length > 0 ? `
+          <div class="p-4 border-t border-gray-700 flex gap-3">
+            <button onclick="window.podcastPlayer?.playNextInQueue(); document.getElementById('podcast-queue-modal')?.remove()"
+                    class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-white font-medium transition">
+              Reproducir siguiente
+            </button>
+            <button onclick="window.podcastPlayer?.clearQueue()"
+                    class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-white transition">
+              Vaciar
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
   }
 
   // ==========================================================================
@@ -285,6 +528,55 @@ class PodcastPlayer {
     } else if (this.currentEpisode) {
       this.resume();
     }
+  }
+
+  // ==========================================================================
+  // SEEK MEJORADO (v2.9.372)
+  // ==========================================================================
+
+  /**
+   * Salta a una posición específica (en segundos)
+   */
+  seekTo(seconds) {
+    if (window.audioReader?.seekTo) {
+      window.audioReader.seekTo(seconds);
+      this.currentTime = seconds;
+      this.updateSeekUI();
+    }
+  }
+
+  /**
+   * Salta adelante o atrás X segundos
+   */
+  seekBySeconds(delta) {
+    const newTime = Math.max(0, Math.min(this.duration, this.currentTime + delta));
+    this.seekTo(newTime);
+    const direction = delta > 0 ? '+' : '';
+    window.toast?.info(`${direction}${delta}s`, { duration: 1000 });
+  }
+
+  /**
+   * Manejador del cambio de scrubber
+   */
+  onScrubberChange(percent) {
+    if (this.duration > 0) {
+      const newTime = (percent / 100) * this.duration;
+      this.seekTo(newTime);
+    }
+  }
+
+  /**
+   * Avanzar 10 segundos
+   */
+  skipForward() {
+    this.seekBySeconds(10);
+  }
+
+  /**
+   * Retroceder 10 segundos
+   */
+  skipBackward() {
+    this.seekBySeconds(-10);
   }
 
   /**
@@ -605,8 +897,16 @@ class PodcastPlayer {
             ` : ''}
           </div>
 
-          <!-- Acciones -->
+          <!-- Acciones (v2.9.372: añadido botón de cola) -->
           <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+            <!-- Añadir a cola -->
+            <button onclick="window.podcastPlayer?.addToQueue('${this.currentBookId}', '${episode.id}')"
+                    class="p-2 hover:bg-purple-700/50 rounded-lg text-gray-500 hover:text-purple-400 transition-colors"
+                    title="Añadir a la cola">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </button>
             ${episode.isDownloaded ? `
               <button onclick="window.podcastPlayer?.removeDownload('${this.currentBookId}', '${episode.id}')"
                       class="p-2 hover:bg-red-900/30 rounded-lg text-gray-500 hover:text-red-400 transition-colors"
@@ -631,7 +931,7 @@ class PodcastPlayer {
   }
 
   // ==========================================================================
-  // UI - MINI PLAYER
+  // UI - MINI PLAYER (v2.9.372 - Mejorado con scrubber y cola)
   // ==========================================================================
 
   showMiniPlayer() {
@@ -643,9 +943,10 @@ class PodcastPlayer {
 
     const miniPlayer = document.createElement('div');
     miniPlayer.id = 'podcast-mini-player';
-    miniPlayer.className = 'fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-slate-900 border border-purple-500/30 rounded-xl shadow-2xl z-[9990] p-3';
+    miniPlayer.className = 'fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-slate-900 border border-purple-500/30 rounded-xl shadow-2xl z-[9990] overflow-hidden';
     miniPlayer.innerHTML = `
-      <div class="flex items-center gap-3">
+      <!-- Header con info -->
+      <div class="p-3 flex items-center gap-3">
         <!-- Artwork mini -->
         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
           <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -656,54 +957,117 @@ class PodcastPlayer {
         <!-- Info -->
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-white truncate">Ep. ${current.number}: ${this.escapeHtml(current.title)}</p>
-          <p class="text-xs text-gray-500">Podcast</p>
+          <p id="podcast-time-display" class="text-xs text-gray-500 font-mono">${this.formatTime(this.currentTime)} / ${this.formatTime(this.duration)}</p>
         </div>
 
-        <!-- Controles -->
+        <!-- Botones secundarios -->
         <div class="flex items-center gap-1">
+          <button onclick="window.podcastPlayer?.showQueueModal()"
+                  class="p-2 hover:bg-slate-700 rounded-lg text-gray-400 hover:text-white transition-colors relative"
+                  title="Cola de reproducción">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            ${this.queue.length > 0 ? `<span class="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full text-xs flex items-center justify-center">${this.queue.length}</span>` : ''}
+          </button>
           <button onclick="window.podcastPlayer?.addBookmark()"
-                  class="p-2 hover:bg-purple-700 rounded-full text-purple-400 hover:text-white transition-colors"
+                  class="p-2 hover:bg-purple-700 rounded-lg text-purple-400 hover:text-white transition-colors"
                   title="Guardar marcador">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
             </svg>
           </button>
-          <button onclick="window.podcastPlayer?.previousEpisode()"
-                  class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-            </svg>
-          </button>
-          <button onclick="window.podcastPlayer?.togglePlayPause()"
-                  class="w-10 h-10 rounded-full bg-purple-500 hover:bg-purple-400 flex items-center justify-center text-white transition-colors">
-            ${this.isPlaying ? `
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-              </svg>
-            ` : `
-              <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            `}
-          </button>
-          <button onclick="window.podcastPlayer?.nextEpisode()"
-                  class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-            </svg>
-          </button>
           <button onclick="window.podcastPlayer?.stop()"
-                  class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors">
+                  class="p-2 hover:bg-slate-700 rounded-lg text-gray-400 hover:text-white transition-colors"
+                  title="Cerrar">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
         </div>
       </div>
+
+      <!-- Scrubber / Barra de progreso -->
+      <div class="px-3 pb-2">
+        <input type="range" id="podcast-scrubber"
+               min="0" max="100" value="${this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0}"
+               oninput="window.podcastPlayer?.onScrubberChange(this.value)"
+               class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+               style="background: linear-gradient(to right, #a855f7 0%, #a855f7 ${this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0}%, #374151 ${this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0}%, #374151 100%);">
+      </div>
+
+      <!-- Controles principales -->
+      <div class="px-3 pb-3 flex items-center justify-center gap-2">
+        <!-- Velocidad -->
+        <button onclick="window.podcastPlayer?.cycleSpeed()"
+                class="px-2 py-1 text-xs font-medium text-purple-400 hover:text-white bg-slate-800 rounded transition-colors"
+                title="Cambiar velocidad">
+          ${this.playbackSpeed}x
+        </button>
+
+        <!-- Skip -10s -->
+        <button onclick="window.podcastPlayer?.skipBackward()"
+                class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors"
+                title="-10 segundos">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/>
+          </svg>
+        </button>
+
+        <!-- Prev episode -->
+        <button onclick="window.podcastPlayer?.previousEpisode()"
+                class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors"
+                title="Episodio anterior">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+          </svg>
+        </button>
+
+        <!-- Play/Pause -->
+        <button onclick="window.podcastPlayer?.togglePlayPause()"
+                class="w-12 h-12 rounded-full bg-purple-500 hover:bg-purple-400 flex items-center justify-center text-white transition-colors shadow-lg shadow-purple-500/30">
+          ${this.isPlaying ? `
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            </svg>
+          ` : `
+            <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          `}
+        </button>
+
+        <!-- Next episode -->
+        <button onclick="window.podcastPlayer?.nextEpisode()"
+                class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors"
+                title="Siguiente episodio">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+          </svg>
+        </button>
+
+        <!-- Skip +10s -->
+        <button onclick="window.podcastPlayer?.skipForward()"
+                class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors"
+                title="+10 segundos">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"/>
+          </svg>
+        </button>
+      </div>
     `;
 
     document.body.appendChild(miniPlayer);
     this.miniPlayerElement = miniPlayer;
+
+    // Actualizar el estilo del scrubber al mover
+    const scrubber = document.getElementById('podcast-scrubber');
+    if (scrubber) {
+      scrubber.addEventListener('input', () => {
+        const percent = scrubber.value;
+        scrubber.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${percent}%, #374151 ${percent}%, #374151 100%)`;
+      });
+    }
   }
 
   hideMiniPlayer() {

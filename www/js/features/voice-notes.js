@@ -1,6 +1,6 @@
 // ============================================================================
 // VOICE NOTES - Sistema de Notas de Voz
-// v2.9.368: Transcripción automática con Web Speech API
+// v2.9.372: Búsqueda de transcripciones y gestión de almacenamiento
 // ============================================================================
 
 class VoiceNotes {
@@ -371,6 +371,362 @@ class VoiceNotes {
 
   getTotalCount() {
     return this.getAllNotes().length;
+  }
+
+  // ==========================================================================
+  // v2.9.372: BÚSQUEDA DE TRANSCRIPCIONES
+  // ==========================================================================
+
+  /**
+   * Busca en las transcripciones de todas las notas
+   */
+  searchTranscriptions(query) {
+    if (!query || query.trim().length < 2) return [];
+
+    const normalizedQuery = query.toLowerCase().trim();
+    const allNotes = this.getAllNotes();
+
+    return allNotes.filter(note => {
+      // Buscar en transcripción
+      if (note.transcript && note.transcript.toLowerCase().includes(normalizedQuery)) {
+        return true;
+      }
+      // También buscar en título
+      if (note.title && note.title.toLowerCase().includes(normalizedQuery)) {
+        return true;
+      }
+      return false;
+    }).map(note => ({
+      ...note,
+      // Resaltar coincidencias en la transcripción
+      highlightedTranscript: this.highlightMatch(note.transcript || '', query),
+      highlightedTitle: this.highlightMatch(note.title || '', query)
+    }));
+  }
+
+  /**
+   * Resalta las coincidencias en el texto
+   */
+  highlightMatch(text, query) {
+    if (!text || !query) return text;
+    const regex = new RegExp(`(${this.escapeRegex(query)})`, 'gi');
+    return text.replace(regex, '<mark class="bg-yellow-400/30 text-yellow-200 rounded px-0.5">$1</mark>');
+  }
+
+  escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  /**
+   * Muestra el modal de búsqueda
+   */
+  showSearchModal() {
+    document.getElementById('voice-search-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'voice-search-modal';
+    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[60] p-4';
+
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl max-w-lg w-full max-h-[80vh] flex flex-col border border-gray-700">
+        <div class="p-4 border-b border-gray-700">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              🔍 Buscar en transcripciones
+            </h3>
+            <button onclick="document.getElementById('voice-search-modal')?.remove()"
+                    class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+              ${window.Icons?.close?.(20) || '✕'}
+            </button>
+          </div>
+          <input type="text" id="voice-search-input"
+                 placeholder="Buscar en notas de voz..."
+                 class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:ring-2 focus:ring-red-500 focus:outline-none"
+                 autofocus>
+        </div>
+
+        <div id="voice-search-results" class="flex-1 overflow-y-auto p-4">
+          <p class="text-gray-500 text-center py-8">Escribe para buscar...</p>
+        </div>
+
+        <div class="p-3 border-t border-gray-700 text-xs text-gray-500 text-center">
+          ${this.getTotalCount()} notas • ${this.getAllNotes().filter(n => n.transcript).length} con transcripción
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Búsqueda con debounce
+    const searchInput = modal.querySelector('#voice-search-input');
+    const resultsContainer = modal.querySelector('#voice-search-results');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = searchInput.value.trim();
+        if (query.length < 2) {
+          resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Escribe al menos 2 caracteres...</p>';
+          return;
+        }
+
+        const results = this.searchTranscriptions(query);
+        if (results.length === 0) {
+          resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Sin resultados</p>';
+        } else {
+          resultsContainer.innerHTML = results.map(note => `
+            <div class="p-3 bg-gray-800/50 rounded-lg mb-2 hover:bg-gray-800 cursor-pointer transition"
+                 onclick="window.voiceNotes?.playNote('${note.id}')">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-red-400">🎙️</span>
+                <span class="text-white font-medium">${note.highlightedTitle || note.title}</span>
+                <span class="text-xs text-gray-500 ml-auto">${this.formatDuration(note.duration)}</span>
+              </div>
+              ${note.transcript ? `
+                <p class="text-sm text-gray-300 line-clamp-3">${note.highlightedTranscript}</p>
+              ` : ''}
+              <p class="text-xs text-gray-500 mt-2">${new Date(note.createdAt).toLocaleDateString()}</p>
+            </div>
+          `).join('');
+        }
+      }, 300);
+    });
+
+    // Cerrar con ESC
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  /**
+   * Reproduce una nota por ID
+   */
+  async playNote(noteId) {
+    const blob = await this.getVoiceNoteBlob(noteId);
+    if (blob) {
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.addEventListener('ended', () => URL.revokeObjectURL(audioUrl));
+      audio.addEventListener('error', () => URL.revokeObjectURL(audioUrl));
+      audio.play();
+      window.toast?.info('Reproduciendo nota...');
+    } else {
+      window.toast?.error('No se pudo cargar la nota');
+    }
+  }
+
+  // ==========================================================================
+  // v2.9.372: GESTIÓN DE ALMACENAMIENTO
+  // ==========================================================================
+
+  /**
+   * Calcula el espacio usado por las notas de voz
+   */
+  calculateStorageUsage() {
+    let totalBytes = 0;
+    const notes = this.getAllNotes();
+
+    for (const note of notes) {
+      const data = localStorage.getItem(`voice-note-data-${note.id}`);
+      if (data) {
+        // base64 ocupa ~4/3 del tamaño original
+        totalBytes += data.length * 0.75;
+      }
+    }
+
+    // Metadatos
+    const metadata = localStorage.getItem('voice-notes-metadata');
+    if (metadata) {
+      totalBytes += metadata.length;
+    }
+
+    return {
+      bytes: totalBytes,
+      formatted: this.formatBytes(totalBytes),
+      notesCount: notes.length,
+      withTranscript: notes.filter(n => n.transcript).length
+    };
+  }
+
+  formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  /**
+   * Obtiene notas antiguas para limpiar
+   */
+  getOldNotes(daysOld = 30) {
+    const cutoffDate = Date.now() - (daysOld * 24 * 60 * 60 * 1000);
+    return this.getAllNotes().filter(note =>
+      new Date(note.createdAt).getTime() < cutoffDate
+    );
+  }
+
+  /**
+   * Elimina notas antiguas
+   */
+  deleteOldNotes(daysOld = 30) {
+    const oldNotes = this.getOldNotes(daysOld);
+    let deletedCount = 0;
+
+    for (const note of oldNotes) {
+      if (this.deleteVoiceNote(note.id)) {
+        deletedCount++;
+      }
+    }
+
+    return deletedCount;
+  }
+
+  /**
+   * Muestra el modal de gestión de almacenamiento
+   */
+  showStorageModal() {
+    document.getElementById('voice-storage-modal')?.remove();
+
+    const usage = this.calculateStorageUsage();
+    const oldNotes = this.getOldNotes(30);
+
+    const modal = document.createElement('div');
+    modal.id = 'voice-storage-modal';
+    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[60] p-4';
+
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl max-w-md w-full border border-gray-700">
+        <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            💾 Almacenamiento de notas
+          </h3>
+          <button onclick="document.getElementById('voice-storage-modal')?.remove()"
+                  class="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white">
+            ${window.Icons?.close?.(20) || '✕'}
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Estadísticas -->
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+              <p class="text-2xl font-bold text-white">${usage.formatted}</p>
+              <p class="text-xs text-gray-400">Espacio usado</p>
+            </div>
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+              <p class="text-2xl font-bold text-white">${usage.notesCount}</p>
+              <p class="text-xs text-gray-400">Notas guardadas</p>
+            </div>
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+              <p class="text-2xl font-bold text-green-400">${usage.withTranscript}</p>
+              <p class="text-xs text-gray-400">Con transcripción</p>
+            </div>
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+              <p class="text-2xl font-bold text-yellow-400">${oldNotes.length}</p>
+              <p class="text-xs text-gray-400">Antiguas (+30 días)</p>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="space-y-3">
+            ${oldNotes.length > 0 ? `
+              <button onclick="window.voiceNotes?.confirmDeleteOld()"
+                      class="w-full px-4 py-3 bg-yellow-600/20 hover:bg-yellow-600/30 border border-yellow-600/30 rounded-xl text-yellow-200 font-medium transition flex items-center justify-center gap-2">
+                🗑️ Eliminar ${oldNotes.length} notas antiguas
+              </button>
+            ` : ''}
+            <button onclick="window.voiceNotes?.confirmDeleteAll()"
+                    class="w-full px-4 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-600/30 rounded-xl text-red-200 font-medium transition flex items-center justify-center gap-2">
+              ⚠️ Eliminar todas las notas
+            </button>
+            <button onclick="window.voiceNotes?.exportAllNotes()"
+                    class="w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl text-white font-medium transition flex items-center justify-center gap-2">
+              📥 Exportar transcripciones
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  /**
+   * Confirma y elimina notas antiguas
+   */
+  confirmDeleteOld() {
+    const oldNotes = this.getOldNotes(30);
+    if (confirm(`¿Eliminar ${oldNotes.length} notas de más de 30 días?\n\nEsta acción no se puede deshacer.`)) {
+      const deleted = this.deleteOldNotes(30);
+      window.toast?.success(`${deleted} notas eliminadas`);
+      document.getElementById('voice-storage-modal')?.remove();
+      this.showStorageModal(); // Refresh
+    }
+  }
+
+  /**
+   * Confirma y elimina todas las notas
+   */
+  confirmDeleteAll() {
+    const allNotes = this.getAllNotes();
+    if (confirm(`¿ELIMINAR TODAS las ${allNotes.length} notas de voz?\n\n⚠️ ESTA ACCIÓN ES IRREVERSIBLE`)) {
+      if (confirm('¿Estás completamente seguro? Se perderán todas las grabaciones y transcripciones.')) {
+        for (const note of allNotes) {
+          this.deleteVoiceNote(note.id);
+        }
+        window.toast?.success('Todas las notas eliminadas');
+        document.getElementById('voice-storage-modal')?.remove();
+      }
+    }
+  }
+
+  /**
+   * Exporta todas las transcripciones a un archivo de texto
+   */
+  exportAllNotes() {
+    const notes = this.getAllNotes();
+    const notesWithTranscript = notes.filter(n => n.transcript);
+
+    if (notesWithTranscript.length === 0) {
+      window.toast?.info('No hay transcripciones para exportar');
+      return;
+    }
+
+    let content = '# Notas de Voz - Transcripciones\n';
+    content += `Exportado: ${new Date().toLocaleString()}\n\n`;
+    content += '='.repeat(50) + '\n\n';
+
+    for (const note of notesWithTranscript) {
+      content += `## ${note.title}\n`;
+      content += `Fecha: ${new Date(note.createdAt).toLocaleString()}\n`;
+      content += `Duración: ${this.formatDuration(note.duration)}\n\n`;
+      content += `${note.transcript}\n\n`;
+      content += '-'.repeat(40) + '\n\n';
+    }
+
+    // Descargar archivo
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `notas-voz-${Date.now()}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    window.toast?.success(`${notesWithTranscript.length} transcripciones exportadas`);
   }
 
   // ==========================================================================

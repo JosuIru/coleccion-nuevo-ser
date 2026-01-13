@@ -1,6 +1,7 @@
 // ============================================================================
 // ACTION PLANS - Planes de Acción Personalizados
 // ============================================================================
+// v2.9.371: Recordatorios, export PDF/calendario, drag-drop
 // Sistema para crear y gestionar planes de acción basados en las lecturas
 
 class ActionPlans {
@@ -12,6 +13,316 @@ class ActionPlans {
 
     // Plantillas de planes predefinidas
     this.templates = this.getTemplates();
+
+    // v2.9.371: Sistema de recordatorios
+    this.reminders = this.loadReminders();
+    this.initReminderChecker();
+  }
+
+  // ==========================================================================
+  // v2.9.371: SISTEMA DE RECORDATORIOS
+  // ==========================================================================
+
+  loadReminders() {
+    try {
+      return JSON.parse(localStorage.getItem('action-plans-reminders')) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveReminders() {
+    localStorage.setItem('action-plans-reminders', JSON.stringify(this.reminders));
+  }
+
+  setReminder(planId, time, frequency = 'daily') {
+    this.reminders[planId] = {
+      time,
+      frequency,
+      enabled: true,
+      lastShown: null
+    };
+    this.saveReminders();
+    window.toast?.success(`Recordatorio configurado para las ${time}`);
+
+    // Solicitar permiso de notificaciones
+    this.requestNotificationPermission();
+  }
+
+  removeReminder(planId) {
+    delete this.reminders[planId];
+    this.saveReminders();
+    window.toast?.info('Recordatorio eliminado');
+  }
+
+  initReminderChecker() {
+    // Verificar cada minuto
+    setInterval(() => this.checkReminders(), 60000);
+    // Verificar al iniciar
+    setTimeout(() => this.checkReminders(), 5000);
+  }
+
+  checkReminders() {
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const today = now.toISOString().split('T')[0];
+    const dayOfWeek = now.getDay();
+
+    for (const [planId, reminder] of Object.entries(this.reminders)) {
+      if (!reminder.enabled) continue;
+
+      const plan = this.plans[planId];
+      if (!plan || plan.completed) continue;
+
+      // Verificar si es hora del recordatorio
+      if (currentTime !== reminder.time) continue;
+
+      // Verificar frecuencia
+      if (reminder.frequency === 'weekdays' && (dayOfWeek === 0 || dayOfWeek === 6)) continue;
+      if (reminder.frequency === 'weekends' && dayOfWeek >= 1 && dayOfWeek <= 5) continue;
+
+      // Verificar que no se mostró hoy
+      if (reminder.lastShown === today) continue;
+
+      // Mostrar recordatorio
+      this.showReminder(plan);
+      this.reminders[planId].lastShown = today;
+      this.saveReminders();
+    }
+  }
+
+  showReminder(plan) {
+    // Web Notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(`${plan.icon || '📋'} ${plan.name}`, {
+        body: 'Es hora de trabajar en tu plan de acción',
+        icon: 'assets/icons/icon-192x192.png',
+        tag: `action-plan-${plan.id}`,
+        requireInteraction: true
+      });
+    }
+
+    // Toast
+    window.toast?.info(`📋 Recordatorio: ${plan.name}`, { duration: 8000 });
+  }
+
+  async requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+  }
+
+  showReminderModal(planId) {
+    const plan = this.plans[planId];
+    if (!plan) return;
+
+    const existing = document.getElementById('plan-reminder-modal');
+    if (existing) existing.remove();
+
+    const currentReminder = this.reminders[planId];
+
+    const modal = document.createElement('div');
+    modal.id = 'plan-reminder-modal';
+    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4';
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl max-w-sm w-full p-6 border border-cyan-500/30">
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          ⏰ Configurar recordatorio
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">${plan.name}</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Hora del recordatorio</label>
+            <input type="time" id="reminder-time" value="${currentReminder?.time || '09:00'}"
+                   class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white">
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Frecuencia</label>
+            <select id="reminder-frequency" class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white">
+              <option value="daily" ${currentReminder?.frequency === 'daily' ? 'selected' : ''}>Todos los días</option>
+              <option value="weekdays" ${currentReminder?.frequency === 'weekdays' ? 'selected' : ''}>Entre semana</option>
+              <option value="weekends" ${currentReminder?.frequency === 'weekends' ? 'selected' : ''}>Fines de semana</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          ${currentReminder ? `
+            <button id="remove-reminder" class="px-4 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition">
+              Eliminar
+            </button>
+          ` : ''}
+          <button id="cancel-reminder" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition">
+            Cancelar
+          </button>
+          <button id="save-reminder" class="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-bold transition">
+            Guardar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    modal.querySelector('#cancel-reminder')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#remove-reminder')?.addEventListener('click', () => {
+      this.removeReminder(planId);
+      modal.remove();
+    });
+    modal.querySelector('#save-reminder')?.addEventListener('click', () => {
+      const time = modal.querySelector('#reminder-time').value;
+      const frequency = modal.querySelector('#reminder-frequency').value;
+      this.setReminder(planId, time, frequency);
+      modal.remove();
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  // ==========================================================================
+  // v2.9.371: EXPORT A PDF / CALENDARIO
+  // ==========================================================================
+
+  exportToPDF(planId) {
+    const plan = this.plans[planId];
+    if (!plan) return;
+
+    const html = this.generatePlanPDFHtml(plan);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
+  }
+
+  generatePlanPDFHtml(plan) {
+    const tasks = plan.tasks || [];
+    const completedTasks = tasks.filter(t => t.completed).length;
+    const progress = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+    return `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>${plan.name} - Plan de Acción</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: system-ui, sans-serif; padding: 40px; line-height: 1.6; }
+          .header { border-bottom: 2px solid #06b6d4; padding-bottom: 20px; margin-bottom: 30px; }
+          .title { font-size: 28px; font-weight: bold; color: #1f2937; }
+          .subtitle { color: #6b7280; margin-top: 8px; }
+          .progress-bar { background: #e5e7eb; height: 20px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+          .progress-fill { background: linear-gradient(90deg, #06b6d4, #8b5cf6); height: 100%; }
+          .section { margin-bottom: 30px; }
+          .section-title { font-size: 18px; font-weight: bold; color: #374151; margin-bottom: 15px; border-left: 4px solid #06b6d4; padding-left: 12px; }
+          .task { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #e5e7eb; margin-bottom: 8px; border-radius: 8px; }
+          .task.completed { background: #f0fdf4; }
+          .task.completed .task-text { text-decoration: line-through; color: #9ca3af; }
+          .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; }
+          .checkbox.checked { background: #22c55e; border-color: #22c55e; }
+          .meta { display: flex; gap: 20px; color: #6b7280; font-size: 14px; }
+          .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #9ca3af; font-size: 12px; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="title">${plan.icon || '📋'} ${plan.name}</div>
+          ${plan.description ? `<div class="subtitle">${plan.description}</div>` : ''}
+          <div class="meta" style="margin-top: 15px;">
+            <span>📅 Creado: ${new Date(plan.createdAt).toLocaleDateString('es-ES')}</span>
+            ${plan.dueDate ? `<span>🎯 Fecha límite: ${new Date(plan.dueDate).toLocaleDateString('es-ES')}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Progreso</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${progress}%"></div>
+          </div>
+          <div style="text-align: center; color: #6b7280;">${progress}% completado (${completedTasks}/${tasks.length} tareas)</div>
+        </div>
+
+        ${tasks.length > 0 ? `
+          <div class="section">
+            <div class="section-title">Tareas</div>
+            ${tasks.map(task => `
+              <div class="task ${task.completed ? 'completed' : ''}">
+                <div class="checkbox ${task.completed ? 'checked' : ''}"></div>
+                <div class="task-text">${task.text}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${plan.notes ? `
+          <div class="section">
+            <div class="section-title">Notas</div>
+            <div style="padding: 15px; background: #f9fafb; border-radius: 8px; white-space: pre-wrap;">${plan.notes}</div>
+          </div>
+        ` : ''}
+
+        <div class="footer">
+          Generado desde Colección Nuevo Ser • ${new Date().toLocaleDateString('es-ES')}
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  exportToCalendar(planId) {
+    const plan = this.plans[planId];
+    if (!plan) return;
+
+    // Crear evento ICS
+    const event = this.generateICSEvent(plan);
+    const blob = new Blob([event], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `plan-${plan.id}.ics`;
+    link.click();
+
+    URL.revokeObjectURL(url);
+    window.toast?.success('Evento de calendario descargado');
+  }
+
+  generateICSEvent(plan) {
+    const now = new Date();
+    const start = plan.dueDate ? new Date(plan.dueDate) : new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hora
+
+    const formatDate = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    const tasks = (plan.tasks || []).map(t => `- ${t.completed ? '[x]' : '[ ]'} ${t.text}`).join('\\n');
+
+    return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Colección Nuevo Ser//Action Plans//ES
+BEGIN:VEVENT
+UID:${plan.id}@coleccionnuevoser.com
+DTSTAMP:${formatDate(now)}
+DTSTART:${formatDate(start)}
+DTEND:${formatDate(end)}
+SUMMARY:${plan.icon || '📋'} ${plan.name}
+DESCRIPTION:${plan.description || ''}\\n\\nTareas:\\n${tasks}
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Recordatorio: ${plan.name}
+END:VALARM
+END:VEVENT
+END:VCALENDAR`.replace(/\n/g, '\r\n');
   }
 
   // 🔧 FIX v2.9.332: Método helper para obtener bookEngine

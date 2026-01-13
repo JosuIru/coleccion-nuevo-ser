@@ -1,7 +1,7 @@
 // ============================================================================
 // READING CIRCLES - Círculos de Lectura Compartida
 // ============================================================================
-// v2.9.328: Sistema de grupos de lectura para leer juntos
+// v2.9.372: Real-time sync mejorado, chat en tiempo real
 // Funciona offline-first con localStorage, sincroniza con Supabase cuando disponible
 
 class ReadingCircles {
@@ -10,13 +10,339 @@ class ReadingCircles {
     this.modalElement = null;
     this.currentCircleId = null;
 
+    // v2.9.372: Estado de sync en tiempo real
+    this.syncInterval = null;
+    this.lastSyncTime = 0;
+    this.isOnline = navigator.onLine;
+    this.typingUsers = new Map(); // Map of circleId -> Set of userIds typing
+
     // Configuración
     this.config = {
       maxCircleNameLength: 50,
       maxDescriptionLength: 200,
       maxMembersPerCircle: 20,
-      inviteCodeLength: 8
+      inviteCodeLength: 8,
+      syncIntervalMs: 10000, // Sync cada 10 segundos
+      typingTimeoutMs: 3000  // Typing indicator timeout
     };
+
+    // v2.9.372: Iniciar listeners de conectividad
+    this.initConnectivityListeners();
+  }
+
+  // ==========================================================================
+  // v2.9.372: REAL-TIME SYNC
+  // ==========================================================================
+
+  initConnectivityListeners() {
+    window.addEventListener('online', () => {
+      this.isOnline = true;
+      this.startRealtimeSync();
+      window.toast?.success('Conexión restaurada');
+    });
+
+    window.addEventListener('offline', () => {
+      this.isOnline = false;
+      this.stopRealtimeSync();
+      window.toast?.warn('Sin conexión - Modo offline');
+    });
+  }
+
+  startRealtimeSync() {
+    if (this.syncInterval) return;
+    if (!this.isSupabaseAvailable()) return;
+
+    // Sync inicial
+    this.syncAllCircles();
+
+    // Sync periódico
+    this.syncInterval = setInterval(() => {
+      this.syncAllCircles();
+    }, this.config.syncIntervalMs);
+
+    logger.log('[ReadingCircles] Real-time sync iniciado');
+  }
+
+  stopRealtimeSync() {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+      this.syncInterval = null;
+    }
+    logger.log('[ReadingCircles] Real-time sync detenido');
+  }
+
+  async syncAllCircles() {
+    if (!this.isSupabaseAvailable()) return;
+
+    try {
+      const cloudCircles = await this.fetchMyCirclesFromCloud();
+
+      // Merge cloud data with local
+      for (const cloudCircle of cloudCircles) {
+        const localIndex = this.circles.myCircles.findIndex(c => c.id === cloudCircle.id);
+
+        if (localIndex === -1) {
+          // Nuevo círculo de la nube
+          this.circles.myCircles.push(cloudCircle);
+        } else {
+          // Actualizar si la versión de la nube es más reciente
+          const localCircle = this.circles.myCircles[localIndex];
+          const cloudUpdated = new Date(cloudCircle.activity?.[0]?.timestamp || 0);
+          const localUpdated = new Date(localCircle.activity?.[0]?.timestamp || 0);
+
+          if (cloudUpdated > localUpdated) {
+            this.circles.myCircles[localIndex] = cloudCircle;
+          }
+        }
+      }
+
+      this.saveLocalCircles();
+      this.lastSyncTime = Date.now();
+
+      // Actualizar UI si el modal está abierto
+      if (this.modalElement && this.currentCircleId) {
+        this.refreshCircleDetail();
+      }
+    } catch (error) {
+      logger.warn('[ReadingCircles] Error syncing:', error);
+    }
+  }
+
+  refreshCircleDetail() {
+    const circle = this.getCircle(this.currentCircleId);
+    if (!circle) return;
+
+    const tabContent = document.getElementById('tab-content');
+    const activeTab = document.querySelector('[id^="tab-"].border-emerald-500');
+
+    if (tabContent && activeTab) {
+      if (activeTab.id === 'tab-members') {
+        tabContent.innerHTML = this.renderMembersTab(circle);
+      } else if (activeTab.id === 'tab-activity') {
+        tabContent.innerHTML = this.renderActivityTab(circle);
+      } else if (activeTab.id === 'tab-chat') {
+        tabContent.innerHTML = this.renderChatTab(circle);
+        this.scrollChatToBottom();
+      }
+    }
+  }
+
+  // ==========================================================================
+  // v2.9.372: CHAT EN TIEMPO REAL
+  // ==========================================================================
+
+  /**
+   * Enviar mensaje de chat (diferente de actividad)
+   */
+  sendChatMessage(circleId, message) {
+    if (!message || message.trim().length < 1) return;
+
+    const circle = this.circles.myCircles.find(c => c.id === circleId);
+    if (!circle) return;
+
+    // Inicializar array de chat si no existe
+    if (!circle.chat) {
+      circle.chat = [];
+    }
+
+    const chatMessage = {
+      id: `msg-${Date.now()}`,
+      userId: this.getUserId(),
+      userName: this.getUserName(),
+      message: message.trim().substring(0, 500),
+      timestamp: new Date().toISOString(),
+      read: [this.getUserId()]
+    };
+
+    circle.chat.push(chatMessage);
+
+    // Mantener solo los últimos 100 mensajes
+    if (circle.chat.length > 100) {
+      circle.chat = circle.chat.slice(-100);
+    }
+
+    this.saveLocalCircles();
+    this.syncCircleToCloud(circle);
+
+    // Actualizar UI
+    if (this.currentCircleId === circleId) {
+      this.refreshCircleDetail();
+    }
+
+    return chatMessage;
+  }
+
+  /**
+   * Indicador de "está escribiendo"
+   */
+  setTypingStatus(circleId, isTyping) {
+    if (!this.isSupabaseAvailable()) return;
+
+    // Local typing indicator
+    if (!this.typingUsers.has(circleId)) {
+      this.typingUsers.set(circleId, new Set());
+    }
+
+    const typingSet = this.typingUsers.get(circleId);
+
+    if (isTyping) {
+      typingSet.add(this.getUserId());
+
+      // Auto-clear después de timeout
+      setTimeout(() => {
+        typingSet.delete(this.getUserId());
+        this.updateTypingIndicator(circleId);
+      }, this.config.typingTimeoutMs);
+    } else {
+      typingSet.delete(this.getUserId());
+    }
+
+    this.updateTypingIndicator(circleId);
+  }
+
+  updateTypingIndicator(circleId) {
+    const indicator = document.getElementById('typing-indicator');
+    if (!indicator) return;
+
+    const typingSet = this.typingUsers.get(circleId);
+    if (!typingSet || typingSet.size === 0) {
+      indicator.classList.add('hidden');
+      return;
+    }
+
+    // Obtener nombres de usuarios escribiendo (excepto yo)
+    const circle = this.getCircle(circleId);
+    if (!circle) return;
+
+    const typingNames = [];
+    for (const userId of typingSet) {
+      if (userId !== this.getUserId()) {
+        const member = circle.members.find(m => m.id === userId);
+        if (member) {
+          typingNames.push(member.name.split(' ')[0]);
+        }
+      }
+    }
+
+    if (typingNames.length === 0) {
+      indicator.classList.add('hidden');
+    } else {
+      indicator.classList.remove('hidden');
+      const text = typingNames.length === 1
+        ? `${typingNames[0]} está escribiendo...`
+        : `${typingNames.join(', ')} están escribiendo...`;
+      indicator.textContent = text;
+    }
+  }
+
+  /**
+   * Marcar mensajes como leídos
+   */
+  markChatAsRead(circleId) {
+    const circle = this.getCircle(circleId);
+    if (!circle || !circle.chat) return;
+
+    let updated = false;
+    for (const msg of circle.chat) {
+      if (!msg.read.includes(this.getUserId())) {
+        msg.read.push(this.getUserId());
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      this.saveLocalCircles();
+      // No sync para evitar overhead
+    }
+  }
+
+  /**
+   * Contar mensajes no leídos
+   */
+  getUnreadCount(circleId) {
+    const circle = this.getCircle(circleId);
+    if (!circle || !circle.chat) return 0;
+
+    return circle.chat.filter(msg =>
+      msg.userId !== this.getUserId() &&
+      !msg.read.includes(this.getUserId())
+    ).length;
+  }
+
+  scrollChatToBottom() {
+    const chatContainer = document.getElementById('chat-messages');
+    if (chatContainer) {
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 50);
+    }
+  }
+
+  renderChatTab(circle) {
+    if (!circle.chat || circle.chat.length === 0) {
+      return `
+        <div class="text-center py-8 text-gray-500">
+          <div class="text-4xl mb-2">💬</div>
+          <p>No hay mensajes aún</p>
+          <p class="text-sm mt-1">¡Sé el primero en saludar!</p>
+        </div>
+      `;
+    }
+
+    // Agrupar mensajes por día
+    const messagesByDay = {};
+    for (const msg of circle.chat) {
+      const day = new Date(msg.timestamp).toLocaleDateString('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
+      if (!messagesByDay[day]) {
+        messagesByDay[day] = [];
+      }
+      messagesByDay[day].push(msg);
+    }
+
+    let html = '<div id="chat-messages" class="space-y-4 max-h-80 overflow-y-auto pr-2">';
+
+    for (const [day, messages] of Object.entries(messagesByDay)) {
+      // Separador de día
+      html += `
+        <div class="flex items-center gap-2 my-4">
+          <div class="flex-1 h-px bg-gray-700"></div>
+          <span class="text-xs text-gray-500 capitalize">${day}</span>
+          <div class="flex-1 h-px bg-gray-700"></div>
+        </div>
+      `;
+
+      for (const msg of messages) {
+        const isMe = msg.userId === this.getUserId();
+        const time = new Date(msg.timestamp).toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        html += `
+          <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+            <div class="max-w-[80%] ${isMe
+              ? 'bg-emerald-600/30 border-emerald-500/30'
+              : 'bg-slate-800/50 border-gray-700/50'
+            } border rounded-2xl px-4 py-2 ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}">
+              ${!isMe ? `<p class="text-xs text-cyan-400 font-medium mb-1">${this.escapeHtml(msg.userName)}</p>` : ''}
+              <p class="text-sm text-white">${this.escapeHtml(msg.message)}</p>
+              <p class="text-xs text-gray-500 mt-1 ${isMe ? 'text-right' : ''}">${time}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    html += '</div>';
+
+    // Indicador de "está escribiendo"
+    html += '<p id="typing-indicator" class="text-xs text-gray-400 italic mt-2 hidden"></p>';
+
+    return html;
   }
 
   // ==========================================================================
@@ -780,11 +1106,16 @@ class ReadingCircles {
           </div>
         </div>
 
-        <!-- Tabs -->
+        <!-- Tabs (v2.9.372: añadida pestaña de Chat) -->
         <div class="flex border-b border-gray-700 mb-4">
           <button id="tab-members" onclick="window.readingCircles?.showTab('members')"
                   class="px-4 py-2 text-sm font-medium text-white border-b-2 border-emerald-500">
             Miembros (${circle.members.length})
+          </button>
+          <button id="tab-chat" onclick="window.readingCircles?.showTab('chat')"
+                  class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent relative">
+            💬 Chat
+            ${this.getUnreadCount(circleId) > 0 ? `<span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">${this.getUnreadCount(circleId)}</span>` : ''}
           </button>
           <button id="tab-activity" onclick="window.readingCircles?.showTab('activity')"
                   class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent">
@@ -797,15 +1128,16 @@ class ReadingCircles {
           ${this.renderMembersTab(circle)}
         </div>
 
-        <!-- Message Input -->
+        <!-- Chat Input (v2.9.372: mejorado con indicador de escritura) -->
         <div class="mt-4 pt-4 border-t border-gray-700">
           <div class="flex gap-2">
             <input type="text" id="circle-message"
                    class="flex-1 p-3 bg-slate-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-emerald-500 focus:outline-none"
-                   placeholder="Escribe un mensaje al grupo..."
+                   placeholder="Escribe un mensaje..."
                    maxlength="500"
-                   onkeypress="if(event.key==='Enter')window.readingCircles?.sendMessage()">
-            <button onclick="window.readingCircles?.sendMessage()"
+                   oninput="window.readingCircles?.setTypingStatus('${circleId}', this.value.length > 0)"
+                   onkeypress="if(event.key==='Enter')window.readingCircles?.handleChatSend()">
+            <button onclick="window.readingCircles?.handleChatSend()"
                     class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-colors">
               Enviar
             </button>
@@ -882,21 +1214,64 @@ class ReadingCircles {
 
     const tabContent = document.getElementById('tab-content');
     const tabMembers = document.getElementById('tab-members');
+    const tabChat = document.getElementById('tab-chat');
     const tabActivity = document.getElementById('tab-activity');
 
     if (!tabContent || !tabMembers || !tabActivity) return;
 
     // Reset tab styles
-    tabMembers.className = 'px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent';
-    tabActivity.className = 'px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent';
+    const inactiveClass = 'px-4 py-2 text-sm font-medium text-gray-400 hover:text-white border-b-2 border-transparent';
+    const activeClass = 'px-4 py-2 text-sm font-medium text-white border-b-2 border-emerald-500';
+
+    tabMembers.className = inactiveClass;
+    if (tabChat) tabChat.className = inactiveClass + ' relative';
+    tabActivity.className = inactiveClass;
 
     if (tabName === 'members') {
-      tabMembers.className = 'px-4 py-2 text-sm font-medium text-white border-b-2 border-emerald-500';
+      tabMembers.className = activeClass;
       tabContent.innerHTML = this.renderMembersTab(circle);
+    } else if (tabName === 'chat') {
+      if (tabChat) tabChat.className = activeClass + ' relative';
+      tabContent.innerHTML = this.renderChatTab(circle);
+      this.markChatAsRead(this.currentCircleId);
+      this.scrollChatToBottom();
+      // Iniciar sync más frecuente mientras el chat está abierto
+      this.startRealtimeSync();
     } else {
-      tabActivity.className = 'px-4 py-2 text-sm font-medium text-white border-b-2 border-emerald-500';
+      tabActivity.className = activeClass;
       tabContent.innerHTML = this.renderActivityTab(circle);
     }
+  }
+
+  /**
+   * v2.9.372: Maneja el envío de mensajes (chat o actividad según la pestaña)
+   */
+  handleChatSend() {
+    const input = document.getElementById('circle-message');
+    if (!input || !this.currentCircleId) return;
+
+    const message = input.value.trim();
+    if (message.length < 1) {
+      window.toast?.warn('Escribe un mensaje');
+      return;
+    }
+
+    // Determinar si estamos en la pestaña de chat
+    const chatTab = document.getElementById('tab-chat');
+    const isInChatTab = chatTab?.classList.contains('border-emerald-500');
+
+    if (isInChatTab) {
+      // Enviar como mensaje de chat
+      this.sendChatMessage(this.currentCircleId, message);
+    } else {
+      // Enviar como actividad (comportamiento anterior)
+      this.addMessage(this.currentCircleId, message);
+      this.showCircleDetail(this.currentCircleId);
+      this.showTab('activity');
+    }
+
+    input.value = '';
+    this.setTypingStatus(this.currentCircleId, false);
   }
 
   // ==========================================================================

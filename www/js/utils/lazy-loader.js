@@ -589,6 +589,33 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Micro Courses (85KB)
+   * @returns {Promise<void>}
+   */
+  async loadMicroCourses() {
+    if (this.loadedModules.has('micro-courses') || typeof window.MicroCourses !== 'undefined') {
+      this.loadedModules.set('micro-courses', true);
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Micro Courses...');
+    }
+
+    try {
+      await this.loadScript('js/features/micro-courses.js?v=2.9.330');
+      this.loadedModules.set('micro-courses', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Micro Courses cargado (85KB)');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Micro Courses:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Cargar Brújula de Recursos (44KB total)
    * @returns {Promise<void>}
    */
@@ -695,32 +722,6 @@ class LazyLoader {
       }
     } catch (error) {
       logger.error('[LazyLoader] Error cargando Shareable Moments:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Cargar Audio Control Modal (32KB)
-   * @returns {Promise<void>}
-   */
-  async loadAudioControlModal() {
-    if (this.loadedModules.has('audio-control-modal')) {
-      return Promise.resolve();
-    }
-
-    if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Audio Control Modal...');
-    }
-
-    try {
-      await this.loadScript('js/features/audio-control-modal.js?v=3.0.0');
-      this.loadedModules.set('audio-control-modal', true);
-
-      if (typeof logger !== 'undefined') {
-        logger.log('✅ Audio Control Modal cargado (32KB)');
-      }
-    } catch (error) {
-      logger.error('[LazyLoader] Error cargando Audio Control Modal:', error);
       throw error;
     }
   }
@@ -954,8 +955,6 @@ class LazyLoader {
         return await this.loadVoiceNotes();
       case 'shareable-moments':
         return await this.loadShareableMoments();
-      case 'audio-control-modal':
-        return await this.loadAudioControlModal();
       case 'thematic-index-modal':
         return await this.loadThematicIndexModal();
       case 'chapter-resources-modal':

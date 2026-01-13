@@ -12,6 +12,7 @@ class AnimationSystem {
     this.ctx = null;
     this.animationFrame = null;
     this.initialized = false;
+    this._resizeHandler = null; // Para cleanup
   }
 
   /**
@@ -39,11 +40,12 @@ class AnimationSystem {
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext('2d');
 
-    // Resize handler
-    window.addEventListener('resize', () => {
+    // Resize handler (guardamos referencia para cleanup)
+    this._resizeHandler = () => {
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
-    });
+    };
+    window.addEventListener('resize', this._resizeHandler);
 
     // Iniciar loop de animación
     this.startAnimationLoop();
@@ -84,6 +86,12 @@ class AnimationSystem {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
+    }
+
+    // Remover resize listener (prevenir memory leak)
+    if (this._resizeHandler) {
+      window.removeEventListener('resize', this._resizeHandler);
+      this._resizeHandler = null;
     }
 
     if (this.canvas && this.canvas.parentNode) {

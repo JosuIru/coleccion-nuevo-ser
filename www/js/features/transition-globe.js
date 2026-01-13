@@ -3,6 +3,7 @@
  * Globo 3D interactivo para visualizar proyectos de transición
  * Adaptado de Globe3D (Awakening Protocol) para uso web
  * @version 1.0.0
+ * v2.9.368: Panel de detalles de proyecto
  */
 
 class TransitionGlobe {
@@ -18,6 +19,7 @@ class TransitionGlobe {
     this.options = {
       onProjectSelect: options.onProjectSelect || null,
       autoRotate: options.autoRotate !== false,
+      showDetailsPanel: options.showDetailsPanel !== false, // v2.9.368
       ...options
     };
 
@@ -25,6 +27,7 @@ class TransitionGlobe {
     this.filteredProjects = [];
     this.categories = {};
     this.selectedProject = null;
+    this.detailsPanelElement = null; // v2.9.368
     this.filters = {
       categories: [],
       scales: []
@@ -180,6 +183,11 @@ class TransitionGlobe {
       this.options.onProjectSelect(this.selectedProject);
     }
 
+    // v2.9.368: Show details panel
+    if (this.selectedProject && this.options.showDetailsPanel) {
+      this.showDetailsPanel(this.selectedProject);
+    }
+
     // Notify globe to highlight marker
     if (this.iframe && this.iframe.contentWindow) {
       this.iframe.contentWindow.postMessage({
@@ -187,6 +195,350 @@ class TransitionGlobe {
         projectId: projectId
       }, '*');
     }
+  }
+
+  // ==========================================================================
+  // v2.9.368: PANEL DE DETALLES
+  // ==========================================================================
+
+  /**
+   * Muestra el panel de detalles del proyecto
+   */
+  showDetailsPanel(project) {
+    this.hideDetailsPanel();
+
+    const category = this.categories[project.type] || {};
+    const scaleLabels = {
+      local: 'Local',
+      regional: 'Regional',
+      nacional: 'Nacional',
+      global: 'Global'
+    };
+
+    const panel = document.createElement('div');
+    panel.id = 'tg-details-panel';
+    panel.className = 'tg-details-panel';
+    panel.innerHTML = `
+      <div class="tg-details-header">
+        <button class="tg-details-close" onclick="window.transitionGlobe?.hideDetailsPanel()" aria-label="Cerrar">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+        <div class="tg-details-category" style="background: ${category.color || '#10b981'}20; color: ${category.color || '#10b981'};">
+          ${category.icon || '🌱'} ${category.name || project.type}
+        </div>
+      </div>
+
+      <div class="tg-details-body">
+        <h3 class="tg-details-title">${this.escapeHtml(project.name)}</h3>
+
+        <div class="tg-details-meta">
+          <div class="tg-details-meta-item">
+            <span class="tg-details-meta-icon">📍</span>
+            <span>${this.escapeHtml(project.location || project.country || 'Ubicación desconocida')}</span>
+          </div>
+          ${project.scale ? `
+            <div class="tg-details-meta-item">
+              <span class="tg-details-meta-icon">📏</span>
+              <span>Escala ${scaleLabels[project.scale] || project.scale}</span>
+            </div>
+          ` : ''}
+          ${project.founded ? `
+            <div class="tg-details-meta-item">
+              <span class="tg-details-meta-icon">📅</span>
+              <span>Fundado en ${project.founded}</span>
+            </div>
+          ` : ''}
+          ${project.members ? `
+            <div class="tg-details-meta-item">
+              <span class="tg-details-meta-icon">👥</span>
+              <span>${project.members.toLocaleString()} miembros</span>
+            </div>
+          ` : ''}
+        </div>
+
+        ${project.description ? `
+          <div class="tg-details-description">
+            <h4>Descripción</h4>
+            <p>${this.escapeHtml(project.description)}</p>
+          </div>
+        ` : ''}
+
+        ${project.impact ? `
+          <div class="tg-details-impact">
+            <h4>Impacto</h4>
+            <p>${this.escapeHtml(project.impact)}</p>
+          </div>
+        ` : ''}
+
+        ${project.initiatives && project.initiatives.length > 0 ? `
+          <div class="tg-details-initiatives">
+            <h4>Iniciativas</h4>
+            <ul>
+              ${project.initiatives.map(i => `<li>${this.escapeHtml(i)}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+
+        ${project.tags && project.tags.length > 0 ? `
+          <div class="tg-details-tags">
+            ${project.tags.map(tag => `<span class="tg-tag">${this.escapeHtml(tag)}</span>`).join('')}
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="tg-details-footer">
+        ${project.website ? `
+          <a href="${project.website}" target="_blank" rel="noopener" class="tg-details-btn tg-details-btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Visitar Web
+          </a>
+        ` : ''}
+        <button class="tg-details-btn tg-details-btn-secondary" onclick="window.transitionGlobe?.shareProject('${project.id}')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+          Compartir
+        </button>
+      </div>
+    `;
+
+    // Add styles if not already added
+    this.injectDetailsPanelStyles();
+
+    document.body.appendChild(panel);
+    this.detailsPanelElement = panel;
+
+    // Animate in
+    requestAnimationFrame(() => {
+      panel.classList.add('visible');
+    });
+  }
+
+  /**
+   * Oculta el panel de detalles
+   */
+  hideDetailsPanel() {
+    if (this.detailsPanelElement) {
+      this.detailsPanelElement.classList.remove('visible');
+      setTimeout(() => {
+        this.detailsPanelElement?.remove();
+        this.detailsPanelElement = null;
+      }, 300);
+    }
+  }
+
+  /**
+   * Comparte un proyecto
+   */
+  shareProject(projectId) {
+    const project = this.projects.find(p => p.id === projectId);
+    if (!project) return;
+
+    const shareData = {
+      title: project.name,
+      text: `Descubre ${project.name}: ${project.description || 'Un proyecto de transición hacia un mundo más sostenible.'}`,
+      url: project.website || window.location.href
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+      window.toast?.success('Enlace copiado al portapapeles');
+    }
+  }
+
+  /**
+   * Escapa HTML para prevenir XSS
+   */
+  escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * Inyecta los estilos del panel de detalles
+   */
+  injectDetailsPanelStyles() {
+    if (document.getElementById('tg-details-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'tg-details-styles';
+    styles.textContent = `
+      .tg-details-panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 360px;
+        max-width: 100%;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+        backdrop-filter: blur(20px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-out;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .tg-details-panel.visible {
+        transform: translateX(0);
+      }
+      .tg-details-header {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .tg-details-close {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        padding: 8px;
+        border-radius: 8px;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .tg-details-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+      .tg-details-category {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .tg-details-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .tg-details-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 16px 0;
+        line-height: 1.3;
+      }
+      .tg-details-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .tg-details-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #94a3b8;
+        font-size: 14px;
+      }
+      .tg-details-meta-icon {
+        font-size: 16px;
+      }
+      .tg-details-description,
+      .tg-details-impact,
+      .tg-details-initiatives {
+        margin-bottom: 20px;
+      }
+      .tg-details-description h4,
+      .tg-details-impact h4,
+      .tg-details-initiatives h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #10b981;
+        margin: 0 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tg-details-description p,
+      .tg-details-impact p {
+        color: #e2e8f0;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+      }
+      .tg-details-initiatives ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #cbd5e1;
+        font-size: 14px;
+        line-height: 1.8;
+      }
+      .tg-details-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .tg-tag {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+      .tg-details-footer {
+        padding: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        gap: 12px;
+      }
+      .tg-details-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        border: none;
+      }
+      .tg-details-btn-primary {
+        background: #10b981;
+        color: white;
+      }
+      .tg-details-btn-primary:hover {
+        background: #059669;
+      }
+      .tg-details-btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+      }
+      .tg-details-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      @media (max-width: 480px) {
+        .tg-details-panel {
+          width: 100%;
+          border-left: none;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          top: auto;
+          height: 70vh;
+          border-radius: 20px 20px 0 0;
+          transform: translateY(100%);
+        }
+        .tg-details-panel.visible {
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(styles);
   }
 
   renderGlobe() {

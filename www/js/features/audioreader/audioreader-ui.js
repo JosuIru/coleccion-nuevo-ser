@@ -186,35 +186,43 @@ class AudioReaderUI {
               🎵 Ambiente y Binaural
             </summary>
             <div class="mt-3 p-3 bg-purple-900/20 rounded-lg">
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs text-slate-500 mb-1">Sonido Ambiente</label>
-                  <select id="audioreader-ambient-select"
-                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
-                    <option value="">🌊 Sin ambiente</option>
-                    <option value="rain">🌧️ Lluvia</option>
-                    <option value="forest">🌳 Bosque</option>
-                    <option value="ocean">🌊 Océano</option>
-                    <option value="fire">🔥 Fogata</option>
-                    <option value="night">🌙 Noche</option>
-                    <option value="cafe">☕ Cafetería</option>
-                  </select>
+              <!-- Sonidos Ambiente (multi-selección, máx 3) -->
+              <div class="mb-3">
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-xs text-slate-500">Sonidos Ambiente <span class="text-slate-600">(máx 3)</span></label>
+                  <button id="audioreader-stop-all-ambient" class="text-xs text-red-400 hover:text-red-300">🔇 Parar todos</button>
                 </div>
-
-                <div>
-                  <label class="block text-xs text-slate-500 mb-1">Binaural</label>
-                  <select id="audioreader-binaural-select"
-                          class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
-                    <option value="">🧠 Sin binaural</option>
-                    <option value="focus">🎯 Enfoque (14Hz)</option>
-                    <option value="relax">😌 Relajación (10Hz)</option>
-                    <option value="deep">🧘 Meditación (7Hz)</option>
-                    <option value="sleep">😴 Sueño (4Hz)</option>
-                  </select>
+                <div id="audioreader-ambient-grid" class="grid grid-cols-5 gap-1.5">
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="rain" title="Lluvia">🌧️</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="ocean" title="Océano">🌊</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="forest" title="Bosque">🌲</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="river" title="Río">💧</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="whales" title="Ballenas">🐋</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="fire" title="Fuego">🔥</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="storm" title="Tormenta">⛈️</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="wind" title="Viento">🌬️</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="night" title="Noche">🌙</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="birds" title="Pájaros">🐦</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="cafe" title="Cafetería">☕</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="meditation" title="Meditación">🕉️</button>
+                  <button class="ambient-toggle p-1.5 rounded-lg bg-slate-700 hover:bg-purple-600 text-center text-lg transition-colors" data-sound="piano" title="Piano">🎹</button>
                 </div>
               </div>
 
-              <div class="mt-3 flex items-center gap-3">
+              <!-- Binaural -->
+              <div class="mb-3">
+                <label class="block text-xs text-slate-500 mb-1">Binaural</label>
+                <select id="audioreader-binaural-select"
+                        class="w-full px-3 py-2 rounded-lg bg-slate-800 text-white text-sm border border-slate-700">
+                  <option value="">🧠 Sin binaural</option>
+                  <option value="focus">🎯 Enfoque (14Hz)</option>
+                  <option value="relax">😌 Relajación (10Hz)</option>
+                  <option value="deep">🧘 Meditación (7Hz)</option>
+                  <option value="sleep">😴 Sueño (4Hz)</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-3">
                 <span class="text-xs text-slate-500">Volumen</span>
                 <input type="range" id="audioreader-ambient-volume"
                        min="0" max="100" value="30"
@@ -266,22 +274,21 @@ class AudioReaderUI {
     this.attachControlListeners();
     this.loadVoicesForProvider(ar.tts?.getProvider() || 'browser');
 
-    // Restaurar preferencias de ambient/binaural desde localStorage
-    const savedAmbient = localStorage.getItem('audioreader-ambient') || '';
+    // Restaurar preferencias de binaural y volumen desde localStorage
     const savedBinaural = localStorage.getItem('audioreader-binaural') || '';
     const savedVolume = localStorage.getItem('audioreader-volume') || '30';
 
-    const ambientSelect = document.getElementById('audioreader-ambient-select');
     const binauralSelect = document.getElementById('audioreader-binaural-select');
     const volumeSlider = document.getElementById('audioreader-ambient-volume');
     const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
 
-    if (ambientSelect && savedAmbient) ambientSelect.value = savedAmbient;
     if (binauralSelect && savedBinaural) binauralSelect.value = savedBinaural;
     if (volumeSlider) {
       volumeSlider.value = savedVolume;
       if (volumeLabel) volumeLabel.textContent = `${savedVolume}%`;
     }
+
+    // Los sonidos ambiente se restauran en attachAmbientBinauralListeners()
   }
 
   // ==========================================================================
@@ -447,40 +454,70 @@ class AudioReaderUI {
    * Attach listeners for ambient and binaural sound controls
    */
   attachAmbientBinauralListeners() {
-    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    const ambientGrid = document.getElementById('audioreader-ambient-grid');
+    const stopAllBtn = document.getElementById('audioreader-stop-all-ambient');
     const binauralSelect = document.getElementById('audioreader-binaural-select');
     const volumeSlider = document.getElementById('audioreader-ambient-volume');
     const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
 
-    // Ambient sound selection
-    if (ambientSelect) {
-      ambientSelect.addEventListener('change', async (e) => {
-        const value = e.target.value;
-        logger.log('🎵 Ambient seleccionado:', value, 'audioMixer:', !!window.audioMixer);
+    // Multi-select ambient toggle buttons (con debounce)
+    if (ambientGrid) {
+      let isProcessing = false;
 
-        // Guardar preferencia en localStorage
-        try {
-          if (value) {
-            localStorage.setItem('audioreader-ambient', value);
-          } else {
-            localStorage.removeItem('audioreader-ambient');
+      ambientGrid.querySelectorAll('.ambient-toggle').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          // Debounce: evitar clicks rápidos
+          if (isProcessing) return;
+          isProcessing = true;
+
+          const soundName = btn.dataset.sound;
+
+          if (!window.audioMixer) {
+            isProcessing = false;
+            return;
           }
-        } catch (err) {}
 
-        if (window.audioMixer) {
-          if (value) {
-            try {
-              await window.audioMixer.playAmbient(value);
-              window.toast?.success(`Ambiente: ${value}`);
-            } catch (err) {
-              logger.error('Error reproduciendo ambient:', err);
-              window.toast?.error('Error al reproducir ambiente');
+          try {
+            // Actualizar UI inmediatamente para feedback visual
+            const wasActive = btn.classList.contains('bg-purple-600');
+            if (wasActive) {
+              btn.classList.remove('bg-purple-600', 'ring-2', 'ring-purple-400');
+              btn.classList.add('bg-slate-700');
+            } else {
+              btn.classList.remove('bg-slate-700');
+              btn.classList.add('bg-purple-600', 'ring-2', 'ring-purple-400');
             }
-          } else {
-            window.audioMixer.stopAmbient();
+
+            // Ejecutar toggle en audioMixer
+            await window.audioMixer.toggleAmbientSound(soundName);
+
+            // Guardar en localStorage
+            this.saveActiveAmbients();
+          } catch (err) {
+            logger.error('Error toggling ambient:', err);
+          } finally {
+            // Permitir nuevo click después de 300ms
+            setTimeout(() => { isProcessing = false; }, 300);
           }
-        } else {
-          window.toast?.warning('AudioMixer no disponible');
+        });
+      });
+
+      // Restaurar estado guardado
+      this.restoreActiveAmbients();
+    }
+
+    // Stop all ambient sounds
+    if (stopAllBtn) {
+      stopAllBtn.addEventListener('click', async () => {
+        if (window.audioMixer) {
+          await window.audioMixer.stopAmbient();
+          // Reset all buttons
+          ambientGrid?.querySelectorAll('.ambient-toggle').forEach(btn => {
+            btn.classList.remove('bg-purple-600', 'ring-2', 'ring-purple-400');
+            btn.classList.add('bg-slate-700');
+          });
+          localStorage.removeItem('audioreader-active-ambients');
+          window.toast?.info('Todos los ambientes detenidos');
         }
       });
     }
@@ -609,6 +646,8 @@ class AudioReaderUI {
     try {
       if (provider === 'browser') {
         // Web Speech API voices
+        voiceSelect.disabled = false;
+        voiceSelect.title = '';
         const voices = await this.audioReader.tts?.getAvailableVoices() || [];
         const spanishVoices = voices.filter(v => v.lang && v.lang.startsWith('es'));
 
@@ -620,12 +659,12 @@ class AudioReaderUI {
           voiceSelect.innerHTML = '<option value="">No hay voces en español</option>';
         }
       } else if (provider === 'native') {
-        // Native TTS voices (Capacitor)
+        // Native TTS usa la voz del sistema Android
         voiceSelect.innerHTML = `
-          <option value="es-ES">Español (España)</option>
-          <option value="es-MX">Español (México)</option>
-          <option value="es-US">Español (Estados Unidos)</option>
+          <option value="es-ES">🤖 Voz del sistema Android</option>
         `;
+        voiceSelect.disabled = true;
+        voiceSelect.title = 'La voz se configura en Ajustes de Android > Accesibilidad > Texto a voz';
       }
 
       // Restaurar voz guardada si existe
@@ -653,13 +692,48 @@ class AudioReaderUI {
     }
   }
 
+  // Save active ambient sounds to localStorage
+  saveActiveAmbients() {
+    if (window.audioMixer) {
+      const active = window.audioMixer.getActiveAmbients();
+      localStorage.setItem('audioreader-active-ambients', JSON.stringify(active));
+    }
+  }
+
+  // Restore active ambient sounds from localStorage
+  async restoreActiveAmbients() {
+    try {
+      const saved = localStorage.getItem('audioreader-active-ambients');
+      if (!saved) return;
+
+      const ambients = JSON.parse(saved);
+      if (!Array.isArray(ambients) || ambients.length === 0) return;
+
+      const grid = document.getElementById('audioreader-ambient-grid');
+      if (!grid) return;
+
+      // Restaurar sonidos y UI
+      for (const soundName of ambients) {
+        if (window.audioMixer) {
+          await window.audioMixer.addAmbient(soundName);
+        }
+        const btn = grid.querySelector(`[data-sound="${soundName}"]`);
+        if (btn) {
+          btn.classList.remove('bg-slate-700');
+          btn.classList.add('bg-purple-600', 'ring-2', 'ring-purple-400');
+        }
+      }
+    } catch (err) {
+      logger.error('Error restaurando ambientes:', err);
+    }
+  }
+
   // ==========================================================================
   // UI UPDATES
   // ==========================================================================
 
   async updateUI() {
-    // Guardar valores de ambient/binaural/voice antes de re-renderizar
-    const savedAmbient = document.getElementById('audioreader-ambient-select')?.value || '';
+    // Guardar valores de binaural/voice antes de re-renderizar
     const savedBinaural = document.getElementById('audioreader-binaural-select')?.value || '';
     const savedVolume = document.getElementById('audioreader-ambient-volume')?.value || '30';
     const savedProvider = document.getElementById('audioreader-tts-provider')?.value || '';
@@ -667,16 +741,15 @@ class AudioReaderUI {
 
     await this.render();
 
-    // Restaurar valores de ambient/binaural/voice después de re-renderizar
-    const ambientSelect = document.getElementById('audioreader-ambient-select');
+    // Restaurar valores después de re-renderizar
     const binauralSelect = document.getElementById('audioreader-binaural-select');
     const volumeSlider = document.getElementById('audioreader-ambient-volume');
     const volumeLabel = document.getElementById('audioreader-ambient-volume-label');
     const providerSelect = document.getElementById('audioreader-tts-provider');
     const voiceSelect = document.getElementById('audioreader-voice-select');
 
-    if (ambientSelect && savedAmbient) {
-      ambientSelect.value = savedAmbient;
+    // Los ambientes se restauran automáticamente en restoreActiveAmbients()
+    if (false) { // Legacy code removed
     }
     if (binauralSelect && savedBinaural) {
       binauralSelect.value = savedBinaural;

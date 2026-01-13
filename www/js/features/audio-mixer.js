@@ -19,8 +19,9 @@ class AudioMixer {
         volume: 1.0
       },
       ambient: {
-        source: null,
-        gainNode: null,
+        source: null,           // Legacy: single source
+        sources: new Map(),     // Multi-sound: Map<soundName, {source, gainNode}>
+        gainNode: null,         // Master ambient gain
         volume: 0.3,
         loop: true
       },
@@ -35,6 +36,16 @@ class AudioMixer {
     // Estado
     this.currentMode = null;
     this.isPlaying = false;
+    this.activeAmbients = new Set(); // Track active ambient sounds
+
+    // Límites de rendimiento
+    this.MAX_SIMULTANEOUS_AMBIENTS = 3; // Máximo 3 sonidos simultáneos para evitar sobrecarga
+    this.isDucking = false; // Estado de audio ducking (bajar volumen para TTS)
+    this.preDuckVolume = 0.3; // Volumen antes de ducking
+
+    // Caché de buffers de audio decodificados
+    this.audioBufferCache = new Map();
+    this.isLoadingSound = false; // Evitar operaciones simultáneas
   }
 
   // ==========================================================================
@@ -81,74 +92,204 @@ class AudioMixer {
   }
 
   // ==========================================================================
-  // CONTROL DE CANALES
+  // CONTROL DE CANALES - AMBIENTE (Multi-sonido)
   // ==========================================================================
 
+  // Legacy method - plays single sound (stops others)
   async playAmbient(soundscapeName) {
-    logger.log('🎵 AudioMixer.playAmbient llamado:', soundscapeName);
+    await this.stopAmbient();
+    await this.addAmbient(soundscapeName);
+  }
 
-    if (!this.isInitialized) {
-      logger.log('🎵 AudioMixer no inicializado, inicializando...');
-      await this.initialize();
+  // Add an ambient sound (supports multiple simultaneous sounds)
+  async addAmbient(soundscapeName) {
+    // Evitar operaciones simultáneas que causan bloqueos
+    if (this.isLoadingSound) {
+      logger.warn('🎵 Operación en curso, ignorando:', soundscapeName);
+      return;
     }
 
+    // Si ya está activo, no hacer nada
+    if (this.channels.ambient.sources.has(soundscapeName)) {
+      return;
+    }
+
+    // Limitar número de sonidos simultáneos
+    if (this.activeAmbients.size >= this.MAX_SIMULTANEOUS_AMBIENTS) {
+      const firstSound = this.activeAmbients.values().next().value;
+      this.removeAmbientSync(firstSound);
+    }
+
+    this.isLoadingSound = true;
+
     try {
-      // Resumir AudioContext si está suspendido (necesario en móviles)
+      if (!this.isInitialized) {
+        await this.initialize();
+      }
+
       if (this.audioContext.state === 'suspended') {
-        logger.log('🎵 Resumiendo AudioContext suspendido...');
         await this.audioContext.resume();
       }
 
-      // Detener ambiente anterior si existe (esperar a que termine)
-      await this.stopAmbient();
-
-      // Cargar nuevo sonido ambiental
       const soundscapeData = this.getSoundscapeData(soundscapeName);
       if (!soundscapeData) {
-        logger.warn('🎵 Soundscape no encontrado:', soundscapeName);
+        this.isLoadingSound = false;
         return;
       }
 
-      logger.log('🎵 Cargando audio desde:', soundscapeData.url);
-
-      // Crear fuente de audio
-      const response = await fetch(soundscapeData.url);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      // Usar caché de buffers para evitar descargas repetidas
+      let audioBuffer = this.audioBufferCache.get(soundscapeName);
+      if (!audioBuffer) {
+        const response = await fetch(soundscapeData.url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const arrayBuffer = await response.arrayBuffer();
+        audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+        this.audioBufferCache.set(soundscapeName, audioBuffer);
       }
 
-      const arrayBuffer = await response.arrayBuffer();
-      logger.log('🎵 Audio descargado, bytes:', arrayBuffer.byteLength);
-
-      const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      logger.log('🎵 Audio decodificado, duración:', audioBuffer.duration, 's');
+      // Crear gain node individual
+      const gainNode = this.audioContext.createGain();
+      gainNode.connect(this.channels.ambient.gainNode);
+      gainNode.gain.value = 0;
 
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.loop = true;
-      source.connect(this.channels.ambient.gainNode);
+      source.connect(gainNode);
       source.start(0);
 
-      this.channels.ambient.source = source;
+      // Guardar referencia
+      this.channels.ambient.sources.set(soundscapeName, { source, gainNode });
+      this.activeAmbients.add(soundscapeName);
 
-      // Fade in
-      this.fadeIn(this.channels.ambient.gainNode, this.channels.ambient.volume, 2000);
+      // Fade in rápido
+      const targetVolume = this.calculateIndividualVolume();
+      gainNode.gain.setTargetAtTime(targetVolume, this.audioContext.currentTime, 0.3);
+      this.rebalanceAmbientVolumes();
 
-      logger.log('🎵 Ambiente iniciado exitosamente:', soundscapeName);
     } catch (error) {
-      logger.error('❌ Error cargando ambiente:', error);
+      logger.error('❌ Error añadiendo ambiente:', error);
+    } finally {
+      this.isLoadingSound = false;
     }
   }
 
-  async stopAmbient() {
-    if (this.channels.ambient.source) {
-      await this.fadeOut(this.channels.ambient.gainNode, 1000);
-      if (this.channels.ambient.source) {
-        this.channels.ambient.source.stop();
-        this.channels.ambient.source = null;
+  // Versión síncrona para remover (sin await)
+  removeAmbientSync(soundscapeName) {
+    const soundData = this.channels.ambient.sources.get(soundscapeName);
+    if (!soundData) return;
+
+    try {
+      soundData.gainNode.gain.value = 0;
+      soundData.source.stop();
+      soundData.source.disconnect();
+      soundData.gainNode.disconnect();
+    } catch (e) {}
+
+    this.channels.ambient.sources.delete(soundscapeName);
+    this.activeAmbients.delete(soundscapeName);
+  }
+
+  // Remove a specific ambient sound
+  async removeAmbient(soundscapeName) {
+    this.removeAmbientSync(soundscapeName);
+    this.rebalanceAmbientVolumes();
+  }
+
+  // Toggle an ambient sound on/off
+  async toggleAmbientSound(soundscapeName) {
+    if (this.channels.ambient.sources.has(soundscapeName)) {
+      await this.removeAmbient(soundscapeName);
+      return false;
+    } else {
+      await this.addAmbient(soundscapeName);
+      return true;
+    }
+  }
+
+  // Check if an ambient sound is active
+  isAmbientActive(soundscapeName) {
+    return this.channels.ambient.sources.has(soundscapeName);
+  }
+
+  // Get list of active ambient sounds
+  getActiveAmbients() {
+    return Array.from(this.activeAmbients);
+  }
+
+  // Calculate individual volume based on number of active sounds
+  calculateIndividualVolume() {
+    const count = this.activeAmbients.size || 1;
+    return 1.0 / Math.pow(count, 0.6);
+  }
+
+  // Rebalance volumes when sounds are added/removed
+  rebalanceAmbientVolumes() {
+    const targetVolume = this.calculateIndividualVolume();
+    for (const [name, data] of this.channels.ambient.sources) {
+      if (data.gainNode) {
+        data.gainNode.gain.setTargetAtTime(targetVolume, this.audioContext.currentTime, 0.5);
       }
     }
   }
+
+  // Stop all ambient sounds
+  async stopAmbient() {
+    try {
+      // Detener todos los sonidos multi-ambient
+      for (const [name, data] of this.channels.ambient.sources) {
+        try {
+          data.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+          data.source.stop();
+          data.source.disconnect();
+          data.gainNode.disconnect();
+        } catch (e) {}
+      }
+      this.channels.ambient.sources.clear();
+      this.activeAmbients.clear();
+
+      // Legacy: single source
+      if (this.channels.ambient.source) {
+        this.channels.ambient.source.stop();
+        this.channels.ambient.source.disconnect();
+        this.channels.ambient.source = null;
+      }
+
+      if (this.channels.ambient.gainNode) {
+        this.channels.ambient.gainNode.gain.value = 0;
+      }
+    } catch (error) {
+      logger.error('❌ Error deteniendo ambiente:', error);
+      this.channels.ambient.sources.clear();
+      this.activeAmbients.clear();
+    }
+  }
+
+  // ==========================================================================
+  // AUDIO DUCKING - Bajar volumen ambiente para TTS
+  // ==========================================================================
+
+  /**
+   * Baja el volumen de los sonidos ambient para que el TTS se escuche mejor
+   * DESACTIVADO temporalmente para optimizar rendimiento
+   */
+  startDucking() {
+    // Desactivado - causaba problemas de rendimiento
+    return;
+  }
+
+  /**
+   * Restaura el volumen original de los sonidos ambient
+   * DESACTIVADO temporalmente para optimizar rendimiento
+   */
+  stopDucking() {
+    // Desactivado - causaba problemas de rendimiento
+    return;
+  }
+
+  // ==========================================================================
+  // CONTROL DE CANALES - BINAURAL
+  // ==========================================================================
 
   async playBinaural(presetName) {
     logger.log('🧠 AudioMixer.playBinaural llamado:', presetName);
@@ -495,6 +636,12 @@ class AudioMixer {
         url: `${basePath}piano.mp3`,
         icon: '🎹',
         description: 'Piano suave de fondo'
+      },
+      whales: {
+        name: 'Ballenas',
+        url: `${basePath}whales.ogg`,
+        icon: '🐋',
+        description: 'Cantos de ballenas y delfines'
       }
     };
 
@@ -514,7 +661,8 @@ class AudioMixer {
       night: this.getSoundscapeData('night'),
       birds: this.getSoundscapeData('birds'),
       meditation: this.getSoundscapeData('meditation'),
-      piano: this.getSoundscapeData('piano')
+      piano: this.getSoundscapeData('piano'),
+      whales: this.getSoundscapeData('whales')
     };
   }
 

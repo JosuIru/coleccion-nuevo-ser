@@ -2,6 +2,7 @@
 // CHAPTER COMMENTS - Sistema de Comentarios por Capítulo
 // ============================================================================
 // v2.9.327: Permite a los usuarios dejar y ver comentarios públicos en capítulos
+// v2.9.368: Sistema de threads (respuestas anidadas)
 // Funciona offline-first con localStorage, sincroniza con Supabase cuando disponible
 
 class ChapterComments {
@@ -10,13 +11,15 @@ class ChapterComments {
     this.modalElement = null;
     this.currentBookId = null;
     this.currentChapterId = null;
+    this.replyingTo = null; // v2.9.368: ID del comentario al que se responde
     this.i18n = window.i18n || { t: (key) => key };
 
     // Configuración
     this.config = {
       maxCommentLength: 500,
       minCommentLength: 10,
-      commentsPerPage: 20
+      commentsPerPage: 20,
+      maxThreadDepth: 3 // v2.9.368: Profundidad máxima de threads
     };
   }
 
@@ -67,8 +70,9 @@ class ChapterComments {
 
   /**
    * Añade un comentario
+   * @param {string} parentId - v2.9.368: ID del comentario padre (para threads)
    */
-  async addComment(bookId, chapterId, text, isPublic = false) {
+  async addComment(bookId, chapterId, text, isPublic = false, parentId = null) {
     if (text.length < this.config.minCommentLength) {
       throw new Error(`El comentario debe tener al menos ${this.config.minCommentLength} caracteres`);
     }
@@ -85,7 +89,9 @@ class ChapterComments {
       userId: this.getUserId(),
       createdAt: new Date().toISOString(),
       isPublic,
-      synced: false
+      synced: false,
+      parentId: parentId || null, // v2.9.368: Thread support
+      replies: [] // v2.9.368: Array de IDs de respuestas
     };
 
     // Guardar localmente
@@ -93,6 +99,16 @@ class ChapterComments {
     if (!this.comments[key]) {
       this.comments[key] = [];
     }
+
+    // v2.9.368: Si es una respuesta, añadir referencia en el padre
+    if (parentId) {
+      const parentComment = this.comments[key].find(c => c.id === parentId);
+      if (parentComment) {
+        if (!parentComment.replies) parentComment.replies = [];
+        parentComment.replies.push(comment.id);
+      }
+    }
+
     this.comments[key].unshift(comment);
     this.saveLocalComments();
 
@@ -293,6 +309,9 @@ class ChapterComments {
 
         <!-- New Comment Form -->
         <div class="p-4 border-b border-gray-700 bg-slate-800/50">
+          <!-- v2.9.368: Reply indicator -->
+          <div id="reply-indicator" class="hidden mb-3"></div>
+
           <textarea id="new-comment-text"
                     class="w-full p-3 bg-slate-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 resize-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
                     placeholder="Comparte tu reflexión sobre este capítulo..."
@@ -320,7 +339,7 @@ class ChapterComments {
               <div class="text-4xl mb-2">💭</div>
               <p>Sé el primero en compartir una reflexión</p>
             </div>
-          ` : comments.map(c => this.renderComment(c)).join('')}
+          ` : this.getThreadedComments(comments).map(c => this.renderComment(c)).join('')}
         </div>
 
         <!-- Footer -->
@@ -351,14 +370,17 @@ class ChapterComments {
     document.addEventListener('keydown', this._escapeHandler);
   }
 
-  renderComment(comment) {
+  renderComment(comment, depth = 0) {
     const isOwn = comment.userId === this.getUserId();
     const date = new Date(comment.createdAt).toLocaleDateString('es-ES', {
       day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
+    const canReply = depth < this.config.maxThreadDepth;
+    const hasReplies = comment.replies && comment.replies.length > 0;
+    const marginClass = depth > 0 ? `ml-${Math.min(depth * 4, 12)}` : '';
 
     return `
-      <div class="bg-slate-800/50 rounded-xl p-4 border border-gray-700/50 ${isOwn ? 'border-l-2 border-l-cyan-500' : ''}">
+      <div class="bg-slate-800/50 rounded-xl p-4 border border-gray-700/50 ${isOwn ? 'border-l-2 border-l-cyan-500' : ''} ${marginClass}" data-comment-id="${comment.id}">
         <div class="flex items-start justify-between gap-2">
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
@@ -369,23 +391,100 @@ class ChapterComments {
               <div class="text-xs text-gray-500">${date}</div>
             </div>
           </div>
-          ${isOwn ? `
-            <button onclick="window.chapterComments?.deleteCommentUI('${comment.id}')"
-                    class="p-1 hover:bg-red-900/30 rounded text-gray-500 hover:text-red-400 transition-colors"
-                    title="Eliminar">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-            </button>
-          ` : ''}
+          <div class="flex items-center gap-1">
+            ${canReply ? `
+              <button onclick="window.chapterComments?.setReplyTo('${comment.id}', '${this.escapeHtml(comment.userName)}')"
+                      class="p-1 hover:bg-cyan-900/30 rounded text-gray-500 hover:text-cyan-400 transition-colors"
+                      title="Responder">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                </svg>
+              </button>
+            ` : ''}
+            ${isOwn ? `
+              <button onclick="window.chapterComments?.deleteCommentUI('${comment.id}')"
+                      class="p-1 hover:bg-red-900/30 rounded text-gray-500 hover:text-red-400 transition-colors"
+                      title="Eliminar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            ` : ''}
+          </div>
         </div>
         <p class="mt-3 text-gray-300 text-sm leading-relaxed">${this.escapeHtml(comment.text)}</p>
         <div class="mt-2 flex items-center gap-2">
           ${comment.isPublic ? '<span class="text-xs text-cyan-400/70">🌐 Público</span>' : '<span class="text-xs text-gray-500">🔒 Privado</span>'}
           ${comment.synced ? '<span class="text-xs text-green-400/70">✓ Sincronizado</span>' : ''}
+          ${hasReplies ? `<span class="text-xs text-purple-400/70">💬 ${comment.replies.length} ${comment.replies.length === 1 ? 'respuesta' : 'respuestas'}</span>` : ''}
         </div>
       </div>
+      ${hasReplies ? this.renderReplies(comment, depth) : ''}
     `;
+  }
+
+  // v2.9.368: Renderiza las respuestas de un comentario
+  renderReplies(parentComment, depth) {
+    const key = `${this.currentBookId}:${this.currentChapterId}`;
+    const allComments = this.comments[key] || [];
+
+    const replies = parentComment.replies
+      .map(replyId => allComments.find(c => c.id === replyId))
+      .filter(Boolean)
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Orden cronológico
+
+    if (replies.length === 0) return '';
+
+    return `
+      <div class="mt-2 space-y-2">
+        ${replies.map(reply => this.renderComment(reply, depth + 1)).join('')}
+      </div>
+    `;
+  }
+
+  // v2.9.368: Establece el comentario al que se responde
+  setReplyTo(commentId, userName) {
+    this.replyingTo = commentId;
+
+    const replyIndicator = document.getElementById('reply-indicator');
+    const textarea = document.getElementById('new-comment-text');
+
+    if (replyIndicator) {
+      replyIndicator.innerHTML = `
+        <div class="flex items-center justify-between p-2 bg-cyan-900/30 rounded-lg border border-cyan-500/30">
+          <span class="text-sm text-cyan-400">↩️ Respondiendo a <strong>${this.escapeHtml(userName)}</strong></span>
+          <button onclick="window.chapterComments?.cancelReply()" class="text-gray-400 hover:text-white p-1">✕</button>
+        </div>
+      `;
+      replyIndicator.classList.remove('hidden');
+    }
+
+    if (textarea) {
+      textarea.focus();
+      textarea.placeholder = `Escribe tu respuesta a ${userName}...`;
+    }
+  }
+
+  // v2.9.368: Cancela la respuesta
+  cancelReply() {
+    this.replyingTo = null;
+
+    const replyIndicator = document.getElementById('reply-indicator');
+    const textarea = document.getElementById('new-comment-text');
+
+    if (replyIndicator) {
+      replyIndicator.innerHTML = '';
+      replyIndicator.classList.add('hidden');
+    }
+
+    if (textarea) {
+      textarea.placeholder = 'Comparte tu reflexión sobre este capítulo...';
+    }
+  }
+
+  // v2.9.368: Obtiene comentarios organizados en threads (solo raíz)
+  getThreadedComments(comments) {
+    return comments.filter(c => !c.parentId);
   }
 
   async submitComment() {
@@ -401,14 +500,19 @@ class ChapterComments {
     }
 
     try {
+      // v2.9.368: Support for replies
       await this.addComment(
         this.currentBookId,
         this.currentChapterId,
         text,
-        isPublicCheckbox?.checked || false
+        isPublicCheckbox?.checked || false,
+        this.replyingTo // parentId for threads
       );
 
-      window.toast?.success('Comentario añadido');
+      const isReply = !!this.replyingTo;
+      this.replyingTo = null; // Reset reply state
+
+      window.toast?.success(isReply ? 'Respuesta añadida' : 'Comentario añadido');
 
       // Refresh comments
       await this.show(this.currentBookId, this.currentChapterId);

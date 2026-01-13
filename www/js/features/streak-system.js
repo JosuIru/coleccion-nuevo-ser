@@ -5,6 +5,7 @@
 // - Contador de días consecutivos
 // - Recordatorios sutiles
 // - Milestones y celebraciones
+// - v2.9.368: Rachas por tipo de actividad
 // ============================================================================
 
 // 🔧 FIX v2.9.198: Migrated console.log to logger
@@ -15,6 +16,13 @@ class StreakSystem {
 
     // Configuración de milestones
     this.milestones = [3, 7, 14, 21, 30, 60, 90, 100, 180, 365];
+
+    // v2.9.368: Tipos de actividad con sus íconos y colores
+    this.activityTypes = {
+      reading: { name: 'Lectura', icon: '📖', color: 'cyan' },
+      meditation: { name: 'Meditación', icon: '🧘', color: 'purple' },
+      practice: { name: 'Prácticas', icon: '✨', color: 'amber' }
+    };
 
     // Mensajes motivacionales por nivel de racha
     this.motivationalMessages = {
@@ -52,7 +60,13 @@ class StreakSystem {
       lastActiveDate: null,
       totalActiveDays: 0,
       streakHistory: [],
-      achievements: []
+      achievements: [],
+      // v2.9.368: Rachas por tipo de actividad
+      activityStreaks: {
+        reading: { currentStreak: 0, longestStreak: 0, lastActiveDate: null, totalDays: 0 },
+        meditation: { currentStreak: 0, longestStreak: 0, lastActiveDate: null, totalDays: 0 },
+        practice: { currentStreak: 0, longestStreak: 0, lastActiveDate: null, totalDays: 0 }
+      }
     };
   }
 
@@ -87,67 +101,178 @@ class StreakSystem {
 
   /**
    * Registra actividad del día actual
+   * @param {string} activityType - Tipo de actividad: 'reading', 'meditation', 'practice' (opcional)
    * Llamar cuando el usuario lea, practique o interactúe significativamente
    */
-  recordActivity() {
+  recordActivity(activityType = null) {
     const today = this.getDateString(new Date());
     const lastActive = this.data.lastActiveDate;
+    const yesterday = this.getDateString(new Date(Date.now() - 86400000));
 
-    // Si ya se registró hoy, no hacer nada
-    if (lastActive === today) {
-      return { streakUpdated: false, currentStreak: this.data.currentStreak };
+    let result = { streakUpdated: false, currentStreak: this.data.currentStreak };
+
+    // Si ya se registró hoy para la racha global, solo actualizar tipo específico
+    const alreadyActiveToday = lastActive === today;
+
+    if (!alreadyActiveToday) {
+      let streakBroken = false;
+      let newMilestone = null;
+
+      if (lastActive === yesterday) {
+        // Día consecutivo - incrementar racha
+        this.data.currentStreak++;
+      } else if (lastActive === null) {
+        // Primera actividad
+        this.data.currentStreak = 1;
+      } else {
+        // Se rompió la racha
+        streakBroken = true;
+        if (this.data.currentStreak > 0) {
+          this.data.streakHistory.push({
+            streak: this.data.currentStreak,
+            endDate: lastActive,
+            startDate: this.getStreakStartDate(lastActive, this.data.currentStreak)
+          });
+        }
+        this.data.currentStreak = 1;
+      }
+
+      // Actualizar récord
+      if (this.data.currentStreak > this.data.longestStreak) {
+        this.data.longestStreak = this.data.currentStreak;
+      }
+
+      // Verificar milestone
+      if (this.milestones.includes(this.data.currentStreak)) {
+        newMilestone = this.data.currentStreak;
+        this.unlockAchievement(`streak_${newMilestone}`);
+      }
+
+      this.data.lastActiveDate = today;
+      this.data.totalActiveDays++;
+
+      // Notificar al sistema de momentos compartibles
+      if (newMilestone && window.shareableMoments) {
+        window.shareableMoments.onStreakUpdate(newMilestone);
+      }
+
+      result = {
+        streakUpdated: true,
+        currentStreak: this.data.currentStreak,
+        streakBroken,
+        newMilestone
+      };
+    }
+
+    // v2.9.368: Actualizar racha específica por tipo
+    if (activityType && this.activityTypes[activityType]) {
+      const typeResult = this.recordActivityByType(activityType);
+      result.activityType = activityType;
+      result.typeStreak = typeResult;
+    }
+
+    this.saveData();
+    return result;
+  }
+
+  /**
+   * v2.9.368: Registra actividad para un tipo específico
+   */
+  recordActivityByType(activityType) {
+    // Asegurar que existe la estructura
+    if (!this.data.activityStreaks) {
+      this.data.activityStreaks = {};
+    }
+    if (!this.data.activityStreaks[activityType]) {
+      this.data.activityStreaks[activityType] = {
+        currentStreak: 0,
+        longestStreak: 0,
+        lastActiveDate: null,
+        totalDays: 0
+      };
+    }
+
+    const typeData = this.data.activityStreaks[activityType];
+    const today = this.getDateString(new Date());
+
+    // Ya registrado hoy para este tipo
+    if (typeData.lastActiveDate === today) {
+      return { streakUpdated: false, currentStreak: typeData.currentStreak };
     }
 
     const yesterday = this.getDateString(new Date(Date.now() - 86400000));
-
-    let streakBroken = false;
     let newMilestone = null;
 
-    if (lastActive === yesterday) {
-      // Día consecutivo - incrementar racha
-      this.data.currentStreak++;
-    } else if (lastActive === null) {
-      // Primera actividad
-      this.data.currentStreak = 1;
+    if (typeData.lastActiveDate === yesterday) {
+      typeData.currentStreak++;
+    } else if (typeData.lastActiveDate === null) {
+      typeData.currentStreak = 1;
     } else {
-      // Se rompió la racha
-      streakBroken = true;
-      if (this.data.currentStreak > 0) {
-        this.data.streakHistory.push({
-          streak: this.data.currentStreak,
-          endDate: lastActive,
-          startDate: this.getStreakStartDate(lastActive, this.data.currentStreak)
-        });
-      }
-      this.data.currentStreak = 1;
+      typeData.currentStreak = 1;
     }
 
-    // Actualizar récord
-    if (this.data.currentStreak > this.data.longestStreak) {
-      this.data.longestStreak = this.data.currentStreak;
+    if (typeData.currentStreak > typeData.longestStreak) {
+      typeData.longestStreak = typeData.currentStreak;
     }
 
-    // Verificar milestone
-    if (this.milestones.includes(this.data.currentStreak)) {
-      newMilestone = this.data.currentStreak;
-      this.unlockAchievement(`streak_${newMilestone}`);
+    if (this.milestones.includes(typeData.currentStreak)) {
+      newMilestone = typeData.currentStreak;
+      this.unlockAchievement(`${activityType}_streak_${newMilestone}`);
     }
 
-    this.data.lastActiveDate = today;
-    this.data.totalActiveDays++;
-    this.saveData();
-
-    // Notificar al sistema de momentos compartibles
-    if (newMilestone && window.shareableMoments) {
-      window.shareableMoments.onStreakUpdate(newMilestone);
-    }
+    typeData.lastActiveDate = today;
+    typeData.totalDays++;
 
     return {
       streakUpdated: true,
-      currentStreak: this.data.currentStreak,
-      streakBroken,
-      newMilestone
+      currentStreak: typeData.currentStreak,
+      newMilestone,
+      typeName: this.activityTypes[activityType].name
     };
+  }
+
+  /**
+   * v2.9.368: Obtiene el estado de racha de un tipo específico
+   */
+  getActivityStreakStatus(activityType) {
+    if (!this.data.activityStreaks?.[activityType]) {
+      return { currentStreak: 0, longestStreak: 0, totalDays: 0, status: 'inactive' };
+    }
+
+    const typeData = this.data.activityStreaks[activityType];
+    const today = this.getDateString(new Date());
+    const yesterday = this.getDateString(new Date(Date.now() - 86400000));
+
+    let status = 'inactive';
+    let atRisk = false;
+
+    if (typeData.lastActiveDate === today) {
+      status = 'active_today';
+    } else if (typeData.lastActiveDate === yesterday) {
+      status = 'continue_today';
+      atRisk = true;
+    } else {
+      status = 'broken';
+    }
+
+    return {
+      currentStreak: status !== 'broken' ? typeData.currentStreak : 0,
+      longestStreak: typeData.longestStreak,
+      totalDays: typeData.totalDays,
+      status,
+      atRisk,
+      ...this.activityTypes[activityType]
+    };
+  }
+
+  /**
+   * v2.9.368: Obtiene todas las rachas por tipo
+   */
+  getAllActivityStreaks() {
+    return Object.keys(this.activityTypes).map(type => ({
+      type,
+      ...this.getActivityStreakStatus(type)
+    }));
   }
 
   /**
@@ -225,7 +350,7 @@ class StreakSystem {
             <span class="text-3xl ${flameClass}">${status.currentStreak >= 7 ? '🔥' : '✨'}</span>
             <div>
               <div class="text-2xl font-bold text-white">${status.currentStreak} ${status.currentStreak === 1 ? 'día' : 'días'}</div>
-              <div class="text-sm text-gray-400">Racha actual</div>
+              <div class="text-sm text-gray-400">Racha general</div>
             </div>
           </div>
 
@@ -234,6 +359,9 @@ class StreakSystem {
             <div class="text-xs text-gray-500">${status.totalActiveDays} días totales</div>
           </div>
         </div>
+
+        <!-- v2.9.368: Rachas por tipo de actividad -->
+        ${this.renderActivityStreaks()}
 
         ${status.atRisk ? `
           <div class="mt-3 pt-3 border-t border-amber-500/30">
@@ -249,6 +377,42 @@ class StreakSystem {
         `}
 
         ${this.renderNextMilestone(status.currentStreak)}
+      </div>
+    `;
+  }
+
+  /**
+   * v2.9.368: Renderiza las rachas por tipo de actividad
+   */
+  renderActivityStreaks() {
+    const activityStreaks = this.getAllActivityStreaks();
+    const hasAnyActivity = activityStreaks.some(s => s.totalDays > 0);
+
+    if (!hasAnyActivity) return '';
+
+    const colorClasses = {
+      cyan: 'text-cyan-400 bg-cyan-900/30 border-cyan-500/30',
+      purple: 'text-purple-400 bg-purple-900/30 border-purple-500/30',
+      amber: 'text-amber-400 bg-amber-900/30 border-amber-500/30'
+    };
+
+    return `
+      <div class="mt-4 grid grid-cols-3 gap-2">
+        ${activityStreaks.map(streak => {
+          if (streak.totalDays === 0) return '';
+          const colorClass = colorClasses[streak.color] || colorClasses.cyan;
+          const isActive = streak.status === 'active_today';
+          const atRisk = streak.atRisk;
+
+          return `
+            <div class="p-2 rounded-lg border ${colorClass} text-center relative ${atRisk ? 'animate-pulse' : ''}">
+              ${isActive ? '<span class="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full"></span>' : ''}
+              <div class="text-lg">${streak.icon}</div>
+              <div class="text-lg font-bold">${streak.currentStreak}</div>
+              <div class="text-xs opacity-75">${streak.name}</div>
+            </div>
+          `;
+        }).join('')}
       </div>
     `;
   }
@@ -283,14 +447,24 @@ class StreakSystem {
   showStreakNotification(result) {
     if (!window.toast) return;
 
+    // v2.9.368: Notificación de racha por tipo
+    if (result.typeStreak?.newMilestone) {
+      const typeInfo = this.activityTypes[result.activityType];
+      window.toast.success(`${typeInfo.icon} ¡${result.typeStreak.newMilestone} días de ${typeInfo.name}!`);
+    } else if (result.typeStreak?.streakUpdated && result.typeStreak.currentStreak % 5 === 0) {
+      const typeInfo = this.activityTypes[result.activityType];
+      window.toast.success(`${typeInfo.icon} ${typeInfo.name}: ${result.typeStreak.currentStreak} días`);
+    }
+
+    // Notificación de racha global
     if (result.newMilestone) {
-      window.toast.success(`🔥 ¡${result.newMilestone} días de racha! ¡Increíble!`);
+      window.toast.success(`🔥 ¡${result.newMilestone} días de racha general! ¡Increíble!`);
     } else if (result.streakBroken) {
       window.toast.info('💪 Nueva racha iniciada. ¡Tú puedes!');
     } else if (result.streakUpdated) {
       // Solo mostrar cada 5 días para no ser molesto
       if (result.currentStreak % 5 === 0) {
-        window.toast.success(`✨ Racha de ${result.currentStreak} días`);
+        window.toast.success(`✨ Racha general: ${result.currentStreak} días`);
       }
     }
   }
@@ -394,15 +568,29 @@ window.streakSystem = new StreakSystem();
 
 // Registrar actividad automáticamente en ciertos eventos
 document.addEventListener('DOMContentLoaded', () => {
-  // Registrar actividad cuando el usuario lee un capítulo
+  // v2.9.368: Registrar actividad con tipo específico
+
+  // Lectura de capítulos
   window.addEventListener('chapter-read', () => {
-    const result = window.streakSystem.recordActivity();
+    const result = window.streakSystem.recordActivity('reading');
     window.streakSystem.showStreakNotification(result);
   });
 
-  // Registrar actividad cuando completa una práctica
+  // Meditaciones completadas
+  window.addEventListener('meditation-completed', () => {
+    const result = window.streakSystem.recordActivity('meditation');
+    window.streakSystem.showStreakNotification(result);
+  });
+
+  // Prácticas completadas
   window.addEventListener('practice-completed', () => {
-    const result = window.streakSystem.recordActivity();
+    const result = window.streakSystem.recordActivity('practice');
+    window.streakSystem.showStreakNotification(result);
+  });
+
+  // Ejercicios completados (también cuentan como práctica)
+  window.addEventListener('exercise-completed', () => {
+    const result = window.streakSystem.recordActivity('practice');
     window.streakSystem.showStreakNotification(result);
   });
 

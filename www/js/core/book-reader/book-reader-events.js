@@ -1079,11 +1079,16 @@ class BookReaderEvents {
     );
 
     // ========================================================================
-    // MICRO COURSES (v2.9.330)
+    // MICRO COURSES (v2.9.330) - Lazy loaded (85KB)
     // ========================================================================
     this.attachMultiDeviceWithMenuClose(
       ['micro-courses-btn', 'micro-courses-btn-mobile', 'micro-courses-btn-dropdown'],
-      () => {
+      async () => {
+        // Lazy load Micro Courses (85KB) - loads only when user clicks
+        if (window.lazyLoader && !window.lazyLoader.loadedModules?.has('micro-courses')) {
+          await window.lazyLoader.loadMicroCourses();
+        }
+
         if (window.microCourses) {
           window.microCourses.show();
         } else {

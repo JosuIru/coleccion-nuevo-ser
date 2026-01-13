@@ -1,5 +1,6 @@
 // ============================================================================
 // VOICE NOTES - Sistema de Notas de Voz
+// v2.9.368: Transcripción automática con Web Speech API
 // ============================================================================
 
 class VoiceNotes {
@@ -12,8 +13,113 @@ class VoiceNotes {
     this.maxDurationMs = 120000; // 2 minutos máximo
     this.notes = this.loadNotes();
 
+    // v2.9.368: Transcripción automática
+    this.speechRecognition = null;
+    this.currentTranscript = '';
+    this.transcriptionEnabled = this.loadTranscriptionPreference();
+    this.initSpeechRecognition();
+
     // Exponer globalmente
     window.voiceNotes = this;
+  }
+
+  // ==========================================================================
+  // v2.9.368: TRANSCRIPCIÓN AUTOMÁTICA
+  // ==========================================================================
+
+  initSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      logger.warn('[VoiceNotes] SpeechRecognition no disponible');
+      return;
+    }
+
+    this.speechRecognition = new SpeechRecognition();
+    this.speechRecognition.continuous = true;
+    this.speechRecognition.interimResults = true;
+    this.speechRecognition.lang = 'es-ES';
+    this.speechRecognition.maxAlternatives = 1;
+
+    this.speechRecognition.onresult = (event) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript + ' ';
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        this.currentTranscript += finalTranscript;
+      }
+
+      // Update UI with current transcription
+      this.updateTranscriptionUI(this.currentTranscript + interimTranscript);
+    };
+
+    this.speechRecognition.onerror = (event) => {
+      if (event.error !== 'no-speech' && event.error !== 'aborted') {
+        logger.warn('[VoiceNotes] Speech recognition error:', event.error);
+      }
+    };
+
+    this.speechRecognition.onend = () => {
+      // Restart if still recording
+      if (this.isRecording && this.transcriptionEnabled && this.speechRecognition) {
+        try {
+          this.speechRecognition.start();
+        } catch (e) {
+          // Already started
+        }
+      }
+    };
+  }
+
+  startTranscription() {
+    if (!this.speechRecognition || !this.transcriptionEnabled) return;
+
+    this.currentTranscript = '';
+    try {
+      this.speechRecognition.start();
+    } catch (e) {
+      logger.warn('[VoiceNotes] Error starting transcription:', e);
+    }
+  }
+
+  stopTranscription() {
+    if (this.speechRecognition) {
+      try {
+        this.speechRecognition.stop();
+      } catch (e) {
+        // Already stopped
+      }
+    }
+    return this.currentTranscript.trim();
+  }
+
+  updateTranscriptionUI(text) {
+    const transcriptEl = document.getElementById('voice-transcript');
+    if (transcriptEl) {
+      transcriptEl.textContent = text || 'Escuchando...';
+      transcriptEl.scrollTop = transcriptEl.scrollHeight;
+    }
+  }
+
+  loadTranscriptionPreference() {
+    return localStorage.getItem('voice-notes-transcription') !== 'false';
+  }
+
+  saveTranscriptionPreference(enabled) {
+    this.transcriptionEnabled = enabled;
+    localStorage.setItem('voice-notes-transcription', enabled.toString());
+  }
+
+  static isTranscriptionSupported() {
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
   }
 
   // ==========================================================================
@@ -61,6 +167,9 @@ class VoiceNotes {
       this.isRecording = true;
       this.recordingStartTime = Date.now();
 
+      // v2.9.368: Start transcription alongside recording
+      this.startTranscription();
+
       // Auto-stop after max duration
       this.recordingTimeout = setTimeout(() => {
         if (this.isRecording) {
@@ -86,6 +195,9 @@ class VoiceNotes {
 
       clearTimeout(this.recordingTimeout);
 
+      // v2.9.368: Stop transcription and get result
+      const transcript = this.stopTranscription();
+
       this.mediaRecorder.onstop = async () => {
         this.isRecording = false;
 
@@ -97,7 +209,7 @@ class VoiceNotes {
         const blob = new Blob(this.audioChunks, { type: mimeType });
         const duration = Date.now() - this.recordingStartTime;
 
-        resolve({ blob, duration, mimeType });
+        resolve({ blob, duration, mimeType, transcript });
       };
 
       this.mediaRecorder.stop();
@@ -105,6 +217,9 @@ class VoiceNotes {
   }
 
   cancelRecording() {
+    // v2.9.368: Stop transcription
+    this.stopTranscription();
+
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
       this.mediaRecorder.stop();
@@ -135,7 +250,7 @@ class VoiceNotes {
   // ALMACENAMIENTO
   // ==========================================================================
 
-  async saveVoiceNote(blob, duration, title = '') {
+  async saveVoiceNote(blob, duration, title = '', transcript = '') {
     const bookId = this.bookEngine?.getCurrentBook() || 'general';
     const chapterId = this.bookEngine?.currentChapterId || 'general';
     const noteId = `voice-${Date.now()}`;
@@ -146,7 +261,7 @@ class VoiceNotes {
     // Store audio data
     localStorage.setItem(`voice-note-data-${noteId}`, base64);
 
-    // Store metadata
+    // Store metadata (v2.9.368: includes transcript)
     const metadata = {
       id: noteId,
       bookId,
@@ -154,6 +269,7 @@ class VoiceNotes {
       title: title || `Nota de voz ${new Date().toLocaleDateString()}`,
       duration,
       mimeType: blob.type,
+      transcript: transcript || '', // v2.9.368
       createdAt: new Date().toISOString()
     };
 
@@ -311,6 +427,20 @@ class VoiceNotes {
             </div>
             <p id="recording-time" class="mt-4 text-2xl font-bold text-red-400">00:00</p>
             <p class="text-gray-400">Grabando...</p>
+
+            <!-- v2.9.368: Live transcription -->
+            ${VoiceNotes.isTranscriptionSupported() ? `
+              <div class="mt-4 p-3 bg-gray-800/50 rounded-xl border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    Transcribiendo...
+                  </span>
+                </div>
+                <p id="voice-transcript" class="text-sm text-gray-300 text-left max-h-20 overflow-y-auto">Escuchando...</p>
+              </div>
+            ` : ''}
+
             <button id="cancel-recording-btn" class="mt-2 text-sm text-gray-500 hover:text-gray-300">
               Cancelar
             </button>
@@ -323,7 +453,15 @@ class VoiceNotes {
             <label for="note-title" class="sr-only">Título de la nota</label>
             <input type="text" id="note-title" placeholder="Título de la nota (opcional)"
                    aria-label="Título de la nota de voz"
-                   class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 mb-4 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                   class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 mb-3 focus:ring-2 focus:ring-red-500 focus:outline-none">
+
+            <!-- v2.9.368: Transcript preview/edit -->
+            <div id="transcript-preview" class="hidden mb-4">
+              <label class="text-xs text-gray-400 mb-1 block text-left">Transcripción (editable)</label>
+              <textarea id="transcript-edit" rows="3"
+                        class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-xl text-gray-200 text-sm resize-none focus:ring-2 focus:ring-red-500 focus:outline-none"
+                        placeholder="Transcripción de la nota..."></textarea>
+            </div>
 
             <div class="flex gap-3">
               <button id="discard-btn" class="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
@@ -367,8 +505,15 @@ class VoiceNotes {
         </button>
         <div class="flex-1 min-w-0">
           <p class="text-sm text-gray-200 truncate">${note.title}</p>
-          <p class="text-xs text-gray-500">${this.formatDuration(note.duration)}</p>
+          <p class="text-xs text-gray-500">${this.formatDuration(note.duration)}${note.transcript ? ' • 📝' : ''}</p>
+          ${note.transcript ? `<p class="text-xs text-gray-400 truncate mt-0.5">${note.transcript.substring(0, 50)}${note.transcript.length > 50 ? '...' : ''}</p>` : ''}
         </div>
+        <button class="show-transcript-btn ${note.transcript ? '' : 'hidden'} p-2 hover:bg-gray-700 rounded transition"
+                data-note-id="${note.id}"
+                data-transcript="${this.escapeAttr(note.transcript || '')}"
+                title="Ver transcripción">
+          📝
+        </button>
         <button class="delete-voice-note opacity-0 group-hover:opacity-100 p-2 hover:bg-red-900/50 rounded transition"
                 data-note-id="${note.id}">
           <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -377,6 +522,10 @@ class VoiceNotes {
         </button>
       </div>
     `).join('');
+  }
+
+  escapeAttr(str) {
+    return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   formatDuration(ms) {
@@ -427,12 +576,14 @@ class VoiceNotes {
     });
 
     // Stop recording
+    let pendingTranscript = '';
     modal.querySelector('#stop-btn')?.addEventListener('click', async () => {
       clearInterval(recordingInterval);
       const result = await this.stopRecording();
 
       if (result) {
         pendingBlob = result.blob;
+        pendingTranscript = result.transcript || '';
         recordingInProgress.classList.add('hidden');
         previewArea.classList.remove('hidden');
 
@@ -443,6 +594,14 @@ class VoiceNotes {
           URL.revokeObjectURL(audioPreview.src);
         }
         audioPreview.src = URL.createObjectURL(result.blob);
+
+        // v2.9.368: Show transcript if available
+        const transcriptPreview = modal.querySelector('#transcript-preview');
+        const transcriptEdit = modal.querySelector('#transcript-edit');
+        if (pendingTranscript && transcriptPreview && transcriptEdit) {
+          transcriptEdit.value = pendingTranscript;
+          transcriptPreview.classList.remove('hidden');
+        }
       }
     });
 
@@ -464,9 +623,13 @@ class VoiceNotes {
       }
 
       pendingBlob = null;
+      pendingTranscript = '';
       previewArea.classList.add('hidden');
       recordingArea.classList.remove('hidden');
       modal.querySelector('#note-title').value = '';
+      // v2.9.368: Hide transcript
+      modal.querySelector('#transcript-preview')?.classList.add('hidden');
+      modal.querySelector('#transcript-edit').value = '';
     });
 
     // Save
@@ -474,7 +637,9 @@ class VoiceNotes {
       if (pendingBlob) {
         const title = modal.querySelector('#note-title').value.trim();
         const duration = Date.now() - this.recordingStartTime;
-        await this.saveVoiceNote(pendingBlob, duration, title);
+        // v2.9.368: Include edited transcript
+        const transcript = modal.querySelector('#transcript-edit')?.value.trim() || pendingTranscript;
+        await this.saveVoiceNote(pendingBlob, duration, title, transcript);
         window.toast?.success('Nota de voz guardada');
         closeModal();
       }
@@ -511,9 +676,91 @@ class VoiceNotes {
         if (confirm('¿Eliminar esta nota de voz?')) {
           this.deleteVoiceNote(noteId);
           modal.querySelector('#voice-notes-list').innerHTML = this.renderNotesList();
+          this.attachNoteListListeners(modal);
           window.toast?.info('Nota eliminada');
         }
       });
+    });
+
+    // v2.9.368: Show full transcript
+    modal.querySelectorAll('.show-transcript-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const transcript = btn.dataset.transcript;
+        if (transcript) {
+          this.showTranscriptModal(transcript);
+        }
+      });
+    });
+  }
+
+  // v2.9.368: Re-attach listeners after list update
+  attachNoteListListeners(modal) {
+    modal.querySelectorAll('.play-voice-note').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const noteId = btn.dataset.noteId;
+        const blob = await this.getVoiceNoteBlob(noteId);
+        if (blob) {
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          audio.addEventListener('ended', () => URL.revokeObjectURL(audioUrl));
+          audio.addEventListener('error', () => URL.revokeObjectURL(audioUrl));
+          audio.play();
+        }
+      });
+    });
+
+    modal.querySelectorAll('.delete-voice-note').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const noteId = btn.dataset.noteId;
+        if (confirm('¿Eliminar esta nota de voz?')) {
+          this.deleteVoiceNote(noteId);
+          modal.querySelector('#voice-notes-list').innerHTML = this.renderNotesList();
+          this.attachNoteListListeners(modal);
+          window.toast?.info('Nota eliminada');
+        }
+      });
+    });
+
+    modal.querySelectorAll('.show-transcript-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const transcript = btn.dataset.transcript;
+        if (transcript) {
+          this.showTranscriptModal(transcript);
+        }
+      });
+    });
+  }
+
+  // v2.9.368: Show full transcript in modal
+  showTranscriptModal(transcript) {
+    const existing = document.getElementById('transcript-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'transcript-modal';
+    modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[60] p-4';
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl max-w-md w-full p-6 border border-gray-700">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-white">📝 Transcripción</h3>
+          <button class="text-gray-400 hover:text-white p-2" onclick="this.closest('#transcript-modal').remove()">✕</button>
+        </div>
+        <div class="bg-gray-800 rounded-xl p-4 max-h-64 overflow-y-auto">
+          <p class="text-gray-200 text-sm leading-relaxed whitespace-pre-wrap">${transcript}</p>
+        </div>
+        <div class="mt-4 flex gap-3">
+          <button class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition" onclick="navigator.clipboard.writeText('${this.escapeAttr(transcript)}'); window.toast?.success('Copiado'); this.closest('#transcript-modal').remove();">
+            📋 Copiar
+          </button>
+          <button class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition" onclick="this.closest('#transcript-modal').remove()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
     });
   }
 

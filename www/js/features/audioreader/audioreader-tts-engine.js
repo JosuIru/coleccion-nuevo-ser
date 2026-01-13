@@ -61,6 +61,13 @@ class AudioReaderTTSEngine {
   async _doInit() {
     if (this.isCapacitor) {
       await this.initNativeTTS();
+
+      // Si hay TTS nativo y no hay preferencia guardada, usar nativo por defecto
+      if (this.nativeTTS && !localStorage.getItem('tts-provider')) {
+        this.provider = 'native';
+        localStorage.setItem('tts-provider', 'native');
+        logger.warn('🔊 Proveedor TTS establecido a: native (por defecto en Android)');
+      }
     }
 
     // Siempre cargar voces de Web Speech API como fallback
@@ -83,20 +90,20 @@ class AudioReaderTTSEngine {
         this.nativeTTS = window.Capacitor.Plugins.TextToSpeech;
         logger.warn('🔍 nativeTTS asignado:', !!this.nativeTTS);
 
-        const result = await this.nativeTTS.getSupportedLanguages();
-        const languages = result?.languages || [];
-        logger.warn('✅ TTS nativo: idiomas disponibles:', languages.length);
-
-        // Pre-calentar el TTS (sin await para no bloquear)
-        this.nativeTTS.speak({
-          text: ' ',
-          lang: 'es-ES',
-          rate: 1.0,
-          pitch: 1.0,
-          volume: 0.01
-        }).catch(() => {
-          // Normal en primer uso
-        });
+        // Pre-calentar el TTS con texto silencioso
+        try {
+          await this.nativeTTS.speak({
+            text: ' ',
+            lang: 'es-ES',
+            rate: 1.0,
+            pitch: 1.0,
+            volume: 0.01
+          });
+          logger.warn('✅ TTS nativo inicializado correctamente');
+        } catch (warmupError) {
+          // Normal en primer uso, el TTS sigue funcionando
+          logger.warn('⚠️ Pre-calentamiento TTS:', warmupError.message);
+        }
 
       } else if (window.capacitorTextToSpeech?.TextToSpeech) {
         this.nativeTTS = window.capacitorTextToSpeech.TextToSpeech;
@@ -292,6 +299,11 @@ class AudioReaderTTSEngine {
     // Asegurar que TTS está inicializado antes de hablar
     await this.ensureInitialized();
 
+    // Normalizar paragraph: si es string, convertir a objeto
+    if (typeof paragraph === 'string') {
+      paragraph = { text: paragraph };
+    }
+
     logger.warn('🔊 speak: isInitialized=', this.isInitialized, 'nativeTTS=', !!this.nativeTTS, 'provider=', this.provider);
 
     const { onEnd, onError, showPauseIndicator } = callbacks;
@@ -325,6 +337,11 @@ class AudioReaderTTSEngine {
         return;
       }
 
+      // Activar audio ducking (bajar volumen de sonidos ambiente)
+      if (window.audioMixer) {
+        window.audioMixer.startDucking();
+      }
+
       const options = {
         text: textToSpeak,
         lang: 'es-ES',
@@ -340,9 +357,32 @@ class AudioReaderTTSEngine {
 
       logger.warn('🎤 Iniciando speak nativo...');
       const startTime = Date.now();
-      await this.nativeTTS.speak(options);
+
+      // Timeout de seguridad para evitar bloqueos (30 segundos máximo)
+      const TTS_TIMEOUT = 30000;
+      const speakPromise = this.nativeTTS.speak(options);
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('TTS timeout')), TTS_TIMEOUT)
+      );
+
+      try {
+        await Promise.race([speakPromise, timeoutPromise]);
+      } catch (timeoutError) {
+        if (timeoutError.message === 'TTS timeout') {
+          logger.warn('⚠️ TTS timeout alcanzado, cancelando...');
+          try { await this.nativeTTS.stop(); } catch (e) {}
+        } else {
+          throw timeoutError;
+        }
+      }
+
       const elapsed = Date.now() - startTime;
       logger.warn('🎤 speak nativo completado en', elapsed, 'ms');
+
+      // Desactivar audio ducking
+      if (window.audioMixer) {
+        window.audioMixer.stopDucking();
+      }
 
       paragraph.spoken = true;
 
@@ -355,6 +395,11 @@ class AudioReaderTTSEngine {
         onEnd(pauseDuration);
       }
     } catch (error) {
+      // Siempre restaurar volumen en caso de error
+      if (window.audioMixer) {
+        window.audioMixer.stopDucking();
+      }
+
       // Ignore interrupted/canceled errors (from stop/pause)
       const errorMsg = error?.message?.toLowerCase() || '';
       if (errorMsg.includes('interrupted') || errorMsg.includes('canceled') || errorMsg.includes('cancelled')) {
@@ -418,6 +463,13 @@ class AudioReaderTTSEngine {
       return;
     }
 
+    // Activar audio ducking al empezar
+    this.utterance.onstart = () => {
+      if (window.audioMixer) {
+        window.audioMixer.startDucking();
+      }
+    };
+
     // Word boundary para palabra por palabra
     if (onWordBoundary) {
       this.utterance.onboundary = (event) => {
@@ -428,6 +480,11 @@ class AudioReaderTTSEngine {
     }
 
     this.utterance.onend = () => {
+      // Desactivar audio ducking
+      if (window.audioMixer) {
+        window.audioMixer.stopDucking();
+      }
+
       paragraph.spoken = true;
       const pauseDuration = paragraph.pauseAfter || 300;
 
@@ -439,6 +496,11 @@ class AudioReaderTTSEngine {
     };
 
     this.utterance.onerror = (event) => {
+      // Siempre restaurar volumen en caso de error
+      if (window.audioMixer) {
+        window.audioMixer.stopDucking();
+      }
+
       if (event.error === 'interrupted' || event.error === 'canceled') {
         return;
       }

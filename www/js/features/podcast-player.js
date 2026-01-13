@@ -13,6 +13,7 @@ class PodcastPlayer {
     this.currentBookId = null;
     this.playbackSpeed = 1.0;
     this.downloadedEpisodes = this.loadDownloadedEpisodes();
+    this.bookmarks = this.loadBookmarks(); // v2.9.368: Sistema de marcadores
 
     // Configuración
     this.config = {
@@ -50,6 +51,110 @@ class PodcastPlayer {
     const state = this.loadPlaybackState();
     state[episodeId] = { position, duration, updatedAt: Date.now() };
     localStorage.setItem('podcast-playback', JSON.stringify(state));
+  }
+
+  // ==========================================================================
+  // MARCADORES DE TIEMPO (v2.9.368)
+  // ==========================================================================
+
+  loadBookmarks() {
+    try {
+      return JSON.parse(localStorage.getItem('podcast-bookmarks')) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  saveBookmarks() {
+    localStorage.setItem('podcast-bookmarks', JSON.stringify(this.bookmarks));
+  }
+
+  /**
+   * Añade un marcador en el momento actual
+   */
+  addBookmark(note = '') {
+    if (!this.currentBookId || !this.currentEpisode) {
+      window.toast?.error('No hay episodio reproduciéndose');
+      return;
+    }
+
+    const key = `${this.currentBookId}:${this.currentEpisode}`;
+    if (!this.bookmarks[key]) {
+      this.bookmarks[key] = [];
+    }
+
+    // Obtener posición actual del AudioReader
+    const position = window.audioReader?.getCurrentPosition?.() || 0;
+    const timestamp = this.formatTime(position);
+
+    // Pedir nota si no se proporcionó
+    if (!note) {
+      note = prompt('Añade una nota para este marcador (opcional):') || '';
+    }
+
+    const bookmark = {
+      id: Date.now(),
+      position,
+      timestamp,
+      note: note.trim(),
+      createdAt: Date.now()
+    };
+
+    this.bookmarks[key].push(bookmark);
+    this.saveBookmarks();
+
+    window.toast?.success(`📌 Marcador guardado en ${timestamp}`);
+    this.updateUI();
+  }
+
+  /**
+   * Elimina un marcador
+   */
+  deleteBookmark(episodeKey, bookmarkId) {
+    if (this.bookmarks[episodeKey]) {
+      this.bookmarks[episodeKey] = this.bookmarks[episodeKey].filter(b => b.id !== bookmarkId);
+      if (this.bookmarks[episodeKey].length === 0) {
+        delete this.bookmarks[episodeKey];
+      }
+      this.saveBookmarks();
+      window.toast?.info('Marcador eliminado');
+      this.updateUI();
+    }
+  }
+
+  /**
+   * Salta a un marcador específico
+   */
+  goToBookmark(bookId, episodeId, position) {
+    // Primero reproducir el episodio si no es el actual
+    if (this.currentEpisode !== episodeId || this.currentBookId !== bookId) {
+      this.play(bookId, episodeId);
+    }
+
+    // Saltar a la posición
+    setTimeout(() => {
+      if (window.audioReader?.seekTo) {
+        window.audioReader.seekTo(position);
+        window.toast?.info(`Saltando a marcador...`);
+      }
+    }, 500);
+  }
+
+  /**
+   * Obtiene los marcadores de un episodio
+   */
+  getBookmarks(bookId, episodeId) {
+    const key = `${bookId}:${episodeId}`;
+    return this.bookmarks[key] || [];
+  }
+
+  /**
+   * Formatea segundos a mm:ss
+   */
+  formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
   // ==========================================================================
@@ -432,6 +537,7 @@ class PodcastPlayer {
     const isCurrent = episode.id === this.currentEpisode;
     const progress = this.getEpisodeProgress(this.currentBookId, episode.id);
     const isCompleted = progress >= 95;
+    const bookmarks = this.getBookmarks(this.currentBookId, episode.id);
 
     return `
       <div class="p-4 border-b border-gray-800 hover:bg-slate-800/50 transition-colors ${isCurrent ? 'bg-purple-900/20' : ''}"
@@ -476,6 +582,25 @@ class PodcastPlayer {
             ${progress > 0 ? `
               <div class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
                 <div class="h-full bg-purple-500 rounded-full" style="width: ${progress}%"></div>
+              </div>
+            ` : ''}
+
+            <!-- Marcadores (v2.9.368) -->
+            ${bookmarks.length > 0 ? `
+              <div class="mt-2 space-y-1" onclick="event.stopPropagation()">
+                <p class="text-xs text-purple-400 font-medium">📌 ${bookmarks.length} marcador${bookmarks.length > 1 ? 'es' : ''}</p>
+                ${bookmarks.slice(0, 3).map(b => `
+                  <div class="flex items-center gap-2 text-xs bg-purple-900/30 rounded px-2 py-1">
+                    <button onclick="window.podcastPlayer?.goToBookmark('${this.currentBookId}', '${episode.id}', ${b.position})"
+                            class="text-purple-300 hover:text-white font-mono">
+                      ${b.timestamp}
+                    </button>
+                    <span class="text-gray-400 truncate flex-1">${this.escapeHtml(b.note) || 'Sin nota'}</span>
+                    <button onclick="window.podcastPlayer?.deleteBookmark('${this.currentBookId}:${episode.id}', ${b.id})"
+                            class="text-gray-500 hover:text-red-400">✕</button>
+                  </div>
+                `).join('')}
+                ${bookmarks.length > 3 ? `<p class="text-xs text-gray-500">+${bookmarks.length - 3} más</p>` : ''}
               </div>
             ` : ''}
           </div>
@@ -536,6 +661,13 @@ class PodcastPlayer {
 
         <!-- Controles -->
         <div class="flex items-center gap-1">
+          <button onclick="window.podcastPlayer?.addBookmark()"
+                  class="p-2 hover:bg-purple-700 rounded-full text-purple-400 hover:text-white transition-colors"
+                  title="Guardar marcador">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+          </button>
           <button onclick="window.podcastPlayer?.previousEpisode()"
                   class="p-2 hover:bg-slate-700 rounded-full text-gray-400 hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

@@ -673,43 +673,133 @@ Devuelve el texto adaptado:`;
    */
   async applyAdaptation() {
     // Obtener el contenido del capítulo actual
-    const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content');
+    const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content, .book-content');
     if (!chapterContent) {
       logger.warn('[ContentAdapter] No chapter content found');
-      if (window.showToast) window.showToast('No se encontró contenido para adaptar', 'error');
+      window.toast?.error('No se encontró contenido para adaptar');
       return;
     }
 
+    // Si es contenido original, no hacer nada especial
+    if (this.currentAgeStyle === 'adultos' && this.currentFocusStyle === 'original') {
+      this.restoreOriginal();
+      this.hideSelector();
+      return;
+    }
+
+    // Guardar contenido original si no lo tenemos
+    if (!this.originalContent) {
+      this.originalContent = chapterContent.innerHTML;
+      // Intentar obtener bookId y chapterId del contexto
+      if (window.bookEngine) {
+        this.currentBookId = window.bookEngine.currentBookId;
+        this.currentChapterId = window.bookEngine.currentChapterId;
+      }
+    }
+
     // Mostrar estado de carga
-    this.showLoading('Adaptando contenido...');
+    this.showLoading('Adaptando contenido con IA...');
 
     try {
-      // Por ahora, mostrar mensaje de que la funcionalidad requiere IA Premium
-      setTimeout(() => {
+      // Extraer texto plano del contenido HTML
+      const textContent = chapterContent.innerText || chapterContent.textContent;
+
+      // Llamar a adaptContent con el contenido actual
+      this.setContext(this.currentBookId, this.currentChapterId, textContent);
+
+      const result = await this.adaptContent(this.currentAgeStyle, this.currentFocusStyle);
+
+      if (result && result.content) {
+        // Aplicar contenido adaptado
+        // Preservar estructura HTML pero reemplazar texto
+        const adaptedHtml = this.convertToHtml(result.content);
+        chapterContent.innerHTML = adaptedHtml;
+
+        this.isAdapted = true;
         this.hideLoading();
-        if (window.showToast) {
-          window.showToast(`Adaptación configurada: ${this.currentAgeStyle} + ${this.currentFocusStyle}`, 'success');
-        }
-
-        // Cerrar selector
+        this.showSuccess(
+          `Adaptado: ${this.AGE_STYLES[this.currentAgeStyle]?.label} + ${this.FOCUS_STYLES[this.currentFocusStyle]?.label}`,
+          result.fromCache
+        );
+        this.updateUI();
         this.hideSelector();
-      }, 500);
 
+        window.toast?.success('Contenido adaptado correctamente');
+      }
     } catch (error) {
       logger.error('[ContentAdapter] Error applying adaptation:', error);
       this.hideLoading();
-      if (window.showToast) window.showToast('Error al adaptar contenido', 'error');
+      this.showError(error.message);
+      window.toast?.error(error.message || 'Error al adaptar contenido');
     }
+  }
+
+  /**
+   * Convertir texto plano a HTML con formato básico
+   */
+  convertToHtml(text) {
+    if (!text) return '';
+
+    // Dividir en párrafos y formatear
+    const paragraphs = text.split(/\n\n+/);
+    return paragraphs
+      .map(p => {
+        p = p.trim();
+        if (!p) return '';
+
+        // Detectar encabezados (líneas cortas que terminan en : o son todo mayúsculas)
+        if (p.length < 80 && (p.endsWith(':') || p === p.toUpperCase())) {
+          return `<h3 class="text-lg font-bold mt-6 mb-3">${this.escapeHtml(p)}</h3>`;
+        }
+
+        // Detectar listas
+        if (p.match(/^[-•*]\s/m)) {
+          const items = p.split(/\n/).map(line => {
+            const content = line.replace(/^[-•*]\s*/, '').trim();
+            return content ? `<li>${this.escapeHtml(content)}</li>` : '';
+          }).join('');
+          return `<ul class="list-disc pl-6 my-4">${items}</ul>`;
+        }
+
+        // Párrafo normal
+        return `<p class="mb-4">${this.escapeHtml(p).replace(/\n/g, '<br>')}</p>`;
+      })
+      .filter(p => p)
+      .join('\n');
+  }
+
+  /**
+   * Escapar HTML para prevenir XSS
+   */
+  escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   /**
    * Restaurar contenido original
    */
   restoreOriginal() {
-    if (window.showToast) {
-      window.showToast('Contenido restaurado', 'info');
+    // Restaurar el HTML original si lo tenemos
+    if (this.originalContent) {
+      const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content, .book-content');
+      if (chapterContent) {
+        chapterContent.innerHTML = this.originalContent;
+      }
     }
+
     this.isAdapted = false;
+    this.currentAgeStyle = 'adultos';
+    this.currentFocusStyle = 'original';
+    this.savePreferences();
+    this.updateUI();
+
+    window.toast?.info('Contenido restaurado');
 
     // Actualizar botón restaurar
     const restoreBtn = document.getElementById('adapter-restore-btn');

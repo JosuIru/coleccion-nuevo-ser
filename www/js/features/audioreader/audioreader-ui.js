@@ -712,6 +712,13 @@ class AudioReaderUI {
       const grid = document.getElementById('audioreader-ambient-grid');
       if (!grid) return;
 
+      // 🔧 FIX: Restaurar volumen guardado ANTES de añadir sonidos
+      if (window.audioMixer) {
+        const savedVolume = localStorage.getItem('audioreader-volume');
+        const volume = savedVolume ? parseInt(savedVolume) / 100 : 0.3;
+        window.audioMixer.setAmbientVolume(volume);
+      }
+
       // Restaurar sonidos y UI
       for (const soundName of ambients) {
         if (window.audioMixer) {

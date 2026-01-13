@@ -167,6 +167,17 @@ class AudioMixer {
       gainNode.gain.setTargetAtTime(targetVolume, this.audioContext.currentTime, 0.3);
       this.rebalanceAmbientVolumes();
 
+      // 🔧 FIX: Asegurar que el master ambient gain está activo
+      // Si es el primer sonido o el master está en 0, restaurar volumen
+      if (this.channels.ambient.gainNode.gain.value < 0.01) {
+        const masterVolume = this.channels.ambient.volume || 0.3;
+        this.channels.ambient.gainNode.gain.setTargetAtTime(
+          masterVolume,
+          this.audioContext.currentTime,
+          0.3
+        );
+      }
+
     } catch (error) {
       logger.error('❌ Error añadiendo ambiente:', error);
     } finally {

@@ -108,7 +108,15 @@ class AudioReaderPlayback {
       window.backgroundAudio.pause();
     }
 
-    // NO pausar ambient/binaural - dejar que sigan sonando durante pausa
+    // Silenciar ambient/binaural durante pausa (fade out rápido)
+    if (window.audioMixer) {
+      // Guardar volumen actual para restaurar después
+      ar._pausedAmbientVolume = window.audioMixer.channels?.ambient?.volume || 0.3;
+      ar._pausedBinauralVolume = window.audioMixer.channels?.binaural?.volume || 0.2;
+      // Silenciar con fade
+      window.audioMixer.setAmbientVolume(0);
+      window.audioMixer.setBinauralVolume(0);
+    }
 
     // Ocultar indicador de pausa
     if (ar.ui) {
@@ -136,7 +144,13 @@ class AudioReaderPlayback {
       window.backgroundAudio.resume();
     }
 
-    // NO reiniciar ambient/binaural - nunca se detuvieron durante pausa
+    // Restaurar volumen de ambient/binaural
+    if (window.audioMixer) {
+      const ambientVol = ar._pausedAmbientVolume || 0.3;
+      const binauralVol = ar._pausedBinauralVolume || 0.2;
+      window.audioMixer.setAmbientVolume(ambientVol);
+      window.audioMixer.setBinauralVolume(binauralVol);
+    }
 
     // Verificar si Web Speech API puede continuar desde donde se pausó
     const canResumeWebSpeech = ar.tts?.provider === 'browser' &&

@@ -535,11 +535,13 @@ class PracticeTimer {
       if (window.audioMixer) {
         logger.log('[PracticeTimer] Iniciando ambientes:', [...this.activeAmbients]);
 
+        // 🔧 FIX: Establecer volumen ANTES de añadir sonidos
+        window.audioMixer.setAmbientVolume(this.ambientVolume);
+
         // Añadir cada sonido activo
         for (const soundName of this.activeAmbients) {
           await window.audioMixer.addAmbient(soundName);
         }
-        window.audioMixer.setAmbientVolume(this.ambientVolume);
         this.usingAudioMixer = true;
         return;
       }
@@ -1219,7 +1221,6 @@ class PracticeTimer {
     });
 
     // Actualizar label del botón toggle según cantidad de sonidos activos
-    const btn = document.getElementById('timer-ambient-toggle');
     if (btn && this.ambientEnabled && this.activeAmbients.size > 0) {
       const label = btn.querySelector('.ambient-label');
       if (label) {

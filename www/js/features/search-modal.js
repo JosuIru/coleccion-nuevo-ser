@@ -40,6 +40,141 @@ class SearchModal {
     // 🔧 FIX #31: Inicializar filtros dinámicos desde catálogo
     this.filters = null;
     this.filtersPromise = this.loadFilters();
+
+    // v2.9.369: Historial de búsquedas
+    this.searchHistory = this.loadSearchHistory();
+    this.maxHistoryItems = 10;
+  }
+
+  // ==========================================================================
+  // v2.9.369: HISTORIAL DE BÚSQUEDAS
+  // ==========================================================================
+
+  loadSearchHistory() {
+    try {
+      return JSON.parse(localStorage.getItem('search-history') || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  saveSearchHistory() {
+    try {
+      localStorage.setItem('search-history', JSON.stringify(this.searchHistory));
+    } catch (error) {
+      logger.error('Error guardando historial de búsquedas:', error);
+    }
+  }
+
+  addToSearchHistory(query) {
+    if (!query || query.trim().length < 3) return;
+
+    const normalizedQuery = query.trim().toLowerCase();
+
+    // Eliminar si ya existe (para moverlo al principio)
+    this.searchHistory = this.searchHistory.filter(
+      item => item.query.toLowerCase() !== normalizedQuery
+    );
+
+    // Añadir al principio
+    this.searchHistory.unshift({
+      query: query.trim(),
+      timestamp: Date.now()
+    });
+
+    // Limitar tamaño
+    if (this.searchHistory.length > this.maxHistoryItems) {
+      this.searchHistory = this.searchHistory.slice(0, this.maxHistoryItems);
+    }
+
+    this.saveSearchHistory();
+  }
+
+  removeFromSearchHistory(query) {
+    this.searchHistory = this.searchHistory.filter(
+      item => item.query.toLowerCase() !== query.toLowerCase()
+    );
+    this.saveSearchHistory();
+    this.renderSearchHistory();
+  }
+
+  clearSearchHistory() {
+    this.searchHistory = [];
+    this.saveSearchHistory();
+    this.renderSearchHistory();
+  }
+
+  renderSearchHistory() {
+    const container = document.getElementById('search-results');
+    if (!container) return;
+
+    if (this.searchHistory.length === 0) {
+      container.innerHTML = `
+        <div class="text-center text-gray-600 dark:text-gray-400 py-12">
+          <div class="text-6xl mb-4 text-gray-400 dark:text-gray-500">${Icons.search(64)}</div>
+          <p class="text-lg text-gray-800 dark:text-gray-300">Busca en toda la colección de libros</p>
+          <p class="text-sm mt-2 text-gray-600 dark:text-gray-400">Prueba: "crear comunidad", "meditación para ansiedad", "grupo de consumo"</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            ${Icons.clock(16)} Búsquedas recientes
+          </h3>
+          <button id="clear-search-history" class="text-xs text-red-500 hover:text-red-400 transition">
+            Borrar historial
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          ${this.searchHistory.map(item => `
+            <div class="search-history-item group flex items-center gap-1 px-3 py-2 bg-gray-100 dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-slate-700 cursor-pointer transition">
+              <span class="text-sm text-gray-800 dark:text-gray-200" data-query="${Sanitizer.sanitizeAttribute(item.query)}">${Sanitizer.escapeHtml(item.query)}</span>
+              <button class="remove-history-item ml-1 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition" data-query="${Sanitizer.sanitizeAttribute(item.query)}">
+                ${Icons.close(14)}
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="text-center text-gray-500 dark:text-gray-400 py-8">
+        <p class="text-sm">Haz clic en una búsqueda reciente o escribe algo nuevo</p>
+      </div>
+    `;
+
+    // Attach history event listeners
+    this.attachHistoryListeners();
+  }
+
+  attachHistoryListeners() {
+    // Click en item del historial
+    document.querySelectorAll('.search-history-item span[data-query]').forEach(item => {
+      item.addEventListener('click', (e) => {
+        const query = e.target.dataset.query;
+        const input = document.getElementById('search-input');
+        if (input) {
+          input.value = query;
+          this.search(query);
+        }
+      });
+    });
+
+    // Eliminar item del historial
+    document.querySelectorAll('.remove-history-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const query = e.currentTarget.dataset.query;
+        this.removeFromSearchHistory(query);
+      });
+    });
+
+    // Limpiar todo el historial
+    document.getElementById('clear-search-history')?.addEventListener('click', () => {
+      this.clearSearchHistory();
+    });
   }
 
   async loadMetadata() {
@@ -228,6 +363,9 @@ class SearchModal {
       // logger.debug('⏱️ Timeout ejecutado - adjuntando listeners');
       this.attachEventListeners();
 
+      // v2.9.369: Mostrar historial de búsquedas al abrir
+      this.renderSearchHistory();
+
       // Focus en el input de búsqueda
       const input = document.getElementById('search-input');
       // logger.debug('🎯 Focus en input:', input ? 'SÍ' : 'NO');
@@ -355,6 +493,11 @@ class SearchModal {
 
     // Ocultar indicador de carga
     if (loadingIndicator) loadingIndicator.classList.add('hidden');
+
+    // v2.9.369: Guardar en historial si hay resultados
+    if (this.searchResults.length > 0) {
+      this.addToSearchHistory(query);
+    }
 
     // Aplicar filtros
     this.applyFilters();

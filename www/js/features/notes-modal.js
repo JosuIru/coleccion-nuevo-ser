@@ -2,6 +2,7 @@
 // NOTES MODAL - Sistema de Notas Personales
 // ============================================================================
 // Modal para crear, editar y gestionar notas por capítulo
+// v2.9.368: Búsqueda y etiquetas
 
 class NotesModal {
   constructor(bookEngine) {
@@ -12,11 +13,100 @@ class NotesModal {
     this.notes = this.loadNotes();
     this.previousActiveElement = null; // For accessibility focus restoration
 
+    // v2.9.368: Búsqueda y filtros
+    this.searchQuery = '';
+    this.selectedTags = [];
+    this.allTags = this.extractAllTags();
+
     // 🔧 FIX #86: Usar EventManager para prevenir memory leaks
     this.eventManager = new EventManager();
 
     // 🔧 FIX v2.9.269: Focus trap para accesibilidad
     this.focusTrap = null;
+  }
+
+  // ==========================================================================
+  // v2.9.368: BÚSQUEDA Y ETIQUETAS
+  // ==========================================================================
+
+  extractAllTags() {
+    const tags = new Set();
+    for (const key in this.notes) {
+      for (const note of this.notes[key]) {
+        if (note.tags) {
+          note.tags.forEach(tag => tags.add(tag));
+        }
+      }
+    }
+    return [...tags].sort();
+  }
+
+  searchNotes(notes) {
+    if (!this.searchQuery && this.selectedTags.length === 0) {
+      return notes;
+    }
+
+    return notes.filter(note => {
+      // Filtrar por texto
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase();
+        const matchesText = note.content.toLowerCase().includes(query);
+        if (!matchesText) return false;
+      }
+
+      // Filtrar por etiquetas
+      if (this.selectedTags.length > 0) {
+        const noteTags = note.tags || [];
+        const hasAllTags = this.selectedTags.every(tag => noteTags.includes(tag));
+        if (!hasAllTags) return false;
+      }
+
+      return true;
+    });
+  }
+
+  addTagToNote(noteId, tag) {
+    const normalizedTag = tag.trim().toLowerCase().replace(/[^a-záéíóúñü0-9]/g, '');
+    if (!normalizedTag) return;
+
+    for (const key in this.notes) {
+      const note = this.notes[key].find(n => n.id === noteId);
+      if (note) {
+        if (!note.tags) note.tags = [];
+        if (!note.tags.includes(normalizedTag)) {
+          note.tags.push(normalizedTag);
+          this.saveNotes();
+          this.allTags = this.extractAllTags();
+        }
+        break;
+      }
+    }
+  }
+
+  removeTagFromNote(noteId, tag) {
+    for (const key in this.notes) {
+      const note = this.notes[key].find(n => n.id === noteId);
+      if (note && note.tags) {
+        const index = note.tags.indexOf(tag);
+        if (index > -1) {
+          note.tags.splice(index, 1);
+          this.saveNotes();
+          this.allTags = this.extractAllTags();
+        }
+        break;
+      }
+    }
+  }
+
+  toggleTagFilter(tag) {
+    const index = this.selectedTags.indexOf(tag);
+    if (index === -1) {
+      this.selectedTags.push(tag);
+    } else {
+      this.selectedTags.splice(index, 1);
+    }
+    this.render();
+    this.attachEventListeners();
   }
 
   // ==========================================================================
@@ -244,49 +334,103 @@ class NotesModal {
 
   renderHeader(bookData, chapter) {
     return `
-      <div class="border-b border-slate-700 p-3 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 bg-slate-800/50">
-        <div class="flex-1 min-w-0 w-full sm:w-auto">
-          <h2 id="notes-modal-title" class="text-lg sm:text-2xl font-bold mb-1 flex items-center gap-2 sm:gap-3">
-            ${Icons.note(20)} <span class="truncate">${this.i18n.t('notes.title')}</span>
-          </h2>
-          <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1 truncate">
-            ${chapter
-              ? `<span class="truncate">${bookData.title}</span> ${Icons.chevronRight(14)} <span class="truncate">${chapter.title}</span>`
-              : `<span class="truncate">Todas las notas de ${bookData.title}</span>`
-            }
-          </p>
+      <div class="border-b border-slate-700 p-3 sm:p-6 bg-slate-800/50">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+          <div class="flex-1 min-w-0 w-full sm:w-auto">
+            <h2 id="notes-modal-title" class="text-lg sm:text-2xl font-bold mb-1 flex items-center gap-2 sm:gap-3">
+              ${Icons.note(20)} <span class="truncate">${this.i18n.t('notes.title')}</span>
+            </h2>
+            <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1 truncate">
+              ${chapter
+                ? `<span class="truncate">${bookData.title}</span> ${Icons.chevronRight(14)} <span class="truncate">${chapter.title}</span>`
+                : `<span class="truncate">Todas las notas de ${bookData.title}</span>`
+              }
+            </p>
+          </div>
+
+          <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
+            ${this.currentChapterId ? `
+              <button id="view-all-notes-btn"
+                      class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-xs sm:text-sm whitespace-nowrap">
+                ${this.i18n.t('notes.viewAll')}
+              </button>
+            ` : ''}
+            <button id="export-notes-btn"
+                    class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition text-xs sm:text-sm flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+              ${Icons.download(16)} <span class="hidden sm:inline">${this.i18n.t('btn.export')}</span>
+            </button>
+            <button id="close-notes-btn"
+                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center"
+                    aria-label="Cerrar notas">
+              ${Icons.close(20)}
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
-          ${this.currentChapterId ? `
-            <button id="view-all-notes-btn"
-                    class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-xs sm:text-sm whitespace-nowrap">
-              ${this.i18n.t('notes.viewAll')}
-            </button>
+        <!-- v2.9.368: Búsqueda y filtros de etiquetas -->
+        <div class="mt-4 space-y-3">
+          <!-- Barra de búsqueda -->
+          <div class="relative">
+            <input type="text"
+                   id="notes-search-input"
+                   class="w-full px-4 py-2 pl-10 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
+                   placeholder="Buscar en notas..."
+                   value="${this.escapeHtml(this.searchQuery)}">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            ${this.searchQuery ? `
+              <button id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                ${Icons.close(16)}
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Filtros de etiquetas -->
+          ${this.allTags.length > 0 ? `
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs text-gray-400 mr-1">🏷️</span>
+              ${this.allTags.map(tag => `
+                <button class="tag-filter-btn px-2 py-1 rounded-full text-xs transition ${
+                  this.selectedTags.includes(tag)
+                    ? 'bg-cyan-600 text-white'
+                    : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                }" data-tag="${tag}">
+                  #${tag}
+                </button>
+              `).join('')}
+              ${this.selectedTags.length > 0 ? `
+                <button id="clear-tags-btn" class="px-2 py-1 rounded-full text-xs bg-red-900/50 text-red-300 hover:bg-red-800 transition">
+                  Limpiar filtros
+                </button>
+              ` : ''}
+            </div>
           ` : ''}
-          <button id="export-notes-btn"
-                  class="px-2 sm:px-4 py-1 sm:py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition text-xs sm:text-sm flex items-center gap-1 sm:gap-2 whitespace-nowrap">
-            ${Icons.download(16)} <span class="hidden sm:inline">${this.i18n.t('btn.export')}</span>
-          </button>
-          <button id="close-notes-btn"
-                  class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-700 transition flex items-center justify-center"
-                  aria-label="Cerrar notas">
-            ${Icons.close(20)}
-          </button>
         </div>
       </div>
     `;
   }
 
   renderChapterNotes() {
-    const notes = this.getChapterNotes(this.currentChapterId);
+    const allNotes = this.getChapterNotes(this.currentChapterId);
+    const notes = this.searchNotes(allNotes); // v2.9.368: Aplicar búsqueda/filtros
 
-    if (notes.length === 0) {
+    if (allNotes.length === 0) {
       return `
         <div class="text-center py-12 opacity-50">
           <div class="text-6xl mb-4">📝</div>
           <p class="text-lg">${this.i18n.t('notes.empty')}</p>
           <p class="text-sm mt-2">${this.i18n.t('notes.writeBelow')}</p>
+        </div>
+      `;
+    }
+
+    if (notes.length === 0) {
+      return `
+        <div class="text-center py-12 opacity-50">
+          <div class="text-4xl mb-4">🔍</div>
+          <p class="text-lg">No se encontraron notas</p>
+          <p class="text-sm mt-2">Intenta con otros términos o filtros</p>
         </div>
       `;
     }
@@ -299,14 +443,25 @@ class NotesModal {
   }
 
   renderAllNotes() {
-    const notes = this.getAllNotes();
+    const allNotes = this.getAllNotes();
+    const notes = this.searchNotes(allNotes); // v2.9.368: Aplicar búsqueda/filtros
 
-    if (notes.length === 0) {
+    if (allNotes.length === 0) {
       return `
         <div class="text-center py-12 opacity-50">
           <div class="text-6xl mb-4">📝</div>
           <p class="text-lg">Aún no tienes notas en este libro</p>
           <p class="text-sm mt-2">Abre un capítulo y empieza a escribir</p>
+        </div>
+      `;
+    }
+
+    if (notes.length === 0) {
+      return `
+        <div class="text-center py-12 opacity-50">
+          <div class="text-4xl mb-4">🔍</div>
+          <p class="text-lg">No se encontraron notas</p>
+          <p class="text-sm mt-2">Intenta con otros términos o filtros</p>
         </div>
       `;
     }
@@ -331,6 +486,8 @@ class NotesModal {
       minute: '2-digit'
     });
 
+    const tags = note.tags || [];
+
     return `
       <div class="note-card bg-slate-800/50 border border-slate-700 rounded-xl p-4 hover:border-cyan-500/50 transition group"
            data-note-id="${note.id}">
@@ -341,6 +498,20 @@ class NotesModal {
 
         <div class="note-content prose prose-invert prose-sm max-w-none mb-3">
           ${this.formatNoteContent(note.content)}
+        </div>
+
+        <!-- v2.9.368: Etiquetas de la nota -->
+        <div class="flex flex-wrap items-center gap-1 mb-3">
+          ${tags.map(tag => `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-cyan-900/30 text-cyan-400 border border-cyan-500/30">
+              #${tag}
+              <button class="remove-tag-btn hover:text-red-400" data-note-id="${note.id}" data-tag="${tag}" title="Quitar etiqueta">×</button>
+            </span>
+          `).join('')}
+          <button class="add-tag-btn px-2 py-0.5 rounded-full text-xs bg-slate-700 text-gray-400 hover:bg-slate-600 hover:text-white transition"
+                  data-note-id="${note.id}" title="Añadir etiqueta">
+            + 🏷️
+          </button>
         </div>
 
         <div class="flex items-center justify-between text-xs opacity-50">
@@ -517,6 +688,79 @@ class NotesModal {
     if (exportBtn) {
       this.eventManager.addEventListener(exportBtn, 'click', () => this.exportNotes());
     }
+
+    // v2.9.368: Búsqueda con debounce
+    const searchInput = document.getElementById('notes-search-input');
+    if (searchInput) {
+      let searchTimeout;
+      this.eventManager.addEventListener(searchInput, 'input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          this.searchQuery = e.target.value;
+          this.render();
+          this.attachEventListeners();
+          // Restaurar foco en el input de búsqueda
+          const newInput = document.getElementById('notes-search-input');
+          if (newInput) {
+            newInput.focus();
+            newInput.setSelectionRange(newInput.value.length, newInput.value.length);
+          }
+        }, 300);
+      });
+    }
+
+    // v2.9.368: Limpiar búsqueda
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+    if (clearSearchBtn) {
+      this.eventManager.addEventListener(clearSearchBtn, 'click', () => {
+        this.searchQuery = '';
+        this.render();
+        this.attachEventListeners();
+        const newInput = document.getElementById('notes-search-input');
+        if (newInput) newInput.focus();
+      });
+    }
+
+    // v2.9.368: Filtros de etiquetas
+    const tagFilterBtns = document.querySelectorAll('.tag-filter-btn');
+    tagFilterBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', () => {
+        const tag = btn.getAttribute('data-tag');
+        this.toggleTagFilter(tag);
+      });
+    });
+
+    // v2.9.368: Limpiar filtros de etiquetas
+    const clearTagsBtn = document.getElementById('clear-tags-btn');
+    if (clearTagsBtn) {
+      this.eventManager.addEventListener(clearTagsBtn, 'click', () => {
+        this.selectedTags = [];
+        this.render();
+        this.attachEventListeners();
+      });
+    }
+
+    // v2.9.368: Añadir etiqueta a nota
+    const addTagBtns = document.querySelectorAll('.add-tag-btn');
+    addTagBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', () => {
+        const noteId = btn.getAttribute('data-note-id');
+        this.showAddTagModal(noteId);
+      });
+    });
+
+    // v2.9.368: Quitar etiqueta de nota
+    const removeTagBtns = document.querySelectorAll('.remove-tag-btn');
+    removeTagBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
+        e.stopPropagation();
+        const noteId = btn.getAttribute('data-note-id');
+        const tag = btn.getAttribute('data-tag');
+        this.removeTagFromNote(noteId, tag);
+        this.render();
+        this.attachEventListeners();
+      });
+    });
   }
 
   // ==========================================================================
@@ -693,6 +937,100 @@ class NotesModal {
       if (e.target === modal) {
         cleanup();
       }
+    });
+  }
+
+  /**
+   * v2.9.368: Modal para añadir etiqueta a una nota
+   */
+  showAddTagModal(noteId) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-[10001] flex items-center justify-center bg-black/50 animate-fade-in';
+    modal.innerHTML = `
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full mx-4 p-6 animate-scale-in">
+        <h3 class="text-lg font-bold mb-4 text-gray-900 dark:text-white">🏷️ Añadir Etiqueta</h3>
+        <input
+          type="text"
+          id="new-tag-input"
+          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          placeholder="Escribe una etiqueta..."
+          maxlength="20"
+        >
+        ${this.allTags.length > 0 ? `
+          <div class="mt-3">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Etiquetas existentes:</p>
+            <div class="flex flex-wrap gap-1">
+              ${this.allTags.slice(0, 10).map(tag => `
+                <button class="existing-tag-btn px-2 py-1 rounded-full text-xs bg-slate-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-cyan-500 hover:text-white transition" data-tag="${tag}">
+                  #${tag}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+        <div class="flex gap-3 justify-end mt-6">
+          <button class="add-tag-cancel px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition">
+            Cancelar
+          </button>
+          <button class="add-tag-save px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-bold transition">
+            Añadir
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const input = modal.querySelector('#new-tag-input');
+    const saveBtn = modal.querySelector('.add-tag-save');
+    const cancelBtn = modal.querySelector('.add-tag-cancel');
+    const existingTagBtns = modal.querySelectorAll('.existing-tag-btn');
+
+    setTimeout(() => input.focus(), 50);
+
+    const cleanup = () => {
+      document.removeEventListener('keydown', escHandler);
+      modal.remove();
+    };
+
+    const save = () => {
+      const tag = input.value.trim();
+      if (tag) {
+        this.addTagToNote(noteId, tag);
+        this.render();
+        this.attachEventListeners();
+      }
+      cleanup();
+    };
+
+    const escHandler = (e) => {
+      if (e.key === 'Escape') cleanup();
+    };
+    document.addEventListener('keydown', escHandler);
+
+    saveBtn.addEventListener('click', save);
+    cancelBtn.addEventListener('click', cleanup);
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        save();
+      }
+    });
+
+    // Click en etiqueta existente
+    existingTagBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.getAttribute('data-tag');
+        this.addTagToNote(noteId, tag);
+        this.render();
+        this.attachEventListeners();
+        cleanup();
+      });
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) cleanup();
     });
   }
 

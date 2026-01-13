@@ -348,6 +348,314 @@ class FileExportHelper {
   }
 
   // ==========================================================================
+  // v2.9.368: EXPORTAR REFLEXIONES A PDF
+  // ==========================================================================
+
+  async exportReflectionsToPDF() {
+    const reflections = this.getAllReflections();
+
+    if (reflections.length === 0) {
+      window.toast?.info('No hay reflexiones para exportar');
+      return null;
+    }
+
+    // Crear ventana con HTML formateado para impresión
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) {
+      window.toast?.error('Permite las ventanas emergentes para exportar a PDF');
+      return null;
+    }
+
+    const html = this.generateReflectionsPDFHtml(reflections);
+    printWindow.document.write(html);
+    printWindow.document.close();
+
+    // Esperar a que carguen los estilos y luego abrir diálogo de impresión
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    };
+
+    return { success: true, count: reflections.length };
+  }
+
+  getAllReflections() {
+    const reflections = [];
+
+    try {
+      // Cargar reflexiones del nuevo formato
+      const stored = localStorage.getItem('user-reflections');
+      if (stored) {
+        const data = JSON.parse(stored);
+        for (const key in data) {
+          reflections.push(data[key]);
+        }
+      }
+    } catch (error) {
+      // logger.warn('Error loading reflections:', error);
+    }
+
+    // Buscar reflexiones en formato legacy (claves individuales)
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith('reflexion-') && !key.includes('shown') && !key.includes('disabled')) {
+        try {
+          const data = JSON.parse(localStorage.getItem(key));
+          if (data && data.question && data.answer) {
+            reflections.push(data);
+          }
+        } catch {
+          // Ignorar errores de parsing
+        }
+      }
+    }
+
+    // Ordenar por fecha (más recientes primero)
+    reflections.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+    return reflections;
+  }
+
+  generateReflectionsPDFHtml(reflections) {
+    const now = new Date().toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Agrupar por libro
+    const byBook = {};
+    for (const r of reflections) {
+      const bookId = r.bookId || 'sin-libro';
+      if (!byBook[bookId]) byBook[bookId] = [];
+      byBook[bookId].push(r);
+    }
+
+    let contentHtml = '';
+    for (const [bookId, bookReflections] of Object.entries(byBook)) {
+      const bookTitle = this.getBookTitle(bookId);
+      contentHtml += `
+        <section class="book-section">
+          <h2 class="book-title">${this.escapeHtml(bookTitle)}</h2>
+          ${bookReflections.map((r, idx) => {
+            const date = r.timestamp
+              ? new Date(r.timestamp).toLocaleDateString('es-ES', {
+                  year: 'numeric', month: 'short', day: 'numeric'
+                })
+              : '';
+            return `
+              <article class="reflection-card">
+                <div class="reflection-header">
+                  <span class="reflection-number">#${idx + 1}</span>
+                  ${date ? `<span class="reflection-date">${date}</span>` : ''}
+                </div>
+                <blockquote class="reflection-question">
+                  <span class="quote-mark">"</span>${this.escapeHtml(r.question)}<span class="quote-mark">"</span>
+                </blockquote>
+                <div class="reflection-answer">
+                  ${this.escapeHtml(r.answer).replace(/\n/g, '<br>')}
+                </div>
+              </article>
+            `;
+          }).join('')}
+        </section>
+      `;
+    }
+
+    return `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mis Reflexiones - Colección Nuevo Ser</title>
+        <style>
+          @page {
+            margin: 2cm;
+            size: A4;
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            color: #2d3748;
+            background: #fff;
+            padding: 20px;
+          }
+
+          .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+          }
+
+          .header h1 {
+            font-size: 28px;
+            color: #1a202c;
+            margin-bottom: 8px;
+            font-weight: 700;
+          }
+
+          .header .subtitle {
+            font-size: 16px;
+            color: #718096;
+            font-style: italic;
+          }
+
+          .header .meta {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #a0aec0;
+          }
+
+          .book-section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+          }
+
+          .book-title {
+            font-size: 20px;
+            color: #4a5568;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+          }
+
+          .reflection-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #805ad5;
+            page-break-inside: avoid;
+          }
+
+          .reflection-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #a0aec0;
+          }
+
+          .reflection-number {
+            font-weight: 600;
+            color: #805ad5;
+          }
+
+          .reflection-question {
+            font-size: 16px;
+            color: #553c9a;
+            font-style: italic;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #faf5ff;
+            border-radius: 6px;
+            position: relative;
+          }
+
+          .quote-mark {
+            font-size: 24px;
+            color: #b794f4;
+            font-weight: bold;
+          }
+
+          .reflection-answer {
+            font-size: 15px;
+            color: #4a5568;
+            padding-left: 10px;
+            border-left: 2px solid #e2e8f0;
+          }
+
+          .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+            font-size: 12px;
+            color: #a0aec0;
+          }
+
+          .footer .logo {
+            font-size: 24px;
+            margin-bottom: 8px;
+          }
+
+          @media print {
+            body {
+              padding: 0;
+            }
+            .reflection-card {
+              box-shadow: none;
+              border: 1px solid #e2e8f0;
+            }
+            .no-print {
+              display: none !important;
+            }
+          }
+
+          .print-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #805ad5;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(128, 90, 213, 0.4);
+            z-index: 1000;
+          }
+
+          .print-btn:hover {
+            background: #6b46c1;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>✨ Mis Reflexiones</h1>
+          <p class="subtitle">Colección Nuevo Ser</p>
+          <p class="meta">Exportado el ${now} · ${reflections.length} reflexiones</p>
+        </div>
+
+        ${contentHtml}
+
+        <div class="footer">
+          <div class="logo">🌟</div>
+          <p>Generado por Colección Nuevo Ser</p>
+          <p>El despertar de la conciencia comienza con la reflexión</p>
+        </div>
+
+        <button class="print-btn no-print" onclick="window.print()">
+          🖨️ Guardar como PDF
+        </button>
+      </body>
+      </html>
+    `;
+  }
+
+  escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // ==========================================================================
   // UTILIDADES
   // ==========================================================================
 
@@ -426,6 +734,15 @@ class FileExportHelper {
               <div>
                 <p class="font-semibold text-white">Backup Completo</p>
                 <p class="text-sm text-gray-400">Todas las notas, progreso, configuración</p>
+              </div>
+            </button>
+
+            <button onclick="window.fileExportHelper.exportReflectionsToPDF(); document.getElementById('export-modal').remove();"
+                    class="w-full p-4 bg-gradient-to-r from-violet-600/20 to-purple-600/20 hover:from-violet-600/30 hover:to-purple-600/30 rounded-xl text-left transition-colors flex items-center gap-4 border border-violet-500/30">
+              <span class="text-3xl">✨</span>
+              <div>
+                <p class="font-semibold text-white">Reflexiones a PDF</p>
+                <p class="text-sm text-gray-400">Documento imprimible con todas tus reflexiones</p>
               </div>
             </button>
           </div>

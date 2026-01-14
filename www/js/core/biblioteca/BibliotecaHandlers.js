@@ -253,6 +253,15 @@ class BibliotecaHandlers {
     }
   }
 
+  /**
+   * Handler para abrir el libro Código Cósmico
+   */
+  handleCodigoCosmico(evento) {
+    evento.preventDefault();
+    logger.log('[BibliotecaHandlers] Abriendo libro Código Cósmico');
+    this.openBook('codigo-cosmico');
+  }
+
   async handleFrankensteinLabCard(evento) {
     evento.preventDefault();
 

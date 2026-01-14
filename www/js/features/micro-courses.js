@@ -44,10 +44,11 @@ class MicroCourses {
   }
 
   initReminderSystem() {
-    // Verificar cada minuto si es hora del recordatorio
+    // Verificar cada 2 minutos si es hora del recordatorio (solo cuando app visible)
     this.notificationCheckInterval = setInterval(() => {
+      if (document.hidden) return;
       this.checkDailyReminder();
-    }, 60000);
+    }, 120000);
 
     // Verificar inmediatamente al cargar
     setTimeout(() => this.checkDailyReminder(), 5000);

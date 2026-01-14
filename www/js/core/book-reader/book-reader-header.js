@@ -236,38 +236,168 @@ class BookReaderHeader {
     `;
   }
 
+  // 🔧 v2.9.379: Menú tablet reorganizado con secciones colapsables
   renderTabletDropdown(hasTimeline, hasResources, hasManualPractico, hasPracticasRadicales, hasKoan) {
+    const menuBtn = 'w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition flex items-center gap-2 text-sm';
+    const sectionHeader = 'flex items-center justify-between w-full px-3 py-2 text-left text-xs font-bold rounded cursor-pointer transition-colors uppercase tracking-wide';
+
+    // Verificar si hay features del libro
+    const hasBookFeatures = hasTimeline || hasResources || hasManualPractico || hasPracticasRadicales || hasKoan;
+
     return `
-      <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 py-1">
-        <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Configuracion</div>
-        <button id="open-settings-modal-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400 font-semibold" aria-label="Configuracion General">
-          ${Icons.settings(18)} <span>Configuracion General</span>
-        </button>
-        <button id="open-help-center-btn-tablet" class="w-full text-left px-4 py-2 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold" aria-label="Centro de Ayuda">
-          ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
-        </button>
-        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-        <button id="notes-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.notes')}">
-          ${Icons.note(18)} <span>${this.i18n.t('reader.notes')}</span>
-        </button>
-        <button id="chapter-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Recursos del Capitulo">
-          ${Icons.create('link', 18)} <span>Recursos del Capitulo</span>
-        </button>
-        <button id="learning-paths-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400" aria-label="Learning Paths">
-          ${Icons.target(18)} <span>Learning Paths</span>
-        </button>
-        ${hasTimeline ? `<button id="timeline-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Timeline Historico">${Icons.timeline(18)} <span>Timeline Historico</span></button>` : ''}
-        ${hasResources ? `<button id="book-resources-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="Recursos del Libro">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
-        ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.manualPractico')}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
-        ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.practicasRadicales')}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
-        ${hasKoan ? `<button id="koan-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('reader.koan')}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
-        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-        ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.download')}">${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span></button>`}
-        <button id="donations-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('btn.support')}">${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span></button>
-        <button id="premium-edition-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 flex items-center gap-3 text-amber-600 dark:text-amber-400" aria-label="${this.i18n.t('premium.title')}">${Icons.book(18)} <span>${this.i18n.t('premium.title')}</span></button>
-        <button id="language-selector-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${this.i18n.t('lang.title')}">${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span></button>
-        <button id="theme-toggle-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3" aria-label="${window.themeHelper?.getThemeLabel() || 'Tema'}"><span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span> <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span></button>
-        <button id="share-chapter-btn-dropdown" class="w-full text-left px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center gap-3 text-blue-600 dark:text-blue-400" aria-label="Compartir capitulo">${Icons.create('share-2', 18)} <span>Compartir</span></button>
+      <div id="more-actions-dropdown" class="hidden absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 max-h-[80vh] overflow-y-auto">
+        <div class="p-2 space-y-1">
+
+          <!-- Acceso rápido -->
+          <button id="notes-btn-dropdown" class="${menuBtn} bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+            ${Icons.note(16)} <span>Mis Notas</span>
+          </button>
+
+          <!-- 🤖 HERRAMIENTAS IA -->
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden" open>
+            <summary class="${sectionHeader} bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30 text-cyan-700 dark:text-cyan-400">
+              <span class="flex items-center gap-2">🤖 Herramientas IA</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              <button id="chapter-resources-btn-dropdown" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                ${Icons.create('link', 16)} <span>Recursos del Capítulo</span>
+              </button>
+              <button id="summary-btn-dropdown" class="${menuBtn} text-emerald-600 dark:text-emerald-400">
+                ${Icons.create('file-text', 16)} <span>Resumen del Capítulo</span>
+              </button>
+              <button id="voice-notes-btn-dropdown" class="${menuBtn} text-red-600 dark:text-red-400">
+                ${Icons.create('mic', 16)} <span>Notas de Voz</span>
+              </button>
+              <button id="concept-map-btn-dropdown" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
+                ${Icons.create('git-branch', 16)} <span>Mapa Conceptual</span>
+              </button>
+              <button id="action-plans-btn-dropdown" class="${menuBtn} text-green-600 dark:text-green-400">
+                ${Icons.create('clipboard-list', 16)} <span>Planes de Acción</span>
+              </button>
+              <button id="smart-reader-btn-dropdown" class="${menuBtn} text-indigo-600 dark:text-indigo-400">
+                ${Icons.create('book-open', 16)} <span>Smart Reader</span>
+              </button>
+              <button id="content-adapter-btn-dropdown" class="${menuBtn} text-violet-600 dark:text-violet-400">
+                ${Icons.create('sliders', 16)} <span>Adaptar Contenido</span>
+              </button>
+            </div>
+          </details>
+
+          <!-- 📈 MI PROGRESO -->
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <summary class="${sectionHeader} bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-400">
+              <span class="flex items-center gap-2">📈 Mi Progreso</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              <button id="learning-paths-btn-dropdown" class="${menuBtn} text-purple-600 dark:text-purple-400">
+                ${Icons.target(16)} <span>Learning Paths</span>
+              </button>
+              <button id="achievements-btn-dropdown" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                ${Icons.trophy(16)} <span>Mis Logros</span>
+              </button>
+              <button id="quiz-btn-dropdown" class="${menuBtn} text-orange-600 dark:text-orange-400">
+                <span class="text-base">🎯</span> <span>Quiz de Autoevaluación</span>
+              </button>
+            </div>
+          </details>
+
+          <!-- 💬 COMUNIDAD -->
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <summary class="${sectionHeader} bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 text-pink-700 dark:text-pink-400">
+              <span class="flex items-center gap-2">💬 Comunidad</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              <button id="chapter-comments-btn-dropdown" class="${menuBtn} text-pink-600 dark:text-pink-400">
+                ${Icons.create('message-circle', 16)} <span>Comentarios del Capítulo</span>
+              </button>
+              <button id="reading-circles-btn-dropdown" class="${menuBtn} text-emerald-600 dark:text-emerald-400">
+                ${Icons.create('users', 16)} <span>Círculos de Lectura</span>
+              </button>
+              <button id="leaderboards-btn-dropdown" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                ${Icons.create('award', 16)} <span>Clasificación</span>
+              </button>
+            </div>
+          </details>
+
+          <!-- 🎧 MULTIMEDIA -->
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <summary class="${sectionHeader} bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-900/30 dark:to-indigo-900/30 text-violet-700 dark:text-violet-400">
+              <span class="flex items-center gap-2">🎧 Multimedia</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              <button id="audioreader-btn-dropdown" class="${menuBtn} text-violet-600 dark:text-violet-400">
+                ${Icons.headphones(16)} <span>Narración</span>
+              </button>
+              <button id="podcast-player-btn-dropdown" class="${menuBtn} text-indigo-600 dark:text-indigo-400">
+                ${Icons.create('radio', 16)} <span>Modo Podcast</span>
+              </button>
+              <button id="micro-courses-btn-dropdown" class="${menuBtn} text-teal-600 dark:text-teal-400">
+                ${Icons.create('play-circle', 16)} <span>Micro-Cursos</span>
+              </button>
+            </div>
+          </details>
+
+          <!-- 📖 ESTE LIBRO (condicional) -->
+          ${hasBookFeatures ? `
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <summary class="${sectionHeader} bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-400">
+              <span class="flex items-center gap-2">📖 Este Libro</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              ${hasTimeline ? `<button id="timeline-btn-dropdown" class="${menuBtn}">${Icons.timeline(16)} <span>Timeline Histórico</span></button>` : ''}
+              ${hasResources ? `<button id="book-resources-btn-dropdown" class="${menuBtn}">${Icons.resources(16)} <span>Recursos del Libro</span></button>` : ''}
+              ${hasManualPractico ? `<button id="manual-practico-btn-dropdown" class="${menuBtn}">${Icons.manual(16)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+              ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-dropdown" class="${menuBtn}">${Icons.radical(16)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+              ${hasKoan ? `<button id="koan-btn-dropdown" class="${menuBtn}">${Icons.koan(16)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+            </div>
+          </details>
+          ` : ''}
+
+          <!-- ⚙️ CONFIGURACIÓN -->
+          <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <summary class="${sectionHeader} bg-gradient-to-r from-gray-100 to-slate-100 dark:from-gray-800 dark:to-slate-800 text-gray-700 dark:text-gray-300">
+              <span class="flex items-center gap-2">⚙️ Configuración</span>
+              <span class="transform transition-transform group-open:rotate-180 text-[10px]">▼</span>
+            </summary>
+            <div class="p-1.5 space-y-0.5 bg-gray-50 dark:bg-gray-800/50">
+              <button id="open-settings-modal-btn-tablet" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                ${Icons.settings(16)} <span>Ajustes</span>
+              </button>
+              <button id="premium-edition-btn-dropdown" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                ${Icons.book(16)} <span>${this.i18n.t('premium.title')}</span>
+              </button>
+              <button id="donations-btn-dropdown" class="${menuBtn} text-pink-600 dark:text-pink-400">
+                ${Icons.donate(16)} <span>${this.i18n.t('btn.support')}</span>
+              </button>
+              <button id="integrations-btn-dropdown" class="${menuBtn} text-indigo-600 dark:text-indigo-400">
+                ${Icons.create('plug', 16)} <span>Integraciones</span>
+              </button>
+              <button id="my-account-btn-tablet" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
+                ${Icons.user(16)} <span>Mi Cuenta</span>
+              </button>
+              ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="${menuBtn}">${Icons.download(16)} <span>${this.i18n.t('btn.download')}</span></button>`}
+              <button id="open-help-center-btn-tablet" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
+                ${Icons.helpCircle(16)} <span>Centro de Ayuda</span>
+              </button>
+              <button id="language-selector-btn-dropdown" class="${menuBtn}">
+                ${Icons.language(16)} <span>${this.i18n.t('lang.title')}</span>
+              </button>
+              <button id="theme-toggle-btn-dropdown" class="${menuBtn}">
+                <span id="theme-icon-dropdown">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
+                <span id="theme-label-dropdown">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
+              </button>
+              <button id="share-chapter-btn-dropdown" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                ${Icons.create('share-2', 16)} <span>Compartir</span>
+              </button>
+            </div>
+          </details>
+
+        </div>
       </div>
     `;
   }

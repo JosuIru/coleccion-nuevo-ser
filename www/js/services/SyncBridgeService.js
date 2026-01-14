@@ -625,6 +625,7 @@ class SyncBridgeService {
     logger.debug(`[SyncBridge] Auto-sync activado (cada ${this.autoSyncIntervalMs / 1000}s)`);
 
     this.syncInterval = setInterval(() => {
+      if (document.hidden) return; // No sincronizar en segundo plano
       this.sync({ silent: true });
     }, this.autoSyncIntervalMs);
   }

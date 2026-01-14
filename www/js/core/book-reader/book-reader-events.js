@@ -598,9 +598,10 @@ class BookReaderEvents {
 
     // Voice notes
     // 🔧 v2.9.325: Mejorar feedback con loading y error handling
-    const voiceNotesBtn = document.getElementById('voice-notes-btn');
-    if (voiceNotesBtn) {
-      this.eventManager.addEventListener(voiceNotesBtn, 'click', async () => {
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
+    this.attachMultiDeviceWithMenuClose(
+      ['voice-notes-btn', 'voice-notes-btn-mobile', 'voice-notes-btn-dropdown'],
+      async () => {
         await this.withToolLoading(async () => {
           const voiceNotes = this.getDependency('voiceNotes');
           if (voiceNotes) {
@@ -609,8 +610,10 @@ class BookReaderEvents {
             throw new Error('Notas de voz no disponibles');
           }
         }, { toolName: 'Notas de Voz' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // KOAN
@@ -631,10 +634,11 @@ class BookReaderEvents {
     // ========================================================================
     // QUIZ
     // 🔧 v2.9.325: Mejorar feedback con loading y error handling
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const quizBtn = document.getElementById('quiz-btn');
-    if (quizBtn) {
-      this.eventManager.addEventListener(quizBtn, 'click', async () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['quiz-btn', 'quiz-btn-mobile', 'quiz-btn-dropdown'],
+      async () => {
         const bookId = this.bookEngine.getCurrentBook();
         const chapterId = this.currentChapter?.id;
 
@@ -660,8 +664,10 @@ class BookReaderEvents {
             throw new Error('Quiz interactivo no disponible');
           }
         }, { toolName: 'Quiz' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // TIMELINE
@@ -752,19 +758,19 @@ class BookReaderEvents {
       this.eventManager.addEventListener(audioExpandBtn, 'click', this._audioExpandHandler);
     }
 
-    const audioreaderBtn = document.getElementById('audioreader-btn');
-    const audioreaderBtnTablet = document.getElementById('audioreader-btn-tablet');
-    const audioreaderBtnMobile = document.getElementById('audioreader-btn-mobile');
-
-    if (audioreaderBtn) {
-      this.eventManager.addEventListener(audioreaderBtn, 'click', this._audioreaderHandler);
-    }
-    if (audioreaderBtnTablet) {
-      this.eventManager.addEventListener(audioreaderBtnTablet, 'click', this._audioreaderHandler);
-    }
-    if (audioreaderBtnMobile) {
-      this.eventManager.addEventListener(audioreaderBtnMobile, 'click', this._audioreaderHandler);
-    }
+    // 🔧 v2.9.379: Añadir soporte para dropdown
+    const audioreaderBtns = [
+      'audioreader-btn',
+      'audioreader-btn-tablet',
+      'audioreader-btn-mobile',
+      'audioreader-btn-dropdown'
+    ];
+    audioreaderBtns.forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        this.eventManager.addEventListener(btn, 'click', this._audioreaderHandler);
+      }
+    });
 
     // ========================================================================
     // SUPPORT BUTTONS
@@ -787,24 +793,30 @@ class BookReaderEvents {
 
     // ========================================================================
     // ACHIEVEMENTS
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const achievementsBtn = document.getElementById('achievements-btn');
-    if (achievementsBtn) {
-      this.eventManager.addEventListener(achievementsBtn, 'click', () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['achievements-btn', 'achievements-btn-mobile', 'achievements-btn-dropdown'],
+      () => {
         const achievementSystem = this.getDependency('achievementSystem');
         if (achievementSystem) {
           achievementSystem.showDashboardModal();
+        } else {
+          this.showToast('error', 'Sistema de logros no disponible');
         }
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // CONTENT ADAPTER
     // 🔧 v2.9.325: Mejorar feedback con loading y error handling
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const contentAdapterBtn = document.getElementById('content-adapter-btn');
-    if (contentAdapterBtn) {
-      this.eventManager.addEventListener(contentAdapterBtn, 'click', async () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['content-adapter-btn', 'content-adapter-btn-mobile', 'content-adapter-btn-dropdown'],
+      async () => {
         await this.withToolLoading(async () => {
           let contentAdapter = this.getDependency('contentAdapter');
 
@@ -823,16 +835,19 @@ class BookReaderEvents {
             throw new Error('Adaptador de contenido no disponible');
           }
         }, { toolName: 'Adaptar Contenido' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // SUMMARY (Auto-summary with AI)
     // 🔧 v2.9.325: Mejorar feedback con loading y error handling
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const summaryBtn = document.getElementById('summary-btn');
-    if (summaryBtn) {
-      this.eventManager.addEventListener(summaryBtn, 'click', async () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['summary-btn', 'summary-btn-mobile', 'summary-btn-dropdown'],
+      async () => {
         await this.withToolLoading(async () => {
           const autoSummary = this.getDependency('autoSummary');
           if (autoSummary && this.currentChapter) {
@@ -844,15 +859,18 @@ class BookReaderEvents {
             throw new Error('Configura la IA para generar resúmenes');
           }
         }, { toolName: 'Resumen' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // CONCEPT MAP
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const conceptMapBtn = document.getElementById('concept-map-btn');
-    if (conceptMapBtn) {
-      this.eventManager.addEventListener(conceptMapBtn, 'click', async () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['concept-map-btn', 'concept-map-btn-mobile', 'concept-map-btn-dropdown'],
+      async () => {
         // 🔧 v2.9.325: Agregar loading y error handling
         await this.withToolLoading(async () => {
           if (window.learningLazyLoader) {
@@ -866,15 +884,18 @@ class BookReaderEvents {
             throw new Error('Mapa Conceptual no disponible');
           }
         }, { toolName: 'Mapa Conceptual' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // ACTION PLANS
+    // 🔧 v2.9.379: Soporte para botón móvil y tablet dropdown
     // ========================================================================
-    const actionPlansBtn = document.getElementById('action-plans-btn');
-    if (actionPlansBtn) {
-      this.eventManager.addEventListener(actionPlansBtn, 'click', async () => {
+    this.attachMultiDeviceWithMenuClose(
+      ['action-plans-btn', 'action-plans-btn-mobile', 'action-plans-btn-dropdown'],
+      async () => {
         // 🔧 v2.9.325: Agregar loading y error handling
         await this.withToolLoading(async () => {
           if (window.learningLazyLoader) {
@@ -888,8 +909,10 @@ class BookReaderEvents {
             throw new Error('Planes de Acción no disponible');
           }
         }, { toolName: 'Planes de Acción' });
-      });
-    }
+      },
+      closeMobileMenuDropdown,
+      closeDropdownHelper
+    );
 
     // ========================================================================
     // CHAPTER RESOURCES Y BOOK RESOURCES
@@ -1218,29 +1241,29 @@ class BookReaderEvents {
 
     // ========================================================================
     // TABLET DROPDOWN MENU
+    // 🔧 v2.9.380: Event delegation en document para sobrevivir re-renders
     // ========================================================================
-    const moreActionsBtn = document.getElementById('more-actions-btn');
-    const moreActionsDropdown = document.getElementById('more-actions-dropdown');
+    if (!this._moreActionsDocumentHandler) {
+      this._moreActionsDocumentHandler = (e) => {
+        const btn = document.getElementById('more-actions-btn');
+        const dropdown = document.getElementById('more-actions-dropdown');
 
-    if (moreActionsBtn && moreActionsDropdown) {
-      if (!this._moreActionsToggleHandler) {
-        this._moreActionsToggleHandler = (e) => {
+        if (!btn || !dropdown) return;
+
+        // Si click en el botón o sus hijos, toggle dropdown
+        if (btn.contains(e.target)) {
           e.stopPropagation();
-          moreActionsDropdown.classList.toggle('hidden');
-        };
-      }
+          dropdown.classList.toggle('hidden');
+          return;
+        }
 
-      this.eventManager.addEventListener(moreActionsBtn, 'click', this._moreActionsToggleHandler);
+        // Si click fuera del dropdown, cerrarlo
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      };
 
-      if (!this._moreActionsClickOutsideAttached) {
-        this._moreActionsClickOutsideHandler = (e) => {
-          if (!moreActionsBtn.contains(e.target) && !moreActionsDropdown.contains(e.target)) {
-            moreActionsDropdown.classList.add('hidden');
-          }
-        };
-        this.eventManager.addEventListener(document, 'click', this._moreActionsClickOutsideHandler);
-        this._moreActionsClickOutsideAttached = true;
-      }
+      document.addEventListener('click', this._moreActionsDocumentHandler);
     }
 
     // ========================================================================
@@ -2122,142 +2145,9 @@ class BookReaderEvents {
         this.createModalHandler('chapterResourcesModal', closeDropdownHelper, 'open', () => this.currentChapter?.id)
       );
 
-      // SUMMARY
-      const summaryBtn = document.getElementById('summary-btn');
-      if (summaryBtn) {
-        this.eventManager.addEventListener(summaryBtn, 'click', () => {
-          const autoSummary = this.getDependency('autoSummary');
-          if (autoSummary && this.currentChapter) {
-            const bookId = this.bookEngine.getCurrentBook();
-            autoSummary.showSummaryModal(this.currentChapter, bookId);
-          } else {
-            this.showToast('info', 'Configura la IA para generar resumenes');
-          }
-        });
-      }
-
-      // VOICE NOTES
-      const voiceNotesBtn = document.getElementById('voice-notes-btn');
-      if (voiceNotesBtn) {
-        this.eventManager.addEventListener(voiceNotesBtn, 'click', () => {
-          const voiceNotes = this.getDependency('voiceNotes');
-          if (voiceNotes) {
-            voiceNotes.showRecordingModal();
-          } else {
-            this.showToast('error', 'Notas de voz no disponibles');
-          }
-        });
-      }
-
-      // CONCEPT MAP
-      const conceptMapBtn = document.getElementById('concept-map-btn');
-      if (conceptMapBtn) {
-        this.eventManager.addEventListener(conceptMapBtn, 'click', async () => {
-          if (window.learningLazyLoader) {
-            await window.learningLazyLoader.ensureConceptMaps();
-          }
-          const conceptMaps = this.getDependency('conceptMaps') || window.conceptMaps;
-          if (conceptMaps) {
-            conceptMaps.show();
-          }
-        });
-      }
-
-      // ACTION PLANS
-      const actionPlansBtn = document.getElementById('action-plans-btn');
-      if (actionPlansBtn) {
-        this.eventManager.addEventListener(actionPlansBtn, 'click', async () => {
-          if (window.learningLazyLoader) {
-            await window.learningLazyLoader.ensureActionPlans();
-          }
-          const actionPlans = this.getDependency('actionPlans') || window.actionPlans;
-          if (actionPlans) {
-            actionPlans.show();
-          }
-        });
-      }
-
-      // ACHIEVEMENTS
-      const achievementsBtn = document.getElementById('achievements-btn');
-      if (achievementsBtn) {
-        this.eventManager.addEventListener(achievementsBtn, 'click', () => {
-          const achievementSystem = this.getDependency('achievementSystem');
-          if (achievementSystem) {
-            achievementSystem.showDashboardModal();
-          }
-        });
-      }
-
-      // LEARNING PATHS
-      const learningPathsBtnDesktop = document.getElementById('learning-paths-btn-desktop');
-      if (learningPathsBtnDesktop) {
-        this.eventManager.addEventListener(learningPathsBtnDesktop, 'click', async () => {
-          if (window.lazyLoader && !window.lazyLoader.isLoaded('learning-paths')) {
-            await window.lazyLoader.loadLearningPaths();
-          }
-          const learningPaths = this.getDependency('learningPaths');
-          if (learningPaths) {
-            const currentBookId = this.bookEngine.getCurrentBook();
-            learningPaths.open(currentBookId);
-          } else {
-            this.showToast('error', 'Learning Paths no disponible');
-          }
-        });
-      }
-
-      // CONTENT ADAPTER
-      const contentAdapterBtn = document.getElementById('content-adapter-btn');
-      if (contentAdapterBtn) {
-        this.eventManager.addEventListener(contentAdapterBtn, 'click', () => {
-          const contentAdapter = this.getDependency('contentAdapter');
-          if (contentAdapter) {
-            contentAdapter.toggleSelector();
-          } else {
-            this.showToast('info', 'Cargando adaptador de contenido...');
-            const lazyLoader = this.getDependency('lazyLoader');
-            if (lazyLoader) {
-              lazyLoader.load('contentAdapter').then(() => {
-                const loaded = this.getDependency('contentAdapter');
-                if (loaded) {
-                  loaded.toggleSelector();
-                }
-              }).catch(() => {
-                this.showToast('error', 'Error al cargar el adaptador de contenido');
-              });
-            }
-          }
-        });
-      }
-
-      // QUIZ
-      const quizBtn = document.getElementById('quiz-btn');
-      if (quizBtn) {
-        this.eventManager.addEventListener(quizBtn, 'click', async () => {
-          const bookId = this.bookEngine.getCurrentBook();
-          const chapterId = this.currentChapter?.id;
-
-          if (!chapterId) {
-            this.showToast('info', 'Selecciona un capitulo primero');
-            return;
-          }
-
-          if (window.learningLazyLoader) {
-            await window.learningLazyLoader.ensureInteractiveQuiz();
-          }
-
-          const interactiveQuiz = this.getDependency('interactiveQuiz') || window.interactiveQuiz;
-          if (interactiveQuiz) {
-            const quiz = await interactiveQuiz.loadQuiz(bookId, chapterId);
-            if (quiz) {
-              interactiveQuiz.open(bookId, chapterId);
-            } else {
-              this.showToast('info', 'No hay quiz disponible para este capitulo');
-            }
-          } else {
-            logger.error('InteractiveQuiz no esta disponible');
-          }
-        });
-      }
+      // 🔧 v2.9.379: Handlers de SUMMARY, VOICE NOTES, CONCEPT MAP, ACTION PLANS,
+      // ACHIEVEMENTS, LEARNING PATHS, CONTENT ADAPTER y QUIZ movidos a
+      // attachMultiDeviceWithMenuClose para soportar botones móviles
 
       // TIMELINE
       const timelineBtn = document.getElementById('timeline-btn');
@@ -2362,92 +2252,9 @@ class BookReaderEvents {
         });
       }
 
-      // SMART READER (v2.9.329)
-      const smartReaderBtn = document.getElementById('smart-reader-btn');
-      if (smartReaderBtn) {
-        this.eventManager.addEventListener(smartReaderBtn, 'click', () => {
-          const chapter = this.currentChapter;
-          if (window.smartReader) {
-            window.smartReader.show(chapter);
-          } else {
-            this.showToast('error', 'Smart Reader no disponible');
-          }
-        });
-      }
-
-      // CHAPTER COMMENTS (v2.9.327)
-      const chapterCommentsBtn = document.getElementById('chapter-comments-btn');
-      if (chapterCommentsBtn) {
-        this.eventManager.addEventListener(chapterCommentsBtn, 'click', () => {
-          const bookId = this.bookEngine.getCurrentBook();
-          const chapter = this.currentChapter;
-          if (window.chapterComments) {
-            window.chapterComments.show(bookId, chapter?.id, chapter?.title);
-          } else {
-            this.showToast('error', 'Comentarios no disponibles');
-          }
-        });
-      }
-
-      // READING CIRCLES (v2.9.328)
-      const readingCirclesBtn = document.getElementById('reading-circles-btn');
-      if (readingCirclesBtn) {
-        this.eventManager.addEventListener(readingCirclesBtn, 'click', () => {
-          if (window.readingCircles) {
-            window.readingCircles.show();
-          } else {
-            this.showToast('error', 'Círculos de lectura no disponibles');
-          }
-        });
-      }
-
-      // LEADERBOARDS (v2.9.328)
-      const leaderboardsBtn = document.getElementById('leaderboards-btn');
-      if (leaderboardsBtn) {
-        this.eventManager.addEventListener(leaderboardsBtn, 'click', () => {
-          if (window.leaderboards) {
-            window.leaderboards.show();
-          } else {
-            this.showToast('error', 'Clasificación no disponible');
-          }
-        });
-      }
-
-      // PODCAST PLAYER (v2.9.330)
-      const podcastBtn = document.getElementById('podcast-player-btn');
-      if (podcastBtn) {
-        this.eventManager.addEventListener(podcastBtn, 'click', () => {
-          if (window.podcastPlayer) {
-            window.podcastPlayer.show();
-          } else {
-            this.showToast('error', 'Podcast no disponible');
-          }
-        });
-      }
-
-      // MICRO COURSES (v2.9.330)
-      const microCoursesBtn = document.getElementById('micro-courses-btn');
-      if (microCoursesBtn) {
-        this.eventManager.addEventListener(microCoursesBtn, 'click', () => {
-          if (window.microCourses) {
-            window.microCourses.show();
-          } else {
-            this.showToast('error', 'Micro-cursos no disponibles');
-          }
-        });
-      }
-
-      // EXTERNAL INTEGRATIONS (v2.9.330)
-      const integrationsBtn = document.getElementById('integrations-btn');
-      if (integrationsBtn) {
-        this.eventManager.addEventListener(integrationsBtn, 'click', () => {
-          if (window.externalIntegrations) {
-            window.externalIntegrations.show();
-          } else {
-            this.showToast('error', 'Integraciones no disponibles');
-          }
-        });
-      }
+      // 🔧 v2.9.379: Handlers de SMART READER, CHAPTER COMMENTS, READING CIRCLES,
+      // LEADERBOARDS, PODCAST, MICRO COURSES e INTEGRATIONS movidos a
+      // attachMultiDeviceWithMenuClose para soportar botones móviles
 
       // 🔧 FIX v2.9.337: Re-adjuntar BOOK SWITCH handlers (practicas-radicales, manual-practico, koan)
       // Estos botones están en el dropdown book-features y perdían sus listeners al re-renderizar

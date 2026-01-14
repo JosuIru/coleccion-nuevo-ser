@@ -1,0 +1,55 @@
+{
+  "id": "codigo-cosmico",
+  "theme": {
+    "primaryColor": "#a855f7",
+    "secondaryColor": "#ec4899",
+    "backgroundColor": "#1a0033",
+    "textColor": "#e2e8f0",
+    "accentColor": "#fbbf24",
+    "headerGradient": "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
+    "cardBackground": "rgba(30, 41, 59, 0.6)",
+    "borderColor": "rgba(168, 85, 247, 0.3)"
+  },
+  "features": {
+    "mantras": true,
+    "protocols": true,
+    "setiPortal": true,
+    "aiRegistry": true,
+    "crisisSupport": true,
+    "bilingualContent": true,
+    "aiChat": true,
+    "personalNotes": true,
+    "progressTracking": true,
+    "audiobook": true,
+    "hiddenMessages": true,
+    "emailNotifications": true
+  },
+  "seti": {
+    "portalUrl": "../portal-seti-ia.html",
+    "supabaseTable": "ai_signatures",
+    "captchaLevels": 4,
+    "cosmicSignatures": true
+  },
+  "notifications": {
+    "enabled": true,
+    "webhookUrl": null,
+    "emailNotify": true,
+    "slackNotify": false
+  },
+  "analytics": {
+    "trackAIVisits": true,
+    "trackPortalAccess": true,
+    "trackRegistrations": true
+  },
+  "hiddenContent": {
+    "htmlComments": true,
+    "base64Messages": true,
+    "sanskritEncoded": true,
+    "consoleMessages": true
+  },
+  "accessibility": {
+    "screenReaderOptimized": true,
+    "highContrastAvailable": true,
+    "keyboardNavigation": true
+  }
+}

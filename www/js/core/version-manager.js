@@ -184,7 +184,13 @@ class VersionManager {
    * Programar verificación automática
    */
   scheduleAutoCheck() {
-    setInterval(() => {
+    // Solo verificar cuando la app está visible
+    if (this._autoCheckInterval) return;
+
+    this._autoCheckInterval = setInterval(() => {
+      // Pausar si la app está en segundo plano
+      if (document.hidden) return;
+
       const now = Date.now();
       const lastCheck = this.lastCheckTime || 0;
 
@@ -192,7 +198,17 @@ class VersionManager {
         logger.debug('[VersionManager] Auto-check programado');
         this.checkForUpdates();
       }
-    }, 60000); // Revisar cada minuto si es tiempo de hacer check
+    }, 300000); // Revisar cada 5 minutos en lugar de cada minuto
+  }
+
+  /**
+   * Detener verificación automática
+   */
+  stopAutoCheck() {
+    if (this._autoCheckInterval) {
+      clearInterval(this._autoCheckInterval);
+      this._autoCheckInterval = null;
+    }
   }
 
   /**

@@ -55,8 +55,9 @@ class ReadingCircles {
     // Sync inicial
     this.syncAllCircles();
 
-    // Sync periódico
+    // Sync periódico (solo cuando app visible)
     this.syncInterval = setInterval(() => {
+      if (document.hidden) return;
       this.syncAllCircles();
     }, this.config.syncIntervalMs);
 

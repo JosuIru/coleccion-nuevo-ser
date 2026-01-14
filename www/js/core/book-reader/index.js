@@ -129,6 +129,12 @@ class BookReader {
       container.classList.add('hidden');
     }
 
+    // 🔧 v2.9.381: Eliminar sidebar-backdrop al salir del reader
+    const backdrop = document.getElementById('sidebar-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+    }
+
     // 🔧 v2.9.354: Ocultar FAB y limpiar Radial Menu al salir del reader
     if (window.fabMenu) {
       window.fabMenu.hide();

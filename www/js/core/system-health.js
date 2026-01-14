@@ -297,11 +297,14 @@ class SystemHealth {
     /**
      * Start periodic health checks
      */
-    startMonitoring(intervalMs = 60000) {
+    startMonitoring(intervalMs = 120000) { // Aumentado a 2 minutos
         this.stopMonitoring();
         logger.debug(`🔄 Starting health monitoring (every ${intervalMs / 1000}s)`);
         this.checkHealth();
-        this.checkInterval = setInterval(() => this.checkHealth(), intervalMs);
+        this.checkInterval = setInterval(() => {
+            if (document.hidden) return; // No verificar en segundo plano
+            this.checkHealth();
+        }, intervalMs);
     }
 
     /**

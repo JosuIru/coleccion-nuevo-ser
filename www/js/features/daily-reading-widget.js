@@ -156,16 +156,25 @@ class DailyReadingWidget {
 
   checkReminder() {
     if (!this.reminderTime) return;
+    if (this._reminderCheckInterval) return; // Evitar duplicados
 
-    // Verificar cada minuto si es hora del recordatorio
-    setInterval(() => {
+    // Verificar cada 2 minutos si es hora del recordatorio (solo cuando app visible)
+    this._reminderCheckInterval = setInterval(() => {
+      if (document.hidden) return;
       const now = new Date();
       const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
       if (currentTime === this.reminderTime) {
         this.showReminderNotification();
       }
-    }, 60000);
+    }, 120000);
+  }
+
+  stopReminderCheck() {
+    if (this._reminderCheckInterval) {
+      clearInterval(this._reminderCheckInterval);
+      this._reminderCheckInterval = null;
+    }
   }
 
   scheduleReminder() {

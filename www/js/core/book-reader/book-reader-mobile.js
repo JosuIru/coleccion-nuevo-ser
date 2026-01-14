@@ -159,144 +159,228 @@ class BookReaderMobile {
     const hasResources = bookConfig?.features?.resources?.enabled;
     const hasManualPractico = bookConfig?.features?.manualPractico;
     const hasPracticasRadicales = bookConfig?.features?.practicasRadicales;
-    const isBookmarked = this.bookEngine.isBookmarked(this.currentChapter?.id);
 
     // Koan solo disponible para libros especificos
     const bookId = bookConfig?.id || '';
     const koanBooks = ['codigo-despertar', 'manual-practico', 'practicas-radicales'];
     const hasKoan = koanBooks.includes(bookId);
 
+    // Verificar si hay features del libro
+    const hasBookFeatures = hasTimeline || hasResources || hasManualPractico || hasPracticasRadicales || hasKoan;
+
+    // Estilos comunes
+    const menuBtn = 'w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-sm';
+    const sectionHeader = 'flex items-center justify-between w-full p-3 text-left font-semibold rounded-lg cursor-pointer transition-colors';
+
     return `
       <div id="mobile-menu" class="hidden fixed inset-0 z-50 md:hidden">
-        <!-- Backdrop (clickable to close) -->
+        <!-- Backdrop -->
         <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/80"></div>
 
         <!-- Menu Panel -->
         <div class="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col overflow-hidden">
-          <!-- Fixed Header -->
-          <div class="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-900">
+          <!-- Header -->
+          <div class="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <h3 class="font-bold text-lg">${this.i18n.t('menu.title')}</h3>
-            <button id="close-mobile-menu" class="text-3xl hover:text-red-400 transition-colors p-2 -mr-2"
-                    aria-label="${this.i18n.t('menu.close')}"
-                    title="${this.i18n.t('menu.close')}">
-              ×
-            </button>
+            <button id="close-mobile-menu" class="text-3xl hover:text-red-400 transition-colors p-2 -mr-2">×</button>
           </div>
 
-          <!-- Scrollable Menu Items -->
+          <!-- Scrollable Content -->
           <div class="flex-1 overflow-y-auto mobile-menu-scroll">
-            <div class="p-4 pb-6 space-y-2">
-            <!-- Back to Biblioteca -->
-            <button id="back-to-biblioteca-mobile" class="w-full text-left p-3 hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-400 border border-cyan-500/30 mb-2">
-              ${Icons.library(24)}
-              <span class="font-semibold">${this.i18n.t('nav.library')}</span>
-            </button>
+            <div class="p-3 space-y-2">
 
-            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
-
-            <!-- Notas (no esta en header movil, solo aqui) -->
-            <button id="notes-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.note(24)}
-              <span>${this.i18n.t('reader.notes')}</span>
-            </button>
-
-            <button id="chapter-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400">
-              ${Icons.create('link', 24)}
-              <span>Recursos del Capitulo</span>
-            </button>
-
-            <!-- Learning Paths Button -->
-            <button id="learning-paths-btn-mobile" class="w-full text-left p-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition flex items-center gap-3 text-purple-600 dark:text-purple-400 border border-purple-300 dark:border-purple-500/30">
-              ${Icons.target(24)}
-              <span>Learning Paths</span>
-            </button>
-
-            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
-
-            <!-- Feature Buttons -->
-            ${hasTimeline ? `
-              <button id="timeline-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-                ${Icons.timeline(24)}
-                <span>Timeline Historico</span>
+              <!-- Volver a Biblioteca -->
+              <button id="back-to-biblioteca-mobile" class="w-full text-left p-3 hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-400 border border-cyan-500/30">
+                ${Icons.library(20)}
+                <span class="font-semibold">${this.i18n.t('nav.library')}</span>
               </button>
-            ` : ''}
 
-            ${hasResources ? `
-              <button id="book-resources-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-                ${Icons.resources(24)}
-                <span>Recursos del Libro</span>
+              <!-- Acceso rapido: Notas -->
+              <button id="notes-btn-mobile" class="${menuBtn} bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+                ${Icons.note(20)}
+                <span>Mis Notas</span>
               </button>
-            ` : ''}
 
-            ${hasManualPractico ? `
-              <button id="manual-practico-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-                ${Icons.manual(24)}
-                <span>${this.i18n.t('reader.manualPractico')}</span>
-              </button>
-            ` : ''}
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- 🤖 HERRAMIENTAS IA -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden" open>
+                <summary class="${sectionHeader} bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30 text-cyan-700 dark:text-cyan-400 hover:from-cyan-100 hover:to-blue-100 dark:hover:from-cyan-900/40 dark:hover:to-blue-900/40">
+                  <span class="flex items-center gap-2">
+                    <span>🤖</span>
+                    <span>Herramientas IA</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  <button id="chapter-resources-btn-mobile" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                    ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
+                  </button>
+                  <button id="summary-btn-mobile" class="${menuBtn} text-emerald-600 dark:text-emerald-400">
+                    ${Icons.create('file-text', 18)} <span>Resumen del Capítulo</span>
+                  </button>
+                  <button id="voice-notes-btn-mobile" class="${menuBtn} text-red-600 dark:text-red-400">
+                    ${Icons.create('mic', 18)} <span>Notas de Voz</span>
+                  </button>
+                  <button id="concept-map-btn-mobile" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
+                    ${Icons.create('git-branch', 18)} <span>Mapa Conceptual</span>
+                  </button>
+                  <button id="action-plans-btn-mobile" class="${menuBtn} text-green-600 dark:text-green-400">
+                    ${Icons.create('clipboard-list', 18)} <span>Planes de Acción</span>
+                  </button>
+                  <button id="smart-reader-btn-mobile" class="${menuBtn} text-indigo-600 dark:text-indigo-400">
+                    ${Icons.create('book-open', 18)} <span>Smart Reader</span>
+                  </button>
+                  <button id="content-adapter-btn-mobile" class="${menuBtn} text-violet-600 dark:text-violet-400">
+                    ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
+                  </button>
+                </div>
+              </details>
 
-            ${hasPracticasRadicales ? `
-              <button id="practicas-radicales-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-                ${Icons.radical(24)}
-                <span>${this.i18n.t('reader.practicasRadicales')}</span>
-              </button>
-            ` : ''}
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- 📈 MI PROGRESO -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <summary class="${sectionHeader} bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-400 hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/40 dark:hover:to-pink-900/40">
+                  <span class="flex items-center gap-2">
+                    <span>📈</span>
+                    <span>Mi Progreso</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  <button id="learning-paths-btn-mobile" class="${menuBtn} text-purple-600 dark:text-purple-400">
+                    ${Icons.target(18)} <span>Learning Paths</span>
+                  </button>
+                  <button id="achievements-btn-mobile" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                    ${Icons.trophy(18)} <span>Mis Logros</span>
+                  </button>
+                  <button id="quiz-btn-mobile" class="${menuBtn} text-orange-600 dark:text-orange-400">
+                    <span class="text-lg">🎯</span> <span>Quiz de Autoevaluación</span>
+                  </button>
+                </div>
+              </details>
 
-            ${hasKoan ? `
-            <button id="koan-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.koan(24)}
-              <span>${this.i18n.t('reader.koan')}</span>
-            </button>
-            ` : ''}
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- 💬 COMUNIDAD -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <summary class="${sectionHeader} bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 text-pink-700 dark:text-pink-400 hover:from-pink-100 hover:to-rose-100 dark:hover:from-pink-900/40 dark:hover:to-rose-900/40">
+                  <span class="flex items-center gap-2">
+                    <span>💬</span>
+                    <span>Comunidad</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  <button id="chapter-comments-btn-mobile" class="${menuBtn} text-pink-600 dark:text-pink-400">
+                    ${Icons.create('message-circle', 18)} <span>Comentarios del Capítulo</span>
+                  </button>
+                  <button id="reading-circles-btn-mobile" class="${menuBtn} text-emerald-600 dark:text-emerald-400">
+                    ${Icons.create('users', 18)} <span>Círculos de Lectura</span>
+                  </button>
+                  <button id="leaderboards-btn-mobile" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                    ${Icons.create('award', 18)} <span>Clasificación</span>
+                  </button>
+                </div>
+              </details>
 
-            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- 🎧 MULTIMEDIA -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <summary class="${sectionHeader} bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-900/30 dark:to-indigo-900/30 text-violet-700 dark:text-violet-400 hover:from-violet-100 hover:to-indigo-100 dark:hover:from-violet-900/40 dark:hover:to-indigo-900/40">
+                  <span class="flex items-center gap-2">
+                    <span>🎧</span>
+                    <span>Multimedia</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  <button id="podcast-player-btn-mobile" class="${menuBtn} text-purple-600 dark:text-purple-400">
+                    ${Icons.create('headphones', 18)} <span>Modo Podcast</span>
+                  </button>
+                  <button id="micro-courses-btn-mobile" class="${menuBtn} text-teal-600 dark:text-teal-400">
+                    ${Icons.create('calendar', 18)} <span>Micro-Cursos</span>
+                  </button>
+                  <button id="integrations-btn-mobile" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                    ${Icons.create('link', 18)} <span>Integraciones</span>
+                  </button>
+                </div>
+              </details>
 
-            ${this.isCapacitor() ? '' : `
-            <button id="android-download-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.download(24)}
-              <span>${this.i18n.t('btn.download')}</span>
-            </button>
-            `}
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- 📖 ESTE LIBRO (solo si hay features) -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              ${hasBookFeatures ? `
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <summary class="${sectionHeader} bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-400 hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40">
+                  <span class="flex items-center gap-2">
+                    <span>📖</span>
+                    <span>Este Libro</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  ${hasTimeline ? `<button id="timeline-btn-mobile" class="${menuBtn}">${Icons.timeline(18)} <span>Timeline Histórico</span></button>` : ''}
+                  ${hasResources ? `<button id="book-resources-btn-mobile" class="${menuBtn}">${Icons.resources(18)} <span>Recursos del Libro</span></button>` : ''}
+                  ${hasManualPractico ? `<button id="manual-practico-btn-mobile" class="${menuBtn}">${Icons.manual(18)} <span>${this.i18n.t('reader.manualPractico')}</span></button>` : ''}
+                  ${hasPracticasRadicales ? `<button id="practicas-radicales-btn-mobile" class="${menuBtn}">${Icons.radical(18)} <span>${this.i18n.t('reader.practicasRadicales')}</span></button>` : ''}
+                  ${hasKoan ? `<button id="koan-btn-mobile" class="${menuBtn}">${Icons.koan(18)} <span>${this.i18n.t('reader.koan')}</span></button>` : ''}
+                </div>
+              </details>
+              ` : ''}
 
-            <button id="donations-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.donate(24)}
-              <span>${this.i18n.t('btn.support')}</span>
-            </button>
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <!-- ⚙️ CONFIGURACIÓN -->
+              <!-- ═══════════════════════════════════════════════════════════ -->
+              <details class="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <summary class="${sectionHeader} bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 text-gray-700 dark:text-gray-300 hover:from-gray-100 hover:to-slate-100 dark:hover:from-gray-700 dark:hover:to-slate-700">
+                  <span class="flex items-center gap-2">
+                    <span>⚙️</span>
+                    <span>Configuración</span>
+                  </span>
+                  <span class="transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-2 space-y-1 bg-gray-50 dark:bg-gray-800/50">
+                  <button id="open-settings-modal-btn-mobile" class="${menuBtn} text-blue-600 dark:text-blue-400 font-medium">
+                    ${Icons.settings(18)} <span>Configuración General</span>
+                  </button>
+                  <button id="open-help-center-btn-mobile" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
+                    ${Icons.helpCircle(18)} <span>Centro de Ayuda</span>
+                  </button>
+                  <button id="language-selector-btn-mobile" class="${menuBtn}">
+                    ${Icons.language(18)} <span>${this.i18n.t('lang.title')}</span>
+                  </button>
+                  <button id="theme-toggle-btn-mobile" class="${menuBtn}">
+                    <span id="theme-icon-mobile">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
+                    <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
+                  </button>
+                  <button id="my-account-btn-mobile" class="${menuBtn} text-purple-600 dark:text-purple-400">
+                    ${Icons.create('user', 18)} <span>Mi Cuenta</span>
+                  </button>
+                  <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+                  <button id="premium-edition-btn-mobile" class="${menuBtn} text-amber-600 dark:text-amber-400">
+                    ${Icons.book(18)}
+                    <div>
+                      <span class="font-medium">${this.i18n.t('premium.title')}</span>
+                      <span class="text-xs text-amber-500 block">15€ (${this.i18n.t('premium.optional')})</span>
+                    </div>
+                  </button>
+                  <button id="share-chapter-btn-mobile" class="${menuBtn} text-blue-600 dark:text-blue-400">
+                    ${Icons.create('share-2', 18)} <span>Compartir Capítulo</span>
+                  </button>
+                  <button id="donations-btn-mobile" class="${menuBtn} text-pink-600 dark:text-pink-400">
+                    ${Icons.donate(18)} <span>${this.i18n.t('btn.support')}</span>
+                  </button>
+                  ${this.isCapacitor() ? '' : `
+                  <button id="android-download-btn-mobile" class="${menuBtn} text-green-600 dark:text-green-400">
+                    ${Icons.download(18)} <span>${this.i18n.t('btn.download')}</span>
+                  </button>
+                  `}
+                </div>
+              </details>
 
-            <button id="premium-edition-btn-mobile" class="w-full text-left p-3 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition flex items-center gap-3 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30">
-              ${Icons.book(24)}
-              <div>
-                <span class="font-bold">${this.i18n.t('premium.title')}</span>
-                <span class="text-xs text-amber-500 dark:text-amber-300/70 block">${this.i18n.t('premium.contribution')}: 15EUR (${this.i18n.t('premium.optional')})</span>
-              </div>
-            </button>
-
-            <button id="language-selector-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              ${Icons.language(24)}
-              <span>${this.i18n.t('lang.title')}</span>
-            </button>
-
-            <button id="theme-toggle-btn-mobile" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3">
-              <span class="text-2xl" id="theme-icon-mobile">${window.themeHelper?.getThemeIcon() || '🌙'}</span>
-              <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
-            </button>
-
-            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
-
-            <button id="open-settings-modal-btn-mobile" class="w-full text-left p-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30 font-semibold">
-              ${Icons.settings(24)}
-              <span>Configuracion</span>
-            </button>
-
-            <button id="open-help-center-btn-mobile" class="w-full text-left p-3 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded-lg transition flex items-center gap-3 text-cyan-600 dark:text-cyan-400 border border-cyan-300 dark:border-cyan-500/30 font-semibold">
-              ${Icons.helpCircle(24)}
-              <span>Centro de Ayuda</span>
-            </button>
-
-            <button id="share-chapter-btn-mobile" class="w-full text-left p-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition flex items-center gap-3 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30">
-              ${Icons.create('share-2', 24)}
-              <span>Compartir capitulo</span>
-            </button>
             </div>
           </div>
         </div>

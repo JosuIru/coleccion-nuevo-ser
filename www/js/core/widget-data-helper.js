@@ -25,8 +25,9 @@ class WidgetDataHelper {
     // Sincronizar datos al iniciar
     await this.syncWidgetData();
 
-    // Actualizar periódicamente (cada 5 minutos)
+    // Actualizar periódicamente (cada 5 minutos, solo cuando app visible)
     this.updateInterval = setInterval(() => {
+      if (document.hidden) return;
       this.syncWidgetData();
     }, 5 * 60 * 1000);
 

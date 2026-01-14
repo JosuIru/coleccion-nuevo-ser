@@ -459,12 +459,23 @@ class BaseService {
       }
     });
 
-    // Procesar cola cada 30 segundos si hay items pendientes
-    setInterval(async () => {
+    // Procesar cola cada 60 segundos si hay items pendientes (solo cuando app visible)
+    this._offlineQueueInterval = setInterval(async () => {
+      if (document.hidden) return; // No procesar en segundo plano
       if (navigator.onLine && this.offlineQueue.length > 0) {
         await this.procesarColaOffline();
       }
-    }, 30000);
+    }, 60000);
+  }
+
+  /**
+   * Limpiar intervalo de cola offline
+   */
+  stopOfflineQueueProcessing() {
+    if (this._offlineQueueInterval) {
+      clearInterval(this._offlineQueueInterval);
+      this._offlineQueueInterval = null;
+    }
   }
 
   /**

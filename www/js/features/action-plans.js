@@ -56,10 +56,23 @@ class ActionPlans {
   }
 
   initReminderChecker() {
-    // Verificar cada minuto
-    setInterval(() => this.checkReminders(), 60000);
+    // Evitar múltiples intervalos
+    if (this._reminderInterval) return;
+
+    // Verificar cada 2 minutos (solo cuando app visible)
+    this._reminderInterval = setInterval(() => {
+      if (document.hidden) return;
+      this.checkReminders();
+    }, 120000);
     // Verificar al iniciar
     setTimeout(() => this.checkReminders(), 5000);
+  }
+
+  stopReminderChecker() {
+    if (this._reminderInterval) {
+      clearInterval(this._reminderInterval);
+      this._reminderInterval = null;
+    }
   }
 
   checkReminders() {

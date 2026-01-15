@@ -17,7 +17,8 @@ class ContentAdapter {
     this.aiAdapter = null;
     this.currentBookId = null;
     this.currentChapterId = null;
-    this.originalContent = null;
+    this.originalContent = null;      // Texto plano para IA
+    this.originalHtmlContent = null;  // HTML para restaurar vista
     this.isAdapted = false;
     this.currentAgeStyle = 'adultos';
     this.currentFocusStyle = 'original';
@@ -80,67 +81,76 @@ class ContentAdapter {
         label: 'Coloquial',
         icon: '💬',
         description: 'Lenguaje informal y cercano'
+      },
+      dormir: {
+        id: 'dormir',
+        label: 'Para Dormir',
+        icon: '🌙',
+        description: 'Ritmo calmante para escuchar antes de dormir'
       }
     };
 
     // Prompts de adaptación
     this.ADAPTATION_PROMPTS = {
-      ninos: `Adapta este texto para niños de 8-12 años. Instrucciones:
-- Usa oraciones cortas y simples (máximo 15-20 palabras por oración)
-- Vocabulario cotidiano, evita palabras técnicas o abstractas
-- Incluye ejemplos de la vida diaria: escuela, familia, amigos, juegos
-- Añade analogías con cosas que los niños conocen
-- Mantén el mensaje central pero hazlo completamente accesible
-- Si hay conceptos difíciles, usa comparaciones ("es como cuando...")
-- Puedes añadir pequeñas preguntas para que el niño reflexione
-- Extensión similar al original`,
+      ninos: `ADAPTA (no resumas) este texto para niños de 8-12 años:
+- Oraciones cortas y simples (máximo 15-20 palabras)
+- Vocabulario cotidiano, sin palabras técnicas
+- Ejemplos de la vida diaria: escuela, familia, amigos, juegos
+- Analogías con cosas que los niños conocen ("es como cuando...")
+- Pequeñas preguntas para que reflexionen
+- IMPORTANTE: Adapta CADA párrafo, no elimines ni combines contenido`,
 
-      jovenes: `Adapta este texto para adolescentes de 13-17 años. Instrucciones:
-- Lenguaje dinámico y actual, sin ser infantil
-- Conecta con su realidad: redes sociales, relaciones, búsqueda de identidad
-- Mantén la profundidad pero hazlo engaging y relevante
-- Usa ejemplos que resuenen con su experiencia
-- Puedes hacer referencias a cultura pop si es pertinente
-- Evita ser condescendiente, trátalos como pensadores capaces
-- Extensión similar al original`,
+      jovenes: `ADAPTA (no resumas) este texto para adolescentes de 13-17 años:
+- Lenguaje dinámico y actual, no infantil
+- Conecta con su realidad: redes sociales, relaciones, identidad
+- Ejemplos que resuenen con su experiencia
+- Referencias a cultura pop si es pertinente
+- Trátalos como pensadores capaces
+- IMPORTANTE: Adapta CADA párrafo, no elimines ni combines contenido`,
 
-      tecnico: `Reformula este contenido con enfoque técnico-científico. Instrucciones:
-- Añade precisión conceptual y terminología especializada
-- Incluye referencias a estudios, teorías o autores relevantes cuando aplique
-- Usa terminología técnica con breves explicaciones entre paréntesis
-- Estructura lógica y analítica (premisa → argumento → conclusión)
+      tecnico: `REFORMULA (no resumas) con enfoque técnico-científico:
+- Precisión conceptual y terminología especializada
+- Referencias a estudios, teorías o autores cuando aplique
+- Terminología técnica con explicaciones entre paréntesis
+- Estructura lógica: premisa → argumento → conclusión
 - Distingue entre hechos, hipótesis y especulaciones
-- Añade matices y limitaciones de los conceptos presentados
-- Extensión puede ser ligeramente mayor al original`,
+- IMPORTANTE: Reformula CADA párrafo, no elimines contenido`,
 
-      reflexivo: `Reformula este contenido con enfoque contemplativo y reflexivo. Instrucciones:
-- Añade preguntas abiertas para la reflexión personal
-- Incluye pausas naturales e invitaciones a detenerse
-- Conecta los conceptos con la experiencia interior del lector
-- Invita a la introspección y autoobservación
-- Usa lenguaje que invite a la calma y presencia
-- Sugiere momentos de meditación o contemplación sobre las ideas
-- Extensión similar al original`,
+      reflexivo: `REFORMULA (no resumas) con enfoque contemplativo:
+- Preguntas abiertas para reflexión personal
+- Pausas naturales e invitaciones a detenerse
+- Conecta con la experiencia interior del lector
+- Invita a introspección y autoobservación
+- Lenguaje que invite a calma y presencia
+- IMPORTANTE: Reformula CADA párrafo, no elimines contenido`,
 
-      practico: `Reformula este contenido orientado a la acción práctica. Instrucciones:
-- Convierte cada concepto abstracto en pasos concretos aplicables
-- Añade secciones "Qué puedo hacer hoy" o "Ejercicio práctico"
-- Incluye ejercicios simples que el lector pueda hacer inmediatamente
+      practico: `REFORMULA (no resumas) orientado a la acción práctica:
+- Convierte conceptos abstractos en pasos concretos
+- Añade "Qué puedo hacer hoy" o ejercicios prácticos
 - Enfócate en aplicabilidad: ¿cómo uso esto en mi vida?
 - Lista acciones numeradas cuando sea apropiado
-- Sugiere experimentos personales para verificar las ideas
-- Extensión puede ser ligeramente mayor al original`,
+- Sugiere experimentos para verificar las ideas
+- IMPORTANTE: Reformula CADA párrafo, no elimines contenido`,
 
-      coloquial: `Reformula este contenido en lenguaje coloquial e informal. Instrucciones:
-- Usa un tono cercano, como si hablaras con un amigo
-- Incluye expresiones cotidianas y naturales
-- Evita tecnicismos, usa palabras simples del día a día
-- Puedes usar muletillas conversacionales ("mira", "fíjate", "la verdad es que...")
-- Haz el texto más ligero y ameno de leer
-- Usa ejemplos de situaciones cotidianas
-- Mantén el mensaje pero hazlo sentir como una charla casual
-- Puedes usar humor suave si encaja con el contenido
-- Extensión similar al original`
+      coloquial: `REFORMULA (no resumas) en lenguaje coloquial:
+- Tono cercano, como hablar con un amigo
+- Expresiones cotidianas naturales
+- Sin tecnicismos, palabras simples
+- Muletillas conversacionales ("mira", "fíjate", "la verdad es que...")
+- Ejemplos de situaciones cotidianas
+- Humor suave si encaja
+- IMPORTANTE: Reformula CADA párrafo, no elimines contenido`,
+
+      dormir: `REFORMULA (no resumas) para escuchar antes de dormir:
+- Ritmo lento y pausado, oraciones suaves que fluyen
+- Tono calmante, tranquilizador, como una voz que arrulla
+- Evita tensión, conflicto o urgencia en la narrativa
+- Usa frases que inviten a soltar y relajarse ("permite que...", "suavemente...", "mientras descansas...")
+- Transiciones suaves entre ideas, sin cambios bruscos
+- Lenguaje que evoque paz, serenidad, descanso
+- Añade pausas naturales (puntos suspensivos ocasionales)
+- Reemplaza conceptos estimulantes por versiones más serenas
+- IMPORTANTE: Reformula CADA párrafo manteniendo el contenido, solo cambia el ritmo y tono`
     };
   }
 
@@ -197,11 +207,30 @@ class ContentAdapter {
   /**
    * Establecer contexto del capítulo actual
    */
-  setContext(bookId, chapterId, originalContent) {
+  setContext(bookId, chapterId, originalContent, originalHtml = null) {
     this.currentBookId = bookId;
     this.currentChapterId = chapterId;
-    this.originalContent = originalContent;
+    this.originalContent = originalContent;  // Texto plano para IA
+    if (originalHtml) {
+      this.originalHtmlContent = originalHtml;  // HTML para restaurar
+    }
     this.isAdapted = false;
+  }
+
+  /**
+   * Resetear estado del adaptador al cambiar de capítulo
+   * 🔧 FIX v2.9.385: Evitar que la adaptación persista entre capítulos
+   */
+  resetState() {
+    logger.debug('[ContentAdapter] Reseteando estado para nuevo capítulo');
+    this.originalContent = null;
+    this.originalHtmlContent = null;
+    this.isAdapted = false;
+    this.currentBookId = null;
+    this.currentChapterId = null;
+    // No reseteamos currentAgeStyle ni currentFocusStyle
+    // para que el usuario mantenga su preferencia de adaptación
+    this.updateUI();
   }
 
   /**
@@ -261,6 +290,37 @@ class ContentAdapter {
   }
 
   /**
+   * Limpiar caché de adaptaciones
+   */
+  clearCache(bookId = null, chapterId = null) {
+    try {
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(this.CACHE_PREFIX)) {
+          // Si se especifica libro/capítulo, solo borrar esos
+          if (bookId && chapterId) {
+            if (key.includes(`${bookId}_${chapterId}_`)) {
+              keysToRemove.push(key);
+            }
+          } else {
+            keysToRemove.push(key);
+          }
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      logger.debug(`[ContentAdapter] Cache cleared: ${keysToRemove.length} entries`);
+      if (window.toast) {
+        window.toast.success(`🗑️ Caché limpiado (${keysToRemove.length} adaptaciones)`, 3000);
+      }
+      return keysToRemove.length;
+    } catch (e) {
+      logger.warn('[ContentAdapter] Error clearing cache:', e);
+      return 0;
+    }
+  }
+
+  /**
    * Construir prompt de adaptación
    */
   buildAdaptationPrompt(content, ageStyle, focusStyle) {
@@ -281,27 +341,33 @@ class ContentAdapter {
       return null;
     }
 
-    prompt += `IMPORTANTE:
-- Mantén la estructura del texto (párrafos, secciones)
-- No añadas saludos ni despedidas
-- No menciones que estás adaptando el texto
-- Devuelve directamente el contenido adaptado
-- Respeta el formato markdown si existe
+    prompt += `REGLAS CRÍTICAS - DEBES SEGUIRLAS:
+1. **NO RESUMAS** - Adapta CADA párrafo del original, no lo acortes
+2. **MANTÉN LA EXTENSIÓN** - El texto adaptado debe tener aproximadamente la MISMA longitud que el original
+3. **PÁRRAFO POR PÁRRAFO** - Transforma cada párrafo individualmente, no combines ni elimines párrafos
+4. **CONSERVA TODO EL CONTENIDO** - Todas las ideas del original deben aparecer en la adaptación
+5. Mantén la estructura (párrafos, secciones, listas)
+6. No añadas saludos, despedidas ni comentarios meta
+7. Devuelve directamente el contenido adaptado
+8. Respeta el formato markdown si existe
 
-TEXTO A ADAPTAR:
+TEXTO ORIGINAL A ADAPTAR (${content.length} caracteres - tu respuesta debe tener extensión SIMILAR):
 ---
 ${content}
 ---
 
-Devuelve el texto adaptado:`;
+Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
 
     return prompt;
   }
 
   /**
    * Adaptar contenido usando IA
+   * @param {string} ageStyle - Estilo de edad (ninos, jovenes, adultos)
+   * @param {string} focusStyle - Estilo de enfoque (original, tecnico, reflexivo, practico, coloquial)
+   * @param {boolean} forceRegenerate - Si true, ignora caché y regenera
    */
-  async adaptContent(ageStyle, focusStyle) {
+  async adaptContent(ageStyle, focusStyle, forceRegenerate = false) {
     // Si es contenido original, restaurar
     if (ageStyle === 'adultos' && focusStyle === 'original') {
       return this.restoreOriginal();
@@ -312,21 +378,32 @@ Devuelve el texto adaptado:`;
       throw new Error('No hay contenido para adaptar. Por favor, abre un capítulo primero.');
     }
 
-    // Verificar cache primero
-    const cached = this.getCachedAdaptation(
-      this.currentBookId,
-      this.currentChapterId,
-      ageStyle,
-      focusStyle
-    );
+    // Verificar cache primero (si no se fuerza regeneración)
+    if (!forceRegenerate) {
+      const cached = this.getCachedAdaptation(
+        this.currentBookId,
+        this.currentChapterId,
+        ageStyle,
+        focusStyle
+      );
 
-    if (cached) {
-      logger.debug('[ContentAdapter] Using cached adaptation');
-      this.currentAgeStyle = ageStyle;
-      this.currentFocusStyle = focusStyle;
-      this.isAdapted = true;
-      this.savePreferences();
-      return { content: cached, fromCache: true };
+      if (cached) {
+        logger.debug('[ContentAdapter] Using cached adaptation');
+        // Mostrar toast indicando que es caché
+        if (window.toast) {
+          window.toast.info(`📦 Usando adaptación guardada (${cached.length} chars). Mantén pulsado para regenerar.`, 4000);
+        }
+        this.currentAgeStyle = ageStyle;
+        this.currentFocusStyle = focusStyle;
+        this.isAdapted = true;
+        this.savePreferences();
+        return { content: cached, fromCache: true };
+      }
+    } else {
+      logger.debug('[ContentAdapter] Force regenerate - skipping cache');
+      if (window.toast) {
+        window.toast.info('🔄 Regenerando adaptación con IA...', 3000);
+      }
     }
 
     // Verificar que tenemos IA disponible
@@ -347,27 +424,50 @@ Devuelve el texto adaptado:`;
       }
     }
 
-    // Construir prompt
-    const prompt = this.buildAdaptationPrompt(this.originalContent, ageStyle, focusStyle);
-
-    if (!prompt) {
+    // Verificar que hay algo que adaptar (no adultos + original)
+    if (ageStyle === 'adultos' && focusStyle === 'original') {
       return { content: this.originalContent, fromCache: false };
     }
 
-    // Limitar contenido para no exceder tokens
-    const maxContentLength = 6000;
+    // Limitar contenido para no exceder tokens (aprox 4 caracteres = 1 token, 4096 tokens ≈ 16000 chars)
+    const maxContentLength = 12000;
     let contentToAdapt = this.originalContent;
     if (contentToAdapt.length > maxContentLength) {
       contentToAdapt = contentToAdapt.substring(0, maxContentLength) + '\n\n[Contenido truncado por longitud...]';
     }
 
-    // Llamar a IA
+    // Construir prompt con el contenido (potencialmente truncado)
+    const adaptationPrompt = this.buildAdaptationPrompt(contentToAdapt, ageStyle, focusStyle);
+
+    if (!adaptationPrompt) {
+      return { content: this.originalContent, fromCache: false };
+    }
+
+    // 🔧 DEBUG: Log del contenido a adaptar
+    logger.debug(`[ContentAdapter] Contenido original: ${this.originalContent.length} chars`);
+    logger.debug(`[ContentAdapter] Contenido a adaptar: ${contentToAdapt.length} chars`);
+    logger.debug(`[ContentAdapter] Prompt total: ${adaptationPrompt.length} chars`);
+    logger.debug(`[ContentAdapter] Estilos: edad=${ageStyle}, enfoque=${focusStyle}`);
+
+    // Llamar a IA con feature='content_adaptation' para max_tokens=4096
     try {
       const response = await this.aiAdapter.ask(
-        this.buildAdaptationPrompt(contentToAdapt, ageStyle, focusStyle),
-        'Eres un experto adaptador de contenidos educativos. Adapta textos manteniendo su esencia pero ajustando el lenguaje y enfoque según las instrucciones.',
-        []
+        adaptationPrompt,
+        'Eres un adaptador de contenidos. Tu tarea es TRANSFORMAR textos párrafo por párrafo, cambiando el estilo/lenguaje pero MANTENIENDO TODA la información y extensión. NUNCA resumas ni acortes. Si el texto original tiene 10 párrafos, tu respuesta debe tener 10 párrafos adaptados.',
+        [],
+        'content_adaptation'
       );
+
+      // 🔧 DEBUG: Log de respuesta
+      const responseLength = response?.length || 0;
+      const contentLength = contentToAdapt.length;
+      logger.debug(`[ContentAdapter] Respuesta recibida: ${responseLength} chars`);
+
+      // Toast informativo para debug
+      if (window.toast) {
+        const ratio = Math.round((responseLength / contentLength) * 100);
+        window.toast.info(`📊 Original: ${contentLength} → Adaptado: ${responseLength} (${ratio}%)`, 5000);
+      }
 
       if (response && response.trim()) {
         // Guardar en cache
@@ -409,6 +509,12 @@ Devuelve el texto adaptado:`;
    * Renderizar selector de adaptación
    */
   renderSelector() {
+    // Obtener estado de IA usando AIUtils
+    const aiUtils = window.aiUtils;
+    const aiStatus = aiUtils?.getAIStatus?.() || { available: false };
+    const aiStatusBanner = aiUtils?.renderAIStatusBanner?.() || '';
+    const providerSelector = aiStatus.available ? aiUtils?.renderProviderSelector?.({ idPrefix: 'adapter' }) || '' : '';
+
     const ageOptions = Object.values(this.AGE_STYLES).map(style => `
       <button class="adapter-option ${this.currentAgeStyle === style.id ? 'active' : ''}"
               data-type="age"
@@ -433,6 +539,7 @@ Devuelve el texto adaptado:`;
       <div class="content-adapter-selector ${this.selectorVisible ? 'visible' : 'hidden'}" id="content-adapter-selector">
         <div class="adapter-header">
           <span class="adapter-title">Adaptar contenido</span>
+          ${providerSelector}
           <button class="adapter-close" id="adapter-close-btn" title="Cerrar">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -440,6 +547,8 @@ Devuelve el texto adaptado:`;
             </svg>
           </button>
         </div>
+
+        ${aiStatusBanner}
 
         <div class="adapter-section">
           <label class="adapter-label">Por edad</label>
@@ -456,13 +565,21 @@ Devuelve el texto adaptado:`;
         </div>
 
         <div class="adapter-actions">
-          <button class="adapter-btn adapter-btn-primary" id="adapter-apply-btn">
+          <button class="adapter-btn adapter-btn-primary" id="adapter-apply-btn" ${!aiStatus.available ? 'disabled title="Configura IA primero"' : ''}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
               <path d="M2 17l10 5 10-5"></path>
               <path d="M2 12l10 5 10-5"></path>
             </svg>
             Aplicar
+          </button>
+          <button class="adapter-btn adapter-btn-warning" id="adapter-regenerate-btn" title="Ignorar caché y regenerar con IA" ${!aiStatus.available ? 'disabled' : ''}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Regenerar
           </button>
           <button class="adapter-btn adapter-btn-secondary" id="adapter-restore-btn" ${!this.isAdapted ? 'disabled' : ''}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -609,6 +726,14 @@ Devuelve el texto adaptado:`;
    * Adjuntar eventos al selector
    */
   attachSelectorEvents() {
+    const modal = document.getElementById('content-adapter-modal');
+
+    // Adjuntar eventos del banner de estado IA (login, plans, settings)
+    if (window.aiUtils && modal) {
+      window.aiUtils.attachBannerEvents(modal);
+      window.aiUtils.attachProviderSelectorEvents(modal, 'adapter');
+    }
+
     // Botón cerrar
     const closeBtn = document.getElementById('adapter-close-btn');
     if (closeBtn) {
@@ -637,11 +762,55 @@ Devuelve el texto adaptado:`;
       });
     });
 
-    // Botón aplicar
+    // Botón aplicar (click normal = usar caché, long-press = regenerar)
     const applyBtn = document.getElementById('adapter-apply-btn');
     if (applyBtn) {
-      applyBtn.addEventListener('click', async () => {
-        await this.applyAdaptation();
+      let longPressTimer = null;
+      let isLongPress = false;
+
+      applyBtn.addEventListener('mousedown', () => {
+        isLongPress = false;
+        longPressTimer = setTimeout(() => {
+          isLongPress = true;
+          // Long press = forzar regeneración
+          this.applyAdaptation(true);
+        }, 800);
+      });
+
+      applyBtn.addEventListener('mouseup', () => {
+        clearTimeout(longPressTimer);
+        if (!isLongPress) {
+          // Click normal = usar caché si existe
+          this.applyAdaptation(false);
+        }
+      });
+
+      applyBtn.addEventListener('mouseleave', () => {
+        clearTimeout(longPressTimer);
+      });
+
+      // Touch events para móvil
+      applyBtn.addEventListener('touchstart', (e) => {
+        isLongPress = false;
+        longPressTimer = setTimeout(() => {
+          isLongPress = true;
+          this.applyAdaptation(true);
+        }, 800);
+      });
+
+      applyBtn.addEventListener('touchend', () => {
+        clearTimeout(longPressTimer);
+        if (!isLongPress) {
+          this.applyAdaptation(false);
+        }
+      });
+    }
+
+    // Botón regenerar (forzar sin caché)
+    const regenerateBtn = document.getElementById('adapter-regenerate-btn');
+    if (regenerateBtn) {
+      regenerateBtn.addEventListener('click', async () => {
+        await this.applyAdaptation(true);  // true = forzar regeneración
       });
     }
 
@@ -670,8 +839,9 @@ Devuelve el texto adaptado:`;
 
   /**
    * Aplicar adaptación al contenido actual
+   * @param {boolean} forceRegenerate - Si true, ignora caché y regenera
    */
-  async applyAdaptation() {
+  async applyAdaptation(forceRegenerate = false) {
     // Obtener el contenido del capítulo actual
     const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content, .book-content');
     if (!chapterContent) {
@@ -687,27 +857,49 @@ Devuelve el texto adaptado:`;
       return;
     }
 
-    // Guardar contenido original si no lo tenemos
-    if (!this.originalContent) {
-      this.originalContent = chapterContent.innerHTML;
-      // Intentar obtener bookId y chapterId del contexto
-      if (window.bookEngine) {
-        this.currentBookId = window.bookEngine.currentBookId;
-        this.currentChapterId = window.bookEngine.currentChapterId;
-      }
+    // Guardar contenido HTML original para poder restaurarlo
+    if (!this.originalHtmlContent) {
+      this.originalHtmlContent = chapterContent.innerHTML;
     }
+
+    // Extraer texto plano del contenido HTML para enviar a la IA
+    const textContent = chapterContent.innerText || chapterContent.textContent;
+
+    // Obtener bookId y chapterId del contexto actual
+    let detectedBookId = null;
+    let detectedChapterId = null;
+
+    if (window.bookReader) {
+      detectedBookId = window.bookReader.bookEngine?.getCurrentBook?.() || null;
+      detectedChapterId = window.bookReader.currentChapter?.id || null;
+      logger.debug('[ContentAdapter] Context from bookReader:', { bookId: detectedBookId, chapterId: detectedChapterId });
+    }
+
+    if (!detectedBookId && window.bookEngine) {
+      detectedBookId = window.bookEngine.getCurrentBook?.() || window.bookEngine.currentBook || null;
+      detectedChapterId = window.bookEngine.currentChapter?.id || null;
+      logger.debug('[ContentAdapter] Context from bookEngine:', { bookId: detectedBookId, chapterId: detectedChapterId });
+    }
+
+    // Usar IDs detectados o generar temporales para cache
+    this.currentBookId = detectedBookId || 'temp-book';
+    this.currentChapterId = detectedChapterId || `temp-chapter-${Date.now()}`;
+
+    logger.debug('[ContentAdapter] Using context:', {
+      bookId: this.currentBookId,
+      chapterId: this.currentChapterId,
+      hasOriginalHtml: !!this.originalHtmlContent,
+      textLength: textContent?.length || 0
+    });
+
+    // Configurar contexto para adaptContent (texto plano para IA)
+    this.originalContent = textContent;
 
     // Mostrar estado de carga
     this.showLoading('Adaptando contenido con IA...');
 
     try {
-      // Extraer texto plano del contenido HTML
-      const textContent = chapterContent.innerText || chapterContent.textContent;
-
-      // Llamar a adaptContent con el contenido actual
-      this.setContext(this.currentBookId, this.currentChapterId, textContent);
-
-      const result = await this.adaptContent(this.currentAgeStyle, this.currentFocusStyle);
+      const result = await this.adaptContent(this.currentAgeStyle, this.currentFocusStyle, forceRegenerate);
 
       if (result && result.content) {
         // Aplicar contenido adaptado
@@ -786,10 +978,10 @@ Devuelve el texto adaptado:`;
    */
   restoreOriginal() {
     // Restaurar el HTML original si lo tenemos
-    if (this.originalContent) {
+    if (this.originalHtmlContent) {
       const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content, .book-content');
       if (chapterContent) {
-        chapterContent.innerHTML = this.originalContent;
+        chapterContent.innerHTML = this.originalHtmlContent;
       }
     }
 

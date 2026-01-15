@@ -799,7 +799,9 @@ class BibliotecaRenderer {
     `;
 
     herramientas.forEach(herramienta => {
-      if (!herramienta || !herramienta.name || !herramienta.icon || !herramienta.url) {
+      // 🔧 FIX v2.9.384: Permitir herramientas con handler/isBook en lugar de url
+      const hasValidAction = herramienta.url || herramienta.handler || herramienta.isBook;
+      if (!herramienta || !herramienta.name || !herramienta.icon || !hasValidAction) {
         logger.warn('[BibliotecaRenderer] Herramienta con datos incompletos, saltando:', herramienta);
         return;
       }

@@ -96,6 +96,13 @@ class BookReaderNavigation {
       if (chapter) {
         this.currentChapter = chapter;
 
+        // 🔧 FIX v2.9.385: Resetear ContentAdapter al cambiar de capítulo
+        // Evita que la adaptación persista entre capítulos
+        const contentAdapter = this.getDependency('contentAdapter');
+        if (contentAdapter && typeof contentAdapter.resetState === 'function') {
+          contentAdapter.resetState();
+        }
+
         // Detener reproductor al cambiar de capitulo (SALVO si es auto-advance)
         if (!skipAudioStop) {
           const audioReader = this.getDependency('audioReader');

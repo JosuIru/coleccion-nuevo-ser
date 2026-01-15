@@ -32,6 +32,32 @@ class AIAdapter {
     // Detectar si estamos en app nativa (Capacitor/Cordova)
     const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
 
+    // 🔧 FIX v2.9.382: Verificar proxy premium PRIMERO (antes de fallback a local)
+    // Esto permite que usuarios premium usen IA aunque Puter no funcione en Android
+    const premiumResult = await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature);
+
+    if (premiumResult.used) {
+      return premiumResult.response;
+    }
+
+    // 🔧 FIX v2.9.382: Si usuario premium y proxy falló por créditos, NO intentar API directa
+    // El usuario debe recargar créditos o configurar su propia API key manualmente
+    if (premiumResult.isPremiumUser && premiumResult.noCredits) {
+      logger.warn('[AIAdapter] Usuario premium sin créditos - no se intenta API directa');
+      // Ya se mostró el toast en tryPremiumProxy, usar local pero con mensaje específico
+      return await this.askLocal(prompt, systemContext, { showWarning: false });
+    }
+
+    // 🔧 FIX v2.9.383: Para usuarios FREE autenticados, intentar proxy Mistral gratuito
+    // Esto permite que usuarios free usen IA sin configurar API key propia
+    if (!premiumResult.used && !premiumResult.isPremiumUser) {
+      const freeResult = await this.tryFreeProxy(prompt, systemContext, conversationHistory, feature);
+      if (freeResult.used) {
+        return freeResult.response;
+      }
+      // Si el free proxy no está disponible, continuar con el flujo normal
+    }
+
     // En app nativa con Puter: usar modo local directamente
     // Puter SDK no funciona en Android WebView
     if (isNativeApp && provider === this.config.providers.PUTER) {
@@ -40,12 +66,6 @@ class AIAdapter {
         window.toast.info('IA local activa. Configura OpenAI/Gemini en Ajustes para IA avanzada.', 4000);
       }
       return await this.askLocal(prompt, systemContext);
-    }
-
-    // Verificar si el usuario tiene suscripción premium y usar el proxy del admin
-    const premiumResult = await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature);
-    if (premiumResult.used) {
-      return premiumResult.response;
     }
 
     try {
@@ -140,30 +160,35 @@ class AIAdapter {
 
   /**
    * Intenta usar el proxy premium si el usuario tiene suscripción activa
-   * @returns {Object} { used: boolean, response: string|null }
+   * @returns {Object} { used: boolean, response: string|null, isPremiumUser: boolean, noCredits: boolean }
    */
   async tryPremiumProxy(prompt, systemContext, conversationHistory, feature = 'chat') {
     try {
       // Verificar si el usuario está autenticado y tiene suscripción
       const authHelper = window.authHelper;
       if (!authHelper || !authHelper.isAuthenticated()) {
-        return { used: false, response: null };
+        return { used: false, response: null, isPremiumUser: false, noCredits: false };
       }
 
       // Obtener información de suscripción
       const subscription = await this.getUserSubscription();
-      if (!subscription || subscription.plan === 'free') {
+      const planLower = (subscription?.plan || 'free').toLowerCase();
+      const isPremiumUser = ['premium', 'pro'].includes(planLower);
+
+      logger.debug('[Premium Proxy] Plan:', planLower, 'isPremium:', isPremiumUser);
+
+      if (!isPremiumUser) {
         // Usuario free - puede usar si tiene créditos gratuitos restantes
         const hasCredits = await this.checkFreeCredits();
         if (!hasCredits) {
-          return { used: false, response: null };
+          return { used: false, response: null, isPremiumUser: false, noCredits: true };
         }
       }
 
       // Obtener token de acceso del usuario
       const userToken = await authHelper.getAccessToken();
       if (!userToken) {
-        return { used: false, response: null };
+        return { used: false, response: null, isPremiumUser, noCredits: false };
       }
 
       // Construir mensajes para la API
@@ -176,24 +201,32 @@ class AIAdapter {
       ];
 
       // URL del proxy premium (desplegado en gailu.net)
-      const PREMIUM_PROXY_URL = 'https://gailu.net/api/ai-proxy.php';
+      const PREMIUM_PROXY_URL = 'https://gailu.net/api/premium-ai-proxy.php';
 
       // Seleccionar modelo según preferencias (claude-3-5-haiku es el más nuevo disponible)
       const selectedModel = this.config.getSelectedModel() || 'claude-3-5-haiku-20241022';
+
+      // 🔧 FIX v2.9.381: Aumentar max_tokens para adaptaciones de contenido
+      const maxTokens = feature === 'content_adaptation' ? 4096 : 1024;
+
+      logger.debug(`[Premium Proxy] Feature: ${feature}, max_tokens: ${maxTokens}, model: ${selectedModel}`);
+      logger.debug(`[Premium Proxy] Prompt length: ${prompt.length} chars`);
 
       const response = await fetch(PREMIUM_PROXY_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`
+          'Authorization': `Bearer ${userToken}`,
+          'X-User-Token': userToken  // Header que espera el proxy
         },
         body: JSON.stringify({
           model: selectedModel,
           messages: messages,
-          system: systemContext || undefined,
-          max_tokens: 1024,
-          temperature: 0.7,
-          _token: userToken  // Fallback si el header no llega
+          systemPrompt: systemContext || '',  // Nombre que espera el proxy
+          system: systemContext || undefined,  // Backwards compatibility
+          max_tokens: maxTokens,
+          feature: feature,  // Para calcular costo de créditos
+          temperature: 0.7
         })
       });
 
@@ -206,18 +239,29 @@ class AIAdapter {
           // Mostrar mensaje al usuario
           if (window.toast && data.error) {
             if (data.code === 'NO_CREDITS') {
-              window.toast.warning(`Sin créditos IA. ${data.creditsRemaining || 0} restantes.`, 5000);
+              window.toast.warning(`⚠️ Sin créditos IA. Recarga en tu cuenta o configura otra IA en ⚙️ Ajustes.`, 6000);
             } else {
               window.toast.info('Funcionalidad Premium. Actualiza tu plan para usar IA.', 5000);
             }
           }
-          return { used: false, response: null };
+          // 🔧 FIX v2.9.382: Marcar como noCredits para evitar intentar API directa
+          return { used: false, response: null, isPremiumUser, noCredits: true };
         }
         throw new Error(data.error || 'Error en proxy premium');
       }
 
       // Extraer respuesta de Claude
       const responseText = data.content?.[0]?.text || data.text || '';
+
+      // 🔧 DEBUG: Mostrar info de respuesta
+      logger.debug(`[Premium Proxy] Response length: ${responseText.length} chars`);
+      logger.debug(`[Premium Proxy] Stop reason: ${data.stop_reason || 'N/A'}`);
+      if (feature === 'content_adaptation') {
+        logger.warn(`[ContentAdapter] Respuesta IA: ${responseText.length} caracteres`);
+        if (responseText.length < 500) {
+          logger.warn(`[ContentAdapter] ⚠️ Respuesta muy corta! Primeros 200 chars: ${responseText.substring(0, 200)}`);
+        }
+      }
 
       // Éxito - mostrar créditos restantes si es relevante
       if (data._credits?.remaining !== undefined && data._credits.remaining < 50) {
@@ -229,17 +273,144 @@ class AIAdapter {
         response: responseText,
         creditsUsed: data._credits?.used || 1,
         creditsRemaining: data._credits?.remaining,
-        plan: subscription?.plan || 'premium'
+        plan: planLower,
+        isPremiumUser,
+        noCredits: false
       };
 
     } catch (error) {
       logger.warn('Premium proxy no disponible, usando fallback:', error.message);
+      // 🔧 FIX v2.9.382: Detectar si es usuario premium para evitar intentar API directa
+      const authHelper = window.authHelper;
+      let isPremiumUser = false;
+      if (authHelper?.isAuthenticated?.()) {
+        try {
+          const subscription = await this.getUserSubscription();
+          const planLower = (subscription?.plan || 'free').toLowerCase();
+          isPremiumUser = ['premium', 'pro'].includes(planLower);
+        } catch (e) {
+          // Ignorar error al obtener suscripción
+        }
+      }
+      // Si el error es de créditos, marcar noCredits
+      const noCredits = error.message?.includes('créditos') || error.message?.includes('credits');
+      return { used: false, response: null, isPremiumUser, noCredits };
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PROXY FREE - Mistral gratuito para usuarios autenticados (plan free)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * 🔧 FIX v2.9.383: Proxy Mistral para usuarios free autenticados
+   * Usa la API key del administrador para dar acceso gratuito limitado
+   * @returns {Object} { used: boolean, response: string|null }
+   */
+  async tryFreeProxy(prompt, systemContext, conversationHistory, feature = 'chat') {
+    try {
+      // Verificar si el usuario está autenticado
+      const authHelper = window.authHelper;
+      if (!authHelper || !authHelper.isAuthenticated()) {
+        return { used: false, response: null };
+      }
+
+      // Obtener información de suscripción - solo para usuarios FREE
+      const subscription = await this.getUserSubscription();
+      const planLower = (subscription?.plan || 'free').toLowerCase();
+      const isFreeUser = planLower === 'free' || !['premium', 'pro'].includes(planLower);
+
+      if (!isFreeUser) {
+        // Usuario premium - no usar este proxy, usar el premium
+        return { used: false, response: null };
+      }
+
+      // Obtener token de acceso del usuario
+      const userToken = await authHelper.getAccessToken();
+      if (!userToken) {
+        return { used: false, response: null };
+      }
+
+      // Construir mensajes para la API
+      const messages = [];
+
+      // Añadir contexto del sistema
+      if (systemContext) {
+        messages.push({ role: 'system', content: systemContext });
+      }
+
+      // Añadir historial de conversación
+      for (const msg of conversationHistory) {
+        messages.push({
+          role: msg.role,
+          content: msg.content
+        });
+      }
+
+      // Añadir mensaje actual
+      messages.push({ role: 'user', content: prompt });
+
+      // URL del proxy Mistral free
+      const FREE_PROXY_URL = 'https://gailu.net/api/mistral-free-proxy.php';
+
+      // Modelo a usar
+      const model = 'mistral-small-latest';
+
+      // Max tokens según feature
+      const maxTokens = feature === 'content_adaptation' ? 4096 : 1024;
+
+      logger.debug(`[Free Proxy] Feature: ${feature}, model: ${model}, authenticated: true`);
+
+      const response = await fetch(FREE_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+          'X-User-Token': userToken
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          max_tokens: maxTokens,
+          temperature: 0.7,
+          feature: feature
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Error del proxy
+        if (data.code === 'RATE_LIMITED') {
+          if (window.toast) {
+            window.toast.warning('⏳ Límite de uso alcanzado. Espera unos minutos.', 5000);
+          }
+          return { used: false, response: null, rateLimited: true };
+        }
+        throw new Error(data.error || 'Error en proxy Mistral free');
+      }
+
+      // Extraer respuesta de Mistral
+      const responseText = data.choices?.[0]?.message?.content || data.text || '';
+
+      logger.debug(`[Free Proxy] Response length: ${responseText.length} chars`);
+
+      return {
+        used: true,
+        response: responseText,
+        model: model,
+        plan: 'free'
+      };
+
+    } catch (error) {
+      logger.warn('Free proxy no disponible:', error.message);
       return { used: false, response: null };
     }
   }
 
   /**
    * Obtener información de suscripción del usuario
+   * 🔧 FIX: Usar profiles.subscription_tier en lugar de tabla subscriptions
    */
   async getUserSubscription() {
     try {
@@ -249,21 +420,16 @@ class AIAdapter {
       const user = window.authHelper?.getCurrentUser();
       if (!user) return null;
 
+      // Obtener subscription_tier desde profiles
       const { data, error } = await supabase
-        .from('subscriptions')
-        .select('plan, status, current_period_end')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
+        .from('profiles')
+        .select('subscription_tier')
+        .eq('id', user.id)
         .single();
 
       if (error || !data) return { plan: 'free' };
 
-      // Verificar si no ha expirado
-      if (data.current_period_end && new Date(data.current_period_end) < new Date()) {
-        return { plan: 'free' };
-      }
-
-      return data;
+      return { plan: data.subscription_tier || 'free' };
     } catch (error) {
       logger.error('Error obteniendo suscripción:', error);
       return { plan: 'free' };
@@ -272,6 +438,7 @@ class AIAdapter {
 
   /**
    * Verificar si el usuario free tiene créditos gratuitos
+   * 🔧 FIX: Usar tokens_total y sumar uso mensual
    */
   async checkFreeCredits() {
     try {
@@ -281,18 +448,28 @@ class AIAdapter {
       const user = window.authHelper?.getCurrentUser();
       if (!user) return false;
 
+      // Obtener uso de este mes
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
       const { data, error } = await supabase
         .from('ai_usage')
-        .select('credits_used, monthly_limit')
+        .select('tokens_total')
         .eq('user_id', user.id)
-        .single();
+        .gte('created_at', startOfMonth.toISOString());
 
       if (error || !data) {
         // Si no existe registro, tiene todos los créditos gratuitos
         return true;
       }
 
-      return (data.monthly_limit - data.credits_used) > 0;
+      // Sumar tokens usados este mes
+      const tokensUsed = data.reduce((sum, record) => sum + (record.tokens_total || 0), 0);
+      const creditsUsed = Math.floor(tokensUsed / 1000);
+      const monthlyLimit = 100; // 100K tokens para free
+
+      return creditsUsed < monthlyLimit;
     } catch (error) {
       logger.error('Error verificando créditos:', error);
       return true; // En caso de error, permitir
@@ -853,7 +1030,19 @@ class AIAdapter {
   // MODO LOCAL (SIN IA - RESPUESTAS PREDEFINIDAS)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  async askLocal(prompt, systemContext) {
+  async askLocal(prompt, systemContext, options = {}) {
+    // 🔧 FIX v2.9.381: Informar al usuario que está usando respuestas simuladas
+    const showWarning = options.showWarning !== false; // Por defecto mostrar
+
+    if (showWarning && window.toast) {
+      const isAuthenticated = window.authHelper?.isAuthenticated?.();
+      if (!isAuthenticated) {
+        window.toast.warning('⚠️ Respuesta simulada. Inicia sesión o configura una IA en ⚙️ Ajustes para respuestas reales.', 6000);
+      } else {
+        window.toast.warning('⚠️ Respuesta simulada. Configura una IA en ⚙️ Ajustes para respuestas reales.', 5000);
+      }
+    }
+
     // Get current language
     const currentLang = this.i18n.getLanguage();
 

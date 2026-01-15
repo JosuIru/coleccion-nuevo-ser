@@ -84,19 +84,42 @@ class AIConfig {
     const stored = localStorage.getItem('ai_config');
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const config = JSON.parse(stored);
+        // 🔧 FIX v2.9.381: En app nativa, si el provider es Puter, cambiarlo a uno que funcione
+        const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+        if (isNativeApp && config.provider === this.providers.PUTER) {
+          // Buscar un provider configurado o usar Gemini (gratis y fácil de configurar)
+          if (config.apiKeys?.mistral) {
+            config.provider = this.providers.MISTRAL;
+          } else if (config.apiKeys?.gemini) {
+            config.provider = this.providers.GEMINI;
+          } else if (config.apiKeys?.openai) {
+            config.provider = this.providers.OPENAI;
+          } else {
+            // 🔧 Mantener Gemini como default en app nativa (fácil de obtener API key gratis)
+            config.provider = this.providers.GEMINI;
+          }
+          this.saveConfigDirect(config);
+          logger.debug('[AIConfig] App nativa detectada, cambiado de Puter a:', config.provider);
+        }
+        return config;
       } catch (error) {
         logger.error('Error loading AI config:', error);
       }
     }
 
-    // Configuración por defecto (Puter.js - Mistral GRATIS para no registrados)
+    // 🔧 FIX v2.9.381: Mejor default según plataforma
+    const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
+
+    // Configuración por defecto
     return {
-      provider: this.providers.PUTER,  // 🆓 Mistral gratis via Puter.js
+      // En app nativa, usar Gemini por defecto (API gratis fácil de obtener)
+      // En web, usar Puter.js (Mistral GRATIS sin API key)
+      provider: isNativeApp ? this.providers.GEMINI : this.providers.PUTER,
       apiKeys: {
         claude: '',
         openai: '',      // ChatGPT API key
-        gemini: '',      // Google Gemini API key
+        gemini: '',      // Google Gemini API key - GRATIS y fácil de obtener
         qwen: '',        // DashScope API key (Alibaba) - gratis 1M tokens/mes
         mistral: '',     // Mistral AI API key
         huggingface: ''  // Token gratuito de HuggingFace
@@ -105,9 +128,17 @@ class AIConfig {
       preferences: {
         maxTokens: 1024,
         temperature: 0.7,
-        model: 'mistralai/mistral-large-2512'  // Modelo por defecto de Puter
+        model: isNativeApp ? 'gemini-2.0-flash' : 'mistralai/mistral-large-2512'
       }
     };
+  }
+
+  /**
+   * 🔧 FIX v2.9.381: Guardar config directamente sin sincronización
+   * Usado durante loadConfig para evitar loop infinito
+   */
+  saveConfigDirect(config) {
+    localStorage.setItem('ai_config', JSON.stringify(config));
   }
 
   saveConfig() {

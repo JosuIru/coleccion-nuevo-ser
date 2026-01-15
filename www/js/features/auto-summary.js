@@ -62,7 +62,10 @@ class AutoSummary {
   async generateSummary(chapter, bookId) {
     // 🔧 FIX v2.9.332: Usar getAIAdapter() para fallback robusto
     const adapter = this.getAIAdapter();
-    if (!adapter || !window.aiConfig?.getClaudeApiKey()) {
+
+    // 🔧 FIX v2.9.379: Usar AIUtils para verificación unificada de disponibilidad IA
+    const aiUtils = window.aiUtils;
+    if (!adapter || (aiUtils && !aiUtils.isAIAvailable())) {
       // logger.debug('IA no configurada para generar resumen');
       return null;
     }
@@ -151,6 +154,13 @@ FORMATO DE RESPUESTA:
   // ==========================================================================
 
   async showSummaryModal(chapter, bookId) {
+    // 🔧 FIX v2.9.379: Verificar disponibilidad de IA antes de intentar
+    const aiUtils = window.aiUtils;
+    if (aiUtils && !aiUtils.isAIAvailable()) {
+      this.showNoAIModal(chapter);
+      return;
+    }
+
     // Mostrar loading
     this.showLoadingModal();
 
@@ -167,6 +177,48 @@ FORMATO DE RESPUESTA:
 
     // Mostrar modal con resumen
     this.renderSummaryModal(chapter, summary, bookId);
+  }
+
+  /**
+   * 🔧 FIX v2.9.379: Modal cuando no hay IA disponible
+   */
+  showNoAIModal(chapter) {
+    const existing = document.getElementById('summary-modal');
+    if (existing) existing.remove();
+
+    const aiUtils = window.aiUtils;
+    const statusBanner = aiUtils?.renderAIStatusBanner?.() || '';
+
+    const modal = document.createElement('div');
+    modal.id = 'summary-modal';
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4';
+
+    modal.innerHTML = `
+      <div class="bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-cyan-500/30">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">📄</span>
+            <h3 class="text-xl font-bold text-cyan-300">Resumen del Capítulo</h3>
+          </div>
+          <button id="close-summary-modal" class="text-gray-400 hover:text-white p-2 hover:bg-gray-800 rounded-lg transition">
+            ${typeof Icons !== 'undefined' ? Icons.close(20) : '✕'}
+          </button>
+        </div>
+        <p class="text-gray-400 mb-4">Para generar resúmenes automáticos necesitas configurar la IA.</p>
+        ${statusBanner}
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Adjuntar eventos del banner
+    if (aiUtils) {
+      aiUtils.attachBannerEvents(modal);
+    }
+
+    // Evento cerrar
+    modal.querySelector('#close-summary-modal')?.addEventListener('click', () => this.closeModal());
+    modal.addEventListener('click', (e) => { if (e.target === modal) this.closeModal(); });
   }
 
   showLoadingModal() {

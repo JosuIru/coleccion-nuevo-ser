@@ -65,10 +65,15 @@ class SystemHealth {
 
         const startTime = Date.now();
         try {
-            // Simple health check query
-            const { error } = await window.supabase.rpc('health_check').catch(() => ({
-                error: null // RPC may not exist, which is fine
-            }));
+            // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+            // Intentar health_check RPC (puede no existir)
+            let rpcResult = { error: null };
+            try {
+                rpcResult = await window.supabase.rpc('health_check');
+            } catch (rpcErr) {
+                // RPC may not exist, which is fine
+                rpcResult = { error: null };
+            }
 
             // Try a basic query as fallback
             await window.supabase.from('profiles').select('count').limit(1);

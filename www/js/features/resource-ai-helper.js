@@ -11,11 +11,22 @@ class ResourceAIHelper {
   }
 
   // 🔧 FIX v2.9.265: Asegurar que aiAdapter esté disponible (puede cargarse después)
+  // 🔧 FIX v2.9.381: Usar AIUtils para verificación unificada
   ensureAIAdapter() {
     if (!this.aiAdapter && window.aiAdapter) {
       this.aiAdapter = window.aiAdapter;
     }
     return this.aiAdapter;
+  }
+
+  /**
+   * 🔧 FIX v2.9.381: Verifica si la IA está disponible usando AIUtils
+   */
+  isAIReady() {
+    const aiUtils = window.aiUtils;
+    if (!this.ensureAIAdapter()) return false;
+    if (aiUtils && !aiUtils.isAIAvailable()) return false;
+    return true;
   }
 
   // ==========================================================================
@@ -35,8 +46,8 @@ class ResourceAIHelper {
       return this.summariesCache.get(cacheKey);
     }
 
-    // 🔧 FIX v2.9.265: Verificar aiAdapter antes de usar
-    if (!this.ensureAIAdapter()) {
+    // 🔧 FIX v2.9.381: Verificar si IA está disponible usando método unificado
+    if (!this.isAIReady()) {
       return this.getFallbackSummary(resource);
     }
 
@@ -83,8 +94,8 @@ ${resource.author ? `- Autor: ${resource.author}` : ''}
    * Genera recomendaciones personalizadas de recursos según perfil del usuario
    */
   async generateRecommendations(resources, userContext) {
-    // 🔧 FIX v2.9.265: Verificar aiAdapter
-    if (!this.ensureAIAdapter()) return resources.slice(0, 5);
+    // 🔧 FIX v2.9.381: Verificar si IA está disponible
+    if (!this.isAIReady()) return resources.slice(0, 5);
 
     try {
       const resourcesList = resources.map(r => `- ${r.title} (${r.type})`).join('\n');
@@ -131,8 +142,8 @@ ${resourcesList}
    * Explica la relación entre un recurso y el contenido del libro
    */
   async explainResourceConnection(resource, bookId, chapterId) {
-    // 🔧 FIX v2.9.265: Verificar aiAdapter
-    if (!this.ensureAIAdapter()) {
+    // 🔧 FIX v2.9.381: Verificar si IA está disponible
+    if (!this.isAIReady()) {
       return `Este recurso complementa los temas tratados en el capítulo.`;
     }
 
@@ -158,8 +169,8 @@ ${resourcesList}
    * Genera un learning path basado en un objetivo del usuario
    */
   async generateLearningPath(goal, availableResources, bookId) {
-    // 🔧 FIX v2.9.265: Verificar aiAdapter
-    if (!this.ensureAIAdapter()) {
+    // 🔧 FIX v2.9.381: Verificar si IA está disponible
+    if (!this.isAIReady()) {
       return this.getFallbackLearningPath(goal, availableResources);
     }
 

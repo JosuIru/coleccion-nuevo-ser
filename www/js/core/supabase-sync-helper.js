@@ -192,60 +192,53 @@ class SupabaseSyncHelper {
             // Migrar cada libro
             for (const [bookId, progress] of Object.entries(readProgress)) {
                 try {
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    // Verificar si ya existe en Supabase
-                    const { data: existing } = await this.supabase
+                    // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}, no soporta .catch()
+                    const { data: existing, error: selectError } = await this.supabase
                         .from(window.supabaseConfig.tables.readingProgress)
                         .select('*')
                         .eq('user_id', userId)
                         .eq('book_id', bookId)
-                        .single()
-                        .catch(error => {
-                            logger.error('Error verificando progreso existente:', error);
-                            return { data: null };
-                        });
+                        .maybeSingle();
+
+                    if (selectError) {
+                        logger.error('Error verificando progreso existente:', selectError);
+                    }
 
                     const chaptersRead = progress.chaptersRead || [];
                     const record = {
                         user_id: userId,
                         book_id: bookId,
                         chapters_read: chaptersRead,
-                        total_chapters: chaptersRead.length, // Actualizar según lo leído
-                        progress_percentage: 0, // Se calculará en el cliente
+                        total_chapters: chaptersRead.length,
+                        progress_percentage: 0,
                         last_chapter_id: progress.lastChapter || null,
                         updated_at: progress.lastReadAt || lastUpdate || new Date().toISOString(),
                     };
 
                     if (existing) {
-                        // Actualizar si el local es más reciente
                         const localTime = new Date(progress.lastReadAt || lastUpdate || 0).getTime();
                         const remoteTime = new Date(existing.updated_at).getTime();
 
                         if (localTime > remoteTime) {
-                            // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                            await this.supabase
+                            const { error: updateError } = await this.supabase
                                 .from(window.supabaseConfig.tables.readingProgress)
                                 .update(record)
-                                .eq('id', existing.id)
-                                .catch(error => {
-                                    logger.error(`Error actualizando progreso de ${bookId}:`, error);
-                                    window.toast?.error('Error al sincronizar progreso de lectura');
-                                    throw error;
-                                });
-                            // logger.debug(`✓ Progreso de "${bookId}" actualizado en nube`);
+                                .eq('id', existing.id);
+
+                            if (updateError) {
+                                logger.error(`Error actualizando progreso de ${bookId}:`, updateError);
+                                window.toast?.error('Error al sincronizar progreso de lectura');
+                            }
                         }
                     } else {
-                        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                        // Insertar nuevo
-                        await this.supabase
+                        const { error: insertError } = await this.supabase
                             .from(window.supabaseConfig.tables.readingProgress)
-                            .insert(record)
-                            .catch(error => {
-                                logger.error(`Error insertando progreso de ${bookId}:`, error);
-                                window.toast?.error('Error al guardar progreso en la nube');
-                                throw error;
-                            });
-                        // logger.debug(`✓ Progreso de "${bookId}" creado en nube`);
+                            .insert(record);
+
+                        if (insertError) {
+                            logger.error(`Error insertando progreso de ${bookId}:`, insertError);
+                            window.toast?.error('Error al guardar progreso en la nube');
+                        }
                     }
 
                 } catch (error) {
@@ -283,22 +276,20 @@ class SupabaseSyncHelper {
 
                 for (const note of notesList) {
                     try {
-                        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                        // Verificar si ya existe
-                        const { data: existing } = await this.supabase
+                        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+                        const { data: existing, error: selectError } = await this.supabase
                             .from(window.supabaseConfig.tables.notes)
                             .select('*')
                             .eq('user_id', userId)
                             .eq('note_id', note.id)
-                            .single()
-                            .catch(error => {
-                                logger.error('Error verificando nota existente:', error);
-                                return { data: null };
-                            });
+                            .maybeSingle();
+
+                        if (selectError) {
+                            logger.error('Error verificando nota existente:', selectError);
+                        }
 
                         if (!existing) {
-                            // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                            await this.supabase
+                            const { error: insertError } = await this.supabase
                                 .from(window.supabaseConfig.tables.notes)
                                 .insert({
                                     user_id: userId,
@@ -307,13 +298,12 @@ class SupabaseSyncHelper {
                                     chapter_id: chapterId,
                                     content: note.text || note.content,
                                     created_at: note.createdAt || new Date().toISOString(),
-                                })
-                                .catch(error => {
-                                    logger.error(`Error insertando nota ${note.id}:`, error);
-                                    window.toast?.error('Error al sincronizar notas');
-                                    throw error;
                                 });
-                            // logger.debug(`✓ Nota migrada: ${bookId}:${chapterId}`);
+
+                            if (insertError) {
+                                logger.error(`Error insertando nota ${note.id}:`, insertError);
+                                window.toast?.error('Error al sincronizar notas');
+                            }
                         }
                     } catch (error) {
                         logger.error(`Error migrando nota ${note.id}:`, error);
@@ -337,17 +327,16 @@ class SupabaseSyncHelper {
             const achievements = JSON.parse(achievementsData);
             const userId = window.supabaseAuthHelper.user.id;
 
-            // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-            // Verificar si ya existen
-            const { data: existing } = await this.supabase
+            // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+            const { data: existing, error: selectError } = await this.supabase
                 .from(window.supabaseConfig.tables.achievements)
                 .select('*')
                 .eq('user_id', userId)
-                .single()
-                .catch(error => {
-                    logger.error('Error verificando achievements existentes:', error);
-                    return { data: null };
-                });
+                .maybeSingle();
+
+            if (selectError) {
+                logger.error('Error verificando achievements existentes:', selectError);
+            }
 
             const record = {
                 user_id: userId,
@@ -357,26 +346,24 @@ class SupabaseSyncHelper {
             };
 
             if (existing) {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                await this.supabase
+                const { error: updateError } = await this.supabase
                     .from(window.supabaseConfig.tables.achievements)
                     .update(record)
-                    .eq('id', existing.id)
-                    .catch(error => {
-                        logger.error('Error actualizando achievements:', error);
-                        window.toast?.error('Error al sincronizar logros');
-                        throw error;
-                    });
+                    .eq('id', existing.id);
+
+                if (updateError) {
+                    logger.error('Error actualizando achievements:', updateError);
+                    window.toast?.error('Error al sincronizar logros');
+                }
             } else {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                await this.supabase
+                const { error: insertError } = await this.supabase
                     .from(window.supabaseConfig.tables.achievements)
-                    .insert(record)
-                    .catch(error => {
-                        logger.error('Error insertando achievements:', error);
-                        window.toast?.error('Error al guardar logros en la nube');
-                        throw error;
-                    });
+                    .insert(record);
+
+                if (insertError) {
+                    logger.error('Error insertando achievements:', insertError);
+                    window.toast?.error('Error al guardar logros en la nube');
+                }
             }
 
         } catch (error) {
@@ -479,16 +466,16 @@ class SupabaseSyncHelper {
                 return;
             }
 
-            // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-            const { data: existing } = await this.supabase
+            // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+            const { data: existing, error: selectError } = await this.supabase
                 .from(window.supabaseConfig.tables.settings)
                 .select('*')
                 .eq('user_id', userId)
-                .single()
-                .catch(error => {
-                    logger.error('Error verificando settings existentes:', error);
-                    return { data: null };
-                });
+                .maybeSingle();
+
+            if (selectError) {
+                logger.error('Error verificando settings existentes:', selectError);
+            }
 
             const record = {
                 user_id: userId,
@@ -497,35 +484,27 @@ class SupabaseSyncHelper {
             };
 
             if (existing) {
-                // Solo actualizar si los settings en la nube están vacíos o si no existen
                 const existingSettings = existing.settings || {};
                 if (Object.keys(existingSettings).length === 0) {
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    await this.supabase
+                    const { error: updateError } = await this.supabase
                         .from(window.supabaseConfig.tables.settings)
                         .update(record)
-                        .eq('id', existing.id)
-                        .catch(error => {
-                            logger.error('Error actualizando settings:', error);
-                            window.toast?.error('Error al sincronizar configuración');
-                            throw error;
-                        });
-                    // logger.debug('✓ Settings locales migrados (nube estaba vacía)');
-                } else {
-                    // logger.debug('ℹ️ Settings ya existen en la nube, no se sobrescriben');
+                        .eq('id', existing.id);
+
+                    if (updateError) {
+                        logger.error('Error actualizando settings:', updateError);
+                        window.toast?.error('Error al sincronizar configuración');
+                    }
                 }
             } else {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                // No existe registro, crear uno nuevo
-                await this.supabase
+                const { error: insertError } = await this.supabase
                     .from(window.supabaseConfig.tables.settings)
-                    .insert(record)
-                    .catch(error => {
-                        logger.error('Error insertando settings:', error);
-                        window.toast?.error('Error al guardar configuración en la nube');
-                        throw error;
-                    });
-                // logger.debug('✓ Settings locales migrados (nuevo registro)');
+                    .insert(record);
+
+                if (insertError) {
+                    logger.error('Error insertando settings:', insertError);
+                    window.toast?.error('Error al guardar configuración en la nube');
+                }
             }
 
         } catch (error) {
@@ -574,20 +553,26 @@ class SupabaseSyncHelper {
 
             // logger.debug('[SyncHelper] Settings a enviar:', Object.keys(settings));
 
-            // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-            const { data: existing, error: queryError } = await this.supabase
-                .from(window.supabaseConfig.tables.settings)
-                .select('*')
-                .eq('user_id', userId)
-                .maybeSingle()
-                .catch(error => {
-                    logger.error('Error buscando settings existentes:', error);
-                    window.toast?.error('Error al verificar configuración en la nube');
-                    return { data: null, error };
-                });
+            // 🔧 FIX v2.9.383: Corregido - Supabase no usa .catch(), devuelve {data, error}
+            let existing = null;
+            let queryError = null;
+
+            try {
+                const result = await this.supabase
+                    .from(window.supabaseConfig.tables.settings)
+                    .select('*')
+                    .eq('user_id', userId)
+                    .maybeSingle();
+
+                existing = result.data;
+                queryError = result.error;
+            } catch (error) {
+                logger.error('Error buscando settings existentes:', error);
+                return;
+            }
 
             if (queryError) {
-                // logger.warn('⚠️ Error buscando settings existentes:', queryError.message);
+                logger.warn('⚠️ Error buscando settings:', queryError.message);
                 return;
             }
 
@@ -598,39 +583,31 @@ class SupabaseSyncHelper {
             };
 
             if (existing) {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                // Actualizar settings existentes (merge con los actuales)
-                const { error: updateError } = await this.supabase
-                    .from(window.supabaseConfig.tables.settings)
-                    .update(record)
-                    .eq('id', existing.id)
-                    .catch(error => {
-                        logger.error('Error actualizando settings:', error);
-                        window.toast?.error('Error al sincronizar configuración');
-                        return { error };
-                    });
+                // Actualizar settings existentes
+                try {
+                    const { error: updateError } = await this.supabase
+                        .from(window.supabaseConfig.tables.settings)
+                        .update(record)
+                        .eq('id', existing.id);
 
-                if (updateError) {
-                    logger.error('Error actualizando settings:', updateError);
-                } else {
-                    // logger.debug('✓ Settings sincronizados a la nube');
+                    if (updateError) {
+                        logger.error('Error actualizando settings:', updateError);
+                    }
+                } catch (error) {
+                    logger.error('Error actualizando settings:', error);
                 }
             } else {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
                 // Crear nuevo registro
-                const { error: insertError } = await this.supabase
-                    .from(window.supabaseConfig.tables.settings)
-                    .insert(record)
-                    .catch(error => {
-                        logger.error('Error creando settings:', error);
-                        window.toast?.error('Error al guardar configuración en la nube');
-                        return { error };
-                    });
+                try {
+                    const { error: insertError } = await this.supabase
+                        .from(window.supabaseConfig.tables.settings)
+                        .insert(record);
 
-                if (insertError) {
-                    logger.error('Error creando settings:', insertError);
-                } else {
-                    // logger.debug('✓ Settings creados en la nube');
+                    if (insertError) {
+                        logger.error('Error creando settings:', insertError);
+                    }
+                } catch (error) {
+                    logger.error('Error creando settings:', error);
                 }
             }
 
@@ -704,18 +681,17 @@ class SupabaseSyncHelper {
      * CORREGIDO: Actualizar formato correcto de coleccion-nuevo-ser-data
      */
     async syncProgressFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.readingProgress)
             .select('*')
-            .eq('user_id', userId)
-            .catch(error => {
-                logger.error('Error sincronizando progreso desde la nube:', error);
-                window.toast?.error('Error al cargar progreso. Verifica tu conexión.');
-                return { data: null, error };
-            });
+            .eq('user_id', userId);
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando progreso desde la nube:', error);
+            window.toast?.error('Error al cargar progreso. Verifica tu conexión.');
+            throw error;
+        }
 
         if (!data || data.length === 0) {
             // logger.debug('No hay progreso en la nube');
@@ -759,18 +735,17 @@ class SupabaseSyncHelper {
      * CORREGIDO: Actualizar formato correcto de coleccion-nuevo-ser-data
      */
     async syncNotesFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.notes)
             .select('*')
-            .eq('user_id', userId)
-            .catch(error => {
-                logger.error('Error sincronizando notas desde la nube:', error);
-                window.toast?.error('Error al cargar notas. Intenta de nuevo.');
-                return { data: null, error };
-            });
+            .eq('user_id', userId);
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando notas desde la nube:', error);
+            window.toast?.error('Error al cargar notas. Intenta de nuevo.');
+            throw error;
+        }
 
         if (!data || data.length === 0) {
             // logger.debug('No hay notas en la nube');
@@ -843,18 +818,17 @@ class SupabaseSyncHelper {
      * CORREGIDO: Actualizar formato correcto de coleccion-nuevo-ser-data
      */
     async syncBookmarksFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.bookmarks)
             .select('chapter_id')
-            .eq('user_id', userId)
-            .catch(error => {
-                logger.error('Error sincronizando marcadores desde la nube:', error);
-                window.toast?.error('Error al cargar marcadores. Verifica tu conexión.');
-                return { data: null, error };
-            });
+            .eq('user_id', userId);
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando marcadores desde la nube:', error);
+            window.toast?.error('Error al cargar marcadores. Verifica tu conexión.');
+            throw error;
+        }
 
         if (!data || data.length === 0) {
             // logger.debug('No hay bookmarks en la nube');
@@ -943,27 +917,24 @@ class SupabaseSyncHelper {
             for (const [key, reflection] of Object.entries(reflections)) {
                 const [bookId, chapterId] = key.split(':');
 
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                // Verificar si ya existe
-                const { data: existing } = await this.supabase
+                // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+                const { data: existing, error: selectError } = await this.supabase
                     .from(window.supabaseConfig.tables.reflections)
                     .select('updated_at')
                     .eq('user_id', userId)
                     .eq('book_id', bookId)
                     .eq('chapter_id', chapterId)
-                    .single()
-                    .catch(error => {
-                        logger.error('Error verificando reflexión existente:', error);
-                        return { data: null };
-                    });
+                    .maybeSingle();
+
+                if (selectError) {
+                    logger.error('Error verificando reflexión existente:', selectError);
+                }
 
                 const localTime = new Date(reflection.timestamp || Date.now()).getTime();
                 const remoteTime = existing ? new Date(existing.updated_at).getTime() : 0;
 
-                // Solo subir si local es más reciente o no existe
                 if (!existing || localTime > remoteTime) {
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    await this.supabase
+                    const { error: upsertError } = await this.supabase
                         .from(window.supabaseConfig.tables.reflections)
                         .upsert({
                             user_id: userId,
@@ -973,13 +944,12 @@ class SupabaseSyncHelper {
                             answer: reflection.answer,
                             created_at: reflection.timestamp || new Date().toISOString(),
                             updated_at: reflection.timestamp || new Date().toISOString(),
-                        })
-                        .catch(error => {
-                            logger.error(`Error guardando reflexión ${key}:`, error);
-                            window.toast?.error('Error al sincronizar reflexiones');
-                            throw error;
                         });
-                    // logger.debug(`✓ Reflexión migrada: ${key}`);
+
+                    if (upsertError) {
+                        logger.error(`Error guardando reflexión ${key}:`, upsertError);
+                        window.toast?.error('Error al sincronizar reflexiones');
+                    }
                 }
             }
         } catch (error) {
@@ -992,18 +962,17 @@ class SupabaseSyncHelper {
      * Sincronizar reflexiones desde la nube
      */
     async syncReflectionsFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.reflections)
             .select('*')
-            .eq('user_id', userId)
-            .catch(error => {
-                logger.error('Error sincronizando reflexiones desde la nube:', error);
-                window.toast?.error('Error al cargar reflexiones. Intenta de nuevo.');
-                return { data: null, error };
-            });
+            .eq('user_id', userId);
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando reflexiones desde la nube:', error);
+            window.toast?.error('Error al cargar reflexiones. Intenta de nuevo.');
+            throw error;
+        }
 
         const reflections = {};
         data.forEach(refl => {
@@ -1034,26 +1003,23 @@ class SupabaseSyncHelper {
             // logger.debug('Migrando planes de acción:', Object.keys(plans));
 
             for (const [actionId, plan] of Object.entries(plans)) {
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                // Verificar si ya existe
-                const { data: existing } = await this.supabase
+                // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+                const { data: existing, error: selectError } = await this.supabase
                     .from(window.supabaseConfig.tables.actionPlans)
                     .select('updated_at')
                     .eq('user_id', userId)
                     .eq('action_id', actionId)
-                    .single()
-                    .catch(error => {
-                        logger.error('Error verificando plan de acción existente:', error);
-                        return { data: null };
-                    });
+                    .maybeSingle();
+
+                if (selectError) {
+                    logger.error('Error verificando plan de acción existente:', selectError);
+                }
 
                 const localTime = plan.updatedAt ? new Date(plan.updatedAt).getTime() : Date.now();
                 const remoteTime = existing ? new Date(existing.updated_at).getTime() : 0;
 
-                // Solo subir si local es más reciente o no existe
                 if (!existing || localTime > remoteTime) {
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    await this.supabase
+                    const { error: upsertError } = await this.supabase
                         .from(window.supabaseConfig.tables.actionPlans)
                         .upsert({
                             user_id: userId,
@@ -1064,13 +1030,12 @@ class SupabaseSyncHelper {
                             completed_at: plan.completedAt || null,
                             created_at: plan.createdAt || new Date().toISOString(),
                             updated_at: plan.updatedAt || new Date().toISOString(),
-                        })
-                        .catch(error => {
-                            logger.error(`Error guardando plan ${actionId}:`, error);
-                            window.toast?.error('Error al sincronizar planes de acción');
-                            throw error;
                         });
-                    // logger.debug(`✓ Plan de acción migrado: ${actionId}`);
+
+                    if (upsertError) {
+                        logger.error(`Error guardando plan ${actionId}:`, upsertError);
+                        window.toast?.error('Error al sincronizar planes de acción');
+                    }
                 }
             }
         } catch (error) {
@@ -1083,18 +1048,17 @@ class SupabaseSyncHelper {
      * Sincronizar planes de acción desde la nube
      */
     async syncActionPlansFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.actionPlans)
             .select('*')
-            .eq('user_id', userId)
-            .catch(error => {
-                logger.error('Error sincronizando planes de acción desde la nube:', error);
-                window.toast?.error('Error al cargar planes. Verifica tu conexión.');
-                return { data: null, error };
-            });
+            .eq('user_id', userId);
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando planes de acción desde la nube:', error);
+            window.toast?.error('Error al cargar planes. Verifica tu conexión.');
+            throw error;
+        }
 
         const plans = {};
         data.forEach(plan => {
@@ -1129,23 +1093,20 @@ class SupabaseSyncHelper {
             for (const koan of history) {
                 const koanId = `${koan.timestamp || Date.now()}`;
 
-                // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                // Verificar si ya existe
-                const { data: existing } = await this.supabase
+                // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
+                const { data: existing, error: selectError } = await this.supabase
                     .from(window.supabaseConfig.tables.koans)
                     .select('id')
                     .eq('user_id', userId)
                     .eq('koan_id', koanId)
-                    .single()
-                    .catch(error => {
-                        logger.error('Error verificando koan existente:', error);
-                        return { data: null };
-                    });
+                    .maybeSingle();
 
-                // Solo subir si no existe
+                if (selectError) {
+                    logger.error('Error verificando koan existente:', selectError);
+                }
+
                 if (!existing) {
-                    // 🔧 FIX v2.9.199: Error handling - prevent silent failures
-                    await this.supabase
+                    const { error: insertError } = await this.supabase
                         .from(window.supabaseConfig.tables.koans)
                         .insert({
                             user_id: userId,
@@ -1153,12 +1114,12 @@ class SupabaseSyncHelper {
                             text: koan.text,
                             category: koan.category || 'general',
                             created_at: koan.timestamp || new Date().toISOString(),
-                        })
-                        .catch(error => {
-                            logger.error(`Error guardando koan ${koanId}:`, error);
-                            window.toast?.error('Error al sincronizar historial de koans');
-                            throw error;
                         });
+
+                    if (insertError) {
+                        logger.error(`Error guardando koan ${koanId}:`, insertError);
+                        window.toast?.error('Error al sincronizar historial de koans');
+                    }
                 }
             }
             // logger.debug(`✓ ${history.length} koans migrados`);
@@ -1172,19 +1133,18 @@ class SupabaseSyncHelper {
      * Sincronizar historial de koans desde la nube
      */
     async syncKoansFromCloud(userId) {
-        // 🔧 FIX v2.9.199: Error handling - prevent silent failures
+        // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
         const { data, error } = await this.supabase
             .from(window.supabaseConfig.tables.koans)
             .select('*')
             .eq('user_id', userId)
-            .order('created_at', { ascending: false })
-            .catch(error => {
-                logger.error('Error sincronizando koans desde la nube:', error);
-                window.toast?.error('Error al cargar historial de koans. Intenta de nuevo.');
-                return { data: null, error };
-            });
+            .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            logger.error('Error sincronizando koans desde la nube:', error);
+            window.toast?.error('Error al cargar historial de koans. Intenta de nuevo.');
+            throw error;
+        }
 
         const history = data.map(koan => ({
             text: koan.text,

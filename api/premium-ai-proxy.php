@@ -3,7 +3,7 @@
  * Proxy de IA Premium - Colección Nuevo Ser
  *
  * Este proxy usa la API key del administrador para usuarios Premium/Pro
- * Los usuarios gratuitos deben usar su propia API key
+ * Los usuarios gratuitos deben usar su propia API key o el proxy free (Mistral)
  *
  * Subir a: gailu.net/api/premium-ai-proxy.php
  */
@@ -27,27 +27,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONFIGURACIÓN - Editar con tus claves
+// CONFIGURACIÓN - Cargar desde config.php
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// API Keys del administrador (NUNCA exponer al frontend)
-// Recomendación: usar variables de entorno en producción
+// Cargar config.php con las API keys reales
+$configFile = __DIR__ . '/config.php';
+if (file_exists($configFile)) {
+    require_once $configFile;
+}
+
+// API Keys del administrador desde config.php o variables de entorno
 $ADMIN_API_KEYS = [
-    'claude' => getenv('CLAUDE_API_KEY') ?: 'sk-ant-api03-TU-CLAVE-AQUI',
-    'openai' => getenv('OPENAI_API_KEY') ?: 'sk-TU-CLAVE-AQUI',
-    'gemini' => getenv('GEMINI_API_KEY') ?: 'TU-CLAVE-AQUI',
-    'mistral' => getenv('MISTRAL_API_KEY') ?: 'TU-CLAVE-AQUI'
+    'claude' => defined('CLAUDE_API_KEY') ? CLAUDE_API_KEY : (getenv('CLAUDE_API_KEY') ?: ''),
+    'mistral' => defined('MISTRAL_API_KEY') ? MISTRAL_API_KEY : (getenv('MISTRAL_API_KEY') ?: '')
 ];
 
 // Supabase para verificar suscripciones
-$SUPABASE_URL = getenv('SUPABASE_URL') ?: 'https://TU-PROYECTO.supabase.co';
-$SUPABASE_SERVICE_KEY = getenv('SUPABASE_SERVICE_KEY') ?: 'TU-SERVICE-KEY';
+$SUPABASE_URL = defined('SUPABASE_URL') ? SUPABASE_URL : (getenv('SUPABASE_URL') ?: '');
+$SUPABASE_SERVICE_KEY = defined('SUPABASE_SERVICE_KEY') ? SUPABASE_SERVICE_KEY :
+                        (defined('SUPABASE_ANON_KEY') ? SUPABASE_ANON_KEY : (getenv('SUPABASE_SERVICE_KEY') ?: ''));
 
-// Límites por plan
+// Límites por plan (en créditos, donde 1 crédito ≈ 1000 tokens)
 $PLAN_LIMITS = [
-    'free' => 50,      // 50 consultas/mes
-    'premium' => 500,  // 500 consultas/mes
-    'pro' => 2000      // 2000 consultas/mes
+    'free' => 100,      // ~100K tokens/mes
+    'premium' => 1000,  // ~1M tokens/mes
+    'pro' => 5000       // ~5M tokens/mes
 ];
 
 // Modelos por plan
@@ -86,8 +90,8 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
         return ['valid' => false, 'error' => 'User not found'];
     }
 
-    // Obtener suscripción del usuario
-    $ch = curl_init("{$supabaseUrl}/rest/v1/subscriptions?user_id=eq.{$userId}&status=eq.active&select=plan");
+    // Obtener perfil del usuario (subscription_tier está en profiles)
+    $ch = curl_init("{$supabaseUrl}/rest/v1/profiles?id=eq.{$userId}&select=subscription_tier");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
@@ -98,15 +102,18 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    $subscriptions = json_decode($response, true);
+    $profiles = json_decode($response, true);
+
+    // Default: plan free
     $plan = 'free';
 
-    if (!empty($subscriptions) && isset($subscriptions[0]['plan'])) {
-        $plan = $subscriptions[0]['plan'];
+    if (is_array($profiles) && !empty($profiles) && isset($profiles[0]['subscription_tier'])) {
+        $plan = $profiles[0]['subscription_tier'];
     }
 
-    // Verificar uso actual
-    $ch = curl_init("{$supabaseUrl}/rest/v1/ai_usage?user_id=eq.{$userId}&select=credits_used,monthly_limit");
+    // Contar tokens usados este mes (sumando tokens_total de ai_usage)
+    $startOfMonth = date('Y-m-01T00:00:00Z');
+    $ch = curl_init("{$supabaseUrl}/rest/v1/ai_usage?user_id=eq.{$userId}&created_at=gte.{$startOfMonth}&select=tokens_total");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
@@ -117,9 +124,17 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    $usage = json_decode($response, true);
-    $creditsUsed = $usage[0]['credits_used'] ?? 0;
-    $monthlyLimit = $usage[0]['monthly_limit'] ?? $GLOBALS['PLAN_LIMITS']['free'];
+    $usageRecords = json_decode($response, true);
+    $tokensUsed = 0;
+    if (is_array($usageRecords)) {
+        foreach ($usageRecords as $record) {
+            $tokensUsed += intval($record['tokens_total'] ?? 0);
+        }
+    }
+
+    // Convertir tokens a "créditos" (1 crédito = ~1000 tokens)
+    $creditsUsed = intval($tokensUsed / 1000);
+    $monthlyLimit = $GLOBALS['PLAN_LIMITS'][$plan] ?? $GLOBALS['PLAN_LIMITS']['free'];
 
     return [
         'valid' => true,
@@ -132,26 +147,12 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
 }
 
 function incrementUserCredits($userId, $supabaseUrl, $supabaseKey, $credits = 1) {
-    // Incrementar contador de créditos usados
-    $ch = curl_init("{$supabaseUrl}/rest/v1/rpc/increment_ai_credits");
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            "apikey: {$supabaseKey}",
-            "Authorization: Bearer {$supabaseKey}",
-            "Content-Type: application/json"
-        ],
-        CURLOPT_POSTFIELDS => json_encode([
-            'p_user_id' => $userId,
-            'p_credits' => $credits
-        ])
-    ]);
-    curl_exec($ch);
-    curl_close($ch);
+    // El registro de uso se hace desde el cliente (auth-helper.js)
+    // Esta función solo existe por compatibilidad
+    // No necesitamos hacer nada aquí
 }
 
-function callClaudeAPI($apiKey, $model, $messages, $systemPrompt, $maxTokens = 1024) {
+function callClaudeAPI($apiKey, $model, $messages, $systemPrompt, $maxTokens = 4096) {
     $ch = curl_init('https://api.anthropic.com/v1/messages');
 
     $body = [
@@ -217,8 +218,9 @@ if (!$data) {
 }
 
 $messages = $data['messages'] ?? [];
-$systemPrompt = $data['systemPrompt'] ?? '';
+$systemPrompt = $data['systemPrompt'] ?? $data['system'] ?? '';  // Soportar ambos nombres
 $feature = $data['feature'] ?? 'chat'; // chat, tutor, adapter, game_master
+$maxTokens = min(intval($data['max_tokens'] ?? 4096), 8192);  // Leer del cliente, máx 8192
 
 if (empty($messages)) {
     http_response_code(400);
@@ -276,6 +278,7 @@ $creditsCost = [
     'chat' => 1,
     'tutor' => 2,
     'adapter' => 3,
+    'content_adaptation' => 4,  // Adaptación de contenido (textos largos)
     'game_master' => 5
 ];
 $cost = $creditsCost[$feature] ?? 1;
@@ -293,7 +296,7 @@ if ($creditsRemaining < $cost) {
 
 // Hacer la llamada a Claude con la API key del admin
 $apiKey = $ADMIN_API_KEYS['claude'];
-$result = callClaudeAPI($apiKey, $model, $messages, $systemPrompt);
+$result = callClaudeAPI($apiKey, $model, $messages, $systemPrompt, $maxTokens);
 
 if (isset($result['error'])) {
     http_response_code(500);

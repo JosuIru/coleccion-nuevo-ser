@@ -1166,7 +1166,11 @@ class SmartReader {
   // ==========================================================================
 
   async generateReflectionQuestions(chapter) {
-    if (!window.aiChatModal?.aiService) {
+    // 🔧 FIX v2.9.379: Usar AIUtils para verificación unificada de disponibilidad IA
+    const aiUtils = window.aiUtils;
+    const aiAdapter = window.aiAdapter;
+
+    if (!aiAdapter || (aiUtils && !aiUtils.isAIAvailable())) {
       return this.getDefaultQuestions(chapter);
     }
 
@@ -1178,7 +1182,7 @@ Contenido resumido: ${chapter.content?.substring(0, 500) || chapter.closingQuest
 
 Responde SOLO con las 3 preguntas, una por línea, sin numeración.`;
 
-      const response = await window.aiChatModal.aiService.generateResponse(prompt);
+      const response = await aiAdapter.ask(prompt, '', []);
 
       if (response) {
         const questions = response.split('\n')
@@ -1192,6 +1196,9 @@ Responde SOLO con las 3 preguntas, una por línea, sin numeración.`;
       }
     } catch (error) {
       logger.warn('[SmartReader] Error generating AI questions:', error);
+      if (aiUtils) {
+        aiUtils.showErrorToast(error);
+      }
     }
 
     return this.getDefaultQuestions(chapter);

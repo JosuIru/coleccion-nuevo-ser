@@ -218,8 +218,15 @@ class SmartNotes {
   // SUGERENCIAS DE IA
   // ==========================================================================
 
+  /**
+   * 🔧 FIX v2.9.381: Usar AIUtils unificado para verificación de IA
+   */
   async getSuggestionForNote(noteContent, chapterContent) {
-    if (!window.aiAdapter || !window.aiConfig?.getClaudeApiKey()) {
+    // Usar AIUtils para verificar disponibilidad
+    const aiUtils = window.aiUtils;
+    const aiAdapter = window.aiAdapter;
+
+    if (!aiAdapter || (aiUtils && !aiUtils.isAIAvailable())) {
       return null;
     }
 
@@ -234,10 +241,15 @@ ${chapterContent.substring(0, 1000)}
 Responde SOLO con la pregunta sugerida, sin explicaciones.`;
 
     try {
-      const response = await window.aiAdapter.ask(prompt, '', []);
+      const response = await aiAdapter.ask(prompt, '', [], 'smart_notes');
       return response?.trim();
     } catch (error) {
-      logger.error('Error getting note suggestion:', error);
+      // Usar AIUtils para mostrar error si está disponible
+      if (aiUtils) {
+        aiUtils.showErrorToast(error);
+      } else {
+        logger.error('Error getting note suggestion:', error);
+      }
       return null;
     }
   }

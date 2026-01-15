@@ -139,6 +139,9 @@ class AuthHelper {
       // Verificar si necesita reset de créditos
       this.checkCreditsReset();
 
+      // 🔧 FIX v2.9.381: Actualizar proveedor IA si es premium
+      this.updateAIProviderForPremium(data);
+
       return data;
     } catch (error) {
       logger.error('Error loading profile:', error);
@@ -179,6 +182,54 @@ class AuthHelper {
       logger.error('❌ Error reseteando créditos:', error);
       this.handleSupabaseError(error, 'checkCreditsReset');
       // No lanzar error para no bloquear la carga del perfil
+    }
+  }
+
+  /**
+   * 🔧 FIX v2.9.381: Actualizar proveedor de IA para usuarios premium
+   * Los usuarios premium usan Claude via proxy automáticamente
+   */
+  updateAIProviderForPremium(profile) {
+    if (!profile) return;
+
+    // 🔧 FIX v2.9.382: Verificar premium case-insensitive
+    const tier = (profile.subscription_tier || '').toLowerCase();
+    const isPremium = ['premium', 'pro'].includes(tier);
+
+    logger.debug('🔍 [AI Provider] subscription_tier:', profile.subscription_tier, '-> isPremium:', isPremium);
+
+    if (isPremium) {
+      // Esperar a que aiConfig esté disponible
+      const updateProvider = () => {
+        if (!window.aiConfig) {
+          logger.debug('⏳ aiConfig no disponible, reintentando...');
+          setTimeout(updateProvider, 100);
+          return;
+        }
+
+        const currentProvider = window.aiConfig.getCurrentProvider();
+        logger.debug('🔍 [AI Provider] Current:', currentProvider);
+
+        // SIEMPRE establecer Claude para premium (forzar)
+        window.aiConfig.config.provider = 'claude';
+        window.aiConfig.config.preferences = window.aiConfig.config.preferences || {};
+        window.aiConfig.config.preferences.selectedModel = 'claude-3-5-haiku-20241022';
+        window.aiConfig.saveConfig();
+
+        logger.debug('⭐ Usuario premium: Provider establecido a Claude');
+
+        // Mostrar toast siempre para premium
+        if (window.toast) {
+          window.toast.success('⭐ Premium: Claude IA activo', 3000);
+        }
+
+        // Emitir evento para que las UIs se actualicen
+        window.dispatchEvent(new CustomEvent('ai-provider-updated', {
+          detail: { provider: 'claude', isPremium: true }
+        }));
+      };
+
+      updateProvider();
     }
   }
 
@@ -412,10 +463,25 @@ class AuthHelper {
 
   /**
    * Verificar si el usuario tiene una feature habilitada
+   * 🔧 FIX v2.9.383: Usar PLANS_CONFIG en lugar de profile.features
    */
   hasFeature(featureName) {
     if (!this.currentProfile) return false;
-    return this.currentProfile.features?.[featureName] || false;
+
+    const tier = (this.currentProfile.subscription_tier || 'free').toLowerCase();
+
+    // Usar PLANS_CONFIG para verificar features según plan
+    if (window.PLANS_CONFIG) {
+      return window.PLANS_CONFIG.hasFeature(tier, featureName);
+    }
+
+    // Fallback: premium/pro tienen todas las features principales
+    if (['premium', 'pro'].includes(tier)) {
+      const premiumFeatures = ['ai_chat', 'ai_tutor', 'ai_content_adapter', 'elevenlabs_tts', 'advanced_analytics'];
+      return premiumFeatures.includes(featureName);
+    }
+
+    return false;
   }
 
   /**

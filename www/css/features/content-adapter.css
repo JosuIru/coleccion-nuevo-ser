@@ -172,6 +172,17 @@
   color: var(--text-primary, #f1f5f9);
 }
 
+.adapter-btn-warning {
+  background: var(--info-color, #3b82f6);
+  color: #fff;
+  border: none;
+}
+
+.adapter-btn-warning:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
 /* Status Messages */
 .adapter-status {
   padding: 0 16px;

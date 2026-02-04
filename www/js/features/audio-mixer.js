@@ -59,6 +59,24 @@ class AudioMixer {
       // Crear contexto de audio
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+      // Resumir AudioContext si arranca suspendido (Brave/Chrome Linux)
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      // Brave puede bloquear resume silenciosamente - verificar estado real
+      if (this.audioContext.state === 'suspended') {
+        // Segundo intento con un listener de interacción
+        const resumeOnInteraction = async () => {
+          try {
+            await this.audioContext.resume();
+          } catch (e) {}
+        };
+        document.addEventListener('click', resumeOnInteraction, { once: true });
+        document.addEventListener('touchstart', resumeOnInteraction, { once: true });
+        logger.warn('⚠️ AudioContext suspendido - se resumirá en próxima interacción');
+      }
+
       // Crear nodo maestro de ganancia
       this.masterGain = this.audioContext.createGain();
       this.masterGain.connect(this.audioContext.destination);

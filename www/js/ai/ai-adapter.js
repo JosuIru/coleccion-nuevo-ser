@@ -413,6 +413,11 @@ class AIAdapter {
    * 🔧 FIX: Usar profiles.subscription_tier en lugar de tabla subscriptions
    */
   async getUserSubscription() {
+    // Cache de suscripción: reusar si tiene menos de 5 minutos
+    if (this._subscriptionCache && (Date.now() - this._subscriptionCacheTime < 300000)) {
+      return this._subscriptionCache;
+    }
+
     try {
       const supabase = window.supabaseClient;
       if (!supabase) return null;
@@ -427,9 +432,17 @@ class AIAdapter {
         .eq('id', user.id)
         .single();
 
-      if (error || !data) return { plan: 'free' };
+      if (error || !data) {
+        const result = { plan: 'free' };
+        this._subscriptionCache = result;
+        this._subscriptionCacheTime = Date.now();
+        return result;
+      }
 
-      return { plan: data.subscription_tier || 'free' };
+      const result = { plan: data.subscription_tier || 'free' };
+      this._subscriptionCache = result;
+      this._subscriptionCacheTime = Date.now();
+      return result;
     } catch (error) {
       logger.error('Error obteniendo suscripción:', error);
       return { plan: 'free' };

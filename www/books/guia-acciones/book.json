@@ -5,6 +5,65 @@
   "author": "J. Irurtzun",
   "coAuthor": "Claude",
   "year": 2025,
+
+  "bookGlossary": [
+    {
+      "term": "Premisa Invisible",
+      "definition": "Creencia asumida inconscientemente que moldea decisiones y comportamientos sin que nos demos cuenta. Identificarlas es el primer paso para transformar nuestra relación con el mundo.",
+      "context": "Acción 1: Diario de Premisas - registrar creencias ocultas durante una semana"
+    },
+    {
+      "term": "Biorregión",
+      "definition": "Territorio definido por características naturales (cuenca, ecosistema, clima) más que por fronteras políticas. Conocer tu biorregión reconecta con el lugar que habitas.",
+      "context": "Acción 8: Conoce tu Biorregión - mapear el ecosistema local"
+    },
+    {
+      "term": "Inmersión en Naturaleza",
+      "definition": "Pasar un día completo en contacto directo con un ecosistema local, observando y sintiendo la pertenencia. El conocimiento sobre la naturaleza no es lo mismo que conexión con ella.",
+      "context": "Acción 9: Día de Inmersión en Naturaleza"
+    },
+    {
+      "term": "Banco de Tiempo",
+      "definition": "Sistema de intercambio donde la moneda son las horas de servicio. Una hora de trabajo vale una hora, sin importar qué servicio sea. Desvincula el valor del dinero.",
+      "context": "Acción 24: Banco de Tiempo Comunitario"
+    },
+    {
+      "term": "Espacio de Aprendizaje Comunitario",
+      "definition": "Lugar donde cualquiera puede enseñar lo que sabe y aprender lo que le interese, sin títulos ni requisitos. Recupera saberes que no se enseñan en instituciones formales.",
+      "context": "Acción 32: Universidad Popular o Círculo de Saberes"
+    },
+    {
+      "term": "Mentoría Intergeneracional",
+      "definition": "Intercambio bidireccional donde mayores enseñan saberes y sabiduría, mientras jóvenes comparten tecnología y nuevas perspectivas. El conocimiento fluye en ambas direcciones.",
+      "context": "Acción 32: Espacio de Aprendizaje Comunitario"
+    },
+    {
+      "term": "Acción Individual",
+      "definition": "Práctica personal que transforma la forma de ver y actuar en el mundo. Punto de entrada accesible donde comienza todo cambio sistémico.",
+      "context": "Sección 1: 18 acciones individuales"
+    },
+    {
+      "term": "Acción Comunitaria",
+      "definition": "Iniciativa que requiere colaboración con otros, construyendo el tejido social necesario para transformación duradera. Donde lo individual se multiplica.",
+      "context": "Sección 2: Acciones que involucran comunidad"
+    },
+    {
+      "term": "Acción Sistémica",
+      "definition": "Intervención orientada a cambiar estructuras, políticas e instituciones. Las más ambiciosas pero con mayor potencial de impacto a escala.",
+      "context": "Sección 3: Cambio estructural"
+    },
+    {
+      "term": "Experimentación Consciente",
+      "definition": "Aproximación a las acciones como experimentos, no como soluciones. Algunos funcionarán, otros enseñarán qué no hacer. El objetivo es aprender, no completar una lista.",
+      "context": "Prólogo: Cómo usar esta guía"
+    },
+    {
+      "term": "Tejido Social",
+      "definition": "Red de relaciones, confianza y colaboración que sostiene cualquier transformación comunitaria. Se construye a través de acciones compartidas y vulnerabilidad mutua.",
+      "context": "Sección 2: Acciones Comunitarias"
+    }
+  ],
+
   "epigraph": {
     "text": "La acción es el antídoto del desespero.",
     "author": "Joan Baez"
@@ -12,7 +71,7 @@
   "prologo": {
     "id": "prologo",
     "title": "Cómo usar esta guía",
-    "content": "Este libro es un compañero práctico del Manifiesto de la Conciencia Compartida.\n\nMientras el Manifiesto explora las premisas invisibles que dan forma a nuestro mundo y propone una visión de transformación, esta guía te ofrece 54 acciones concretas para comenzar ese cambio desde tu realidad cotidiana.\n\n## Estructura de las acciones\n\nHemos organizado las acciones en tres categorías que representan diferentes escalas de intervención:\n\n**Acciones Individuales** (Sección 1): Prácticas que puedes realizar tú solo/a, que transforman tu forma de ver y actuar en el mundo. Son el punto de entrada más accesible y a menudo el más profundo, porque todo cambio sistémico comienza con la transformación personal.\n\n**Acciones Comunitarias** (Sección 2): Iniciativas que requieren colaboración con otros. Construyen el tejido social necesario para cualquier transformación duradera. Aquí es donde lo individual se multiplica.\n\n**Acciones Sistémicas** (Sección 3): Intervenciones orientadas a cambiar estructuras, políticas e instituciones. Son las más ambiciosas pero también las que tienen mayor potencial de impacto a escala.\n\n## Cómo empezar\n\nNo hay un orden correcto. Puedes:\n\n- **Empezar por lo fácil**: Las acciones individuales son buen punto de entrada\n- **Seguir tu curiosidad**: Ve a la acción que más te atraiga\n- **Conectar con el Manifiesto**: Cada acción está vinculada a un capítulo del Manifiesto que profundiza en el tema\n- **Adaptar a tu contexto**: Las acciones son sugerencias, no recetas. Modifícalas según tu realidad\n\n## Una advertencia importante\n\nEstas acciones no son \"la solución\". Son experimentos. Algunos funcionarán en tu contexto, otros no. Algunos te transformarán, otros te enseñarán qué no hacer. El objetivo no es completar una lista sino iniciar un proceso de experimentación consciente con nuevas formas de ser y hacer.\n\nLa pregunta no es \"¿Hice las 54 acciones?\" sino \"¿Qué aprendí? ¿Qué cambió en mí y a mi alrededor?\"\n\n## Conexión con el Manifiesto\n\nCada acción está vinculada a un capítulo específico del Manifiesto. Te recomendamos leer primero el capítulo correspondiente para entender el contexto y la fundamentación de la acción. La teoría sin práctica es estéril; la práctica sin teoría es ciega.\n\nAdelante. El mundo no cambiará solo."
+    "content": "Este libro es un compañero práctico del Manifiesto de la Conciencia Compartida.\n\nMientras el Manifiesto explora las premisas invisibles que dan forma a nuestro mundo y propone una visión de transformación, esta guía te ofrece 54 acciones concretas para comenzar ese cambio desde tu realidad cotidiana.\n\n## Estructura de las acciones\n\nHemos organizado las acciones en tres categorías que representan diferentes escalas de intervención:\n\n**Acciones Individuales** (Sección 1): Prácticas que puedes realizar tú solo/a, que transforman tu forma de ver y actuar en el mundo. Son el punto de entrada más accesible y a menudo el más profundo, porque todo cambio sistémico comienza con la transformación personal.\n\n**Acciones Comunitarias** (Sección 2): Iniciativas que requieren colaboración con otros. Construyen el tejido social necesario para cualquier transformación duradera. Aquí es donde lo individual se multiplica.\n\n**Acciones Sistémicas** (Sección 3): Intervenciones orientadas a cambiar estructuras, políticas e instituciones. Son las más ambiciosas pero también las que tienen mayor potencial de impacto a escala.\n\n## Cómo empezar\n\nNo hay un orden correcto. Puedes:\n\n- **Empezar por lo fácil**: Las acciones individuales son buen punto de entrada\n- **Seguir tu curiosidad**: Ve a la acción que más te atraiga\n- **Conectar con el Manifiesto**: Cada acción está vinculada a un capítulo del Manifiesto que profundiza en el tema\n- **Adaptar a tu contexto**: Las acciones son sugerencias, no recetas. Modifícalas según tu realidad\n\n## Una advertencia importante\n\nEstas acciones no son \"la solución\". Son experimentos. Algunos funcionarán en tu contexto, otros no. Algunos te transformarán, otros te enseñarán qué no hacer. El objetivo no es completar una lista sino iniciar un proceso de experimentación consciente con nuevas formas de ser y hacer.\n\nLa pregunta no es \"¿Hice las 54 acciones?\" sino \"¿Qué aprendí? ¿Qué cambió en mí y a mi alrededor?\"\n\n## Conexión con el Manifiesto\n\nCada acción está vinculada a un capítulo específico del Manifiesto. Te recomendamos leer primero el capítulo correspondiente para entender el contexto y la fundamentación de la acción. La teoría sin práctica es estéril; la práctica sin teoría es ciega.\n\nAdelante. El mundo no cambiará solo.\n\n---\n\n→ *Para el diagnóstico que fundamenta estas acciones, consulta 'Manifiesto de la Conciencia Compartida'.*"
   },
   "sections": [
     {

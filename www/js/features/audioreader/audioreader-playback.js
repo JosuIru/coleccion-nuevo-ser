@@ -1,6 +1,7 @@
 // ============================================================================
 // AUDIOREADER PLAYBACK - Control de reproducción
 // ============================================================================
+// v2.9.386: Fix auto-avance al siguiente capítulo (getNextChapter con parámetro)
 // v2.9.278: Modularización del AudioReader
 // Maneja play, pause, resume, stop, next, previous, wake lock, Media Session
 
@@ -19,12 +20,23 @@ class AudioReaderPlayback {
   async play(chapterContent = null) {
     const ar = this.audioReader;
 
-    // Verificar problemas de TTS en la plataforma
+    // Inicializar AudioContext DENTRO del gesto de usuario (antes de cualquier await largo)
+    // Brave y otros navegadores estrictos bloquean AudioContext si se pierde el contexto de gesto
+    if (window.audioMixer && !window.audioMixer.isInitialized) {
+      try {
+        await window.audioMixer.initialize();
+      } catch (e) {
+        logger.warn('⚠️ No se pudo pre-inicializar AudioMixer:', e);
+      }
+    }
+
+    // Verificar problemas de TTS en la plataforma (puede tardar varios segundos)
+    let ttsUnavailable = false;
     if (window.ttsPlatformHelper) {
       const ttsIssueDetected = await window.ttsPlatformHelper.checkAndShowModalIfNeeded();
       if (ttsIssueDetected) {
-        logger.warn('⚠️ TTS no disponible');
-        return false;
+        logger.warn('⚠️ TTS no disponible - audio ambiental seguirá funcionando');
+        ttsUnavailable = true;
       }
     }
 
@@ -37,6 +49,12 @@ class AudioReaderPlayback {
     const paragraphs = ar.content?.getParagraphs() || [];
     if (paragraphs.length === 0) {
       logger.error('❌ No hay contenido preparado para narrar');
+      return false;
+    }
+
+    // Si TTS no disponible, iniciar solo audio ambiental si hay configurado
+    if (ttsUnavailable) {
+      await this.syncAmbientAudio(true);
       return false;
     }
 
@@ -395,10 +413,18 @@ class AudioReaderPlayback {
   advanceToNextChapter() {
     const ar = this.audioReader;
 
-    const currentChapter = ar.bookEngine?.currentChapter;
-    if (!currentChapter) return;
+    // Obtener el ID del capítulo actual correctamente
+    const currentChapterId = ar.bookEngine?.currentChapter ||
+                             window.bookReader?.currentChapter?.id;
+    if (!currentChapterId) {
+      if (typeof logger !== 'undefined') {
+        logger.warn('⚠️ No se pudo obtener el capítulo actual para auto-avance');
+      }
+      return;
+    }
 
-    const nextChapter = ar.bookEngine?.getNextChapter?.();
+    // Pasar el ID del capítulo actual a getNextChapter
+    const nextChapter = ar.bookEngine?.getNextChapter?.(currentChapterId);
     if (nextChapter && window.bookReader) {
       if (typeof logger !== 'undefined') {
         logger.log('⏭️ Avanzando al siguiente capítulo:', nextChapter.title);

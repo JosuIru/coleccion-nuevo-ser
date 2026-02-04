@@ -12,7 +12,7 @@
       "keystoreAlias": "",
       "keystoreAliasPassword": ""
     },
-    "allowMixedContent": true
+    "allowMixedContent": false
   },
   "plugins": {
     "StatusBar": {

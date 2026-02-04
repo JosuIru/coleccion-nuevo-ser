@@ -33,7 +33,11 @@ class TTSPlatformHelper {
   detectBrowser() {
     const ua = navigator.userAgent;
 
-    if (ua.includes('Brave')) return 'brave';
+    // Brave no incluye 'Brave' en UA (anti-fingerprinting), pero expone navigator.brave
+    // navigator.brave es un objeto con método isBrave() que retorna Promise<boolean>
+    if (navigator.brave && typeof navigator.brave.isBrave === 'function') return 'brave';
+    // Fallback: en algunas versiones navigator.brave existe como truthy sin isBrave
+    if (navigator.brave) return 'brave';
     if (ua.includes('Edg')) return 'edge';
     if (ua.includes('Chrome')) return 'chrome';
     if (ua.includes('Firefox')) return 'firefox';
@@ -343,6 +347,21 @@ ${browser} \\
                 </div>
               </div>
             </div>
+
+            ${this.browser === 'brave' ? `
+            <!-- Solución 5: Brave Shields -->
+            <div class="bg-slate-800/50 rounded-lg p-4 border border-red-500/30">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-semibold text-red-400 mb-1">5. Desactivar Brave Shields (Si los flags no funcionan)</h4>
+                  <p class="text-sm text-slate-300">
+                    Brave Shields puede bloquear APIs de audio. Haz clic en el icono del escudo
+                    <span class="inline-block mx-1">🛡️</span> en la barra de dirección y desactívalo para este sitio.
+                  </p>
+                </div>
+              </div>
+            </div>
+            ` : ''}
           </div>
 
           <!-- Footer Info -->
@@ -350,6 +369,7 @@ ${browser} \\
             <p class="text-blue-100 text-sm">
               <strong>ℹ️ Nota:</strong> Este problema solo afecta a ${browserName} en Linux.
               La aplicación Android y otros sistemas operativos funcionan correctamente.
+              ${this.browser === 'brave' ? '<br><strong>Brave:</strong> Los sonidos ambientales funcionarán aunque TTS no esté disponible.' : ''}
             </p>
           </div>
         </div>
@@ -460,8 +480,9 @@ ${browser} \\
       return false; // Usuario no quiere ver el modal
     }
 
-    // Verificar si hay voces disponibles
-    const hasVoices = await this.checkVoices(3000);
+    // Verificar si hay voces disponibles (más tiempo para Brave en Linux)
+    const voiceTimeout = navigator.brave ? 8000 : 5000;
+    const hasVoices = await this.checkVoices(voiceTimeout);
 
     if (!hasVoices) {
       this.showLinuxChromeFixModal();

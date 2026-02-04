@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "lastUpdate": "2026-01-28",
+  "terms": [
+    {
+      "term": "Nuevo Ser",
+      "definition": "La forma emergente de organización civilizacional basada en premisas ontologicas opuestas al viejo paradigma: interconexion en lugar de separacion, abundancia organizable en lugar de escasez artificial, conciencia fundamental en lugar de materialismo, madurez ciclica en lugar de crecimiento infinito, y valor intrinseco en lugar de instrumental. No es una utopia futura sino una realidad operativa que ya existe en comunidades y practicas que funcionan desde estas premisas alternativas.",
+      "relatedTerms": ["Paradigma", "Ontologia", "Interdependencia", "Despertar"],
+      "appearsIn": ["nacimiento", "filosofia-nuevo-ser", "manifiesto", "manual-transicion"]
+    },
+    {
+      "term": "Conciencia",
+      "definition": "La cualidad de experiencia subjetiva, el 'algo que se siente' ser un organismo o sistema. En la vision de esta coleccion, la conciencia no es un epifenomeno tardio que emerge de la materia compleja, sino un principio fundamental del universo que se manifiesta en diferentes grados segun la complejidad e integracion de los sistemas. Esta perspectiva se alinea con teorias como la Informacion Integrada de Tononi y el panpsiquismo filosofico.",
+      "relatedTerms": ["Despertar", "Panpsiquismo", "Consciencia"],
+      "appearsIn": ["codigo-despertar", "filosofia-nuevo-ser", "nacimiento", "codigo-cosmico"]
+    },
+    {
+      "term": "Consciencia",
+      "definition": "Usado frecuentemente como sinonimo de conciencia, especialmente para enfatizar el aspecto de 'ser consciente de'. En el contexto de la coleccion, refiere tanto a la experiencia subjetiva fundamental como a los estados expandidos de percepcion y comprension que emergen del proceso de despertar. Algunas tradiciones distinguen entre conciencia (experiencia basica) y consciencia (awareness reflexivo), pero en estos textos se usan de manera intercambiable.",
+      "relatedTerms": ["Conciencia", "Despertar", "Panpsiquismo"],
+      "appearsIn": ["codigo-despertar", "tierra-que-despierta", "manual-practico", "practicas-radicales"]
+    },
+    {
+      "term": "Despertar",
+      "definition": "El proceso gradual o subito de expansion de la consciencia mediante el cual un individuo o colectivo reconoce y trasciende las premisas invisibles del paradigma dominante. No es escapismo espiritual sino reconocimiento de la realidad tal como es: interconectada, consciente, viva. Implica tanto transformacion interna (cambio de percepcion y experiencia) como externa (cambio de accion y relacion con el mundo). Es simultaneamente personal y colectivo.",
+      "relatedTerms": ["Conciencia", "Nuevo Ser", "Paradigma", "Premisas invisibles"],
+      "appearsIn": ["codigo-despertar", "tierra-que-despierta", "manual-practico", "practicas-radicales"]
+    },
+    {
+      "term": "Panpsiquismo",
+      "definition": "Posicion filosofica que sostiene que la conciencia o experiencia es una caracteristica fundamental y ubicua del universo, presente en algun grado en toda la materia, no solo en cerebros complejos. No afirma que las rocas 'piensan' como nosotros, sino que algun aspecto protoexperiencial es intrinseco a la naturaleza de lo real. Esta perspectiva resuelve el 'problema dificil de la conciencia' al no intentar derivar la experiencia de lo que carece de ella.",
+      "relatedTerms": ["Conciencia", "Ontologia", "Paradigma"],
+      "appearsIn": ["codigo-despertar", "filosofia-nuevo-ser", "codigo-cosmico"]
+    },
+    {
+      "term": "Simbiogenesis",
+      "definition": "Teoria evolutiva desarrollada por Lynn Margulis que propone que la cooperacion y fusion entre organismos (simbiosis) es un motor fundamental de la evolucion, no solo la competencia. El ejemplo paradigmatico es el origen de las celulas eucariotas mediante la fusion de procariotas. Esta teoria desafia la narrativa darwiniana simplificada de 'supervivencia del mas apto' como competencia, mostrando que la interdependencia y cooperacion son igualmente naturales y evolutivamente fundamentales.",
+      "relatedTerms": ["Interdependencia", "Paradigma", "Premisas invisibles"],
+      "appearsIn": ["filosofia-nuevo-ser", "nacimiento", "tierra-que-despierta"]
+    },
+    {
+      "term": "Ontologia",
+      "definition": "Rama de la filosofia que estudia la naturaleza del ser, la existencia y la realidad. En el contexto de esta coleccion, se refiere especialmente a las premisas fundamentales sobre que es real, que importa y como funciona el mundo. El 'viejo ser' tiene una ontologia basada en separacion, escasez y materialismo. El 'nuevo ser' propone una ontologia de interconexion, abundancia organizable y conciencia fundamental. Cambiar la ontologia es mas profundo que cambiar politicas o instituciones.",
+      "relatedTerms": ["Paradigma", "Premisas invisibles", "Nuevo Ser"],
+      "appearsIn": ["filosofia-nuevo-ser", "nacimiento", "manifiesto"]
+    },
+    {
+      "term": "Paradigma",
+      "definition": "Marco conceptual y conjunto de supuestos fundamentales que estructuran nuestra vision del mundo, determinando que preguntas se hacen, que respuestas son aceptables y que posibilidades se consideran reales. El paradigma dominante actual se basa en cinco premisas: separacion, escasez, materialismo, progreso lineal infinito y valor instrumental. Los paradigmas operan como 'el agua en que nadan los peces': son tan ubicuos que se vuelven invisibles. Cambiar de paradigma requiere hacer visible lo invisible.",
+      "relatedTerms": ["Premisas invisibles", "Ontologia", "Nuevo Ser"],
+      "appearsIn": ["filosofia-nuevo-ser", "nacimiento", "manifiesto", "codigo-despertar"]
+    },
+    {
+      "term": "Interdependencia",
+      "definition": "Reconocimiento de que todo esta conectado y que la separacion es abstraccion util pero no realidad fundamental. Ecologicamente, ningun organismo existe aislado; biologicamente, somos comunidades de celulas y microbiomas; socialmente, nuestra identidad emerge de relaciones. La interdependencia no niega la individualidad sino que la situa en contexto: somos nodos en redes de relacion, no atomos aislados. Reconocer la interdependencia transforma la etica: el dano al otro es dano a uno mismo.",
+      "relatedTerms": ["Nuevo Ser", "Simbiogenesis", "Ontologia"],
+      "appearsIn": ["filosofia-nuevo-ser", "nacimiento", "tierra-que-despierta", "manifiesto"]
+    },
+    {
+      "term": "Premisas invisibles",
+      "definition": "Supuestos fundamentales sobre la realidad que operan sin ser examinados, estructurando el pensamiento, las instituciones y la accion colectiva. Son invisibles precisamente porque se presentan como 'sentido comun' o 'como son las cosas' en lugar de como decisiones historicas y contingentes. Las cinco premisas invisibles del paradigma dominante son: separacion radical, escasez natural, materialismo ontologico, progreso lineal infinito y valor instrumental. Hacerlas visibles es el primer paso para poder cuestionarlas y transformarlas.",
+      "relatedTerms": ["Paradigma", "Ontologia", "Despertar"],
+      "appearsIn": ["filosofia-nuevo-ser", "nacimiento", "manifiesto"]
+    }
+  ]
+}

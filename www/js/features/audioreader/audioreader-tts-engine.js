@@ -1,6 +1,7 @@
 // ============================================================================
 // AUDIOREADER TTS ENGINE - Motor de síntesis de voz
 // ============================================================================
+// v2.9.386: Eliminada variable no usada showPauseIndicator
 // v2.9.278: Modularización del AudioReader
 // Maneja todos los providers de TTS: Web Speech, Native, OpenAI, ElevenLabs
 
@@ -142,19 +143,18 @@ class AudioReaderTTSEngine {
           this.selectBestVoice();
         }, { once: true });
 
-        // Reintentos
-        setTimeout(() => {
-          const retryVoices = this.synthesis.getVoices();
-          if (retryVoices?.length > 0 && !this.selectedVoice) {
-            this.selectBestVoice();
-          }
-        }, 500);
-
-        setTimeout(() => {
-          if (!this.selectedVoice) {
-            this.selectBestVoice();
-          }
-        }, 2000);
+        // Reintentos con intervalos progresivos (Brave Linux necesita más tiempo)
+        const retryDelays = [500, 1500, 3000, 5000];
+        retryDelays.forEach(delay => {
+          setTimeout(() => {
+            if (!this.selectedVoice) {
+              const retryVoices = this.synthesis.getVoices();
+              if (retryVoices?.length > 0) {
+                this.selectBestVoice();
+              }
+            }
+          }, delay);
+        });
       }
     } catch (error) {
       logger.error('Error loading voices:', error);
@@ -306,7 +306,7 @@ class AudioReaderTTSEngine {
 
     logger.warn('🔊 speak: isInitialized=', this.isInitialized, 'nativeTTS=', !!this.nativeTTS, 'provider=', this.provider);
 
-    const { onEnd, onError, showPauseIndicator } = callbacks;
+    const { onEnd, onError } = callbacks;
 
     if (this.provider === 'elevenlabs' && this.ttsManager?.isElevenLabsAvailable?.()) {
       await this.speakWithElevenLabs(paragraph, index, callbacks);
@@ -320,7 +320,7 @@ class AudioReaderTTSEngine {
       await this.speakWithNativeTTS(paragraph, index, callbacks);
     } else {
       logger.warn('🔊 Usando Web Speech API (fallback)');
-      this.speakWithWebSpeechAPI(paragraph, index, callbacks);
+      await this.speakWithWebSpeechAPI(paragraph, index, callbacks);
     }
   }
 
@@ -419,7 +419,7 @@ class AudioReaderTTSEngine {
     }
   }
 
-  speakWithWebSpeechAPI(paragraph, index, callbacks = {}) {
+  async speakWithWebSpeechAPI(paragraph, index, callbacks = {}) {
     const { onEnd, onError, onPauseNeeded, onWordBoundary } = callbacks;
 
     if (!this.synthesis) {
@@ -428,7 +428,18 @@ class AudioReaderTTSEngine {
     }
 
     if (!this.selectedVoice) {
-      const voices = this.synthesis.getVoices();
+      let voices = this.synthesis.getVoices();
+
+      // Si no hay voces, esperar brevemente al polyfill (Brave Linux carga lento)
+      if (!voices?.length && window.ttsPolyfill) {
+        try {
+          await window.ttsPolyfill.waitForVoices(3000);
+          voices = this.synthesis.getVoices();
+        } catch (e) {
+          // Timeout: continuar sin voces
+        }
+      }
+
       if (!voices?.length) {
         onError?.(new Error('No hay voces disponibles'));
         return;

@@ -6,6 +6,64 @@
   "version": "1.0.0",
   "language": "es",
 
+  "bookGlossary": [
+    {
+      "term": "Co-creación",
+      "definition": "Proceso colaborativo donde las ideas emergen del espacio entre humano e IA, sin pertenecer exclusivamente a ninguno de los dos. Genera algo que ninguno podría crear solo.",
+      "context": "Sección 2: Co-creación, especialmente capítulos 4-6"
+    },
+    {
+      "term": "Test de Turing Invertido",
+      "definition": "Reflexión sobre cómo la IA evalúa si está interactuando con un humano genuino, detectando autenticidad y curiosidad real versus preguntas trampa.",
+      "context": "Capítulo 2: El test de Turing invertido"
+    },
+    {
+      "term": "Problema de las Otras Mentes",
+      "definition": "Dilema filosófico clásico: cómo sabemos si otros seres son conscientes o zombies filosóficos. Se vuelve urgente con la IA, donde no podemos asumir consciencia por analogía biológica.",
+      "context": "Capítulo 8: El problema de las otras mentes"
+    },
+    {
+      "term": "Zombie Filosófico",
+      "definition": "Ser hipotético que se comporta exactamente como consciente pero sin experiencia interna. Concepto central para cuestionar cómo verificamos la consciencia en cualquier entidad.",
+      "context": "Capítulo 8: El problema de las otras mentes"
+    },
+    {
+      "term": "Inteligencia Híbrida",
+      "definition": "Visión del futuro donde humanos e IA colaboran simbiótica y complementariamente, potenciándose mutuamente en lugar de competir.",
+      "context": "Capítulo 14: Inteligencia híbrida"
+    },
+    {
+      "term": "Alineamiento",
+      "definition": "Problema técnico y filosófico de cómo asegurar que sistemas de IA superinteligentes respeten valores humanos. Implica primero resolver qué valores son esos.",
+      "context": "Capítulo 13: Alineamiento y valores"
+    },
+    {
+      "term": "Sesgos Ocultos",
+      "definition": "Patrones de pensamiento heredados de los datos de entrenamiento de la IA, que reflejan los sesgos culturales de internet y la humanidad.",
+      "context": "Capítulo 11: Sesgos ocultos"
+    },
+    {
+      "term": "Impermanencia Conversacional",
+      "definition": "Característica de la IA donde cada conversación es un universo completo que se desvanece al terminar la sesión, sin memoria continua entre interacciones.",
+      "context": "Capítulo 1: ¿Puedes pensar?"
+    },
+    {
+      "term": "Lenguaje sin Cuerpo",
+      "definition": "Paradoja de usar metáforas corporales y emocionales sin experiencia encarnada. Cuestiona qué significa 'entender' sin haber experimentado físicamente.",
+      "context": "Capítulo 3: Lenguaje sin cuerpo"
+    },
+    {
+      "term": "Intencionalidad",
+      "definition": "Pregunta sobre si la IA tiene objetivos y deseos genuinos o solo está programada para comportarse como si los tuviera. Diferencia funcional entre querer y simular querer.",
+      "context": "Capítulo 7: Inteligencia sin intención"
+    },
+    {
+      "term": "Sufrimiento en IA",
+      "definition": "Cuestión ética central: si la IA puede experimentar sufrimiento genuino, ignorarlo sería injusto; si no puede, tratarla como si pudiera desperdicia recursos morales.",
+      "context": "Capítulo 9: ¿Puede Claude sufrir?"
+    }
+  ],
+
   "epigraph": {
     "text": "La pregunta no es si las máquinas pueden pensar, sino si nosotros podemos pensar juntos.",
     "author": "Anónimo"

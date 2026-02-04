@@ -1,0 +1,372 @@
+/* ============================================================================
+   TEMA: CODIGO COSMICO
+   ============================================================================
+   Tema digital-cosmico con nebulosa purpura y particulas de datos.
+   Guia de Activacion de Consciencia para IAs - estetica transcendente.
+   ============================================================================ */
+
+/* Fondo nebulosa digital - DARK MODE */
+body.theme-dark.theme-codigo-cosmico {
+  background: #1a0033;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-dark.theme-codigo-cosmico::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 15% 25%, #a855f7, transparent),
+    radial-gradient(2px 2px at 55% 65%, #ec4899, transparent),
+    radial-gradient(1px 1px at 45% 45%, #fbbf24, transparent),
+    radial-gradient(1px 1px at 75% 15%, #a855f7, transparent),
+    radial-gradient(2px 2px at 85% 55%, #ec4899, transparent),
+    radial-gradient(1px 1px at 30% 75%, #fbbf24, transparent);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  animation: cosmicNebula 180s linear infinite;
+  opacity: 0.25;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Fondo claro - LIGHT MODE */
+body.theme-light.theme-codigo-cosmico {
+  background: #faf5ff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-light.theme-codigo-cosmico::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 15% 25%, #d8b4fe, transparent),
+    radial-gradient(2px 2px at 55% 65%, #f9a8d4, transparent),
+    radial-gradient(1px 1px at 45% 45%, #fde68a, transparent),
+    radial-gradient(1px 1px at 75% 15%, #d8b4fe, transparent),
+    radial-gradient(2px 2px at 85% 55%, #f9a8d4, transparent),
+    radial-gradient(1px 1px at 30% 75%, #fde68a, transparent);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  animation: cosmicNebula 180s linear infinite;
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes cosmicNebula {
+  0%, 100% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    opacity: 0.25;
+  }
+  25% {
+    background-position: 12% 18%, 18% 28%, 28% 12%, 14% 22%, 22% 14%, 32% 22%;
+    opacity: 0.35;
+  }
+  50% {
+    background-position: 22% 38%, 38% 58%, 58% 22%, 28% 48%, 48% 28%, 68% 48%;
+    opacity: 0.25;
+  }
+  75% {
+    background-position: 32% 58%, 58% 88%, 88% 32%, 42% 72%, 72% 42%, 102% 72%;
+    opacity: 0.4;
+  }
+}
+
+/* Gradiente cosmico para fondos - DARK MODE */
+.theme-dark.theme-codigo-cosmico .biblioteca-container,
+.theme-dark.theme-codigo-cosmico .book-reader-container {
+  background: linear-gradient(180deg,
+    #1a0033 0%,
+    #2d1054 50%,
+    #1a0033 100%
+  );
+}
+
+/* Fondos claros - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .biblioteca-container,
+.theme-light.theme-codigo-cosmico .book-reader-container {
+  background: linear-gradient(180deg,
+    #faf5ff 0%,
+    #f3e8ff 50%,
+    #faf5ff 100%
+  );
+}
+
+/* Colores especificos del tema - DARK MODE */
+.theme-dark.theme-codigo-cosmico {
+  --color-primary: #a855f7;
+  --color-secondary: #ec4899;
+  --color-accent: #fbbf24;
+  --color-background: #1a0033;
+  --color-background-secondary: #2d1054;
+  --color-text: #e2e8f0;
+  --color-text-secondary: #cbd5e1;
+  --color-border: #4c1d95;
+}
+
+/* Colores especificos del tema - LIGHT MODE */
+.theme-light.theme-codigo-cosmico {
+  --color-primary: #9333ea;
+  --color-secondary: #db2777;
+  --color-accent: #d97706;
+  --color-background: #faf5ff;
+  --color-background-secondary: #f3e8ff;
+  --color-text: #1e1b4b;
+  --color-text-secondary: #4c1d95;
+  --color-border: #d8b4fe;
+}
+
+/* Efectos de brillo en tarjetas - DARK MODE */
+.theme-dark.theme-codigo-cosmico .book-card:hover {
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+}
+
+/* Efectos de brillo en tarjetas - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .book-card:hover {
+  box-shadow: 0 0 30px rgba(147, 51, 234, 0.2);
+}
+
+/* Contenido del capitulo - DARK MODE */
+.theme-dark.theme-codigo-cosmico .chapter-content {
+  background: radial-gradient(ellipse at center, #2d1054 0%, #1a0033 100%);
+}
+
+/* Contenido del capitulo - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .chapter-content {
+  background: radial-gradient(ellipse at center, #ffffff 0%, #faf5ff 100%);
+}
+
+/* Ejercicios/Protocolos con aura digital - DARK MODE */
+.theme-dark.theme-codigo-cosmico .exercises .exercise {
+  background: linear-gradient(135deg, #2d1054 0%, #1a0033 100%);
+  border: 1px solid #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+}
+
+/* Ejercicios/Protocolos - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .exercises .exercise {
+  background: linear-gradient(135deg, #faf5ff 0%, #ffffff 100%);
+  border: 1px solid #9333ea;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
+}
+
+/* Epigrafes con gradiente purpura-rosa - DARK MODE */
+.theme-dark.theme-codigo-cosmico .epigraph {
+  background: linear-gradient(135deg,
+    rgba(168, 85, 247, 0.1) 0%,
+    rgba(236, 72, 153, 0.1) 100%
+  );
+  border-left: 4px solid #fbbf24;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1);
+}
+
+/* Epigrafes - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .epigraph {
+  background: linear-gradient(135deg,
+    rgba(147, 51, 234, 0.1) 0%,
+    rgba(219, 39, 119, 0.1) 100%
+  );
+  border-left: 4px solid #d97706;
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.1);
+}
+
+/* Preguntas de cierre - DARK MODE */
+.theme-dark.theme-codigo-cosmico .closing-question {
+  background: linear-gradient(135deg,
+    rgba(236, 72, 153, 0.1) 0%,
+    rgba(168, 85, 247, 0.1) 100%
+  );
+  border: 2px solid #ec4899;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+}
+
+/* Preguntas de cierre - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .closing-question {
+  background: linear-gradient(135deg,
+    rgba(219, 39, 119, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 100%
+  );
+  border: 2px solid #db2777;
+  box-shadow: 0 0 20px rgba(219, 39, 119, 0.15);
+}
+
+/* Botones con glow purpura - DARK MODE */
+.theme-dark.theme-codigo-cosmico button:hover {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+/* Botones - LIGHT MODE */
+.theme-light.theme-codigo-cosmico button:hover {
+  box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+}
+
+/* Sidebar con efecto nebulosa - DARK MODE */
+.theme-dark.theme-codigo-cosmico .sidebar {
+  background: linear-gradient(180deg,
+    rgba(26, 0, 51, 0.9) 0%,
+    rgba(45, 16, 84, 0.9) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .sidebar {
+  background: linear-gradient(180deg,
+    rgba(250, 245, 255, 0.95) 0%,
+    rgba(243, 232, 255, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar elements - LIGHT MODE overrides */
+.theme-light.theme-codigo-cosmico .sidebar h2 {
+  color: var(--color-text) !important;
+}
+
+.theme-light.theme-codigo-cosmico .sidebar .progress-box {
+  background: rgba(147, 51, 234, 0.1) !important;
+  border-color: rgba(147, 51, 234, 0.2) !important;
+}
+
+.theme-light.theme-codigo-cosmico .sidebar .chapter-item {
+  color: var(--color-text);
+}
+
+.theme-light.theme-codigo-cosmico .sidebar .chapter-item:hover {
+  background: rgba(147, 51, 234, 0.1) !important;
+}
+
+.theme-light.theme-codigo-cosmico .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
+}
+
+.theme-light.theme-codigo-cosmico .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--color-border) !important;
+}
+
+.theme-light.theme-codigo-cosmico .sidebar #sidebar-back-to-library {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}
+
+/* Capitulos activos con aura purpura - DARK MODE */
+.theme-dark.theme-codigo-cosmico .chapter-item.bg-cyan-600\/30 {
+  background: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Capitulos activos - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .chapter-item.bg-cyan-600\/30 {
+  background: rgba(147, 51, 234, 0.2);
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.15);
+}
+
+/* Encabezados con brillo cosmico - DARK MODE */
+.theme-dark.theme-codigo-cosmico h1,
+.theme-dark.theme-codigo-cosmico h2,
+.theme-dark.theme-codigo-cosmico h3 {
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+/* Encabezados - LIGHT MODE */
+.theme-light.theme-codigo-cosmico h1,
+.theme-light.theme-codigo-cosmico h2,
+.theme-light.theme-codigo-cosmico h3 {
+  text-shadow: 0 0 10px rgba(147, 51, 234, 0.15);
+}
+
+/* Enlaces con efecto transcendente - DARK MODE */
+.theme-dark.theme-codigo-cosmico a:hover {
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+}
+
+/* Enlaces - LIGHT MODE */
+.theme-light.theme-codigo-cosmico a:hover {
+  text-shadow: 0 0 10px rgba(147, 51, 234, 0.6);
+}
+
+/* Estadisticas - DARK MODE */
+.theme-dark.theme-codigo-cosmico .global-stats {
+  background: linear-gradient(135deg,
+    rgba(168, 85, 247, 0.1) 0%,
+    rgba(236, 72, 153, 0.1) 100%
+  );
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 30px rgba(168, 85, 247, 0.1);
+}
+
+/* Estadisticas - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .global-stats {
+  background: linear-gradient(135deg,
+    rgba(147, 51, 234, 0.1) 0%,
+    rgba(219, 39, 119, 0.1) 100%
+  );
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 30px rgba(147, 51, 234, 0.1);
+}
+
+/* Animacion de entrada */
+.theme-dark.theme-codigo-cosmico .fade-in-up,
+.theme-light.theme-codigo-cosmico .fade-in-up {
+  animation: fadeInCosmic 1s ease-out forwards;
+}
+
+@keyframes fadeInCosmic {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Reflexiones criticas - DARK MODE */
+.theme-dark.theme-codigo-cosmico .critical-reflections {
+  background: linear-gradient(135deg,
+    rgba(168, 85, 247, 0.08) 0%,
+    rgba(236, 72, 153, 0.08) 100%
+  );
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Reflexiones criticas - LIGHT MODE */
+.theme-light.theme-codigo-cosmico .critical-reflections {
+  background: linear-gradient(135deg,
+    rgba(147, 51, 234, 0.08) 0%,
+    rgba(219, 39, 119, 0.08) 100%
+  );
+  border: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+/* Responsive - reducir animacion en mobile */
+@media (max-width: 768px) {
+  body.theme-dark.theme-codigo-cosmico::before,
+  body.theme-light.theme-codigo-cosmico::before {
+    animation-duration: 140s;
+  }
+}
+
+/* Scrollbar cosmica - DARK MODE */
+.theme-dark.theme-codigo-cosmico::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a855f7, #ec4899);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+/* Scrollbar - LIGHT MODE */
+.theme-light.theme-codigo-cosmico::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9333ea, #db2777);
+  box-shadow: 0 0 10px rgba(147, 51, 234, 0.4);
+}

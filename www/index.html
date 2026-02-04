@@ -81,7 +81,7 @@
   </script>
 
   <!-- Vendor libs (local, offline-capable) -->
-  <script src="js/vendor/lucide.min.js"></script>
+  <script src="js/vendor/lucide.min.js" defer></script>
   <script src="js/vendor/supabase.min.js"></script>
   <!-- Puter.js - Free Mistral AI (requires network, fallback in ai-adapter) -->
   <script src="https://js.puter.com/v2/" onerror="console.warn('Puter.js unavailable offline')"></script>
@@ -511,8 +511,8 @@
   <script src="js/data/achievements.js"></script>
   <script src="js/features/achievements-system.js?v=2.8.6.4-a11y"></script>
   <!-- 🔧 v2.9.327: Certificate Generator - Sistema de certificados de lectura -->
-  <script src="js/vendor/html2canvas.min.js"></script>
-  <script src="js/features/certificate-generator.js?v=2.9.327"></script>
+  <!-- v2.9.387: html2canvas lazy loaded desde certificate-generator.js (199KB) -->
+  <script src="js/features/certificate-generator.js?v=2.9.387"></script>
   <script src="js/features/auto-summary.js?v=2.8.6.4-a11y"></script>
   <!-- LAZY LOADED: AI Suggestions (16KB) -->
   <!-- <script src="js/features/ai-suggestions.js?v=2.9.283"></script> -->
@@ -524,8 +524,7 @@
   <!-- LAZY LOADED: Learning Paths (100KB) - Loaded when user accesses learning paths -->
     <!-- LAZY LOADED: Learning Paths (100KB) -->
   <!-- <script src="js/features/learning-paths.js?v=2.8.7"></script> -->
-  <!-- 🔧 v2.9.327: Learning Features - resource-ai-helper cargado, resto lazy -->
-  <script src="js/features/resource-ai-helper.js?v=2.9.327"></script>
+  <!-- v2.9.387: resource-ai-helper eliminado (archivo no existe, se carga lazy via lazyLoader) -->
   <!-- 🔧 v2.9.368: Lazy loaded (~100KB total) - se cargan bajo demanda via learningLazyLoader -->
   <!-- <script src="js/features/interactive-quiz.js?v=2.9.327"></script> -->
   <!-- <script src="js/features/concept-maps.js?v=2.9.327"></script> -->

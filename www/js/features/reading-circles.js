@@ -35,17 +35,31 @@ class ReadingCircles {
   // ==========================================================================
 
   initConnectivityListeners() {
-    window.addEventListener('online', () => {
+    this._onlineHandler = () => {
       this.isOnline = true;
       this.startRealtimeSync();
       window.toast?.success('Conexión restaurada');
-    });
+    };
 
-    window.addEventListener('offline', () => {
+    this._offlineHandler = () => {
       this.isOnline = false;
       this.stopRealtimeSync();
       window.toast?.warn('Sin conexión - Modo offline');
-    });
+    };
+
+    window.addEventListener('online', this._onlineHandler);
+    window.addEventListener('offline', this._offlineHandler);
+  }
+
+  destroyConnectivityListeners() {
+    if (this._onlineHandler) {
+      window.removeEventListener('online', this._onlineHandler);
+      this._onlineHandler = null;
+    }
+    if (this._offlineHandler) {
+      window.removeEventListener('offline', this._offlineHandler);
+      this._offlineHandler = null;
+    }
   }
 
   startRealtimeSync() {
@@ -1380,6 +1394,8 @@ class ReadingCircles {
       this._escapeHandler = null;
     }
     this.currentCircleId = null;
+    this.stopRealtimeSync();
+    this.destroyConnectivityListeners();
   }
 }
 

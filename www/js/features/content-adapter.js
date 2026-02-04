@@ -1,14 +1,13 @@
 /**
-// 🔧 FIX v2.9.198: Migrated console.log to logger
  * Content Adapter - Herramienta IA para adaptar contenido de capítulos
  *
  * Permite adaptar el contenido a diferentes audiencias y estilos:
  * - Por edad: niños (8-12), jóvenes (13-17), adultos
- * - Por enfoque: técnico, reflexivo, práctico
+ * - Por enfoque: técnico, reflexivo, práctico, coloquial, dormir, historia
  *
  * Usa sistema híbrido: cache local + IA en tiempo real
  *
- * @version 1.0.0
+ * @version 2.9.388 - Timeout IA 60s, validación respuestas, optimización móvil, nuevos estilos
  */
 
 class ContentAdapter {
@@ -48,6 +47,12 @@ class ContentAdapter {
         label: 'Adultos',
         icon: '📖',
         description: 'Contenido original sin modificar'
+      },
+      mayores: {
+        id: 'mayores',
+        label: 'Mayores (65+)',
+        icon: '🌳',
+        description: 'Lenguaje claro, referencias de su época'
       }
     };
 
@@ -87,6 +92,12 @@ class ContentAdapter {
         label: 'Para Dormir',
         icon: '🌙',
         description: 'Ritmo calmante para escuchar antes de dormir'
+      },
+      historia: {
+        id: 'historia',
+        label: 'Como Historia',
+        icon: '📚',
+        description: 'Narrado como cuento o historia'
       }
     };
 
@@ -106,6 +117,17 @@ class ContentAdapter {
 - Ejemplos que resuenen con su experiencia
 - Referencias a cultura pop si es pertinente
 - Trátalos como pensadores capaces
+- IMPORTANTE: Adapta CADA párrafo, no elimines ni combines contenido`,
+
+      mayores: `ADAPTA (no resumas) este texto para personas mayores de 65 años:
+- Oraciones claras y bien estructuradas, sin prisas
+- Vocabulario formal pero accesible, evitando anglicismos y jerga moderna
+- Referencias culturales de las décadas 1950-1990 (cine clásico, música de su época, acontecimientos históricos que vivieron)
+- Ejemplos de la vida cotidiana tradicional: familia extendida, oficios artesanales, costumbres de antaño
+- Tono respetuoso que reconozca su experiencia y sabiduría de vida
+- Conectar con valores clásicos: esfuerzo, compromiso, palabra dada, tradición
+- Usar expresiones que evoquen nostalgia positiva sin ser condescendiente
+- Evitar referencias a tecnología moderna (apps, redes sociales, streaming)
 - IMPORTANTE: Adapta CADA párrafo, no elimines ni combines contenido`,
 
       tecnico: `REFORMULA (no resumas) con enfoque técnico-científico:
@@ -150,7 +172,19 @@ class ContentAdapter {
 - Lenguaje que evoque paz, serenidad, descanso
 - Añade pausas naturales (puntos suspensivos ocasionales)
 - Reemplaza conceptos estimulantes por versiones más serenas
-- IMPORTANTE: Reformula CADA párrafo manteniendo el contenido, solo cambia el ritmo y tono`
+- IMPORTANTE: Reformula CADA párrafo manteniendo el contenido, solo cambia el ritmo y tono`,
+
+      historia: `REFORMULA (no resumas) el contenido como un cuento o historia narrativa:
+- Transforma el contenido en una narración envolvente con inicio, desarrollo y cierre
+- Usa estructura de cuento: "Había una vez...", "Cuenta la historia que...", "En tiempos remotos..."
+- Crea personajes o arquetipos que representen las ideas (el buscador, el sabio, el viajero...)
+- Añade ambientación y escenas visuales que ilustren los conceptos
+- Incluye diálogos entre personajes para transmitir las enseñanzas
+- Usa metáforas y símbolos narrativos (el camino, la montaña, el tesoro, la luz...)
+- Mantén un hilo conductor que guíe al lector por la historia
+- El tono puede ser épico, íntimo, misterioso o fantástico según el contenido
+- Transforma conceptos abstractos en aventuras y descubrimientos
+- IMPORTANTE: Reformula CADA párrafo como parte de la historia, no elimines contenido`
     };
   }
 
@@ -160,11 +194,12 @@ class ContentAdapter {
   init(bookEngine) {
     this.bookEngine = bookEngine;
 
-    // Intentar obtener AIAdapter si existe
-    if (window.AIAdapter) {
-      this.aiAdapter = new window.AIAdapter();
-    } else if (window.aiAdapter) {
+    // Reusar instancia global de AIAdapter si existe
+    if (window.aiAdapter) {
       this.aiAdapter = window.aiAdapter;
+    } else if (window.AIAdapter) {
+      this.aiAdapter = new window.AIAdapter();
+      window.aiAdapter = this.aiAdapter;
     }
 
     // Cargar preferencias guardadas
@@ -370,7 +405,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
   async adaptContent(ageStyle, focusStyle, forceRegenerate = false) {
     // Si es contenido original, restaurar
     if (ageStyle === 'adultos' && focusStyle === 'original') {
-      return this.restoreOriginal();
+      return this.restoreOriginalInternal();
     }
 
     // Verificar que tenemos contexto
@@ -408,9 +443,12 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
 
     // Verificar que tenemos IA disponible
     if (!this.aiAdapter) {
-      // Intentar cargar el adaptador
-      if (window.AIAdapter) {
+      // Reusar instancia global o crear una sola vez
+      if (window.aiAdapter) {
+        this.aiAdapter = window.aiAdapter;
+      } else if (window.AIAdapter) {
         this.aiAdapter = new window.AIAdapter();
+        window.aiAdapter = this.aiAdapter;
       } else {
         throw new Error('Sistema de IA no disponible. Por favor, configura un proveedor de IA.');
       }
@@ -418,7 +456,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
 
     // Verificar créditos si hay sistema premium
     if (window.aiPremium) {
-      const hasCredits = await window.aiPremium.checkCredits(2000, 'content_adaptation');
+      const hasCredits = await window.aiPremium.checkCredits(2000, 'ai_content_adapter');
       if (!hasCredits) {
         throw new Error('No tienes suficientes créditos de IA. Considera usar el modo gratuito o adquirir más créditos.');
       }
@@ -429,11 +467,13 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       return { content: this.originalContent, fromCache: false };
     }
 
-    // Limitar contenido para no exceder tokens (aprox 4 caracteres = 1 token, 4096 tokens ≈ 16000 chars)
-    const maxContentLength = 12000;
+    // Limitar contenido para no exceder tokens (reducido para mejor rendimiento móvil)
+    const maxContentLength = 8000;
     let contentToAdapt = this.originalContent;
     if (contentToAdapt.length > maxContentLength) {
       contentToAdapt = contentToAdapt.substring(0, maxContentLength) + '\n\n[Contenido truncado por longitud...]';
+      logger.warn(`[ContentAdapter] Contenido truncado: ${this.originalContent.length} → ${maxContentLength} chars`);
+      window.toast?.warning(`⚠️ Capítulo muy largo, adaptando primeros ${Math.round(maxContentLength/1000)}K caracteres`, 4000);
     }
 
     // Construir prompt con el contenido (potencialmente truncado)
@@ -443,33 +483,57 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       return { content: this.originalContent, fromCache: false };
     }
 
-    // 🔧 DEBUG: Log del contenido a adaptar
     logger.debug(`[ContentAdapter] Contenido original: ${this.originalContent.length} chars`);
     logger.debug(`[ContentAdapter] Contenido a adaptar: ${contentToAdapt.length} chars`);
-    logger.debug(`[ContentAdapter] Prompt total: ${adaptationPrompt.length} chars`);
     logger.debug(`[ContentAdapter] Estilos: edad=${ageStyle}, enfoque=${focusStyle}`);
 
-    // Llamar a IA con feature='content_adaptation' para max_tokens=4096
+    // Llamar a IA con timeout de 60s para evitar bloqueos
     try {
-      const response = await this.aiAdapter.ask(
+      const timeoutMs = 60000;
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout: La IA tardó demasiado en responder. Intenta con un capítulo más corto.')), timeoutMs);
+      });
+
+      const aiPromise = this.aiAdapter.ask(
         adaptationPrompt,
         'Eres un adaptador de contenidos. Tu tarea es TRANSFORMAR textos párrafo por párrafo, cambiando el estilo/lenguaje pero MANTENIENDO TODA la información y extensión. NUNCA resumas ni acortes. Si el texto original tiene 10 párrafos, tu respuesta debe tener 10 párrafos adaptados.',
         [],
         'content_adaptation'
       );
 
-      // 🔧 DEBUG: Log de respuesta
+      const response = await Promise.race([aiPromise, timeoutPromise]);
+
+      // Validar tipo de respuesta
+      if (typeof response !== 'string') {
+        logger.error('[ContentAdapter] Respuesta no es string:', typeof response);
+        throw new Error('La IA devolvió un formato de respuesta inesperado');
+      }
+
       const responseLength = response?.length || 0;
       const contentLength = contentToAdapt.length;
       logger.debug(`[ContentAdapter] Respuesta recibida: ${responseLength} chars`);
 
-      // Toast informativo para debug
-      if (window.toast) {
-        const ratio = Math.round((responseLength / contentLength) * 100);
-        window.toast.info(`📊 Original: ${contentLength} → Adaptado: ${responseLength} (${ratio}%)`, 5000);
-      }
-
       if (response && response.trim()) {
+        // Detectar respuestas de fallback local (demasiado cortas para ser adaptaciones reales)
+        const minAbsoluteLength = 200;
+        const actualRatio = responseLength / contentLength;
+
+        if (responseLength < minAbsoluteLength || (actualRatio < 0.1 && responseLength < 500)) {
+          logger.error(`[ContentAdapter] Respuesta demasiado corta: ${responseLength} chars`);
+          const fallbackPhrases = ['pregunta profunda', 'te invito a sentarte', 'libro explora', 'interesante perspectiva'];
+          const isFallback = fallbackPhrases.some(phrase => response.toLowerCase().includes(phrase));
+
+          if (isFallback) {
+            throw new Error('La IA no está disponible. Verifica tu conexión o que tengas créditos. Puedes configurar otra IA en ⚙️ Ajustes.');
+          } else {
+            throw new Error(`La respuesta de IA es muy corta (${responseLength} caracteres). Verifica créditos o intenta regenerar.`);
+          }
+        }
+
+        if (actualRatio < 0.3 && responseLength < 1000) {
+          window.toast?.warning(`⚠️ La adaptación puede estar incompleta (${responseLength} chars). Puedes regenerar si lo deseas.`, 6000);
+        }
+
         // Guardar en cache
         this.cacheAdaptation(
           this.currentBookId,
@@ -495,9 +559,10 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
   }
 
   /**
-   * Restaurar contenido original
+   * Restaurar contenido original (retorna objeto para uso interno)
+   * Para restaurar en la UI, usar el método en la línea ~979
    */
-  restoreOriginal() {
+  restoreOriginalInternal() {
     this.isAdapted = false;
     this.currentAgeStyle = 'adultos';
     this.currentFocusStyle = 'original';
@@ -789,21 +854,31 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
         clearTimeout(longPressTimer);
       });
 
-      // Touch events para móvil
+      // Touch events para móvil (passive para no interferir con scroll)
       applyBtn.addEventListener('touchstart', (e) => {
         isLongPress = false;
         longPressTimer = setTimeout(() => {
           isLongPress = true;
           this.applyAdaptation(true);
         }, 800);
-      });
+      }, { passive: true });
 
-      applyBtn.addEventListener('touchend', () => {
+      applyBtn.addEventListener('touchend', (e) => {
         clearTimeout(longPressTimer);
         if (!isLongPress) {
           this.applyAdaptation(false);
         }
-      });
+      }, { passive: true });
+
+      applyBtn.addEventListener('touchmove', () => {
+        clearTimeout(longPressTimer);
+        isLongPress = false;
+      }, { passive: true });
+
+      applyBtn.addEventListener('touchcancel', () => {
+        clearTimeout(longPressTimer);
+        isLongPress = false;
+      }, { passive: true });
     }
 
     // Botón regenerar (forzar sin caché)
@@ -819,21 +894,8 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
     if (restoreBtn) {
       restoreBtn.addEventListener('click', () => {
         this.restoreOriginal();
+        this.hideSelector();
       });
-    }
-  }
-
-  /**
-   * Guardar preferencias
-   */
-  savePreferences() {
-    try {
-      localStorage.setItem('content_adapter_preferences', JSON.stringify({
-        age: this.currentAgeStyle,
-        focus: this.currentFocusStyle
-      }));
-    } catch (e) {
-      logger.warn('[ContentAdapter] Error saving preferences:', e);
     }
   }
 
@@ -920,44 +982,110 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       }
     } catch (error) {
       logger.error('[ContentAdapter] Error applying adaptation:', error);
+      this.hideSelector();
+      window.toast?.error(error.message || 'Error al adaptar contenido', 8000);
+    } finally {
+      // Siempre restaurar estado de UI para evitar bloqueos
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       this.hideLoading();
-      this.showError(error.message);
-      window.toast?.error(error.message || 'Error al adaptar contenido');
+
+      // Forzar ocultar backdrop para evitar pantalla bloqueada
+      const backdrop = document.getElementById('content-adapter-backdrop');
+      if (backdrop) {
+        backdrop.style.opacity = '0';
+        backdrop.style.visibility = 'hidden';
+      }
+
+      // Rehabilitar botones
+      const applyBtn = document.getElementById('adapter-apply-btn');
+      const restoreBtn = document.getElementById('adapter-restore-btn');
+      const regenerateBtn = document.getElementById('adapter-regenerate-btn');
+      if (applyBtn) applyBtn.disabled = false;
+      if (regenerateBtn) regenerateBtn.disabled = false;
+      if (restoreBtn) restoreBtn.disabled = !this.isAdapted;
     }
   }
 
   /**
-   * Convertir texto plano a HTML con formato básico
+   * Convertir texto plano/markdown a HTML con formato
    */
   convertToHtml(text) {
     if (!text) return '';
 
-    // Dividir en párrafos y formatear
+    // Dividir en párrafos
     const paragraphs = text.split(/\n\n+/);
+
     return paragraphs
       .map(p => {
         p = p.trim();
         if (!p) return '';
 
-        // Detectar encabezados (líneas cortas que terminan en : o son todo mayúsculas)
-        if (p.length < 80 && (p.endsWith(':') || p === p.toUpperCase())) {
-          return `<h3 class="text-lg font-bold mt-6 mb-3">${this.escapeHtml(p)}</h3>`;
+        // Detectar encabezados markdown (## Título)
+        const headerMatch = p.match(/^(#{1,3})\s+(.+)$/);
+        if (headerMatch) {
+          const level = headerMatch[1].length;
+          const title = this.formatInlineMarkdown(headerMatch[2]);
+          const sizes = { 1: 'text-xl', 2: 'text-lg', 3: 'text-base' };
+          return `<h${level + 1} class="${sizes[level]} font-bold mt-6 mb-3">${title}</h${level + 1}>`;
         }
 
-        // Detectar listas
+        // Detectar encabezados implícitos (líneas cortas que terminan en :)
+        if (p.length < 80 && p.endsWith(':') && !p.includes('\n')) {
+          return `<h3 class="text-lg font-bold mt-6 mb-3">${this.formatInlineMarkdown(p)}</h3>`;
+        }
+
+        // Detectar listas con viñetas
         if (p.match(/^[-•*]\s/m)) {
           const items = p.split(/\n/).map(line => {
             const content = line.replace(/^[-•*]\s*/, '').trim();
-            return content ? `<li>${this.escapeHtml(content)}</li>` : '';
-          }).join('');
-          return `<ul class="list-disc pl-6 my-4">${items}</ul>`;
+            return content ? `<li>${this.formatInlineMarkdown(content)}</li>` : '';
+          }).filter(i => i).join('');
+          return `<ul class="list-disc pl-6 my-4 space-y-1">${items}</ul>`;
         }
 
-        // Párrafo normal
-        return `<p class="mb-4">${this.escapeHtml(p).replace(/\n/g, '<br>')}</p>`;
+        // Detectar listas numeradas
+        if (p.match(/^\d+[.)]\s/m)) {
+          const items = p.split(/\n/).map(line => {
+            const content = line.replace(/^\d+[.)]\s*/, '').trim();
+            return content ? `<li>${this.formatInlineMarkdown(content)}</li>` : '';
+          }).filter(i => i).join('');
+          return `<ol class="list-decimal pl-6 my-4 space-y-1">${items}</ol>`;
+        }
+
+        // Detectar citas (líneas que empiezan con >)
+        if (p.startsWith('>')) {
+          const quoteContent = p.replace(/^>\s*/gm, '').trim();
+          return `<blockquote class="border-l-4 border-cyan-500/50 pl-4 my-4 italic text-slate-300">${this.formatInlineMarkdown(quoteContent)}</blockquote>`;
+        }
+
+        // Párrafo normal con formato inline
+        return `<p class="mb-4 leading-relaxed">${this.formatInlineMarkdown(p).replace(/\n/g, '<br>')}</p>`;
       })
       .filter(p => p)
       .join('\n');
+  }
+
+  /**
+   * Formatear markdown inline (negritas, cursivas, etc.)
+   */
+  formatInlineMarkdown(text) {
+    if (!text) return '';
+
+    let formatted = this.escapeHtml(text);
+
+    // Negritas: **texto** o __texto__
+    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+    // Cursivas: *texto* o _texto_
+    formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    formatted = formatted.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // Código inline: `texto`
+    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-slate-700 px-1 rounded text-sm">$1</code>');
+
+    return formatted;
   }
 
   /**
@@ -1126,21 +1254,6 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       if (restoreBtn) {
         restoreBtn.disabled = !this.isAdapted;
       }
-    }
-  }
-
-  /**
-   * Limpiar cache de adaptaciones
-   */
-  clearCache() {
-    try {
-      const keys = Object.keys(localStorage).filter(k => k.startsWith(this.CACHE_PREFIX));
-      keys.forEach(k => localStorage.removeItem(k));
-      logger.debug(`[ContentAdapter] Cleared ${keys.length} cached adaptations`);
-      return keys.length;
-    } catch (e) {
-      logger.error('[ContentAdapter] Error clearing cache:', e);
-      return 0;
     }
   }
 

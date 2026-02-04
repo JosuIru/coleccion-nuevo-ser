@@ -10,7 +10,7 @@ class TTSPolyfill {
     this.voices = [];
     this.voicesLoaded = false;
     this.loadAttempts = 0;
-    this.maxAttempts = 10;
+    this.maxAttempts = 20;
 
     this.init();
   }
@@ -45,10 +45,12 @@ class TTSPolyfill {
         return true;
       }
 
-      // Si no se cargaron y quedan intentos, reintentar
+      // Si no se cargaron y quedan intentos, reintentar con backoff progresivo
       if (this.loadAttempts < this.maxAttempts) {
         // logger.debug(`⏳ Intento ${this.loadAttempts}/${this.maxAttempts} - Esperando voces...`);
-        setTimeout(attemptLoad, 500);
+        const retryDelay = this.loadAttempts < 5 ? 300 :
+                          this.loadAttempts < 10 ? 500 : 1000;
+        setTimeout(attemptLoad, retryDelay);
       } else {
         // logger.warn('⚠️ No se pudieron cargar voces después de', this.maxAttempts, 'intentos');
         // Último recurso: trigger manual
@@ -78,28 +80,50 @@ class TTSPolyfill {
     }, 500);
   }
 
-  // Trick para forzar carga de voces en Chrome
+  // Trick para forzar carga de voces en Chrome/Brave
   triggerVoiceLoad() {
     // logger.debug('🔧 Intentando forzar carga de voces...');
 
-    // Crear y cancelar utterance (trick conocido)
-    const utterance = new SpeechSynthesisUtterance('');
-    utterance.volume = 0;
-    this.nativeSynthesis.speak(utterance);
+    // Estrategia 1: Crear y cancelar utterance vacía (trick conocido para Chrome)
+    const emptyUtterance = new SpeechSynthesisUtterance('');
+    emptyUtterance.volume = 0;
+    this.nativeSynthesis.speak(emptyUtterance);
 
     setTimeout(() => {
       this.nativeSynthesis.cancel();
 
-      // Reintentar obtener voces
-      setTimeout(() => {
+      // Reintentar obtener voces con cadena de retries post-trigger
+      const postTriggerRetry = (attempt) => {
         const voices = this.nativeSynthesis.getVoices();
         if (voices && voices.length > 0) {
           this.voices = voices;
           this.voicesLoaded = true;
-          // logger.debug('✅ Voces cargadas después de trigger:', voices.length);
+          return;
         }
-      }, 500);
+        if (attempt < 5) {
+          setTimeout(() => postTriggerRetry(attempt + 1), 1000);
+        }
+      };
+      setTimeout(() => postTriggerRetry(0), 500);
     }, 100);
+
+    // Estrategia 2: Utterance con texto real a volumen 0 (para Brave Linux)
+    setTimeout(() => {
+      if (!this.voicesLoaded) {
+        const textUtterance = new SpeechSynthesisUtterance('.');
+        textUtterance.volume = 0;
+        textUtterance.rate = 10;
+        this.nativeSynthesis.speak(textUtterance);
+        setTimeout(() => {
+          this.nativeSynthesis.cancel();
+          const voices = this.nativeSynthesis.getVoices();
+          if (voices && voices.length > 0) {
+            this.voices = voices;
+            this.voicesLoaded = true;
+          }
+        }, 200);
+      }
+    }, 3000);
   }
 
   getVoices() {

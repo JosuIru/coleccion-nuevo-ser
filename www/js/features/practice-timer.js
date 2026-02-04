@@ -3,6 +3,7 @@
  * Gestiona la ejecución paso a paso de prácticas con temporizador
  * @version 1.0.0
  * v2.9.368: Sistema de prácticas recurrentes
+ * v2.9.387: Fix memory leaks - AbortController + destroy()
  */
 
 class PracticeTimer {
@@ -17,9 +18,13 @@ class PracticeTimer {
     this.modalElement = null;
     this.completedSteps = [];
 
+    // v2.9.387: AbortController para cleanup de event listeners
+    this._abortController = null;
+
     // v2.9.368: Sistema de prácticas recurrentes
     this.recurringPractices = this.loadRecurringPractices();
-    this.checkRecurringReminders();
+    this._reminderInterval = null;
+    this.startRecurringReminders();
 
     // Audio para transiciones
     this.bellSound = null;
@@ -164,6 +169,25 @@ class PracticeTimer {
   }
 
   /**
+   * Inicia la verificación periódica de prácticas recurrentes
+   */
+  startRecurringReminders() {
+    this.stopRecurringReminders();
+    this.checkRecurringReminders();
+    this._reminderInterval = setInterval(() => this.checkRecurringReminders(), 60000);
+  }
+
+  /**
+   * Detiene la verificación periódica de prácticas recurrentes
+   */
+  stopRecurringReminders() {
+    if (this._reminderInterval) {
+      clearInterval(this._reminderInterval);
+      this._reminderInterval = null;
+    }
+  }
+
+  /**
    * Verifica si hay prácticas pendientes para hoy
    */
   checkRecurringReminders() {
@@ -208,9 +232,6 @@ class PracticeTimer {
         this.showRecurringReminder(recurring);
       }
     });
-
-    // Verificar cada minuto
-    setTimeout(() => this.checkRecurringReminders(), 60000);
   }
 
   /**
@@ -235,12 +256,13 @@ class PracticeTimer {
       });
     }
 
-    // Limpiar después de 10 minutos
-    setTimeout(() => {
+    // Limpiar después de 10 minutos (tracked para cleanup)
+    const reminderCleanupId = setTimeout(() => {
       if (this._lastReminderId === recurring.id) {
         this._lastReminderId = null;
       }
     }, 600000);
+    this.trackAmbientTimeout(reminderCleanupId);
   }
 
   /**
@@ -553,6 +575,17 @@ class PracticeTimer {
   }
 
   /**
+   * Registra un timeout de ambiente con límite de 30 elementos para evitar crecimiento infinito
+   */
+  trackAmbientTimeout(timeoutId) {
+    if (this.ambientTimeouts.length >= 30) {
+      clearTimeout(this.ambientTimeouts[0]);
+      this.ambientTimeouts.shift();
+    }
+    this.ambientTimeouts.push(timeoutId);
+  }
+
+  /**
    * Detiene el sonido de fondo
    */
   async stopAmbientSound() {
@@ -670,13 +703,13 @@ class PracticeTimer {
       // Siguiente pájaro en 2-8 segundos (con tracking para cleanup)
       if (this.ambientEnabled && this.isRunning) {
         const timeoutId = setTimeout(playBird, 2000 + Math.random() * 6000);
-        this.ambientTimeouts.push(timeoutId);
+        this.trackAmbientTimeout(timeoutId);
       }
     };
 
     // Iniciar después de un delay aleatorio (con tracking)
     const initialTimeoutId = setTimeout(playBird, 1000 + Math.random() * 3000);
-    this.ambientTimeouts.push(initialTimeoutId);
+    this.trackAmbientTimeout(initialTimeoutId);
   }
 
   /**
@@ -735,12 +768,12 @@ class PracticeTimer {
 
       if (this.ambientEnabled && this.isRunning) {
         const timeoutId = setTimeout(playDrop, 100 + Math.random() * 500);
-        this.ambientTimeouts.push(timeoutId);
+        this.trackAmbientTimeout(timeoutId);
       }
     };
 
     const initialTimeoutId = setTimeout(playDrop, 500);
-    this.ambientTimeouts.push(initialTimeoutId);
+    this.trackAmbientTimeout(initialTimeoutId);
   }
 
   /**
@@ -791,7 +824,7 @@ class PracticeTimer {
 
       if (this.ambientEnabled && this.isRunning) {
         const timeoutId = setTimeout(wave, waveDuration * 1000);
-        this.ambientTimeouts.push(timeoutId);
+        this.trackAmbientTimeout(timeoutId);
       }
     };
 
@@ -847,7 +880,7 @@ class PracticeTimer {
       // Siguiente cuenco en 6-15 segundos (con tracking)
       if (this.ambientEnabled && this.isRunning) {
         const timeoutId = setTimeout(playBowl, 6000 + Math.random() * 9000);
-        this.ambientTimeouts.push(timeoutId);
+        this.trackAmbientTimeout(timeoutId);
       }
     };
 
@@ -1333,6 +1366,12 @@ class PracticeTimer {
    * Crea el modal del timer
    */
   createModal() {
+    // v2.9.387: Abortar listeners anteriores antes de recrear
+    if (this._abortController) {
+      this._abortController.abort();
+    }
+    this._abortController = new AbortController();
+
     const existingModal = document.getElementById('practice-timer-modal');
     if (existingModal) {
       existingModal.remove();
@@ -1511,6 +1550,7 @@ class PracticeTimer {
    */
   addTouchAndClickListener(element, callback) {
     if (!element) return;
+    const signal = this._abortController?.signal;
 
     // Usar un flag para evitar doble ejecución
     let touchHandled = false;
@@ -1521,20 +1561,22 @@ class PracticeTimer {
       callback(e);
       // Reset flag después de un pequeño delay
       setTimeout(() => { touchHandled = false; }, 300);
-    }, { passive: false });
+    }, { passive: false, signal });
 
     element.addEventListener('click', (e) => {
       // Solo ejecutar si no fue manejado por touch
       if (!touchHandled) {
         callback(e);
       }
-    });
+    }, { signal });
   }
 
   /**
    * Configura los event listeners
    */
   attachEventListeners() {
+    const signal = this._abortController?.signal;
+
     // Usar método que soporta touch y click
     this.addTouchAndClickListener(document.getElementById('timer-close'), () => this.stop());
     this.addTouchAndClickListener(document.getElementById('timer-play-pause'), () => this.togglePause());
@@ -1557,7 +1599,7 @@ class PracticeTimer {
         });
         e.target.classList.remove('bg-slate-700');
         e.target.classList.add('bg-violet-600');
-      });
+      }, { signal });
     });
 
     // Ambient sound controls - también con soporte touch
@@ -1568,7 +1610,7 @@ class PracticeTimer {
       btn.addEventListener('click', (e) => {
         const type = e.currentTarget.dataset.type;
         this.toggleAmbientType(type);
-      });
+      }, { signal });
     });
 
     // Stop all ambient sounds button
@@ -1593,10 +1635,10 @@ class PracticeTimer {
         if (volumeLabel) {
           volumeLabel.textContent = `${e.target.value}%`;
         }
-      });
+      }, { signal });
     }
 
-    // Keyboard shortcuts
+    // Keyboard shortcuts (on document - critical to clean up via signal)
     document.addEventListener('keydown', (e) => {
       if (!this.isRunning) return;
 
@@ -1627,7 +1669,7 @@ class PracticeTimer {
           this.toggleAmbient();
           break;
       }
-    });
+    }, { signal });
   }
 
   /**
@@ -1637,6 +1679,11 @@ class PracticeTimer {
     if (!practice || !practice.steps || practice.steps.length === 0) {
       logger.error('[PracticeTimer] Práctica inválida');
       return;
+    }
+
+    // v2.9.387: Re-crear modal si fue destruido
+    if (!this.modalElement || !document.contains(this.modalElement)) {
+      this.createModal();
     }
 
     this.currentPractice = practice;
@@ -1918,9 +1965,10 @@ class PracticeTimer {
     // Registrar completado
     this.trackCompletion();
 
-    // Event listeners para botones de completado
-    document.getElementById('timer-rate-btn')?.addEventListener('click', () => this.showRating());
-    document.getElementById('timer-done-btn')?.addEventListener('click', () => this.stop());
+    // Event listeners para botones de completado (con signal para cleanup)
+    const signalOpts = this._abortController ? { signal: this._abortController.signal } : {};
+    document.getElementById('timer-rate-btn')?.addEventListener('click', () => this.showRating(), signalOpts);
+    document.getElementById('timer-done-btn')?.addEventListener('click', () => this.stop(), signalOpts);
   }
 
   /**
@@ -2331,13 +2379,49 @@ class PracticeTimer {
     // Detener sonido ambiente
     this.stopAmbientSound();
 
-    this.modalElement?.classList.add('hidden');
-    document.body.style.overflow = '';
+    // v2.9.387: Destruir modal y limpiar listeners
+    this.destroy();
 
-    // Restaurar controles
-    document.getElementById('timer-play-pause')?.classList.remove('hidden');
-    document.getElementById('timer-prev')?.classList.remove('hidden');
-    document.getElementById('timer-next')?.classList.remove('hidden');
+    document.body.style.overflow = '';
+  }
+
+  /**
+   * v2.9.387: Destruye el modal y limpia todos los recursos
+   * Elimina el modal del DOM y aborta todos los event listeners
+   */
+  destroy() {
+    // Abortar todos los event listeners registrados via AbortController
+    if (this._abortController) {
+      this._abortController.abort();
+      this._abortController = null;
+    }
+
+    // Limpiar intervals
+    this.clearInterval();
+    this.stopRecurringReminders();
+
+    if (this.randomAmbientInterval) {
+      clearInterval(this.randomAmbientInterval);
+      this.randomAmbientInterval = null;
+    }
+
+    // Limpiar todos los timeouts de ambiente
+    if (this.ambientTimeouts?.length > 0) {
+      this.ambientTimeouts.forEach(id => clearTimeout(id));
+      this.ambientTimeouts = [];
+    }
+
+    // Limpiar timeout de ballenas
+    if (this.whaleCallTimeout) {
+      clearTimeout(this.whaleCallTimeout);
+      this.whaleCallTimeout = null;
+    }
+
+    // Eliminar modal del DOM
+    if (this.modalElement) {
+      this.modalElement.remove();
+      this.modalElement = null;
+    }
   }
 
   /**

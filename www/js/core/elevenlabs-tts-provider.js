@@ -506,11 +506,19 @@ class ElevenLabsTTSProvider {
    * Reproduce el audio generado
    */
   playAudio(url, onProgress, onEnd, onError) {
+    // Liberar ObjectURL anterior si existe
+    this.revokeCurrentAudioUrl();
+    this.currentAudioUrl = url;
+
     return new Promise((resolve, reject) => {
       const audio = new Audio(url);
       this.currentAudio = audio;
       this.isPlaying = true;
       this.isPaused = false;
+
+      const cleanup = () => {
+        this.revokeCurrentAudioUrl();
+      };
 
       // Progreso
       if (onProgress) {
@@ -523,6 +531,7 @@ class ElevenLabsTTSProvider {
       audio.addEventListener('ended', () => {
         this.isPlaying = false;
         this.isPaused = false;
+        cleanup();
         if (onEnd) onEnd();
         resolve();
       });
@@ -530,6 +539,7 @@ class ElevenLabsTTSProvider {
       // Error
       audio.addEventListener('error', (e) => {
         this.isPlaying = false;
+        cleanup();
         const error = new Error('Error reproduciendo audio');
         if (onError) onError(error);
         reject(error);
@@ -538,10 +548,23 @@ class ElevenLabsTTSProvider {
       // Iniciar reproducción
       audio.play().catch((e) => {
         this.isPlaying = false;
+        cleanup();
         if (onError) onError(e);
         reject(e);
       });
     });
+  }
+
+  /**
+   * Libera el ObjectURL actual para evitar memory leaks
+   */
+  revokeCurrentAudioUrl() {
+    if (this.currentAudioUrl) {
+      try {
+        URL.revokeObjectURL(this.currentAudioUrl);
+      } catch (e) {}
+      this.currentAudioUrl = null;
+    }
   }
 
   /**
@@ -575,6 +598,7 @@ class ElevenLabsTTSProvider {
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
     }
+    this.revokeCurrentAudioUrl();
     this.isPlaying = false;
     this.isPaused = false;
   }

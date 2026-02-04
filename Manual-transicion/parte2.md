@@ -434,8 +434,8 @@ eficiencia de representación con posibilidad de participación directa.
 
 Del Código Genético --- Proof-of-Help: «El poder de decisión se gana
 ayudando, no acumulando capital o tokens. Fórmula: flowPower =
-(timeDonated \* 2 + projectContributions \* 5 + generosityScore \* 10 +
-communityEndorsements \* 3) / totalCommunityContribution. Máximo: nadie
+(timeDonated × 2 + projectContributions × 5 + generosityScore × 10 +
+communityEndorsements × 3) / totalCommunityContribution. Máximo: nadie
 puede tener más de 2-3x el poder del mínimo. Anti-plutocracia: el dinero
 NO compra votos.»
 

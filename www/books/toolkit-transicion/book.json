@@ -954,5 +954,67 @@
         }
       ]
     }
+  ],
+  "bookGlossary": [
+    {
+      "term": "Pedagogía de la Praxis",
+      "definition": "Enfoque educativo donde se aprende transformando la realidad y se transforma la realidad aprendiendo. La comprensión emerge de la acción reflexiva.",
+      "context": "Introducción del Toolkit, fundamento metodológico de todos los ejercicios"
+    },
+    {
+      "term": "Puntos de Apalancamiento",
+      "definition": "Lugares estratégicos donde intervenir en un sistema para producir cambio efectivo. Van desde parámetros superficiales hasta paradigmas profundos, según el modelo de Donella Meadows.",
+      "context": "Ejercicio 3: Mapeo de Puntos de Apalancamiento"
+    },
+    {
+      "term": "Ecosistema de Cambio",
+      "definition": "Red de organizaciones, iniciativas y personas que trabajan por la transformación social en un territorio. Incluye ONGs, cooperativas, movimientos sociales y redes informales.",
+      "context": "Ejercicio 4: Mapeo del Ecosistema de Cambio Local"
+    },
+    {
+      "term": "Cadena de Valor Ética",
+      "definition": "Análisis completo del impacto social y ambiental de una organización, desde proveedores hasta consumidores finales, incluyendo condiciones laborales e impacto comunitario.",
+      "context": "Ejercicio 5: Auditoría de Impacto de tu Trabajo"
+    },
+    {
+      "term": "Canvas Cooperativo",
+      "definition": "Herramienta visual para diseñar cooperativas que incluye socios, propuesta de valor, gobernanza, actividades, recursos, alianzas, impacto, costes e ingresos.",
+      "context": "Ejercicio 6: Diseño de una Cooperativa"
+    },
+    {
+      "term": "Auto-organización",
+      "definition": "Modelo organizativo donde los equipos funcionan sin jerarquía formal impuesta, emergiendo roles y liderazgos según necesidad y competencia.",
+      "context": "Ejercicio 7: Experimento de Auto-organización"
+    },
+    {
+      "term": "Principios de Ostrom",
+      "definition": "Ocho principios identificados por Elinor Ostrom para la gestión exitosa de bienes comunes: límites claros, reglas locales, participación, monitoreo, sanciones graduales, resolución de conflictos, autonomía y anidamiento.",
+      "context": "Ejercicio 8: Identificar Commons en tu Vida"
+    },
+    {
+      "term": "Soberanía Digital",
+      "definition": "Control sobre tus propios datos, identidad digital y herramientas tecnológicas, usando alternativas éticas a plataformas extractivas.",
+      "context": "Ejercicio 12: Auditoría de Soberanía Digital"
+    },
+    {
+      "term": "Escucha Profunda",
+      "definition": "Práctica de escuchar sin juicio, sin preparar respuestas y sin interrumpir. Base de relaciones saludables, resolución de conflictos y democracia deliberativa.",
+      "context": "Ejercicio 13: Práctica de Escucha Profunda"
+    },
+    {
+      "term": "Poder Prefigurativo",
+      "definition": "Construcción de estructuras alternativas funcionales en el presente (cooperativas, redes de cuidados, medios alternativos) sin esperar a tomar el poder formal.",
+      "context": "Ejercicio 20: Mapeo de Poder Prefigurativo"
+    },
+    {
+      "term": "Facilitación de Procesos",
+      "definition": "Arte de acompañar grupos en la toma de decisiones y el trabajo colectivo, usando técnicas como círculos, rondas, parking lot y gestión de divergencia/convergencia.",
+      "context": "Introducción y múltiples ejercicios grupales"
+    },
+    {
+      "term": "Resiliencia Activista",
+      "definition": "Capacidad de sostener el trabajo de cambio social a largo plazo mediante colchones económicos, relacionales y de competencias, previniendo el burnout.",
+      "context": "Ejercicio 19: Plan de Resiliencia Personal"
+    }
   ]
 }

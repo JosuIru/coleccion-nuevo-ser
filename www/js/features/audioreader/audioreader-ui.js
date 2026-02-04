@@ -1,6 +1,7 @@
 // ============================================================================
 // AUDIOREADER UI - Interfaz de usuario del reproductor
 // ============================================================================
+// v2.9.386: Fix slider velocidad (getClosestRateIndex), UI minimizada mejorada
 // v2.9.358: Drag handle mejorado con touch-action:none y user-select:none
 // v2.9.357: Drag handle más grande (área táctil h-6) para mejor usabilidad
 // v2.9.278: Modularización del AudioReader
@@ -16,6 +17,35 @@ class AudioReaderUI {
     // Timer para pausa
     this.pauseTimerInterval = null;
     this.currentPauseEndTime = null;
+  }
+
+  // ==========================================================================
+  // HELPERS
+  // ==========================================================================
+
+  /**
+   * Obtiene el índice más cercano para una velocidad dada
+   * @param {number} rate - Velocidad actual
+   * @returns {number} Índice del slider (0-6)
+   */
+  getClosestRateIndex(rate) {
+    const rates = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    const exactIndex = rates.indexOf(rate);
+    if (exactIndex !== -1) return exactIndex;
+
+    // Buscar el más cercano
+    let closestIndex = 2; // Default: 1x
+    let closestDiff = Infinity;
+
+    rates.forEach((r, i) => {
+      const diff = Math.abs(r - rate);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestIndex = i;
+      }
+    });
+
+    return closestIndex;
   }
 
   // ==========================================================================
@@ -172,7 +202,7 @@ class AudioReaderUI {
               <span id="speed-value" class="text-sm font-mono text-cyan-400">${ar.tts?.getRate() || 1}x</span>
             </div>
             <input type="range" id="speed-slider"
-                   min="0" max="6" value="${[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].indexOf(ar.tts?.getRate() || 1)}"
+                   min="0" max="6" value="${this.getClosestRateIndex(ar.tts?.getRate() || 1)}"
                    class="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer accent-cyan-500">
             <div class="flex text-[10px] text-slate-600 mt-1">
               <span class="w-[14.28%] text-left">0.5</span>
@@ -381,44 +411,54 @@ class AudioReaderUI {
 
         <!-- Mini player -->
         <div class="px-4 py-2 flex items-center gap-3">
-          <!-- Progress ring -->
+          <!-- Progress ring con indicador de estado -->
           <div class="relative w-12 h-12 flex-shrink-0">
             <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
               <circle cx="18" cy="18" r="15" fill="none" stroke="#334155" stroke-width="3"/>
-              <circle cx="18" cy="18" r="15" fill="none" stroke="#06b6d4" stroke-width="3"
-                stroke-dasharray="${progress * 0.94} 94" stroke-linecap="round"/>
+              <circle cx="18" cy="18" r="15" fill="none"
+                stroke="${ar.isPlaying && !ar.isPaused ? '#06b6d4' : '#64748b'}"
+                stroke-width="3"
+                stroke-dasharray="${progress * 0.94} 94" stroke-linecap="round"
+                class="${ar.isPlaying && !ar.isPaused ? '' : ''}"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center text-xs text-white font-medium">
               ${Math.round(parseFloat(progress))}%
             </div>
+            <!-- Indicador de auto-avance -->
+            ${ar.playback?.isAutoAdvanceEnabled() ? `
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-[8px]" title="Auto-avance activo">
+                ↪
+              </div>
+            ` : ''}
           </div>
 
-          <!-- Info -->
+          <!-- Info mejorada -->
           <div class="flex-1 min-w-0">
-            <p class="text-sm text-white font-medium truncate">${bookData.title || 'Audiolibro'}</p>
-            <p class="text-xs text-slate-400">
-              ${paragraphs.length > 0 ? `${ar.currentParagraphIndex + 1}/${paragraphs.length}` : ''}
-              ${ar.utils?.formatTime(tiempoEstimado) ? `• ${ar.utils.formatTime(tiempoEstimado)}` : ''}
-            </p>
+            <p class="text-sm text-white font-medium truncate">${ar.bookEngine?.currentChapter?.title || bookData.title || 'Audiolibro'}</p>
+            <div class="flex items-center gap-2 text-xs text-slate-400">
+              <span>${paragraphs.length > 0 ? `${ar.currentParagraphIndex + 1}/${paragraphs.length}` : ''}</span>
+              ${ar.utils?.formatTime(tiempoEstimado) ? `<span>• ${ar.utils.formatTime(tiempoEstimado)}</span>` : ''}
+              <span class="text-cyan-400/70">${ar.tts?.getRate() || 1}x</span>
+            </div>
           </div>
 
-          <!-- Controls -->
-          <div class="flex items-center gap-2">
-            <button id="audioreader-prev" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white">
-              ${Icons?.skipBack?.(18) || '⏮'}
+          <!-- Controls mejorados -->
+          <div class="flex items-center gap-1.5">
+            <button id="audioreader-prev" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition-colors active:scale-95">
+              ${Icons?.skipBack?.(16) || '⏮'}
             </button>
             <button id="${ar.isPlaying && !ar.isPaused ? 'audioreader-pause' : 'audioreader-play'}"
-              class="w-12 h-12 rounded-xl ${ar.isPlaying && !ar.isPaused
-                ? 'bg-orange-500'
-                : 'bg-cyan-500'}
-              flex items-center justify-center text-white">
-              ${ar.isPlaying && !ar.isPaused ? (Icons?.pause?.(24) || '⏸') : (Icons?.play?.(24) || '▶')}
+              class="w-11 h-11 rounded-xl ${ar.isPlaying && !ar.isPaused
+                ? 'bg-orange-500 hover:bg-orange-400'
+                : 'bg-cyan-500 hover:bg-cyan-400'}
+              flex items-center justify-center text-white shadow-lg transition-colors active:scale-95">
+              ${ar.isPlaying && !ar.isPaused ? (Icons?.pause?.(22) || '⏸') : (Icons?.play?.(22) || '▶')}
             </button>
-            <button id="audioreader-next" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-white">
-              ${Icons?.skipForward?.(18) || '⏭'}
+            <button id="audioreader-next" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition-colors active:scale-95">
+              ${Icons?.skipForward?.(16) || '⏭'}
             </button>
-            <button id="audioreader-expand" class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center text-white">
-              ${Icons?.chevronUp?.(18) || '↑'}
+            <button id="audioreader-expand" class="w-9 h-9 rounded-lg bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-300 transition-colors active:scale-95" title="Expandir controles">
+              ${Icons?.chevronUp?.(16) || '↑'}
             </button>
           </div>
         </div>
@@ -468,14 +508,6 @@ class AudioReaderUI {
     if (prevBtn) prevBtn.addEventListener('click', () => ar.playback?.previous());
     if (nextBtn) nextBtn.addEventListener('click', () => ar.playback?.next());
     if (stopBtn) stopBtn.addEventListener('click', () => ar.playback?.stop());
-
-    // Rate
-    const rateSelect = document.getElementById('audioreader-rate');
-    if (rateSelect) {
-      rateSelect.addEventListener('change', (e) => {
-        ar.tts?.setRate(parseFloat(e.target.value));
-      });
-    }
 
     // Auto-advance
     const autoBtn = document.getElementById('audioreader-auto-advance');
@@ -889,8 +921,6 @@ class AudioReaderUI {
     const voiceSelect = document.getElementById('audioreader-voice-select');
 
     // Los ambientes se restauran automáticamente en restoreActiveAmbients()
-    if (false) { // Legacy code removed
-    }
     if (binauralSelect && savedBinaural) {
       binauralSelect.value = savedBinaural;
     }

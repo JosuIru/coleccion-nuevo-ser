@@ -29,11 +29,18 @@ class DonationsModal {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         this.showCopiedFeedback(buttonId);
+        this.notifyBTCCopy(text);
       }).catch(() => {
         this.fallbackCopy(text, buttonId);
       });
     } else {
       this.fallbackCopy(text, buttonId);
+    }
+  }
+
+  notifyBTCCopy(address) {
+    if (window.adminNotifications) {
+      window.adminNotifications.notifyBTCPayment(address);
     }
   }
 
@@ -49,6 +56,7 @@ class DonationsModal {
     try {
       document.execCommand('copy');
       this.showCopiedFeedback(buttonId);
+      this.notifyBTCCopy(text);
     } catch (err) {
       logger.error('Error copying:', err);
     }
@@ -126,7 +134,7 @@ class DonationsModal {
             <div class="space-y-3">
 
               <!-- Ko-fi -->
-              <a href="https://ko-fi.com/codigodespierto" target="_blank"
+              <a href="https://ko-fi.com/codigodespierto" target="_blank" id="donate-kofi-link"
                  class="block p-4 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 rounded-lg transition transform hover:scale-105 text-white">
                 <div class="flex items-center gap-4">
                   <div class="text-4xl">☕</div>
@@ -139,7 +147,7 @@ class DonationsModal {
               </a>
 
               <!-- PayPal -->
-              <a href="https://www.paypal.com/paypalme/codigodespierto" target="_blank"
+              <a href="https://www.paypal.com/paypalme/codigodespierto" target="_blank" id="donate-paypal-link"
                  class="block p-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg transition transform hover:scale-105">
                 <div class="flex items-center gap-4">
                   <div class="text-4xl">💳</div>
@@ -299,6 +307,19 @@ class DonationsModal {
     // ESC to close
     document.addEventListener('keydown', this.handleEscape = (e) => {
       if (e.key === 'Escape' && this.isOpen) this.close();
+    });
+
+    // Notificaciones admin para Ko-fi y PayPal
+    document.getElementById('donate-kofi-link')?.addEventListener('click', () => {
+      if (window.adminNotifications) {
+        window.adminNotifications.notifyDonation('kofi');
+      }
+    });
+
+    document.getElementById('donate-paypal-link')?.addEventListener('click', () => {
+      if (window.adminNotifications) {
+        window.adminNotifications.notifyDonation('paypal');
+      }
     });
   }
 }

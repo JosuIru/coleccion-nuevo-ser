@@ -20,6 +20,9 @@ window.env = {
   // Stripe (optional, for payments)
   STRIPE_PUBLISHABLE_KEY: '',
 
+  // Admin notifications
+  ADMIN_EMAIL: 'admin@example.com',
+
   // Environment
   NODE_ENV: 'production',  // 'development' or 'production'
   DEBUG_MODE: false

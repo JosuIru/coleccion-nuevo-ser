@@ -44,15 +44,14 @@ class PricingModal {
         features: [
           'Acceso a todos los libros',
           'Progreso sincronizado',
-          'Quizzes básicos',
+          'Quizzes interactivos',
           `${config.plans.free.credits} créditos IA/mes`,
-          'Comunidad',
+          'Modo offline',
         ],
         notIncluded: [
-          'Chat IA ilimitado',
-          'Tutor IA personalizado',
-          'Game Master IA',
-          'Analytics avanzados',
+          'Chat IA',
+          'Voces Premium ElevenLabs',
+          'Prácticas IA personalizadas',
         ],
         button: 'Plan Actual',
         buttonAction: 'current',
@@ -68,14 +67,16 @@ class PricingModal {
         features: [
           'Todo lo de Gratuito',
           `${featureDescriptions.ai_chat.icon} ${featureDescriptions.ai_chat.name}`,
-          `${featureDescriptions.ai_tutor.icon} ${featureDescriptions.ai_tutor.name}`,
           `${featureDescriptions.ai_content_adapter.icon} ${featureDescriptions.ai_content_adapter.name}`,
+          `${featureDescriptions.elevenlabs_tts.icon} ${featureDescriptions.elevenlabs_tts.name}`,
+          `${featureDescriptions.ai_practice_generator.icon} ${featureDescriptions.ai_practice_generator.name}`,
+          `${featureDescriptions.ai_auto_summary.icon} ${featureDescriptions.ai_auto_summary.name}`,
           `${featureDescriptions.advanced_analytics.icon} ${featureDescriptions.advanced_analytics.name}`,
           `${config.plans.premium.credits} créditos IA/mes`,
-          'Sin anuncios',
         ],
         notIncluded: [
-          `${featureDescriptions.ai_game_master.icon} ${featureDescriptions.ai_game_master.name}`,
+          `${featureDescriptions.ai_smart_notes.icon} ${featureDescriptions.ai_smart_notes.name}`,
+          `${featureDescriptions.ai_koan_generator.icon} ${featureDescriptions.ai_koan_generator.name}`,
           `${featureDescriptions.priority_support.icon} ${featureDescriptions.priority_support.name}`,
         ],
         button: 'Comenzar Premium',
@@ -90,13 +91,10 @@ class PricingModal {
         credits: config.plans.pro.credits,
         features: [
           'Todo lo de Premium',
-          `${featureDescriptions.ai_game_master.icon} ${featureDescriptions.ai_game_master.name}`,
-          'NPCs conversacionales ilimitados',
-          'Generación de misiones dinámicas',
-          'Narrativa adaptativa',
-          `${config.plans.pro.credits} créditos IA/mes`,
+          `${featureDescriptions.ai_smart_notes.icon} ${featureDescriptions.ai_smart_notes.name}`,
+          `${featureDescriptions.ai_koan_generator.icon} ${featureDescriptions.ai_koan_generator.name}`,
           `${featureDescriptions.priority_support.icon} ${featureDescriptions.priority_support.name}`,
-          'API access',
+          `${config.plans.pro.credits} créditos IA/mes`,
         ],
         notIncluded: [],
         button: 'Comenzar Pro',
@@ -117,8 +115,8 @@ class PricingModal {
         period: '/mes',
         icon: '🆓',
         credits: 10,
-        features: ['Acceso a todos los libros', '10 créditos IA/mes'],
-        notIncluded: ['Chat IA ilimitado', 'Tutor IA', 'Game Master IA'],
+        features: ['Acceso a todos los libros', 'Quizzes interactivos', '10 créditos IA/mes'],
+        notIncluded: ['Chat IA', 'Voces Premium', 'Prácticas IA'],
         button: 'Plan Actual',
         buttonAction: 'current',
       },
@@ -129,8 +127,8 @@ class PricingModal {
         icon: '⭐',
         badge: 'Recomendado',
         credits: 500,
-        features: ['Todo lo de Gratuito', 'Chat IA', 'Tutor IA', '500 créditos/mes'],
-        notIncluded: ['Game Master IA'],
+        features: ['Todo lo de Gratuito', 'Chat IA', 'Voces ElevenLabs', 'Prácticas IA', 'Resúmenes IA', '500 créditos/mes'],
+        notIncluded: ['Notas inteligentes IA', 'Koans IA'],
         button: 'Comenzar Premium',
         buttonAction: 'premium',
         stripePriceId: 'price_premium_monthly',
@@ -141,7 +139,7 @@ class PricingModal {
         period: '/mes',
         icon: '👑',
         credits: 2000,
-        features: ['Todo lo de Premium', 'Game Master IA', '2000 créditos/mes'],
+        features: ['Todo lo de Premium', 'Notas inteligentes IA', 'Koans IA', 'Soporte prioritario', '2000 créditos/mes'],
         notIncluded: [],
         button: 'Comenzar Pro',
         buttonAction: 'pro',
@@ -336,6 +334,11 @@ class PricingModal {
     button.textContent = 'Procesando...';
 
     try {
+      // Notificar intento de checkout al admin
+      if (window.adminNotifications) {
+        window.adminNotifications.notifyPayment(tier, user.id);
+      }
+
       // Llamar a Edge Function para crear sesión
       const { data, error } = await this.supabase.functions.invoke(
         'create-checkout-session',

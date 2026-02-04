@@ -27,10 +27,12 @@ const PLANS_CONFIG = {
 
       features: {
         ai_chat: false,
-        ai_tutor: false,
-        ai_game_master: false,
         ai_content_adapter: false,
         elevenlabs_tts: false,
+        ai_practice_generator: false,
+        ai_auto_summary: false,
+        ai_smart_notes: false,
+        ai_koan_generator: false,
         advanced_analytics: false,
         priority_support: false,
         offline_mode: true,
@@ -60,10 +62,12 @@ const PLANS_CONFIG = {
 
       features: {
         ai_chat: true,
-        ai_tutor: true,
-        ai_game_master: false,
         ai_content_adapter: true,
         elevenlabs_tts: true,
+        ai_practice_generator: true,
+        ai_auto_summary: true,
+        ai_smart_notes: false,
+        ai_koan_generator: false,
         advanced_analytics: true,
         priority_support: false,
         offline_mode: true,
@@ -76,8 +80,8 @@ const PLANS_CONFIG = {
         maxHistoryMessages: 20,
       },
 
-      description: 'Chat IA, tutor personalizado y adaptacion de contenido',
-      descriptionEn: 'AI Chat, personalized tutor and content adaptation',
+      description: 'Chat IA, adaptacion de contenido y practicas IA',
+      descriptionEn: 'AI Chat, content adaptation and AI practices',
       recommended: true, // Marcar como recomendado en UI
     },
 
@@ -94,10 +98,12 @@ const PLANS_CONFIG = {
 
       features: {
         ai_chat: true,
-        ai_tutor: true,
-        ai_game_master: true,
         ai_content_adapter: true,
         elevenlabs_tts: true,
+        ai_practice_generator: true,
+        ai_auto_summary: true,
+        ai_smart_notes: true,
+        ai_koan_generator: true,
         advanced_analytics: true,
         priority_support: true,
         offline_mode: true,
@@ -110,8 +116,8 @@ const PLANS_CONFIG = {
         maxHistoryMessages: 50,
       },
 
-      description: 'Todas las funciones + Game Master IA + soporte prioritario',
-      descriptionEn: 'All features + AI Game Master + priority support',
+      description: 'Todas las funciones + notas inteligentes + soporte prioritario',
+      descriptionEn: 'All features + smart notes + priority support',
     },
   },
 
@@ -125,18 +131,6 @@ const PLANS_CONFIG = {
       description: 'Conversa con un asistente IA sobre los libros',
       icon: '💬',
     },
-    ai_tutor: {
-      name: 'Tutor Personalizado',
-      nameEn: 'Personal Tutor',
-      description: 'Explicaciones profundas y adaptadas a tu nivel',
-      icon: '🎓',
-    },
-    ai_game_master: {
-      name: 'Game Master IA',
-      nameEn: 'AI Game Master',
-      description: 'NPCs conversacionales y narrativa adaptativa',
-      icon: '🎮',
-    },
     ai_content_adapter: {
       name: 'Adaptador de Contenido',
       nameEn: 'Content Adapter',
@@ -146,8 +140,32 @@ const PLANS_CONFIG = {
     elevenlabs_tts: {
       name: 'Voces Premium ElevenLabs',
       nameEn: 'ElevenLabs Premium Voices',
-      description: 'Narración con voces IA de alta calidad',
+      description: 'Narracion con voces IA de alta calidad',
       icon: '🎙️',
+    },
+    ai_practice_generator: {
+      name: 'Generador de Practicas IA',
+      nameEn: 'AI Practice Generator',
+      description: 'Genera practicas personalizadas con IA',
+      icon: '🧘',
+    },
+    ai_auto_summary: {
+      name: 'Resumenes Automaticos IA',
+      nameEn: 'AI Auto Summaries',
+      description: 'Resumenes inteligentes de cada capitulo',
+      icon: '📝',
+    },
+    ai_smart_notes: {
+      name: 'Notas Inteligentes IA',
+      nameEn: 'AI Smart Notes',
+      description: 'Notas enriquecidas con analisis de IA',
+      icon: '🧠',
+    },
+    ai_koan_generator: {
+      name: 'Generador de Koans IA',
+      nameEn: 'AI Koan Generator',
+      description: 'Koans y reflexiones generados por IA',
+      icon: '🪷',
     },
     advanced_analytics: {
       name: 'Analiticas Avanzadas',

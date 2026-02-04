@@ -98,6 +98,12 @@ class ContentAdapter {
         label: 'Como Historia',
         icon: '📚',
         description: 'Narrado como cuento o historia'
+      },
+      punk: {
+        id: 'punk',
+        label: 'Punk',
+        icon: '🔥',
+        description: 'Directo, irreverente, sin filtros'
       }
     };
 
@@ -184,7 +190,20 @@ class ContentAdapter {
 - Mantén un hilo conductor que guíe al lector por la historia
 - El tono puede ser épico, íntimo, misterioso o fantástico según el contenido
 - Transforma conceptos abstractos en aventuras y descubrimientos
-- IMPORTANTE: Reformula CADA párrafo como parte de la historia, no elimines contenido`
+- IMPORTANTE: Reformula CADA párrafo como parte de la historia, no elimines contenido`,
+
+      punk: `REFORMULA (no resumas) el contenido con actitud punk, directa e irreverente:
+- Lenguaje directo, sin rodeos, sin florituras académicas
+- Actitud desafiante y cuestionadora: reta al lector a pensar por sí mismo
+- Usa expresiones coloquiales fuertes (sin ser vulgar), jerga urbana y tono rebelde
+- Ironía y sarcasmo inteligente para cuestionar lo establecido
+- Frases cortas y contundentes que golpeen como un riff de guitarra
+- Cuestiona la autoridad, las instituciones y el pensamiento convencional
+- Convierte las ideas en manifiestos: "esto es así y punto" en vez de "podría considerarse que..."
+- Usa metáforas urbanas: la calle, el muro, el grito, la resistencia, el underground
+- Mantén la esencia del mensaje pero sin el envoltorio políticamente correcto
+- El tono es de quien ha visto el mundo como es y no se calla
+- IMPORTANTE: Reformula CADA párrafo, no elimines contenido. Cambia el tono, no el mensaje`
     };
   }
 
@@ -707,6 +726,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
         z-index: 9998;
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
         transition: opacity 0.2s ease, visibility 0.2s;
       `;
       backdrop.addEventListener('click', () => this.hideSelector());
@@ -753,6 +773,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
     if (this.selectorVisible) {
       // Mostrar
       if (backdrop) {
+        backdrop.style.pointerEvents = 'auto';
         backdrop.style.opacity = '1';
         backdrop.style.visibility = 'visible';
       }
@@ -778,10 +799,12 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
     if (backdrop) {
       backdrop.style.opacity = '0';
       backdrop.style.visibility = 'hidden';
+      backdrop.style.pointerEvents = 'none';
     }
     if (modal) {
       modal.style.opacity = '0';
       modal.style.visibility = 'hidden';
+      modal.style.pointerEvents = 'none';
       modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
     }
     logger.debug('[ContentAdapter] Selector hidden');
@@ -965,9 +988,11 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
 
       if (result && result.content) {
         // Aplicar contenido adaptado
-        // Preservar estructura HTML pero reemplazar texto
         const adaptedHtml = this.convertToHtml(result.content);
         chapterContent.innerHTML = adaptedHtml;
+
+        // Re-adjuntar event listeners del contenido que innerHTML destruyó
+        this._reattachContentEvents();
 
         this.isAdapted = true;
         this.hideLoading();
@@ -990,11 +1015,18 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       document.body.style.touchAction = '';
       this.hideLoading();
 
-      // Forzar ocultar backdrop para evitar pantalla bloqueada
+      // Forzar ocultar backdrop y modal para evitar pantalla bloqueada
       const backdrop = document.getElementById('content-adapter-backdrop');
       if (backdrop) {
         backdrop.style.opacity = '0';
         backdrop.style.visibility = 'hidden';
+        backdrop.style.pointerEvents = 'none';
+      }
+      const modal = document.getElementById('content-adapter-modal');
+      if (modal) {
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+        modal.style.pointerEvents = 'none';
       }
 
       // Rehabilitar botones
@@ -1089,6 +1121,28 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
   }
 
   /**
+   * Re-adjuntar event listeners del contenido tras reemplazo innerHTML
+   */
+  _reattachContentEvents() {
+    try {
+      // BookReader content events (action cards, mark-read, prev/next)
+      if (window.bookReader?.events?.attachContentEventListeners) {
+        window.bookReader.events.attachContentEventListeners();
+      }
+      // Action link listeners (enlaces internos)
+      if (window.bookReader?.events?.attachActionLinkListeners) {
+        window.bookReader.events.attachActionLinkListeners();
+      }
+      // Re-inicializar iconos
+      if (window.Icons?.init) {
+        window.Icons.init();
+      }
+    } catch (err) {
+      logger.warn('[ContentAdapter] Error re-attaching events:', err);
+    }
+  }
+
+  /**
    * Escapar HTML para prevenir XSS
    */
   escapeHtml(text) {
@@ -1110,6 +1164,8 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       const chapterContent = document.querySelector('.chapter-content, .content-wrapper, #chapter-content, .book-content');
       if (chapterContent) {
         chapterContent.innerHTML = this.originalHtmlContent;
+        // Re-adjuntar event listeners que innerHTML destruyó
+        this._reattachContentEvents();
       }
     }
 

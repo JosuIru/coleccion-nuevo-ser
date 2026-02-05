@@ -427,7 +427,8 @@ class LazyLoader {
   }
 
   /**
-   * Cargar Learning Paths (100KB)
+   * Cargar Learning Paths (modular ~100KB total)
+   * v2.9.390: Arquitectura modular
    * @returns {Promise<void>}
    */
   async loadLearningPaths() {
@@ -436,15 +437,23 @@ class LazyLoader {
     }
 
     if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Learning Paths...');
+      logger.log('[LazyLoader] Cargando Learning Paths (modular)...');
     }
 
+    const scripts = [
+      'js/features/learning-paths/learning-paths-data.js?v=2.9.390',
+      'js/features/learning-paths/learning-paths-ui.js?v=2.9.390',
+      'js/features/learning-paths/learning-paths-events.js?v=2.9.390',
+      'js/features/learning-paths/learning-paths-ai.js?v=2.9.390',
+      'js/features/learning-paths/index.js?v=2.9.390'
+    ];
+
     try {
-      await this.loadScript('js/features/learning-paths.js?v=2.8.7');
+      await this.loadScripts(scripts);
       this.loadedModules.set('learning-paths', true);
 
       if (typeof logger !== 'undefined') {
-        logger.log('✅ Learning Paths cargado (100KB)');
+        logger.log('✅ Learning Paths cargado (modular - 5 modulos)');
       }
     } catch (error) {
       logger.error('[LazyLoader] Error cargando Learning Paths:', error);
@@ -453,7 +462,8 @@ class LazyLoader {
   }
 
   /**
-   * Cargar Settings Modal (124KB)
+   * Cargar Settings Modal (modular ~124KB total)
+   * v2.9.390: Arquitectura modular
    * @returns {Promise<void>}
    */
   async loadSettingsModal() {
@@ -462,15 +472,22 @@ class LazyLoader {
     }
 
     if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Settings Modal...');
+      logger.log('[LazyLoader] Cargando Settings Modal (modular)...');
     }
 
     try {
-      await this.loadScript('js/features/settings-modal.js?v=2.9.176');
+      // Cargar módulos en orden: primero los módulos auxiliares, luego el coordinador
+      await this.loadScript('js/features/settings-modal/settings-modal-general.js?v=2.9.390');
+      await this.loadScript('js/features/settings-modal/settings-modal-ai.js?v=2.9.390');
+      await this.loadScript('js/features/settings-modal/settings-modal-account.js?v=2.9.390');
+      await this.loadScript('js/features/settings-modal/settings-modal-appearance.js?v=2.9.390');
+      await this.loadScript('js/features/settings-modal/settings-modal-events.js?v=2.9.390');
+      await this.loadScript('js/features/settings-modal/index.js?v=2.9.390');
+
       this.loadedModules.set('settings-modal', true);
 
       if (typeof logger !== 'undefined') {
-        logger.log('✅ Settings Modal cargado (124KB)');
+        logger.log('[LazyLoader] Settings Modal cargado (modular)');
       }
     } catch (error) {
       logger.error('[LazyLoader] Error cargando Settings Modal:', error);

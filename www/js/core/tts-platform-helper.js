@@ -79,7 +79,7 @@ class TTSPlatformHelper {
   }
 
   // ==========================================================================
-  // DETECCIÓN DE PROBLEMA LINUX + CHROME
+  // DETECCIÓN DE PROBLEMAS POR PLATAFORMA/NAVEGADOR
   // ==========================================================================
 
   isLinuxChromeIssue() {
@@ -87,6 +87,21 @@ class TTSPlatformHelper {
       this.platform === 'linux' &&
       (this.browser === 'chrome' || this.browser === 'brave' || this.browser === 'edge')
     );
+  }
+
+  /**
+   * Detecta si es Brave en cualquier plataforma (Brave bloquea voces de Google)
+   */
+  isBraveShieldsIssue() {
+    return this.browser === 'brave';
+  }
+
+  /**
+   * Verifica si hay voces de Google disponibles (las que Brave bloquea)
+   */
+  hasGoogleVoices() {
+    const voices = speechSynthesis.getVoices();
+    return voices.some(v => v.name.toLowerCase().includes('google'));
   }
 
   shouldShowLinuxChromeFix() {
@@ -427,6 +442,135 @@ ${browser} \\
   }
 
   // ==========================================================================
+  // MODAL ESPECÍFICO PARA BRAVE (Shields bloqueando voces)
+  // ==========================================================================
+
+  showBraveShieldsModal() {
+    // Evitar mostrar si ya hay uno abierto
+    if (document.getElementById('brave-shields-tts-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'brave-shields-tts-modal';
+    modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] p-4';
+    modal.style.backdropFilter = 'blur(8px)';
+
+    modal.innerHTML = `
+      <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-lg w-full border border-orange-500/30">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-orange-600 to-red-600 p-5 rounded-t-2xl">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="text-3xl">🦁</div>
+              <div>
+                <h2 class="text-xl font-bold text-white">Brave Shields Activo</h2>
+                <p class="text-orange-100 text-sm">Las voces de audio están bloqueadas</p>
+              </div>
+            </div>
+            <button id="brave-modal-close" class="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-5 space-y-4">
+          <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
+            <p class="text-orange-100 text-sm leading-relaxed">
+              <strong>¿Por qué pasa esto?</strong><br>
+              Brave bloquea las conexiones a Google que proporcionan las voces de texto-a-voz.
+              Chrome usa estas mismas voces, pero Brave las bloquea por privacidad.
+            </p>
+          </div>
+
+          <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <h4 class="font-semibold text-green-400 mb-3 flex items-center gap-2">
+              <span class="text-xl">🛡️</span>
+              Solución Rápida
+            </h4>
+            <ol class="text-sm text-slate-300 space-y-2 ml-4">
+              <li class="flex items-start gap-2">
+                <span class="text-orange-400 font-bold">1.</span>
+                <span>Haz clic en el <strong class="text-orange-400">icono del escudo 🛡️</strong> en la barra de direcciones</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-orange-400 font-bold">2.</span>
+                <span>Desactiva <strong class="text-orange-400">"Shields"</strong> para este sitio</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-orange-400 font-bold">3.</span>
+                <span><strong class="text-green-400">Recarga la página</strong> (F5 o Ctrl+R)</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+            <p class="text-blue-100 text-xs">
+              <strong>💡 Alternativa:</strong> Usa Chrome o Firefox donde TTS funciona sin configuración.
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-slate-800/50 p-4 rounded-b-2xl flex justify-between items-center border-t border-slate-700">
+          <button id="brave-modal-retry" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/>
+            </svg>
+            Ya desactivé Shields, reintentar
+          </button>
+          <button id="brave-modal-dismiss" class="px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition text-sm">
+            No mostrar más
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    const helper = this;
+
+    document.getElementById('brave-modal-close').addEventListener('click', () => {
+      modal.remove();
+    });
+
+    document.getElementById('brave-modal-retry').addEventListener('click', async () => {
+      modal.remove();
+
+      // Esperar un momento y verificar de nuevo
+      if (window.toast) {
+        window.toast.info('Verificando voces...');
+      }
+
+      await new Promise(r => setTimeout(r, 1000));
+      const voices = speechSynthesis.getVoices();
+
+      if (voices.length > 0) {
+        if (window.toast) {
+          window.toast.success(`¡Voces disponibles! (${voices.length} encontradas)`);
+        }
+        helper.hasVoices = true;
+      } else {
+        if (window.toast) {
+          window.toast.error('Aún no hay voces. Asegúrate de desactivar Shields y recargar.');
+        }
+        // Mostrar modal de nuevo
+        setTimeout(() => helper.showBraveShieldsModal(), 500);
+      }
+    });
+
+    document.getElementById('brave-modal-dismiss').addEventListener('click', () => {
+      localStorage.setItem('hide-brave-shields-tts-warning', 'true');
+      modal.remove();
+      if (window.toast) {
+        window.toast.info('No se volverá a mostrar');
+      }
+    });
+  }
+
+  // ==========================================================================
   // INICIALIZACIÓN AUTOMÁTICA
   // ==========================================================================
 
@@ -470,26 +614,39 @@ ${browser} \\
       return false; // Capacitor apps tienen TTS nativo, no necesitan este check
     }
 
-    // Solo verificar si es Linux + Chrome/Brave/Edge
-    if (!this.isLinuxChromeIssue()) {
-      return false; // No hay problema
-    }
-
-    // Verificar si el usuario ya dijo "no mostrar más"
-    if (localStorage.getItem('hide-linux-chrome-tts-warning') === 'true') {
-      return false; // Usuario no quiere ver el modal
-    }
-
-    // Verificar si hay voces disponibles (más tiempo para Brave en Linux)
-    const voiceTimeout = navigator.brave ? 8000 : 5000;
+    // Verificar si hay voces disponibles (más tiempo para Brave)
+    const voiceTimeout = this.browser === 'brave' ? 8000 : 5000;
     const hasVoices = await this.checkVoices(voiceTimeout);
 
-    if (!hasVoices) {
-      this.showLinuxChromeFixModal();
-      return true; // Se mostró el modal
+    // Si hay voces, todo bien
+    if (hasVoices) {
+      return false;
     }
 
-    return false; // Hay voces, todo bien
+    // 🦁 BRAVE: Mostrar modal específico de Shields (en cualquier plataforma)
+    if (this.isBraveShieldsIssue()) {
+      // Verificar si el usuario ya dijo "no mostrar más"
+      if (localStorage.getItem('hide-brave-shields-tts-warning') === 'true') {
+        return false;
+      }
+
+      this.showBraveShieldsModal();
+      return true;
+    }
+
+    // 🐧 LINUX + Chrome/Edge: Mostrar modal de configuración Linux
+    if (this.isLinuxChromeIssue()) {
+      // Verificar si el usuario ya dijo "no mostrar más"
+      if (localStorage.getItem('hide-linux-chrome-tts-warning') === 'true') {
+        return false;
+      }
+
+      this.showLinuxChromeFixModal();
+      return true;
+    }
+
+    // Otros navegadores sin voces - no mostramos modal
+    return false;
   }
 }
 

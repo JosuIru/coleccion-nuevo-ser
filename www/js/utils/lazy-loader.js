@@ -1019,6 +1019,42 @@ class LazyLoader {
   }
 
   /**
+   * Cargar Knowledge Evolution System (7 archivos modulares)
+   * @returns {Promise<void>}
+   */
+  async loadKnowledgeEvolution() {
+    if (this.loadedModules.has('knowledge-evolution')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Knowledge Evolution...');
+    }
+
+    const scripts = [
+      'js/features/knowledge-evolution/knowledge-ingestion.js?v=2.9.398',
+      'js/features/knowledge-evolution/knowledge-analysis.js?v=2.9.399',
+      'js/features/knowledge-evolution/knowledge-meditation.js?v=2.9.400',
+      'js/features/knowledge-evolution/knowledge-synthesis.js?v=2.9.401',
+      'js/features/knowledge-evolution/knowledge-dialogue.js?v=2.9.402',
+      'js/features/knowledge-evolution/knowledge-ui.js?v=2.9.403',
+      'js/features/knowledge-evolution/index.js?v=2.9.403'
+    ];
+
+    try {
+      await this.loadScripts(scripts);
+      this.loadedModules.set('knowledge-evolution', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Knowledge Evolution cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Knowledge Evolution:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Verificar si un módulo está cargado
    * @param {string} module - Nombre del módulo
    * @returns {boolean}

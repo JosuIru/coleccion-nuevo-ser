@@ -15,12 +15,101 @@ class SettingsModalAccount {
         const authHTML = window.supabaseAuthHelper?.renderSettingsPanel() ||
             '<p class="text-gray-400">Supabase Auth no disponible</p>';
 
+        // Verificar si el usuario es el autor (admin)
+        const authorToolsHTML = this.renderAuthorTools();
+
         return `
             <div class="settings-section">
                 <h3 class="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Cuenta</h3>
                 ${authHTML}
             </div>
+            ${authorToolsHTML}
         `;
+    }
+
+    // ==========================================================================
+    // HERRAMIENTAS DEL AUTOR
+    // ==========================================================================
+
+    /**
+     * Verifica si el usuario actual es el autor/administrador
+     */
+    isAuthor() {
+        const authHelper = window.authHelper || window.supabaseAuthHelper;
+        const user = authHelper?.currentUser || authHelper?.user;
+
+        if (!user?.email) return false;
+
+        // El autor se identifica por su email configurado en env.js o por patron conocido
+        const authorEmail = window.env?.ADMIN_EMAIL || 'irurag@gmail.com';
+        return user.email === authorEmail;
+    }
+
+    /**
+     * Renderiza las herramientas del autor (solo visibles para el admin)
+     */
+    renderAuthorTools() {
+        if (!this.isAuthor()) return '';
+
+        return `
+            <div class="settings-section mt-8 pt-8 border-t border-amber-700/30">
+                <h3 class="text-lg sm:text-xl font-bold text-amber-400 mb-4 sm:mb-6 flex items-center gap-2">
+                    <span>🔧</span> Herramientas del Autor
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Knowledge Evolution -->
+                    <div class="bg-gradient-to-r from-amber-900/30 to-slate-800/50 rounded-xl p-4 border border-amber-700/30">
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🧠</span>
+                            <div class="flex-1">
+                                <h4 class="text-white font-semibold">Knowledge Evolution</h4>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    Sistema que analiza los 18 libros, conecta conceptos y genera sintesis evolutiva.
+                                </p>
+                                <button onclick="window.settingsModal?.account?.openKnowledgeEvolution()"
+                                        class="mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded-lg transition-colors">
+                                    Abrir Knowledge Evolution
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Otros tools del autor aqui en el futuro -->
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Abre el sistema Knowledge Evolution
+     */
+    async openKnowledgeEvolution() {
+        try {
+            // Cargar el modulo si no esta cargado
+            if (!window.KnowledgeEvolution) {
+                if (window.toast) {
+                    window.toast.info('Cargando Knowledge Evolution...', 2000);
+                }
+                await window.lazyLoader.loadKnowledgeEvolution();
+            }
+
+            // Inicializar si es necesario
+            if (!window.knowledgeEvolution) {
+                window.knowledgeEvolution = new KnowledgeEvolution();
+                await window.knowledgeEvolution.init();
+            }
+
+            // Cerrar settings y abrir Knowledge Evolution
+            this.settingsModal.close();
+            window.knowledgeEvolution.openModal();
+
+        } catch (error) {
+            logger.error('[SettingsModal] Error abriendo Knowledge Evolution:', error);
+            if (window.toast) {
+                window.toast.error('Error cargando Knowledge Evolution');
+            }
+        }
     }
 
     // ==========================================================================

@@ -7,7 +7,7 @@
 
 // 🔧 FIX v2.9.338: Guard contra redeclaración si el script se carga múltiples veces
 if (typeof window.ConceptMaps !== 'undefined') {
-  console.warn('[ConceptMaps] Script ya cargado, saltando redeclaración');
+  logger.warn('[ConceptMaps] Script ya cargado, saltando redeclaración');
 } else {
 
 class ConceptMaps {

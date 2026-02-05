@@ -218,7 +218,7 @@ class BookReaderEvents {
    */
   createBookSwitchHandler(bookId, closeMenu = null) {
     return async () => {
-      console.log(`[BookReaderEvents] createBookSwitchHandler FIRED for bookId: ${bookId}`);
+      logger.log(`[BookReaderEvents] createBookSwitchHandler FIRED for bookId: ${bookId}`);
       if (closeMenu) closeMenu();
       await this.bookReader.handleBookSwitch(bookId);
     };
@@ -244,11 +244,11 @@ class BookReaderEvents {
       const btn = document.getElementById(id);
       if (btn) {
         this.eventManager.addEventListener(btn, 'click', handler);
-        console.log(`[attachMultiDevice] Attached listener to: ${id}`);
+        logger.log(`[attachMultiDevice] Attached listener to: ${id}`);
       } else {
         // Solo loguear para botones importantes que deberían existir
         if (id.includes('practicas') || id.includes('manual') || id.includes('toggle')) {
-          console.log(`[attachMultiDevice] Button NOT FOUND: ${id}`);
+          logger.log(`[attachMultiDevice] Button NOT FOUND: ${id}`);
         }
       }
     });
@@ -302,7 +302,7 @@ class BookReaderEvents {
       // Buscar dropdown HERMANO del botón clickeado (están en el mismo div.relative)
       const currentDropdown = btn.parentElement?.querySelector(`#${dropdownId}`);
       if (!currentDropdown) {
-        console.warn(`[setupDropdown] No se encontró #${dropdownId} como hermano de #${btnId}`);
+        logger.warn(`[setupDropdown] No se encontró #${dropdownId} como hermano de #${btnId}`);
         return;
       }
 
@@ -342,7 +342,7 @@ class BookReaderEvents {
     if (typeof logger !== 'undefined') {
       logger.debug('[BookReaderEvents] Ejecutando attachEventListeners');
     }
-    console.log('[BookReaderEvents] attachEventListeners() STARTED');
+    logger.log('[BookReaderEvents] attachEventListeners() STARTED');
     this._eventListenersAttached = true;
 
     // 🔧 v2.9.336: Listener de diagnóstico para detectar si los clics llegan al DOM
@@ -352,9 +352,9 @@ class BookReaderEvents {
         const target = e.target;
         const id = target.id || '(no-id)';
         const tagName = target.tagName;
-        console.log(`[CLICK DIAGNOSTIC] Clicked: ${tagName}#${id}`, target);
+        logger.log(`[CLICK DIAGNOSTIC] Clicked: ${tagName}#${id}`, target);
       }, true); // useCapture=true para capturar en fase de captura
-      console.log('[BookReaderEvents] Click diagnostic listener attached to document');
+      logger.log('[BookReaderEvents] Click diagnostic listener attached to document');
     }
 
     // Helper para cerrar dropdown del menu
@@ -376,23 +376,23 @@ class BookReaderEvents {
     // ========================================================================
     if (!this._toggleSidebarHandler) {
       this._toggleSidebarHandler = (e) => {
-        console.log('[BookReaderEvents] _toggleSidebarHandler FIRED');
+        logger.log('[BookReaderEvents] _toggleSidebarHandler FIRED');
         e.stopPropagation();
         e.preventDefault();
         if (this.bookReader) {
-          console.log('[BookReaderEvents] Calling bookReader.toggleSidebar()');
+          logger.log('[BookReaderEvents] Calling bookReader.toggleSidebar()');
           this.bookReader.toggleSidebar();
         } else {
-          console.error('[BookReaderEvents] bookReader is null/undefined!');
+          logger.error('[BookReaderEvents] bookReader is null/undefined!');
         }
       };
     }
 
     const toggleSidebar = document.getElementById('toggle-sidebar');
-    console.log('[BookReaderEvents] toggle-sidebar element:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
+    logger.log('[BookReaderEvents] toggle-sidebar element:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
     if (toggleSidebar) {
       this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
-      console.log('[BookReaderEvents] Added click listener to toggle-sidebar');
+      logger.log('[BookReaderEvents] Added click listener to toggle-sidebar');
     }
 
     // Close sidebar (mobile)
@@ -1580,29 +1580,29 @@ class BookReaderEvents {
     try {
       // Command Palette - siempre disponible con Ctrl+K
       if (window.commandPalette) {
-        console.log('[BookReaderEvents] Command Palette already initialized');
+        logger.log('[BookReaderEvents] Command Palette already initialized');
       } else if (window.CommandPalette) {
         window.commandPalette = new window.CommandPalette();
-        console.log('[BookReaderEvents] Command Palette initialized');
+        logger.log('[BookReaderEvents] Command Palette initialized');
       }
 
       // FAB Menu - mostrar solo en book-reader
       if (window.fabMenu) {
         window.fabMenu.show();
-        console.log('[BookReaderEvents] FAB Menu shown');
+        logger.log('[BookReaderEvents] FAB Menu shown');
       } else if (window.FABMenu) {
         window.fabMenu = new window.FABMenu();
         window.fabMenu.show();
-        console.log('[BookReaderEvents] FAB Menu initialized and shown');
+        logger.log('[BookReaderEvents] FAB Menu initialized and shown');
       }
 
       // Radial Menu - attach al contenido del capítulo (deshabilitado en APK)
       if (window.radialMenu) {
         window.radialMenu.attachToContent();
-        console.log('[BookReaderEvents] Radial Menu attached');
+        logger.log('[BookReaderEvents] Radial Menu attached');
       }
     } catch (error) {
-      console.error('[BookReaderEvents] Error initializing quick access components:', error);
+      logger.error('[BookReaderEvents] Error initializing quick access components:', error);
     }
   }
 
@@ -1972,23 +1972,23 @@ class BookReaderEvents {
       // 🔧 v2.9.336: Mejorar logging
       if (!this._toggleSidebarHandler) {
         this._toggleSidebarHandler = (e) => {
-          console.log('[attachHeaderListeners] _toggleSidebarHandler FIRED');
+          logger.log('[attachHeaderListeners] _toggleSidebarHandler FIRED');
           e.stopPropagation();
           e.preventDefault();
           if (this.bookReader) {
-            console.log('[attachHeaderListeners] Calling bookReader.toggleSidebar()');
+            logger.log('[attachHeaderListeners] Calling bookReader.toggleSidebar()');
             this.bookReader.toggleSidebar();
           } else {
-            console.error('[attachHeaderListeners] bookReader is null!');
+            logger.error('[attachHeaderListeners] bookReader is null!');
           }
         };
       }
 
       const toggleSidebar = document.getElementById('toggle-sidebar');
-      console.log('[attachHeaderListeners] toggle-sidebar:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
+      logger.log('[attachHeaderListeners] toggle-sidebar:', toggleSidebar ? 'FOUND' : 'NOT FOUND');
       if (toggleSidebar) {
         this.eventManager.addEventListener(toggleSidebar, 'click', this._toggleSidebarHandler);
-        console.log('[attachHeaderListeners] Added listener to toggle-sidebar');
+        logger.log('[attachHeaderListeners] Added listener to toggle-sidebar');
       }
 
       // 🔧 v2.9.334: Breadcrumb "Libros" - volver a biblioteca (usa mismo handler que sidebar)

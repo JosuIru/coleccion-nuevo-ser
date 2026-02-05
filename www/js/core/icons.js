@@ -196,7 +196,7 @@ const Icons = {
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     } else {
-      // console.warn('Lucide Icons no está cargado');
+      // logger.warn('Lucide Icons no está cargado');
     }
   },
 

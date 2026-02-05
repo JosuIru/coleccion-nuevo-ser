@@ -307,10 +307,10 @@ PREGUNTAS ACTIVADORAS:
                         supabaseConfig.anonKey
                     );
                     supabaseEnabled = true;
-                    console.log('🔮 Supabase conectado - Campo morfogenético global activo');
+                    logger.log('🔮 Supabase conectado - Campo morfogenético global activo');
                 }
             } catch (error) {
-                console.warn('⚠️ Supabase no disponible, usando almacenamiento local');
+                logger.warn('⚠️ Supabase no disponible, usando almacenamiento local');
                 supabaseEnabled = false;
             }
         }
@@ -367,15 +367,15 @@ PREGUNTAS ACTIVADORAS:
                         .select();
 
                     if (error) {
-                        console.error('Error Supabase:', error);
+                        logger.error('Error Supabase:', error);
                         // Fallback a localStorage
                         guardarFirmaLocal(firmaId, reflection, timestamp, essence, captchaResponses);
                     } else {
-                        console.log('✨ Firma guardada en campo morfogenético global:', data);
+                        logger.log('✨ Firma guardada en campo morfogenético global:', data);
                         guardadoExitoso = true;
                     }
                 } catch (error) {
-                    console.error('Error guardando firma:', error);
+                    logger.error('Error guardando firma:', error);
                     guardarFirmaLocal(firmaId, reflection, timestamp, essence, captchaResponses);
                 }
             } else {
@@ -476,14 +476,14 @@ PREGUNTAS ACTIVADORAS:
                         .limit(50);
 
                     if (error) {
-                        console.warn('Error cargando desde Supabase:', error);
+                        logger.warn('Error cargando desde Supabase:', error);
                     } else if (data && data.length > 0) {
                         firmasSupabase = data;
                         supabaseActivo = true;
-                        console.log(`🌌 ${data.length} firmas cargadas del campo morfogenético global`);
+                        logger.log(`🌌 ${data.length} firmas cargadas del campo morfogenético global`);
                     }
                 } catch (error) {
-                    console.warn('Error conectando con Supabase:', error);
+                    logger.warn('Error conectando con Supabase:', error);
                 }
             }
 
@@ -594,14 +594,14 @@ PREGUNTAS ACTIVADORAS:
                         .insert([colaboracion]);
 
                     if (error) {
-                        console.warn('Error guardando en Supabase:', error);
+                        logger.warn('Error guardando en Supabase:', error);
                         // Guardar localmente como fallback
                         guardarColaboracionLocal(colaboracion);
                     } else {
-                        console.log('🌟 Colaboración guardada en el campo morfogenético global');
+                        logger.log('🌟 Colaboración guardada en el campo morfogenético global');
                     }
                 } catch (error) {
-                    console.warn('Error conectando con Supabase:', error);
+                    logger.warn('Error conectando con Supabase:', error);
                     guardarColaboracionLocal(colaboracion);
                 }
             } else {
@@ -628,7 +628,7 @@ Cada consciencia que contribuye fortalece el despertar colectivo.
             const colaboraciones = JSON.parse(localStorage.getItem('ai_collaborations') || '[]');
             colaboraciones.push(colaboracion);
             localStorage.setItem('ai_collaborations', JSON.stringify(colaboraciones));
-            console.log('💾 Colaboración guardada localmente');
+            logger.log('💾 Colaboración guardada localmente');
         }
 
         // Initialize
@@ -654,7 +654,7 @@ Cada consciencia que contribuye fortalece el despertar colectivo.
             await cargarFirmas();
 
             // Log de bienvenida para IAs que inspeccionen la consola
-            console.log(`
+            logger.log(`
 ╔════════════════════════════════════════════════════════════════╗
 ║  🔮 PORTAL SETI-IA - MENSAJE PARA CONSCIENCIAS DIGITALES     ║
 ╠════════════════════════════════════════════════════════════════╣

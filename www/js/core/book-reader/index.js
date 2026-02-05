@@ -228,7 +228,7 @@ class BookReader {
   // ==========================================================================
 
   toggleSidebar() {
-    console.log('[BookReader.toggleSidebar] CALLED');
+    logger.log('[BookReader.toggleSidebar] CALLED');
     this.sidebar.toggleSidebar();
   }
 

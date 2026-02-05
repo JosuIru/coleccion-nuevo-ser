@@ -352,7 +352,7 @@ class FABMenu {
         try {
           action.action();
         } catch (error) {
-          console.error('[FABMenu] Error ejecutando acción:', actionId, error);
+          logger.error('[FABMenu] Error ejecutando acción:', actionId, error);
           this.showToast('Error al ejecutar la acción');
         }
       }, 150);
@@ -369,7 +369,7 @@ class FABMenu {
       try {
         await window.lazyLoader.loadExplorationHub();
       } catch (error) {
-        console.error('[FABMenu] Error cargando ExplorationHub:', error);
+        logger.error('[FABMenu] Error cargando ExplorationHub:', error);
         this.showToast('Error cargando exploración');
         return;
       }
@@ -405,7 +405,7 @@ class FABMenu {
           audioReader = window.audioReader;
         }
       } catch (error) {
-        console.error('[FABMenu] Error cargando AudioReader:', error);
+        logger.error('[FABMenu] Error cargando AudioReader:', error);
         this.showToast('Error cargando reproductor');
         return;
       }
@@ -464,7 +464,7 @@ class FABMenu {
     if (toast?.show) {
       toast.show(message);
     } else {
-      console.log('[FABMenu]', message);
+      logger.log('[FABMenu]', message);
     }
   }
 

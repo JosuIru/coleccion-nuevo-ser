@@ -31,9 +31,9 @@ class EducatorsKit {
       this.createViewerModal();
       this.setupEventListeners();
       this.renderActivities(this.currentAgeFilter);
-      console.log('[EducatorsKit] Inicializado correctamente v2.0');
+      logger.log('[EducatorsKit] Inicializado correctamente v2.0');
     } catch (error) {
-      console.error('[EducatorsKit] Error al inicializar:', error);
+      logger.error('[EducatorsKit] Error al inicializar:', error);
     }
   }
 
@@ -45,10 +45,10 @@ class EducatorsKit {
       const response = await fetch(this.resourcesConfig.contentPath);
       if (response.ok) {
         this.content = await response.json();
-        console.log('[EducatorsKit] Contenido cargado:', Object.keys(this.content.resources || {}).length, 'recursos');
+        logger.log('[EducatorsKit] Contenido cargado:', Object.keys(this.content.resources || {}).length, 'recursos');
       }
     } catch (error) {
-      console.warn('[EducatorsKit] No se pudo cargar content.json:', error);
+      logger.warn('[EducatorsKit] No se pudo cargar content.json:', error);
       this.content = { resources: {}, activities: {} };
     }
   }
@@ -721,7 +721,7 @@ class EducatorsKit {
       const history = localStorage.getItem('educator-downloads');
       this.downloadHistory = history ? JSON.parse(history) : [];
     } catch (error) {
-      console.warn('[EducatorsKit] Error cargando historial:', error);
+      logger.warn('[EducatorsKit] Error cargando historial:', error);
       this.downloadHistory = [];
     }
   }
@@ -733,7 +733,7 @@ class EducatorsKit {
     try {
       localStorage.setItem('educator-downloads', JSON.stringify(this.downloadHistory));
     } catch (error) {
-      console.warn('[EducatorsKit] Error guardando historial:', error);
+      logger.warn('[EducatorsKit] Error guardando historial:', error);
     }
   }
 
@@ -999,7 +999,7 @@ class EducatorsKit {
     const contentData = this.content?.resources?.[resourceId];
 
     if (!resource) {
-      console.warn('[EducatorsKit] Recurso no encontrado:', resourceId);
+      logger.warn('[EducatorsKit] Recurso no encontrado:', resourceId);
       this.showToast('Recurso no disponible', 'warning');
       return;
     }
@@ -1027,7 +1027,7 @@ class EducatorsKit {
     const contentData = this.content?.activities?.[activityId];
 
     if (!activity) {
-      console.warn('[EducatorsKit] Actividad no encontrada:', activityId);
+      logger.warn('[EducatorsKit] Actividad no encontrada:', activityId);
       this.showToast('Actividad no disponible', 'warning');
       return;
     }
@@ -1051,7 +1051,7 @@ class EducatorsKit {
    * Registra una vista para analytics
    */
   trackView(itemId, type) {
-    console.log('[EducatorsKit] Vista:', { itemId, type });
+    logger.log('[EducatorsKit] Vista:', { itemId, type });
 
     if (window.analyticsHelper) {
       window.analyticsHelper.trackEvent('educator_view', { itemId, type });
@@ -1075,7 +1075,7 @@ class EducatorsKit {
       window.analyticsHelper.trackEvent('educator_download', { itemId, type });
     }
 
-    console.log('[EducatorsKit] Descarga registrada:', download);
+    logger.log('[EducatorsKit] Descarga registrada:', download);
   }
 
   /**
@@ -1669,7 +1669,7 @@ class EducatorsKit {
       this.showGeneratedResult(result);
 
     } catch (error) {
-      console.error('[EducatorsKit] Error generando recurso:', error);
+      logger.error('[EducatorsKit] Error generando recurso:', error);
       this.showToast('Error al generar el recurso. Inténtalo de nuevo.', 'error');
       this.resetAIGenerator();
     }
@@ -1737,7 +1737,7 @@ Sé creativo, práctico y asegúrate de que el recurso sea fácil de implementar
         });
         return response;
       } catch (e) {
-        console.warn('[EducatorsKit] AIAdapter failed, trying Puter:', e);
+        logger.warn('[EducatorsKit] AIAdapter failed, trying Puter:', e);
       }
     }
 
@@ -1749,7 +1749,7 @@ Sé creativo, práctico y asegúrate de que el recurso sea fácil de implementar
         });
         return response?.message?.content || response;
       } catch (e) {
-        console.warn('[EducatorsKit] Puter AI failed:', e);
+        logger.warn('[EducatorsKit] Puter AI failed:', e);
       }
     }
 

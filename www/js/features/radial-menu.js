@@ -81,7 +81,7 @@ class RadialMenu {
   attachToContent() {
     const contentArea = document.querySelector('.chapter-content');
     if (!contentArea) {
-      console.log('[RadialMenu] No chapter-content found, will retry later');
+      logger.log('[RadialMenu] No chapter-content found, will retry later');
       return;
     }
 
@@ -138,7 +138,7 @@ class RadialMenu {
       this.open(e.clientX, e.clientY);
     });
 
-    console.log('[RadialMenu] Attached to chapter-content');
+    logger.log('[RadialMenu] Attached to chapter-content');
   }
 
   cancelLongPress() {
@@ -372,7 +372,7 @@ class RadialMenu {
         try {
           option.action();
         } catch (error) {
-          console.error('[RadialMenu] Error ejecutando acción:', option.id, error);
+          logger.error('[RadialMenu] Error ejecutando acción:', option.id, error);
         }
       }, 100);
     }
@@ -465,7 +465,7 @@ class RadialMenu {
     if (toast?.show) {
       toast.show(message);
     } else {
-      console.log('[RadialMenu]', message);
+      logger.log('[RadialMenu]', message);
     }
   }
 
@@ -494,6 +494,6 @@ const isNativeApp = window.Capacitor?.isNativePlatform?.() ||
 if (!isNativeApp) {
   window.radialMenu = new RadialMenu();
 } else {
-  console.log('[RadialMenu] Deshabilitado en app nativa');
+  logger.log('[RadialMenu] Deshabilitado en app nativa');
   window.radialMenu = null;
 }

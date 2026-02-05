@@ -50,7 +50,7 @@ class AIPracticeGenerator {
   init() {
     this.createModal();
     this.attachEventListeners();
-    console.log('[AIPracticeGenerator] Inicializado');
+    logger.log('[AIPracticeGenerator] Inicializado');
   }
 
   /**
@@ -61,7 +61,7 @@ class AIPracticeGenerator {
       const history = localStorage.getItem('ai-generated-practices');
       this.generatedHistory = history ? JSON.parse(history) : [];
     } catch (error) {
-      console.warn('[AIPracticeGenerator] Error cargando historial:', error);
+      logger.warn('[AIPracticeGenerator] Error cargando historial:', error);
       this.generatedHistory = [];
     }
   }
@@ -75,7 +75,7 @@ class AIPracticeGenerator {
       const historyToSave = this.generatedHistory.slice(-30);
       localStorage.setItem('ai-generated-practices', JSON.stringify(historyToSave));
     } catch (error) {
-      console.warn('[AIPracticeGenerator] Error guardando historial:', error);
+      logger.warn('[AIPracticeGenerator] Error guardando historial:', error);
     }
   }
 
@@ -566,7 +566,7 @@ class AIPracticeGenerator {
       const aiConfig = window.aiConfig?.getConfig?.() || {};
       const currentProvider = aiConfig.provider || 'puter';
 
-      console.log('[AIPracticeGenerator] Entorno:', {
+      logger.log('[AIPracticeGenerator] Entorno:', {
         isNativeApp,
         currentProvider,
         hasAiAdapter: !!window.aiAdapter,
@@ -576,7 +576,7 @@ class AIPracticeGenerator {
       // En app nativa: usar fallback local siempre que el proveedor sea Puter
       // porque Puter SDK requiere navegador web real
       if (isNativeApp && (currentProvider === 'puter' || !window.aiAdapter)) {
-        console.warn('[AIPracticeGenerator] App nativa detectada - usando práctica local');
+        logger.warn('[AIPracticeGenerator] App nativa detectada - usando práctica local');
         const practice = this.createFallbackPractice(userInput);
         practice.note = 'Práctica generada localmente. Para IA, configura OpenAI/Gemini en Ajustes > Inteligencia Artificial.';
         this.currentPractice = practice;
@@ -600,7 +600,7 @@ class AIPracticeGenerator {
           );
           response = result?.message?.content || result;
         } catch (puterError) {
-          console.error('[AIPracticeGenerator] Error con Puter:', puterError);
+          logger.error('[AIPracticeGenerator] Error con Puter:', puterError);
           // En vez de error, usar fallback
           const practice = this.createFallbackPractice(userInput);
           practice.note = 'No se pudo conectar con IA. Práctica generada localmente.';
@@ -631,7 +631,7 @@ class AIPracticeGenerator {
       }
 
     } catch (error) {
-      console.error('[AIPracticeGenerator] Error generando práctica:', error);
+      logger.error('[AIPracticeGenerator] Error generando práctica:', error);
       this.showError(error.message);
     } finally {
       this.isGenerating = false;
@@ -733,8 +733,8 @@ IMPORTANTE: Responde SIEMPRE con JSON válido, sin markdown ni texto adicional.`
       return practice;
 
     } catch (error) {
-      console.error('[AIPracticeGenerator] Error parseando respuesta:', error);
-      console.log('Respuesta raw:', response);
+      logger.error('[AIPracticeGenerator] Error parseando respuesta:', error);
+      logger.log('Respuesta raw:', response);
 
       // Intentar crear una práctica de fallback
       return this.createFallbackPractice(userInput);
@@ -856,7 +856,7 @@ IMPORTANTE: Responde SIEMPRE con JSON válido, sin markdown ni texto adicional.`
       }
 
     } catch (error) {
-      console.error('[AIPracticeGenerator] Error guardando favorito:', error);
+      logger.error('[AIPracticeGenerator] Error guardando favorito:', error);
     }
   }
 

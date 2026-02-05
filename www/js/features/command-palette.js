@@ -493,7 +493,7 @@ class CommandPalette {
         try {
           cmd.action();
         } catch (error) {
-          console.error('[CommandPalette] Error ejecutando comando:', commandId, error);
+          logger.error('[CommandPalette] Error ejecutando comando:', commandId, error);
           this.showToast('Error al ejecutar el comando');
         }
       }, 100);
@@ -593,7 +593,7 @@ class CommandPalette {
     if (toast?.show) {
       toast.show(message);
     } else {
-      console.log('[CommandPalette]', message);
+      logger.log('[CommandPalette]', message);
     }
   }
 

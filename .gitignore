@@ -83,4 +83,6 @@ gradle.properties.local
 
 # Mobile game specific
 mobile-game/mobile-app/android/gradle.properties.local
-tests/
+# tests/ - root tests folder ignored, www/tests/ included
+/tests/
+!www/tests/

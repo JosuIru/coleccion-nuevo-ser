@@ -240,6 +240,9 @@ class AIChatModal {
         <!-- Practical Mode Toggle (only when AI is configured) -->
         ${this.renderPracticalModeToggle()}
 
+        <!-- 🔧 v2.9.404: Knowledge Evolution Indicator -->
+        ${this.renderKnowledgeEvolutionIndicator()}
+
         <!-- Config Panel (collapsible) -->
         ${this.showConfig ? this.renderConfigPanel() : ''}
       </div>
@@ -442,6 +445,50 @@ class AIChatModal {
                  ${this.practicalMode ? 'checked' : ''}
                  class="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2 cursor-pointer">
         </label>
+      </div>
+    `;
+  }
+
+  /**
+   * 🔧 v2.9.404: Indicador de Knowledge Evolution activo
+   */
+  renderKnowledgeEvolutionIndicator() {
+    const ke = window.knowledgeEvolution;
+
+    // No mostrar si Knowledge Evolution no está disponible o inicializado
+    if (!ke?.state?.initialized) {
+      return '';
+    }
+
+    const state = ke.getState();
+    const booksLoaded = state.corpus?.booksLoaded || 0;
+
+    if (booksLoaded === 0) {
+      return '';
+    }
+
+    const hasAnalysis = state.analysis?.conceptsFound > 0;
+    const statusColor = hasAnalysis ? 'from-emerald-900/30 to-teal-900/30' : 'from-amber-900/30 to-orange-900/30';
+    const borderColor = hasAnalysis ? 'border-emerald-500/30' : 'border-amber-500/30';
+    const textColor = hasAnalysis ? 'text-emerald-300' : 'text-amber-300';
+
+    return `
+      <div class="mt-3 p-3 bg-gradient-to-r ${statusColor} rounded-lg border ${borderColor}">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🧠</span>
+            <div>
+              <span class="font-semibold ${textColor}">Conocimiento Colección</span>
+              <p class="text-xs text-gray-400 mt-0.5">
+                ${booksLoaded} libros • ${this.formatNumber(state.corpus?.totalWords || 0)} palabras
+                ${hasAnalysis ? ` • ${state.analysis.conceptsFound} conceptos` : ''}
+              </p>
+            </div>
+          </div>
+          <span class="text-xs ${textColor} bg-black/20 px-2 py-1 rounded">
+            ${hasAnalysis ? 'Activo' : 'Cargado'}
+          </span>
+        </div>
       </div>
     `;
   }
@@ -1555,7 +1602,13 @@ class AIChatModal {
     }
 
     // Construir contexto del sistema
-    const systemContext = this.buildSystemContext();
+    let systemContext = this.buildSystemContext();
+
+    // 🔧 v2.9.404: Buscar contexto relevante en Knowledge Evolution
+    const relevantContext = this.searchKnowledgeEvolution(userMessage);
+    if (relevantContext) {
+      systemContext += relevantContext;
+    }
 
     // 🔧 FIX #27: Usar tamaño de historial configurable
     const history = this.conversationHistory
@@ -1573,6 +1626,86 @@ class AIChatModal {
     );
 
     return response;
+  }
+
+  /**
+   * 🔧 v2.9.404: Busca contenido relevante en Knowledge Evolution basado en la pregunta
+   */
+  searchKnowledgeEvolution(userMessage) {
+    const ke = window.knowledgeEvolution;
+    if (!ke?.ingestionModule?.index?.byChapter) {
+      return null;
+    }
+
+    // Buscar en el corpus
+    const searchResults = ke.ingestionModule.searchCorpus(userMessage, { limit: 3 });
+    if (!searchResults || searchResults.length === 0) {
+      return null;
+    }
+
+    let context = '\n\n=== CONTENIDO RELEVANTE DE OTROS LIBROS ===\n';
+
+    for (const result of searchResults) {
+      // Evitar duplicar contenido del libro actual
+      const currentBookId = this.bookEngine?.getCurrentBook?.();
+      if (result.bookId === currentBookId) continue;
+
+      const book = ke.corpus.books.get(result.bookId);
+      const bookTitle = book?.title || result.bookId;
+
+      context += `\nDe "${bookTitle}" - ${result.title}:\n`;
+      context += `"${result.context}"\n`;
+    }
+
+    // Buscar conceptos relacionados
+    if (ke.analysisModule?.extractedConcepts) {
+      const words = userMessage.toLowerCase().split(/\s+/);
+      const relatedConcepts = [];
+
+      for (const [term, data] of ke.analysisModule.extractedConcepts) {
+        for (const word of words) {
+          if (term.includes(word) || word.includes(term)) {
+            relatedConcepts.push(term);
+            break;
+          }
+        }
+        if (relatedConcepts.length >= 5) break;
+      }
+
+      if (relatedConcepts.length > 0) {
+        context += `\nConceptos relacionados en la colección: ${relatedConcepts.join(', ')}\n`;
+      }
+    }
+
+    // Buscar ejercicios relacionados
+    if (ke.ingestionModule?.index?.byExercise) {
+      const relevantExercises = [];
+      const msgLower = userMessage.toLowerCase();
+
+      for (const [exId, exercise] of ke.ingestionModule.index.byExercise) {
+        const titleLower = (exercise.title || '').toLowerCase();
+        if (msgLower.split(' ').some(w => w.length > 4 && titleLower.includes(w))) {
+          relevantExercises.push({
+            title: exercise.title,
+            duration: exercise.duration,
+            bookId: exercise.bookId
+          });
+          if (relevantExercises.length >= 2) break;
+        }
+      }
+
+      if (relevantExercises.length > 0) {
+        context += '\nEjercicios relacionados:\n';
+        for (const ex of relevantExercises) {
+          const book = ke.corpus.books.get(ex.bookId);
+          context += `- "${ex.title}" (${ex.duration}) de "${book?.title || ex.bookId}"\n`;
+        }
+      }
+    }
+
+    context += '=== FIN CONTENIDO RELEVANTE ===\n';
+
+    return context;
   }
 
   buildSystemContext() {
@@ -1699,6 +1832,12 @@ class AIChatModal {
     // Instrucciones generales
     context += `INSTRUCCIONES: Responde basándote en el contenido del capítulo actual. Si el usuario pregunta sobre algo específico del capítulo, usa la información proporcionada arriba. Sé claro, profundo y relevante. Si no tienes información suficiente del capítulo para responder, indícalo honestamente.`;
 
+    // 🔧 v2.9.404: Integrar Knowledge Evolution si está disponible
+    const knowledgeContext = this.getKnowledgeEvolutionContext();
+    if (knowledgeContext) {
+      context += knowledgeContext;
+    }
+
     // 🔧 FIX #28: Modo práctico conciso (reducción de ~100 líneas a ~8 líneas = -90% tokens)
     if (this.practicalMode) {
       const currentChapterId = this.bookEngine.currentChapter;
@@ -1715,6 +1854,75 @@ class AIChatModal {
     }
 
     return context;
+  }
+
+  /**
+   * 🔧 v2.9.404: Obtiene contexto de Knowledge Evolution si está disponible
+   * Integra el conocimiento de los 18 libros de la colección en las respuestas
+   */
+  getKnowledgeEvolutionContext() {
+    // Verificar si Knowledge Evolution está inicializado
+    const ke = window.knowledgeEvolution;
+    if (!ke || !ke.state?.initialized) {
+      return null;
+    }
+
+    // Verificar si hay datos procesados
+    const state = ke.getState();
+    if (!state.corpus?.booksLoaded || state.corpus.booksLoaded === 0) {
+      return null;
+    }
+
+    let keContext = '\n\n=== CONOCIMIENTO DE LA COLECCIÓN NUEVO SER ===\n';
+
+    // Añadir estadísticas del corpus
+    keContext += `Tienes acceso al conocimiento integrado de ${state.corpus.booksLoaded} libros `;
+    keContext += `(${this.formatNumber(state.corpus.totalWords)} palabras, `;
+    keContext += `${state.corpus.totalChapters} capítulos, `;
+    keContext += `${state.corpus.totalExercises} ejercicios).\n\n`;
+
+    // Añadir temas principales si están disponibles
+    if (state.analysis?.themesIdentified > 0 && ke.analysis?.themes?.length > 0) {
+      keContext += 'TEMAS PRINCIPALES DE LA COLECCIÓN:\n';
+      for (const theme of ke.analysis.themes.slice(0, 6)) {
+        keContext += `- ${theme.name}\n`;
+      }
+      keContext += '\n';
+    }
+
+    // Añadir insights de la meditación si están disponibles
+    if (state.meditation?.totalInsights > 0 && ke.meditation?.insights?.length > 0) {
+      const topInsights = ke.meditation.insights
+        .filter(i => i.type === 'transcendence' || i.type === 'integration')
+        .slice(0, 3);
+
+      if (topInsights.length > 0) {
+        keContext += 'INSIGHTS CLAVE:\n';
+        for (const insight of topInsights) {
+          keContext += `- ${insight.content.substring(0, 200)}...\n`;
+        }
+        keContext += '\n';
+      }
+    }
+
+    // Instrucciones para usar el conocimiento
+    keContext += 'INSTRUCCIONES ADICIONALES:\n';
+    keContext += '- Cuando sea relevante, conecta la respuesta con otros libros de la colección.\n';
+    keContext += '- Menciona temas transversales que aparecen en múltiples libros.\n';
+    keContext += '- Sugiere capítulos o ejercicios relacionados de otros libros cuando sea útil.\n';
+    keContext += '- Mantén la coherencia con la visión integral de la colección "Nuevo Ser".\n';
+    keContext += '=== FIN CONOCIMIENTO COLECCIÓN ===\n';
+
+    return keContext;
+  }
+
+  /**
+   * Formatea números grandes para el contexto
+   */
+  formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+    return num.toString();
   }
 
   scrollToBottom() {

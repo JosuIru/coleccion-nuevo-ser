@@ -598,6 +598,18 @@ class ResourcesViewer {
     logger.debug('[ResourcesViewer] Cleanup completado');
   }
 
+  /**
+   * Destroy alias - llama a cleanup y limpia estado
+   */
+  destroy() {
+    this.cleanup();
+    const modal = document.getElementById('resources-modal');
+    if (modal) modal.remove();
+    this.isOpen = false;
+    this.resourcesData = null;
+    logger.log('[ResourcesViewer] Destroyed');
+  }
+
   // ==========================================================================
   // EVENT LISTENERS
   // ==========================================================================

@@ -15,6 +15,10 @@ class HelpCenterModal {
     this.eventManager.setComponentName('HelpCenterModal');
     this._eventListenersAttached = false;
 
+    // Timer tracking para cleanup de memory leaks
+    this._timers = [];
+    this._intervals = [];
+
     // Base de conocimiento organizada por categorías
     this.helpContent = {
       basics: {
@@ -986,7 +990,7 @@ class HelpCenterModal {
     this.attachEventListeners();
 
     // Focus en búsqueda
-    setTimeout(() => {
+    this._trackTimeout(() => {
       const searchInput = document.getElementById('help-search-input');
       if (searchInput) searchInput.focus();
     }, 100);
@@ -1002,7 +1006,7 @@ class HelpCenterModal {
     const modal = document.getElementById('help-center-modal');
     if (modal) {
       modal.classList.add('opacity-0');
-      setTimeout(() => {
+      this._trackTimeout(() => {
         modal.remove();
         this.isOpen = false;
       }, 200);
@@ -1300,7 +1304,7 @@ class HelpCenterModal {
     if (tutorialBtn) {
       this.eventManager.addEventListener(tutorialBtn, 'click', () => {
         this.close();
-        setTimeout(() => {
+        this._trackTimeout(() => {
           if (window.onboardingTutorial) {
             window.onboardingTutorial.start();
           }
@@ -1419,7 +1423,7 @@ class HelpCenterModal {
             this.render();
             this.attachEventListeners();
             // Ir a la pestaña de soporte y abrir el formulario
-            setTimeout(() => {
+            this._trackTimeout(() => {
               const formHeader = document.querySelector('[data-item-id="contact-form"]');
               if (formHeader) formHeader.click();
             }, 100);
@@ -1439,6 +1443,55 @@ class HelpCenterModal {
   }
 
   // ==========================================================================
+  // TIMER TRACKING & CLEANUP
+  // ==========================================================================
+
+  /**
+   * setTimeout wrapper con tracking para cleanup
+   */
+  _trackTimeout(fn, delay) {
+    const id = setTimeout(() => {
+      this._timers = this._timers.filter(t => t !== id);
+      fn();
+    }, delay);
+    this._timers.push(id);
+    return id;
+  }
+
+  /**
+   * setInterval wrapper con tracking para cleanup
+   */
+  _trackInterval(fn, delay) {
+    const id = setInterval(fn, delay);
+    this._intervals.push(id);
+    return id;
+  }
+
+  /**
+   * Limpia todos los timers, intervals y event listeners
+   */
+  destroy() {
+    this._timers.forEach(id => clearTimeout(id));
+    this._intervals.forEach(id => clearInterval(id));
+    this._timers = [];
+    this._intervals = [];
+
+    if (this.eventManager) {
+      this.eventManager.cleanup();
+    }
+
+    const modal = document.getElementById('help-center-modal');
+    if (modal) {
+      modal.remove();
+    }
+
+    this.isOpen = false;
+    this._eventListenersAttached = false;
+
+    logger.log('[HelpCenterModal] Destroyed');
+  }
+
+  // ==========================================================================
   // MÉTODOS PÚBLICOS
   // ==========================================================================
 
@@ -1447,7 +1500,7 @@ class HelpCenterModal {
     this.open();
 
     // Esperar render y abrir item
-    setTimeout(() => {
+    this._trackTimeout(() => {
       const header = document.querySelector(`[data-item-id="${itemId}"]`);
       if (header) {
         header.click();

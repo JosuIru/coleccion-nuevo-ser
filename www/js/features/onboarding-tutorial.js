@@ -277,6 +277,9 @@ class OnboardingTutorial {
       this.resizeHandler = null;
     }
 
+    // Limpiar todos los timers pendientes
+    this.cleanup();
+
     this.isActive = false;
     this.removeOverlay();
     this.removeTooltip();
@@ -731,6 +734,20 @@ class OnboardingTutorial {
     this.timers = [];
 
     logger.debug('[OnboardingTutorial] Cleanup completado');
+  }
+
+  /**
+   * Destruye la instancia completamente
+   */
+  destroy() {
+    this.close();
+    this.cleanup();
+
+    if (window.onboardingTutorial === this) {
+      window.onboardingTutorial = null;
+    }
+
+    logger.log('[OnboardingTutorial] Destroyed');
   }
 }
 

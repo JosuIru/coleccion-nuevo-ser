@@ -11,8 +11,47 @@ class TTSPolyfill {
     this.voicesLoaded = false;
     this.loadAttempts = 0;
     this.maxAttempts = 20;
+    this._timers = [];
+    this._intervals = [];
 
     this.init();
+  }
+
+  /**
+   * setTimeout wrapper con tracking para cleanup
+   */
+  _trackTimeout(fn, delay) {
+    const id = setTimeout(() => {
+      this._timers = this._timers.filter(t => t !== id);
+      fn();
+    }, delay);
+    this._timers.push(id);
+    return id;
+  }
+
+  /**
+   * setInterval wrapper con tracking para cleanup
+   */
+  _trackInterval(fn, delay) {
+    const id = setInterval(fn, delay);
+    this._intervals.push(id);
+    return id;
+  }
+
+  /**
+   * Limpia todos los timers, intervals y recursos
+   */
+  destroy() {
+    this._timers.forEach(id => clearTimeout(id));
+    this._intervals.forEach(id => clearInterval(id));
+    this._timers = [];
+    this._intervals = [];
+
+    if (this.nativeSynthesis) {
+      this.nativeSynthesis.cancel();
+    }
+
+    logger.log('[TTSPolyfill] Destroyed');
   }
 
   init() {
@@ -50,7 +89,7 @@ class TTSPolyfill {
         // logger.debug(`⏳ Intento ${this.loadAttempts}/${this.maxAttempts} - Esperando voces...`);
         const retryDelay = this.loadAttempts < 5 ? 300 :
                           this.loadAttempts < 10 ? 500 : 1000;
-        setTimeout(attemptLoad, retryDelay);
+        this._trackTimeout(attemptLoad, retryDelay);
       } else {
         // logger.warn('⚠️ No se pudieron cargar voces después de', this.maxAttempts, 'intentos');
         // Último recurso: trigger manual
@@ -71,9 +110,10 @@ class TTSPolyfill {
     }, { once: true });
 
     // Intento 3: Polling manual cada 500ms
-    const pollInterval = setInterval(() => {
+    const pollInterval = this._trackInterval(() => {
       if (this.voicesLoaded || this.loadAttempts >= this.maxAttempts) {
         clearInterval(pollInterval);
+        this._intervals = this._intervals.filter(id => id !== pollInterval);
       } else {
         attemptLoad();
       }
@@ -89,7 +129,7 @@ class TTSPolyfill {
     emptyUtterance.volume = 0;
     this.nativeSynthesis.speak(emptyUtterance);
 
-    setTimeout(() => {
+    this._trackTimeout(() => {
       this.nativeSynthesis.cancel();
 
       // Reintentar obtener voces con cadena de retries post-trigger
@@ -101,20 +141,20 @@ class TTSPolyfill {
           return;
         }
         if (attempt < 5) {
-          setTimeout(() => postTriggerRetry(attempt + 1), 1000);
+          this._trackTimeout(() => postTriggerRetry(attempt + 1), 1000);
         }
       };
-      setTimeout(() => postTriggerRetry(0), 500);
+      this._trackTimeout(() => postTriggerRetry(0), 500);
     }, 100);
 
     // Estrategia 2: Utterance con texto real a volumen 0 (para Brave Linux)
-    setTimeout(() => {
+    this._trackTimeout(() => {
       if (!this.voicesLoaded) {
         const textUtterance = new SpeechSynthesisUtterance('.');
         textUtterance.volume = 0;
         textUtterance.rate = 10;
         this.nativeSynthesis.speak(textUtterance);
-        setTimeout(() => {
+        this._trackTimeout(() => {
           this.nativeSynthesis.cancel();
           const voices = this.nativeSynthesis.getVoices();
           if (voices && voices.length > 0) {
@@ -168,7 +208,7 @@ class TTSPolyfill {
           return;
         }
 
-        setTimeout(checkVoices, 200);
+        this._trackTimeout(checkVoices, 200);
       };
 
       checkVoices();

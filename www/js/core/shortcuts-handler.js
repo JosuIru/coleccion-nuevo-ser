@@ -13,7 +13,52 @@ class ShortcutsHandler {
     constructor() {
         this.isCapacitor = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
         this.pendingDeepLink = null;
+        this._timers = [];
+        this._intervals = [];
+        this._appUrlOpenListener = null;
         this.init();
+    }
+
+    /**
+     * setTimeout wrapper con tracking para cleanup
+     */
+    _trackTimeout(fn, delay) {
+        const id = setTimeout(() => {
+            this._timers = this._timers.filter(t => t !== id);
+            fn();
+        }, delay);
+        this._timers.push(id);
+        return id;
+    }
+
+    /**
+     * setInterval wrapper con tracking para cleanup
+     */
+    _trackInterval(fn, delay) {
+        const id = setInterval(fn, delay);
+        this._intervals.push(id);
+        return id;
+    }
+
+    /**
+     * Limpia todos los timers, intervals y event listeners
+     */
+    destroy() {
+        this._timers.forEach(id => clearTimeout(id));
+        this._intervals.forEach(id => clearInterval(id));
+        this._timers = [];
+        this._intervals = [];
+
+        if (this._appUrlOpenListener && window.Capacitor?.Plugins?.App) {
+            this._appUrlOpenListener.remove?.();
+            this._appUrlOpenListener = null;
+        }
+
+        if (window.shortcutsHandler === this) {
+            window.shortcutsHandler = null;
+        }
+
+        logger.log('[ShortcutsHandler] Destroyed');
     }
 
     async init() {
@@ -43,7 +88,7 @@ class ShortcutsHandler {
 
                 if (launchUrl && launchUrl.url) {
                     this.pendingDeepLink = launchUrl.url;
-                    setTimeout(() => this.handleDeepLink(launchUrl.url), 1000);
+                    this._trackTimeout(() => this.handleDeepLink(launchUrl.url), 1000);
                 }
             }
         } catch (error) {
@@ -58,7 +103,7 @@ class ShortcutsHandler {
         if (window.Capacitor?.Plugins?.App) {
             const { App } = window.Capacitor.Plugins;
 
-            App.addListener('appUrlOpen', (data) => {
+            this._appUrlOpenListener = App.addListener('appUrlOpen', (data) => {
                 logger.log('[ShortcutsHandler] Deep link received');
                 this.handleDeepLink(data.url);
             });
@@ -184,7 +229,7 @@ class ShortcutsHandler {
 
                 // Recargar la página para mostrar estado logueado
                 // (el mensaje de bienvenida lo muestra auth-modal automáticamente)
-                setTimeout(() => {
+                this._trackTimeout(() => {
                     window.location.reload();
                 }, 500);
             }
@@ -269,7 +314,7 @@ class ShortcutsHandler {
 
             // Mostrar modal de koans si existe
             if (window.koansModal && typeof window.koansModal.show === 'function') {
-                setTimeout(() => {
+                this._trackTimeout(() => {
                     window.koansModal.show();
                     // logger.debug('[ShortcutsHandler] Koan modal shown');
                 }, 500);
@@ -297,7 +342,7 @@ class ShortcutsHandler {
 
             // Mostrar dashboard de progreso si existe
             if (window.progressDashboard && typeof window.progressDashboard.show === 'function') {
-                setTimeout(() => {
+                this._trackTimeout(() => {
                     window.progressDashboard.show();
                     // logger.debug('[ShortcutsHandler] Progress dashboard shown');
                 }, 500);
@@ -335,13 +380,13 @@ class ShortcutsHandler {
         // Verificar si hay que mostrar el koan
         if (sessionStorage.getItem('show-koan-on-load') === 'true') {
             sessionStorage.removeItem('show-koan-on-load');
-            setTimeout(() => this.showDailyKoan(), 1000);
+            this._trackTimeout(() => this.showDailyKoan(), 1000);
         }
 
         // Verificar si hay que mostrar el progreso
         if (sessionStorage.getItem('show-progress-on-load') === 'true') {
             sessionStorage.removeItem('show-progress-on-load');
-            setTimeout(() => this.showProgressDashboard(), 1000);
+            this._trackTimeout(() => this.showProgressDashboard(), 1000);
         }
     }
 }
@@ -352,9 +397,9 @@ if (document.readyState === 'loading') {
         const handler = new ShortcutsHandler();
 
         // Verificar acciones pendientes después de que todo esté cargado
-        setTimeout(() => handler.checkPendingActions(), 2000);
+        handler._trackTimeout(() => handler.checkPendingActions(), 2000);
     });
 } else {
     const handler = new ShortcutsHandler();
-    setTimeout(() => handler.checkPendingActions(), 2000);
+    handler._trackTimeout(() => handler.checkPendingActions(), 2000);
 }

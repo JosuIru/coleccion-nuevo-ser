@@ -12,7 +12,7 @@ class TransitionGlobe {
     this.container = document.getElementById(containerId);
 
     if (!this.container) {
-      console.error(`[TransitionGlobe] Container #${containerId} not found`);
+      logger.error(`[TransitionGlobe] Container #${containerId} not found`);
       return;
     }
 
@@ -28,6 +28,9 @@ class TransitionGlobe {
     this.categories = {};
     this.selectedProject = null;
     this.detailsPanelElement = null; // v2.9.368
+    this._timers = [];
+    this._intervals = [];
+    this._messageHandler = null;
     this.filters = {
       categories: [],
       scales: []
@@ -43,7 +46,7 @@ class TransitionGlobe {
       await this.loadProjectsData();
       this.renderGlobe();
     } catch (error) {
-      console.error('[TransitionGlobe] Init error:', error);
+      logger.error('[TransitionGlobe] Init error:', error);
       this.hideLoading();
     }
   }
@@ -74,9 +77,9 @@ class TransitionGlobe {
       this.scales = data.scales || {};
       this.filteredProjects = [...this.projects];
 
-      console.log(`[TransitionGlobe] Loaded ${this.projects.length} projects`);
+      logger.log(`[TransitionGlobe] Loaded ${this.projects.length} projects`);
     } catch (error) {
-      console.error('[TransitionGlobe] Error loading projects:', error);
+      logger.error('[TransitionGlobe] Error loading projects:', error);
       this.projects = [];
       this.filteredProjects = [];
     }
@@ -324,7 +327,7 @@ class TransitionGlobe {
   hideDetailsPanel() {
     if (this.detailsPanelElement) {
       this.detailsPanelElement.classList.remove('visible');
-      setTimeout(() => {
+      this._trackTimeout(() => {
         this.detailsPanelElement?.remove();
         this.detailsPanelElement = null;
       }, 300);
@@ -555,7 +558,7 @@ class TransitionGlobe {
     this.container.appendChild(this.iframe);
 
     // Listen for messages from globe
-    window.addEventListener('message', (event) => {
+    this._messageHandler = (event) => {
       if (event.data && event.data.type === 'projectSelect') {
         this.selectProject(event.data.projectId);
       }
@@ -563,7 +566,8 @@ class TransitionGlobe {
         this.hideLoading();
         this.updateStats();
       }
-    });
+    };
+    window.addEventListener('message', this._messageHandler);
   }
 
   generateGlobeHTML(projectsJson, categoriesJson) {
@@ -1361,11 +1365,49 @@ class TransitionGlobe {
     `;
   }
 
+  /**
+   * setTimeout wrapper con tracking para cleanup
+   */
+  _trackTimeout(fn, delay) {
+    const id = setTimeout(() => {
+      this._timers = this._timers.filter(t => t !== id);
+      fn();
+    }, delay);
+    this._timers.push(id);
+    return id;
+  }
+
+  /**
+   * setInterval wrapper con tracking para cleanup
+   */
+  _trackInterval(fn, delay) {
+    const id = setInterval(fn, delay);
+    this._intervals.push(id);
+    return id;
+  }
+
   destroy() {
-    window.removeEventListener('message', this.handleMessage);
+    // Clear tracked timers and intervals
+    this._timers.forEach(id => clearTimeout(id));
+    this._intervals.forEach(id => clearInterval(id));
+    this._timers = [];
+    this._intervals = [];
+
+    // Remove message listener
+    if (this._messageHandler) {
+      window.removeEventListener('message', this._messageHandler);
+      this._messageHandler = null;
+    }
+
+    // Remove details panel
+    this.hideDetailsPanel();
+
     if (this.iframe) {
       this.iframe.remove();
+      this.iframe = null;
     }
+
+    logger.log('[TransitionGlobe] Destroyed');
   }
 }
 

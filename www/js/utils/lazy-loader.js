@@ -1032,13 +1032,13 @@ class LazyLoader {
     }
 
     const scripts = [
-      'js/features/knowledge-evolution/knowledge-ingestion.js?v=2.9.398',
-      'js/features/knowledge-evolution/knowledge-analysis.js?v=2.9.399',
-      'js/features/knowledge-evolution/knowledge-meditation.js?v=2.9.400',
-      'js/features/knowledge-evolution/knowledge-synthesis.js?v=2.9.401',
-      'js/features/knowledge-evolution/knowledge-dialogue.js?v=2.9.402',
-      'js/features/knowledge-evolution/knowledge-ui.js?v=2.9.403',
-      'js/features/knowledge-evolution/index.js?v=2.9.403'
+      'js/features/knowledge-evolution/knowledge-ingestion.js?v=2.9.406',
+      'js/features/knowledge-evolution/knowledge-analysis.js?v=2.9.406',
+      'js/features/knowledge-evolution/knowledge-meditation.js?v=2.9.406',
+      'js/features/knowledge-evolution/knowledge-synthesis.js?v=2.9.406',
+      'js/features/knowledge-evolution/knowledge-dialogue.js?v=2.9.406',
+      'js/features/knowledge-evolution/knowledge-ui.js?v=2.9.406',
+      'js/features/knowledge-evolution/index.js?v=2.9.406'
     ];
 
     try {

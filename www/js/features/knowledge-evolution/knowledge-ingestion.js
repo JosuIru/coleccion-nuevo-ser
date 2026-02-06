@@ -26,7 +26,7 @@ class KnowledgeIngestion {
       fullText: new Map()     // bookId -> texto plano completo
     };
 
-    // Lista de libros de la coleccion (18 libros segun plan)
+    // Lista de libros de la coleccion (14 libros disponibles actualmente)
     this.collectionBooks = [
       // Fundacion Teorica
       'codigo-despertar',
@@ -43,14 +43,10 @@ class KnowledgeIngestion {
       'ahora-instituciones',
       // Areas Especializadas
       'educacion-nuevo-ser',
-      'arte-relacion-consciente',
-      'simplicidad-radical',
-      'revolucion-creativa',
       'dialogos-maquina',
       // Practica Directa
       'manual-practico',
-      'practicas-radicales',
-      'ecologia-profunda'
+      'practicas-radicales'
     ];
   }
 

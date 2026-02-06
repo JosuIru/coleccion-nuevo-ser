@@ -68,6 +68,12 @@ const Icons = {
     palette: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z"/></svg>`,
     feather: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg>`,
 
+    // User/Account Icons - SVG inline para menús dinámicos
+    user: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    crown: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>`,
+    download: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`,
+    info: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+
     // Theme Icons - iconos para el sistema de temas
     moon: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
     sun: (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
@@ -102,11 +108,13 @@ const Icons = {
   koan: (size = 20) => Icons.create('lightbulb', size),
 
   // Configuración y sistema
-  download: (size = 20) => Icons.create('download', size),
+  download: (size = 20) => Icons._svg.download(size),          // Download (SVG inline)
   downloadCloud: (size = 20) => Icons.create('download-cloud', size),
   settings: (size = 20) => Icons._svg.settings(size),
   donate: (size = 20) => Icons.create('heart', size),
-  language: (size = 20) => Icons.create('globe', size),
+  language: (size = 20) => Icons._svg.globe(size),             // Idioma (SVG inline)
+  globe: (size = 20) => Icons._svg.globe(size),                // Globe (SVG inline)
+  crown: (size = 20) => Icons._svg.crown(size),                // Premium (SVG inline)
   list: (size = 20) => Icons.create('list', size),
   barChart2: (size = 20) => Icons.create('bar-chart-2', size),
 
@@ -172,8 +180,8 @@ const Icons = {
   stop: (size = 20) => Icons._svg.stop(size),                  // Detener (SVG inline)
   pause: (size = 20) => Icons._svg.pause(size),                // Pausar (SVG inline)
   loader: (size = 20) => Icons._svg.loader(size),              // Spinner/Cargando (SVG inline)
-  info: (size = 20) => Icons.create('info', size),             // Información
-  user: (size = 20) => Icons.create('user', size),             // Usuario
+  info: (size = 20) => Icons._svg.info(size),                  // Información (SVG inline)
+  user: (size = 20) => Icons._svg.user(size),                  // Usuario (SVG inline)
   calendar: (size = 20) => Icons._svg.calendar(size),          // Calendario (SVG inline)
   volume: (size = 20) => Icons._svg.volume2(size),             // Volumen (SVG inline)
   wrench: (size = 20) => Icons.create('wrench', size),         // Herramientas

@@ -99,6 +99,7 @@ class AILazyLoader {
   /**
    * Mostrar AI Settings Modal con carga lazy
    * Uso: window.aiLazyLoader.showAISettings()
+   * @version 2.9.407: Instanciar automáticamente si solo existe la clase
    */
   async showAISettings() {
     try {
@@ -108,6 +109,13 @@ class AILazyLoader {
           window.toast.info('Cargando Configuración IA...');
         }
         await window.lazyLoader.loadAISettings();
+      }
+
+      // Instanciar si solo existe la clase pero no la instancia
+      if (!window.aiSettingsModal && window.AISettingsModal) {
+        logger.log('[AILazyLoader] Instanciando AI Settings Modal...');
+        window.aiSettingsModal = new window.AISettingsModal();
+        logger.log('[AILazyLoader] AI Settings Modal instanciado correctamente');
       }
 
       // Abrir modal

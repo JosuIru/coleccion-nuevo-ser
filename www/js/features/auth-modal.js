@@ -15,7 +15,7 @@ class AuthModal {
     this.previousActiveElement = null; // For focus trap
 
     // 🔧 FIX #86: Usar EventManager para prevenir memory leaks
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
 
     this.init();
   }

@@ -30,13 +30,13 @@ class AudioReader {
     this.startTime = null;
 
     // Inicializar módulos internos
-    this.utils = new (window.AudioReaderUtils || AudioReaderUtils)();
-    this.content = new (window.AudioReaderContent || AudioReaderContent)(this);
-    this.highlighter = new (window.AudioReaderHighlighter || AudioReaderHighlighter)(this);
-    this.tts = new (window.AudioReaderTTSEngine || AudioReaderTTSEngine)(this);
-    this.playback = new (window.AudioReaderPlayback || AudioReaderPlayback)(this);
-    this.events = new (window.AudioReaderEvents || AudioReaderEvents)(this);
-    this.ui = new (window.AudioReaderUI || AudioReaderUI)(this);
+    this.utils = new window.AudioReaderUtils();
+    this.content = new window.AudioReaderContent(this);
+    this.highlighter = new window.AudioReaderHighlighter(this);
+    this.tts = new window.AudioReaderTTSEngine(this);
+    this.playback = new window.AudioReaderPlayback(this);
+    this.events = new window.AudioReaderEvents(this);
+    this.ui = new window.AudioReaderUI(this);
 
     // Inicializar módulos externos (si están disponibles)
     if (window.AudioReaderSleepTimer) {

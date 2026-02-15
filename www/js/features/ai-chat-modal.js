@@ -21,7 +21,7 @@ class AIChatModal {
     this.maxHistoryLength = parseInt(localStorage.getItem('ai-max-history') || '10', 10);
 
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('AIChatModal');
 
     // 🔧 FIX v2.9.269: Focus trap para accesibilidad
@@ -202,9 +202,7 @@ class AIChatModal {
   }
 
   renderHeader() {
-    const bookData = this.bookEngine.getCurrentBookData();
     const bookConfig = this.bookEngine.getCurrentBookConfig();
-    const bookId = this.bookEngine.getCurrentBook();
 
     // Verificar si tiene modos de IA
     const hasModes = bookConfig?.features?.aiChat?.modes &&
@@ -890,7 +888,6 @@ class AIChatModal {
 
   // 🔧 FIX #25: Preguntas sugeridas dinámicas basadas en el contexto actual
   getSuggestedQuestions() {
-    const bookId = this.bookEngine?.getCurrentBook();
     const chapterId = this.bookEngine?.currentChapter;
     const bookData = this.bookEngine?.getCurrentBookData();
 
@@ -1662,7 +1659,7 @@ class AIChatModal {
       const words = userMessage.toLowerCase().split(/\s+/);
       const relatedConcepts = [];
 
-      for (const [term, data] of ke.analysisModule.extractedConcepts) {
+      for (const [term, _data] of ke.analysisModule.extractedConcepts) {
         for (const word of words) {
           if (term.includes(word) || word.includes(term)) {
             relatedConcepts.push(term);
@@ -1682,7 +1679,7 @@ class AIChatModal {
       const relevantExercises = [];
       const msgLower = userMessage.toLowerCase();
 
-      for (const [exId, exercise] of ke.ingestionModule.index.byExercise) {
+      for (const [_exId, exercise] of ke.ingestionModule.index.byExercise) {
         const titleLower = (exercise.title || '').toLowerCase();
         if (msgLower.split(' ').some(w => w.length > 4 && titleLower.includes(w))) {
           relevantExercises.push({
@@ -1709,7 +1706,6 @@ class AIChatModal {
   }
 
   buildSystemContext() {
-    const bookId = this.bookEngine.getCurrentBook();
     const bookData = this.bookEngine.getCurrentBookData();
     const bookConfig = this.bookEngine.getCurrentBookConfig();
 

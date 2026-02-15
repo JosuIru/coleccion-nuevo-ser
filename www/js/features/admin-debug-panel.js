@@ -20,7 +20,6 @@ class AdminDebugPanel {
   generateAdminToken() {
     // En producción, esto vendría del servidor
     // Por ahora usamos hash simple del email admin
-    const adminEmail = 'irurag@gmail.com';
     return 'debug-token'; // Placeholder - el servidor verificará correctamente
   }
 
@@ -170,7 +169,7 @@ class AdminDebugPanel {
     return `
       <div class="space-y-3">
         <div class="text-sm text-gray-400 mb-4">Última actualización: ${data.timestamp}</div>
-        ${Object.entries(data.services).map(([key, service]) => `
+        ${Object.entries(data.services).map(([_key, service]) => `
           <div class="bg-slate-800 rounded p-4 border-l-4 ${
             service.status === 'ok' ? 'border-green-500' : 'border-red-500'
           }">
@@ -274,7 +273,7 @@ class AdminDebugPanel {
   /**
    * Renderizar Estadísticas
    */
-  renderStats(data) {
+  renderStats(_data) {
     return `
       <div class="grid grid-cols-2 gap-4">
         <div class="bg-slate-800 rounded p-4 text-center">

@@ -240,7 +240,7 @@ class AISuggestions {
 
         <!-- Suggestions -->
         <div class="p-3 space-y-2">
-          ${suggestions.slice(0, 3).map((suggestion, index) => `
+          ${suggestions.slice(0, 3).map((suggestion, _index) => `
             <button class="ai-suggestion-btn w-full text-left p-3 bg-gray-800/50 hover:bg-cyan-900/30 rounded-lg border border-gray-700/50 hover:border-cyan-500/50 transition-all flex items-center gap-3"
                     data-suggestion-text="${suggestion.text}">
               <span class="text-lg">${suggestion.icon}</span>

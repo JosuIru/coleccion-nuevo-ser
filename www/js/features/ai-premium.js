@@ -33,7 +33,7 @@ class AIPremium {
     }
 
     // Escuchar cambios de auth
-    this.authHelper.onAuthStateChange((event, user) => {
+    this.authHelper.onAuthStateChange((event, _user) => {
       if (event === 'signed_in') {
         logger.debug('🔐 AI Premium verificando permisos...');
       } else if (event === 'signed_out') {
@@ -388,7 +388,7 @@ class AIPremium {
   /**
    * Estimar costo en USD
    */
-  estimateCostUSD(tokens, provider = 'claude', model = 'claude-3-5-sonnet') {
+  estimateCostUSD(tokens, _provider = 'claude', model = 'claude-3-5-sonnet') {
     // Costos por 1K tokens - Actualizado Diciembre 2024
     // Fuentes: anthropic.com/pricing, openai.com/pricing, ai.google.dev/pricing
     const costPerK = {

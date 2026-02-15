@@ -255,7 +255,7 @@ class AudioMixer {
   // Rebalance volumes when sounds are added/removed
   rebalanceAmbientVolumes() {
     const targetVolume = this.calculateIndividualVolume();
-    for (const [name, data] of this.channels.ambient.sources) {
+    for (const [_name, data] of this.channels.ambient.sources) {
       if (data.gainNode) {
         data.gainNode.gain.setTargetAtTime(targetVolume, this.audioContext.currentTime, 0.5);
       }
@@ -266,7 +266,7 @@ class AudioMixer {
   async stopAmbient() {
     try {
       // Detener todos los sonidos multi-ambient
-      for (const [name, data] of this.channels.ambient.sources) {
+      for (const [_name, data] of this.channels.ambient.sources) {
         try {
           data.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
           data.source.stop();
@@ -414,7 +414,7 @@ class AudioMixer {
       try {
         if (volume === 0) {
           // Silenciar todos - cancelar transiciones primero
-          for (const [name, data] of this.channels.ambient.sources) {
+          for (const [_name, data] of this.channels.ambient.sources) {
             if (data?.gainNode) {
               data.gainNode.gain.cancelScheduledValues(this.audioContext?.currentTime || 0);
               data.gainNode.gain.value = 0;
@@ -423,7 +423,7 @@ class AudioMixer {
         } else {
           // Restaurar volúmenes individuales - cancelar transiciones primero
           const individualVol = this.calculateIndividualVolume();
-          for (const [name, data] of this.channels.ambient.sources) {
+          for (const [_name, data] of this.channels.ambient.sources) {
             if (data?.gainNode) {
               data.gainNode.gain.cancelScheduledValues(this.audioContext?.currentTime || 0);
               data.gainNode.gain.value = individualVol;

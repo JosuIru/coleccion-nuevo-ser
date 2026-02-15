@@ -325,7 +325,7 @@ class AudioReaderTTSEngine {
   }
 
   async speakWithNativeTTS(paragraph, index, callbacks = {}, retryCount = 0) {
-    const { onEnd, onError: _onError, onPauseNeeded } = callbacks;
+    const { onEnd, onError, onPauseNeeded } = callbacks;
 
     try {
       const textToSpeak = paragraph.text || '';
@@ -577,7 +577,7 @@ class AudioReaderTTSEngine {
   }
 
   async speakWithElevenLabs(paragraph, index, callbacks = {}) {
-    const { onEnd, onError, onPauseNeeded } = callbacks;
+    const { onEnd, onError: _onError, onPauseNeeded } = callbacks;
 
     if (!this.ttsManager?.providers?.elevenlabs) {
       this.speakWithWebSpeechAPI(paragraph, index, callbacks);

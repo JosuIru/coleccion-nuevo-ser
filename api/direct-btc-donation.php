@@ -10,10 +10,38 @@
  * @created 2025-01-15
  */
 
+function getAllowedOrigins() {
+    $raw = getenv('APP_ALLOWED_ORIGINS') ?: '';
+    $origins = array_filter(array_map('trim', explode(',', $raw)));
+    if (empty($origins)) {
+        $origins = [
+            'https://gailu.net',
+            'https://www.gailu.net',
+            'http://localhost:5173',
+            'http://localhost:8100'
+        ];
+    }
+    return $origins;
+}
+
+function applyCorsHeaders() {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if ($origin) {
+        $allowedOrigins = getAllowedOrigins();
+        if (!in_array($origin, $allowedOrigins, true)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Origin not allowed']);
+            exit;
+        }
+        header("Access-Control-Allow-Origin: $origin");
+        header('Vary: Origin');
+    }
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+}
+
 // Headers CORS
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+applyCorsHeaders();
 header('Content-Type: application/json; charset=utf-8');
 
 // Preflight

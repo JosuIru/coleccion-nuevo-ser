@@ -17,7 +17,7 @@ class FABMenu {
     this.isVisible = false;
 
     // EventManager para cleanup automático
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('FABMenu');
 
     // i18n

@@ -26,10 +26,10 @@ class EducatorsKit {
     };
 
     // Inicializar modulos
-    this.contentModule = new (window.EducatorsKitContent || EducatorsKitContent)(this);
-    this.viewerModule = new (window.EducatorsKitViewer || EducatorsKitViewer)(this);
-    this.activitiesModule = new (window.EducatorsKitActivities || EducatorsKitActivities)(this);
-    this.aiGeneratorModule = new (window.EducatorsKitAIGenerator || EducatorsKitAIGenerator)(this);
+    this.contentModule = new window.EducatorsKitContent(this);
+    this.viewerModule = new window.EducatorsKitViewer(this);
+    this.activitiesModule = new window.EducatorsKitActivities(this);
+    this.aiGeneratorModule = new window.EducatorsKitAIGenerator(this);
   }
 
   /**

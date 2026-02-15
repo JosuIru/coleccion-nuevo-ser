@@ -11,7 +11,7 @@ class HelpCenterModal {
     this.i18n = window.i18n || { t: (key) => key };
 
     // 🔧 FIX: EventManager para gestión automática de listeners
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('HelpCenterModal');
     this._eventListenersAttached = false;
 
@@ -1186,7 +1186,7 @@ class HelpCenterModal {
       <div class="space-y-3">
         <h3 class="text-2xl font-bold text-cyan-300 mb-4">${category.title}</h3>
 
-        ${items.map((item, index) => `
+        ${items.map((item, _index) => `
           <div class="help-item bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
             <button
               class="help-item-header w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-700/30 transition"

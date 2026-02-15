@@ -29,7 +29,7 @@ class ExplorationHub {
     this.brujulaRecursos.init();
 
     // ⭐ FIX v2.9.180: EventManager para prevenir memory leaks
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
   }
 
   /**
@@ -253,7 +253,7 @@ class ExplorationHub {
   /**
    * Tab 3: Brújula de Recursos (Contemplativa)
    */
-  renderResourcesTab() {
+  renderResourcesTabContemplative() {
     return `
       <div class="resources-tab-content brujula-inicio">
         <!-- Símbolo contemplativo -->
@@ -655,7 +655,7 @@ class ExplorationHub {
    */
   setupFrankensteinCard() {
     const downloadBtn = document.getElementById('frankenstein-download-btn');
-    const webBtn = document.getElementById('frankenstein-web-btn');
+    const _webBtn = document.getElementById('frankenstein-web-btn');
     const webText = document.getElementById('frankenstein-web-text');
     const deviceInfo = document.getElementById('frankenstein-device-info');
 

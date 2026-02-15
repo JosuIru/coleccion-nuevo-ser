@@ -823,7 +823,7 @@ class EntityDonationModal {
     }
   }
 
-  showPaypalConfirmation(donationId) {
+  showPaypalConfirmation(_donationId) {
     const content = document.querySelector('#entity-donation-modal .overflow-y-auto');
     if (!content) return;
 

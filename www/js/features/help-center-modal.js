@@ -939,6 +939,13 @@ class HelpCenterModal {
                 <p class="mt-4 text-xs text-gray-500 text-center">
                   Normalmente respondemos en 24-48 horas hábiles.
                 </p>
+
+                <button
+                  id="open-support-chat-btn"
+                  type="button"
+                  class="mt-4 w-full bg-gradient-to-r from-cyan-800/70 to-blue-800/70 hover:from-cyan-700/80 hover:to-blue-700/80 text-cyan-100 font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2 border border-cyan-700/40">
+                  💬 Abrir chat de soporte IA
+                </button>
               </div>
             `,
             tags: ['soporte', 'contacto', 'ayuda', 'mensaje', 'email', 'bug', 'sugerencia']
@@ -1321,6 +1328,14 @@ class HelpCenterModal {
       });
     }
 
+    // Acceso rápido al chat de soporte IA
+    const openChatBtn = document.getElementById('open-support-chat-btn');
+    if (openChatBtn) {
+      this.eventManager.addEventListener(openChatBtn, 'click', () => {
+        this.openSupportChat();
+      });
+    }
+
     // Pre-llenar email si está autenticado
     const emailInput = document.getElementById('support-email');
     if (emailInput && window.authHelper?.getCurrentUser()) {
@@ -1343,6 +1358,22 @@ class HelpCenterModal {
   // ==========================================================================
   // SOPORTE
   // ==========================================================================
+
+  openSupportChat() {
+    this.close();
+
+    this._trackTimeout(() => {
+      if (window.supportChat?.open) {
+        window.supportChat.open();
+      } else if (window.supportChat?.show) {
+        window.supportChat.show();
+      } else if (window.supportChat?.toggle) {
+        window.supportChat.toggle(true);
+      } else if (window.toast) {
+        window.toast.info('El chat de soporte no está disponible en este momento.');
+      }
+    }, 300);
+  }
 
   /**
    * 🔧 v2.9.333: Enviar mensaje de soporte a Supabase

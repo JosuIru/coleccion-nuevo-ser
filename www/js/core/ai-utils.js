@@ -24,6 +24,29 @@ class AIUtils {
   }
 
   /**
+   * 🔧 v2.9.393: Verifica si el usuario tiene acceso a IA premium
+   * Considera plan premium/pro O tokens comprados
+   * @returns {boolean}
+   */
+  hasAIAccess() {
+    const profile = window.authHelper?.getProfile?.();
+    if (!profile) return false;
+
+    // Plan premium/pro tiene acceso
+    if (['premium', 'pro'].includes(profile.subscription_tier)) return true;
+
+    // Tokens comprados dan acceso
+    const tokenBalance = profile.token_balance || 0;
+    if (tokenBalance > 0) return true;
+
+    // Créditos mensuales restantes
+    const aiCredits = profile.ai_credits_remaining || 0;
+    if (aiCredits > 0) return true;
+
+    return false;
+  }
+
+  /**
    * Verifica si el usuario está autenticado
    * @returns {boolean}
    */
@@ -71,12 +94,13 @@ class AIUtils {
   }
 
   /**
-   * Verifica si hay IA disponible (Premium o proveedor configurado)
+   * Verifica si hay IA disponible (Premium, tokens o proveedor configurado)
+   * 🔧 v2.9.393: Considera tokens comprados además de plan
    * @returns {boolean}
    */
   isAIAvailable() {
-    // Premium siempre tiene IA
-    if (this.isPremiumUser()) return true;
+    // Premium o tokens comprados siempre tienen IA
+    if (this.hasAIAccess()) return true;
 
     // Verificar proveedor configurado
     const currentProvider = this.getCurrentProvider();
@@ -92,10 +116,12 @@ class AIUtils {
 
   /**
    * Obtiene información del estado de IA
-   * @returns {Object} { available, provider, isPremium, reason }
+   * 🔧 v2.9.393: Usa hasAIAccess() que considera tokens además de plan
+   * @returns {Object} { available, provider, isPremium, hasAccess, reason }
    */
   getAIStatus() {
     const isPremium = this.isPremiumUser();
+    const hasAccess = this.hasAIAccess();  // 🔧 v2.9.393
     const isAuthenticated = this.isAuthenticated();
     const provider = this.getCurrentProvider();
     const isNative = this.isNativeApp();
@@ -104,9 +130,10 @@ class AIUtils {
     let available = false;
     let reason = '';
 
-    if (isPremium) {
+    // 🔧 v2.9.393: Verificar acceso premium O tokens comprados
+    if (hasAccess) {
       available = true;
-      reason = 'premium';
+      reason = isPremium ? 'premium' : 'tokens';
     } else if (provider === 'puter' && isNative) {
       available = false;
       reason = 'puter_native';
@@ -125,6 +152,7 @@ class AIUtils {
       available,
       provider,
       isPremium,
+      hasAccess,  // 🔧 v2.9.393
       isAuthenticated,
       isNative,
       isConfigured,

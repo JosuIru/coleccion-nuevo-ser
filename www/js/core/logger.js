@@ -6,6 +6,7 @@
 class Logger {
   constructor() {
     this.isDev = this.checkIfDevelopment();
+    this.manualOverride = this.loadDebugSetting();
   }
 
   checkIfDevelopment() {
@@ -21,14 +22,58 @@ class Logger {
     return isLocalhost || hasDebugParam;
   }
 
+  /**
+   * Carga configuración de debug desde localStorage
+   */
+  loadDebugSetting() {
+    try {
+      return localStorage.getItem('debug_mode') === 'true';
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Verifica si debug está activo (por cualquier método)
+   */
+  isDebugEnabled() {
+    return this.isDev || this.manualOverride;
+  }
+
+  /**
+   * Activa/desactiva modo debug manualmente
+   * @param {boolean} enabled - true para activar, false para desactivar
+   */
+  setDebugMode(enabled) {
+    this.manualOverride = enabled;
+    try {
+      if (enabled) {
+        localStorage.setItem('debug_mode', 'true');
+      } else {
+        localStorage.removeItem('debug_mode');
+      }
+    } catch {
+      // localStorage no disponible
+    }
+    console.log(`[LOGGER] Modo debug ${enabled ? 'ACTIVADO' : 'DESACTIVADO'}`);
+    return this.getStatus();
+  }
+
+  /**
+   * Toggle de modo debug
+   */
+  toggleDebugMode() {
+    return this.setDebugMode(!this.manualOverride);
+  }
+
   log(...args) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.log('[LOG]', ...args);
     }
   }
 
   warn(...args) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.warn('[WARN]', ...args);
     }
   }
@@ -39,31 +84,31 @@ class Logger {
   }
 
   info(...args) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.info('[INFO]', ...args);
     }
   }
 
   debug(...args) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.debug('[DEBUG]', ...args);
     }
   }
 
   group(...args) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.group(...args);
     }
   }
 
   groupEnd() {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.groupEnd();
     }
   }
 
   table(data) {
-    if (this.isDev) {
+    if (this.isDebugEnabled()) {
       console.table(data);
     }
   }
@@ -72,7 +117,9 @@ class Logger {
   getStatus() {
     return {
       mode: this.isDev ? 'development' : 'production',
-      logsEnabled: this.isDev
+      debugEnabled: this.isDebugEnabled(),
+      manualOverride: this.manualOverride,
+      autoDetected: this.isDev
     };
   }
 }

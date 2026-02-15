@@ -1467,8 +1467,14 @@ class BookEngine {
     root.style.setProperty('--color-text-secondary', theme.textSecondary);
     root.style.setProperty('--color-border', theme.border);
 
-    // Aplicar clase de tema al body
-    document.body.className = `theme-${this.currentBook}`;
+    // 🔧 v2.9.389: Aplicar clase de tema al body SIN eliminar theme-dark/light
+    // Remover solo clases de temas de libros anteriores, preservando theme-dark, theme-light, dark, etc.
+    const classesToKeep = Array.from(document.body.classList).filter(cls =>
+      cls === 'theme-dark' || cls === 'theme-light' || cls === 'dark' ||
+      cls === 'min-h-screen' || !cls.startsWith('theme-')
+    );
+    document.body.className = classesToKeep.join(' ');
+    document.body.classList.add(`theme-${this.currentBook}`);
 
     // Cargar CSS del tema dinámicamente usando lazy-loader
     const bookInfo = this.getBookInfo(this.currentBook);

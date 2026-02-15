@@ -297,7 +297,7 @@ class KnowledgeIngestion {
     let totalChapters = 0;
     let totalExercises = 0;
 
-    for (const [bookId, book] of this.coordinator.corpus.books) {
+    for (const [_bookId, book] of this.coordinator.corpus.books) {
       if (book._stats) {
         totalWords += book._stats.words;
         totalChapters += book._stats.chapters;

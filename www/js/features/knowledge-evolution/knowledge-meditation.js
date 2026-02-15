@@ -587,7 +587,7 @@ class KnowledgeMeditation {
   /**
    * Sintetiza un tema integrando perspectivas de diferentes libros
    */
-  synthesizeTheme(theme, comprehension, connection, deepening) {
+  synthesizeTheme(theme, comprehension, connection, _deepening) {
     // Encontrar el hilo tematico
     const thread = connection?.threads?.find(t => t.themeId === theme.id);
 
@@ -689,7 +689,7 @@ class KnowledgeMeditation {
   /**
    * Genera insights que emergen del conjunto
    */
-  generateEmergentInsights(allInsights, _integration) {
+  generateEmergentInsights(_allInsights, _integration) {
     const insights = [];
 
     // Insight sobre la naturaleza del conocimiento integrado

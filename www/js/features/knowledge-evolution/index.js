@@ -114,12 +114,12 @@ class KnowledgeEvolution {
   async loadModules() {
     try {
       // Los modulos se cargan desde window si ya estan disponibles
-      this.ingestionModule = new (window.KnowledgeIngestion || KnowledgeIngestion)(this);
-      this.analysisModule = new (window.KnowledgeAnalysis || KnowledgeAnalysis)(this);
-      this.meditationModule = new (window.KnowledgeMeditation || KnowledgeMeditation)(this);
-      this.synthesisModule = new (window.KnowledgeSynthesis || KnowledgeSynthesis)(this);
-      this.dialogueModule = new (window.KnowledgeDialogue || KnowledgeDialogue)(this);
-      this.uiModule = new (window.KnowledgeUI || KnowledgeUI)(this);
+      this.ingestionModule = new window.KnowledgeIngestion(this);
+      this.analysisModule = new window.KnowledgeAnalysis(this);
+      this.meditationModule = new window.KnowledgeMeditation(this);
+      this.synthesisModule = new window.KnowledgeSynthesis(this);
+      this.dialogueModule = new window.KnowledgeDialogue(this);
+      this.uiModule = new window.KnowledgeUI(this);
 
       logger.log('[KnowledgeEvolution] Modulos cargados');
     } catch (error) {

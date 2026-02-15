@@ -343,9 +343,9 @@ class KnowledgeAnalysis {
   /**
    * Extrae conceptos usando IA (para analisis profundo)
    */
-  async extractConceptsWithAI(text, bookId) {
+  async extractConceptsWithAI(text, _bookId) {
     try {
-      const aiAdapter = window.aiAdapter || new AIAdapter();
+      const aiAdapter = window.aiAdapter || new window.AIAdapter();
 
       const prompt = `Analiza el siguiente texto de un libro filosofico/espiritual y extrae los 10 conceptos mas importantes.
 
@@ -585,14 +585,6 @@ Enfocate en conceptos filosoficos, espirituales, cientificos y transformadores.`
    * Guarda resultados en el coordinador
    */
   saveResults() {
-    // Convertir Map a Array para serialización
-    const conceptsArray = Array.from(this.extractedConcepts.entries()).map(([term, data]) => ({
-      term,
-      occurrences: data.occurrences,
-      categories: Array.from(data.categories),
-      relatedTerms: Array.from(data.relatedTerms)
-    }));
-
     this.coordinator.analysis.concepts = this.extractedConcepts;
 
     logger.log('[KnowledgeAnalysis] Resultados guardados');

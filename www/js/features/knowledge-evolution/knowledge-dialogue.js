@@ -345,7 +345,7 @@ El usuario busca guia practica.
    */
   async getAIResponse(question, systemPrompt, context) {
     try {
-      const aiAdapter = window.aiAdapter || new AIAdapter();
+      const aiAdapter = window.aiAdapter || new window.AIAdapter();
 
       // Construir prompt enriquecido con contexto
       const enrichedPrompt = this.buildEnrichedPrompt(question, context);

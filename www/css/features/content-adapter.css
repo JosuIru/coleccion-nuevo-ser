@@ -32,6 +32,23 @@
   visibility: visible;
 }
 
+/* 🔧 v2.9.391: Drag Handle para móvil (bottom sheet) */
+.adapter-drag-handle {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .adapter-drag-handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin: 8px auto;
+    flex-shrink: 0;
+  }
+}
+
 /* Header */
 .adapter-header {
   display: flex;
@@ -308,6 +325,10 @@
     border-radius: 16px 16px 0 0;
     max-height: 80vh;
     overflow-y: auto;
+    /* 🔧 v2.9.391: Mejorar scroll en móvil */
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
   }
 
   .content-adapter-selector.hidden {
@@ -318,14 +339,25 @@
     transform: translateY(0);
   }
 
-  .adapter-options {
+  /* 🔧 v2.9.391: Asegurar que las opciones puedan scrollear */
+  .content-adapter-selector .adapter-section {
+    touch-action: pan-y;
+  }
+
+  .content-adapter-selector .adapter-options {
     justify-content: center;
+    touch-action: pan-y;
   }
 
   .adapter-option {
     flex: 1;
     min-width: calc(33% - 8px);
     justify-content: center;
+  }
+
+  /* 🔧 v2.9.391: Asegurar que los botones no bloqueen el scroll */
+  .content-adapter-selector .adapter-btn {
+    touch-action: manipulation;
   }
 }
 

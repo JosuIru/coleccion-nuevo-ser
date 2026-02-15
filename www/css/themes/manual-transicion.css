@@ -4,9 +4,16 @@
    Tema activista con patrones orgánicos y energía constructiva
    ============================================================================ */
 
-/* Fondo con patrones orgánicos */
-body.theme-manual-transicion {
+/* Fondo con patrones orgánicos - Dark mode */
+body.theme-dark.theme-manual-transicion {
   background: #1a1a1a;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fondo con patrones orgánicos - Light mode */
+body.theme-light.theme-manual-transicion {
+  background: #f8fafc;
   position: relative;
   overflow-x: hidden;
 }
@@ -47,13 +54,23 @@ body.theme-manual-transicion::before {
   }
 }
 
-/* Gradiente esperanzador para fondos */
-.theme-manual-transicion .biblioteca-container,
-.theme-manual-transicion .book-reader-container {
+/* Gradiente esperanzador para fondos - Dark mode */
+.theme-dark.theme-manual-transicion .biblioteca-container,
+.theme-dark.theme-manual-transicion .book-reader-container {
   background: linear-gradient(180deg,
     #1a1a1a 0%,
     #2d3748 50%,
     #1a1a1a 100%
+  );
+}
+
+/* Gradiente esperanzador para fondos - Light mode */
+.theme-light.theme-manual-transicion .biblioteca-container,
+.theme-light.theme-manual-transicion .book-reader-container {
+  background: linear-gradient(180deg,
+    #f8fafc 0%,
+    #e2e8f0 50%,
+    #f8fafc 100%
   );
 }
 

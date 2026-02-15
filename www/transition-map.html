@@ -24,6 +24,13 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
+    .tg-action-btn.donate {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+    }
+    .tg-action-btn.donate:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    }
   </style>
 </head>
 <body class="transition-map-page">
@@ -204,7 +211,9 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/features/transition-globe.js?v=1.0.1"></script>
+  <script src="js/features/entity-verification-system.js?v=1.0.0"></script>
+  <script src="js/features/entity-donation-modal.js?v=2.0.0"></script>
+  <script src="js/features/transition-globe.js?v=1.1.0"></script>
   <script>
     // Initialize Lucide icons
     lucide.createIcons();
@@ -213,11 +222,18 @@
     let categories = {};
     let globe = null;
 
+    // Store current project for donation
+    let currentProject = null;
+
     // Initialize globe when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
       globe = new TransitionGlobe('transition-globe', {
-        onProjectSelect: showProjectDetails
+        onProjectSelect: showProjectDetails,
+        showDetailsPanel: false // Use our own HTML panel instead
       });
+
+      // Expose globe for the donation modal
+      window.transitionGlobe = globe;
 
       // Load categories for filters
       setTimeout(() => {
@@ -276,6 +292,9 @@
     function showProjectDetails(project) {
       if (!project) return;
 
+      // Store for donation
+      currentProject = project;
+
       // Update categories from globe if available
       if (globe && globe.categories && Object.keys(globe.categories).length > 0) {
         categories = globe.categories;
@@ -327,12 +346,17 @@
       document.getElementById('detail-meta').innerHTML = metaHtml;
 
       // Actions
-      let actionsHtml = '';
+      let actionsHtml = `
+        <button class="tg-action-btn donate" onclick="openDonationModal()">
+          <i data-lucide="heart" class="w-4 h-4"></i>
+          Donar
+        </button>
+      `;
       if (project.website) {
         actionsHtml += `
           <a href="${project.website}" target="_blank" rel="noopener noreferrer" class="tg-action-btn primary">
             <i data-lucide="external-link" class="w-4 h-4"></i>
-            Visitar Web
+            Web
           </a>
         `;
       }
@@ -367,6 +391,48 @@
 
     function closeDetailPanel() {
       document.getElementById('detail-panel').classList.remove('visible');
+      currentProject = null;
+    }
+
+    // Open donation modal
+    function openDonationModal() {
+      console.log('[TransitionMap] openDonationModal called');
+      console.log('[TransitionMap] currentProject:', currentProject);
+      console.log('[TransitionMap] window.entityDonationModal:', window.entityDonationModal);
+
+      if (!currentProject) {
+        console.log('[TransitionMap] No currentProject');
+        return;
+      }
+
+      // Convert project to entity format
+      const entity = {
+        id: currentProject.id,
+        name: currentProject.name,
+        category: currentProject.type,
+        location: currentProject.location || currentProject.country,
+        description: currentProject.description,
+        website: currentProject.website,
+        btc_address: currentProject.btc_address,
+        is_verified: currentProject.verified || false,
+        contact_email: currentProject.contact_email
+      };
+
+      console.log('[TransitionMap] entity:', entity);
+
+      // Close detail panel
+      closeDetailPanel();
+
+      // Open donation modal
+      if (window.entityDonationModal) {
+        console.log('[TransitionMap] Calling show() on entityDonationModal');
+        window.entityDonationModal.show(entity);
+      } else {
+        alert('Sistema de donaciones no disponible. Recargando...');
+        console.error('[TransitionMap] EntityDonationModal NOT available');
+        // Try to reload scripts
+        setTimeout(() => location.reload(), 1000);
+      }
     }
 
     function getScaleLabel(scale) {

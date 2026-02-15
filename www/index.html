@@ -80,11 +80,20 @@
     }
   </script>
 
-  <!-- Vendor libs (local, offline-capable) -->
-  <script src="js/vendor/lucide.min.js" defer></script>
-  <script src="js/vendor/supabase.min.js"></script>
-  <!-- Puter.js - Free Mistral AI (requires network, fallback in ai-adapter) -->
-  <script src="https://js.puter.com/v2/" onerror="console.warn('Puter.js unavailable offline')"></script>
+  <!-- Lucide Icons - Local copy for offline/Android support -->
+  <script src="js/vendor/lucide.min.js"
+          onerror="console.warn('Lucide failed to load, icons may not render')"></script>
+
+  <!-- Supabase JS CDN (sin integrity hash) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"
+          crossorigin="anonymous"
+          onerror="console.error('Supabase CDN failed - auth features unavailable')"></script>
+
+  <!-- Puter.js - Free Mistral AI for non-registered users -->
+  <script src="https://js.puter.com/v2/"></script>
+
+  <!-- Three.js for 3D Navigation - LAZY LOADED -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script> -->
 
   <!-- Custom Styles -->
   <!-- Design Tokens -->
@@ -393,15 +402,13 @@
   <script src="js/core/shortcuts-handler.js"></script>
   <script src="js/core/dynamic-colors-helper.js?v=2.9.176"></script>
   <!-- Environment config (credentials) - must load before supabase-config -->
-  <script src="js/core/env.js"></script>
+  <script src="js/core/env.js?v=2.9.403"></script>
   <script src="js/core/supabase-config.js"></script>
   <script src="js/core/custom-captcha.js"></script>
   <!-- Auth consolidado: incluye funcionalidades de supabase-auth-helper + premium -->
   <script src="js/core/auth-helper.js?v=2.2.0"></script>
   <!-- Configuración de planes premium -->
-  <script src="js/core/plans-config.js?v=2.0.0"></script>
-  <!-- Admin Notifications Service -->
-  <script src="js/core/admin-notifications.js?v=1.0.0"></script>
+  <script src="js/core/plans-config.js?v=1.0.0"></script>
 
   <!-- Service Layer - Abstracción de Supabase con cache y offline queue -->
   <script src="js/services/BaseService.js?v=1.0.0"></script>
@@ -471,6 +478,8 @@
   <script src="js/features/donations-modal.js?v=2.8.6.6-contrast-fix"></script>
   <!-- 🔧 v2.9.327: my-account-modal cargado para que Tab Perfil funcione -->
   <script src="js/features/my-account-modal.js?v=2.9.327"></script>
+  <!-- 💬 v2.9.380: Support Chat - Chat de soporte con IA -->
+  <script src="js/features/support-chat.js?v=2.9.380"></script>
   <!-- LAZY LOADED: Settings Modal (124KB) - Loaded when user opens settings -->
   <!-- <script src="js/features/settings-modal.js?v=2.9.176"></script> -->
   <!-- LAZY LOADED: Notes Modal (28KB) - Loaded when user opens notes -->
@@ -498,8 +507,19 @@
   <script src="js/features/audioreader/audioreader-ui.js?v=2.9.283"></script>
   <script src="js/features/audioreader/index.js?v=2.9.283"></script>
   -->
-  <!-- Audio mixer (binaurales y sonidos de fondo) -->
+  <!-- Sistema de audio mejorado - LAZY LOADED when audioreader is activated -->
+  <!-- 🔧 FIX v2.9.212: Descomentar audio-mixer para habilitar sonidos binaurales y de fondo -->
   <script src="js/features/audio-mixer.js?v=3.0.0"></script>
+  <!--
+  <script src="js/features/audio-processor.js?v=3.0.0"></script>
+  <script src="js/features/audio-visualizer.js?v=3.0.0"></script>
+  <script src="js/features/word-by-word-sync.js?v=3.0.0"></script>
+  <script src="js/features/soundscape-cache.js?v=3.0.0"></script>
+  <!-- LAZY LOADED: Enhanced AudioReader requiere AudioReader base -->
+  <!-- <script src="js/features/enhanced-audioreader.js?v=3.0.0"></script> -->
+  <!-- LAZY LOADED: Audio Control Modal (32KB) -->
+  <!-- <script src="js/features/audio-control-modal.js?v=3.0.0"></script> -->
+  <!-- <script src="js/features/audio-enhancements.js?v=3.1.0"></script> -->
   <script src="js/features/koan-generator.js"></script>
   <script src="js/features/koan-modal.js"></script>
   <script src="js/features/binaural-audio.js"></script>
@@ -511,8 +531,8 @@
   <script src="js/data/achievements.js"></script>
   <script src="js/features/achievements-system.js?v=2.8.6.4-a11y"></script>
   <!-- 🔧 v2.9.327: Certificate Generator - Sistema de certificados de lectura -->
-  <!-- v2.9.387: html2canvas lazy loaded desde certificate-generator.js (199KB) -->
-  <script src="js/features/certificate-generator.js?v=2.9.387"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script src="js/features/certificate-generator.js?v=2.9.327"></script>
   <script src="js/features/auto-summary.js?v=2.8.6.4-a11y"></script>
   <!-- LAZY LOADED: AI Suggestions (16KB) -->
   <!-- <script src="js/features/ai-suggestions.js?v=2.9.283"></script> -->
@@ -524,7 +544,8 @@
   <!-- LAZY LOADED: Learning Paths (100KB) - Loaded when user accesses learning paths -->
     <!-- LAZY LOADED: Learning Paths (100KB) -->
   <!-- <script src="js/features/learning-paths.js?v=2.8.7"></script> -->
-  <!-- v2.9.387: resource-ai-helper eliminado (archivo no existe, se carga lazy via lazyLoader) -->
+  <!-- 🔧 v2.9.327: Learning Features - resource-ai-helper cargado, resto lazy -->
+  <script src="js/features/resource-ai-helper.js?v=2.9.327"></script>
   <!-- 🔧 v2.9.368: Lazy loaded (~100KB total) - se cargan bajo demanda via learningLazyLoader -->
   <!-- <script src="js/features/interactive-quiz.js?v=2.9.327"></script> -->
   <!-- <script src="js/features/concept-maps.js?v=2.9.327"></script> -->
@@ -533,11 +554,14 @@
   <script src="js/features/content-adapter.js?v=2.9.327"></script>
 
   <!-- Practical Utility Features -->
-  <!-- DEFERRED: Search Modal (43KB) - lazy loaded via BibliotecaFilters/ExplorationHub -->
+  <!-- 🔧 FIX v2.9.309: Descomentar dependencias requeridas por ExplorationHub -->
+  <!-- Search Modal - Required by Exploration Hub -->
+  <script src="js/features/search-modal.js"></script>
   <script src="js/features/practice-library.js?v=2.9.176"></script>
   <script src="js/features/practice-recommender.js?v=2.9.176"></script>
+  <!-- v3.0: AI Practice Generator + Timer -->
   <script src="js/features/ai-practice-generator.js?v=3.0.0"></script>
-  <!-- DEFERRED: Practice Timer (84KB) - loaded when user starts practice -->
+  <script src="js/features/practice-timer.js?v=3.0.0"></script>
   <!-- Thematic Index Modal - Required by Exploration Hub -->
   <script src="js/features/thematic-index-modal.js"></script>
   <!-- 🔧 v2.9.327: chapter-resources-modal cargado -->
@@ -564,7 +588,8 @@
 
 
   <!-- Help & Onboarding System -->
-  <!-- DEFERRED: Help Center Modal (60KB) - loaded when user clicks help -->
+  <!-- 🔧 v2.9.327: help-center-modal cargado para que Centro de Ayuda funcione -->
+  <script src="js/features/help-center-modal.js?v=2.9.327"></script>
   <!-- <script src="js/features/onboarding-tutorial.js"></script> -->
   <!-- Welcome Flow - Onboarding rápido de 3 pasos (28KB) - LAZY LOADED -->
   <!-- <script src="js/features/welcome-flow.js?v=1.0.0"></script> -->
@@ -572,9 +597,18 @@
   <!-- Engagement & Growth Systems -->
   <script src="js/features/streak-system.js?v=1.0.0"></script>
   <!-- LAZY LOADED: Shareable Moments (20KB) - Loaded when user shares -->
-  <!-- DEFERRED: Community & Social features - loaded after splash -->
-  <!-- shareable-moments.js, chapter-comments.js, reading-circles.js, leaderboards.js -->
-  <!-- smart-reader.js (73KB), podcast-player.js (42KB) -->
+  <!-- 🔧 v2.9.327: Shareable Moments habilitado para compartir en redes sociales -->
+  <script src="js/features/shareable-moments.js?v=2.9.327"></script>
+  <!-- 🔧 v2.9.327: Chapter Comments - Sistema de comentarios por capítulo -->
+  <script src="js/features/chapter-comments.js?v=2.9.327"></script>
+  <!-- 🔧 v2.9.328: Reading Circles - Círculos de lectura compartida -->
+  <script src="js/features/reading-circles.js?v=2.9.328"></script>
+  <!-- 🔧 v2.9.328: Leaderboards - Tablas de clasificación pública -->
+  <script src="js/features/leaderboards.js?v=2.9.328"></script>
+  <!-- 🔧 v2.9.329: Smart Reader - Panel contextual inteligente -->
+  <script src="js/features/smart-reader.js?v=2.9.329"></script>
+  <!-- 🔧 v2.9.330: FASE 4 - Podcast, Micro-Cursos, Integraciones -->
+  <script src="js/features/podcast-player.js?v=2.9.330"></script>
   <!-- 🔧 v2.9.368: Lazy loaded (85KB) - se carga bajo demanda -->
   <!-- <script src="js/features/micro-courses.js?v=2.9.330"></script> -->
   <script src="js/features/external-integrations.js?v=2.9.330"></script>
@@ -618,10 +652,18 @@
     let i18n, languageSelector, bookEngine, biblioteca, bookReader, aiConfig, aiAdapter, aiChatModal, aiSettingsModal, donationsModal, notesModal, timelineViewer, resourcesViewer, audioReader, koanGenerator, koanModal, binauralAudio, binauralModal, reflexiveModal, achievementSystem, autoSummary, aiSuggestions, progressDashboard, smartNotes, conceptMaps, actionPlans, chapterResourcesModal, powerIndicator, energyParticles;
 
     async function initApp() {
+      // 🔧 v2.9.397: Timeout de seguridad para ocultar splash SIEMPRE después de 10s
+      // Esto evita que la app quede bloqueada si hay un error en la inicialización
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash && !splash.classList.contains('fade-out')) {
+          console.warn('[InitApp] Forzando cierre del splash screen por timeout');
+          splash.classList.add('fade-out');
+          setTimeout(() => splash.remove(), 500);
+        }
+      }, 10000);
+
       try {
-
-
-
         // Initialize i18n first
         if (window.I18n) {
           i18n = new I18n();
@@ -636,20 +678,20 @@
 
         }
 
-        // Initialize Supabase Auth & Sync (aislados para no bloquear la app si fallan)
+        // Initialize Supabase Auth & Sync
         if (window.supabaseAuthHelper) {
-          try { await window.supabaseAuthHelper.init(); }
-          catch (e) { logger.warn('⚠️ Supabase Auth no disponible:', e.message); }
+          await window.supabaseAuthHelper.init();
+
         }
 
         if (window.supabaseSyncHelper) {
-          try { await window.supabaseSyncHelper.init(); }
-          catch (e) { logger.warn('⚠️ Supabase Sync no disponible:', e.message); }
+          await window.supabaseSyncHelper.init();
+
         }
 
         if (window.supabaseNotificationsHelper) {
-          try { await window.supabaseNotificationsHelper.init(); }
-          catch (e) { logger.warn('⚠️ Supabase Notifications no disponible:', e.message); }
+          await window.supabaseNotificationsHelper.init();
+
         }
 
         // Crear instancias
@@ -964,41 +1006,6 @@
             setTimeout(() => splash.remove(), 500);
           }
         }, 1500);
-
-        // ================================================================
-        // CARGA DIFERIDA: Features no críticos (después del splash)
-        // ================================================================
-        const deferredScripts = [
-          'js/features/search-modal.js',
-          // Practice Timer modular (v2.9.390)
-          'js/features/practice-timer/practice-timer-ambient.js?v=2.9.390',
-          'js/features/practice-timer/practice-timer-tts.js?v=2.9.390',
-          'js/features/practice-timer/practice-timer-recurring.js?v=2.9.390',
-          'js/features/practice-timer/practice-timer-ui.js?v=2.9.390',
-          'js/features/practice-timer/practice-timer-playback.js?v=2.9.390',
-          'js/features/practice-timer/index.js?v=2.9.390',
-          'js/features/help-center-modal.js?v=2.9.327',
-          'js/features/smart-reader.js?v=2.9.329',
-          'js/features/reading-circles.js?v=2.9.328',
-          'js/features/podcast-player.js?v=2.9.330',
-          'js/features/shareable-moments.js?v=2.9.327',
-          'js/features/chapter-comments.js?v=2.9.327',
-          'js/features/leaderboards.js?v=2.9.328'
-        ];
-
-        // Cargar después de que la UI sea interactiva
-        setTimeout(() => {
-          if (window.lazyLoader) {
-            deferredScripts.forEach(src => window.lazyLoader.loadScript(src));
-          } else {
-            deferredScripts.forEach(src => {
-              const scriptEl = document.createElement('script');
-              scriptEl.src = src;
-              scriptEl.async = true;
-              document.head.appendChild(scriptEl);
-            });
-          }
-        }, 2500);
 
       } catch (error) {
         console.error('❌ Error al inicializar la app:', error);

@@ -4,6 +4,16 @@ apply plugin: 'kotlin-android'
 android {
     namespace "com.nuevosser.coleccion"
     compileSdk rootProject.ext.compileSdkVersion
+
+    signingConfigs {
+        release {
+            storeFile file('../../coleccion-nuevo-ser.keystore')
+            storePassword 'nuevosercns2024'
+            keyAlias 'coleccion'
+            keyPassword 'nuevosercns2024'
+        }
+    }
+
     defaultConfig {
         applicationId "com.nuevosser.coleccion"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -19,6 +29,7 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -1,18 +1,19 @@
 {
   "appId": "com.nuevosser.coleccion",
   "appName": "Colección Nuevo Ser",
-  "webDir": "www",
+  "webDir": "dist",
   "server": {
     "androidScheme": "https"
   },
   "android": {
     "buildOptions": {
-      "keystorePath": "",
-      "keystorePassword": "",
-      "keystoreAlias": "",
-      "keystoreAliasPassword": ""
+      "keystorePath": "coleccion-nuevo-ser.keystore",
+      "keystorePassword": "nuevosercns2024",
+      "keystoreAlias": "coleccion",
+      "keystoreAliasPassword": "nuevosercns2024",
+      "releaseType": "APK"
     },
-    "allowMixedContent": false
+    "allowMixedContent": true
   },
   "plugins": {
     "StatusBar": {

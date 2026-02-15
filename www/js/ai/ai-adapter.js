@@ -978,7 +978,7 @@ class AIAdapter {
 
   async askPuter(prompt, systemContext, conversationHistory) {
     // Verificar que Puter.js está cargado
-    if (typeof puter === 'undefined') {
+    if (typeof window.puter === 'undefined') {
       throw new Error(
         'Puter.js no está cargado.\n\n' +
         'Recarga la página para usar el servicio gratuito de IA.'
@@ -1008,7 +1008,7 @@ class AIAdapter {
 
     try {
       // Llamar a Puter AI (acceso gratuito a Mistral)
-      const response = await puter.ai.chat(fullPrompt, {
+      const response = await window.puter.ai.chat(fullPrompt, {
         model: selectedModel
       });
 

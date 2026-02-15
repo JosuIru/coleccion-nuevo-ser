@@ -108,7 +108,7 @@ class BibliotecaUtils {
       const supabase = window.supabaseClient;
       if (!supabase) return false;
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)

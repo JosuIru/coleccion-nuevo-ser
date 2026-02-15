@@ -782,7 +782,7 @@ class BookEngine {
   }
 
   // Renderizar enlace al Toolkit de Transición desde un capítulo del Manual de Transición
-  renderLinkedExercise(linkedExercise, chapterTitle) {
+  renderLinkedExercise(linkedExercise, _chapterTitle) {
     if (!linkedExercise) return '';
 
     let html = '<div class="toolkit-exercise mt-16 relative">';

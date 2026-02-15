@@ -232,9 +232,9 @@ class AIUtils {
     const {
       showWhenAvailable = false,
       compact = false,
-      onLoginClick = null,
-      onPlansClick = null,
-      onSettingsClick = null
+      onLoginClick: _onLoginClick = null,
+      onPlansClick: _onPlansClick = null,
+      onSettingsClick: _onSettingsClick = null
     } = options;
 
     const status = this.getAIStatus();
@@ -528,8 +528,6 @@ class AIUtils {
           } else if (provider === 'local') {
             window.toast?.info('Modo local: respuestas simuladas. Configura una IA para respuestas reales.', 4000);
           } else if (!isConfigured) {
-            const providerInfo = window.aiConfig?.getProviderInfo()?.[provider];
-            const getKeyUrl = providerInfo?.getApiKey || '';
             window.toast?.warning(`⚙️ ${provider} no tiene API key. Ve a Ajustes > IA para configurar.`, 5000);
           } else {
             const modelName = window.aiConfig.getModelInfo(window.aiConfig.getSelectedModel())?.name || provider;

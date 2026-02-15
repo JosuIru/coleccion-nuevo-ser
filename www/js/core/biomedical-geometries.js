@@ -79,7 +79,7 @@ class BiomedicalGeometries {
   /**
    * CEREBRO - Dos hemisferios con circunvoluciones
    */
-  createBrainGeometry(radius = 150, detail = 2) {
+  createBrainGeometry(radius = 150, _detail = 2) {
     const group = new THREE.Group();
 
     // Hemisferio izquierdo
@@ -454,7 +454,7 @@ class BiomedicalGeometries {
         { x: radius * 0.25, z: radius * 0.25, angle: 0.2 }     // Meñique
       ];
 
-      fingerPositions.forEach((pos, i) => {
+      fingerPositions.forEach((pos, _i) => {
         const fingerGroup = new THREE.Group();
 
         // 3 falanges por dedo

@@ -437,7 +437,7 @@ class AuthHelper {
       const fileName = `${this.currentUser.id}-${Date.now()}.${fileExt}`;
 
       // Subir a Supabase Storage
-      const { data: uploadData, error: uploadError } = await this.supabase.storage
+      const { error: uploadError } = await this.supabase.storage
         .from('avatars')
         .upload(fileName, file, {
           cacheControl: '3600',
@@ -894,7 +894,7 @@ class AuthHelper {
   /**
    * Mostrar notificación (integración con sistema existente)
    */
-  showNotification(message, type = 'info', duration = 5000) {
+  showNotification(message, type = 'info', _duration = 5000) {
     // Usar toast si está disponible
     if (window.toast) {
       if (type === 'error') window.toast.error(message);
@@ -1640,7 +1640,7 @@ class AuthHelper {
   /**
    * Notificar al usuario sobre el error
    */
-  notifyUserOfError(error, category, context) {
+  notifyUserOfError(error, category, _context) {
     const messages = {
       network: 'Problema de conexión. Por favor, verifica tu internet.',
       auth: 'Error de autenticación. Por favor, vuelve a iniciar sesión.',

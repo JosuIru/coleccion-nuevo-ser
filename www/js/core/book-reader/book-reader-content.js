@@ -250,7 +250,6 @@ class BookReaderContent {
     const InteractiveQuiz = this.getDependency('InteractiveQuiz'); // 🔧 FIX #87
     const hasQuiz = InteractiveQuiz && this.currentChapter && this.currentChapter.quiz;
     const hasResources = bookConfig && bookConfig.features && bookConfig.features.resources && bookConfig.features.resources.enabled;
-    const hasReflection = this.currentChapter && this.currentChapter.closingQuestion;
     const nextChapter = this.bookEngine.getNextChapter(chapterId);
 
     return `

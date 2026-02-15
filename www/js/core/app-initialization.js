@@ -16,7 +16,7 @@ class AppInitialization {
       // 2. Inicializar Analytics (Google Analytics 4)
       // El ID se configura en localStorage o se deshabilita si no existe
       const gaId = window.StorageHelper?.get('analytics-ga-id') || null;
-      window.analyticsHelper = new AnalyticsHelper({
+      window.analyticsHelper = new window.AnalyticsHelper({
         enabled: !!gaId, // Solo habilitado si hay ID configurado
         measurementId: gaId || 'disabled',
         debug: window.__ENVIRONMENT__ === 'development'
@@ -28,7 +28,7 @@ class AppInitialization {
       logger.log('[AppInit] Sistema de analytics inicializado');
 
       // 2.5. Inicializar AI Cache Service (reducir costos 40-60%)
-      window.aiCacheService = new AICacheService({
+      window.aiCacheService = new window.AICacheService({
         enabled: true,
         maxLocalEntries: 100,
         defaultTTL: 7 * 24 * 60 * 60 * 1000, // 7 días

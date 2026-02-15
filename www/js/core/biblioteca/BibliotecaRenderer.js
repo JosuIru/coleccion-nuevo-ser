@@ -58,7 +58,7 @@ class BibliotecaRenderer {
   }
 
   renderBotonesAccionGlobal() {
-    return BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL
+    return window.BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL
       .map(boton => this.renderBotonAccion(boton))
       .join('\n');
   }
@@ -88,7 +88,7 @@ class BibliotecaRenderer {
   }
 
   renderBotonesPrimarios() {
-    return BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS
+    return window.BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS
       .map(boton => this.renderBotonAccion(boton))
       .join('\n');
   }
@@ -118,7 +118,7 @@ class BibliotecaRenderer {
     const isAdmin = bib._adminCache === true;
     const isAuthenticated = !!window.authHelper?.getCurrentUser();
 
-    const botonesFiltrados = BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS.filter(boton => {
+    const botonesFiltrados = window.BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS.filter(boton => {
       if (boton.adminOnly && !isAdmin) return false;
       if (boton.requiresAuth && !isAuthenticated) return false;
       return true;
@@ -577,7 +577,7 @@ class BibliotecaRenderer {
 
   renderSearchAndFilters() {
     const bib = this.biblioteca;
-    const opcionesCategorias = BIBLIOTECA_CONFIG.CATEGORIAS_FILTRO
+    const opcionesCategorias = window.BIBLIOTECA_CONFIG.CATEGORIAS_FILTRO
       .map(categoria => {
         const labelTexto = categoria.value === 'all'
           ? bib.i18n.t(categoria.label)
@@ -758,7 +758,7 @@ class BibliotecaRenderer {
   }
 
   renderComplementaryInfo(book) {
-    const relacionLibro = BIBLIOTECA_CONFIG.RELACIONES_COMPLEMENTARIAS[book.id];
+    const relacionLibro = window.BIBLIOTECA_CONFIG.RELACIONES_COMPLEMENTARIAS[book.id];
     if (!relacionLibro) return '';
 
     if (relacionLibro.type === 'complements') {
@@ -796,7 +796,7 @@ class BibliotecaRenderer {
 
   renderToolsSection() {
     const bib = this.biblioteca;
-    const herramientas = BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA;
+    const herramientas = window.BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA;
 
     if (!herramientas || herramientas.length === 0) return '';
 

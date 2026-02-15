@@ -483,14 +483,6 @@ class BookReaderEvents {
       }
     };
 
-    // Función helper para cerrar dropdowns
-    const closeDropdowns = () => {
-      ['tools-dropdown', 'book-features-dropdown', 'settings-dropdown', 'more-actions-dropdown'].forEach(id => {
-        document.getElementById(id)?.classList.add('hidden');
-      });
-      document.getElementById('mobile-menu')?.classList.add('hidden');
-    };
-
     // Event delegation en document para capturar clicks en botones del dropdown
     document.addEventListener('click', (e) => {
       // Log inicial para saber que el listener está activo
@@ -1682,7 +1674,7 @@ class BookReaderEvents {
     // ========================================================================
     const actionCards = document.querySelectorAll('.action-card');
     actionCards.forEach(card => {
-      this.eventManager.addEventListener(card, 'click', async (e) => {
+      this.eventManager.addEventListener(card, 'click', async (_e) => {
         const action = card.getAttribute('data-action');
 
         if (action === 'quiz') {
@@ -2140,7 +2132,7 @@ class BookReaderEvents {
       actionCards.forEach(card => {
         const action = card.getAttribute('data-action');
         if (action) {
-          this.eventManager.addEventListener(card, 'click', async (e) => {
+          this.eventManager.addEventListener(card, 'click', async (_e) => {
             if (action === 'quiz') {
               const InteractiveQuiz = this.getDependency('InteractiveQuiz');
               if (InteractiveQuiz && this.currentChapter && this.currentChapter.quiz) {

@@ -621,7 +621,7 @@ class BibliotecaHandlers {
     const isAndroid = /Android/i.test(navigator.userAgent);
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA.forEach(herramienta => {
+    window.BIBLIOTECA_CONFIG.HERRAMIENTAS_ECOSISTEMA.forEach(herramienta => {
       if (!herramienta.hasApk) return;
 
       const container = document.getElementById(`tool-actions-${herramienta.id}`);
@@ -666,7 +666,7 @@ class BibliotecaHandlers {
     }
 
     const mapaHandlers = {};
-    BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL.forEach(boton => {
+    window.BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL.forEach(boton => {
       mapaHandlers[boton.id] = this[boton.handler].bind(this);
     });
 
@@ -759,7 +759,7 @@ class BibliotecaHandlers {
    */
   getHandlersMap() {
     const handlersMap = {};
-    BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL.forEach(boton => {
+    window.BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL.forEach(boton => {
       handlersMap[boton.id] = this[boton.handler].bind(this);
     });
     return handlersMap;

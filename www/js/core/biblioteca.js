@@ -8,7 +8,7 @@
 // CONFIGURACIONES
 // ============================================================================
 
-const BIBLIOTECA_CONFIG = {
+window.BIBLIOTECA_CONFIG = {
   CATEGORIAS_FILTRO: [
     { value: 'all', label: 'library.allCategories' },
     { value: 'Espiritualidad & Ciencia', label: 'Espiritualidad & Ciencia' },
@@ -188,7 +188,7 @@ class Biblioteca {
     this.ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
     // EventManager para gestionar listeners
-    this.eventManager = new EventManager(false);
+    this.eventManager = new window.EventManager(false);
     this.eventManager.setComponentName('Biblioteca');
 
     // Tracking para cleanup
@@ -199,9 +199,9 @@ class Biblioteca {
     this.eventListeners = [];
 
     // Combinar botones para event delegation
-    BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL = [
-      ...BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS,
-      ...BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS
+    window.BIBLIOTECA_CONFIG.BOTONES_ACCION_GLOBAL = [
+      ...window.BIBLIOTECA_CONFIG.BOTONES_PRIMARIOS,
+      ...window.BIBLIOTECA_CONFIG.BOTONES_SECUNDARIOS
     ];
 
     // Inicializar módulos
@@ -212,11 +212,11 @@ class Biblioteca {
    * Inicializa los módulos especializados
    */
   _initModules() {
-    this.utils = new BibliotecaUtils(this);
-    this.filters = new BibliotecaFilters(this);
-    this.modals = new BibliotecaModals(this);
-    this.handlers = new BibliotecaHandlers(this);
-    this.renderer = new BibliotecaRenderer(this);
+    this.utils = new window.BibliotecaUtils(this);
+    this.filters = new window.BibliotecaFilters(this);
+    this.modals = new window.BibliotecaModals(this);
+    this.handlers = new window.BibliotecaHandlers(this);
+    this.renderer = new window.BibliotecaRenderer(this);
   }
 
   // ==========================================================================

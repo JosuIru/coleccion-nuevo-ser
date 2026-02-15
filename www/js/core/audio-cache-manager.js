@@ -98,8 +98,7 @@ class AudioCacheManager {
    * Genera nombre de archivo legible
    */
   generateFileName(metadata) {
-    const { bookId, chapterId, paragraphIndex } = metadata;
-    const bookName = this.sanitizeFileName(bookId || 'libro');
+    const { bookId: _bookId, chapterId, paragraphIndex } = metadata;
     const chapterName = this.sanitizeFileName(chapterId || 'capitulo');
     const paragraph = paragraphIndex !== undefined ? `_p${String(paragraphIndex).padStart(3, '0')}` : '';
     return `${chapterName}${paragraph}.mp3`;

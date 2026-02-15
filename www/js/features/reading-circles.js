@@ -1080,7 +1080,6 @@ class ReadingCircles {
     const content = document.getElementById('circles-content');
     if (!content) return;
 
-    const isAdmin = circle.members.find(m => m.id === this.getUserId())?.role === 'admin';
     const bookTitle = this.getBookTitle(circle.bookId);
 
     content.innerHTML = `

@@ -1597,7 +1597,7 @@ Responde SOLO con las 3 preguntas, una por línea, sin numeración.`;
           <span>💭</span> Preguntas de Reflexión
         </h3>
         <div class="space-y-3">
-          ${questions.map((q, i) => `
+          ${questions.map((q, _i) => `
             <div class="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg p-3 border border-blue-700/30">
               <p class="text-sm text-gray-200 leading-relaxed">${this.escapeHtml(q)}</p>
               <button onclick="window.smartReader?.openJournal('${encodeURIComponent(q)}')"

@@ -1040,7 +1040,7 @@ class SearchModal {
     // Verificar si hay múltiples inputs con el mismo ID
     const allInputs = document.querySelectorAll('#search-input');
     // logger.debug('🔍 Número de elementos con ID "search-input":', allInputs.length);
-    allInputs.forEach((input, index) => {
+    allInputs.forEach((_input, _index) => {
       // logger.debug(`  Input ${index}: value="${input.value}", placeholder="${input.placeholder}"`);
     });
 

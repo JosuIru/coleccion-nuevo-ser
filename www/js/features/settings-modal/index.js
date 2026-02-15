@@ -216,7 +216,7 @@ class SettingsModal {
         // Limpiar timers de debounce de sliders
         if (this.sliderDebounceTimers.size > 0) {
             logger.debug('[Settings] Limpiando timers de sliders pendientes');
-            this.sliderDebounceTimers.forEach((timer, key) => {
+            this.sliderDebounceTimers.forEach((timer, _key) => {
                 clearTimeout(timer);
             });
             this.sliderDebounceTimers.clear();

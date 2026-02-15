@@ -213,3 +213,8 @@ function updateRadicalUI(practiceId) {
 window.addEventListener('beforeunload', () => {
   stopAllRadicalAudio();
 });
+
+// Exponer API global usada por botones inline y otros módulos
+window.playRadicalAudio = playRadicalAudio;
+window.pauseRadicalAudio = pauseRadicalAudio;
+window.resumeRadicalAudio = resumeRadicalAudio;

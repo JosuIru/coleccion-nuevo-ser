@@ -19,10 +19,10 @@ class LearningPaths {
     this.aiPreviewPath = null;
 
     // Inicializar modulos
-    this.data = new (window.LearningPathsData || LearningPathsData)(this);
-    this.ui = new (window.LearningPathsUI || LearningPathsUI)(this);
-    this.events = new (window.LearningPathsEvents || LearningPathsEvents)(this);
-    this.ai = new (window.LearningPathsAI || LearningPathsAI)(this);
+    this.data = new window.LearningPathsData(this);
+    this.ui = new window.LearningPathsUI(this);
+    this.events = new window.LearningPathsEvents(this);
+    this.ai = new window.LearningPathsAI(this);
 
     // Cargar progreso
     this.userProgress = this.data.loadProgress();

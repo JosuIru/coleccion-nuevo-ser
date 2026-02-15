@@ -31,7 +31,7 @@ class MyAccountModal {
     this.aiConversations = [];
 
     // 🔧 FIX: EventManager para gestión automática de listeners
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('MyAccountModal');
     this._eventListenersAttached = false;
 
@@ -553,7 +553,6 @@ class MyAccountModal {
   renderMyDataTab() {
     const totalNotes = this.userNotes.length;
     const totalBookmarks = this.userBookmarks.length;
-    const totalProgress = this.readingProgress.length;
     const totalChats = this.aiConversations.length;
 
     // Calcular estadísticas de lectura

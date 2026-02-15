@@ -19,7 +19,7 @@ class NotesModal {
     this.allTags = this.extractAllTags();
 
     // 🔧 FIX #86: Usar EventManager para prevenir memory leaks
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
 
     // 🔧 FIX v2.9.269: Focus trap para accesibilidad
     this.focusTrap = null;

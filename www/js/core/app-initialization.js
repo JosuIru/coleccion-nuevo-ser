@@ -83,10 +83,6 @@ class AppInitialization {
         window.contextualHints.onPageVisit('biblioteca');
       }
 
-      // 9. Pre-cargar Knowledge Evolution en background para enriquecer el chat IA
-      // Esto permite que todos los usuarios tengan contexto de la colección al usar el chat
-      this.initKnowledgeEvolutionBackground();
-
       return true;
 
     } catch (error) {
@@ -118,8 +114,8 @@ class AppInitialization {
    */
   static injectVersionInfo() {
     // Se puede obtener del manifest o build
-    // 🔧 v2.9.325: Fix CRÍTICO - ai-adapter.js cargado síncronamente
-    window.__APP_VERSION__ = '2.9.325'; // Cambiar con cada release
+    // 🔧 v2.9.397: Fix error handling para Content Adapter y AI
+    window.__APP_VERSION__ = '2.9.397'; // Cambiar con cada release
     window.__BUILD_TIME__ = new Date().toISOString();
     window.__ENVIRONMENT__ = 'production'; // 'development', 'staging', 'production'
 
@@ -159,47 +155,6 @@ class AppInitialization {
       versionManager: window.versionManager?.getDebugInfo?.(),
       updateInfo: window.versionManager?.availableUpdate
     };
-  }
-
-  /**
-   * Inicializa Knowledge Evolution en background para enriquecer el chat IA
-   * Pre-carga el índice de la colección para que esté disponible en consultas
-   * @version 2.9.405
-   */
-  static initKnowledgeEvolutionBackground() {
-    // Delay de 5 segundos para no interferir con la carga inicial
-    setTimeout(async () => {
-      try {
-        if (!window.lazyLoader) {
-          logger.warn('[AppInit] LazyLoader no disponible para Knowledge Evolution');
-          return;
-        }
-
-        logger.log('[AppInit] Iniciando pre-carga de Knowledge Evolution...');
-
-        // Cargar módulos de Knowledge Evolution
-        await window.lazyLoader.loadKnowledgeEvolution();
-
-        // Inicializar solo si los módulos están disponibles
-        if (window.KnowledgeEvolution) {
-          window.knowledgeEvolution = new KnowledgeEvolution();
-          await window.knowledgeEvolution.init();
-
-          // Ejecutar solo la ingestion (índice de libros) en background
-          // No ejecutar el pipeline completo que requiere IA
-          if (window.knowledgeEvolution.ingestionModule) {
-            logger.log('[AppInit] Ejecutando ingestion de colección en background...');
-            await window.knowledgeEvolution.runIngestion();
-            const stats = window.knowledgeEvolution.ingestionModule.getStats();
-            logger.log('[AppInit] Knowledge Evolution pre-cargado correctamente');
-            logger.log(`[AppInit] Libros indexados: ${stats.booksLoaded}/${stats.booksInCollection}`);
-          }
-        }
-      } catch (error) {
-        // Error silencioso - no afecta la funcionalidad principal
-        logger.warn('[AppInit] Error pre-cargando Knowledge Evolution:', error.message);
-      }
-    }, 5000);
   }
 }
 

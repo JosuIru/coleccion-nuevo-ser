@@ -243,8 +243,9 @@ class LazyLoader {
     }
 
     const scripts = [
-      'js/features/ai-premium.js?v=2.9.283',
-      'js/features/pricing-modal.js?v=2.9.283'
+      'js/features/ai-premium.js?v=2.9.386',
+      'js/features/pricing-modal.js?v=2.9.386',
+      'js/features/token-purchase-modal.js?v=2.9.386'
     ];
 
     try {
@@ -427,8 +428,7 @@ class LazyLoader {
   }
 
   /**
-   * Cargar Learning Paths (modular ~100KB total)
-   * v2.9.390: Arquitectura modular
+   * Cargar Learning Paths (100KB)
    * @returns {Promise<void>}
    */
   async loadLearningPaths() {
@@ -437,23 +437,15 @@ class LazyLoader {
     }
 
     if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Learning Paths (modular)...');
+      logger.log('[LazyLoader] Cargando Learning Paths...');
     }
 
-    const scripts = [
-      'js/features/learning-paths/learning-paths-data.js?v=2.9.390',
-      'js/features/learning-paths/learning-paths-ui.js?v=2.9.390',
-      'js/features/learning-paths/learning-paths-events.js?v=2.9.390',
-      'js/features/learning-paths/learning-paths-ai.js?v=2.9.390',
-      'js/features/learning-paths/index.js?v=2.9.390'
-    ];
-
     try {
-      await this.loadScripts(scripts);
+      await this.loadScript('js/features/learning-paths.js?v=2.8.7');
       this.loadedModules.set('learning-paths', true);
 
       if (typeof logger !== 'undefined') {
-        logger.log('✅ Learning Paths cargado (modular - 5 modulos)');
+        logger.log('✅ Learning Paths cargado (100KB)');
       }
     } catch (error) {
       logger.error('[LazyLoader] Error cargando Learning Paths:', error);
@@ -462,8 +454,7 @@ class LazyLoader {
   }
 
   /**
-   * Cargar Settings Modal (modular ~124KB total)
-   * v2.9.390: Arquitectura modular
+   * Cargar Settings Modal (124KB)
    * @returns {Promise<void>}
    */
   async loadSettingsModal() {
@@ -472,22 +463,15 @@ class LazyLoader {
     }
 
     if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Settings Modal (modular)...');
+      logger.log('[LazyLoader] Cargando Settings Modal...');
     }
 
     try {
-      // Cargar módulos en orden: primero los módulos auxiliares, luego el coordinador
-      await this.loadScript('js/features/settings-modal/settings-modal-general.js?v=2.9.390');
-      await this.loadScript('js/features/settings-modal/settings-modal-ai.js?v=2.9.390');
-      await this.loadScript('js/features/settings-modal/settings-modal-account.js?v=2.9.390');
-      await this.loadScript('js/features/settings-modal/settings-modal-appearance.js?v=2.9.390');
-      await this.loadScript('js/features/settings-modal/settings-modal-events.js?v=2.9.390');
-      await this.loadScript('js/features/settings-modal/index.js?v=2.9.390');
-
+      await this.loadScript('js/features/settings-modal.js?v=2.9.406');
       this.loadedModules.set('settings-modal', true);
 
       if (typeof logger !== 'undefined') {
-        logger.log('[LazyLoader] Settings Modal cargado (modular)');
+        logger.log('✅ Settings Modal cargado (124KB)');
       }
     } catch (error) {
       logger.error('[LazyLoader] Error cargando Settings Modal:', error);
@@ -1016,42 +1000,6 @@ class LazyLoader {
     }
     // Si es un string, cargar uno solo
     return this._loadModuleByName(modules);
-  }
-
-  /**
-   * Cargar Knowledge Evolution System (7 archivos modulares)
-   * @returns {Promise<void>}
-   */
-  async loadKnowledgeEvolution() {
-    if (this.loadedModules.has('knowledge-evolution')) {
-      return Promise.resolve();
-    }
-
-    if (typeof logger !== 'undefined') {
-      logger.log('[LazyLoader] Cargando Knowledge Evolution...');
-    }
-
-    const scripts = [
-      'js/features/knowledge-evolution/knowledge-ingestion.js?v=2.9.406',
-      'js/features/knowledge-evolution/knowledge-analysis.js?v=2.9.406',
-      'js/features/knowledge-evolution/knowledge-meditation.js?v=2.9.406',
-      'js/features/knowledge-evolution/knowledge-synthesis.js?v=2.9.406',
-      'js/features/knowledge-evolution/knowledge-dialogue.js?v=2.9.406',
-      'js/features/knowledge-evolution/knowledge-ui.js?v=2.9.406',
-      'js/features/knowledge-evolution/index.js?v=2.9.406'
-    ];
-
-    try {
-      await this.loadScripts(scripts);
-      this.loadedModules.set('knowledge-evolution', true);
-
-      if (typeof logger !== 'undefined') {
-        logger.log('✅ Knowledge Evolution cargado');
-      }
-    } catch (error) {
-      logger.error('[LazyLoader] Error cargando Knowledge Evolution:', error);
-      throw error;
-    }
   }
 
   /**

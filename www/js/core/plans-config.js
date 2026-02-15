@@ -1,17 +1,127 @@
 /**
- * Configuracion Centralizada de Planes Premium
+ * Configuracion Centralizada de Planes y Tokens
  * Coleccion Nuevo Ser
  *
- * IMPORTANTE: Este archivo es la UNICA fuente de verdad para planes.
+ * IMPORTANTE: Este archivo es la UNICA fuente de verdad para planes y tokens.
  * Sincronizar con: supabase/functions/stripe-webhook/index.ts
  *
- * @version 2.9.32
- * @updated 2024-12-16
+ * @version 2.9.386
+ * @updated 2025-01-15
+ *
+ * MODELO HIBRIDO:
+ * - Suscripciones mensuales dan tokens gratis cada mes
+ * - Paquetes de tokens adicionales disponibles para compra
+ * - Metodos de pago: Stripe, PayPal, Bitcoin
  */
 
 const PLANS_CONFIG = {
   // =============================================
-  // DEFINICION DE PLANES
+  // PAQUETES DE TOKENS PARA COMPRA
+  // =============================================
+  tokenPackages: {
+    basico: {
+      id: 'basico',
+      name: 'Basico',
+      nameEn: 'Basic',
+      icon: '🪙',
+      tokens: 50000,
+      price: 2.99,
+      currency: 'EUR',
+      discount: 0,
+      stripePriceId: 'price_tokens_basico',
+      popular: false,
+    },
+    estandar: {
+      id: 'estandar',
+      name: 'Estandar',
+      nameEn: 'Standard',
+      icon: '💰',
+      tokens: 150000,
+      price: 7.99,
+      currency: 'EUR',
+      discount: 11,
+      stripePriceId: 'price_tokens_estandar',
+      popular: true,
+    },
+    premium_pack: {
+      id: 'premium_pack',
+      name: 'Premium',
+      nameEn: 'Premium',
+      icon: '💎',
+      tokens: 500000,
+      price: 19.99,
+      currency: 'EUR',
+      discount: 20,
+      stripePriceId: 'price_tokens_premium',
+      popular: false,
+    },
+    pro_pack: {
+      id: 'pro_pack',
+      name: 'Pro',
+      nameEn: 'Pro',
+      icon: '🚀',
+      tokens: 1500000,
+      price: 49.99,
+      currency: 'EUR',
+      discount: 33,
+      stripePriceId: 'price_tokens_pro',
+      popular: false,
+    },
+  },
+
+  // =============================================
+  // PRECIOS DE TOKENS POR RECURSO (con margen ~40%)
+  // =============================================
+  tokenPricing: {
+    // Modelos de IA (tokens por 1K tokens de API)
+    'claude-3-5-sonnet': { costPer1K: 0.003, pricePer1K: 0.005, margin: 40 },
+    'claude-3-5-haiku': { costPer1K: 0.001, pricePer1K: 0.002, margin: 50 },
+    'gpt-4o': { costPer1K: 0.005, pricePer1K: 0.008, margin: 37 },
+    'gpt-4o-mini': { costPer1K: 0.0005, pricePer1K: 0.001, margin: 50 },
+    'gemini-2.0-flash': { costPer1K: 0.001, pricePer1K: 0.002, margin: 50 },
+    'mistral-large': { costPer1K: 0.002, pricePer1K: 0.003, margin: 33 },
+
+    // ElevenLabs TTS (tokens por 1K caracteres)
+    'elevenlabs': { costPer1K: 0.018, pricePer1K: 0.030, margin: 40 },
+
+    // Conversion: 1 token de usuario ≈ 1 token de API
+    // Para simplificar, usamos ratio 1:1
+    tokenRatio: 1,
+  },
+
+  // =============================================
+  // METODOS DE PAGO DISPONIBLES
+  // =============================================
+  paymentMethods: {
+    stripe: {
+      id: 'stripe',
+      name: 'Tarjeta',
+      nameEn: 'Card',
+      icon: '💳',
+      enabled: true,
+      description: 'Visa, Mastercard, Google Pay, Apple Pay',
+    },
+    paypal: {
+      id: 'paypal',
+      name: 'PayPal',
+      nameEn: 'PayPal',
+      icon: '🅿️',
+      enabled: true,
+      description: 'Paga con tu cuenta PayPal',
+    },
+    bitcoin: {
+      id: 'bitcoin',
+      name: 'Bitcoin',
+      nameEn: 'Bitcoin',
+      icon: '₿',
+      enabled: true,
+      description: 'Pago manual con verificacion',
+      // La direccion BTC se configura en env.js
+    },
+  },
+
+  // =============================================
+  // DEFINICION DE PLANES (SUSCRIPCIONES)
   // =============================================
   plans: {
     free: {
@@ -22,17 +132,15 @@ const PLANS_CONFIG = {
       price: 0,
       currency: 'EUR',
       interval: 'month',
-      credits: 10,
-      stripePriceId: null, // No tiene precio en Stripe
+      monthlyTokens: 5000, // Tokens gratis al mes
+      stripePriceId: null,
 
       features: {
-        ai_chat: false,
+        ai_chat: true,  // Permitido pero con tokens limitados
+        ai_tutor: false,
+        ai_game_master: false,
         ai_content_adapter: false,
         elevenlabs_tts: false,
-        ai_practice_generator: false,
-        ai_auto_summary: false,
-        ai_smart_notes: false,
-        ai_koan_generator: false,
         advanced_analytics: false,
         priority_support: false,
         offline_mode: true,
@@ -40,13 +148,13 @@ const PLANS_CONFIG = {
       },
 
       limits: {
-        maxConversationsPerDay: 3,
-        maxTokensPerMessage: 500,
+        maxConversationsPerDay: 5,
+        maxTokensPerMessage: 1000,
         maxHistoryMessages: 5,
       },
 
-      description: 'Acceso basico a la coleccion',
-      descriptionEn: 'Basic access to the collection',
+      description: 'Acceso basico con 5,000 tokens/mes',
+      descriptionEn: 'Basic access with 5,000 tokens/month',
     },
 
     premium: {
@@ -54,20 +162,18 @@ const PLANS_CONFIG = {
       name: 'Premium',
       nameEn: 'Premium',
       icon: '⭐',
-      price: 9.99,
+      price: 4.99,
       currency: 'EUR',
       interval: 'month',
-      credits: 500,
-      stripePriceId: 'price_premium_monthly', // Reemplazar con ID real de Stripe
+      monthlyTokens: 100000, // 100K tokens gratis al mes
+      stripePriceId: 'price_premium_monthly',
 
       features: {
         ai_chat: true,
+        ai_tutor: true,
+        ai_game_master: false,
         ai_content_adapter: true,
         elevenlabs_tts: true,
-        ai_practice_generator: true,
-        ai_auto_summary: true,
-        ai_smart_notes: false,
-        ai_koan_generator: false,
         advanced_analytics: true,
         priority_support: false,
         offline_mode: true,
@@ -75,14 +181,14 @@ const PLANS_CONFIG = {
       },
 
       limits: {
-        maxConversationsPerDay: 50,
+        maxConversationsPerDay: -1, // Sin limite
         maxTokensPerMessage: 4000,
         maxHistoryMessages: 20,
       },
 
-      description: 'Chat IA, adaptacion de contenido y practicas IA',
-      descriptionEn: 'AI Chat, content adaptation and AI practices',
-      recommended: true, // Marcar como recomendado en UI
+      description: '100,000 tokens/mes + voces premium',
+      descriptionEn: '100,000 tokens/month + premium voices',
+      recommended: true,
     },
 
     pro: {
@@ -90,20 +196,18 @@ const PLANS_CONFIG = {
       name: 'Pro',
       nameEn: 'Pro',
       icon: '👑',
-      price: 19.99,
+      price: 9.99,
       currency: 'EUR',
       interval: 'month',
-      credits: 2000,
-      stripePriceId: 'price_pro_monthly', // Reemplazar con ID real de Stripe
+      monthlyTokens: 300000, // 300K tokens gratis al mes
+      stripePriceId: 'price_pro_monthly',
 
       features: {
         ai_chat: true,
+        ai_tutor: true,
+        ai_game_master: true,
         ai_content_adapter: true,
         elevenlabs_tts: true,
-        ai_practice_generator: true,
-        ai_auto_summary: true,
-        ai_smart_notes: true,
-        ai_koan_generator: true,
         advanced_analytics: true,
         priority_support: true,
         offline_mode: true,
@@ -111,13 +215,13 @@ const PLANS_CONFIG = {
       },
 
       limits: {
-        maxConversationsPerDay: -1, // Sin limite
+        maxConversationsPerDay: -1,
         maxTokensPerMessage: 8000,
         maxHistoryMessages: 50,
       },
 
-      description: 'Todas las funciones + notas inteligentes + soporte prioritario',
-      descriptionEn: 'All features + smart notes + priority support',
+      description: '300,000 tokens/mes + Game Master + soporte prioritario',
+      descriptionEn: '300,000 tokens/month + Game Master + priority support',
     },
   },
 
@@ -131,6 +235,18 @@ const PLANS_CONFIG = {
       description: 'Conversa con un asistente IA sobre los libros',
       icon: '💬',
     },
+    ai_tutor: {
+      name: 'Tutor Personalizado',
+      nameEn: 'Personal Tutor',
+      description: 'Explicaciones profundas y adaptadas a tu nivel',
+      icon: '🎓',
+    },
+    ai_game_master: {
+      name: 'Game Master IA',
+      nameEn: 'AI Game Master',
+      description: 'NPCs conversacionales y narrativa adaptativa',
+      icon: '🎮',
+    },
     ai_content_adapter: {
       name: 'Adaptador de Contenido',
       nameEn: 'Content Adapter',
@@ -140,32 +256,8 @@ const PLANS_CONFIG = {
     elevenlabs_tts: {
       name: 'Voces Premium ElevenLabs',
       nameEn: 'ElevenLabs Premium Voices',
-      description: 'Narracion con voces IA de alta calidad',
+      description: 'Narración con voces IA de alta calidad',
       icon: '🎙️',
-    },
-    ai_practice_generator: {
-      name: 'Generador de Practicas IA',
-      nameEn: 'AI Practice Generator',
-      description: 'Genera practicas personalizadas con IA',
-      icon: '🧘',
-    },
-    ai_auto_summary: {
-      name: 'Resumenes Automaticos IA',
-      nameEn: 'AI Auto Summaries',
-      description: 'Resumenes inteligentes de cada capitulo',
-      icon: '📝',
-    },
-    ai_smart_notes: {
-      name: 'Notas Inteligentes IA',
-      nameEn: 'AI Smart Notes',
-      description: 'Notas enriquecidas con analisis de IA',
-      icon: '🧠',
-    },
-    ai_koan_generator: {
-      name: 'Generador de Koans IA',
-      nameEn: 'AI Koan Generator',
-      description: 'Koans y reflexiones generados por IA',
-      icon: '🪷',
     },
     advanced_analytics: {
       name: 'Analiticas Avanzadas',
@@ -194,7 +286,25 @@ const PLANS_CONFIG = {
   },
 
   // =============================================
-  // METODOS HELPER
+  // CONFIGURACION DE PAGOS
+  // =============================================
+  paymentConfig: {
+    // PayPal
+    paypalEmail: 'codigodespierto',  // paypal.me/codigodespierto
+    paypalUrl: 'https://www.paypal.com/paypalme/codigodespierto',
+
+    // Bitcoin - Direcciones para recibir pagos
+    btcAddresses: {
+      segwit: 'bc1qjnva46wy92ldhsv4w0j26jmu8c5wm5cxvgdfd7',
+      taproot: 'bc1p29l9vjelerljlwhg6dhr0uldldus4zgn8vjaecer0spj7273d7rss4gnyk',
+    },
+
+    // Tasa BTC/EUR aproximada (se actualiza dinamicamente)
+    btcEurRate: 40000, // Precio aproximado, actualizar via API
+  },
+
+  // =============================================
+  // METODOS HELPER - PLANES
   // =============================================
 
   /**
@@ -220,10 +330,10 @@ const PLANS_CONFIG = {
   },
 
   /**
-   * Obtener creditos mensuales de un plan
+   * Obtener tokens mensuales de un plan
    */
-  getCredits(planId) {
-    return this.getPlan(planId).credits;
+  getMonthlyTokens(planId) {
+    return this.getPlan(planId).monthlyTokens || 0;
   },
 
   /**
@@ -274,6 +384,93 @@ const PLANS_CONFIG = {
     }
 
     return { gained, lost };
+  },
+
+  // =============================================
+  // METODOS HELPER - TOKENS
+  // =============================================
+
+  /**
+   * Obtener paquete de tokens por ID
+   */
+  getTokenPackage(packageId) {
+    return this.tokenPackages[packageId] || null;
+  },
+
+  /**
+   * Obtener todos los paquetes de tokens
+   */
+  getAllTokenPackages() {
+    return Object.values(this.tokenPackages);
+  },
+
+  /**
+   * Obtener paquete popular
+   */
+  getPopularPackage() {
+    return Object.values(this.tokenPackages).find(p => p.popular) || this.tokenPackages.estandar;
+  },
+
+  /**
+   * Calcular precio por 1K tokens de un paquete
+   */
+  getPricePerKTokens(packageId) {
+    const pkg = this.getTokenPackage(packageId);
+    if (!pkg) return 0;
+    return ((pkg.price / pkg.tokens) * 1000).toFixed(4);
+  },
+
+  /**
+   * Formatear cantidad de tokens para mostrar
+   */
+  formatTokens(amount) {
+    if (amount >= 1000000) {
+      return `${(amount / 1000000).toFixed(1)}M`;
+    } else if (amount >= 1000) {
+      return `${(amount / 1000).toFixed(0)}K`;
+    }
+    return amount.toString();
+  },
+
+  /**
+   * Calcular costo en tokens para una operacion
+   * @param {string} resource - Tipo de recurso (claude-3-5-sonnet, elevenlabs, etc)
+   * @param {number} units - Cantidad de unidades (tokens API o caracteres)
+   */
+  calculateTokenCost(resource, units) {
+    const pricing = this.tokenPricing[resource];
+    if (!pricing) return units; // Si no hay pricing especifico, 1:1
+
+    // Precio por 1K unidades * (unidades / 1000)
+    const cost = pricing.pricePer1K * (units / 1000);
+    // Convertir a tokens internos (redondeando hacia arriba)
+    return Math.ceil(cost * 1000);
+  },
+
+  /**
+   * Calcular equivalente en BTC para un precio en EUR
+   */
+  calculateBtcAmount(eurAmount) {
+    const rate = this.paymentConfig.btcEurRate;
+    return (eurAmount / rate).toFixed(8);
+  },
+
+  /**
+   * Obtener URL de PayPal para un monto
+   */
+  getPayPalUrl(amount) {
+    return `${this.paymentConfig.paypalUrl}/${amount}EUR`;
+  },
+
+  // =============================================
+  // DEPRECADO - Mantener por compatibilidad
+  // =============================================
+
+  /**
+   * @deprecated Usar getMonthlyTokens() en su lugar
+   */
+  getCredits(planId) {
+    return this.getMonthlyTokens(planId);
   },
 };
 

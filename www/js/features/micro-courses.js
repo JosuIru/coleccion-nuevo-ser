@@ -74,7 +74,7 @@ class MicroCourses {
 
   getCoursesWithPendingLessons() {
     const pending = [];
-    for (const [courseId, enrollment] of Object.entries(this.enrolledCourses)) {
+    for (const [courseId, _enrollment] of Object.entries(this.enrolledCourses)) {
       const course = this.courses[courseId];
       if (!course) continue;
 
@@ -82,7 +82,7 @@ class MicroCourses {
       const today = new Date().toISOString().split('T')[0];
 
       // Verificar si ya completó la lección de hoy
-      const todayLessons = Object.entries(progress).filter(([day, data]) =>
+      const todayLessons = Object.entries(progress).filter(([_day, data]) =>
         data.completedAt?.startsWith(today)
       );
 
@@ -149,7 +149,6 @@ class MicroCourses {
 
   async shareProgress(courseId) {
     const course = this.courses[courseId];
-    const progress = this.courseProgress[courseId] || {};
     const stats = this.calculateCourseStats(courseId);
 
     if (!course || !stats) {
@@ -1550,7 +1549,7 @@ class MicroCourses {
 
         <!-- Lessons List -->
         <div class="space-y-2">
-          ${course.lessons.map((lesson, index) => this.renderLessonCard(courseId, lesson, progress)).join('')}
+          ${course.lessons.map((lesson, _index) => this.renderLessonCard(courseId, lesson, progress)).join('')}
         </div>
 
         <!-- Leave Course -->
@@ -1732,9 +1731,6 @@ class MicroCourses {
 
     const timerInterval = setInterval(() => {
       const remaining = Math.max(0, endTime - Date.now());
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-
       if (remaining <= 0) {
         clearInterval(timerInterval);
         window.toast?.success('¡Tiempo completado! 🎉');

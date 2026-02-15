@@ -1501,9 +1501,6 @@ El futuro no está escrito. Tú lo escribes con cada decisión cada día.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function createEnhancedGuidedMeditation(exercise, exerciseId) {
-  // Si hay un script completo disponible para este ejercicio, usarlo
-  const scriptKey = exerciseId.replace(/^exercise-\d+-\d+$/, '');
-
   // Mapeo de IDs de ejercicios a scripts
   const scriptMapping = {
     // Sección I - El Código

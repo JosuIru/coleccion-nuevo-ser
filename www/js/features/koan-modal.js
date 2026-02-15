@@ -12,7 +12,7 @@ class KoanModal {
     this.duration = 10;
 
     // 🔧 FIX: EventManager para gestión automática de listeners
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('KoanModal');
     this._eventListenersAttached = false;
   }

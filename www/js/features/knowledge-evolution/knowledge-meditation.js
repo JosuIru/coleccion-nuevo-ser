@@ -689,7 +689,7 @@ class KnowledgeMeditation {
   /**
    * Genera insights que emergen del conjunto
    */
-  generateEmergentInsights(allInsights, integration) {
+  generateEmergentInsights(allInsights, _integration) {
     const insights = [];
 
     // Insight sobre la naturaleza del conocimiento integrado
@@ -728,7 +728,7 @@ class KnowledgeMeditation {
   /**
    * Genera nuevas preguntas que el material sugiere pero no responde
    */
-  generateNewQuestions(integration) {
+  generateNewQuestions(_integration) {
     return [
       {
         question: '¿Como se manifiesta el despertar en la era de la inteligencia artificial?',
@@ -756,7 +756,7 @@ class KnowledgeMeditation {
   /**
    * Identifica caminos de desarrollo futuro
    */
-  identifyFuturePaths(integration) {
+  identifyFuturePaths(_integration) {
     return [
       {
         path: 'Profundizacion contemplativa',

@@ -775,7 +775,7 @@ class KnowledgeUI {
   /**
    * Adjunta event listeners especificos del tab
    */
-  attachTabEventListeners(tabId) {
+  attachTabEventListeners(_tabId) {
     // Eventos especificos por tab si son necesarios
   }
 

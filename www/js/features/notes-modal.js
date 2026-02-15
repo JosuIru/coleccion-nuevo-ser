@@ -534,12 +534,69 @@ class NotesModal {
   renderNewNoteInput() {
     return `
       <div class="border-t border-slate-700 p-4 bg-slate-800/30">
+        <!-- 🔧 v2.9.390: Toolbar WYSIWYG Markdown -->
+        <div class="flex flex-wrap gap-1 mb-2 p-1 bg-slate-900/50 rounded-lg border border-slate-700">
+          <button type="button" class="md-toolbar-btn" data-md="bold" title="Negrita (Ctrl+B)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+              <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+            </svg>
+          </button>
+          <button type="button" class="md-toolbar-btn" data-md="italic" title="Cursiva (Ctrl+I)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="4" x2="10" y2="4"></line>
+              <line x1="14" y1="20" x2="5" y2="20"></line>
+              <line x1="15" y1="4" x2="9" y2="20"></line>
+            </svg>
+          </button>
+          <span class="w-px h-6 bg-slate-600 mx-1"></span>
+          <button type="button" class="md-toolbar-btn" data-md="h2" title="Título">
+            <span class="font-bold text-sm">H2</span>
+          </button>
+          <button type="button" class="md-toolbar-btn" data-md="h3" title="Subtítulo">
+            <span class="font-bold text-xs">H3</span>
+          </button>
+          <span class="w-px h-6 bg-slate-600 mx-1"></span>
+          <button type="button" class="md-toolbar-btn" data-md="ul" title="Lista con viñetas">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <circle cx="3" cy="6" r="1" fill="currentColor"></circle>
+              <circle cx="3" cy="12" r="1" fill="currentColor"></circle>
+              <circle cx="3" cy="18" r="1" fill="currentColor"></circle>
+            </svg>
+          </button>
+          <button type="button" class="md-toolbar-btn" data-md="ol" title="Lista numerada">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="10" y1="6" x2="21" y2="6"></line>
+              <line x1="10" y1="12" x2="21" y2="12"></line>
+              <line x1="10" y1="18" x2="21" y2="18"></line>
+              <text x="2" y="8" font-size="8" fill="currentColor">1</text>
+              <text x="2" y="14" font-size="8" fill="currentColor">2</text>
+              <text x="2" y="20" font-size="8" fill="currentColor">3</text>
+            </svg>
+          </button>
+          <span class="w-px h-6 bg-slate-600 mx-1"></span>
+          <button type="button" class="md-toolbar-btn" data-md="quote" title="Cita">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"></path>
+              <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"></path>
+            </svg>
+          </button>
+          <button type="button" class="md-toolbar-btn" data-md="link" title="Enlace">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </button>
+        </div>
         <textarea id="note-input"
-                  class="w-full h-32 bg-slate-800 border border-slate-600 rounded-lg p-3 resize-none focus:outline-none focus:border-cyan-500 transition"
+                  class="w-full h-32 bg-slate-800 border border-slate-600 rounded-lg p-3 resize-none focus:outline-none focus:border-cyan-500 transition font-mono text-sm"
                   placeholder="${this.i18n.t('notes.placeholder')}"></textarea>
         <div class="flex justify-between items-center mt-3">
-          <span class="text-xs opacity-50">
-            💡 Usa **negrita**, *cursiva*, listas con - o 1.
+          <span class="text-xs opacity-50 hidden sm:inline">
+            💡 Selecciona texto y usa los botones para formatear
           </span>
           <button id="save-note-btn"
                   class="px-6 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition flex items-center gap-2">
@@ -645,15 +702,38 @@ class NotesModal {
       this.eventManager.addEventListener(saveBtn, 'click', () => this.handleSaveNote());
     }
 
-    // Enter con Ctrl para guardar
+    // Enter con Ctrl para guardar + atajos de teclado markdown
     const textarea = document.getElementById('note-input');
     if (textarea) {
       this.eventManager.addEventListener(textarea, 'keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           this.handleSaveNote();
         }
+        // 🔧 v2.9.390: Atajos de teclado para formato markdown
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+          e.preventDefault();
+          this.insertMarkdown(textarea, 'bold');
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+          e.preventDefault();
+          this.insertMarkdown(textarea, 'italic');
+        }
       });
     }
+
+    // 🔧 v2.9.390: Toolbar markdown buttons
+    const toolbarBtns = document.querySelectorAll('.md-toolbar-btn');
+    toolbarBtns.forEach(btn => {
+      this.eventManager.addEventListener(btn, 'click', (e) => {
+        e.preventDefault();
+        const mdType = btn.getAttribute('data-md');
+        const textarea = document.getElementById('note-input');
+        if (textarea && mdType) {
+          this.insertMarkdown(textarea, mdType);
+          textarea.focus();
+        }
+      });
+    });
 
     // Edit buttons
     const editBtns = document.querySelectorAll('.edit-note-btn');
@@ -761,6 +841,131 @@ class NotesModal {
         this.attachEventListeners();
       });
     });
+  }
+
+  // ==========================================================================
+  // 🔧 v2.9.390: MARKDOWN TOOLBAR HELPER
+  // ==========================================================================
+
+  /**
+   * Inserta formato markdown en el textarea
+   * @param {HTMLTextAreaElement} textarea - El textarea donde insertar
+   * @param {string} mdType - Tipo de markdown: bold, italic, h2, h3, ul, ol, quote, link
+   */
+  insertMarkdown(textarea, mdType) {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const beforeText = textarea.value.substring(0, start);
+    const afterText = textarea.value.substring(end);
+
+    let insertion = '';
+    let cursorOffset = 0;
+
+    switch (mdType) {
+      case 'bold':
+        if (selectedText) {
+          insertion = `**${selectedText}**`;
+          cursorOffset = insertion.length;
+        } else {
+          insertion = '**texto**';
+          cursorOffset = 2; // Posicionar después de **
+        }
+        break;
+
+      case 'italic':
+        if (selectedText) {
+          insertion = `*${selectedText}*`;
+          cursorOffset = insertion.length;
+        } else {
+          insertion = '*texto*';
+          cursorOffset = 1;
+        }
+        break;
+
+      case 'h2':
+        // Añadir al inicio de la línea
+        const lineStartH2 = beforeText.lastIndexOf('\n') + 1;
+        const lineTextH2 = beforeText.substring(lineStartH2);
+        if (lineTextH2.startsWith('## ')) {
+          // Ya tiene H2, quitarlo
+          textarea.value = beforeText.substring(0, lineStartH2) + lineTextH2.substring(3) + selectedText + afterText;
+          textarea.selectionStart = textarea.selectionEnd = start - 3;
+          return;
+        }
+        insertion = selectedText ? `## ${selectedText}` : '## ';
+        cursorOffset = selectedText ? insertion.length : 3;
+        break;
+
+      case 'h3':
+        const lineStartH3 = beforeText.lastIndexOf('\n') + 1;
+        const lineTextH3 = beforeText.substring(lineStartH3);
+        if (lineTextH3.startsWith('### ')) {
+          textarea.value = beforeText.substring(0, lineStartH3) + lineTextH3.substring(4) + selectedText + afterText;
+          textarea.selectionStart = textarea.selectionEnd = start - 4;
+          return;
+        }
+        insertion = selectedText ? `### ${selectedText}` : '### ';
+        cursorOffset = selectedText ? insertion.length : 4;
+        break;
+
+      case 'ul':
+        if (selectedText) {
+          // Convertir líneas seleccionadas en lista
+          const lines = selectedText.split('\n');
+          insertion = lines.map(line => `- ${line.replace(/^[-*]\s*/, '')}`).join('\n');
+          cursorOffset = insertion.length;
+        } else {
+          insertion = '- ';
+          cursorOffset = 2;
+        }
+        break;
+
+      case 'ol':
+        if (selectedText) {
+          const lines = selectedText.split('\n');
+          insertion = lines.map((line, i) => `${i + 1}. ${line.replace(/^\d+\.\s*/, '')}`).join('\n');
+          cursorOffset = insertion.length;
+        } else {
+          insertion = '1. ';
+          cursorOffset = 3;
+        }
+        break;
+
+      case 'quote':
+        if (selectedText) {
+          const lines = selectedText.split('\n');
+          insertion = lines.map(line => `> ${line}`).join('\n');
+          cursorOffset = insertion.length;
+        } else {
+          insertion = '> ';
+          cursorOffset = 2;
+        }
+        break;
+
+      case 'link':
+        if (selectedText) {
+          insertion = `[${selectedText}](url)`;
+          cursorOffset = insertion.length - 4; // Antes de "url)"
+        } else {
+          insertion = '[texto](url)';
+          cursorOffset = 1; // Después de "["
+        }
+        break;
+
+      default:
+        return;
+    }
+
+    textarea.value = beforeText + insertion + afterText;
+
+    // Posicionar cursor
+    if (selectedText) {
+      textarea.selectionStart = textarea.selectionEnd = start + cursorOffset;
+    } else {
+      textarea.selectionStart = start + cursorOffset;
+      textarea.selectionEnd = start + insertion.length - (mdType === 'bold' ? 2 : mdType === 'italic' ? 1 : 0);
+    }
   }
 
   // ==========================================================================

@@ -25,3 +25,19 @@ define('MISTRAL_API_KEY', 'tu_mistral_api_key_aqui');
 define('SUPABASE_URL', 'https://tu-proyecto.supabase.co');
 define('SUPABASE_ANON_KEY', 'tu_supabase_anon_key_aqui');
 define('SUPABASE_SERVICE_KEY', 'tu_supabase_service_key_aqui'); // Opcional, más permisos
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Payment Configuration - Stripe
+// ═══════════════════════════════════════════════════════════════════════════════
+
+define('STRIPE_SECRET_KEY', 'sk_test_tu_stripe_secret_key');
+define('STRIPE_WEBHOOK_SECRET', 'whsec_tu_stripe_webhook_secret');
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Payment Configuration - PayPal
+// ═══════════════════════════════════════════════════════════════════════════════
+
+define('PAYPAL_CLIENT_ID', 'tu_paypal_client_id');
+define('PAYPAL_CLIENT_SECRET', 'tu_paypal_client_secret');
+define('PAYPAL_WEBHOOK_ID', 'tu_paypal_webhook_id');
+define('PAYPAL_MODE', 'sandbox'); // 'sandbox' o 'live'

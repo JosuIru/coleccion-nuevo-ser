@@ -121,6 +121,21 @@ class SettingsModalAppearance {
                     </div>
                 </div>
 
+                <!-- Centro de ayuda -->
+                <div class="support-section mb-4 sm:mb-6">
+                    <h4 class="text-sm sm:text-base font-semibold text-white mb-3">Centro de Ayuda</h4>
+                    <button id="open-support-chat-btn" class="w-full flex items-center gap-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 rounded-lg px-3 sm:px-4 py-3 sm:py-4 text-sm sm:text-base text-white transition-all">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-medium">Chat de Soporte IA</span>
+                            <p class="text-xs text-gray-400">Obtén ayuda instantánea con tus dudas</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 ml-auto text-gray-400"></i>
+                    </button>
+                </div>
+
                 <div class="links space-y-2 sm:space-y-3">
                     <a href="legal/privacy-policy.html" target="_blank" class="block bg-slate-700/50 hover:bg-slate-700 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-gray-300 hover:text-white transition-colors">
                         <i data-lucide="shield" class="w-4 h-4 inline mr-2"></i>

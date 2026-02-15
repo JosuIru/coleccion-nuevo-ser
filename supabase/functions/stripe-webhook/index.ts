@@ -15,36 +15,50 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Planes y su configuración de créditos
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONFIGURACIÓN DE PLANES Y TOKENS (sincronizar con plans-config.js)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Planes de suscripción (tokens mensuales)
 const PLAN_CONFIG: Record<string, any> = {
   premium: {
     tier: "premium",
-    credits: 500,
+    monthlyTokens: 100000, // 100K tokens/mes
     features: {
       ai_chat: true,
       ai_tutor: true,
       ai_game_master: false,
+      ai_content_adapter: true,
+      elevenlabs_tts: true,
       advanced_analytics: true,
-      export_pdf: true,
-      cloud_sync: true,
-      custom_themes: false,
       priority_support: false,
+      offline_mode: true,
+      sync_cloud: true,
     },
   },
   pro: {
     tier: "pro",
-    credits: 2000,
+    monthlyTokens: 300000, // 300K tokens/mes
     features: {
       ai_chat: true,
       ai_tutor: true,
       ai_game_master: true,
+      ai_content_adapter: true,
+      elevenlabs_tts: true,
       advanced_analytics: true,
-      export_pdf: true,
-      cloud_sync: true,
-      custom_themes: true,
       priority_support: true,
+      offline_mode: true,
+      sync_cloud: true,
     },
   },
+};
+
+// Paquetes de tokens para compra única
+const TOKEN_PACKAGES: Record<string, { name: string; tokens: number }> = {
+  basico: { name: "Básico", tokens: 50000 },
+  estandar: { name: "Estándar", tokens: 150000 },
+  premium_pack: { name: "Premium", tokens: 500000 },
+  pro_pack: { name: "Pro", tokens: 1500000 },
 };
 
 serve(async (req) => {
@@ -78,25 +92,89 @@ serve(async (req) => {
     // Manejar diferentes tipos de eventos
     switch (event.type) {
       // ════════════════════════════════════════════════════════════════════
-      // Checkout completado - Usuario compró suscripción
+      // Checkout completado - Suscripción O Compra de Tokens
       // ════════════════════════════════════════════════════════════════════
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.metadata?.supabase_user_id;
-        const tier = session.metadata?.tier || "premium";
+        const userId = session.metadata?.userId || session.metadata?.supabase_user_id;
+        const checkoutType = session.metadata?.type;
 
         if (!userId) {
           console.warn("⚠️ checkout.session.completed sin user ID");
           break;
         }
 
+        // ═══════════════════════════════════════════════════════════════════
+        // COMPRA DE TOKENS (one-time payment)
+        // ═══════════════════════════════════════════════════════════════════
+        if (checkoutType === "token_purchase") {
+          const packageId = session.metadata?.packageId;
+          const tokens = parseInt(session.metadata?.tokens || "0", 10);
+
+          if (!packageId || !tokens) {
+            console.warn("⚠️ Token purchase sin packageId o tokens");
+            break;
+          }
+
+          console.log(`🪙 Compra de tokens: ${tokens} tokens para usuario ${userId}`);
+
+          // Usar función RPC para añadir tokens
+          const { error: addError } = await supabase.rpc("add_purchased_tokens", {
+            p_user_id: userId,
+            p_tokens: tokens,
+            p_payment_method: "stripe",
+            p_payment_id: session.id,
+            p_package_id: packageId,
+          });
+
+          if (addError) {
+            console.error("❌ Error añadiendo tokens:", addError);
+            // Fallback: actualizar directamente
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("token_balance, tokens_purchased_total")
+              .eq("id", userId)
+              .single();
+
+            const currentBalance = profile?.token_balance || 0;
+            const currentTotal = profile?.tokens_purchased_total || 0;
+
+            await supabase
+              .from("profiles")
+              .update({
+                token_balance: currentBalance + tokens,
+                tokens_purchased_total: currentTotal + tokens,
+              })
+              .eq("id", userId);
+          }
+
+          // Registrar transacción
+          await supabase.from("token_transactions").insert({
+            user_id: userId,
+            type: "purchase",
+            tokens_amount: tokens,
+            payment_method: "stripe",
+            payment_id: session.id,
+            package_id: packageId,
+            description: `Compra de ${tokens} tokens via Stripe`,
+          });
+
+          console.log(`✅ ${tokens} tokens añadidos a usuario ${userId}`);
+          break;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // SUSCRIPCIÓN (recurring payment)
+        // ═══════════════════════════════════════════════════════════════════
+        const tier = session.metadata?.tier || "premium";
         const planConfig = PLAN_CONFIG[tier];
+
         if (!planConfig) {
           console.warn(`⚠️ Plan desconocido: ${tier}`);
           break;
         }
 
-        console.log(`💳 Checkout completado para usuario ${userId}, tier: ${tier}`);
+        console.log(`💳 Suscripción completada para usuario ${userId}, tier: ${tier}`);
 
         // Actualizar perfil del usuario
         const { error: updateError } = await supabase
@@ -108,8 +186,8 @@ serve(async (req) => {
             stripe_subscription_id: session.subscription as string,
             subscription_start: new Date().toISOString(),
             subscription_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            ai_credits_remaining: planConfig.credits,
-            ai_credits_total: planConfig.credits,
+            ai_credits_remaining: planConfig.monthlyTokens,
+            ai_credits_total: planConfig.monthlyTokens,
             ai_credits_reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             features: planConfig.features,
           })
@@ -191,24 +269,25 @@ serve(async (req) => {
           break;
         }
 
-        // Downgrade a free
+        // Downgrade a free (mantiene tokens comprados, pierde mensuales)
         const { error: updateError } = await supabase
           .from("profiles")
           .update({
             subscription_tier: "free",
             subscription_status: "canceled",
-            ai_credits_remaining: 10,
-            ai_credits_total: 10,
+            ai_credits_remaining: 5000, // 5K tokens mensuales free
+            ai_credits_total: 5000,
             ai_credits_reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             features: {
-              ai_chat: false,
+              ai_chat: true, // Permitido pero con tokens limitados
               ai_tutor: false,
               ai_game_master: false,
+              ai_content_adapter: false,
+              elevenlabs_tts: false,
               advanced_analytics: false,
-              export_pdf: false,
-              cloud_sync: true,
-              custom_themes: false,
               priority_support: false,
+              offline_mode: true,
+              sync_cloud: true,
             },
           })
           .eq("id", profile.id);

@@ -13,12 +13,13 @@ class MyAccountModal {
     this.currentTab = 'profile';
     this.usageHistory = [];
     this.transactions = [];
+    this.tokenTransactions = [];
 
     this.tabs = [
       { id: 'profile', label: 'Perfil', emoji: '👤' },
       { id: 'mydata', label: 'Mis Datos', emoji: '📚' },
       { id: 'subscription', label: 'Plan', emoji: '⭐' },
-      { id: 'credits', label: 'Créditos', emoji: '⚡' },
+      { id: 'tokens', label: 'Tokens', emoji: '🪙' },
       { id: 'history', label: 'Historial', emoji: '📋' },
       { id: 'settings', label: 'Ajustes', emoji: '⚙️' }
     ];
@@ -164,7 +165,7 @@ class MyAccountModal {
       }
 
       // Cargar todo en paralelo
-      const [notesRes, bookmarksRes, progressRes, conversationsRes, transactionsRes] = await Promise.allSettled([
+      const [notesRes, bookmarksRes, progressRes, conversationsRes, transactionsRes, tokenTransRes] = await Promise.allSettled([
         // Notas
         this.supabase.from('notes').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
         // Marcadores
@@ -173,8 +174,10 @@ class MyAccountModal {
         this.supabase.from('reading_progress').select('*').eq('user_id', userId).order('updated_at', { ascending: false }),
         // Conversaciones IA
         this.supabase.from('ai_conversations').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
-        // Transacciones
-        this.supabase.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20)
+        // Transacciones de pago
+        this.supabase.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
+        // Transacciones de tokens
+        this.supabase.from('token_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(30)
       ]);
 
       this.userNotes = notesRes.status === 'fulfilled' ? (notesRes.value.data || []) : [];
@@ -182,6 +185,7 @@ class MyAccountModal {
       this.readingProgress = progressRes.status === 'fulfilled' ? (progressRes.value.data || []) : [];
       this.aiConversations = conversationsRes.status === 'fulfilled' ? (conversationsRes.value.data || []) : [];
       this.transactions = transactionsRes.status === 'fulfilled' ? (transactionsRes.value.data || []) : [];
+      this.tokenTransactions = tokenTransRes.status === 'fulfilled' ? (tokenTransRes.value.data || []) : [];
 
       // 🔧 FIX v2.9.276: Si Supabase no devolvió bookmarks, cargar de localStorage
       if (this.userBookmarks.length === 0) {
@@ -419,7 +423,7 @@ class MyAccountModal {
               <p class="text-sm text-slate-400">${user.email || ''}</p>
             </div>
           </div>
-          <button id="my-account-close" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" aria-label="Cerrar">
+          <button id="my-account-close" class="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors text-slate-600 dark:text-white" aria-label="Cerrar">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </button>
         </div>
@@ -461,7 +465,7 @@ class MyAccountModal {
       case 'profile': return this.renderProfileTab();
       case 'mydata': return this.renderMyDataTab();
       case 'subscription': return this.renderSubscriptionTab();
-      case 'credits': return this.renderCreditsTab();
+      case 'tokens': return this.renderTokensTab();
       case 'history': return this.renderHistoryTab();
       case 'settings': return this.renderSettingsTab();
       default: return this.renderProfileTab();
@@ -851,109 +855,197 @@ class MyAccountModal {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // TAB: CRÉDITOS IA
+  // TAB: TOKENS IA (Sistema híbrido: mensuales + comprados)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  renderCreditsTab() {
+  renderTokensTab() {
     const profile = this.authHelper?.getProfile() || {};
-    const remaining = profile.ai_credits_remaining || 0;
-    const total = profile.ai_credits_total || 10;
-    const percentage = total > 0 ? Math.round((remaining / total) * 100) : 0;
+
+    // Tokens mensuales (del plan de suscripción)
+    const monthlyRemaining = profile.ai_credits_remaining || 0;
+    const monthlyTotal = profile.ai_credits_total || 5000;
+    const monthlyPercentage = monthlyTotal > 0 ? Math.round((monthlyRemaining / monthlyTotal) * 100) : 0;
     const resetDate = profile.ai_credits_reset_date;
+
+    // Tokens comprados (wallet - no expiran)
+    const purchasedTokens = profile.token_balance || 0;
+    const purchasedTotal = profile.tokens_purchased_total || 0;
+
+    // Total disponible
+    const totalAvailable = monthlyRemaining + purchasedTokens;
 
     // Calcular estadísticas de uso
     const usageByFeature = {};
     this.usageHistory.forEach(item => {
       const feature = item.feature_used || 'general';
-      usageByFeature[feature] = (usageByFeature[feature] || 0) + (item.credits_used || 0);
+      usageByFeature[feature] = (usageByFeature[feature] || 0) + (item.tokens_used || item.credits_used || 0);
     });
+
+    // Plan actual
+    const tier = profile.subscription_tier || 'free';
+    const tierNames = { free: 'Gratuito', premium: 'Premium', pro: 'Pro' };
+    const tierEmojis = { free: '🆓', premium: '⭐', pro: '👑' };
 
     return `
       <div class="space-y-6">
-        <!-- Créditos actuales -->
-        <div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-2xl p-6 border border-cyan-500/30">
+        <!-- Balance total de tokens -->
+        <div class="bg-gradient-to-br from-amber-500/20 to-orange-500/10 rounded-2xl p-6 border border-amber-500/30">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-white">Créditos Disponibles</h3>
-            <span class="text-3xl font-bold text-cyan-400">${remaining.toLocaleString()}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🪙</span>
+              <h3 class="text-lg font-semibold text-white">Balance Total</h3>
+            </div>
+            <span class="text-3xl font-bold text-amber-400">${totalAvailable.toLocaleString()}</span>
+          </div>
+          <p class="text-sm text-slate-400">Tokens disponibles para usar en funciones IA</p>
+        </div>
+
+        <!-- Desglose: Mensuales vs Comprados -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Tokens mensuales -->
+          <div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-xl p-4 border border-cyan-500/30">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">📅</span>
+                <h4 class="font-semibold text-white">Mensuales</h4>
+              </div>
+              <span class="text-xl font-bold text-cyan-400">${monthlyRemaining.toLocaleString()}</span>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="h-2 bg-white/10 rounded-full overflow-hidden mb-2">
+              <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500"
+                   style="width: ${monthlyPercentage}%"></div>
+            </div>
+
+            <div class="flex justify-between text-xs text-slate-500">
+              <span>${tierEmojis[tier]} Plan ${tierNames[tier]}</span>
+              <span>${monthlyPercentage}% restante</span>
+            </div>
+
+            ${resetDate ? `
+              <p class="text-xs text-slate-500 mt-2">
+                Renovación: ${new Date(resetDate).toLocaleDateString('es-ES')}
+              </p>
+            ` : ''}
           </div>
 
-          <!-- Barra de progreso -->
-          <div class="h-3 bg-white/10 rounded-full overflow-hidden mb-2">
-            <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500"
-                 style="width: ${percentage}%"></div>
-          </div>
+          <!-- Tokens comprados (wallet) -->
+          <div class="bg-gradient-to-br from-purple-500/20 to-pink-500/10 rounded-xl p-4 border border-purple-500/30">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">💎</span>
+                <h4 class="font-semibold text-white">Comprados</h4>
+              </div>
+              <span class="text-xl font-bold text-purple-400">${purchasedTokens.toLocaleString()}</span>
+            </div>
 
-          <div class="flex justify-between text-sm">
-            <span class="text-slate-400">${remaining.toLocaleString()} de ${total.toLocaleString()} créditos</span>
-            <span class="text-slate-400">${percentage}% disponible</span>
-          </div>
+            <p class="text-xs text-slate-400 mb-2">No expiran. Uso después de los mensuales.</p>
 
-          ${resetDate ? `
-            <p class="text-sm text-slate-500 mt-3">
-              Los créditos se renuevan el ${new Date(resetDate).toLocaleDateString('es-ES')}
-            </p>
-          ` : ''}
+            ${purchasedTotal > 0 ? `
+              <p class="text-xs text-slate-500">
+                Total comprado: ${purchasedTotal.toLocaleString()} tokens
+              </p>
+            ` : ''}
+
+            <button id="buy-tokens-btn" class="mt-3 w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-lg text-sm transition-all flex items-center justify-center gap-2">
+              🛒 Comprar tokens
+            </button>
+          </div>
         </div>
 
         <!-- Uso por característica -->
         <div>
-          <h4 class="text-lg font-semibold text-white mb-3">Uso este mes</h4>
+          <h4 class="text-lg font-semibold text-white mb-3">Uso reciente</h4>
           ${Object.keys(usageByFeature).length > 0 ? `
             <div class="space-y-2">
-              ${Object.entries(usageByFeature).map(([feature, credits]) => `
+              ${Object.entries(usageByFeature).slice(0, 5).map(([feature, tokens]) => `
                 <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
                   <span class="text-slate-300 capitalize">${feature.replace(/_/g, ' ')}</span>
-                  <span class="text-cyan-400 font-medium">${credits.toLocaleString()} créditos</span>
+                  <span class="text-amber-400 font-medium">${tokens.toLocaleString()} tokens</span>
                 </div>
               `).join('')}
             </div>
           ` : `
-            <div class="text-center py-8 text-slate-500">
-              <p>No has usado créditos este mes</p>
+            <div class="text-center py-6 text-slate-500">
+              <p>🤖 No has usado tokens aún</p>
+              <p class="text-xs mt-1">Prueba el chat IA mientras lees un libro</p>
             </div>
           `}
         </div>
 
-        <!-- Costos estimados -->
+        <!-- Costos estimados por feature -->
         <div class="bg-white/5 rounded-xl p-4">
-          <h4 class="font-semibold text-white mb-3">Costos por característica</h4>
+          <h4 class="font-semibold text-white mb-3">Costos aproximados por uso</h4>
           <div class="grid grid-cols-2 gap-2 text-sm">
             <div class="flex justify-between text-slate-400">
-              <span>Chat IA</span>
-              <span>~250 créditos</span>
+              <span>💬 Chat IA</span>
+              <span>~500 tokens</span>
             </div>
             <div class="flex justify-between text-slate-400">
-              <span>Resumen</span>
-              <span>~200 créditos</span>
+              <span>📝 Resumen</span>
+              <span>~300 tokens</span>
             </div>
             <div class="flex justify-between text-slate-400">
-              <span>Quiz personalizado</span>
-              <span>~400 créditos</span>
+              <span>❓ Quiz</span>
+              <span>~600 tokens</span>
             </div>
             <div class="flex justify-between text-slate-400">
-              <span>Tutor IA</span>
-              <span>~450 créditos</span>
+              <span>🎓 Tutor IA</span>
+              <span>~800 tokens</span>
             </div>
             <div class="flex justify-between text-slate-400">
-              <span>Game Master</span>
-              <span>~500 créditos</span>
+              <span>🎮 Game Master</span>
+              <span>~1000 tokens</span>
             </div>
             <div class="flex justify-between text-slate-400">
-              <span>Adaptador contenido</span>
-              <span>~300 créditos</span>
+              <span>🔊 Voz ElevenLabs</span>
+              <span>~200/1K chars</span>
             </div>
           </div>
         </div>
 
-        <!-- Comprar más créditos -->
-        ${remaining < total * 0.2 ? `
+        <!-- Alerta tokens bajos -->
+        ${totalAvailable < 1000 ? `
           <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-            <p class="text-amber-400 text-sm mb-3">⚠️ Tus créditos están bajos</p>
-            <button id="buy-credits-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg transition-colors">
-              Actualizar plan para más créditos
-            </button>
+            <p class="text-amber-400 text-sm mb-3">⚠️ Tus tokens están bajos</p>
+            <div class="flex flex-wrap gap-2">
+              <button id="buy-tokens-alert-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg transition-colors text-sm">
+                🛒 Comprar tokens
+              </button>
+              ${tier === 'free' ? `
+                <button id="upgrade-for-tokens-btn" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">
+                  ⭐ Mejorar plan
+                </button>
+              ` : ''}
+            </div>
           </div>
         ` : ''}
+
+        <!-- Paquetes disponibles resumen -->
+        <div class="bg-white/5 rounded-xl p-4">
+          <h4 class="font-semibold text-white mb-3">Paquetes de tokens</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-sm">
+            <div class="bg-white/5 rounded-lg p-2">
+              <div class="text-amber-400 font-bold">50K</div>
+              <div class="text-slate-500">2,99€</div>
+            </div>
+            <div class="bg-white/5 rounded-lg p-2 ring-1 ring-cyan-500/50">
+              <div class="text-cyan-400 font-bold">150K</div>
+              <div class="text-slate-500">7,99€</div>
+              <div class="text-xs text-cyan-400">Popular</div>
+            </div>
+            <div class="bg-white/5 rounded-lg p-2">
+              <div class="text-purple-400 font-bold">500K</div>
+              <div class="text-slate-500">19,99€</div>
+            </div>
+            <div class="bg-white/5 rounded-lg p-2">
+              <div class="text-pink-400 font-bold">1.5M</div>
+              <div class="text-slate-500">49,99€</div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 text-center mt-2">Pago con tarjeta, PayPal o Bitcoin</p>
+        </div>
       </div>
     `;
   }
@@ -963,66 +1055,133 @@ class MyAccountModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   renderHistoryTab() {
+    // Combinar transacciones de pago y tokens
+    const allTokenTransactions = this.tokenTransactions || [];
+    const purchases = allTokenTransactions.filter(t => t.type === 'purchase');
+    const consumptions = allTokenTransactions.filter(t => t.type === 'consumption');
+
     return `
       <div class="space-y-6">
-        <!-- Historial de pagos -->
+        <!-- Historial de compras -->
         <div>
-          <h4 class="text-lg font-semibold text-white mb-3">Historial de Pagos</h4>
-          ${this.transactions.length > 0 ? `
-            <div class="space-y-2">
-              ${this.transactions.map(tx => `
+          <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+            💳 Compras de Tokens
+            <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-slate-400">${purchases.length}</span>
+          </h4>
+          ${purchases.length > 0 ? `
+            <div class="space-y-2 max-h-48 overflow-y-auto">
+              ${purchases.map(tx => `
                 <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full ${tx.status === 'completed' ? 'bg-green-500/20' : 'bg-yellow-500/20'} flex items-center justify-center">
-                      ${tx.status === 'completed'
-                        ? Icons.create('check', 20)
-                        : Icons.create('clock', 20)}
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                      ${this.getPaymentMethodIcon(tx.payment_method)}
                     </div>
                     <div>
-                      <p class="text-white font-medium">${tx.description || 'Pago de suscripción'}</p>
+                      <p class="text-white font-medium">${tx.description || `Compra ${tx.package_id || ''}`}</p>
                       <p class="text-sm text-slate-400">${new Date(tx.created_at).toLocaleDateString('es-ES')}</p>
                     </div>
                   </div>
                   <div class="text-right">
-                    <p class="text-white font-bold">${tx.amount}€</p>
-                    <p class="text-sm ${tx.status === 'completed' ? 'text-green-400' : 'text-yellow-400'}">
-                      ${tx.status === 'completed' ? 'Completado' : 'Pendiente'}
-                    </p>
+                    <p class="text-green-400 font-bold">+${(tx.tokens_amount || 0).toLocaleString()}</p>
+                    <p class="text-xs text-slate-500">${tx.payment_method || 'stripe'}</p>
                   </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : `
-            <div class="text-center py-12 text-slate-500">
-              <p class="text-4xl mb-2">📭</p>
-              <p>No hay pagos registrados</p>
-            </div>
-          `}
-        </div>
-
-        <!-- Historial de uso IA -->
-        <div>
-          <h4 class="text-lg font-semibold text-white mb-3">Uso de IA (últimos 30 días)</h4>
-          ${this.usageHistory.length > 0 ? `
-            <div class="max-h-64 overflow-y-auto space-y-2">
-              ${this.usageHistory.slice(0, 20).map(item => `
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg text-sm">
-                  <div>
-                    <span class="text-slate-300 capitalize">${(item.feature_used || 'general').replace(/_/g, ' ')}</span>
-                    <span class="text-slate-600 ml-2">${new Date(item.created_at).toLocaleString('es-ES')}</span>
-                  </div>
-                  <span class="text-cyan-400">-${item.credits_used || 0}</span>
                 </div>
               `).join('')}
             </div>
           ` : `
             <div class="text-center py-8 text-slate-500">
-              <p>No hay uso de IA registrado</p>
+              <p class="text-2xl mb-2">🛒</p>
+              <p>No has comprado tokens aún</p>
+            </div>
+          `}
+        </div>
+
+        <!-- Historial de pagos tradicionales -->
+        ${this.transactions.length > 0 ? `
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-3">📄 Pagos de Suscripción</h4>
+          <div class="space-y-2 max-h-40 overflow-y-auto">
+            ${this.transactions.slice(0, 10).map(tx => `
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full ${tx.status === 'completed' ? 'bg-green-500/20' : 'bg-yellow-500/20'} flex items-center justify-center">
+                    ${tx.status === 'completed'
+                      ? Icons.create('check', 16)
+                      : Icons.create('clock', 16)}
+                  </div>
+                  <div>
+                    <p class="text-white text-sm">${tx.description || 'Suscripción'}</p>
+                    <p class="text-xs text-slate-500">${new Date(tx.created_at).toLocaleDateString('es-ES')}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-white font-medium">${tx.amount}€</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- Historial de consumo de tokens -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+            🤖 Uso de Tokens
+            <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-slate-400">${consumptions.length}</span>
+          </h4>
+          ${consumptions.length > 0 ? `
+            <div class="max-h-64 overflow-y-auto space-y-2">
+              ${consumptions.slice(0, 20).map(item => `
+                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg text-sm">
+                  <div class="flex items-center gap-2">
+                    <span class="text-slate-400">${this.getContextEmoji(item.context)}</span>
+                    <div>
+                      <span class="text-slate-300 capitalize">${(item.context || 'general').replace(/_/g, ' ')}</span>
+                      <span class="text-slate-600 ml-2 text-xs">${new Date(item.created_at).toLocaleString('es-ES')}</span>
+                    </div>
+                  </div>
+                  <span class="text-amber-400">-${(item.tokens_amount || 0).toLocaleString()}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="text-center py-8 text-slate-500">
+              <p class="text-2xl mb-2">🤖</p>
+              <p>No hay consumo de tokens registrado</p>
+              <p class="text-xs mt-1">Prueba el chat IA mientras lees</p>
             </div>
           `}
         </div>
       </div>
     `;
+  }
+
+  // Helper para icono de método de pago
+  getPaymentMethodIcon(method) {
+    switch (method) {
+      case 'btc':
+      case 'bitcoin':
+        return '₿';
+      case 'paypal':
+        return '🅿️';
+      default:
+        return '💳';
+    }
+  }
+
+  // Helper para emoji de contexto
+  getContextEmoji(context) {
+    const emojis = {
+      ai_chat: '💬',
+      ai_tutor: '🎓',
+      ai_game_master: '🎮',
+      ai_content_adapter: '📖',
+      elevenlabs: '🔊',
+      summary: '📝',
+      quiz: '❓',
+      general: '🤖'
+    };
+    return emojis[context] || '🤖';
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1053,11 +1212,11 @@ class MyAccountModal {
 
           <label class="flex items-center justify-between p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10">
             <div>
-              <p class="text-white">Alertas de créditos bajos</p>
-              <p class="text-sm text-slate-500">Aviso cuando quedan pocos créditos IA</p>
+              <p class="text-white">Alertas de tokens bajos</p>
+              <p class="text-sm text-slate-500">Aviso cuando quedan pocos tokens IA</p>
             </div>
-            <input type="checkbox" id="pref-low-credits-alert"
-                   ${preferences.low_credits_alert !== false ? 'checked' : ''}
+            <input type="checkbox" id="pref-low-tokens-alert"
+                   ${preferences.low_tokens_alert !== false ? 'checked' : ''}
                    class="w-5 h-5 rounded accent-cyan-500">
           </label>
         </div>
@@ -1183,6 +1342,14 @@ class MyAccountModal {
       });
     }
 
+    // Cambiar avatar
+    const changeAvatarBtn = document.getElementById('change-avatar-btn');
+    if (changeAvatarBtn) {
+      this.eventManager.addEventListener(changeAvatarBtn, 'click', () => {
+        this.openAvatarPicker();
+      });
+    }
+
     // Cambiar contraseña
     const changePasswordBtn = document.getElementById('change-password-btn');
     if (changePasswordBtn) {
@@ -1249,10 +1416,36 @@ class MyAccountModal {
       });
     }
 
-    // Comprar créditos
-    const buyCreditsBtn = document.getElementById('buy-credits-btn');
-    if (buyCreditsBtn) {
-      this.eventManager.addEventListener(buyCreditsBtn, 'click', () => {
+    // Comprar tokens - botón principal
+    const buyTokensBtn = document.getElementById('buy-tokens-btn');
+    if (buyTokensBtn) {
+      this.eventManager.addEventListener(buyTokensBtn, 'click', () => {
+        this.close();
+        if (window.tokenPurchaseModal) {
+          window.tokenPurchaseModal.show();
+        } else if (window.pricingModal) {
+          window.pricingModal.showPricingModal();
+        }
+      });
+    }
+
+    // Comprar tokens - botón de alerta
+    const buyTokensAlertBtn = document.getElementById('buy-tokens-alert-btn');
+    if (buyTokensAlertBtn) {
+      this.eventManager.addEventListener(buyTokensAlertBtn, 'click', () => {
+        this.close();
+        if (window.tokenPurchaseModal) {
+          window.tokenPurchaseModal.show();
+        } else if (window.pricingModal) {
+          window.pricingModal.showPricingModal();
+        }
+      });
+    }
+
+    // Mejorar plan para más tokens
+    const upgradeForTokensBtn = document.getElementById('upgrade-for-tokens-btn');
+    if (upgradeForTokensBtn) {
+      this.eventManager.addEventListener(upgradeForTokensBtn, 'click', () => {
         this.close();
         if (window.pricingModal) {
           window.pricingModal.showPricingModal();
@@ -1375,7 +1568,7 @@ class MyAccountModal {
   async savePreferences() {
     const preferences = {
       email_notifications: document.getElementById('pref-email-notifications')?.checked ?? true,
-      low_credits_alert: document.getElementById('pref-low-credits-alert')?.checked ?? true,
+      low_tokens_alert: document.getElementById('pref-low-tokens-alert')?.checked ?? true,
       sync_progress: document.getElementById('pref-sync-progress')?.checked ?? true,
       analytics: document.getElementById('pref-analytics')?.checked ?? true
     };
@@ -1532,6 +1725,138 @@ class MyAccountModal {
       logger.error('[MyAccount] Error eliminando cuenta:', error);
       window.toast?.error('Error al eliminar. Contacta con soporte.');
     }
+  }
+
+  // ============================================================================
+  // AVATAR - Cambio de foto de perfil
+  // ============================================================================
+
+  /**
+   * Abre el selector de imagen para cambiar el avatar
+   */
+  openAvatarPicker() {
+    // Crear input de archivo temporal
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/jpeg,image/png,image/webp,image/gif';
+    input.style.display = 'none';
+
+    input.onchange = async (e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        await this.handleAvatarUpload(file);
+      }
+      input.remove();
+    };
+
+    document.body.appendChild(input);
+    input.click();
+  }
+
+  /**
+   * Procesa y sube la imagen de avatar
+   * @param {File} file - Archivo de imagen seleccionado
+   */
+  async handleAvatarUpload(file) {
+    // Validar tamaño (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      window.toast?.error('La imagen no puede superar 5MB');
+      return;
+    }
+
+    // Validar tipo
+    if (!file.type.startsWith('image/')) {
+      window.toast?.error('Por favor selecciona una imagen válida');
+      return;
+    }
+
+    try {
+      window.toast?.info('Procesando imagen...');
+
+      // Redimensionar y comprimir la imagen
+      const resizedImage = await this.resizeImage(file, 200, 200);
+
+      // Guardar en Supabase
+      const userId = this.authHelper?.getUser()?.id;
+      if (!userId || !this.supabase) {
+        window.toast?.error('Error: usuario no autenticado');
+        return;
+      }
+
+      await this.supabase
+        .from('profiles')
+        .update({ avatar_url: resizedImage })
+        .eq('id', userId);
+
+      // Actualizar caché local del perfil
+      if (this.authHelper?.profile) {
+        this.authHelper.profile.avatar_url = resizedImage;
+      }
+
+      // Actualizar UI
+      const avatarContainer = document.querySelector('#my-account-modal .w-20.h-20');
+      if (avatarContainer) {
+        avatarContainer.innerHTML = `<img src="${resizedImage}" class="w-full h-full rounded-full object-cover" alt="Avatar">`;
+      }
+
+      window.toast?.success('Foto de perfil actualizada');
+
+    } catch (error) {
+      logger.error('[MyAccount] Error subiendo avatar:', error);
+      window.toast?.error('Error al actualizar la foto de perfil');
+    }
+  }
+
+  /**
+   * Redimensiona una imagen a las dimensiones especificadas
+   * @param {File} file - Archivo de imagen
+   * @param {number} maxWidth - Ancho máximo
+   * @param {number} maxHeight - Alto máximo
+   * @returns {Promise<string>} - Data URL de la imagen redimensionada
+   */
+  resizeImage(file, maxWidth, maxHeight) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const img = new Image();
+
+        img.onload = () => {
+          // Calcular dimensiones manteniendo aspect ratio
+          let width = img.width;
+          let height = img.height;
+
+          // Recortar al cuadrado más grande posible (centrado)
+          const size = Math.min(width, height);
+          const startX = (width - size) / 2;
+          const startY = (height - size) / 2;
+
+          // Crear canvas
+          const canvas = document.createElement('canvas');
+          canvas.width = maxWidth;
+          canvas.height = maxHeight;
+
+          const ctx = canvas.getContext('2d');
+
+          // Dibujar imagen recortada y redimensionada
+          ctx.drawImage(
+            img,
+            startX, startY, size, size,  // Origen (recorte cuadrado)
+            0, 0, maxWidth, maxHeight     // Destino
+          );
+
+          // Convertir a base64 con compresión
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          resolve(dataUrl);
+        };
+
+        img.onerror = () => reject(new Error('Error al cargar la imagen'));
+        img.src = e.target.result;
+      };
+
+      reader.onerror = () => reject(new Error('Error al leer el archivo'));
+      reader.readAsDataURL(file);
+    });
   }
 }
 

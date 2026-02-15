@@ -654,6 +654,8 @@ class PracticeOfTheDayWidget {
   }
 }
 
+window.PracticeOfTheDayWidget = PracticeOfTheDayWidget;
+
 // ==========================================================================
 // INICIALIZACIÓN GLOBAL
 // ==========================================================================

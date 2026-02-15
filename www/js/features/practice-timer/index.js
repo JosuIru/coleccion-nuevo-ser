@@ -63,11 +63,11 @@ class PracticeTimer {
     this._lastReminderId = null;
 
     // Inicializar modulos
-    this.ambient = new (window.PracticeTimerAmbient || PracticeTimerAmbient)(this);
-    this.tts = new (window.PracticeTimerTTS || PracticeTimerTTS)(this);
-    this.recurring = new (window.PracticeTimerRecurring || PracticeTimerRecurring)(this);
-    this.ui = new (window.PracticeTimerUI || PracticeTimerUI)(this);
-    this.playback = new (window.PracticeTimerPlayback || PracticeTimerPlayback)(this);
+    this.ambient = new window.PracticeTimerAmbient(this);
+    this.tts = new window.PracticeTimerTTS(this);
+    this.recurring = new window.PracticeTimerRecurring(this);
+    this.ui = new window.PracticeTimerUI(this);
+    this.playback = new window.PracticeTimerPlayback(this);
 
     // Cargar practicas recurrentes
     this.recurringPractices = this.recurring.loadRecurringPractices();

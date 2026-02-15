@@ -18,7 +18,7 @@ class RadialMenu {
     this.touchStartPos = { x: 0, y: 0 };
 
     // EventManager para cleanup automático
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('RadialMenu');
 
     // i18n

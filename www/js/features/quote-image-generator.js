@@ -179,7 +179,7 @@ class QuoteImageGenerator {
     return this.canvas;
   }
 
-  calculateFontSize(text, maxWidth, lineHeight) {
+  calculateFontSize(text, _maxWidth, _lineHeight) {
     const baseSize = 48;
     const words = text.split(' ').length;
 

@@ -153,8 +153,6 @@ class TokenPurchaseModal {
   }
 
   renderBitcoinContent(btcRequest = null) {
-    const btcConfig = window.PLANS_CONFIG?.paymentConfig || {};
-
     if (btcRequest) {
       // Mostrar datos de pago pendiente
       return `

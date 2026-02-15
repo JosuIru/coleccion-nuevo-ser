@@ -305,18 +305,6 @@ class VoiceNotes {
     const base64 = localStorage.getItem(`voice-note-data-${noteId}`);
     if (!base64) return null;
 
-    // Find metadata to get mime type
-    let mimeType = 'audio/webm';
-    for (const bookNotes of Object.values(this.notes)) {
-      for (const chapterNotes of Object.values(bookNotes)) {
-        const note = chapterNotes.find(n => n.id === noteId);
-        if (note) {
-          mimeType = note.mimeType;
-          break;
-        }
-      }
-    }
-
     // Convert base64 back to blob
     const response = await fetch(base64);
     return response.blob();

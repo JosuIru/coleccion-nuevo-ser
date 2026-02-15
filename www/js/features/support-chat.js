@@ -408,6 +408,7 @@ Tokens disponibles: ${(profile.ai_credits_remaining || 0) + (profile.token_balan
         body: JSON.stringify({
           message: userMessage,
           category,
+          systemContext,
           userContext,
           history: this.messages.slice(-6), // Ultimos 6 mensajes
           conversationId: this.conversationId

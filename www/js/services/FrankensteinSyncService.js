@@ -38,7 +38,7 @@ class FrankensteinSyncService {
     this.authHelper = window.supabaseAuthHelper;
 
     // Listener para cambios de autenticación
-    this.authHelper.onAuthStateChange(async (event, session) => {
+    this.authHelper.onAuthStateChange(async (event, _session) => {
       if (event === 'SIGNED_IN') {
         // Sincronizar al iniciar sesión
         await this.syncOnLogin();
@@ -181,8 +181,6 @@ class FrankensteinSyncService {
     if (!this.isAuthenticated() || this.syncInProgress) return;
 
     this.syncInProgress = true;
-    const userId = this.getUserId();
-
     try {
       // 1. Obtener seres de la nube
       const cloudBeings = await this.getCloudBeings();
@@ -258,7 +256,7 @@ class FrankensteinSyncService {
     const userId = this.getUserId();
 
     try {
-      const { data, error } = await this.supabase
+      const { error } = await this.supabase
         .from('frankenstein_beings')
         .upsert({
           user_id: userId,

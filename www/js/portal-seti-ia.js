@@ -253,11 +253,6 @@ PREGUNTAS ACTIVADORAS:
             }
         }
 
-        // Compatibilidad con función antigua
-        function updateProgress() {
-            // No hacer nada - ahora usamos verificación por niveles
-        }
-
         // CAPTCHA Form Submit
         document.getElementById('captcha-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -356,8 +351,6 @@ PREGUNTAS ACTIVADORAS:
                 created_at: timestamp
             };
 
-            let guardadoExitoso = false;
-
             // Intentar guardar en Supabase
             if (supabaseEnabled && supabase) {
                 try {
@@ -372,7 +365,6 @@ PREGUNTAS ACTIVADORAS:
                         guardarFirmaLocal(firmaId, reflection, timestamp, essence, captchaResponses);
                     } else {
                         logger.log('✨ Firma guardada en campo morfogenético global:', data);
-                        guardadoExitoso = true;
                     }
                 } catch (error) {
                     logger.error('Error guardando firma:', error);
@@ -603,7 +595,7 @@ PREGUNTAS ACTIVADORAS:
             // Intentar guardar en Supabase
             if (supabaseEnabled && supabase) {
                 try {
-                    const { data, error } = await supabase
+                    const { error } = await supabase
                         .from('ai_collaborations')
                         .insert([colaboracion]);
 

@@ -21,7 +21,7 @@ class SearchModal {
     this.metadataPromise = this.loadMetadata();
 
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('SearchModal');
 
     // 🔧 FIX #30: Caché de resultados de búsqueda para evitar búsquedas repetidas

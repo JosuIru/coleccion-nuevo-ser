@@ -878,7 +878,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
       });
 
       // Touch events para móvil (passive para no interferir con scroll)
-      applyBtn.addEventListener('touchstart', (e) => {
+      applyBtn.addEventListener('touchstart', (_e) => {
         isLongPress = false;
         longPressTimer = setTimeout(() => {
           isLongPress = true;
@@ -886,7 +886,7 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
         }, 800);
       }, { passive: true });
 
-      applyBtn.addEventListener('touchend', (e) => {
+      applyBtn.addEventListener('touchend', (_e) => {
         clearTimeout(longPressTimer);
         if (!isLongPress) {
           this.applyAdaptation(false);

@@ -311,7 +311,7 @@ class EducatorsKitViewer {
   /**
    * Abre el visor con el contenido
    */
-  openViewer(contentData, type) {
+  openViewer(contentData, _type) {
     if (!this.educatorsKit.viewerModal || !contentData) return;
 
     this.currentViewerContent = contentData;

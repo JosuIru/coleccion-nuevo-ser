@@ -19,7 +19,7 @@ class ContextualHints {
     this.autoCloseTimeout = null;
 
     // 🔧 FIX #86: Event manager centralizado para limpieza consistente
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('ContextualHints');
 
     // 🔧 FIX #74: No detectar aquí - usar getter dinámico en su lugar (ver más abajo)
@@ -274,7 +274,7 @@ class ContextualHints {
         return false;
       }
 
-      const evaluator = new SafeExpressionEvaluator(false);
+      const evaluator = new window.SafeExpressionEvaluator(false);
       return evaluator.evaluate(trigger, context);
     } catch (e) {
       logger.error('[ContextualHints] Error evaluating trigger:', e);

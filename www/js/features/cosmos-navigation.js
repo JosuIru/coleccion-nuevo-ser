@@ -75,7 +75,7 @@ class CosmosNavigationV2 {
     this.animationFrameId = null;
 
     // ⭐ FIX v2.9.180: EventManager para prevenir memory leaks
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
 
     // ⭐ FIX v2.9.185: Tracking de timers para cleanup (3 timers sin clear)
     this.timers = [];

@@ -615,9 +615,9 @@ Se creativo, practico y asegurate de que el recurso sea facil de implementar. Us
     }
 
     // Intentar usar Puter AI
-    if (typeof puter !== 'undefined' && puter.ai) {
+    if (typeof window.puter !== 'undefined' && window.puter.ai) {
       try {
-        const response = await puter.ai.chat(prompt, {
+        const response = await window.puter.ai.chat(prompt, {
           model: 'gpt-4o-mini'
         });
         return response?.message?.content || response;

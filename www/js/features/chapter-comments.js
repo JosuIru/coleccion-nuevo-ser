@@ -416,11 +416,11 @@ class ChapterComments {
     });
   }
 
-  async syncLikeToCloud(commentId, isUnlike) {
+  async syncLikeToCloud(_commentId, _isUnlike) {
     // Implementar sincronización con Supabase cuando esté disponible
   }
 
-  async syncReportToCloud(report) {
+  async syncReportToCloud(_report) {
     // Implementar sincronización con Supabase cuando esté disponible
   }
 

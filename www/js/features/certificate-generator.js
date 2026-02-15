@@ -337,7 +337,7 @@ class CertificateGenerator {
       const certificateElement = tempContainer.querySelector('#certificate-canvas');
 
       // v2.9.387: Lazy load html2canvas (199KB) solo cuando se necesita
-      if (typeof html2canvas === 'undefined' && window.lazyLoader) {
+      if (typeof window.html2canvas === 'undefined' && window.lazyLoader) {
         try {
           await window.lazyLoader.loadScript('js/vendor/html2canvas.min.js');
         } catch (loadError) {
@@ -346,8 +346,8 @@ class CertificateGenerator {
       }
 
       // Usar html2canvas si está disponible, sino canvas nativo
-      if (typeof html2canvas !== 'undefined') {
-        const canvas = await html2canvas(certificateElement, {
+      if (typeof window.html2canvas !== 'undefined') {
+        const canvas = await window.html2canvas(certificateElement, {
           backgroundColor: '#0f172a',
           scale: 2,
           useCORS: true,

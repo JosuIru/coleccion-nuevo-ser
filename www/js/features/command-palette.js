@@ -13,7 +13,7 @@ class CommandPalette {
     this.filteredCommands = [];
 
     // EventManager para cleanup automático
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('CommandPalette');
 
     // i18n

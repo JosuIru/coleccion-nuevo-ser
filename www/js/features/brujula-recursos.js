@@ -116,7 +116,6 @@ class BrujulaRecursos {
 
         // Procesar cada tipo de recurso
         const tipos = ['books', 'papers', 'documentaries', 'podcasts', 'organizations', 'tools'];
-        let recursosLibro = 0;
 
         for (const tipo of tipos) {
           if (data[tipo]) {
@@ -129,7 +128,6 @@ class BrujulaRecursos {
                 libroNombre: libro.title,
                 dimensiones: this.detectarDimensiones(recurso, libro.id)
               });
-              recursosLibro++;
             });
           }
         }
@@ -148,11 +146,8 @@ class BrujulaRecursos {
               dimensiones: ref.relatedChapters ? this.inferirDimensionesDeCapitulos(ref.relatedChapters) : [],
               relatedChapters: ref.relatedChapters
             });
-            recursosLibro++;
           });
         }
-
-        // logger.debug(`  ✓ ${recursosLibro} recursos cargados de ${libro.id}`);
       }
     } catch (error) {
       // logger.warn(`No se pudieron cargar recursos de ${libro.id}:`, error);
@@ -297,7 +292,7 @@ class BrujulaRecursos {
 
     // Tags de keywords detectadas
     const texto = `${recurso.title} ${recurso.description}`.toLowerCase();
-    Object.entries(this.dimensiones).forEach(([dimId, dim]) => {
+    Object.entries(this.dimensiones).forEach(([_dimId, dim]) => {
       dim.keywords.forEach(kw => {
         if (texto.includes(kw)) tags.add(kw);
       });

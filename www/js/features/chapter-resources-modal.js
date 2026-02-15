@@ -14,7 +14,7 @@ class ChapterResourcesModal {
     this.favorites = this.loadFavorites();
 
     // 🔧 FIX: EventManager para gestión automática de listeners
-    this.eventManager = new EventManager();
+    this.eventManager = new window.EventManager();
     this.eventManager.setComponentName('ChapterResourcesModal');
     this._eventListenersAttached = false;
   }

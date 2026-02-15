@@ -10,6 +10,48 @@ require('../js/core/book-engine.js');
 
 const BookEngine = window.BookEngine;
 
+// Minimal icon map used by rich render methods
+const iconFn = (name) => () => `<i>${name}</i>`;
+window.Icons = {
+  meditation: iconFn('meditation'),
+  clock: iconFn('clock'),
+  chevronRight: iconFn('chevronRight'),
+  sparkles: iconFn('sparkles'),
+  flame: iconFn('flame'),
+  zap: iconFn('zap'),
+  link: iconFn('link'),
+  book: iconFn('book'),
+  waves: iconFn('waves'),
+  brain: iconFn('brain'),
+  smartphone: iconFn('smartphone'),
+  refreshCw: iconFn('refreshCw'),
+  heartPulse: iconFn('heartPulse'),
+  eye: iconFn('eye'),
+  helpCircle: iconFn('helpCircle'),
+  alertTriangle: iconFn('alertTriangle'),
+  skull: iconFn('skull'),
+  messageSquare: iconFn('messageSquare'),
+  scale: iconFn('scale'),
+  infinity: iconFn('infinity'),
+  network: iconFn('network'),
+  route: iconFn('route'),
+  users: iconFn('users'),
+  palette: iconFn('palette'),
+  drama: iconFn('drama'),
+  gem: iconFn('gem'),
+  activity: iconFn('activity'),
+  search: iconFn('search'),
+  feather: iconFn('feather'),
+  leaf: iconFn('leaf'),
+  mail: iconFn('mail'),
+  moonStar: iconFn('moonStar'),
+  fileText: iconFn('fileText'),
+  bot: iconFn('bot'),
+  target: iconFn('target'),
+  sunrise: iconFn('sunrise'),
+  bookMarked: iconFn('bookMarked')
+};
+
 // ---------------------------------------------------------------------------
 // Shared test data
 // ---------------------------------------------------------------------------
@@ -576,6 +618,80 @@ describe('BookEngine', () => {
       expect(html).toContain('<strong');
       expect(html).toContain('<em');
     });
+
+    it('should render full exercises block for regular books', () => {
+      const html = engine.renderExercises([
+        {
+          title: 'Respiracion consciente',
+          duration: '10 min',
+          description: 'Descripcion breve',
+          steps: ['Paso 1', 'Paso 2'],
+          reflection: 'Reflexiona aqui'
+        }
+      ], 'cap1');
+
+      expect(html).toContain('Prácticas y Ejercicios');
+      expect(html).toContain('Respiracion consciente');
+      expect(html).toContain('Paso 1');
+      expect(html).toContain('Reflexión');
+    });
+
+    it('should render linked exercises layout when current book is link-based', () => {
+      jest.spyOn(engine, 'getCurrentBook').mockReturnValue({ id: 'codigo-despertar' });
+
+      const html = engine.renderExercises([{ id: 'x', title: 'dummy' }], 'cap12');
+
+      expect(html).toContain('Material Complementario');
+      expect(html).toContain('Manual Práctico');
+      expect(html).toContain('Prácticas Radicales');
+      expect(html).toContain('Lecturas Relacionadas');
+    });
+
+    it('should return empty string for exercise links when chapter has no related resources', () => {
+      const html = engine.renderExerciseLinks([], 'chapter-unknown');
+      expect(html).toBe('');
+    });
+
+    it('should render toolkit linked exercise card', () => {
+      const html = engine.renderLinkedExercise({
+        book: 'toolkit-transicion',
+        chapterId: 'tk-1',
+        title: 'Ritual de transicion',
+        duration: '20 min',
+        difficulty: 'media'
+      });
+
+      expect(html).toContain('Ejercicio Práctico');
+      expect(html).toContain('toolkit-transicion');
+      expect(html).toContain('Ritual de transicion');
+    });
+
+    it('should render parent book link with book-specific style', () => {
+      const html = engine.renderParentBookLink({
+        book: 'manual-transicion',
+        bookTitle: 'Manual',
+        chapterId: 'fase1',
+        chapterTitle: 'Fase 1',
+        description: 'Descripcion'
+      });
+
+      expect(html).toContain('manual-transicion');
+      expect(html).toContain('Fase 1');
+      expect(html).toContain('manual-transicion');
+    });
+
+    it('should render manifiesto link card', () => {
+      const html = engine.renderManifiestoLink({
+        book: 'manifiesto',
+        chapterId: 'principio1',
+        chapterTitle: 'Principio 1',
+        relation: 'Base conceptual'
+      });
+
+      expect(html).toContain('manifiesto');
+      expect(html).toContain('Principio 1');
+      expect(html).toContain('Base conceptual');
+    });
   });
 
   // ========================================================================
@@ -656,6 +772,43 @@ describe('BookEngine', () => {
     it('should return null when exercise title is not found', () => {
       const chapterId = engine.findChapterByExerciseTitle('Nonexistent Exercise');
       expect(chapterId).toBeNull();
+    });
+  });
+
+  describe('Cloud Sync', () => {
+    it('should skip progress sync when user is not authenticated', async () => {
+      window.supabaseSyncHelper = { migrateReadingProgress: jest.fn() };
+      window.supabaseAuthHelper = { isAuthenticated: jest.fn(() => false) };
+
+      await engine.syncProgressToCloud();
+      expect(window.supabaseSyncHelper.migrateReadingProgress).not.toHaveBeenCalled();
+    });
+
+    it('should run progress, notes and bookmarks sync when authenticated', async () => {
+      window.supabaseSyncHelper = {
+        migrateReadingProgress: jest.fn(() => Promise.resolve()),
+        migrateNotes: jest.fn(() => Promise.resolve()),
+        migrateBookmarks: jest.fn(() => Promise.resolve())
+      };
+      window.supabaseAuthHelper = { isAuthenticated: jest.fn(() => true) };
+
+      await engine.syncProgressToCloud();
+      await engine.syncNotesToCloud();
+      await engine.syncBookmarksToCloud();
+
+      expect(window.supabaseSyncHelper.migrateReadingProgress).toHaveBeenCalled();
+      expect(window.supabaseSyncHelper.migrateNotes).toHaveBeenCalled();
+      expect(window.supabaseSyncHelper.migrateBookmarks).toHaveBeenCalled();
+    });
+
+    it('should swallow sync errors and log them', async () => {
+      window.supabaseSyncHelper = {
+        migrateNotes: jest.fn(() => Promise.reject(new Error('sync notes fail')))
+      };
+      window.supabaseAuthHelper = { isAuthenticated: jest.fn(() => true) };
+
+      await engine.syncNotesToCloud();
+      expect(logger.error).toHaveBeenCalled();
     });
   });
 });

@@ -556,6 +556,53 @@ describe('AuthHelper', () => {
       expect(logger.groupEnd).toHaveBeenCalled();
     });
 
+    it('should capture error in ErrorBoundary when available', () => {
+      const captureError = jest.fn();
+      window.errorBoundary = { captureError };
+      const error = { message: 'boundary test', code: '500', details: 'd' };
+
+      authHelper.handleSupabaseError(error, 'consumeTokens');
+
+      expect(captureError).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          context: 'supabase_consumeTokens',
+          filename: 'auth-helper.js'
+        })
+      );
+    });
+
+    it('should notify user for user_action_required category', () => {
+      authHelper.notifyUserOfError = jest.fn();
+      const error = { message: 'email not confirmed', code: '' };
+
+      const category = authHelper.handleSupabaseError(error, 'signup');
+
+      expect(category).toBe('user_action_required');
+      expect(authHelper.notifyUserOfError).toHaveBeenCalledWith(error, 'user_action_required', 'signup');
+    });
+
+    it('should fallback to logger when toast is unavailable', () => {
+      const previousToast = window.toast;
+      window.toast = null;
+
+      authHelper.notifyUserOfError({ message: 'boom' }, 'fatal', 'ctx');
+
+      expect(logger.error).toHaveBeenCalled();
+      window.toast = previousToast;
+    });
+
+    it('should trigger delayed signOut on session expired', () => {
+      jest.useFakeTimers();
+      authHelper.signOut = jest.fn();
+
+      authHelper.notifyUserOfError({ message: 'expired' }, 'session_expired', 'ctx');
+      jest.advanceTimersByTime(2100);
+
+      expect(authHelper.signOut).toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+
     it('should estimate costs correctly', () => {
       const cost = authHelper.estimateCost(1000, 'openai', 'gpt-4o');
       expect(parseFloat(cost)).toBeCloseTo(0.005, 3);
@@ -606,6 +653,33 @@ describe('AuthHelper', () => {
 
       authHelper.showNotification('Info msg', 'info');
       expect(window.toast.info).toHaveBeenCalledWith('Info msg');
+    });
+
+    it('should return empty error stats when ErrorBoundary is unavailable', () => {
+      window.errorBoundary = null;
+
+      expect(authHelper.getErrorStats()).toEqual({
+        total: 0,
+        byCategory: {},
+        recent: []
+      });
+    });
+
+    it('should aggregate error stats from ErrorBoundary log', () => {
+      window.errorBoundary = {
+        getErrorLog: jest.fn(() => [
+          { context: 'supabase_login', category: 'auth', filename: 'auth-helper.js' },
+          { context: 'supabase_profile', category: 'network', filename: 'auth-helper.js' },
+          { context: 'other', category: 'other', filename: 'other.js' }
+        ])
+      };
+
+      const stats = authHelper.getErrorStats();
+
+      expect(stats.total).toBe(2);
+      expect(stats.byCategory.auth).toBe(1);
+      expect(stats.byCategory.network).toBe(1);
+      expect(stats.recent).toHaveLength(2);
     });
   });
 });

@@ -11,7 +11,7 @@ class TTSProvider {
     this.isPaused = false;
   }
 
-  async speak(text, options = {}) {
+  async speak(text, _options = {}) {
     throw new Error('speak() debe ser implementado por la subclase');
   }
 
@@ -325,7 +325,7 @@ class OpenAITTSProvider extends TTSProvider {
       });
 
       // Error
-      audio.addEventListener('error', (event) => {
+      audio.addEventListener('error', (_event) => {
         this.isPlaying = false;
         this.isPaused = false;
         const error = new Error('Error reproduciendo audio');

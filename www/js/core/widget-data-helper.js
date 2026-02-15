@@ -346,7 +346,7 @@ class WidgetDataHelper {
     this.syncWidgetData();
   }
 
-  onNoteCreated(bookId) {
+  onNoteCreated(_bookId) {
     const today = new Date().toISOString().slice(0, 10);
     const todayStats = this.getFromStorage(`stats-${today}`, {
       chaptersRead: 0,

@@ -67,12 +67,10 @@ class SystemHealth {
         try {
             // 🔧 FIX v2.9.384: Supabase v2 devuelve {data, error}
             // Intentar health_check RPC (puede no existir)
-            let rpcResult = { error: null };
             try {
-                rpcResult = await window.supabase.rpc('health_check');
+                await window.supabase.rpc('health_check');
             } catch (rpcErr) {
                 // RPC may not exist, which is fine
-                rpcResult = { error: null };
             }
 
             // Try a basic query as fallback

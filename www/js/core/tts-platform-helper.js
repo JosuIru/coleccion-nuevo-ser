@@ -115,8 +115,6 @@ class TTSPlatformHelper {
                    this.browser === 'edge' ? 'microsoft-edge' :
                    'google-chrome';
 
-    const browserName = this.browser.charAt(0).toUpperCase() + this.browser.slice(1);
-
     const flags = [
       '--enable-speech-dispatcher',
       '--enable-features=WebSpeech',

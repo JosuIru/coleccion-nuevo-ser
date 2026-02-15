@@ -383,7 +383,7 @@ class AIChatModal {
     `;
   }
 
-  renderModelSelector() {
+  renderModelSelectorLegacy() {
     // Este método ya no se usa, pero lo mantenemos por compatibilidad
     return '';
   }

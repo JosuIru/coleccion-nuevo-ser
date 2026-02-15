@@ -642,7 +642,7 @@ END:VCALENDAR`.replace(/\n/g, '\r\n');
 
             <!-- Key data preview -->
             <div class="text-sm text-gray-400 mt-1 truncate">
-              ${Object.entries(plan.data).slice(0, 2).map(([key, value]) =>
+              ${Object.entries(plan.data).slice(0, 2).map(([_key, value]) =>
                 `<span>${value}</span>`
               ).join(' • ')}
             </div>

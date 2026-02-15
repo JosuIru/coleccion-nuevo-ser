@@ -15,30 +15,8 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/logger-service.php';
 require_once __DIR__ . '/error-logger.php';
 
-function getAllowedOrigins() {
-    $raw = getenv('APP_ALLOWED_ORIGINS') ?: '';
-    $origins = array_filter(array_map('trim', explode(',', $raw)));
-    if (empty($origins)) {
-        $origins = [
-            'https://gailu.net',
-            'https://www.gailu.net',
-            'http://localhost:5173',
-            'http://localhost:8100'
-        ];
-    }
-    return $origins;
-}
-
-function applyCorsHeaders() {
-    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-    $allowedOrigins = getAllowedOrigins();
-    if ($origin && in_array($origin, $allowedOrigins, true)) {
-        header("Access-Control-Allow-Origin: $origin");
-        header('Vary: Origin');
-    }
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-}
+require_once __DIR__ . '/_cors.php';
+applyCorsHeaders('GET, POST, OPTIONS', 'Content-Type, Authorization');
 
 function isDebugEnabled() {
     $env = getenv('APP_ENV') ?: '';
@@ -58,7 +36,6 @@ function isAuthorizedAdminRequest() {
 }
 
 header('Content-Type: application/json');
-applyCorsHeaders();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);

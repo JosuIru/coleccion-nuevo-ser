@@ -1,9 +1,15 @@
 /**
 // 🔧 FIX v2.9.198: Migrated console.log to logger
- * AI PREMIUM - Sistema de Créditos y Rate Limiting
- * Gestión de créditos de IA, verificación de permisos y consumo
+// 🔧 v2.9.386: Migrado a sistema de TOKENS (híbrido con suscripciones)
+ * AI PREMIUM - Sistema de Tokens y Rate Limiting
+ * Gestión de tokens de IA, verificación de permisos y consumo
  *
- * @version 1.0.0
+ * MODELO HÍBRIDO:
+ * - Suscripciones mensuales dan tokens gratis cada mes
+ * - Paquetes de tokens adicionales disponibles para compra
+ * - Métodos de pago: Stripe, PayPal, Bitcoin
+ *
+ * @version 2.0.0
  */
 
 class AIPremium {
@@ -50,7 +56,10 @@ class AIPremium {
   }
 
   /**
-   * Verificar si tiene créditos suficientes
+   * Verificar si tiene tokens suficientes
+   * @param {number} estimatedTokens - Tokens estimados necesarios
+   * @param {string} featureName - Nombre de la feature (opcional)
+   * 🔧 v2.9.391: Si tiene tokens suficientes, puede usar IA sin importar el plan
    */
   async checkCredits(estimatedTokens = 100, featureName = null) {
     const profile = this.authHelper.getProfile();
@@ -59,56 +68,99 @@ class AIPremium {
       throw new Error('Usuario no autenticado. Por favor, inicia sesión primero.');
     }
 
-    // Si es free, rechazar características premium
+    // Usar nuevo sistema de tokens
+    const tokenBalance = this.authHelper.getTokenBalance();
+
+    // 🔧 v2.9.391: Debug logging para verificar tokens
+    logger.debug('[AIPremium] checkCredits:', {
+      estimatedTokens,
+      featureName,
+      tier: profile.subscription_tier,
+      tokenBalance: profile.token_balance,
+      aiCreditsRemaining: profile.ai_credits_remaining,
+      totalTokens: tokenBalance
+    });
+
+    // 🔧 v2.9.391: Si tiene tokens suficientes (>= lo que necesita),
+    // puede usar la feature sin importar el plan
+    if (tokenBalance >= estimatedTokens) {
+      logger.debug('[AIPremium] Tokens suficientes, acceso permitido');
+      return true;
+    }
+
+    // Si no tiene tokens suficientes, verificar plan para dar mensaje apropiado
     if (featureName && !this.hasFeature(featureName)) {
-      const tier = profile.subscription_tier;
+      const tier = profile.subscription_tier || 'free';
       throw new Error(
-        `Esta función es de ${tier === 'free' ? 'pago' : 'plan superior'}. ` +
+        `Esta función requiere plan ${tier === 'free' ? 'Premium o Pro' : 'superior'}. ` +
         `Actualiza tu plan para acceder a "${featureName}".`
       );
     }
 
-    const remaining = profile.ai_credits_remaining || 0;
-
-    if (remaining < estimatedTokens) {
-      const creditsNeeded = estimatedTokens - remaining;
-      throw new Error(
-        `Créditos insuficientes. Necesitas ${creditsNeeded} créditos más. ` +
-        `Tus créditos se renuevan el ${new Date(profile.ai_credits_reset_date).toLocaleDateString('es-ES')}`
-      );
-    }
-
-    return true;
+    // No tiene tokens suficientes
+    const tokensNeeded = estimatedTokens - tokenBalance;
+    throw new Error(
+      `Tokens insuficientes. Necesitas ${this.formatTokens(tokensNeeded)} tokens más. ` +
+      `Compra tokens adicionales o actualiza tu plan.`
+    );
   }
 
   /**
-   * Obtener créditos disponibles
+   * Alias para compatibilidad: checkTokens
+   */
+  async checkTokens(estimatedTokens = 100, featureName = null) {
+    return this.checkCredits(estimatedTokens, featureName);
+  }
+
+  /**
+   * Obtener tokens disponibles (total: comprados + mensuales)
    */
   getCreditsRemaining() {
-    return this.authHelper.getAICredits();
+    return this.authHelper.getTokenBalance();
   }
 
   /**
-   * Obtener total de créditos mensuales
+   * Alias para nuevo sistema
+   */
+  getTokenBalance() {
+    return this.authHelper.getTokenBalance();
+  }
+
+  /**
+   * Obtener tokens comprados (wallet)
+   */
+  getPurchasedTokens() {
+    return this.authHelper.getPurchasedTokens();
+  }
+
+  /**
+   * Obtener tokens mensuales restantes
+   */
+  getMonthlyTokensRemaining() {
+    return this.authHelper.getMonthlyTokensRemaining();
+  }
+
+  /**
+   * Obtener total de tokens mensuales del plan
    */
   getCreditsTotal() {
-    const profile = this.authHelper.getProfile();
-    return profile?.ai_credits_total || 0;
+    const plan = this.authHelper.getSubscriptionTier();
+    return window.PLANS_CONFIG?.getMonthlyTokens(plan) || 0;
   }
 
   /**
-   * Obtener porcentaje de uso
+   * Obtener porcentaje de uso de tokens mensuales
    */
   getCreditsPercentage() {
-    const remaining = this.getCreditsRemaining();
-    const total = this.getCreditsTotal();
+    const monthlyRemaining = this.getMonthlyTokensRemaining();
+    const monthlyTotal = this.getCreditsTotal();
 
-    if (total === 0) return 0;
-    return Math.round((remaining / total) * 100);
+    if (monthlyTotal === 0) return 100; // Si no hay mensuales, mostrar 100%
+    return Math.round((monthlyRemaining / monthlyTotal) * 100);
   }
 
   /**
-   * Obtener fecha de reset de créditos
+   * Obtener fecha de reset de tokens mensuales
    */
   getCreditsResetDate() {
     const profile = this.authHelper.getProfile();
@@ -118,7 +170,7 @@ class AIPremium {
   }
 
   /**
-   * Obtener días hasta reset
+   * Obtener días hasta reset de tokens mensuales
    */
   getDaysUntilReset() {
     const resetDate = this.getCreditsResetDate();
@@ -131,19 +183,30 @@ class AIPremium {
     return Math.max(0, diffDays);
   }
 
+  /**
+   * Formatear tokens para mostrar (ej: 150K, 1.5M)
+   */
+  formatTokens(amount) {
+    return window.PLANS_CONFIG?.formatTokens(amount) || amount.toLocaleString();
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // CONSUMO DE CRÉDITOS
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
-   * Consumir créditos y registrar uso
+   * Consumir tokens y registrar uso
+   * @param {number} tokensAmount - Cantidad de tokens a consumir
+   * @param {string} context - Contexto (ai_chat, elevenlabs_tts, game_master)
+   * @param {string} provider - Proveedor (claude, openai, etc)
+   * @param {string} model - Modelo específico
    */
   async consumeCredits(
-    creditsAmount,
+    tokensAmount,
     context,
     provider = 'claude',
     model = 'claude-3-5-sonnet',
-    tokensUsed = 0
+    _tokensUsed = 0 // Deprecated, se usa tokensAmount
   ) {
     const user = this.authHelper.getUser();
 
@@ -152,21 +215,20 @@ class AIPremium {
     }
 
     try {
-      // Verificar que haya créditos
-      if (!this.authHelper.hasEnoughCredits(creditsAmount)) {
+      // Verificar que haya tokens
+      if (!this.authHelper.hasEnoughTokens(tokensAmount)) {
         throw new Error(
-          `Créditos insuficientes. Tienes ${this.getCreditsRemaining()}, ` +
-          `necesitas ${creditsAmount}.`
+          `Tokens insuficientes. Tienes ${this.formatTokens(this.getTokenBalance())}, ` +
+          `necesitas ${this.formatTokens(tokensAmount)}. Compra más tokens para continuar.`
         );
       }
 
-      // Consumir créditos (usando RPC de Supabase)
-      const result = await this.authHelper.consumeCredits(
-        creditsAmount,
+      // Consumir tokens (usando nuevo sistema)
+      const result = await this.authHelper.consumeTokens(
+        tokensAmount,
         context,
         provider,
-        model,
-        tokensUsed
+        model
       );
 
       if (!result.success) {
@@ -176,8 +238,13 @@ class AIPremium {
       // Notificar listeners
       this.notifyCreditUpdate(result.remaining);
 
+      // Verificar si tokens están bajos
+      if (this.authHelper.isTokenBalanceLow()) {
+        this.showLowTokensWarning();
+      }
+
       logger.debug(
-        `✅ Consumidos ${creditsAmount} créditos. Restantes: ${result.remaining}`
+        `✅ Consumidos ${this.formatTokens(tokensAmount)} tokens. Restantes: ${this.formatTokens(result.remaining)}`
       );
 
       return {
@@ -186,8 +253,28 @@ class AIPremium {
         percentage: this.getCreditsPercentage(),
       };
     } catch (error) {
-      logger.error('❌ Error consumiendo créditos:', error);
+      logger.error('❌ Error consumiendo tokens:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Alias: consumeTokens
+   */
+  async consumeTokens(tokensAmount, context, provider, model) {
+    return this.consumeCredits(tokensAmount, context, provider, model);
+  }
+
+  /**
+   * Mostrar advertencia de tokens bajos
+   */
+  showLowTokensWarning() {
+    if (window.toast) {
+      window.toast.warning(
+        `⚠️ Tokens bajos (${this.formatTokens(this.getTokenBalance())}). ` +
+        `<a href="#" onclick="window.tokenPurchaseModal?.open(); return false;">Comprar más</a>`,
+        8000
+      );
     }
   }
 
@@ -336,34 +423,41 @@ class AIPremium {
   }
 
   /**
-   * Obtener información de plan actual
+   * Obtener información de plan actual (usando PLANS_CONFIG)
    */
   getPlanInfo() {
-    const profile = this.authHelper.getProfile();
+    const tier = this.authHelper.getSubscriptionTier();
+    const planConfig = window.PLANS_CONFIG?.getPlan(tier);
+    const tokensInfo = this.authHelper.getTokensInfo();
 
-    const plans = {
-      free: {
+    if (!planConfig) {
+      return {
+        id: 'free',
         name: 'Gratuito',
-        monthlyCredits: 10,
-        features: ['ai_chat: NO', 'ai_tutor: NO', 'ai_game_master: NO'],
         icon: '🆓',
-      },
-      premium: {
-        name: 'Premium',
-        monthlyCredits: 500,
-        features: ['ai_chat: SÍ', 'ai_tutor: SÍ', 'ai_game_master: NO'],
-        icon: '⭐',
-      },
-      pro: {
-        name: 'Pro',
-        monthlyCredits: 2000,
-        features: ['ai_chat: SÍ', 'ai_tutor: SÍ', 'ai_game_master: SÍ'],
-        icon: '👑',
-      },
-    };
+        monthlyTokens: 5000,
+        features: [],
+        tokensInfo,
+      };
+    }
 
-    const tier = profile?.subscription_tier || 'free';
-    return plans[tier] || plans['free'];
+    // Construir lista de features activas
+    const activeFeatures = Object.entries(planConfig.features || {})
+      .filter(([_, enabled]) => enabled)
+      .map(([featureId]) => {
+        const featureDesc = window.PLANS_CONFIG?.featureDescriptions?.[featureId];
+        return featureDesc ? `${featureDesc.icon} ${featureDesc.name}` : featureId;
+      });
+
+    return {
+      id: planConfig.id,
+      name: planConfig.name,
+      icon: planConfig.icon,
+      monthlyTokens: planConfig.monthlyTokens,
+      price: planConfig.price,
+      features: activeFeatures,
+      tokensInfo,
+    };
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -413,44 +507,62 @@ class AIPremium {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
-   * Crear widget de créditos
+   * Crear widget de tokens (muestra total, comprados y mensuales)
    */
   createCreditsWidget() {
-    const remaining = this.getCreditsRemaining();
-    const total = this.getCreditsTotal();
-    const percentage = this.getCreditsPercentage();
+    const tokensInfo = this.authHelper.getTokensInfo();
     const daysLeft = this.getDaysUntilReset();
+    const planInfo = this.getPlanInfo();
 
     const widget = document.createElement('div');
-    widget.className = 'ai-credits-widget';
+    widget.className = 'ai-credits-widget ai-tokens-widget';
     widget.innerHTML = `
-      <div class="credits-display">
-        <div class="credits-icon">🪙</div>
-        <div class="credits-info">
-          <div class="credits-count">${remaining} / ${total}</div>
-          <div class="credits-label">Créditos IA</div>
-          <div class="credits-reset">Renuevan en ${daysLeft} días</div>
+      <div class="tokens-display">
+        <div class="tokens-icon">🪙</div>
+        <div class="tokens-info">
+          <div class="tokens-total">${tokensInfo.formatted}</div>
+          <div class="tokens-label">Tokens disponibles</div>
+          <div class="tokens-breakdown">
+            <span class="tokens-monthly" title="Tokens mensuales del plan ${planInfo.name}">
+              📅 ${this.formatTokens(tokensInfo.monthly)}
+            </span>
+            <span class="tokens-purchased" title="Tokens comprados (wallet)">
+              💰 ${this.formatTokens(tokensInfo.purchased)}
+            </span>
+          </div>
+          ${daysLeft !== null ? `<div class="tokens-reset">Mensuales renuevan en ${daysLeft} días</div>` : ''}
         </div>
       </div>
 
-      <div class="credits-bar">
-        <div class="credits-bar-fill" style="width: ${percentage}%"></div>
+      <div class="tokens-actions">
+        <button class="btn-buy-tokens" onclick="window.tokenPurchaseModal?.open()">
+          + Comprar tokens
+        </button>
       </div>
 
-      <div class="credits-percentage">${percentage}%</div>
+      ${tokensInfo.isLow ? '<div class="tokens-low-warning">⚠️ Tokens bajos</div>' : ''}
     `;
 
-    // Escuchar cambios de créditos
-    this.onCreditsUpdate((credits) => {
-      const bar = widget.querySelector('.credits-bar-fill');
-      const count = widget.querySelector('.credits-count');
-      const percent = widget.querySelector('.credits-percentage');
+    // Escuchar cambios de tokens
+    this.onCreditsUpdate(() => {
+      const newInfo = this.authHelper.getTokensInfo();
+      const totalEl = widget.querySelector('.tokens-total');
+      const monthlyEl = widget.querySelector('.tokens-monthly');
+      const purchasedEl = widget.querySelector('.tokens-purchased');
+      const warningEl = widget.querySelector('.tokens-low-warning');
 
-      if (bar && count && percent) {
-        const newPercentage = (credits.remaining / credits.total) * 100;
-        bar.style.width = `${newPercentage}%`;
-        count.textContent = `${credits.remaining} / ${credits.total}`;
-        percent.textContent = `${Math.round(newPercentage)}%`;
+      if (totalEl) totalEl.textContent = newInfo.formatted;
+      if (monthlyEl) monthlyEl.innerHTML = `📅 ${this.formatTokens(newInfo.monthly)}`;
+      if (purchasedEl) purchasedEl.innerHTML = `💰 ${this.formatTokens(newInfo.purchased)}`;
+
+      // Mostrar/ocultar warning
+      if (newInfo.isLow && !warningEl) {
+        const warning = document.createElement('div');
+        warning.className = 'tokens-low-warning';
+        warning.textContent = '⚠️ Tokens bajos';
+        widget.appendChild(warning);
+      } else if (!newInfo.isLow && warningEl) {
+        warningEl.remove();
       }
     });
 
@@ -458,35 +570,289 @@ class AIPremium {
   }
 
   /**
-   * Mostrar aviso de créditos bajos
+   * Crear widget compacto para header
+   */
+  createCompactTokensWidget() {
+    const tokensInfo = this.authHelper.getTokensInfo();
+
+    const widget = document.createElement('button');
+    widget.className = 'compact-tokens-widget';
+    widget.title = 'Ver tokens disponibles';
+    widget.onclick = () => window.tokenPurchaseModal?.open();
+    widget.innerHTML = `
+      <span class="widget-icon">🪙</span>
+      <span class="widget-amount">${tokensInfo.formatted}</span>
+      ${tokensInfo.isLow ? '<span class="widget-warning">!</span>' : ''}
+    `;
+
+    // Escuchar cambios
+    this.onCreditsUpdate(() => {
+      const newInfo = this.authHelper.getTokensInfo();
+      const amountEl = widget.querySelector('.widget-amount');
+      const warningEl = widget.querySelector('.widget-warning');
+
+      if (amountEl) amountEl.textContent = newInfo.formatted;
+
+      if (newInfo.isLow && !warningEl) {
+        const warning = document.createElement('span');
+        warning.className = 'widget-warning';
+        warning.textContent = '!';
+        widget.appendChild(warning);
+      } else if (!newInfo.isLow && warningEl) {
+        warningEl.remove();
+      }
+    });
+
+    return widget;
+  }
+
+  /**
+   * Mostrar aviso de tokens bajos (versión modal)
    */
   showLowCreditsWarning() {
-    const remaining = this.getCreditsRemaining();
-    const total = this.getCreditsTotal();
-    const percentage = (remaining / total) * 100;
+    const tokensInfo = this.authHelper.getTokensInfo();
 
-    if (percentage <= 20 && percentage > 0) {
+    if (tokensInfo.isLow && tokensInfo.total > 0) {
       const warning = document.createElement('div');
-      warning.className = 'low-credits-warning fade-in';
+      warning.className = 'low-tokens-warning fade-in';
       warning.innerHTML = `
         <div class="warning-content">
           <span class="warning-icon">⚠️</span>
           <span class="warning-text">
-            Te quedan ${remaining} créditos (${Math.round(percentage)}%)
+            Te quedan ${tokensInfo.formatted} tokens
           </span>
-          <button onclick="window.pricingModal.showPricingModal(); this.closest('.low-credits-warning').remove()">
-            Actualizar Plan
+          <button class="btn-primary" onclick="window.tokenPurchaseModal?.open(); this.closest('.low-tokens-warning').remove()">
+            Comprar tokens
+          </button>
+          <button class="btn-secondary" onclick="this.closest('.low-tokens-warning').remove()">
+            Cerrar
           </button>
         </div>
       `;
 
       document.body.appendChild(warning);
 
-      // Auto-remover después de 10 segundos
+      // Auto-remover después de 15 segundos
       setTimeout(() => {
-        warning.classList.add('fade-out');
-        setTimeout(() => warning.remove(), 300);
-      }, 10000);
+        if (warning.parentNode) {
+          warning.classList.add('fade-out');
+          setTimeout(() => warning.remove(), 300);
+        }
+      }, 15000);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // COMPRA DE TOKENS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Obtener paquetes de tokens disponibles
+   */
+  getTokenPackages() {
+    return window.PLANS_CONFIG?.getAllTokenPackages() || [];
+  }
+
+  /**
+   * Obtener paquete popular
+   */
+  getPopularPackage() {
+    return window.PLANS_CONFIG?.getPopularPackage();
+  }
+
+  /**
+   * Obtener métodos de pago disponibles
+   */
+  getPaymentMethods() {
+    const methods = window.PLANS_CONFIG?.paymentMethods || {};
+    return Object.values(methods).filter(m => m.enabled);
+  }
+
+  /**
+   * Iniciar compra de paquete de tokens
+   * @param {string} packageId - ID del paquete
+   * @param {string} paymentMethod - stripe, paypal, bitcoin
+   */
+  async purchaseTokens(packageId, paymentMethod = 'stripe') {
+    const pkg = window.PLANS_CONFIG?.getTokenPackage(packageId);
+    if (!pkg) {
+      throw new Error('Paquete no encontrado');
+    }
+
+    logger.debug(`Iniciando compra: ${pkg.name} (${pkg.tokens} tokens) via ${paymentMethod}`);
+
+    switch (paymentMethod) {
+      case 'stripe':
+        return this.purchaseWithStripe(pkg);
+      case 'paypal':
+        return this.purchaseWithPayPal(pkg);
+      case 'bitcoin':
+        return this.purchaseWithBitcoin(pkg);
+      default:
+        throw new Error('Método de pago no soportado');
+    }
+  }
+
+  /**
+   * Compra con Stripe
+   */
+  async purchaseWithStripe(pkg) {
+    // Llamar a Edge Function de Supabase
+    const user = this.authHelper.getUser();
+    if (!user) throw new Error('Usuario no autenticado');
+
+    const response = await fetch(
+      `${window.supabaseConfig.url}/functions/v1/create-token-checkout`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.supabaseConfig.anonKey}`,
+        },
+        body: JSON.stringify({
+          packageId: pkg.id,
+          userId: user.id,
+          successUrl: window.location.origin + '?tokens_purchased=success',
+          cancelUrl: window.location.origin + '?tokens_purchased=cancelled',
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error creando checkout');
+    }
+
+    const { checkoutUrl } = await response.json();
+
+    // Redirigir a Stripe Checkout
+    window.location.href = checkoutUrl;
+  }
+
+  /**
+   * Compra con PayPal
+   */
+  async purchaseWithPayPal(pkg) {
+    const user = this.authHelper.getUser();
+    if (!user) throw new Error('Usuario no autenticado');
+
+    // Llamar a Edge Function para crear orden PayPal
+    const response = await fetch(
+      `${window.supabaseConfig.url}/functions/v1/paypal-create-order`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${window.supabaseConfig.anonKey}`,
+        },
+        body: JSON.stringify({
+          packageId: pkg.id,
+          userId: user.id,
+          amount: pkg.price,
+          currency: pkg.currency,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error creando orden PayPal');
+    }
+
+    const { approvalUrl } = await response.json();
+
+    // Redirigir a PayPal
+    window.location.href = approvalUrl;
+  }
+
+  /**
+   * Compra con Bitcoin (genera solicitud de pago)
+   */
+  async purchaseWithBitcoin(pkg) {
+    const user = this.authHelper.getUser();
+    if (!user) throw new Error('Usuario no autenticado');
+
+    // Calcular monto en BTC
+    const btcAmount = window.PLANS_CONFIG?.calculateBtcAmount(pkg.price);
+    const btcAddress = window.PLANS_CONFIG?.paymentConfig?.btcAddresses?.segwit;
+
+    if (!btcAddress) {
+      throw new Error('Dirección BTC no configurada');
+    }
+
+    // Crear solicitud de pago en la base de datos
+    const { data, error } = await this.supabase
+      .from('btc_payment_requests')
+      .insert({
+        user_id: user.id,
+        package_id: pkg.id,
+        tokens_amount: pkg.tokens,
+        eur_amount: pkg.price,
+        btc_amount: btcAmount,
+        btc_address: btcAddress,
+        status: 'pending',
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      requestId: data.id,
+      btcAddress,
+      btcAmount,
+      eurAmount: pkg.price,
+      tokens: pkg.tokens,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
+    };
+  }
+
+  /**
+   * Notificar pago BTC realizado
+   * @param {string} requestId - ID de la solicitud
+   * @param {string} txId - Transaction ID de blockchain
+   */
+  async notifyBtcPayment(requestId, txId) {
+    const { data, error } = await this.supabase
+      .from('btc_payment_requests')
+      .update({
+        tx_id: txId,
+        status: 'submitted',
+        submitted_at: new Date().toISOString(),
+      })
+      .eq('id', requestId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Disparar verificación automática
+    await this.triggerBtcVerification(requestId);
+
+    return data;
+  }
+
+  /**
+   * Disparar verificación automática de pago BTC
+   */
+  async triggerBtcVerification(requestId) {
+    try {
+      const response = await fetch(
+        `${window.supabaseConfig.url}/functions/v1/verify-btc-payment`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.supabaseConfig.anonKey}`,
+          },
+          body: JSON.stringify({ requestId }),
+        }
+      );
+
+      return await response.json();
+    } catch (error) {
+      logger.error('Error triggering BTC verification:', error);
+      // No lanzar error, la verificación también corre por cron
     }
   }
 }

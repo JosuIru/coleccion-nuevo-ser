@@ -15,11 +15,31 @@ class BibliotecaHandlers {
   // HANDLERS DE BOTONES DEL MENÚ
   // ==========================================================================
 
-  handleSettingsButton(evento) {
+  async handleSettingsButton(evento) {
     evento.preventDefault();
+    // Cerrar el dropdown antes de abrir el modal
+    this.closeMenuDropdown();
+
+    // Cargar SettingsModal si no está disponible
+    if (!window.SettingsModal && window.lazyLoader) {
+      try {
+        window.toast?.info('Cargando configuración...');
+        await window.lazyLoader.loadSettingsModal();
+      } catch (error) {
+        logger.error('[BibliotecaHandlers] Error cargando SettingsModal:', error);
+        window.toast?.error('Error al cargar configuración');
+        return;
+      }
+    }
+
     if (window.SettingsModal) {
-      const modalConfiguracion = new window.SettingsModal();
-      modalConfiguracion.show();
+      // Pequeño delay para que el dropdown se cierre primero
+      setTimeout(() => {
+        const modalConfiguracion = new window.SettingsModal();
+        modalConfiguracion.show();
+      }, 50);
+    } else {
+      window.toast?.error('No se pudo cargar la configuración');
     }
   }
 
@@ -70,12 +90,16 @@ class BibliotecaHandlers {
 
   handleMyAccountButton(evento) {
     evento.preventDefault();
+    // Cerrar el dropdown antes de abrir el modal
+    this.closeMenuDropdown();
+
     if (window.myAccountModal) {
-      window.myAccountModal.show();
+      // Pequeño delay para que el dropdown se cierre primero
+      setTimeout(() => window.myAccountModal.show(), 50);
     } else if (window.lazyLoader) {
       window.lazyLoader.load('my-account').then(() => {
         if (window.myAccountModal) {
-          window.myAccountModal.show();
+          setTimeout(() => window.myAccountModal.show(), 50);
         } else {
           this.biblioteca.modals.showLoginRequiredModal('Mi Cuenta');
         }
@@ -149,10 +173,12 @@ class BibliotecaHandlers {
 
   handleHelpCenterButton(evento) {
     evento.preventDefault();
+    // Abrir el Centro de Ayuda (el chat IA está integrado en la sección Soporte)
     if (window.helpCenterModal) {
       window.helpCenterModal.open();
     } else {
-      logger.warn('[BibliotecaHandlers] Help Center Modal no disponible');
+      logger.warn('[BibliotecaHandlers] HelpCenterModal no disponible');
+      window.toast?.info('El centro de ayuda está cargando, intenta de nuevo en unos segundos');
     }
   }
 
@@ -170,13 +196,31 @@ class BibliotecaHandlers {
     }
   }
 
-  handleExplorationHub(evento) {
+  async handleExplorationHub(evento) {
     evento.preventDefault();
-    if (window.ExplorationHub && window.bookEngine) {
-      const hub = new window.ExplorationHub(window.bookEngine);
-      hub.open('search');
+    // Primero intentar usar instancia existente
+    if (window.explorationHub) {
+      window.explorationHub.open('search');
+    } else if (window.ExplorationHub && window.bookEngine) {
+      // Crear nueva instancia si no existe
+      window.explorationHub = new window.ExplorationHub(window.bookEngine);
+      window.explorationHub.open('search');
+    } else if (window.lazyLoader) {
+      // Cargar via LazyLoader si no está disponible
+      try {
+        window.toast?.info('Cargando explorador...');
+        await window.lazyLoader.loadExplorationHub();
+        if (window.ExplorationHub && window.bookEngine) {
+          window.explorationHub = new window.ExplorationHub(window.bookEngine);
+          window.explorationHub.open('search');
+        }
+      } catch (error) {
+        logger.error('[BibliotecaHandlers] Error cargando ExplorationHub:', error);
+        window.toast?.error('Error al cargar el explorador');
+      }
     } else {
-      logger.error('[BibliotecaHandlers] ExplorationHub no está disponible');
+      logger.error('[BibliotecaHandlers] ExplorationHub y LazyLoader no están disponibles');
+      window.toast?.info('El explorador está cargando, intenta de nuevo en unos segundos');
     }
   }
 
@@ -399,6 +443,10 @@ class BibliotecaHandlers {
         menuContent.innerHTML = bib.renderer.renderOpcionesMenuDropdown();
       }
       menu.classList.remove('hidden');
+      // 🔧 v2.9.401: Inicializar Lucide igual que settings-modal (sin setTimeout)
+      if (window.lucide) {
+        lucide.createIcons();
+      }
     } else {
       menu.classList.add('hidden');
     }
@@ -450,11 +498,14 @@ class BibliotecaHandlers {
 
   openPracticeLibrary() {
     this.setActiveBottomTab('practicas');
-    if (window.practiceLibrary) {
+    // Primero intentar abrir Learning Paths (rutas de aprendizaje)
+    if (window.learningPaths) {
+      window.learningPaths.open();
+    } else if (window.practiceLibrary) {
       window.practiceLibrary.open();
     } else {
-      logger.warn('[BibliotecaHandlers] PracticeLibrary not loaded');
-      alert('El sistema de prácticas no está disponible. Por favor, recarga la página e intenta de nuevo.');
+      logger.warn('[BibliotecaHandlers] LearningPaths y PracticeLibrary no disponibles');
+      window.toast?.info('Las prácticas están cargando, intenta de nuevo en unos segundos');
     }
   }
 

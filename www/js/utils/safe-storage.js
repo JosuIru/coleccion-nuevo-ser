@@ -333,12 +333,10 @@ class SafeStorage {
   }
 }
 
-// Exportar instancia singleton
-export const safeStorage = new SafeStorage();
+// Instancia singleton global (modo script, no ESM)
+const safeStorage = new SafeStorage();
 
 // También exportar como global para compatibilidad con código existente
 if (typeof window !== 'undefined') {
   window.safeStorage = safeStorage;
 }
-
-export default safeStorage;

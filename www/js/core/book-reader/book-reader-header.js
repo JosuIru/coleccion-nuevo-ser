@@ -478,7 +478,8 @@ class BookReaderHeader {
           <button id="chapter-resources-btn" class="${toolBtnBase} text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" aria-label="Recursos del Capítulo">
             ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
           </button>
-          <button id="summary-btn" class="${toolBtnBase} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" aria-label="Resumen del capítulo">
+          <button id="summary-btn" class="${toolBtnBase} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" aria-label="Resumen del capítulo"
+                  onclick="console.log('ONCLICK summary-btn FIRED'); window.toast && window.toast.info('Click en Resumen');">
             ${Icons.create('file-text', 18)} <span>Resumen del Capítulo</span>
           </button>
           <button id="voice-notes-btn" class="${toolBtnBase} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30" aria-label="Notas de voz">
@@ -522,7 +523,8 @@ class BookReaderHeader {
             ${Icons.create('link', 18)} <span>Integraciones</span>
           </button>
           <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
-          <button id="content-adapter-btn" class="${toolBtnBase} text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30" aria-label="Adaptar Contenido">
+          <button id="content-adapter-btn" class="${toolBtnBase} text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30" aria-label="Adaptar Contenido"
+                  onclick="console.log('ONCLICK content-adapter-btn FIRED'); window.toast && window.toast.info('Click detectado en Adaptar Contenido');">
             ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
           </button>
         </div>

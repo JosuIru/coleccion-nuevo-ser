@@ -1,62 +1,75 @@
-/* Tema AHORA - Instituciones que la Vida Necesita */
-/* Paleta: Azules institucionales + Verdes de transformación */
+/* ============================================================================
+   TEMA: AHORA - Instituciones que la Vida Necesita
+   ============================================================================
+   Paleta: Azules institucionales + Verdes de transformación
+   ============================================================================ */
 
-.book-theme-ahora-instituciones {
-  /* Colores primarios */
-  --primary-color: #1e3a8a; /* Azul institucional profundo */
-  --primary-light: #3b82f6; /* Azul institucional brillante */
-  --primary-dark: #1e40af;
-
-  /* Colores secundarios (transformación/crecimiento) */
-  --secondary-color: #059669; /* Verde esmeralda */
-  --secondary-light: #10b981;
-  --secondary-dark: #047857;
-
-  /* Colores de acento */
-  --accent-color: #0891b2; /* Cyan profesional */
-  --accent-light: #06b6d4;
-  --accent-dark: #0e7490;
-
-  /* Fondos */
-  --bg-primary: #0f172a; /* Azul oscuro casi negro */
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-
-  /* Textos */
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-
-  /* Gradientes */
+/* ==========================================================================
+   VARIABLES CSS - DARK MODE
+   ========================================================================== */
+body.theme-dark.theme-ahora-instituciones {
+  --color-primary: #1e3a8a;         /* Azul institucional profundo */
+  --color-primary-light: #3b82f6;   /* Azul institucional brillante */
+  --color-primary-dark: #1e40af;
+  --color-secondary: #059669;       /* Verde esmeralda */
+  --color-secondary-light: #10b981;
+  --color-secondary-dark: #047857;
+  --color-accent: #0891b2;          /* Cyan profesional */
+  --color-accent-light: #06b6d4;
+  --color-accent-dark: #0e7490;
+  --color-background: #0f172a;      /* Azul oscuro casi negro */
+  --color-background-secondary: #1e293b;
+  --color-background-tertiary: #334155;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
   --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
   --gradient-secondary: linear-gradient(135deg, #059669 0%, #0891b2 100%);
   --gradient-header: linear-gradient(180deg, #1e3a8a 0%, #1e293b 100%);
 }
 
-/* Modo claro */
-.light-mode .book-theme-ahora-instituciones {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-tertiary: #e2e8f0;
-
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-
-  --primary-color: #1e40af;
-  --primary-light: #3b82f6;
-  --secondary-color: #059669;
-  --accent-color: #0891b2;
+/* ==========================================================================
+   VARIABLES CSS - LIGHT MODE
+   ========================================================================== */
+body.theme-light.theme-ahora-instituciones {
+  --color-primary: #1e40af;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1e3a8a;
+  --color-secondary: #059669;
+  --color-secondary-light: #10b981;
+  --color-secondary-dark: #047857;
+  --color-accent: #0891b2;
+  --color-accent-light: #06b6d4;
+  --color-accent-dark: #0e7490;
+  --color-background: #f8fafc;
+  --color-background-secondary: #f1f5f9;
+  --color-background-tertiary: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-border: #cbd5e1;
+  --gradient-primary: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+  --gradient-secondary: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+  --gradient-header: linear-gradient(180deg, #3b82f6 0%, #f1f5f9 100%);
 }
 
-/* Patrón de fondo - Red de instituciones interconectadas */
-.book-theme-ahora-instituciones::before {
+/* ==========================================================================
+   FONDO - DARK MODE
+   ========================================================================== */
+body.theme-dark.theme-ahora-instituciones {
+  background: #0f172a;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-dark.theme-ahora-instituciones::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-image:
     radial-gradient(circle at 20% 30%, rgba(30, 58, 138, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(5, 150, 105, 0.06) 0%, transparent 50%),
@@ -65,7 +78,49 @@
   background-position: 0% 0%, 100% 100%, 50% 50%;
   opacity: 0.6;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
+  animation: networkPulse 20s ease-in-out infinite;
+}
+
+body.theme-dark.theme-ahora-instituciones::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(30, 58, 138, 0.02) 100px, rgba(30, 58, 138, 0.02) 101px),
+    repeating-linear-gradient(-45deg, transparent, transparent 100px, rgba(5, 150, 105, 0.015) 100px, rgba(5, 150, 105, 0.015) 101px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==========================================================================
+   FONDO - LIGHT MODE
+   ========================================================================== */
+body.theme-light.theme-ahora-instituciones {
+  background: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.theme-light.theme-ahora-instituciones::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(30, 58, 138, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(8, 145, 178, 0.03) 0%, transparent 50%);
+  background-size: 100% 100%, 80% 80%, 60% 60%;
+  background-position: 0% 0%, 100% 100%, 50% 50%;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
   animation: networkPulse 20s ease-in-out infinite;
 }
 
@@ -74,55 +129,78 @@
   50% { opacity: 0.8; }
 }
 
-/* Patrón de nodos conectados */
-.book-theme-ahora-instituciones::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(30, 58, 138, 0.02) 100px, rgba(30, 58, 138, 0.02) 101px),
-    repeating-linear-gradient(-45deg, transparent, transparent 100px, rgba(5, 150, 105, 0.015) 100px, rgba(5, 150, 105, 0.015) 101px);
-  pointer-events: none;
-  z-index: 0;
+/* ==========================================================================
+   CONTAINERS - DARK MODE
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones .biblioteca-container,
+.theme-dark.theme-ahora-instituciones .book-reader-container {
+  background: linear-gradient(180deg,
+    #0f172a 0%,
+    #1e293b 50%,
+    #0f172a 100%
+  );
 }
 
-/* Headers de sección */
-.book-theme-ahora-instituciones .section-header {
-  background: var(--gradient-header);
-  border-left: 4px solid var(--secondary-color);
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+/* ==========================================================================
+   CONTAINERS - LIGHT MODE
+   ========================================================================== */
+.theme-light.theme-ahora-instituciones .biblioteca-container,
+.theme-light.theme-ahora-instituciones .book-reader-container {
+  background: linear-gradient(180deg,
+    #f8fafc 0%,
+    #f1f5f9 50%,
+    #f8fafc 100%
+  );
 }
 
-/* Títulos de capítulo */
-.book-theme-ahora-instituciones h1,
-.book-theme-ahora-instituciones h2 {
-  color: var(--primary-light);
+/* ==========================================================================
+   HEADERS Y TITULOS
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones h1,
+.theme-dark.theme-ahora-instituciones h2 {
+  color: var(--color-primary-light);
   text-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
 }
 
-.book-theme-ahora-instituciones h3 {
-  color: var(--secondary-light);
-  border-bottom: 2px solid var(--secondary-color);
+.theme-light.theme-ahora-instituciones h1,
+.theme-light.theme-ahora-instituciones h2 {
+  color: var(--color-primary);
+}
+
+.theme-dark.theme-ahora-instituciones h3,
+.theme-light.theme-ahora-instituciones h3 {
+  color: var(--color-secondary-light);
+  border-bottom: 2px solid var(--color-secondary);
   padding-bottom: 0.5rem;
 }
 
-/* Enlaces */
-.book-theme-ahora-instituciones a {
-  color: var(--accent-light);
+/* ==========================================================================
+   ENLACES
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones a {
+  color: var(--color-accent-light);
   transition: all 0.3s ease;
 }
 
-.book-theme-ahora-instituciones a:hover {
-  color: var(--secondary-light);
+.theme-dark.theme-ahora-instituciones a:hover {
+  color: var(--color-secondary-light);
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
-/* Blockquotes - Para citas institucionales */
-.book-theme-ahora-instituciones blockquote {
-  border-left: 4px solid var(--accent-color);
+.theme-light.theme-ahora-instituciones a {
+  color: var(--color-accent);
+  transition: all 0.3s ease;
+}
+
+.theme-light.theme-ahora-instituciones a:hover {
+  color: var(--color-secondary);
+}
+
+/* ==========================================================================
+   BLOCKQUOTES
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones blockquote {
+  border-left: 4px solid var(--color-accent);
   background: linear-gradient(90deg, rgba(8, 145, 178, 0.08) 0%, transparent 100%);
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
@@ -130,94 +208,218 @@
   box-shadow: 0 2px 8px rgba(8, 145, 178, 0.1);
 }
 
-/* Prácticas inline */
-.book-theme-ahora-instituciones .inline-practice {
+.theme-light.theme-ahora-instituciones blockquote {
+  border-left: 4px solid var(--color-accent);
+  background: linear-gradient(90deg, rgba(8, 145, 178, 0.05) 0%, transparent 100%);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.08);
+}
+
+/* ==========================================================================
+   PRACTICAS INLINE
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones .inline-practice {
   background: linear-gradient(135deg, rgba(5, 150, 105, 0.12) 0%, rgba(8, 145, 178, 0.08) 100%);
-  border-left: 4px solid var(--secondary-color);
+  border-left: 4px solid var(--color-secondary);
   box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
   transition: all 0.3s ease;
 }
 
-.book-theme-ahora-instituciones .inline-practice:hover {
+.theme-dark.theme-ahora-instituciones .inline-practice:hover {
   box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
   transform: translateX(4px);
 }
 
-.book-theme-ahora-instituciones .inline-practice-title {
-  color: var(--secondary-light);
+.theme-light.theme-ahora-instituciones .inline-practice {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(8, 145, 178, 0.05) 100%);
+  border-left: 4px solid var(--color-secondary);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1);
+  transition: all 0.3s ease;
+}
+
+.theme-light.theme-ahora-instituciones .inline-practice:hover {
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.15);
+  transform: translateX(4px);
+}
+
+.theme-ahora-instituciones .inline-practice-title {
+  color: var(--color-secondary-light);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.book-theme-ahora-instituciones .practice-icon {
-  color: var(--accent-light);
+.theme-ahora-instituciones .practice-icon {
+  color: var(--color-accent-light);
   font-size: 1.3em;
 }
 
-/* Ejercicios */
-.book-theme-ahora-instituciones .exercise {
+/* ==========================================================================
+   EJERCICIOS
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones .exercise {
   background: linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(5, 150, 105, 0.06) 100%);
   border: 2px solid rgba(30, 58, 138, 0.2);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
-.book-theme-ahora-instituciones .exercise:hover {
-  border-color: var(--secondary-color);
+.theme-dark.theme-ahora-instituciones .exercise:hover {
+  border-color: var(--color-secondary);
   box-shadow: 0 8px 24px rgba(5, 150, 105, 0.2);
 }
 
-/* Botones */
-.book-theme-ahora-instituciones button,
-.book-theme-ahora-instituciones .btn {
+.theme-light.theme-ahora-instituciones .exercise {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(5, 150, 105, 0.04) 100%);
+  border: 2px solid rgba(30, 58, 138, 0.15);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.theme-light.theme-ahora-instituciones .exercise:hover {
+  border-color: var(--color-secondary);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.15);
+}
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones button,
+.theme-dark.theme-ahora-instituciones .btn {
   background: var(--gradient-primary);
-  color: var(--text-primary);
+  color: var(--color-text);
   border: none;
   transition: all 0.3s ease;
 }
 
-.book-theme-ahora-instituciones button:hover,
-.book-theme-ahora-instituciones .btn:hover {
+.theme-dark.theme-ahora-instituciones button:hover,
+.theme-dark.theme-ahora-instituciones .btn:hover {
   background: var(--gradient-secondary);
   box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
   transform: translateY(-2px);
 }
 
-/* Navegación de capítulos */
-.book-theme-ahora-instituciones .chapter-nav {
-  background: rgba(30, 58, 138, 0.05);
-  border-top: 2px solid var(--accent-color);
+.theme-light.theme-ahora-instituciones button,
+.theme-light.theme-ahora-instituciones .btn {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
 }
 
-/* Scrollbar personalizada */
-.book-theme-ahora-instituciones ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+.theme-light.theme-ahora-instituciones button:hover,
+.theme-light.theme-ahora-instituciones .btn:hover {
+  background: var(--gradient-secondary);
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   SCROLLBAR
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   border-radius: 10px;
 }
 
-.book-theme-ahora-instituciones ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+.theme-dark.theme-ahora-instituciones ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-secondary-light) 100%);
 }
 
-/* Notas de Claude con estilo institucional */
-.book-theme-ahora-instituciones .claude-note {
+.theme-light.theme-ahora-instituciones ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-secondary-light) 100%);
+  border-radius: 10px;
+}
+
+/* ==========================================================================
+   NOTAS DE CLAUDE
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones .claude-note {
   background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(30, 58, 138, 0.08) 100%);
-  border-left: 4px solid var(--accent-color);
+  border-left: 4px solid var(--color-accent);
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(8, 145, 178, 0.15);
 }
 
-/* Progress bar */
-.book-theme-ahora-instituciones .progress-bar {
+.theme-light.theme-ahora-instituciones .claude-note {
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.08) 0%, rgba(30, 58, 138, 0.05) 100%);
+  border-left: 4px solid var(--color-accent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.1);
+}
+
+/* ==========================================================================
+   PROGRESS BAR
+   ========================================================================== */
+.theme-ahora-instituciones .progress-bar {
   background: var(--gradient-primary);
   box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
 }
 
-/* Animación de entrada */
-.book-theme-ahora-instituciones .chapter-content {
+/* ==========================================================================
+   DESTACADOS DE TEXTO
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones strong {
+  color: var(--color-secondary-light);
+  font-weight: 600;
+}
+
+.theme-light.theme-ahora-instituciones strong {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.theme-dark.theme-ahora-instituciones em {
+  color: var(--color-accent-light);
+}
+
+.theme-light.theme-ahora-instituciones em {
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   LISTAS
+   ========================================================================== */
+.theme-ahora-instituciones ul li::marker,
+.theme-ahora-instituciones ol li::marker {
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   TABLAS
+   ========================================================================== */
+.theme-dark.theme-ahora-instituciones table {
+  border: 2px solid var(--color-primary);
+  background: rgba(30, 58, 138, 0.03);
+}
+
+.theme-dark.theme-ahora-instituciones th {
+  background: var(--gradient-header);
+  color: var(--color-text);
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+.theme-light.theme-ahora-instituciones table {
+  border: 2px solid var(--color-primary-light);
+  background: rgba(30, 58, 138, 0.02);
+}
+
+.theme-light.theme-ahora-instituciones th {
+  background: var(--gradient-primary);
+  color: white;
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+/* ==========================================================================
+   ANIMACION DE ENTRADA
+   ========================================================================== */
+.theme-ahora-instituciones .chapter-content {
   animation: fadeInSlide 0.6s ease-out;
 }
 
@@ -232,41 +434,16 @@
   }
 }
 
-/* Destacados de texto */
-.book-theme-ahora-instituciones strong {
-  color: var(--secondary-light);
-  font-weight: 600;
-}
-
-.book-theme-ahora-instituciones em {
-  color: var(--accent-light);
-}
-
-/* Listas */
-.book-theme-ahora-instituciones ul li::marker,
-.book-theme-ahora-instituciones ol li::marker {
-  color: var(--accent-color);
-}
-
-/* Tablas (si las hay) */
-.book-theme-ahora-instituciones table {
-  border: 2px solid var(--primary-color);
-  background: rgba(30, 58, 138, 0.03);
-}
-
-.book-theme-ahora-instituciones th {
-  background: var(--gradient-header);
-  color: var(--text-primary);
-  border-bottom: 2px solid var(--secondary-color);
-}
-
-/* Responsive adjustments */
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
 @media (max-width: 768px) {
-  .book-theme-ahora-instituciones::before {
+  body.theme-dark.theme-ahora-instituciones::before,
+  body.theme-light.theme-ahora-instituciones::before {
     opacity: 0.4;
   }
 
-  .book-theme-ahora-instituciones::after {
+  body.theme-dark.theme-ahora-instituciones::after {
     opacity: 0.3;
   }
 }
@@ -274,7 +451,7 @@
 /* ==========================================================================
    SIDEBAR - DARK MODE
    ========================================================================== */
-.book-theme-ahora-instituciones .sidebar {
+.theme-dark.theme-ahora-instituciones .sidebar {
   background: linear-gradient(180deg,
     rgba(15, 23, 42, 0.95) 0%,
     rgba(30, 41, 59, 0.95) 100%
@@ -286,7 +463,7 @@
 /* ==========================================================================
    SIDEBAR - LIGHT MODE
    ========================================================================== */
-.light-mode .book-theme-ahora-instituciones .sidebar {
+.theme-light.theme-ahora-instituciones .sidebar {
   background: linear-gradient(180deg,
     rgba(255, 255, 255, 0.95) 0%,
     rgba(248, 250, 252, 0.95) 100%
@@ -296,33 +473,33 @@
 }
 
 /* Sidebar elements - Light Mode overrides */
-.light-mode .book-theme-ahora-instituciones .sidebar h2 {
-  color: var(--text-primary) !important;
+.theme-light.theme-ahora-instituciones .sidebar h2 {
+  color: var(--color-text) !important;
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar .progress-box {
+.theme-light.theme-ahora-instituciones .sidebar .progress-box {
   background: rgba(30, 58, 138, 0.1) !important;
   border-color: rgba(30, 58, 138, 0.2) !important;
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item {
-  color: var(--text-primary);
+.theme-light.theme-ahora-instituciones .sidebar .chapter-item {
+  color: var(--color-text);
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item:hover {
+.theme-light.theme-ahora-instituciones .sidebar .chapter-item:hover {
   background: rgba(30, 58, 138, 0.1) !important;
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar .chapter-item .text-cyan-600 {
-  color: var(--primary-color) !important;
+.theme-light.theme-ahora-instituciones .sidebar .chapter-item .text-cyan-600 {
+  color: var(--color-primary) !important;
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar #close-sidebar-mobile {
-  color: var(--text-primary) !important;
+.theme-light.theme-ahora-instituciones .sidebar #close-sidebar-mobile {
+  color: var(--color-text) !important;
   background: rgba(255, 255, 255, 0.9) !important;
   border-color: rgba(30, 58, 138, 0.2) !important;
 }
 
-.light-mode .book-theme-ahora-instituciones .sidebar #sidebar-back-to-library {
+.theme-light.theme-ahora-instituciones .sidebar #sidebar-back-to-library {
   background: var(--gradient-primary) !important;
 }

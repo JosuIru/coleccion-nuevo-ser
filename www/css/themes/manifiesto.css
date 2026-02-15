@@ -4,9 +4,16 @@
    Tema revolucionario con patrones geométricos y energía activista
    ============================================================================ */
 
-/* Fondo con patrones geométricos */
-body.theme-manifiesto {
+/* Fondo con patrones geométricos - Dark mode */
+body.theme-dark.theme-manifiesto {
   background: #171717;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fondo con patrones geométricos - Light mode */
+body.theme-light.theme-manifiesto {
+  background: #fafafa;
   position: relative;
   overflow-x: hidden;
 }
@@ -47,13 +54,23 @@ body.theme-manifiesto::before {
   }
 }
 
-/* Gradiente revolucionario para fondos */
-.theme-manifiesto .biblioteca-container,
-.theme-manifiesto .book-reader-container {
+/* Gradiente revolucionario para fondos - Dark mode */
+.theme-dark.theme-manifiesto .biblioteca-container,
+.theme-dark.theme-manifiesto .book-reader-container {
   background: linear-gradient(180deg,
     #171717 0%,
     #262626 50%,
     #171717 100%
+  );
+}
+
+/* Gradiente revolucionario para fondos - Light mode */
+.theme-light.theme-manifiesto .biblioteca-container,
+.theme-light.theme-manifiesto .book-reader-container {
+  background: linear-gradient(180deg,
+    #fafafa 0%,
+    #f5f5f5 50%,
+    #fafafa 100%
   );
 }
 

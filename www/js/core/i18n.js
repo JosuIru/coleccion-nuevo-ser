@@ -567,7 +567,7 @@ class I18n {
   // Save language preference
   setLanguage(lang) {
     if (lang !== 'es' && lang !== 'en') {
-      // logger.warn('Invalid language:', lang);
+      // console.warn('Invalid language:', lang);
       return false;
     }
 

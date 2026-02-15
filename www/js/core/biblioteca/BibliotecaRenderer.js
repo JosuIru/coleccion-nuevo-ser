@@ -25,17 +25,18 @@ class BibliotecaRenderer {
       ? bib.i18n.t(configuracionBoton.labelKey)
       : configuracionBoton.label;
 
+    // 🔧 v2.9.401: Usar data-lucide igual que settings-modal
     let iconoHTML;
     if (configuracionBoton.iconDynamic) {
-      iconoHTML = `<span id="theme-icon-bib">${window.themeHelper?.getThemeIcon() || Icons.moon(20)}</span>`;
+      const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('theme-dark');
+      const themeIcon = isDark ? 'sun' : 'moon';
+      iconoHTML = `<span id="theme-icon-bib"><i data-lucide="${themeIcon}" class="w-5 h-5"></i></span>`;
     } else {
-      const iconMethod = configuracionBoton.icon;
-      iconoHTML = Icons[iconMethod]
-        ? Icons[iconMethod](20)
-        : Icons.create(iconMethod, 20);
-
+      const iconName = configuracionBoton.icon;
       if (configuracionBoton.iconClass) {
-        iconoHTML = `<span class="${configuracionBoton.iconClass}">${iconoHTML}</span>`;
+        iconoHTML = `<span class="${configuracionBoton.iconClass}"><i data-lucide="${iconName}" class="w-5 h-5"></i></span>`;
+      } else {
+        iconoHTML = `<i data-lucide="${iconName}" class="w-5 h-5"></i>`;
       }
     }
 
@@ -98,7 +99,7 @@ class BibliotecaRenderer {
         <button id="more-options-btn-bib"
                 class="px-3 sm:px-4 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl transition-all duration-200 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
                 title="Más opciones">
-          ${Icons.create('more-vertical', 20)}
+          <i data-lucide="more-vertical" class="w-5 h-5"></i>
           <span class="hidden sm:inline">Más</span>
         </button>
 
@@ -157,14 +158,39 @@ class BibliotecaRenderer {
       ? bib.i18n.t(boton.labelKey)
       : boton.label;
 
+    // 🔧 v2.9.401: Usar EXACTAMENTE el mismo formato que settings-modal (data-lucide + text-color)
+    const iconColorMap = {
+      'user': 'text-indigo-400',
+      'settings': 'text-slate-400',
+      'crown': 'text-amber-400',
+      'download': 'text-emerald-400',
+      'language': 'text-blue-400',
+      'info': 'text-cyan-400',
+      'shield': 'text-red-400',
+      'log-out': 'text-red-400'
+    };
+
+    // Mapear nombres de config a nombres de Lucide
+    const lucideNameMap = {
+      'user': 'user',
+      'settings': 'settings',
+      'crown': 'crown',
+      'download': 'download',
+      'language': 'globe',
+      'info': 'info',
+      'shield': 'shield',
+      'log-out': 'log-out'
+    };
+
     let iconoHTML;
     if (boton.iconDynamic) {
-      iconoHTML = `<span id="theme-icon-menu">${window.themeHelper?.getThemeIcon() || Icons.moon(20)}</span>`;
+      const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('theme-dark');
+      const themeIcon = isDark ? 'sun' : 'moon';
+      iconoHTML = `<span id="theme-icon-menu"><i data-lucide="${themeIcon}" class="w-5 h-5 text-violet-400"></i></span>`;
     } else {
-      const iconMethod = boton.icon;
-      iconoHTML = Icons[iconMethod]
-        ? Icons[iconMethod](20)
-        : Icons.create(iconMethod, 20);
+      const lucideName = lucideNameMap[boton.icon] || boton.icon;
+      const colorClass = iconColorMap[boton.icon] || 'text-gray-400';
+      iconoHTML = `<i data-lucide="${lucideName}" class="w-5 h-5 ${colorClass}"></i>`;
     }
 
     const labelHTML = boton.labelDynamic
@@ -223,8 +249,9 @@ class BibliotecaRenderer {
 
     contenedorPrincipal.innerHTML = htmlCompleto;
 
-    if (window.Icons) {
-      Icons.init();
+    // 🔧 v2.9.401: Inicializar Lucide (Icons.init() ya lo hace internamente)
+    if (window.lucide) {
+      lucide.createIcons();
     }
 
     this.populateBooksGrid();
@@ -518,7 +545,7 @@ class BibliotecaRenderer {
             <span class="text-2xl">📚</span>
             <div class="text-left">
               <h3 class="text-xl font-bold text-white">Explorar Biblioteca</h3>
-              <p class="text-sm text-gray-400">${this.biblioteca.bookEngine.catalog.books.length} libros disponibles</p>
+              <p class="text-sm text-gray-400">${this.biblioteca.bookEngine.catalog.books.filter(b => b.status === 'published').length} libros disponibles</p>
             </div>
           </div>
           <svg class="chevron w-6 h-6 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

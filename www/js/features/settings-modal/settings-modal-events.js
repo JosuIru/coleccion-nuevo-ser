@@ -100,6 +100,9 @@ class SettingsModalEvents {
                 window.supabaseSyncHelper?.attachSettingsListeners();
                 this.attachSyncListeners();
                 break;
+            case 'about':
+                this.attachAboutListeners();
+                break;
         }
     }
 
@@ -848,6 +851,27 @@ class SettingsModalEvents {
         if (importDataBtn) {
             settingsModal._addEventListener(importDataBtn, 'click', () => {
                 settingsModal.appearance.showImportDialog();
+            });
+        }
+    }
+
+    // ==========================================================================
+    // ABOUT TAB LISTENERS
+    // ==========================================================================
+
+    attachAboutListeners() {
+        const settingsModal = this.settingsModal;
+        const supportChatBtn = document.getElementById('open-support-chat-btn');
+
+        if (supportChatBtn) {
+            settingsModal._addEventListener(supportChatBtn, 'click', () => {
+                settingsModal.close();
+                settingsModal._setTimeout(() => {
+                    if (window.supportChat) {
+                        window.supportChat.showFab();
+                        window.supportChat.open();
+                    }
+                }, 300);
             });
         }
     }

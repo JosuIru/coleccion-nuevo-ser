@@ -133,8 +133,14 @@ class AuthHelper {
       if (error) throw error;
 
       this.currentProfile = data;
-      // Log reducido para producción (sin datos sensibles)
-      logger.debug('👤 Perfil cargado para:', data?.email?.split('@')[0] || 'usuario');
+      // 🔧 v2.9.391: Log detallado de tokens para debugging
+      logger.debug('👤 Perfil cargado:', {
+        email: data?.email?.split('@')[0] || 'usuario',
+        tier: data?.subscription_tier,
+        tokenBalance: data?.token_balance,
+        aiCreditsRemaining: data?.ai_credits_remaining,
+        role: data?.role
+      });
 
       // Verificar si necesita reset de créditos
       this.checkCreditsReset();
@@ -464,23 +470,33 @@ class AuthHelper {
   /**
    * Verificar si el usuario tiene una feature habilitada
    * 🔧 FIX v2.9.383: Usar PLANS_CONFIG en lugar de profile.features
+   * 🔧 v2.9.391: Añadido debug logging
    */
   hasFeature(featureName) {
-    if (!this.currentProfile) return false;
+    if (!this.currentProfile) {
+      logger.debug('[AuthHelper] hasFeature: no profile loaded');
+      return false;
+    }
 
     const tier = (this.currentProfile.subscription_tier || 'free').toLowerCase();
+    logger.debug('[AuthHelper] hasFeature check:', { featureName, tier, rawTier: this.currentProfile.subscription_tier });
 
     // Usar PLANS_CONFIG para verificar features según plan
     if (window.PLANS_CONFIG) {
-      return window.PLANS_CONFIG.hasFeature(tier, featureName);
+      const result = window.PLANS_CONFIG.hasFeature(tier, featureName);
+      logger.debug('[AuthHelper] PLANS_CONFIG.hasFeature result:', result);
+      return result;
     }
 
     // Fallback: premium/pro tienen todas las features principales
     if (['premium', 'pro'].includes(tier)) {
       const premiumFeatures = ['ai_chat', 'ai_tutor', 'ai_content_adapter', 'elevenlabs_tts', 'advanced_analytics'];
-      return premiumFeatures.includes(featureName);
+      const result = premiumFeatures.includes(featureName);
+      logger.debug('[AuthHelper] Fallback hasFeature result:', result);
+      return result;
     }
 
+    logger.debug('[AuthHelper] hasFeature: tier not premium/pro, returning false');
     return false;
   }
 
@@ -504,6 +520,14 @@ class AuthHelper {
   isPremium() {
     const tier = this.getSubscriptionTier();
     return tier === 'premium' || tier === 'pro';
+  }
+
+  /**
+   * 🔧 v2.9.391: Verificar si el usuario es administrador
+   * Admins tienen tokens ilimitados y acceso a todas las features
+   */
+  isAdmin() {
+    return this.currentProfile?.role === 'admin';
   }
 
   /**
@@ -576,10 +600,17 @@ class AuthHelper {
    * Estimar costo de tokens
    */
   estimateCost(tokens, provider, model) {
-    // Costos por 1K tokens (actualizar según pricing real)
+    // Usar pricing de PLANS_CONFIG si está disponible
+    if (window.PLANS_CONFIG?.tokenPricing?.[model]) {
+      const pricing = window.PLANS_CONFIG.tokenPricing[model];
+      return ((tokens / 1000) * pricing.costPer1K).toFixed(6);
+    }
+
+    // Fallback: Costos por 1K tokens
     const costs = {
       'claude-sonnet-4': 0.003,
       'claude-3-5-sonnet': 0.003,
+      'claude-3-5-haiku': 0.001,
       'gpt-4o': 0.005,
       'gpt-4o-mini': 0.0005,
       'gemini-2.0-flash': 0.001
@@ -587,6 +618,209 @@ class AuthHelper {
 
     const costPer1K = costs[model] || 0.002;
     return ((tokens / 1000) * costPer1K).toFixed(6);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SISTEMA DE TOKENS v2.9.386
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Obtener balance total de tokens (comprados + mensuales restantes)
+   * 🔧 v2.9.391: Añadido debug logging
+   */
+  getTokenBalance() {
+    const purchased = this.currentProfile?.token_balance || 0;
+    const monthly = this.currentProfile?.ai_credits_remaining || 0;
+    const total = purchased + monthly;
+
+    // Debug: mostrar los valores del perfil
+    logger.debug('[AuthHelper] getTokenBalance:', {
+      purchased,
+      monthly,
+      total,
+      rawTokenBalance: this.currentProfile?.token_balance,
+      rawAiCredits: this.currentProfile?.ai_credits_remaining
+    });
+
+    return total;
+  }
+
+  /**
+   * Obtener tokens comprados (wallet)
+   */
+  getPurchasedTokens() {
+    return this.currentProfile?.token_balance || 0;
+  }
+
+  /**
+   * Obtener tokens mensuales restantes (de suscripción)
+   */
+  getMonthlyTokensRemaining() {
+    return this.currentProfile?.ai_credits_remaining || 0;
+  }
+
+  /**
+   * Verificar si tiene suficientes tokens
+   */
+  hasEnoughTokens(requiredTokens) {
+    return this.getTokenBalance() >= requiredTokens;
+  }
+
+  /**
+   * Consumir tokens (primero mensuales, luego comprados)
+   * @param {number} amount - Cantidad de tokens a consumir
+   * @param {string} context - Contexto (ai_chat, elevenlabs, game_master)
+   * @param {string} provider - Proveedor (claude, openai, etc)
+   * @param {string} model - Modelo específico
+   */
+  async consumeTokens(amount, context, provider, model) {
+    if (!this.currentUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    try {
+      // Verificar tokens disponibles
+      if (!this.hasEnoughTokens(amount)) {
+        throw new Error('Tokens insuficientes. Compra más tokens para continuar.');
+      }
+
+      // Calcular cuánto consumir de cada fuente
+      let monthlyToConsume = 0;
+      let purchasedToConsume = 0;
+      const monthlyRemaining = this.getMonthlyTokensRemaining();
+
+      if (monthlyRemaining >= amount) {
+        // Solo consumir de mensuales
+        monthlyToConsume = amount;
+      } else {
+        // Consumir todos los mensuales y el resto de comprados
+        monthlyToConsume = monthlyRemaining;
+        purchasedToConsume = amount - monthlyRemaining;
+      }
+
+      // Consumir tokens mensuales si hay
+      if (monthlyToConsume > 0) {
+        const { error: monthlyError } = await this.executeWithRetry(() =>
+          this.supabase.rpc('consume_ai_credits', {
+            p_user_id: this.currentUser.id,
+            p_credits: monthlyToConsume
+          })
+        );
+        if (monthlyError) throw monthlyError;
+      }
+
+      // Consumir tokens comprados si hay
+      if (purchasedToConsume > 0) {
+        const { error: purchasedError } = await this.executeWithRetry(() =>
+          this.supabase.rpc('consume_purchased_tokens', {
+            p_user_id: this.currentUser.id,
+            p_tokens: purchasedToConsume
+          })
+        );
+        if (purchasedError) throw purchasedError;
+      }
+
+      // Registrar uso en ai_usage
+      await this.executeWithRetry(() =>
+        this.supabase.from('ai_usage').insert({
+          user_id: this.currentUser.id,
+          provider,
+          model,
+          context,
+          tokens_total: amount,
+          cost_usd: this.estimateCost(amount, provider, model)
+        })
+      );
+
+      // Registrar en historial de tokens
+      await this.executeWithRetry(() =>
+        this.supabase.from('token_transactions').insert({
+          user_id: this.currentUser.id,
+          type: 'consumption',
+          tokens_amount: -amount,
+          payment_method: monthlyToConsume > 0 ? 'subscription' : 'purchased',
+          context
+        })
+      );
+
+      // Recargar perfil
+      await this.loadUserProfile();
+
+      return { success: true, remaining: this.getTokenBalance() };
+    } catch (error) {
+      logger.error('❌ Error al consumir tokens:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Añadir tokens al balance (después de compra)
+   */
+  async addTokens(amount, paymentMethod, paymentId = null) {
+    if (!this.currentUser) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    try {
+      // Actualizar balance
+      const { error } = await this.executeWithRetry(() =>
+        this.supabase.rpc('add_purchased_tokens', {
+          p_user_id: this.currentUser.id,
+          p_tokens: amount
+        })
+      );
+
+      if (error) throw error;
+
+      // Registrar transacción
+      await this.executeWithRetry(() =>
+        this.supabase.from('token_transactions').insert({
+          user_id: this.currentUser.id,
+          type: 'purchase',
+          tokens_amount: amount,
+          payment_method: paymentMethod,
+          payment_id: paymentId
+        })
+      );
+
+      // Recargar perfil
+      await this.loadUserProfile();
+
+      logger.debug(`✅ Añadidos ${amount} tokens via ${paymentMethod}`);
+      return { success: true, newBalance: this.getTokenBalance() };
+    } catch (error) {
+      logger.error('❌ Error añadiendo tokens:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Verificar si tokens están bajos (<10% del último paquete o <1000)
+   */
+  isTokenBalanceLow() {
+    const balance = this.getTokenBalance();
+    return balance < 1000;
+  }
+
+  /**
+   * Obtener información formateada de tokens para UI
+   */
+  getTokensInfo() {
+    const purchased = this.getPurchasedTokens();
+    const monthly = this.getMonthlyTokensRemaining();
+    const total = purchased + monthly;
+    const plan = this.getSubscriptionTier();
+    const planData = window.PLANS_CONFIG?.getPlan(plan);
+
+    return {
+      total,
+      purchased,
+      monthly,
+      monthlyMax: planData?.monthlyTokens || 0,
+      formatted: window.PLANS_CONFIG?.formatTokens(total) || total.toLocaleString(),
+      isLow: this.isTokenBalanceLow(),
+      plan
+    };
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -817,14 +1051,56 @@ class AuthHelper {
    */
   renderSettingsPanel() {
     if (!this.isAuthenticated()) {
+      // 🔧 v2.9.400: Mostrar formulario de login directamente en el panel
       return `
         <div class="space-y-4">
-          <p class="text-gray-400">Inicia sesión para sincronizar tus datos en la nube</p>
-          <div class="flex flex-col gap-3">
-            <button id="supabase-show-login" class="btn-primary">Iniciar Sesión</button>
-            <button id="supabase-show-signup" class="btn-secondary">Crear Cuenta</button>
-            <button id="supabase-signin-anonymous" class="btn-secondary text-sm">Continuar sin cuenta</button>
+          <p class="text-gray-400 mb-4">Inicia sesión para sincronizar tus datos en la nube</p>
+
+          <!-- Formulario de Login Inline -->
+          <form id="supabase-inline-login-form" class="space-y-4">
+            <div>
+              <label class="block text-sm text-gray-400 mb-2">Email</label>
+              <input type="email" id="inline-login-email" required
+                     class="w-full bg-slate-700 rounded-lg px-4 py-3 text-white border border-slate-600 focus:border-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-400 mb-2">Contraseña</label>
+              <input type="password" id="inline-login-password" required
+                     class="w-full bg-slate-700 rounded-lg px-4 py-3 text-white border border-slate-600 focus:border-blue-500 focus:outline-none">
+            </div>
+            <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 !text-white font-semibold rounded-lg transition-all">
+              Iniciar Sesión
+            </button>
+          </form>
+
+          <div class="relative my-4">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-slate-600"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-slate-800 text-gray-400">o continúa con</span>
+            </div>
           </div>
+
+          <button id="supabase-signin-google" class="w-full py-3 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg transition-all flex items-center justify-center gap-3 border border-gray-300">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continuar con Google
+          </button>
+
+          <div class="text-center mt-4">
+            <button type="button" id="supabase-forgot-password-inline" class="text-sm text-blue-400 hover:underline">¿Olvidaste tu contraseña?</button>
+          </div>
+
+          <div class="border-t border-slate-700 pt-4 mt-4">
+            <p class="text-sm text-gray-500 text-center mb-3">¿No tienes cuenta?</p>
+            <button id="supabase-show-signup" class="w-full py-2.5 px-4 bg-slate-700 hover:bg-slate-600 !text-white font-medium rounded-lg transition-all border border-slate-600">
+              Crear Cuenta Nueva
+            </button>
+          </div>
+
+          <button id="supabase-signin-anonymous" class="w-full py-2 text-sm text-gray-500 hover:text-gray-300 transition-colors">
+            Continuar sin cuenta →
+          </button>
         </div>
       `;
     }
@@ -870,6 +1146,38 @@ class AuthHelper {
    * Adjuntar event listeners para el panel de settings
    */
   attachSettingsListeners() {
+    // 🔧 v2.9.400: Listener para formulario de login inline
+    document.getElementById('supabase-inline-login-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('inline-login-email').value;
+      const password = document.getElementById('inline-login-password').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Entrando...';
+      submitBtn.disabled = true;
+
+      const result = await this.signIn(email, password);
+      if (result.success) {
+        if (window.settingsModalInstance) {
+          window.settingsModalInstance.updateContent();
+        }
+      } else {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Listener para "Olvidaste tu contraseña" inline
+    document.getElementById('supabase-forgot-password-inline')?.addEventListener('click', () => {
+      this.showForgotPasswordModal();
+    });
+
+    // Listener para Google Sign-In
+    document.getElementById('supabase-signin-google')?.addEventListener('click', async () => {
+      await this.signInWithGoogle();
+    });
+
+    // Legacy: por si aún se usa el botón de mostrar login modal
     document.getElementById('supabase-show-login')?.addEventListener('click', () => {
       this.showLoginModal();
     });
@@ -924,30 +1232,40 @@ class AuthHelper {
    * Mostrar modal de login
    */
   showLoginModal() {
-    const modal = `
-      <div id="supabase-login-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full">
-          <h2 class="text-xl font-bold mb-4">Iniciar Sesión</h2>
-          <form id="supabase-login-form" class="space-y-4">
-            <div>
-              <label class="block text-sm text-gray-400 mb-2">Email</label>
-              <input type="email" id="login-email" required class="w-full bg-slate-700 rounded-lg px-4 py-2 text-white">
-            </div>
-            <div>
-              <label class="block text-sm text-gray-400 mb-2">Contraseña</label>
-              <input type="password" id="login-password" required class="w-full bg-slate-700 rounded-lg px-4 py-2 text-white">
-            </div>
-            <div class="flex gap-3">
-              <button type="submit" class="btn-primary flex-1">Entrar</button>
-              <button type="button" id="cancel-login" class="btn-secondary flex-1">Cancelar</button>
-            </div>
-            <button type="button" id="forgot-password" class="text-sm text-blue-400 hover:underline">¿Olvidaste tu contraseña?</button>
-          </form>
-        </div>
+    // 🔧 v2.9.400: Cerrar settings modal antes de abrir login para evitar conflictos de CSS
+    if (window.settingsModalInstance) {
+      window.settingsModalInstance.close();
+    }
+
+    // Crear el modal con estilos inline completos para evitar conflictos CSS
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'supabase-login-modal';
+    modalContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:99999;padding:1rem;';
+
+    modalContainer.innerHTML = `
+      <div style="background:#1e293b;border-radius:12px;padding:1.5rem;max-width:400px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid #334155;">
+        <h2 style="font-size:1.25rem;font-weight:bold;margin-bottom:1rem;color:white;">Iniciar Sesión</h2>
+        <form id="supabase-login-form">
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Email</label>
+            <input type="email" id="login-email" required
+                   style="width:100%;background:#334155;border-radius:8px;padding:0.75rem 1rem;color:white;border:1px solid #475569;outline:none;box-sizing:border-box;">
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Contraseña</label>
+            <input type="password" id="login-password" required
+                   style="width:100%;background:#334155;border-radius:8px;padding:0.75rem 1rem;color:white;border:1px solid #475569;outline:none;box-sizing:border-box;">
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+            <button type="submit" style="flex:1;padding:0.75rem 1rem;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;font-weight:600;border-radius:8px;border:none;cursor:pointer;">Entrar</button>
+            <button type="button" id="cancel-login" style="flex:1;padding:0.75rem 1rem;background:#475569;color:white;font-weight:600;border-radius:8px;border:1px solid #64748b;cursor:pointer;">Cancelar</button>
+          </div>
+          <button type="button" id="forgot-password" style="margin-top:1rem;font-size:0.875rem;color:#60a5fa;background:none;border:none;cursor:pointer;text-decoration:underline;">¿Olvidaste tu contraseña?</button>
+        </form>
       </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', modal);
+    document.body.appendChild(modalContainer);
 
     document.getElementById('supabase-login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -977,7 +1295,7 @@ class AuthHelper {
    */
   showSignupModal() {
     const modal = `
-      <div id="supabase-signup-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div id="supabase-signup-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[10001] p-4">
         <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full">
           <h2 class="text-xl font-bold mb-4">Crear Cuenta</h2>
           <form id="supabase-signup-form" class="space-y-4">
@@ -1052,7 +1370,7 @@ class AuthHelper {
    */
   showForgotPasswordModal() {
     const modal = `
-      <div id="supabase-forgot-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div id="supabase-forgot-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[10001] p-4">
         <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full">
           <h2 class="text-xl font-bold mb-4">Recuperar Contraseña</h2>
           <form id="supabase-forgot-form" class="space-y-4">
@@ -1090,7 +1408,7 @@ class AuthHelper {
    */
   showChangePasswordModal() {
     const modal = `
-      <div id="supabase-change-password-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div id="supabase-change-password-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[10001] p-4">
         <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full">
           <h2 class="text-xl font-bold mb-4">Cambiar Contraseña</h2>
           <form id="supabase-change-password-form" class="space-y-4">
@@ -1390,16 +1708,33 @@ window.authHelper = new AuthHelper();
 // Alias para compatibilidad con código existente que usa supabaseAuthHelper
 window.supabaseAuthHelper = window.authHelper;
 
-// Exponer para debugging
-if (window.location.hostname === 'localhost') {
-  window.debugAuth = () => {
-    logger.debug('Current User:', window.authHelper.currentUser);
-    logger.debug('Current Profile:', window.authHelper.currentProfile);
-    logger.debug('Is Authenticated:', window.authHelper.isAuthenticated());
-    logger.debug('Subscription Tier:', window.authHelper.getSubscriptionTier());
-    logger.debug('AI Credits:', window.authHelper.getAICredits());
-    logger.debug('Features:', window.authHelper.currentProfile?.features);
-  };
-}
+// 🔧 v2.9.391: Función de debug mejorada (disponible siempre, no solo en localhost)
+window.debugAuth = () => {
+  const profile = window.authHelper.currentProfile;
+  console.log('═══════════════════════════════════════════');
+  console.log('🔐 AUTH DEBUG');
+  console.log('═══════════════════════════════════════════');
+  console.log('Current User:', window.authHelper.currentUser?.email);
+  console.log('Is Authenticated:', window.authHelper.isAuthenticated());
+  console.log('═══════════════════════════════════════════');
+  console.log('📋 PROFILE');
+  console.log('═══════════════════════════════════════════');
+  console.log('Subscription Tier:', profile?.subscription_tier);
+  console.log('Role:', profile?.role);
+  console.log('Token Balance (purchased):', profile?.token_balance);
+  console.log('AI Credits Remaining (monthly):', profile?.ai_credits_remaining);
+  console.log('Total Tokens:', window.authHelper.getTokenBalance());
+  console.log('═══════════════════════════════════════════');
+  console.log('🎯 FEATURES CHECK');
+  console.log('═══════════════════════════════════════════');
+  console.log('ai_chat:', window.authHelper.hasFeature('ai_chat'));
+  console.log('ai_tutor:', window.authHelper.hasFeature('ai_tutor'));
+  console.log('ai_content_adapter:', window.authHelper.hasFeature('ai_content_adapter'));
+  console.log('elevenlabs_tts:', window.authHelper.hasFeature('elevenlabs_tts'));
+  console.log('═══════════════════════════════════════════');
+  console.log('📊 FULL PROFILE:', profile);
+  console.log('═══════════════════════════════════════════');
+  return profile;
+};
 
 logger.debug('🔐 AuthHelper loaded. Use window.authHelper to access authentication.');

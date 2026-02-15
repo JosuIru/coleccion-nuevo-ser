@@ -1,6 +1,6 @@
 {
   "name": "coleccion-nuevo-ser",
-  "version": "2.9.385",
+  "version": "2.9.397",
   "description": "Colección Nuevo Ser - Exploraciones en la Frontera del Pensamiento Humano-IA",
   "main": "www/index.html",
   "scripts": {
@@ -38,7 +38,8 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "terser": "^5.27.0",
-    "clean-css-cli": "^5.6.3"
+    "clean-css-cli": "^5.6.3",
+    "glob": "^10.3.10"
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^9.1.2",

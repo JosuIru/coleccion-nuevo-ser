@@ -2,10 +2,16 @@
 /**
  * Proxy de IA Premium - Colección Nuevo Ser
  *
- * Este proxy usa la API key del administrador para usuarios Premium/Pro
- * Los usuarios gratuitos deben usar su propia API key o el proxy free (Mistral)
+ * Sistema de TOKENS (híbrido):
+ * - Tokens mensuales del plan (se renuevan cada mes)
+ * - Tokens comprados (wallet, no expiran)
+ *
+ * Los tokens se consumen en orden: primero mensuales, luego comprados.
  *
  * Subir a: gailu.net/api/premium-ai-proxy.php
+ *
+ * @version 2.0.0 - Sistema de tokens
+ * @updated 2025-01-15
  */
 
 // Headers CORS
@@ -30,42 +36,44 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // CONFIGURACIÓN - Cargar desde config.php
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Cargar config.php con las API keys reales
 $configFile = __DIR__ . '/config.php';
 if (file_exists($configFile)) {
     require_once $configFile;
 }
 
-// API Keys del administrador desde config.php o variables de entorno
+// API Keys del administrador
 $ADMIN_API_KEYS = [
     'claude' => defined('CLAUDE_API_KEY') ? CLAUDE_API_KEY : (getenv('CLAUDE_API_KEY') ?: ''),
     'mistral' => defined('MISTRAL_API_KEY') ? MISTRAL_API_KEY : (getenv('MISTRAL_API_KEY') ?: '')
 ];
 
-// Supabase para verificar suscripciones
+// Supabase para verificar tokens
 $SUPABASE_URL = defined('SUPABASE_URL') ? SUPABASE_URL : (getenv('SUPABASE_URL') ?: '');
 $SUPABASE_SERVICE_KEY = defined('SUPABASE_SERVICE_KEY') ? SUPABASE_SERVICE_KEY :
                         (defined('SUPABASE_ANON_KEY') ? SUPABASE_ANON_KEY : (getenv('SUPABASE_SERVICE_KEY') ?: ''));
 
-// Límites por plan (en créditos, donde 1 crédito ≈ 1000 tokens)
-$PLAN_LIMITS = [
-    'free' => 100,      // ~100K tokens/mes
-    'premium' => 1000,  // ~1M tokens/mes
-    'pro' => 5000       // ~5M tokens/mes
+// Tokens mensuales por plan (sincronizar con plans-config.js)
+$PLAN_MONTHLY_TOKENS = [
+    'free' => 5000,       // 5K tokens gratis
+    'premium' => 100000,  // 100K tokens
+    'pro' => 300000       // 300K tokens
 ];
 
 // Modelos por plan
 $PLAN_MODELS = [
-    'free' => 'claude-3-5-haiku-20241022',     // Más económico para free
-    'premium' => 'claude-3-5-sonnet-20241022', // Buen balance
-    'pro' => 'claude-3-5-sonnet-20241022'      // Igual que premium, pero más consultas
+    'free' => 'claude-3-5-haiku-20241022',
+    'premium' => 'claude-3-5-sonnet-20241022',
+    'pro' => 'claude-3-5-sonnet-20241022'
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // FUNCIONES AUXILIARES
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
+/**
+ * Verificar usuario y obtener balance de tokens
+ */
+function verifyUserAndTokens($userToken, $supabaseUrl, $supabaseKey) {
     // Verificar el token JWT del usuario con Supabase
     $ch = curl_init("{$supabaseUrl}/auth/v1/user");
     curl_setopt_array($ch, [
@@ -90,8 +98,8 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
         return ['valid' => false, 'error' => 'User not found'];
     }
 
-    // Obtener perfil del usuario (subscription_tier está en profiles)
-    $ch = curl_init("{$supabaseUrl}/rest/v1/profiles?id=eq.{$userId}&select=subscription_tier");
+    // Obtener perfil del usuario con todos los campos de tokens
+    $ch = curl_init("{$supabaseUrl}/rest/v1/profiles?id=eq.{$userId}&select=subscription_tier,token_balance,ai_credits_remaining,ai_credits_reset_date");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
@@ -104,52 +112,156 @@ function verifyUserSubscription($userToken, $supabaseUrl, $supabaseKey) {
 
     $profiles = json_decode($response, true);
 
-    // Default: plan free
-    $plan = 'free';
-
-    if (is_array($profiles) && !empty($profiles) && isset($profiles[0]['subscription_tier'])) {
-        $plan = $profiles[0]['subscription_tier'];
+    if (!is_array($profiles) || empty($profiles)) {
+        return ['valid' => false, 'error' => 'Profile not found'];
     }
 
-    // Contar tokens usados este mes (sumando tokens_total de ai_usage)
-    $startOfMonth = date('Y-m-01T00:00:00Z');
-    $ch = curl_init("{$supabaseUrl}/rest/v1/ai_usage?user_id=eq.{$userId}&created_at=gte.{$startOfMonth}&select=tokens_total");
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            "apikey: {$supabaseKey}",
-            "Authorization: Bearer {$supabaseKey}"
-        ]
-    ]);
-    $response = curl_exec($ch);
-    curl_close($ch);
+    $profile = $profiles[0];
+    $plan = $profile['subscription_tier'] ?? 'free';
 
-    $usageRecords = json_decode($response, true);
-    $tokensUsed = 0;
-    if (is_array($usageRecords)) {
-        foreach ($usageRecords as $record) {
-            $tokensUsed += intval($record['tokens_total'] ?? 0);
-        }
+    // Tokens comprados (wallet)
+    $purchasedTokens = intval($profile['token_balance'] ?? 0);
+
+    // Tokens mensuales restantes
+    $monthlyTokens = intval($profile['ai_credits_remaining'] ?? 0);
+
+    // Verificar si necesita reset mensual
+    $resetDate = $profile['ai_credits_reset_date'] ?? null;
+    if ($resetDate && strtotime($resetDate) <= time()) {
+        // Resetear tokens mensuales
+        $monthlyMax = $GLOBALS['PLAN_MONTHLY_TOKENS'][$plan] ?? 5000;
+        $monthlyTokens = $monthlyMax;
+
+        // Actualizar en la base de datos
+        $nextReset = date('Y-m-d', strtotime('first day of next month'));
+        $updateCh = curl_init("{$supabaseUrl}/rest/v1/profiles?id=eq.{$userId}");
+        curl_setopt_array($updateCh, [
+            CURLOPT_CUSTOMREQUEST => 'PATCH',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "apikey: {$supabaseKey}",
+                "Authorization: Bearer {$supabaseKey}",
+                "Content-Type: application/json",
+                "Prefer: return=minimal"
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'ai_credits_remaining' => $monthlyMax,
+                'ai_credits_reset_date' => $nextReset
+            ])
+        ]);
+        curl_exec($updateCh);
+        curl_close($updateCh);
     }
 
-    // Convertir tokens a "créditos" (1 crédito = ~1000 tokens)
-    $creditsUsed = intval($tokensUsed / 1000);
-    $monthlyLimit = $GLOBALS['PLAN_LIMITS'][$plan] ?? $GLOBALS['PLAN_LIMITS']['free'];
+    // Total disponible
+    $totalTokens = $purchasedTokens + $monthlyTokens;
 
     return [
         'valid' => true,
         'userId' => $userId,
         'plan' => $plan,
-        'creditsUsed' => $creditsUsed,
-        'monthlyLimit' => $monthlyLimit,
-        'creditsRemaining' => max(0, $monthlyLimit - $creditsUsed)
+        'purchasedTokens' => $purchasedTokens,
+        'monthlyTokens' => $monthlyTokens,
+        'totalTokens' => $totalTokens,
+        'monthlyMax' => $GLOBALS['PLAN_MONTHLY_TOKENS'][$plan] ?? 5000
     ];
 }
 
-function incrementUserCredits($userId, $supabaseUrl, $supabaseKey, $credits = 1) {
-    // El registro de uso se hace desde el cliente (auth-helper.js)
-    // Esta función solo existe por compatibilidad
-    // No necesitamos hacer nada aquí
+/**
+ * Consumir tokens del usuario
+ * Primero consume tokens mensuales, luego comprados
+ */
+function consumeTokens($userId, $tokensToConsume, $supabaseUrl, $supabaseKey, $monthlyTokens, $purchasedTokens) {
+    $monthlyConsumed = 0;
+    $purchasedConsumed = 0;
+
+    // Primero consumir de tokens mensuales
+    if ($monthlyTokens > 0) {
+        $monthlyConsumed = min($tokensToConsume, $monthlyTokens);
+        $tokensToConsume -= $monthlyConsumed;
+    }
+
+    // Si no alcanza, consumir de tokens comprados
+    if ($tokensToConsume > 0 && $purchasedTokens > 0) {
+        $purchasedConsumed = min($tokensToConsume, $purchasedTokens);
+    }
+
+    // Actualizar en la base de datos
+    $newMonthly = $monthlyTokens - $monthlyConsumed;
+    $newPurchased = $purchasedTokens - $purchasedConsumed;
+
+    $ch = curl_init("{$supabaseUrl}/rest/v1/profiles?id=eq.{$userId}");
+    curl_setopt_array($ch, [
+        CURLOPT_CUSTOMREQUEST => 'PATCH',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "apikey: {$supabaseKey}",
+            "Authorization: Bearer {$supabaseKey}",
+            "Content-Type: application/json",
+            "Prefer: return=minimal"
+        ],
+        CURLOPT_POSTFIELDS => json_encode([
+            'ai_credits_remaining' => $newMonthly,
+            'token_balance' => $newPurchased
+        ])
+    ]);
+    curl_exec($ch);
+    curl_close($ch);
+
+    return [
+        'success' => true,
+        'monthlyRemaining' => $newMonthly,
+        'purchasedRemaining' => $newPurchased,
+        'totalRemaining' => $newMonthly + $newPurchased
+    ];
+}
+
+/**
+ * Registrar uso en ai_usage
+ */
+function logUsage($userId, $context, $provider, $model, $tokensInput, $tokensOutput, $supabaseUrl, $supabaseKey) {
+    $ch = curl_init("{$supabaseUrl}/rest/v1/ai_usage");
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "apikey: {$supabaseKey}",
+            "Authorization: Bearer {$supabaseKey}",
+            "Content-Type: application/json",
+            "Prefer: return=minimal"
+        ],
+        CURLOPT_POSTFIELDS => json_encode([
+            'user_id' => $userId,
+            'context' => $context,
+            'provider' => $provider,
+            'model' => $model,
+            'tokens_input' => $tokensInput,
+            'tokens_output' => $tokensOutput,
+            'tokens_total' => $tokensInput + $tokensOutput,
+            'cost_usd' => calculateCost($tokensInput, $tokensOutput, $model)
+        ])
+    ]);
+    curl_exec($ch);
+    curl_close($ch);
+}
+
+/**
+ * Calcular costo en USD
+ */
+function calculateCost($tokensInput, $tokensOutput, $model) {
+    // Precios por 1M tokens (Anthropic pricing)
+    $prices = [
+        'claude-3-5-sonnet-20241022' => ['input' => 3.0, 'output' => 15.0],
+        'claude-3-5-haiku-20241022' => ['input' => 0.25, 'output' => 1.25],
+        'claude-3-opus-20240229' => ['input' => 15.0, 'output' => 75.0]
+    ];
+
+    $price = $prices[$model] ?? $prices['claude-3-5-sonnet-20241022'];
+
+    $inputCost = ($tokensInput / 1000000) * $price['input'];
+    $outputCost = ($tokensOutput / 1000000) * $price['output'];
+
+    return round($inputCost + $outputCost, 6);
 }
 
 function callClaudeAPI($apiKey, $model, $messages, $systemPrompt, $maxTokens = 4096) {
@@ -218,9 +330,9 @@ if (!$data) {
 }
 
 $messages = $data['messages'] ?? [];
-$systemPrompt = $data['systemPrompt'] ?? $data['system'] ?? '';  // Soportar ambos nombres
+$systemPrompt = $data['systemPrompt'] ?? $data['system'] ?? '';
 $feature = $data['feature'] ?? 'chat'; // chat, tutor, adapter, game_master
-$maxTokens = min(intval($data['max_tokens'] ?? 4096), 8192);  // Leer del cliente, máx 8192
+$maxTokens = min(intval($data['max_tokens'] ?? 4096), 8192);
 
 if (empty($messages)) {
     http_response_code(400);
@@ -231,41 +343,71 @@ if (empty($messages)) {
 // Verificar usuario si tiene token
 $userInfo = null;
 if ($userToken) {
-    $userInfo = verifyUserSubscription($userToken, $SUPABASE_URL, $SUPABASE_SERVICE_KEY);
+    $userInfo = verifyUserAndTokens($userToken, $SUPABASE_URL, $SUPABASE_SERVICE_KEY);
 
     if (!$userInfo['valid']) {
-        // Token inválido, pero permitir si tiene API key propia
-        $userInfo = null;
+        http_response_code(401);
+        echo json_encode(['error' => $userInfo['error']]);
+        exit;
     }
 }
 
-// Determinar plan y límites
-$plan = $userInfo['plan'] ?? 'free';
-$creditsRemaining = $userInfo['creditsRemaining'] ?? 0;
-$userId = $userInfo['userId'] ?? null;
-
-// Usuarios no autenticados o free sin créditos: rechazar
-if (!$userInfo || ($plan === 'free' && $creditsRemaining <= 0)) {
-    http_response_code(403);
+if (!$userInfo) {
+    http_response_code(401);
     echo json_encode([
-        'error' => 'No tienes créditos de IA disponibles',
-        'plan' => $plan,
-        'creditsRemaining' => $creditsRemaining,
-        'upgrade' => true,
-        'message' => 'Suscríbete a Premium para obtener 500 consultas IA/mes o configura tu propia API key'
+        'error' => 'Autenticación requerida',
+        'message' => 'Por favor inicia sesión para usar el chat de IA'
     ]);
     exit;
 }
 
-// Verificar si tiene créditos
-if ($creditsRemaining <= 0) {
+// Obtener información de tokens
+$plan = $userInfo['plan'];
+$totalTokens = $userInfo['totalTokens'];
+$monthlyTokens = $userInfo['monthlyTokens'];
+$purchasedTokens = $userInfo['purchasedTokens'];
+$userId = $userInfo['userId'];
+
+// Estimar tokens necesarios (aproximado)
+$estimatedTokens = 100; // Mínimo base
+foreach ($messages as $msg) {
+    $estimatedTokens += intval(strlen($msg['content'] ?? '') / 4);
+}
+$estimatedTokens = min($estimatedTokens + $maxTokens, 10000); // Cap máximo
+
+// Verificar si tiene tokens suficientes
+if ($totalTokens < $estimatedTokens) {
     http_response_code(403);
     echo json_encode([
-        'error' => 'Has agotado tus créditos de IA este mes',
+        'error' => 'Tokens insuficientes',
+        'tokensAvailable' => $totalTokens,
+        'tokensNeeded' => $estimatedTokens,
+        'message' => 'Compra más tokens para continuar usando el chat de IA',
+        'purchaseUrl' => true
+    ]);
+    exit;
+}
+
+// 🔧 v2.9.392: Verificar feature según plan O si tiene tokens comprados
+// Si el usuario tiene tokens comprados (wallet), puede usar cualquier feature
+// Esto alinea el comportamiento del proxy con el frontend (ai-premium.js)
+$featureAccess = [
+    'free' => ['chat'],
+    'premium' => ['chat', 'tutor', 'adapter', 'content_adaptation'],
+    'pro' => ['chat', 'tutor', 'adapter', 'content_adaptation', 'game_master']
+];
+
+$allowedFeatures = $featureAccess[$plan] ?? $featureAccess['free'];
+$hasPurchasedTokens = $purchasedTokens > 0;
+
+// Permitir acceso si: (1) la feature está en su plan, O (2) tiene tokens comprados
+if (!in_array($feature, $allowedFeatures) && !$hasPurchasedTokens) {
+    http_response_code(403);
+    echo json_encode([
+        'error' => "La función '{$feature}' no está disponible en tu plan {$plan}",
         'plan' => $plan,
-        'creditsRemaining' => 0,
-        'resetDate' => date('Y-m-01', strtotime('first day of next month')),
-        'upgrade' => $plan !== 'pro'
+        'upgrade' => true,
+        'message' => 'Actualiza tu plan o compra tokens para acceder a esta función'
     ]);
     exit;
 }
@@ -273,28 +415,7 @@ if ($creditsRemaining <= 0) {
 // Determinar modelo según plan
 $model = $PLAN_MODELS[$plan] ?? $PLAN_MODELS['free'];
 
-// Calcular créditos a consumir según feature
-$creditsCost = [
-    'chat' => 1,
-    'tutor' => 2,
-    'adapter' => 3,
-    'content_adaptation' => 4,  // Adaptación de contenido (textos largos)
-    'game_master' => 5
-];
-$cost = $creditsCost[$feature] ?? 1;
-
-// Verificar que tiene suficientes créditos
-if ($creditsRemaining < $cost) {
-    http_response_code(403);
-    echo json_encode([
-        'error' => "Esta función cuesta {$cost} créditos y solo te quedan {$creditsRemaining}",
-        'creditsRemaining' => $creditsRemaining,
-        'cost' => $cost
-    ]);
-    exit;
-}
-
-// Hacer la llamada a Claude con la API key del admin
+// Hacer la llamada a Claude
 $apiKey = $ADMIN_API_KEYS['claude'];
 $result = callClaudeAPI($apiKey, $model, $messages, $systemPrompt, $maxTokens);
 
@@ -304,17 +425,37 @@ if (isset($result['error'])) {
     exit;
 }
 
-// Incrementar créditos usados
-if ($userId) {
-    incrementUserCredits($userId, $SUPABASE_URL, $SUPABASE_SERVICE_KEY, $cost);
-}
+// Calcular tokens reales usados
+$tokensInput = $result['usage']['input_tokens'] ?? 0;
+$tokensOutput = $result['usage']['output_tokens'] ?? 0;
+$tokensUsed = $tokensInput + $tokensOutput;
+
+// Consumir tokens
+$consumeResult = consumeTokens(
+    $userId,
+    $tokensUsed,
+    $SUPABASE_URL,
+    $SUPABASE_SERVICE_KEY,
+    $monthlyTokens,
+    $purchasedTokens
+);
+
+// Registrar uso
+logUsage($userId, $feature, 'claude', $model, $tokensInput, $tokensOutput, $SUPABASE_URL, $SUPABASE_SERVICE_KEY);
 
 // Devolver respuesta exitosa
 echo json_encode([
     'success' => true,
     'text' => $result['text'],
     'model' => $model,
-    'creditsUsed' => $cost,
-    'creditsRemaining' => $creditsRemaining - $cost,
-    'plan' => $plan
+    'tokensUsed' => $tokensUsed,
+    'tokensRemaining' => $consumeResult['totalRemaining'],
+    'monthlyRemaining' => $consumeResult['monthlyRemaining'],
+    'purchasedRemaining' => $consumeResult['purchasedRemaining'],
+    'plan' => $plan,
+    'usage' => [
+        'input' => $tokensInput,
+        'output' => $tokensOutput,
+        'total' => $tokensUsed
+    ]
 ]);

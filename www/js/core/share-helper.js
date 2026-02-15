@@ -31,7 +31,7 @@ class ShareHelper {
         return this.fallbackShare({ title, text, url });
       }
     } catch (error) {
-      // logger.warn('Error sharing:', error);
+      // console.warn('Error sharing:', error);
       return this.fallbackShare({ title, text, url });
     }
   }

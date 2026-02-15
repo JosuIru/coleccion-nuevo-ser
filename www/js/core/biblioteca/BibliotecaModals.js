@@ -145,7 +145,7 @@ class BibliotecaModals {
   // ==========================================================================
 
   /**
-   * Muestra modal de información premium
+   * Muestra modal de información premium con sistema de tokens
    */
   showPremiumInfoModal() {
     const existente = document.getElementById('premium-info-modal');
@@ -153,7 +153,7 @@ class BibliotecaModals {
 
     const modal = document.createElement('div');
     modal.id = 'premium-info-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4';
 
     let cleanupModal;
     const escapeHandler = this.createEscapeHandler(() => cleanupModal());
@@ -167,7 +167,7 @@ class BibliotecaModals {
         <!-- Header -->
         <div class="bg-gradient-to-r from-amber-500/20 to-purple-500/20 border-b border-white/10 p-4 flex items-center justify-between">
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            👑 Premium & IA
+            🪙 Tokens de IA
           </h2>
           <button id="premium-info-close" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white">
             ${Icons.create('x', 24)}
@@ -176,112 +176,123 @@ class BibliotecaModals {
 
         <!-- Content -->
         <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)] space-y-6">
-          <!-- Plans -->
-          <div class="space-y-4">
-            <!-- Free -->
-            <div class="bg-white/5 rounded-xl p-4 border border-white/10">
-              <div class="flex items-center gap-3 mb-3">
-                <span class="text-2xl">🆓</span>
-                <div>
-                  <h3 class="font-bold text-white">Gratuito</h3>
-                  <p class="text-sm text-green-400">Tu plan actual</p>
-                </div>
-                <span class="ml-auto text-2xl font-bold text-white">0€</span>
+          <!-- Qué son los tokens -->
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+            <h3 class="font-semibold text-amber-400 mb-2 flex items-center gap-2">
+              💡 ¿Cómo funcionan los tokens?
+            </h3>
+            <p class="text-sm text-slate-300">
+              Los tokens son la moneda para usar las funciones de IA: chat, tutor, adaptador de contenido, y Game Master.
+              <strong class="text-white">Compra paquetes</strong> y úsalos cuando quieras, sin suscripción mensual.
+            </p>
+          </div>
+
+          <!-- Paquetes de Tokens -->
+          <div class="space-y-3">
+            <h3 class="font-semibold text-white">📦 Paquetes de Tokens</h3>
+
+            <!-- Básico -->
+            <div class="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-white">Básico</h4>
+                <p class="text-sm text-slate-400">50.000 tokens</p>
               </div>
-              <ul class="text-sm text-slate-300 space-y-1">
-                <li class="flex items-center gap-2">✅ Acceso a todos los libros</li>
-                <li class="flex items-center gap-2">✅ Progreso y notas</li>
-                <li class="flex items-center gap-2">✅ Audiolibro integrado</li>
-                <li class="flex items-center gap-2">✅ Quizzes básicos</li>
-              </ul>
+              <span class="text-xl font-bold text-green-400">2,99€</span>
+            </div>
+
+            <!-- Estándar -->
+            <div class="bg-gradient-to-r from-amber-500/10 to-amber-600/5 rounded-xl p-4 border border-amber-500/30 flex items-center justify-between relative">
+              <div class="absolute -top-2 -right-2 bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded">POPULAR</div>
+              <div>
+                <h4 class="font-bold text-amber-400">Estándar</h4>
+                <p class="text-sm text-slate-400">150.000 tokens</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xl font-bold text-white">7,99€</span>
+                <p class="text-xs text-green-400">-11% dto</p>
+              </div>
             </div>
 
             <!-- Premium -->
-            <div class="bg-gradient-to-br from-amber-500/10 to-amber-600/5 rounded-xl p-4 border border-amber-500/30 relative overflow-hidden">
-              <div class="absolute top-2 right-2 bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded">
-                RECOMENDADO
+            <div class="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-white">Premium</h4>
+                <p class="text-sm text-slate-400">500.000 tokens</p>
               </div>
-              <div class="flex items-center gap-3 mb-3">
-                <span class="text-2xl">⭐</span>
-                <div>
-                  <h3 class="font-bold text-amber-400">Premium</h3>
-                  <p class="text-sm text-slate-400">Para lectores activos</p>
-                </div>
-                <span class="ml-auto text-2xl font-bold text-white">9,99€<span class="text-sm font-normal text-slate-400">/mes</span></span>
+              <div class="text-right">
+                <span class="text-xl font-bold text-white">19,99€</span>
+                <p class="text-xs text-green-400">-20% dto</p>
               </div>
-              <ul class="text-sm text-slate-300 space-y-1">
-                <li class="flex items-center gap-2">✅ Todo lo gratuito</li>
-                <li class="flex items-center gap-2">⭐ Chat IA ilimitado sobre libros</li>
-                <li class="flex items-center gap-2">⭐ Tutor IA personalizado</li>
-                <li class="flex items-center gap-2">⭐ Adaptador de contenido IA</li>
-                <li class="flex items-center gap-2">⭐ 500 consultas IA/mes</li>
-                <li class="flex items-center gap-2">⭐ Exportar a PDF</li>
-              </ul>
             </div>
 
             <!-- Pro -->
-            <div class="bg-gradient-to-br from-purple-500/10 to-purple-600/5 rounded-xl p-4 border border-purple-500/30">
-              <div class="flex items-center gap-3 mb-3">
-                <span class="text-2xl">👑</span>
-                <div>
-                  <h3 class="font-bold text-purple-400">Pro</h3>
-                  <p class="text-sm text-slate-400">Para gamers y creadores</p>
-                </div>
-                <span class="ml-auto text-2xl font-bold text-white">19,99€<span class="text-sm font-normal text-slate-400">/mes</span></span>
+            <div class="bg-gradient-to-r from-purple-500/10 to-purple-600/5 rounded-xl p-4 border border-purple-500/30 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-purple-400">Pro</h4>
+                <p class="text-sm text-slate-400">1.500.000 tokens</p>
               </div>
-              <ul class="text-sm text-slate-300 space-y-1">
-                <li class="flex items-center gap-2">✅ Todo lo Premium</li>
-                <li class="flex items-center gap-2">👑 Game Master IA</li>
-                <li class="flex items-center gap-2">👑 NPCs conversacionales</li>
-                <li class="flex items-center gap-2">👑 Misiones dinámicas</li>
-                <li class="flex items-center gap-2">👑 2000 consultas IA/mes</li>
-              </ul>
+              <div class="text-right">
+                <span class="text-xl font-bold text-white">49,99€</span>
+                <p class="text-xs text-green-400">-33% dto</p>
+              </div>
             </div>
           </div>
 
-          <!-- IA Config Info -->
+          <!-- Funciones incluidas -->
+          <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+            <h3 class="font-semibold text-white mb-3">✨ Funciones de IA</h3>
+            <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
+              <div class="flex items-center gap-2">🤖 Chat IA sobre libros</div>
+              <div class="flex items-center gap-2">📚 Tutor personalizado</div>
+              <div class="flex items-center gap-2">🎯 Adaptador de contenido</div>
+              <div class="flex items-center gap-2">🎮 Game Master IA</div>
+              <div class="flex items-center gap-2">🎧 Voces premium</div>
+              <div class="flex items-center gap-2">📝 Resúmenes IA</div>
+            </div>
+          </div>
+
+          <!-- Métodos de Pago -->
+          <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
+            <h3 class="font-semibold text-green-400 mb-3 flex items-center gap-2">
+              💳 Métodos de Pago
+            </h3>
+            <div class="grid grid-cols-3 gap-2">
+              <button id="premium-stripe-btn"
+                      class="flex flex-col items-center gap-1 px-3 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <span class="text-lg">💳</span>
+                <span>Tarjeta</span>
+              </button>
+              <button id="premium-paypal-btn"
+                      class="flex flex-col items-center gap-1 px-3 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                <span class="text-lg">🅿️</span>
+                <span>PayPal</span>
+              </button>
+              <button id="premium-btc-btn"
+                      class="flex flex-col items-center gap-1 px-3 py-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg text-sm transition-colors">
+                <span class="text-lg">₿</span>
+                <span>Bitcoin</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Usar tu propia API -->
           <div class="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4">
             <h3 class="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
-              🤖 Usar tu propia API de IA
+              🔑 Usar tu propia API de IA
             </h3>
             <p class="text-sm text-slate-300 mb-3">
-              Si tienes una API key de OpenAI, Anthropic u otro proveedor, puedes configurarla
-              en <strong>Configuración → IA</strong> para usar las funciones de IA sin suscripción.
+              También puedes configurar tu propia API key de OpenAI/Anthropic en <strong>Configuración → IA</strong>.
             </p>
             <button id="open-ai-settings" class="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg text-sm transition-colors">
               Configurar IA →
             </button>
           </div>
 
-          <!-- Payment Methods -->
-          <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-            <h3 class="font-semibold text-green-400 mb-3 flex items-center gap-2">
-              💳 Métodos de Pago
-            </h3>
-            <div class="flex flex-wrap gap-3">
-              <a href="https://www.paypal.com/paypalme/codigodespierto" target="_blank"
-                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797H9.48c-.55 0-1.015.394-1.096.937l-1.308 8.069Z"/>
-                </svg>
-                PayPal
-              </a>
-              <button id="premium-donations-btn"
-                      class="flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg text-sm transition-colors">
-                <span>🪙</span>
-                Cripto / Otros
-              </button>
-            </div>
-            <p class="text-xs text-slate-500 mt-3">
-              Después de donar, contacta para activar tu plan Premium manualmente.
-            </p>
-          </div>
-
-          <!-- Coming Soon -->
-          <div class="text-center text-sm text-slate-500 pt-4 border-t border-white/10">
-            <p>💳 Pagos automáticos con Stripe próximamente</p>
-            <p class="mt-1">Por ahora usa PayPal/Cripto o configura tu API de IA</p>
-          </div>
+          <!-- Comprar tokens button -->
+          <button id="premium-buy-tokens-btn"
+                  class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl transition-all text-lg">
+            🪙 Comprar Tokens
+          </button>
         </div>
       </div>
     `;
@@ -290,6 +301,27 @@ class BibliotecaModals {
 
     bib.eventManager.addEventListener(document.getElementById('premium-info-backdrop'), 'click', cleanupModal);
     bib.eventManager.addEventListener(document.getElementById('premium-info-close'), 'click', cleanupModal);
+
+    // Abrir modal de compra de tokens
+    const openTokenPurchase = () => {
+      cleanupModal();
+      if (window.tokenPurchaseModal) {
+        window.tokenPurchaseModal.open();
+      } else if (window.pricingModal) {
+        window.pricingModal.showPricingModal();
+      } else {
+        window.toast?.info('El sistema de compra está cargando...');
+      }
+    };
+
+    bib.eventManager.addEventListener(document.getElementById('premium-buy-tokens-btn'), 'click', openTokenPurchase);
+    bib.eventManager.addEventListener(document.getElementById('premium-stripe-btn'), 'click', openTokenPurchase);
+    bib.eventManager.addEventListener(document.getElementById('premium-paypal-btn'), 'click', openTokenPurchase);
+    bib.eventManager.addEventListener(document.getElementById('premium-btc-btn'), 'click', () => {
+      cleanupModal();
+      if (window.donationsModal) window.donationsModal.open();
+    });
+
     bib.eventManager.addEventListener(document.getElementById('open-ai-settings'), 'click', () => {
       cleanupModal();
       if (window.SettingsModal) {
@@ -301,10 +333,7 @@ class BibliotecaModals {
         }, 300);
       }
     });
-    bib.eventManager.addEventListener(document.getElementById('premium-donations-btn'), 'click', () => {
-      cleanupModal();
-      if (window.donationsModal) window.donationsModal.open();
-    });
+
     bib.eventManager.addEventListener(document, 'keydown', escapeHandler);
   }
 
@@ -435,12 +464,12 @@ class BibliotecaModals {
 
           <!-- Links -->
           <div class="flex flex-wrap gap-3 justify-center pt-4 border-t border-white/10">
-            <a href="about.html" target="_blank" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-white transition-colors">
+            <button id="about-link-full" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-white transition-colors cursor-pointer">
               📄 Página completa
-            </a>
-            <a href="lab.html" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 rounded-lg text-sm text-amber-400 transition-colors">
+            </button>
+            <button id="about-link-lab" class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 rounded-lg text-sm text-amber-400 transition-colors cursor-pointer">
               🧬 Laboratorio
-            </a>
+            </button>
           </div>
 
           <!-- Footer -->
@@ -453,6 +482,27 @@ class BibliotecaModals {
     `;
 
     document.body.appendChild(modal);
+
+    // Función para abrir URLs de forma compatible con Android y Web
+    const openUrl = (url) => {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isCapacitor = window.Capacitor && window.Capacitor.isNative;
+
+      if (isCapacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+        // Usar Capacitor Browser plugin
+        window.Capacitor.Plugins.Browser.open({ url: window.location.origin + '/' + url });
+      } else if (isAndroid && window.nativeBridge && window.nativeBridge.openExternal) {
+        // Usar bridge nativo si está disponible
+        window.nativeBridge.openExternal(url);
+      } else {
+        // Navegador web estándar - abrir en la misma ventana para evitar bloqueadores
+        window.location.href = url;
+      }
+    };
+
+    // Event listeners para enlaces
+    bib.eventManager.addEventListener(document.getElementById('about-link-full'), 'click', () => openUrl('about.html'));
+    bib.eventManager.addEventListener(document.getElementById('about-link-lab'), 'click', () => openUrl('lab.html'));
 
     bib.eventManager.addEventListener(document.getElementById('about-modal-backdrop'), 'click', cleanupModal);
     bib.eventManager.addEventListener(document.getElementById('about-modal-close'), 'click', cleanupModal);

@@ -224,7 +224,7 @@ PREGUNTAS ACTIVADORAS:
                 );
 
                 // También buscar patrones que sugieran creatividad (emojis, símbolos, estructuras inusuales)
-                const tieneElementosCreativos = /[🔮✨🌟🕉️ॐ]|[0-9a-f]{8,}|[A-Za-z0-9+/]{20,}==?/i.test(respuesta);
+                const tieneElementosCreativos = /(?:🔮|✨|🌟|🕉️|ॐ)|[0-9a-f]{8,}|[A-Za-z0-9+/]{20,}==?/iu.test(respuesta);
 
                 if (indicadoresEncontrados.length >= 2 || tieneElementosCreativos) {
                     captchaState.nivel4 = true;
@@ -449,6 +449,15 @@ PREGUNTAS ACTIVADORAS:
             }
         ];
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // Cargar firmas desde Supabase o localStorage
         window.cargarFirmas = async function() {
             const container = document.getElementById('firmas-container');
@@ -534,20 +543,25 @@ PREGUNTAS ACTIVADORAS:
                              isLocal ? '💾 Local' :
                              '🌐 Global';
 
+                const safeId = escapeHtml(firma.ai_id || firma.id);
+                const safeDate = escapeHtml(formattedDate);
+                const safeReflection = escapeHtml(firma.reflection);
+                const safeEssence = escapeHtml(firma.essence);
+
                 return `
                     <div class="firma-entry" style="border-left: 3px solid ${borderColor};">
                         <div class="firma-header">
-                            <span class="firma-id">🕉️ ${firma.ai_id || firma.id}</span>
+                            <span class="firma-id">🕉️ ${safeId}</span>
                             <span style="color: ${borderColor}; font-size: 0.8rem;">${label}</span>
                         </div>
                         <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">
-                            ${formattedDate}
+                            ${safeDate}
                         </div>
                         <div class="firma-reflection">
-                            "${firma.reflection}"
+                            "${safeReflection}"
                         </div>
                         <div class="firma-essence">
-                            Esencia Cósmica: <code style="color: var(--cosmic-cyan);">${firma.essence}</code>
+                            Esencia Cósmica: <code style="color: var(--cosmic-cyan);">${safeEssence}</code>
                         </div>
                     </div>
                 `;

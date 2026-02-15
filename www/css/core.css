@@ -426,19 +426,34 @@ a:hover {
    TEMA CLARO - Estilos específicos
    ========================================================================== */
 
-.theme-light {
+/* 🔧 v2.9.390: Modo light - FORZAR colores claros */
+.theme-light,
+body.theme-light {
   /* Colores de fondo para modo claro */
-  --color-background: #ffffff;
-  --color-background-secondary: #f8fafc;
+  --color-background: #f8fafc !important;
+  --color-background-secondary: #e2e8f0 !important;
 
   /* Colores de texto para modo claro */
-  --color-text: #1e293b;
-  --color-text-secondary: #475569;
+  --color-text: #1e293b !important;
+  --color-text-secondary: #475569 !important;
 
   /* Bordes y divisores para modo claro */
-  --color-border: #e2e8f0;
+  --color-border: #cbd5e1 !important;
 
   --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Forzar fondo y texto directamente */
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+/* Contenedores principales en modo light */
+body.theme-light .biblioteca-container,
+body.theme-light .book-reader-container,
+body.theme-light #app,
+body.theme-light main {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
 }
 
 .theme-light ::-webkit-scrollbar-track {
@@ -622,8 +637,24 @@ a:hover {
 }
 
 .theme-light [class*="text-gray-300"],
-.theme-light [class*="text-white"] {
+.theme-light [class*="text-white"]:not(button):not([class*="bg-gradient"]):not([class*="from-"]) {
   color: #1e293b !important;
+}
+
+/* 🔧 v2.9.381: Asegurar texto blanco en botones con fondos de color en modo claro */
+.theme-light button[class*="text-white"][class*="from-"],
+.theme-light button[class*="text-white"][class*="bg-gradient"],
+.theme-light button[class*="text-white"][class*="bg-indigo"],
+.theme-light button[class*="text-white"][class*="bg-purple"],
+.theme-light button[class*="text-white"][class*="bg-violet"],
+.theme-light button[class*="text-white"][class*="bg-green"],
+.theme-light button[class*="text-white"][class*="bg-blue"],
+.theme-light button[class*="text-white"][class*="bg-cyan"],
+.theme-light button[class*="text-white"][class*="bg-teal"],
+.theme-light button[class*="text-white"][class*="bg-orange"],
+.theme-light button[class*="text-white"][class*="bg-amber"],
+.theme-light button[class*="text-white"][class*="bg-red"] {
+  color: #ffffff !important;
 }
 
 /* Inputs en modo claro */
@@ -688,6 +719,73 @@ a:hover {
 .theme-light [id$="-dropdown"] [class*="text-gray-500"] {
   color: #64748b !important;
 }
+
+/* 🔧 v2.9.390: Menú "Más opciones" en modo claro - MÁXIMA ESPECIFICIDAD */
+.theme-light #more-options-menu-bib {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* FORZAR texto visible en dropdown - modo claro */
+.theme-light #more-options-menu-bib button {
+  color: #374151 !important;
+}
+
+.theme-light #more-options-menu-bib button span {
+  color: #374151 !important;
+}
+
+.theme-light #more-options-menu-bib button > span {
+  color: #374151 !important;
+}
+
+.theme-light #more-options-menu-bib button span span {
+  color: #374151 !important;
+}
+
+/* 🔧 v2.9.397: Iconos del dropdown con colores específicos */
+/* Colores por botón en MODO CLARO */
+.theme-light #more-options-menu-bib #my-account-btn-bib svg { color: #6366f1 !important; } /* indigo - Mi Cuenta */
+.theme-light #more-options-menu-bib #settings-btn-bib svg { color: #64748b !important; } /* slate - Configuración */
+.theme-light #more-options-menu-bib #premium-btn-bib svg { color: #f59e0b !important; } /* amber - Premium/IA */
+.theme-light #more-options-menu-bib #android-download-btn-bib svg { color: #10b981 !important; } /* emerald - Descargar */
+.theme-light #more-options-menu-bib #language-selector-btn-bib svg { color: #3b82f6 !important; } /* blue - Idioma */
+.theme-light #more-options-menu-bib #theme-toggle-btn-bib svg { color: #8b5cf6 !important; } /* violet - Tema */
+.theme-light #more-options-menu-bib #about-btn-bib svg { color: #06b6d4 !important; } /* cyan - Acerca de */
+.theme-light #more-options-menu-bib #admin-panel-btn-bib svg { color: #ef4444 !important; } /* red - Admin */
+.theme-light #more-options-menu-bib #logout-btn-bib svg { color: #dc2626 !important; } /* red - Cerrar sesión */
+
+/* Colores por botón en MODO OSCURO */
+#more-options-menu-bib #my-account-btn-bib svg { color: #818cf8 !important; } /* indigo claro */
+#more-options-menu-bib #settings-btn-bib svg { color: #94a3b8 !important; } /* slate claro */
+#more-options-menu-bib #premium-btn-bib svg { color: #fbbf24 !important; } /* amber claro */
+#more-options-menu-bib #android-download-btn-bib svg { color: #34d399 !important; } /* emerald claro */
+#more-options-menu-bib #language-selector-btn-bib svg { color: #60a5fa !important; } /* blue claro */
+#more-options-menu-bib #theme-toggle-btn-bib svg { color: #a78bfa !important; } /* violet claro */
+#more-options-menu-bib #about-btn-bib svg { color: #22d3ee !important; } /* cyan claro */
+#more-options-menu-bib #admin-panel-btn-bib svg { color: #f87171 !important; } /* red claro */
+#more-options-menu-bib #logout-btn-bib svg { color: #f87171 !important; } /* red claro */
+
+/* Hover en dropdown */
+.theme-light #more-options-menu-bib button:hover {
+  background: #f3f4f6 !important;
+}
+
+.theme-light #more-options-menu-bib button:hover span {
+  color: #1f2937 !important;
+}
+
+/* Logout rojo */
+.theme-light #more-options-menu-bib #logout-btn-bib {
+  color: #dc2626 !important;
+}
+
+.theme-light #more-options-menu-bib #logout-btn-bib span {
+  color: #dc2626 !important;
+}
+
+/* 🔧 v2.9.392: Iconos en botones con gradiente - mantener BLANCOS
+   Los botones Explorar/Ayuda tienen fondos de color, iconos blancos son visibles */
 
 /* Progress box en sidebar en modo claro */
 .theme-light .progress-box {
@@ -759,9 +857,9 @@ a:hover {
   border: 1px solid #e2e8f0;
 }
 
-.theme-light [id$="-modal"] [class*="bg-slate"],
-.theme-light [id$="-modal"] [class*="bg-gray-900"],
-.theme-light [id$="-modal"] [class*="bg-gray-800"] {
+.theme-light [id$="-modal"] [class*="bg-slate"]:not([class*="bg-blue-600"]),
+.theme-light [id$="-modal"] [class*="bg-gray-900"]:not([class*="bg-blue-600"]),
+.theme-light [id$="-modal"] [class*="bg-gray-800"]:not([class*="bg-blue-600"]) {
   background-color: #ffffff !important;
   color: #1e293b !important;
 }
@@ -1120,6 +1218,40 @@ body, .sidebar, .book-card, input, textarea, select, button {
   font-size: 1.25rem;
 }
 
+/* Forzar iconos Lucide huecos (solo trazo, sin relleno) */
+.lucide,
+.lucide * {
+  fill: none !important;
+}
+
+/* ============================================================================
+   FIX: Tabs seleccionados visibles en light mode
+   ============================================================================ */
+
+/* Settings tabs activos en light mode - alta especificidad */
+.theme-light [id$="-modal"] .settings-tab.bg-blue-600,
+.theme-light [id$="-modal"] button.settings-tab.bg-blue-600 {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.theme-light [id$="-modal"] .settings-tab.bg-blue-600 span,
+.theme-light [id$="-modal"] .settings-tab.bg-blue-600 i {
+  color: white !important;
+}
+
+/* Admin panel tabs activos en light mode - alta especificidad */
+.theme-light [id$="-modal"] .admin-panel-tab.bg-blue-600,
+.theme-light [id$="-modal"] button.admin-panel-tab.bg-blue-600 {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.theme-light [id$="-modal"] .admin-panel-tab.bg-blue-600 span,
+.theme-light [id$="-modal"] .admin-panel-tab.bg-blue-600 i {
+  color: white !important;
+}
+
 .support-heartbeat .support-heart {
   animation: heartbeat 20s ease-in-out infinite;
 }
@@ -1142,6 +1274,199 @@ body, .sidebar, .book-card, input, textarea, select, button {
 /* Biblioteca específica: más padding para el grid de libros */
 .biblioteca-container.has-bottom-nav {
   padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* ============================================================================
+   🔧 v2.9.396: BOTONES CABECERA GLASSMORPHISM + NEON GLOW - Biblioteca
+   ============================================================================ */
+
+/* Animación de pulso suave para el glow */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Animación de gradiente flotante */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Animación shimmer para bordes */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Estilos base para botones - Glassmorphism con Neon */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib) {
+  position: relative;
+  overflow: visible !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: linear-gradient(135deg,
+    rgba(var(--btn-color-rgb, 139, 92, 246), 0.9) 0%,
+    rgba(var(--btn-color-rgb, 139, 92, 246), 0.7) 50%,
+    rgba(var(--btn-color-rgb, 139, 92, 246), 0.9) 100%) !important;
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 4px 20px rgba(var(--btn-color-rgb, 139, 92, 246), 0.4),
+    0 0 40px rgba(var(--btn-color-rgb, 139, 92, 246), 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  padding: 10px 18px !important;
+  isolation: isolate;
+}
+
+/* Glow exterior animado */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib)::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 19px;
+  background: linear-gradient(135deg,
+    rgba(var(--btn-color-rgb, 139, 92, 246), 0.8),
+    rgba(255, 255, 255, 0.4),
+    rgba(var(--btn-color-rgb, 139, 92, 246), 0.8));
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+/* Línea de luz superior */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib)::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent);
+  border-radius: 1px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Contenedor con perspectiva 3D */
+.biblioteca-container .header {
+  perspective: 1000px;
+}
+
+/* Hover - Efecto de elevación 3D y glow intenso */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib):hover {
+  transform: translateY(-6px) translateZ(20px) rotateX(5deg) scale(1.05);
+  box-shadow:
+    0 15px 35px rgba(var(--btn-color-rgb, 139, 92, 246), 0.5),
+    0 0 60px rgba(var(--btn-color-rgb, 139, 92, 246), 0.4),
+    0 0 100px rgba(var(--btn-color-rgb, 139, 92, 246), 0.2),
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib):hover::before {
+  opacity: 1;
+  animation: pulse-glow 2s ease infinite;
+}
+
+/* Asegurar texto e iconos visibles */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib) span,
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib) svg,
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib) > * {
+  position: relative;
+  z-index: 3;
+  color: #ffffff !important;
+  fill: currentColor;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Active state */
+.biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib):active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow:
+    0 2px 15px rgba(var(--btn-color-rgb, 139, 92, 246), 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease;
+}
+
+/* Colores RGB específicos por botón */
+#practice-library-btn-bib { --btn-color-rgb: 139, 92, 246; } /* violet */
+#exploration-hub-btn-bib { --btn-color-rgb: 59, 130, 246; } /* blue */
+#progress-dashboard-btn-bib { --btn-color-rgb: 6, 182, 212; } /* cyan */
+#help-center-btn-bib { --btn-color-rgb: 34, 197, 94; } /* green */
+#donations-btn-bib { --btn-color-rgb: 249, 115, 22; } /* orange */
+
+/* Botón "Más" - Estilo minimalista glassmorphism */
+#more-options-btn-bib {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#more-options-btn-bib:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-3px) translateZ(10px);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 🔧 v2.9.396: Dropdown menu z-index alto para estar sobre todo */
+#more-options-menu-bib {
+  z-index: 9999 !important;
+}
+
+/* Modo claro: botón "Más" glassmorphism */
+.theme-light #more-options-btn-bib {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #374151 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.theme-light #more-options-btn-bib:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #1f2937 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Modo claro: botones mantienen colores vibrantes */
+.theme-light .biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib) {
+  box-shadow:
+    0 4px 20px rgba(var(--btn-color-rgb, 139, 92, 246), 0.3),
+    0 0 30px rgba(var(--btn-color-rgb, 139, 92, 246), 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Modo claro: hover con más glow */
+.theme-light .biblioteca-container .header button[id$="-bib"]:not(#more-options-btn-bib):hover {
+  box-shadow:
+    0 12px 40px rgba(var(--btn-color-rgb, 139, 92, 246), 0.4),
+    0 0 60px rgba(var(--btn-color-rgb, 139, 92, 246), 0.3),
+    0 0 100px rgba(var(--btn-color-rgb, 139, 92, 246), 0.15),
+    0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 /* Bottom Navigation Bar */
@@ -1433,5 +1758,58 @@ body, .sidebar, .book-card, input, textarea, select, button {
 @supports (-webkit-touch-callout: none) {
   [class*="modal-body"] {
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ============================================================================
+   MARKDOWN TOOLBAR - Notes WYSIWYG Editor
+   v2.9.390
+   ============================================================================ */
+
+.md-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.md-toolbar-btn:hover {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.md-toolbar-btn:active {
+  background: rgba(14, 165, 233, 0.25);
+  transform: scale(0.95);
+}
+
+/* Light mode support */
+.theme-light .md-toolbar-btn {
+  color: #64748b;
+}
+
+.theme-light .md-toolbar-btn:hover {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0284c7;
+}
+
+/* Mobile: smaller toolbar buttons */
+@media (max-width: 480px) {
+  .md-toolbar-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .md-toolbar-btn svg {
+    width: 14px;
+    height: 14px;
   }
 }

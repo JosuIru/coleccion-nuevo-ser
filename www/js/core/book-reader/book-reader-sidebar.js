@@ -183,7 +183,7 @@ class BookReaderSidebar {
    * Abre o cierra el sidebar, actualizando clases y backdrop
    */
   toggleSidebar() {
-    logger.log('[BookReaderSidebar.toggleSidebar] CALLED, current sidebarOpen:', this.sidebarOpen);
+    console.log('[BookReaderSidebar.toggleSidebar] CALLED, current sidebarOpen:', this.sidebarOpen);
     this.sidebarOpen = !this.sidebarOpen;
 
     // Solo actualizar las clases del sidebar sin re-renderizar todo
@@ -225,12 +225,12 @@ class BookReaderSidebar {
     const toggleBtn = document.getElementById('toggle-sidebar');
     const toggleText = document.getElementById('toggle-sidebar-text');
 
-    logger.log('[toggleSidebar] sidebarOpen:', this.sidebarOpen, 'toggleBtn:', !!toggleBtn, 'toggleText:', !!toggleText);
+    console.log('[toggleSidebar] sidebarOpen:', this.sidebarOpen, 'toggleBtn:', !!toggleBtn, 'toggleText:', !!toggleText);
 
     if (toggleText) {
       const text = this.sidebarOpen ? 'Ocultar' : 'Índice';
       toggleText.textContent = text;
-      logger.log('[toggleSidebar] Updated text to:', text);
+      console.log('[toggleSidebar] Updated text to:', text);
     }
 
     if (toggleBtn) {

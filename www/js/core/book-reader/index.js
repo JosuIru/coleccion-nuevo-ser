@@ -111,6 +111,9 @@ class BookReader {
 
     this.render();
 
+    // 🔧 v2.9.389: Aplicar tema del libro para que CSS light/dark funcionen
+    this.applyBookTheme();
+
     this._eventListenersAttached = false;
     this.events.resetFlags(); // Reset events module flag too
     this.events.attachEventListeners();
@@ -118,6 +121,11 @@ class BookReader {
     const mainNav = document.getElementById('main-nav');
     if (mainNav) {
       mainNav.classList.add('hidden');
+    }
+
+    // 🔧 v2.9.387: Ocultar FAB de soporte al entrar al lector
+    if (window.supportChat) {
+      window.supportChat.hideFab();
     }
 
     this.navigation.applyFontSize();
@@ -141,6 +149,11 @@ class BookReader {
     }
     if (window.radialMenu) {
       window.radialMenu.detach();
+    }
+
+    // 🔧 v2.9.387: Mostrar FAB de soporte al salir del lector
+    if (window.supportChat) {
+      window.supportChat.showFab();
     }
 
     this.cleanup();
@@ -228,7 +241,7 @@ class BookReader {
   // ==========================================================================
 
   toggleSidebar() {
-    logger.log('[BookReader.toggleSidebar] CALLED');
+    console.log('[BookReader.toggleSidebar] CALLED');
     this.sidebar.toggleSidebar();
   }
 

@@ -332,7 +332,7 @@ class SmartReader {
       const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
       let node;
 
-      while (node = walker.nextNode()) {
+      while ((node = walker.nextNode())) {
         if (node.textContent.includes(hl.text)) {
           const span = document.createElement('span');
           span.className = `${colors[hl.color] || colors.yellow} rounded px-0.5`;

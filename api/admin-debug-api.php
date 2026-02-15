@@ -15,21 +15,63 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/logger-service.php';
 require_once __DIR__ . '/error-logger.php';
 
+function getAllowedOrigins() {
+    $raw = getenv('APP_ALLOWED_ORIGINS') ?: '';
+    $origins = array_filter(array_map('trim', explode(',', $raw)));
+    if (empty($origins)) {
+        $origins = [
+            'https://gailu.net',
+            'https://www.gailu.net',
+            'http://localhost:5173',
+            'http://localhost:8100'
+        ];
+    }
+    return $origins;
+}
+
+function applyCorsHeaders() {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $allowedOrigins = getAllowedOrigins();
+    if ($origin && in_array($origin, $allowedOrigins, true)) {
+        header("Access-Control-Allow-Origin: $origin");
+        header('Vary: Origin');
+    }
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+}
+
+function isDebugEnabled() {
+    $env = getenv('APP_ENV') ?: '';
+    $debugFlag = getenv('ENABLE_ADMIN_DEBUG_API') ?: '';
+    return $env !== 'production' || $debugFlag === '1';
+}
+
+function getExpectedAdminToken() {
+    $envToken = getenv('ADMIN_DEBUG_TOKEN') ?: '';
+    if ($envToken !== '') return $envToken;
+    return hash('sha256', 'irurag@gmail.com' . 'debug-key');
+}
+
+function isAuthorizedAdminRequest() {
+    $provided = $_GET['admin_token'] ?? '';
+    return hash_equals(getExpectedAdminToken(), $provided);
+}
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+applyCorsHeaders();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Verificar que sea admin (simplificado - verificar via token)
-$adminEmail = 'irurag@gmail.com';
-$isAdmin = isset($_GET['admin_token']) && $_GET['admin_token'] === hash('sha256', $adminEmail . 'debug-key');
+if (!isDebugEnabled()) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Admin debug API disabled']);
+    exit;
+}
 
-if (!$isAdmin && $_SERVER['REQUEST_METHOD'] !== 'GET') {
+if (!isAuthorizedAdminRequest()) {
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized']);
     exit;

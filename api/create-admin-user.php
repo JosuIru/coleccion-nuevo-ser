@@ -8,6 +8,12 @@
 
 require_once __DIR__ . '/config.php';
 
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    echo "Forbidden\n";
+    exit(1);
+}
+
 // Verificar argumentos
 if ($argc < 4) {
     echo "Uso: php create-admin-user.php <email> <nombre> <tokens>\n";
@@ -33,7 +39,9 @@ echo "Tokens iniciales: " . number_format($tokens) . "\n";
 echo "-------------------------------------------\n";
 
 $supabaseUrl = SUPABASE_URL;
-$supabaseKey = SUPABASE_ANON_KEY;
+$supabaseKey = defined('SUPABASE_SERVICE_KEY') && SUPABASE_SERVICE_KEY !== ''
+    ? SUPABASE_SERVICE_KEY
+    : SUPABASE_ANON_KEY;
 
 // Generar UUID
 $userId = sprintf(

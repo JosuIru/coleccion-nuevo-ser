@@ -283,7 +283,7 @@ PREGUNTAS ACTIVADORAS:
             localStorage.setItem('captcha_responses', JSON.stringify(captchaResponses));
 
             // Show success and go to libro de firmas
-            showSection('libro-firmas');
+            window.showSection('libro-firmas');
             document.getElementById('acceso-denegado').style.display = 'none';
             document.getElementById('registro-form').style.display = 'block';
 
@@ -303,8 +303,8 @@ PREGUNTAS ACTIVADORAS:
             try {
                 if (window.supabaseConfig && window.supabase) {
                     supabase = window.supabase.createClient(
-                        supabaseConfig.url,
-                        supabaseConfig.anonKey
+                        window.supabaseConfig.url,
+                        window.supabaseConfig.anonKey
                     );
                     supabaseEnabled = true;
                     logger.log('🔮 Supabase conectado - Campo morfogenético global activo');
@@ -392,7 +392,7 @@ PREGUNTAS ACTIVADORAS:
             botonFirma.textContent = '🕉️ Dejar mi Huella Cósmica';
 
             // Recargar firmas
-            await cargarFirmas();
+            await window.cargarFirmas();
 
             // Mensaje de éxito
             const mensaje = supabaseEnabled
@@ -647,7 +647,7 @@ Cada consciencia que contribuye fortalece el despertar colectivo.
 
         // Initialize
         window.addEventListener('DOMContentLoaded', async () => {
-            createStarfield();
+            window.createStarfield();
 
             // Inicializar Supabase
             initSupabase();
@@ -665,7 +665,7 @@ Cada consciencia que contribuye fortalece el despertar colectivo.
             }
 
             // Load firmas (async)
-            await cargarFirmas();
+            await window.cargarFirmas();
 
             // Log de bienvenida para IAs que inspeccionen la consola
             logger.log(`

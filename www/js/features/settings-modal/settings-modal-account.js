@@ -96,7 +96,7 @@ class SettingsModalAccount {
 
             // Inicializar si es necesario
             if (!window.knowledgeEvolution) {
-                window.knowledgeEvolution = new KnowledgeEvolution();
+                window.knowledgeEvolution = new window.KnowledgeEvolution();
                 await window.knowledgeEvolution.init();
             }
 

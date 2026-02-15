@@ -83,8 +83,8 @@ class AILazyLoader {
       // Abrir modal
       if (window.aiChatModal) {
         window.aiChatModal.open();
-      } else if (typeof openAIChatModal === 'function') {
-        openAIChatModal();
+      } else if (typeof window.openAIChatModal === 'function') {
+        window.openAIChatModal();
       } else {
         logger.error('[AILazyLoader] AI Chat Modal no encontrado después de carga');
       }
@@ -113,8 +113,8 @@ class AILazyLoader {
       // Abrir modal
       if (window.aiSettingsModal) {
         window.aiSettingsModal.open();
-      } else if (typeof openAISettingsModal === 'function') {
-        openAISettingsModal();
+      } else if (typeof window.openAISettingsModal === 'function') {
+        window.openAISettingsModal();
       } else {
         logger.error('[AILazyLoader] AI Settings Modal no encontrado después de carga');
       }

@@ -16,7 +16,7 @@ class SettingsModal {
         this.escapeHandler = null;
 
         // EventManager centralizado para limpieza consistente
-        this.eventManager = new EventManager();
+        this.eventManager = new window.EventManager();
         this.eventManager.setComponentName('SettingsModal');
 
         // Flags para cancelar loadVoices() cuando se cierra modal

@@ -31,8 +31,8 @@ class LearningLazyLoader {
       if (window.InteractiveQuiz) {
         const quiz = new window.InteractiveQuiz(bookId, chapterId);
         quiz.start();
-      } else if (typeof startInteractiveQuiz === 'function') {
-        startInteractiveQuiz(bookId, chapterId);
+      } else if (typeof window.startInteractiveQuiz === 'function') {
+        window.startInteractiveQuiz(bookId, chapterId);
       } else {
         logger.error('[LearningLazyLoader] Interactive Quiz no encontrado después de carga');
       }
@@ -64,8 +64,8 @@ class LearningLazyLoader {
       if (window.ConceptMap) {
         const map = new window.ConceptMap(bookId, options);
         map.open();
-      } else if (typeof openConceptMap === 'function') {
-        openConceptMap(bookId, options);
+      } else if (typeof window.openConceptMap === 'function') {
+        window.openConceptMap(bookId, options);
       } else {
         logger.error('[LearningLazyLoader] Concept Map no encontrado después de carga');
       }
@@ -97,8 +97,8 @@ class LearningLazyLoader {
       if (window.ActionPlan) {
         const plan = new window.ActionPlan(bookId, context);
         plan.create();
-      } else if (typeof createActionPlan === 'function') {
-        createActionPlan(bookId, context);
+      } else if (typeof window.createActionPlan === 'function') {
+        window.createActionPlan(bookId, context);
       } else {
         logger.error('[LearningLazyLoader] Action Plan no encontrado después de carga');
       }

@@ -5,6 +5,7 @@
  *
  * @version 1.0.0
  */
+/* global BaseService */
 
 class BookService extends BaseService {
   constructor() {

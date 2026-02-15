@@ -5,6 +5,7 @@
  *
  * @version 1.0.0
  */
+/* global BaseService */
 
 class UserService extends BaseService {
   constructor() {

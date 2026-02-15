@@ -15,6 +15,8 @@ const path = require('path');
 
 const SRC_DIR = path.join(__dirname, '../www');
 const DIST_DIR = path.join(__dirname, '../dist');
+const LOCAL_TERSER_BIN = path.join(__dirname, '../node_modules/.bin/terser');
+const LOCAL_CLEANCSS_BIN = path.join(__dirname, '../node_modules/.bin/cleancss');
 
 // Colores para la consola
 const colors = {
@@ -84,6 +86,9 @@ function getFiles(dir, ext) {
  * Minifica un archivo JS usando Terser
  */
 function minifyJS(filePath) {
+  if (!fs.existsSync(LOCAL_TERSER_BIN)) {
+    return false;
+  }
   try {
     const options = [
       '--compress',
@@ -94,7 +99,7 @@ function minifyJS(filePath) {
       '--', filePath
     ].join(' ');
 
-    execSync(`npx terser ${options}`, { stdio: 'pipe' });
+    execSync(`"${LOCAL_TERSER_BIN}" ${options}`, { stdio: 'pipe' });
     return true;
   } catch (error) {
     return false;
@@ -105,8 +110,11 @@ function minifyJS(filePath) {
  * Minifica un archivo CSS usando clean-css
  */
 function minifyCSS(filePath) {
+  if (!fs.existsSync(LOCAL_CLEANCSS_BIN)) {
+    return false;
+  }
   try {
-    execSync(`npx cleancss -o "${filePath}" "${filePath}"`, { stdio: 'pipe' });
+    execSync(`"${LOCAL_CLEANCSS_BIN}" -o "${filePath}" "${filePath}"`, { stdio: 'pipe' });
     return true;
   } catch (error) {
     return false;
@@ -154,10 +162,18 @@ function getDirSize(dir) {
  */
 async function build() {
   const startTime = Date.now();
+  const jsMinifyEnabled = fs.existsSync(LOCAL_TERSER_BIN);
+  const cssMinifyEnabled = fs.existsSync(LOCAL_CLEANCSS_BIN);
 
   log('\n========================================', 'cyan');
   log('  BUILD - Colección Nuevo Ser', 'cyan');
   log('========================================\n', 'cyan');
+  if (!jsMinifyEnabled) {
+    log('Aviso: terser no está instalado localmente. Se omitirá minificación JS.', 'yellow');
+  }
+  if (!cssMinifyEnabled) {
+    log('Aviso: clean-css-cli no está instalado localmente. Se omitirá minificación CSS.', 'yellow');
+  }
 
   // 1. Limpiar directorio dist
   logStep('1/5', 'Limpiando directorio dist...');
@@ -173,7 +189,7 @@ async function build() {
 
   // 3. Minificar archivos JS
   logStep('3/5', 'Minificando archivos JavaScript...');
-  const jsFiles = getFiles(DIST_DIR, '.js');
+  const jsFiles = jsMinifyEnabled ? getFiles(DIST_DIR, '.js') : [];
   let jsSuccess = 0;
   let jsFailed = 0;
 
@@ -194,11 +210,15 @@ async function build() {
     }
   }
 
-  log(`  JS: ${jsSuccess} minificados, ${jsFailed} errores`, jsSuccess > 0 ? 'green' : 'yellow');
+  if (!jsMinifyEnabled) {
+    log('  JS: minificación omitida (terser no disponible)', 'yellow');
+  } else {
+    log(`  JS: ${jsSuccess} minificados, ${jsFailed} errores`, jsSuccess > 0 ? 'green' : 'yellow');
+  }
 
   // 4. Minificar archivos CSS
   logStep('4/5', 'Minificando archivos CSS...');
-  const cssFiles = getFiles(DIST_DIR, '.css');
+  const cssFiles = cssMinifyEnabled ? getFiles(DIST_DIR, '.css') : [];
   let cssSuccess = 0;
   let cssFailed = 0;
 
@@ -219,7 +239,11 @@ async function build() {
     }
   }
 
-  log(`  CSS: ${cssSuccess} minificados, ${cssFailed} errores`, cssSuccess > 0 ? 'green' : 'yellow');
+  if (!cssMinifyEnabled) {
+    log('  CSS: minificación omitida (clean-css-cli no disponible)', 'yellow');
+  } else {
+    log(`  CSS: ${cssSuccess} minificados, ${cssFailed} errores`, cssSuccess > 0 ? 'green' : 'yellow');
+  }
 
   // 5. Generar resumen
   logStep('5/5', 'Generando resumen...');

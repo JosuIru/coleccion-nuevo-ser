@@ -17,7 +17,7 @@ section() {
 
 section "1) Potential real secrets in api/config.php"
 if [[ -f api/config.php ]]; then
-  if rg -n "sk-ant-|sk_live_|SUPABASE_SERVICE_KEY|PAYPAL_CLIENT_SECRET|STRIPE_SECRET_KEY" api/config.php >/tmp/security_audit_secrets.txt 2>/dev/null; then
+  if rg -n "sk-ant-|sk_live_|whsec_|AKIA[0-9A-Z]{16}|eyJ[a-zA-Z0-9_-]{20,}" api/config.php >/tmp/security_audit_secrets.txt 2>/dev/null; then
     echo "WARNING: posible secreto detectado en api/config.php"
     cat /tmp/security_audit_secrets.txt
     fail=1
@@ -76,4 +76,3 @@ fi
 
 echo "FAIL: hay hallazgos que requieren acción."
 exit 1
-

@@ -217,7 +217,7 @@ class AudioReaderContent {
       /^(guardar|cancelar|cerrar|aceptar|rechazar)$/i,
       /^(play|pause|stop|siguiente|anterior)$/i,
       /^\d+\s*\/\s*\d+$/,           // "1 / 10"
-      /^[←→↑↓⏮⏭▶⏸⏹🎧📖📝🤖🎯📚]$/,  // Solo iconos
+      /^(?:←|→|↑|↓|⏮|⏭|▶|⏸|⏹|🎧|📖|📝|🤖|🎯|📚)$/u,  // Solo iconos
       /^(escuchar audio|tomar notas|preguntar a la ia|quiz)$/i,
       /^¿qué quieres hacer ahora\?$/i,
       /^elige cómo continuar/i,
@@ -270,7 +270,7 @@ class AudioReaderContent {
       .replace(/<=/g, ' ')
 
       // Eliminar emojis comunes de UI
-      .replace(/[🎧📖📝🤖🎯📚💡⚡🧘✅✓✔️☐☑️⏱️🔒🔓⚙️🔧]/g, '')
+      .replace(/(?:🎧|📖|📝|🤖|🎯|📚|💡|⚡|🧘|✅|✓|✔️|☐|☑️|⏱️|🔒|🔓|⚙️|🔧)/gu, '')
 
       // Eliminar guiones y barras sueltas
       .replace(/\s+-\s+/g, ', ')           // " - " → ", "

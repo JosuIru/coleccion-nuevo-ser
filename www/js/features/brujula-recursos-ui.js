@@ -147,8 +147,6 @@ class BrujulaRecursosUI {
   // ========== MODO DIÁLOGO ==========
 
   renderDialogo() {
-    const { pasoDialogo, dimensionElegida, inquietud } = this.brujula;
-
     this.container.innerHTML = `
       <div class="brujula-dialogo">
         <header class="brujula-header">
@@ -413,8 +411,6 @@ class BrujulaRecursosUI {
     });
 
     const tiposUnicos = [...new Set(this.brujula.recursos.map(r => r.tipo))];
-    const librosUnicos = [...new Set(this.brujula.recursos.map(r => r.libroOrigen))].filter(Boolean);
-
     this.container.innerHTML = `
       <div class="brujula-explorar">
         <header class="brujula-header">

@@ -182,7 +182,7 @@ FORMATO DE RESPUESTA:
   /**
    * 🔧 FIX v2.9.379: Modal cuando no hay IA disponible
    */
-  showNoAIModal(chapter) {
+  showNoAIModal(_chapter) {
     const existing = document.getElementById('summary-modal');
     if (existing) existing.remove();
 
@@ -335,7 +335,7 @@ FORMATO DE RESPUESTA:
     return formatted;
   }
 
-  attachModalListeners(chapter, summary, bookId) {
+  attachModalListeners(chapter, summary, _bookId) {
     const modal = document.getElementById('summary-modal');
     if (!modal) return;
 

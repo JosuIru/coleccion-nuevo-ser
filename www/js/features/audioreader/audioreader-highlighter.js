@@ -126,7 +126,7 @@ class AudioReaderHighlighter {
    * @param {number} charIndex - Índice del carácter donde inicia la palabra
    * @param {number} charLength - Longitud de la palabra
    */
-  highlightWord(charIndex, charLength) {
+  highlightWord(charIndex, _charLength) {
     const previousWord = document.querySelector('.audioreader-word-active');
     if (previousWord) {
       previousWord.classList.remove('audioreader-word-active');

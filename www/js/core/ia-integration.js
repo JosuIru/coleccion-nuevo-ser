@@ -392,7 +392,7 @@ class IAIntegration {
 
     // Escuchar cambios de autenticación
     if (this.authHelper) {
-      this.authHelper.onAuthStateChange?.((event, user) => {
+      this.authHelper.onAuthStateChange?.((event, _user) => {
         if (event === 'signed_in') {
           this.insertCreditsWidget();
         } else {
@@ -531,7 +531,7 @@ class IAIntegration {
     }
   }
 
-  showQuizModal(quiz, chapterId) {
+  showQuizModal(quiz, _chapterId) {
     const modal = document.createElement('div');
     modal.className = 'ai-response-card';
     modal.innerHTML = `

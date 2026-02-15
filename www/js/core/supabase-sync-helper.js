@@ -31,7 +31,7 @@ class SupabaseSyncHelper {
         }
 
         // Listener para cambios de autenticación
-        window.supabaseAuthHelper.onAuthStateChange(async (event, session) => {
+        window.supabaseAuthHelper.onAuthStateChange(async (event, _session) => {
             if (event === 'SIGNED_IN') {
                 await this.setupRealtime();
 
@@ -91,7 +91,7 @@ class SupabaseSyncHelper {
      * Manejar actualizaciones en tiempo real
      */
     handleRealtimeUpdate(payload) {
-        const { table, eventType, new: newRecord, old: oldRecord } = payload;
+        const { table, eventType, new: newRecord, old: _oldRecord } = payload;
 
         // Actualizar localStorage según la tabla
         switch (table) {

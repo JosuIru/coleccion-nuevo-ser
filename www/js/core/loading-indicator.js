@@ -291,7 +291,7 @@ class LoadingIndicator {
    * Ocultar todos los loaders
    */
   hideAll() {
-    this.activeLoaders.forEach((loader, id) => {
+    this.activeLoaders.forEach((loader, _id) => {
       loader.remove();
     });
     this.activeLoaders.clear();
@@ -328,9 +328,9 @@ window.showLoading = (message, type = 'bar') => {
   return window.loadingIndicator.showBar();
 };
 
-window.hideLoading = (id) => {
-  if (id) {
-    window.loadingIndicator.hide(id);
+window.hideLoading = (_id) => {
+  if (_id) {
+    window.loadingIndicator.hide(_id);
   } else {
     window.loadingIndicator.hideAll();
   }

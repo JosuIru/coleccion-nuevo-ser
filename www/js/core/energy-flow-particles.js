@@ -144,7 +144,7 @@ class EnergyFlowSystem {
   /**
    * Animar flujos
    */
-  animate(deltaTime = 0.016) {
+  animate(_deltaTime = 0.016) {
     this.flows.forEach(flow => {
       if (!flow.active) return;
 

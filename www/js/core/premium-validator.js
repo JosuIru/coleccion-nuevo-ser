@@ -73,7 +73,7 @@ class PremiumValidator {
 
         try {
             // Test connection with a simple query
-            const { data, error } = await window.supabase
+            const { error } = await window.supabase
                 .from('profiles')
                 .select('count')
                 .limit(1);

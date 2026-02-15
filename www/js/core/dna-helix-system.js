@@ -286,14 +286,13 @@ class DNAHelixSystem {
   /**
    * Animar todas las hélices
    */
-  animate(deltaTime = 0.016) {
+  animate(_deltaTime = 0.016) {
     this.helices.forEach(helix => {
       if (helix.userData.type === 'dna_helix') {
         // Rotar la hélice completa
         helix.rotation.y += helix.userData.rotationSpeed;
 
         // Pulso de brillo en pares de bases
-        const pulse = Math.sin(Date.now() * 0.002) * 0.5 + 0.5;
         helix.userData.basePairs.forEach((pair, i) => {
           const phase = (i / helix.userData.basePairs.length) * Math.PI * 2;
           const localPulse = Math.sin(Date.now() * 0.003 + phase) * 0.3 + 0.7;

@@ -199,13 +199,8 @@ class I18n {
         'progress.read': 'leído',
         'progress.completed': 'completado',
 
-        // Mobile Menu
-        'menu.open': 'Abrir menú',
-        'menu.title': 'Menú',
-
         // Errors
         'error.loadLibrary': 'Error al cargar la biblioteca',
-        'error.openBook': 'Error al abrir el libro',
 
         // Loading
         'loading.loadingBook': 'Cargando libro...',
@@ -471,13 +466,8 @@ class I18n {
         'progress.read': 'read',
         'progress.completed': 'completed',
 
-        // Mobile Menu
-        'menu.open': 'Open menu',
-        'menu.title': 'Menu',
-
         // Errors
         'error.loadLibrary': 'Error loading library',
-        'error.openBook': 'Error opening book',
 
         // Loading
         'loading.loadingBook': 'Loading book...',

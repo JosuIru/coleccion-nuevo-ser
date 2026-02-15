@@ -300,12 +300,10 @@ class NeuralConnectionsSystem {
       if (connection.userData.type !== 'neural_connection') return;
 
       const isActive = connection.userData.active;
-      const strength = connection.userData.strength;
-
       // Pulso en sinapsis
       const pulse = Math.sin(time * 0.003 + connection.userData.pulsePhase) * 0.5 + 0.5;
 
-      connection.userData.synapses.forEach((synapse, i) => {
+      connection.userData.synapses.forEach((synapse, _i) => {
         if (synapse.material) {
           const basePulse = isActive ? 1.5 : 1.0;
           synapse.material.emissiveIntensity = basePulse + pulse * 0.5;

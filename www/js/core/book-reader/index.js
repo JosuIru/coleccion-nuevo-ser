@@ -25,20 +25,20 @@ class BookReader {
     this.i18n = null;
 
     // EventManager para gestionar listeners
-    this.eventManager = new EventManager(false);
+    this.eventManager = new window.EventManager(false);
     this.eventManager.setComponentName('BookReader');
 
     // Event handlers cleanup
     this._eventHandlers = new Map();
 
     // Inicializar módulos
-    this.utils = new (window.BookReaderUtils || BookReaderUtils)(this);
-    this.sidebar = new (window.BookReaderSidebar || BookReaderSidebar)(this);
-    this.header = new (window.BookReaderHeader || BookReaderHeader)(this);
-    this.content = new (window.BookReaderContent || BookReaderContent)(this);
-    this.navigation = new (window.BookReaderNavigation || BookReaderNavigation)(this);
-    this.events = new (window.BookReaderEvents || BookReaderEvents)(this);
-    this.mobile = new (window.BookReaderMobile || BookReaderMobile)(this);
+    this.utils = new window.BookReaderUtils(this);
+    this.sidebar = new window.BookReaderSidebar(this);
+    this.header = new window.BookReaderHeader(this);
+    this.content = new window.BookReaderContent(this);
+    this.navigation = new window.BookReaderNavigation(this);
+    this.events = new window.BookReaderEvents(this);
+    this.mobile = new window.BookReaderMobile(this);
 
     // Inicializar dependencias
     this.initDependencies();
@@ -447,9 +447,6 @@ class BookReader {
   showPremiumDownloadModal() {
     const bookId = this.bookEngine.getCurrentBook();
     const premiumFile = `downloads/${bookId}-premium.html`;
-    const bookData = this.bookEngine.getCurrentBookData();
-    const bookTitle = bookData?.title || 'Libro';
-
     const existingModal = document.getElementById('premium-download-modal');
     if (existingModal) existingModal.remove();
 

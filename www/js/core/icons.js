@@ -237,7 +237,6 @@ const Icons = {
   // Helpers para iconos de libros (SVG inline)
   globe: (size = 20) => Icons._svg.globe(size),                // Tierra/Ecología
   sprout: (size = 20) => Icons._svg.sprout(size),              // Transición/Crecimiento
-  wrench: (size = 20) => Icons._svg.wrench(size),              // Herramientas/Toolkit
   circleDot: (size = 20) => Icons._svg.circleDot(size),        // Meditación/Práctica
   landmark: (size = 20) => Icons._svg.landmark(size),          // Instituciones/Edificio
   baby: (size = 20) => Icons._svg.baby(size),                  // Nacimiento

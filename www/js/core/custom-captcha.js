@@ -173,12 +173,10 @@ class CustomCaptcha {
         const fill = document.getElementById('captcha-slider-fill');
 
         let isDragging = false;
-        let startX = 0;
         let currentX = 0;
 
-        const onStart = (e) => {
+        const onStart = (_e) => {
             isDragging = true;
-            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
             thumb.style.cursor = 'grabbing';
         };
 

@@ -237,7 +237,7 @@ class ElevenLabsTTSProvider {
       model = this.defaultModel,
       stability = 0.5,
       similarity_boost = 0.75,
-      speed = 1.0,
+      speed: _speed = 1.0,
       onProgress = null,
       onEnd = null,
       onError = null
@@ -528,7 +528,7 @@ class ElevenLabsTTSProvider {
       });
 
       // Error
-      audio.addEventListener('error', (e) => {
+      audio.addEventListener('error', (_e) => {
         this.isPlaying = false;
         const error = new Error('Error reproduciendo audio');
         if (onError) onError(error);

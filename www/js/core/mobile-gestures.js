@@ -280,14 +280,12 @@ class MobileGestures {
 
       // Aplicar transformación temporal
       const newPos = Math.max(window.innerHeight * 0.1, Math.min(window.innerHeight * 0.9, startPos + deltaY));
-      const percentage = newPos / window.innerHeight;
-
       bottomSheet.style.transform = `translateY(${newPos}px)`;
 
       e.preventDefault();
     }, { passive: false });
 
-    handle.addEventListener('touchend', (e) => {
+    handle.addEventListener('touchend', (_e) => {
       if (!isDragging) return;
 
       isDragging = false;
@@ -381,7 +379,7 @@ class MobileGestures {
       }
     }, { passive: true });
 
-    modal.addEventListener('touchend', (e) => {
+    modal.addEventListener('touchend', (_e) => {
       if (!isDragging) return;
 
       isDragging = false;
@@ -467,7 +465,7 @@ class MobileGestures {
       }
     }, { passive: true });
 
-    container.addEventListener('touchend', (e) => {
+    container.addEventListener('touchend', (_e) => {
       if (!pulling) return;
 
       pulling = false;

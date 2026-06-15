@@ -2,7 +2,6 @@
   "id": "nacimiento",
   "version": "1.0.0",
   "lastUpdate": "2025-12-19",
-
   "theme": {
     "name": "Birth & Beginning",
     "primary": "#ec4899",
@@ -15,7 +14,6 @@
     "border": "#ec4899",
     "gradient": "from-pink-600 to-rose-700"
   },
-
   "ui": {
     "showStarfield": true,
     "animationType": "organic",
@@ -31,13 +29,17 @@
       "paragraph": 16
     }
   },
-
   "features": {
     "audiobook": {
       "enabled": true,
       "voice": "es-ES",
       "speedControl": true,
-      "speeds": [0.75, 1.0, 1.25, 1.5],
+      "speeds": [
+        0.75,
+        1.0,
+        1.25,
+        1.5
+      ],
       "highlightCurrentParagraph": true,
       "autoAdvanceChapter": false
     },
@@ -65,19 +67,34 @@
     "resources": {
       "enabled": true,
       "file": "books/nacimiento/assets/resources.json"
+    },
+    "exercises": {
+      "enabled": true,
+      "types": [
+        "practice",
+        "reflection",
+        "self-assessment"
+      ],
+      "trackCompletion": true
     }
   },
-
   "content": {
     "sourceFile": "books/nacimiento/book.json",
     "dataStructure": "standard"
   },
-
   "metadata": {
     "locale": "es-ES",
     "readingLevel": "intermediate",
     "recommendedPace": "normal",
-    "tags": ["nacimiento", "inicios", "transformación", "ciclos de vida"],
-    "complementaryBooks": ["codigo-despertar", "tierra-que-despierta"]
+    "tags": [
+      "nacimiento",
+      "inicios",
+      "transformación",
+      "ciclos de vida"
+    ],
+    "complementaryBooks": [
+      "codigo-despertar",
+      "tierra-que-despierta"
+    ]
   }
 }

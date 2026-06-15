@@ -252,7 +252,22 @@
           },
           "content": "### Por qué la IA es decisiva ahora\n\nLa inteligencia artificial no es una tecnología más. Es infraestructura que determina qué formas de organización social son posibles.\n\nQuien controla IA controla:\n- Qué información ve cada persona (algoritmos de recomendación)\n- Qué comportamientos se recompensan (sistemas de crédito social)\n- Qué decisiones se automatizan (contratación, crédito, justicia)\n- Qué vigilancia es posible (reconocimiento facial, análisis de redes)\n- Qué coordinación es escalable (logística, comunicación, gobernanza)\n\nLas decisiones tomadas entre 2025 y 2035 sobre diseño, propiedad y gobernanza de IA cristalizarán en infraestructuras que durarán décadas.\n\n### IA extractiva: herramienta de La Fortaleza\n\n**Características:**\n- Recolección masiva de datos sin consentimiento informado\n- Predicción de comportamiento para manipulación\n- Concentración de capacidad computacional en pocas corporaciones\n- Opacidad algorítmica (\"caja negra\")\n- Vigilancia como modelo de negocio\n- Automatización que desplaza trabajo sin redistribuir beneficios\n\n**Ejemplos actuales:**\n- Sistema de crédito social chino\n- Reconocimiento facial policial en ciudades occidentales\n- Algoritmos de redes sociales optimizando engagement (adicción, polarización)\n- IA de contratación replicando sesgos\n- Drones autónomos en conflictos\n\n**Hacia dónde lleva:**\n- Vigilancia total técnicamente posible\n- Manipulación comportamental a escala\n- Desempleo masivo sin redistribución\n- Concentración de poder sin precedentes\n- La Fortaleza como resultado casi inevitable\n\n### IA regenerativa: herramienta de El Nacimiento\n\n**Características:**\n- Datos bajo control del usuario\n- Transparencia algorítmica (código abierto, auditable)\n- Capacidad computacional distribuida\n- Diseño para amplificar cooperación, no adicción\n- Automatización que libera tiempo para lo humano\n- Gobernanza democrática del desarrollo\n\n**Ejemplos emergentes:**\n- Modelos de lenguaje de código abierto (Llama, Mistral)\n- IA para coordinación de redes energéticas distribuidas\n- Herramientas de deliberación colectiva asistida\n- Diagnóstico médico accesible globalmente\n- Monitoreo ecológico distribuido\n\n**Hacia dónde podría llevar:**\n- Coordinación sin jerarquía a escala global\n- Automatización de trabajo penoso, liberación para trabajo con sentido\n- Acceso universal a capacidades antes exclusivas\n- Gobernanza participativa escalable\n- El Nacimiento como posibilidad realizable\n\n### El punto de bifurcación\n\n**La tecnología no es neutral.** Cada sistema de IA encarna decisiones sobre:\n- ¿Quién tiene acceso a capacidades?\n- ¿Quién controla los datos?\n- ¿Qué comportamientos se optimizan?\n- ¿Quién decide qué se desarrolla?\n\nEstas decisiones se toman ahora. La infraestructura que se construye ahora será difícil de desmantelar.\n\n**Preguntas críticas para cada desarrollo de IA:**\n1. ¿Concentra o distribuye poder?\n2. ¿Vigila o empodera?\n3. ¿Es opaco o auditable?\n4. ¿Quién se beneficia?\n5. ¿Podemos apagarlo si sale mal?\n\n### Contraargumento: ¿no es determinismo tecnológico?\n\n**Objeción:** ¿No estamos exagerando el poder de la tecnología? La sociedad determina cómo se usa.\n\n**Respuesta:** La tecnología no determina, pero **condiciona posibilidades.** Una sociedad con vigilancia total tiene menos capacidad de resistencia que una sin ella. Una sociedad con herramientas de coordinación distribuida tiene más capacidad de autoorganización.\n\nLa tecnología no decide el futuro, pero **delimita qué futuros son posibles.**\n\n### Qué hacer\n\n**A nivel individual:**\n- Elegir herramientas que respetan privacidad\n- Apoyar desarrollo de IA abierta\n- Educarse sobre implicaciones de lo que usamos\n\n**A nivel colectivo:**\n- Exigir regulación de IA extractiva\n- Financiar desarrollo de IA regenerativa\n- Construir capacidad técnica en movimientos sociales\n- Participar en gobernanza de tecnología\n\n**A nivel sistémico:**\n- Tratados internacionales sobre IA\n- Prohibición de ciertos usos (armas autónomas, vigilancia masiva)\n- Propiedad común de infraestructura de datos\n- Redistribución de beneficios de automatización\n\nLa IA no determinará nuestro futuro. **Nuestras decisiones sobre IA sí lo harán.**",
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
-          "exercises": []
+          "exercises": [
+            {
+              "id": "ex-cap20-1",
+              "title": "Evaluar una tecnología de IA antes de adoptarla",
+              "duration": "15 minutos",
+              "description": "Aplica las cinco preguntas críticas del capítulo a cualquier herramienta o desarrollo de IA para distinguir si es extractiva (al servicio de La Fortaleza) o regenerativa (al servicio de El Nacimiento).",
+              "steps": [
+                "**Pregunta de poder:** ¿Concentra o distribuye poder?",
+                "**Pregunta de vigilancia:** ¿Vigila o empodera?",
+                "**Pregunta de transparencia:** ¿Es opaco o auditable?",
+                "**Pregunta de beneficio:** ¿Quién se beneficia?",
+                "**Pregunta de reversibilidad:** ¿Podemos apagarlo si sale mal?"
+              ],
+              "reflection": "La tecnología no determina el futuro, pero delimita qué futuros son posibles: ¿la herramienta que estás evaluando abre posibilidades de cooperación o las cierra?"
+            }
+          ]
         },
         {
           "id": "cap21",
@@ -264,7 +279,65 @@
           },
           "content": "### Acción que no reproduce el problema\n\nEl viejo ser ofrece dos modelos de acción:\n1. **Participación en el sistema:** Votar, consumir conscientemente, trabajar en instituciones para \"cambiarlas desde dentro\"\n2. **Revolución contra el sistema:** Tomar el poder estatal, derrotar enemigos, instalar nuevo régimen\n\nAmbos modelos fracasan porque **operan desde las premisas del viejo ser.**\n\nParticipación asume que el sistema puede reformarse (Cap. 5 explicó por qué no). Revolución asume que el problema es quién tiene el poder, no las premisas del poder mismo. Revoluciones que cambian ocupantes del poder sin cambiar premisas reproducen opresión con nuevos amos.\n\n### El modelo de acción del nuevo ser\n\nNo es participación ni revolución. Es **construcción desde premisas distintas mientras se retira energía del viejo sistema.**\n\nCuatro dimensiones simultáneas:\n\n### 1. BOICOT PASIVO\n\n**Qué es:** Dejar de alimentar lo viejo. No confrontación activa sino retiro de energía.\n\n**Formas concretas:**\n- **Consumo:** Comprar menos. Comprar local. Comprar usado. Reparar. Compartir.\n- **Trabajo:** Reducir horas si es posible. Priorizar sentido sobre salario. Rechazar trabajos destructivos.\n- **Atención:** Salir de redes sociales extractivas. No consumir medios que viven del miedo.\n- **Obediencia:** Cuestionar autoridad automática. No obedecer ciegamente. Practicar desobediencia civil cuando es necesario.\n- **Narrativa:** No repetir historias del viejo ser. No validar premisas falsas.\n\n**Por qué funciona:** El viejo ser depende de participación masiva. Cada persona que retira energía debilita el sistema. No se necesita confrontación; se necesita abandono.\n\n**Límites:** El boicot solo no construye alternativa. Necesita complementarse con construcción activa.\n\n### 2. CONSTRUCCIÓN ACTIVA\n\n**Qué es:** Crear estructuras que operan desde premisas del nuevo ser.\n\n**Formas concretas:**\n- **Economía:** Cooperativas, monedas locales, bancos de tiempo, redes de trueque, grupos de compra colectiva\n- **Alimentación:** Huertos comunitarios, cooperativas de consumo, agricultura apoyada por comunidad (CSA)\n- **Vivienda:** Cohousing, cooperativas de vivienda, ocupación con proyecto social\n- **Gobernanza:** Asambleas vecinales, presupuestos participativos, mediación comunitaria\n- **Educación:** Grupos de estudio, escuelas libres, mentorías intergeneracionales\n- **Cuidado:** Redes de apoyo mutuo, cuidado compartido de niños y ancianos\n\n**Por qué funciona:** Cada estructura funcional demuestra que otro mundo es posible. Además, proporciona base material para quien quiera salir del viejo sistema.\n\n**Límites:** Construcción local no escala automáticamente. Puede volverse gueto o secta. Necesita conexión con redes más amplias.\n\n### 3. BLOQUEO DE LO MÁS PELIGROSO\n\n**Qué es:** Resistencia activa a los desarrollos que aceleran La Fortaleza o el Colapso Caótico.\n\n**Formas concretas:**\n- **Movilización:** Protestas contra proyectos destructivos (minería, desahucios, vigilancia)\n- **Litigio:** Demandas legales contra corporaciones y gobiernos\n- **Desobediencia civil:** Bloqueos, ocupaciones, huelgas cuando son necesarios\n- **Sabotaje:** Interrupción de infraestructura de destrucción (controvertido, con debate ético legítimo)\n- **Documentación:** Exposición de corrupción, violencia, destrucción\n\n**Por qué es necesario:** No todo puede esperarse. Algunos desarrollos (vigilancia total, destrucción ecológica irreversible, infraestructura de control) deben bloquearse antes de consolidarse.\n\n**Límites:** La resistencia sin alternativa genera fatiga y represión. Debe complementarse con construcción.\n\n### 4. EDUCACIÓN Y NARRATIVA\n\n**Qué es:** Cambiar las historias que la gente cuenta sobre qué está pasando y qué es posible.\n\n**Formas concretas:**\n- **Conversación:** Hablar con gente fuera de la burbuja. Escuchar antes de argumentar. Encontrar terreno común.\n- **Medios:** Crear y compartir contenido que visibilice alternativas\n- **Arte:** Imaginar futuros distintos. El arte llega donde el argumento no.\n- **Educación popular:** Talleres, charlas, materiales accesibles\n- **Ejemplo:** Vivir de forma que encarne las premisas. El ejemplo es más poderoso que el argumento.\n\n**Por qué es esencial:** Sin cambio narrativo, las alternativas son invisibles aunque existan. La gente no puede querer lo que no puede imaginar.\n\n### Integración de las cuatro dimensiones\n\nNinguna dimensión sola es suficiente:\n- Boicot sin construcción es nihilismo\n- Construcción sin boicot alimenta el viejo ser\n- Construcción sin bloqueo permite que La Fortaleza se consolide\n- Todo sin narrativa permanece marginal\n\nLa acción efectiva **integra las cuatro,** según contexto y capacidad de cada persona y grupo.",
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
-          "exercises": []
+          "exercises": [
+            {
+              "id": "ex-cap21-1",
+              "title": "Boicot pasivo: retirar energía de lo viejo",
+              "duration": "práctica continua",
+              "description": "Dejar de alimentar el viejo sistema retirando energía en cinco frentes, sin confrontación activa sino mediante abandono.",
+              "steps": [
+                "**Consumo:** Comprar menos. Comprar local. Comprar usado. Reparar. Compartir.",
+                "**Trabajo:** Reducir horas si es posible. Priorizar sentido sobre salario. Rechazar trabajos destructivos.",
+                "**Atención:** Salir de redes sociales extractivas. No consumir medios que viven del miedo.",
+                "**Obediencia:** Cuestionar la autoridad automática. No obedecer ciegamente. Practicar desobediencia civil cuando sea necesario.",
+                "**Narrativa:** No repetir historias del viejo ser. No validar premisas falsas."
+              ],
+              "reflection": "El viejo ser depende de participación masiva: ¿en qué frente concreto puedes empezar a retirar tu energía esta semana?"
+            },
+            {
+              "id": "ex-cap21-2",
+              "title": "Construcción activa: crear estructuras del nuevo ser",
+              "duration": "práctica continua",
+              "description": "Crear o sumarte a estructuras que operan desde las premisas del nuevo ser, proporcionando base material a quien quiera salir del viejo sistema.",
+              "steps": [
+                "**Economía:** Cooperativas, monedas locales, bancos de tiempo, redes de trueque, grupos de compra colectiva.",
+                "**Alimentación:** Huertos comunitarios, cooperativas de consumo, agricultura apoyada por la comunidad (CSA).",
+                "**Vivienda:** Cohousing, cooperativas de vivienda, ocupación con proyecto social.",
+                "**Gobernanza:** Asambleas vecinales, presupuestos participativos, mediación comunitaria.",
+                "**Educación:** Grupos de estudio, escuelas libres, mentorías intergeneracionales.",
+                "**Cuidado:** Redes de apoyo mutuo, cuidado compartido de niños y ancianos."
+              ],
+              "reflection": "Cada estructura funcional demuestra que otro mundo es posible: ¿cuál de estas alternativas existe ya cerca de ti, o cuál podrías ayudar a iniciar?"
+            },
+            {
+              "id": "ex-cap21-3",
+              "title": "Bloqueo de lo más peligroso",
+              "duration": "según contexto",
+              "description": "Resistencia activa a los desarrollos que aceleran La Fortaleza o el Colapso Caótico, bloqueando lo que debe detenerse antes de consolidarse.",
+              "steps": [
+                "**Movilización:** Protestas contra proyectos destructivos (minería, desahucios, vigilancia).",
+                "**Litigio:** Demandas legales contra corporaciones y gobiernos.",
+                "**Desobediencia civil:** Bloqueos, ocupaciones, huelgas cuando son necesarios.",
+                "**Sabotaje:** Interrupción de infraestructura de destrucción (controvertido, con debate ético legítimo).",
+                "**Documentación:** Exposición de corrupción, violencia, destrucción."
+              ],
+              "reflection": "La resistencia sin alternativa genera fatiga y represión: ¿cómo equilibras el bloqueo de lo peligroso con la construcción de lo nuevo?"
+            },
+            {
+              "id": "ex-cap21-4",
+              "title": "Educación y narrativa: cambiar las historias",
+              "duration": "práctica continua",
+              "description": "Cambiar las historias que la gente cuenta sobre qué está pasando y qué es posible, para hacer visibles las alternativas que ya existen.",
+              "steps": [
+                "**Conversación:** Hablar con gente fuera de la burbuja. Escuchar antes de argumentar. Encontrar terreno común.",
+                "**Medios:** Crear y compartir contenido que visibilice alternativas.",
+                "**Arte:** Imaginar futuros distintos; el arte llega donde el argumento no.",
+                "**Educación popular:** Talleres, charlas, materiales accesibles.",
+                "**Ejemplo:** Vivir de forma que encarne las premisas; el ejemplo es más poderoso que el argumento."
+              ],
+              "reflection": "La gente no puede querer lo que no puede imaginar: ¿qué historia del nuevo ser puedes contar o encarnar para que otros la imaginen?"
+            }
+          ]
         },
         {
           "id": "cap22",
@@ -276,7 +349,92 @@
           },
           "content": "### Soberanía en un mundo de interdependencia\n\nEl viejo ser tiene una concepción de soberanía: control exclusivo sobre territorio y decisiones. Estado soberano. Individuo soberano. Mi tierra. Mi cuerpo. Mi elección.\n\nEsta concepción es **simultáneamente importante y obsoleta.**\n\nImportante porque sin capacidad de decisión propia no hay dignidad. Obsoleta porque la realidad es interdependiente: mis decisiones afectan a otros, las de otros me afectan a mí.\n\nEl nuevo ser no abandona la soberanía; la **transforma.** De control exclusivo a capacidad de participación en decisiones que me afectan.\n\n### Las cinco soberanías operativas\n\nLa soberanía real en 2025 no reside principalmente en votos o constituciones. Reside en cinco dimensiones concretas:\n\n### 1. SOBERANÍA COGNITIVA\n\n**Qué significa:** Capacidad de decidir qué información entra en tu mente y cómo la procesas.\n\n**Amenazas actuales:**\n- Algoritmos que deciden qué ves\n- Desinformación diseñada para manipular\n- Sobrecarga informativa que impide pensamiento profundo\n- Adicción atencional diseñada\n\n**Cómo recuperarla:**\n- Curar activamente fuentes de información\n- Practicar silencio y reflexión\n- Diversificar perspectivas intencionalmente\n- Limitar exposición a medios diseñados para adicción\n- Desarrollar pensamiento crítico y verificación\n\n**Indicador:** ¿Puedes explicar por qué crees lo que crees? ¿O solo repites lo que absorbiste?\n\n### 2. SOBERANÍA ECONÓMICA\n\n**Qué significa:** Capacidad de satisfacer necesidades básicas sin dependencia total de sistemas que no controlas.\n\n**Amenazas actuales:**\n- Dependencia total de empleo asalariado\n- Deuda que condiciona decisiones\n- Cadenas de suministro frágiles y opacas\n- Monopolios en servicios esenciales\n\n**Cómo recuperarla:**\n- Reducir dependencia de consumo (necesitar menos)\n- Diversificar fuentes de ingreso\n- Construir redes de apoyo mutuo\n- Participar en economías locales\n- Desarrollar habilidades de autosuficiencia\n\n**Indicador:** ¿Podrías sobrevivir seis meses si tu fuente principal de ingreso desapareciera?\n\n### 3. SOBERANÍA TECNOLÓGICA\n\n**Qué significa:** Capacidad de usar tecnología sin ser usado por ella. Control sobre tus datos y herramientas.\n\n**Amenazas actuales:**\n- Vigilancia constante por dispositivos\n- Plataformas que son \"servicio\" pero capturan dependencia\n- Obsolescencia programada\n- Opacidad de algoritmos que afectan tu vida\n\n**Cómo recuperarla:**\n- Usar software libre cuando es posible\n- Minimizar huella digital\n- Entender básicamente cómo funciona lo que usas\n- Preferir herramientas que controlas sobre servicios que te capturan\n- Apoyar desarrollo de tecnología abierta\n\n**Indicador:** ¿Podrías funcionar si las tres plataformas que más usas desaparecieran mañana?\n\n### 4. SOBERANÍA ESPIRITUAL\n\n**Qué significa:** Capacidad de definir tu propio sentido, valores y relación con lo sagrado, sin imposición externa.\n\n**Amenazas actuales:**\n- Religión institucional que impone dogmas\n- Espiritualidad comercializada que vende sentido\n- Nihilismo que niega la posibilidad de sentido\n- Materialismo que reduce todo a lo medible\n\n**Cómo cultivarla:**\n- Examinar premisas heredadas\n- Practicar disciplinas contemplativas (no necesariamente religiosas)\n- Buscar comunidad de sentido sin secta\n- Tolerar incertidumbre sin caer en dogma\n- Integrar razón y experiencia\n\n**Indicador:** ¿Puedes articular qué te da sentido y por qué, sin recurrir a autoridad externa?\n\n### 5. SOBERANÍA TERRITORIAL\n\n**Qué significa:** Relación de reciprocidad con lugar específico. Capacidad de participar en decisiones sobre territorio que habitas.\n\n**Amenazas actuales:**\n- Especulación inmobiliaria que expulsa\n- Decisiones sobre territorio tomadas por distantes\n- Desconexión de ciclos naturales locales\n- Homogeneización de lugares\n\n**Cómo cultivarla:**\n- Conocer el territorio que habitas (ecología, historia, comunidad)\n- Participar en gobernanza local\n- Contribuir a resiliencia del lugar\n- Defender territorio contra extracción\n- Construir arraigo que no sea nacionalismo excluyente\n\n**Indicador:** ¿Conoces los nombres de las plantas, los ciclos del agua, la historia de tu lugar? ¿Participas en decisiones sobre él?\n\n### Soberanía como práctica, no como estado\n\nNo se \"alcanza\" soberanía y se la posee. Es práctica continua que requiere atención y decisión.\n\nCada dimensión se cultiva. Cada una tiene grados. Nadie es completamente soberano ni completamente capturado.\n\nLa pregunta práctica no es \"¿soy soberano?\" sino **\"¿en qué dirección me muevo?\"**\n\n### Soberanía e interdependencia\n\nLa paradoja final: cultivar estas cinco soberanías **aumenta capacidad de interdependencia.**\n\nSolo quien no está desesperado por consumo puede cooperar libremente. Solo quien piensa por sí mismo puede deliberar genuinamente. Solo quien tiene base material puede participar sin coerción.\n\nLa soberanía no es aislamiento. Es **condición de participación digna en redes de interdependencia.**",
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
-          "exercises": []
+          "exercises": [
+            {
+              "id": "ex-cap22-1",
+              "title": "Autodiagnóstico de las cinco soberanías",
+              "duration": "30 minutos",
+              "description": "La soberanía no se alcanza y se posee: es práctica continua. Responde con honestidad a los cinco indicadores del capítulo para situar en qué dirección te mueves en cada dimensión.",
+              "steps": [
+                "**Soberanía cognitiva:** ¿Puedes explicar por qué crees lo que crees? ¿O solo repites lo que absorbiste?",
+                "**Soberanía económica:** ¿Podrías sobrevivir seis meses si tu fuente principal de ingreso desapareciera?",
+                "**Soberanía tecnológica:** ¿Podrías funcionar si las tres plataformas que más usas desaparecieran mañana?",
+                "**Soberanía espiritual:** ¿Puedes articular qué te da sentido y por qué, sin recurrir a autoridad externa?",
+                "**Soberanía territorial:** ¿Conoces los nombres de las plantas, los ciclos del agua, la historia de tu lugar? ¿Participas en decisiones sobre él?"
+              ],
+              "reflection": "La pregunta práctica no es \"¿soy soberano?\" sino \"¿en qué dirección me muevo?\""
+            },
+            {
+              "id": "ex-cap22-2",
+              "title": "Cultivar la soberanía cognitiva",
+              "duration": "práctica continua",
+              "description": "Recuperar la capacidad de decidir qué información entra en tu mente y cómo la procesas, frente a algoritmos, desinformación y adicción atencional.",
+              "steps": [
+                "**Curar fuentes:** Curar activamente las fuentes de información que consumes.",
+                "**Silencio:** Practicar silencio y reflexión.",
+                "**Diversificar:** Diversificar perspectivas intencionalmente.",
+                "**Limitar:** Limitar la exposición a medios diseñados para la adicción.",
+                "**Pensar críticamente:** Desarrollar pensamiento crítico y verificación."
+              ],
+              "reflection": "¿Puedes explicar por qué crees lo que crees, o solo repites lo que absorbiste?"
+            },
+            {
+              "id": "ex-cap22-3",
+              "title": "Cultivar la soberanía económica",
+              "duration": "práctica continua",
+              "description": "Recuperar la capacidad de satisfacer necesidades básicas sin dependencia total de sistemas que no controlas.",
+              "steps": [
+                "**Necesitar menos:** Reducir la dependencia del consumo.",
+                "**Diversificar ingresos:** Diversificar las fuentes de ingreso.",
+                "**Apoyo mutuo:** Construir redes de apoyo mutuo.",
+                "**Economía local:** Participar en economías locales.",
+                "**Autosuficiencia:** Desarrollar habilidades de autosuficiencia."
+              ],
+              "reflection": "¿Podrías sobrevivir seis meses si tu fuente principal de ingreso desapareciera?"
+            },
+            {
+              "id": "ex-cap22-4",
+              "title": "Cultivar la soberanía tecnológica",
+              "duration": "práctica continua",
+              "description": "Recuperar el control sobre tus datos y herramientas para usar la tecnología sin ser usado por ella.",
+              "steps": [
+                "**Software libre:** Usar software libre cuando es posible.",
+                "**Huella digital:** Minimizar tu huella digital.",
+                "**Comprender:** Entender básicamente cómo funciona lo que usas.",
+                "**Controlar:** Preferir herramientas que controlas sobre servicios que te capturan.",
+                "**Apoyar lo abierto:** Apoyar el desarrollo de tecnología abierta."
+              ],
+              "reflection": "¿Podrías funcionar si las tres plataformas que más usas desaparecieran mañana?"
+            },
+            {
+              "id": "ex-cap22-5",
+              "title": "Cultivar la soberanía espiritual",
+              "duration": "práctica continua",
+              "description": "Recuperar la capacidad de definir tu propio sentido, valores y relación con lo sagrado, sin imposición externa.",
+              "steps": [
+                "**Examinar premisas:** Examinar las premisas heredadas.",
+                "**Contemplar:** Practicar disciplinas contemplativas (no necesariamente religiosas).",
+                "**Comunidad sin secta:** Buscar comunidad de sentido sin secta.",
+                "**Tolerar incertidumbre:** Tolerar la incertidumbre sin caer en dogma.",
+                "**Integrar:** Integrar razón y experiencia."
+              ],
+              "reflection": "¿Puedes articular qué te da sentido y por qué, sin recurrir a autoridad externa?"
+            },
+            {
+              "id": "ex-cap22-6",
+              "title": "Cultivar la soberanía territorial",
+              "duration": "práctica continua",
+              "description": "Establecer una relación de reciprocidad con el lugar específico que habitas y participar en las decisiones sobre él.",
+              "steps": [
+                "**Conocer el lugar:** Conocer el territorio que habitas (ecología, historia, comunidad).",
+                "**Gobernanza local:** Participar en la gobernanza local.",
+                "**Resiliencia:** Contribuir a la resiliencia del lugar.",
+                "**Defender:** Defender el territorio contra la extracción.",
+                "**Arraigo:** Construir arraigo que no sea nacionalismo excluyente."
+              ],
+              "reflection": "¿Conoces los nombres de las plantas, los ciclos del agua, la historia de tu lugar, y participas en decisiones sobre él?"
+            }
+          ]
         }
       ]
     },
@@ -296,7 +454,22 @@
           },
           "content": "### Lo que este libro ha intentado\n\nEste libro es diagnóstico, no predicción. Ha intentado:\n\n1. **Nombrar con precisión** el viejo ser: sus cinco premisas, sus siete estructuras, su coherencia interna\n2. **Documentar su colapso** no como especulación sino como síntomas observables\n3. **Identificar las resistencias** que lo mantienen artificialmente vivo\n4. **Mostrar que el nuevo ser existe** en lugares específicos, con resultados verificables\n5. **Articular las premisas** que hacen funcionar esas alternativas\n6. **Analizar los escenarios** de los próximos años sin falso optimismo ni derrotismo\n7. **Proponer acción** que no reproduce las premisas del viejo ser\n\n### Lo que este libro no puede hacer\n\nEste libro no puede:\n- **Garantizar El Nacimiento.** El resultado depende de acción colectiva, no de argumentos.\n- **Proporcionar recetas universales.** Cada contexto requiere adaptación.\n- **Sustituir la experiencia.** Leer sobre el nuevo ser no es vivirlo.\n- **Resolver todas las preguntas.** Muchos problemas permanecen abiertos.\n\n### Objeciones que merecen respuesta final\n\n**\"Es demasiado optimista.\"**\nEl libro asigna 40-50% de probabilidad a La Fortaleza. Reconoce que el viejo ser tiene poder y lo usa. No es optimismo; es reconocimiento de que posibilidad no es certeza.\n\n**\"Es demasiado pesimista.\"**\nEl libro documenta alternativas funcionando. Muestra que las premisas del nuevo ser generan vida coherente. No es pesimismo; es reconocimiento de que el viejo ser realmente está colapsando.\n\n**\"Es demasiado abstracto.\"**\nEl libro incluye ejemplos concretos: Mondragón, Zapatistas, Porto Alegre, Kerala, Rojava. Podría incluir más. Pero la abstracción es necesaria para ver patrones.\n\n**\"Es demasiado concreto.\"**\nLos ejemplos son locales y específicos. Pero la pregunta \"¿puede escalar?\" asume que la forma de escalar es la del viejo ser (replicación uniforme). El nuevo ser escala por redes, no por uniformidad.\n\n**\"No dice qué hacer.\"**\nEl Capítulo 21 propone cuatro dimensiones de acción. Pero este libro no es manual; es diagnóstico. Los manuales vendrán (ver \"Manual de Transición\" en esta colección).\n\n### El reconocimiento que todo lo cambia\n\nTodo en este libro depende de un reconocimiento:\n\n**El viejo ser está muriendo.**\n\nNo es deseo. No es predicción. Es observación de contradicciones irresolubles entre un sistema que requiere crecimiento infinito y un planeta finito que ya alcanzó límites.\n\nQuien reconoce esto ve el mundo de otra manera. Lo que parecía sólido se revela como construcción contingente. Lo que parecía imposible se revela como construcción posible.\n\nEl reconocimiento no es suficiente. Pero sin él, toda acción es reordenamiento de sillas en el Titanic.\n\n### El nuevo ser que está naciendo\n\nTambién depende de un reconocimiento:\n\n**El nuevo ser ya existe.**\n\nNo como utopía futura sino como realidad operativa en grietas del presente. Donde las premisas cambian, la vida cambia. Donde hay interdependencia reconocida, hay menos violencia. Donde hay suficiencia organizada, hay menos ansiedad. Donde hay valor intrínseco, hay límites respetados.\n\nEsto no es teoría. Es observación. Está disponible para verificación.\n\n### La década que determina siglos\n\nLos próximos diez años determinarán qué escenario se cristaliza. No porque sea fecha mágica sino porque límites físicos, ecológicos, tecnológicos y sociales convergen en este período.\n\nLo que hagamos ahora—cada cooperativa formada, cada asamblea convocada, cada historia contada, cada premisa examinada, cada tecnología elegida—inclina las probabilidades.\n\nNo es garantía. Es posibilidad.\n\n### Invitación final\n\nEste libro no pide que \"creas\" en el nuevo ser. Pide que:\n\n1. **Examines** las premisas que estructuran tu vida\n2. **Observes** los síntomas de colapso sin negarlos ni paralizarte\n3. **Busques** las alternativas que ya funcionan\n4. **Actúes** desde las cuatro dimensiones según tu capacidad\n5. **Cuentes** historias que hagan visible lo que está naciendo\n\nEl viejo ser no necesita tu oposición activa. Se está derrumbando solo.\n\nEl nuevo ser no necesita tu fe. Necesita tu participación.\n\nLa transición no necesita que seas héroe. Necesita que seas consciente.\n\n**El fin de las estructuras ya está ocurriendo. El nacimiento del nuevo ser depende de lo que hagamos con eso.**",
           "closingQuestion": "¿Qué acción tomarás hoy para acelerar el nacimiento del nuevo ser?",
-          "exercises": []
+          "exercises": [
+            {
+              "id": "ex-epilogo-1",
+              "title": "La invitación final: cinco gestos conscientes",
+              "duration": "práctica continua",
+              "description": "El libro no pide que creas en el nuevo ser, sino que participes. Estos cinco gestos resumen la invitación final para pasar del reconocimiento a la acción.",
+              "steps": [
+                "**Examina** las premisas que estructuran tu vida.",
+                "**Observa** los síntomas de colapso sin negarlos ni paralizarte.",
+                "**Busca** las alternativas que ya funcionan.",
+                "**Actúa** desde las cuatro dimensiones según tu capacidad.",
+                "**Cuenta** historias que hagan visible lo que está naciendo."
+              ],
+              "reflection": "El nuevo ser no necesita tu fe, necesita tu participación: la transición no necesita que seas héroe, necesita que seas consciente."
+            }
+          ]
         }
       ]
     }

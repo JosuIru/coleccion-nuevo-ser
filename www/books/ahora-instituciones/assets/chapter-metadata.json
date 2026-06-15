@@ -1,100 +1,163 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 12,
-    "tags": ["introducción", "instituciones", "transformación-sistémica"],
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 4,
+    "tags": ["por-que-ahora", "inteligencia-artificial", "futuro-instituciones", "cambio-paradigma", "instituciones"],
     "practicalUses": []
   },
-  "parte1_cap1": {
+  "cap5": {
     "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["crisis-institucional", "diagnóstico", "análisis-sistémico"],
-    "practicalUses": ["análisis", "comprensión"]
+    "readingTime": 4,
+    "tags": ["interdependencia", "separacion", "silos-organizativos", "recursos-humanos", "instituciones"],
+    "practicalUses": []
   },
-  "parte1_cap2": {
-    "type": "teoría",
-    "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["historia-instituciones", "evolución", "contexto"],
-    "practicalUses": ["perspectiva-histórica"]
-  },
-  "parte1_cap3": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["poder", "hegemonía", "resistencia"],
-    "practicalUses": ["análisis-poder", "estrategia"]
-  },
-  "parte2_cap1": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 24,
-    "tags": ["democracia-participativa", "asambleas", "autogestión"],
-    "practicalUses": ["organización", "participación"]
-  },
-  "parte2_cap2": {
-    "type": "práctica",
-    "difficulty": "avanzado",
-    "readingTime": 28,
-    "tags": ["cooperativas", "economía-solidaria", "empresas-recuperadas"],
-    "practicalUses": ["crear-cooperativa", "economía"]
-  },
-  "parte2_cap3": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["educación-popular", "escuelas-libres", "pedagogía-alternativa"],
-    "practicalUses": ["educar", "aprender"]
-  },
-  "parte2_cap4": {
-    "type": "práctica",
-    "difficulty": "avanzado",
-    "readingTime": 26,
-    "tags": ["medios-comunitarios", "comunicación-popular", "contrainformación"],
-    "practicalUses": ["comunicar", "medios"]
-  },
-  "parte2_cap5": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 24,
-    "tags": ["salud-comunitaria", "medicina-social", "autocuidado"],
-    "practicalUses": ["salud", "cuidados"]
-  },
-  "parte2_cap6": {
-    "type": "práctica",
-    "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["justicia-restaurativa", "resolución-conflictos", "mediación"],
-    "practicalUses": ["justicia", "conflictos"]
-  },
-  "parte3_cap1": {
-    "type": "teoría-práctica",
-    "difficulty": "avanzado",
-    "readingTime": 28,
-    "tags": ["estrategia", "doble-poder", "transición"],
-    "practicalUses": ["planificación", "estrategia"]
-  },
-  "parte3_cap2": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["alianzas", "articulación", "movimientos"],
-    "practicalUses": ["organizar", "articular"]
-  },
-  "parte3_cap3": {
-    "type": "teoría-práctica",
-    "difficulty": "avanzado",
-    "readingTime": 26,
-    "tags": ["escala", "replicación", "sistematización"],
-    "practicalUses": ["escalar", "expandir"]
-  },
-  "conclusion": {
+  "cap6": {
     "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["síntesis", "horizonte", "futuro"],
+    "readingTime": 4,
+    "tags": ["abundancia-organizable", "escasez", "competencia-interna", "externalizacion-costos", "instituciones"],
+    "practicalUses": []
+  },
+  "cap7": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["regeneracion", "extraccion", "burnout", "sostenibilidad", "instituciones"],
+    "practicalUses": []
+  },
+  "cap8": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 4,
+    "tags": ["red-coordinacion", "jerarquia-control", "distribucion-poder", "autonomia", "instituciones"],
+    "practicalUses": []
+  },
+  "cap9": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 4,
+    "tags": ["valor-intrinseco", "valor-instrumental", "cosificacion", "dignidad", "instituciones"],
+    "practicalUses": []
+  },
+  "cap10": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 4,
+    "tags": ["cristalizacion-premisas", "estructuras-organizativas", "cultura-organizacional", "incentivos", "instituciones"],
+    "practicalUses": []
+  },
+  "cap11": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 5,
+    "tags": ["estructura-invisible", "premisas-cristalizadas", "diagnostico-institucional", "auditoria", "instituciones"],
+    "practicalUses": ["auditoría de premisas institucionales", "observación antropológica de la organización"]
+  },
+  "cap12": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["pensamiento-sistemico", "stakeholders", "mapa-sistemico", "flujos-poder", "instituciones"],
+    "practicalUses": ["mapa sistémico de stakeholders y flujos", "diagnóstico de poder e incentivos"]
+  },
+  "cap13": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["grietas-y-semillas", "oportunidades-cambio", "diagnostico-institucional", "agentes-cambio", "instituciones"],
+    "practicalUses": ["inventario de grietas y semillas", "identificación de palancas de cambio"]
+  },
+  "cap14": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["evaluar-el-momento", "disposicion-al-cambio", "liderazgo", "gestion-del-cambio", "instituciones"],
+    "practicalUses": ["matriz de disposición al cambio", "decisión sobre el momento de transformar"]
+  },
+  "cap15": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["proposito", "servir-a-la-vida", "razon-de-ser", "rediseno-organizativo", "instituciones"],
+    "practicalUses": ["ejercicio del por qué radical", "definición del propósito profundo"]
+  },
+  "cap16": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["gobernanza", "inteligencia-colectiva", "consentimiento", "distribucion-poder", "instituciones"],
+    "practicalUses": ["reunión de gobernanza por consentimiento", "rediseño de la toma de decisiones"]
+  },
+  "cap17": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["economia-regenerativa", "flujos-de-valor", "distribucion-equitativa", "internalizar-impactos", "instituciones"],
+    "practicalUses": ["auditoría de flujos de valor", "evaluación de externalidades"]
+  },
+  "cap18": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["cultura-organizacional", "florecimiento-mutuo", "seguridad-psicologica", "rituales", "instituciones"],
+    "practicalUses": ["círculo de conexión", "cultivo de seguridad psicológica"]
+  },
+  "cap19": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["ecosistema", "relacion-con-contexto", "stakeholders", "colaboracion", "instituciones"],
+    "practicalUses": ["mapa de ecosistema", "detección de vínculos extractivos"]
+  },
+  "cap20": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["democracia-aumentada", "participacion-directa", "inteligencia-artificial", "deliberacion", "instituciones"],
+    "practicalUses": []
+  },
+  "cap21": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["economias-de-contribucion", "trabajo-asalariado", "automatizacion", "renta-basica", "instituciones"],
+    "practicalUses": []
+  },
+  "cap22": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["redes-de-organizaciones", "organizaciones-conscientes", "apoyo-mutuo", "ecosistema", "instituciones"],
+    "practicalUses": []
+  },
+  "cap23": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["largo-plazo", "cortoplacismo", "generaciones-futuras", "riesgos-sistemicos", "instituciones"],
+    "practicalUses": []
+  },
+  "cap24": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["instituciones-de-cuidado", "crisis-del-cuidado", "trabajo-invisible", "comunidad", "instituciones"],
+    "practicalUses": []
+  },
+  "cap25": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["bien-comun", "infraestructuras-publicas", "propiedad", "datos-y-conocimiento", "instituciones"],
+    "practicalUses": []
+  },
+  "epilogo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": ["carta-al-nuevo-ser", "futuro", "esperanza", "accion-presente", "instituciones"],
     "practicalUses": []
   }
 }

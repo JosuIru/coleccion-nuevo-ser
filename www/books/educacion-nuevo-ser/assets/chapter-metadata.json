@@ -1,0 +1,142 @@
+{
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["prologo", "nota-de-claude", "ia-colaboradora", "educacion", "transicion-educativa"],
+    "practicalUses": []
+  },
+  "cap1": {
+    "type": "teoría",
+    "difficulty": "introductorio",
+    "readingTime": 10,
+    "tags": ["agentes-educativos", "tiempo-educativo", "curriculum-oculto", "familia", "pantallas", "educacion"],
+    "practicalUses": ["auditoria del tiempo educativo del nino", "mapear que educa realmente fuera de la escuela"]
+  },
+  "cap2": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 11,
+    "tags": ["escuela-fabrica", "origenes-industriales", "estandarizacion", "obediencia", "sistema-educativo", "educacion"],
+    "practicalUses": []
+  },
+  "cap3": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["familia", "tiempo-familiar", "crianza", "cuidado", "captura-economica", "educacion"],
+    "practicalUses": ["recuperar tiempo familiar de calidad", "diario de presencia en el hogar"]
+  },
+  "cap4": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 12,
+    "tags": ["pantallas", "medios-digitales", "tiempo-de-pantalla", "curriculum-oculto", "publicidad", "educacion"],
+    "practicalUses": ["autodiagnostico del tiempo de pantalla", "higiene digital familiar"]
+  },
+  "cap5": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["adoctrinamiento", "ideologia", "religion-institucional", "pensamiento-critico", "valores", "educacion"],
+    "practicalUses": ["distinguir educar de adoctrinar", "ejercicio de cuestionamiento de premisas"]
+  },
+  "cap6": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 11,
+    "tags": ["medicalizacion", "infancia", "diagnosticos-psiquiatricos", "tdah", "farmacologizacion", "educacion"],
+    "practicalUses": []
+  },
+  "cap7": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["trastornos", "sintomas-como-senales", "nino-detector", "entorno-inadecuado", "salud-mental", "educacion"],
+    "practicalUses": ["releer sintomas como senales del entorno", "observacion del nino como detector"]
+  },
+  "cap8": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 10,
+    "tags": ["patologizacion", "diferencia", "construccion-de-lo-normal", "neurodiversidad", "normalidad", "educacion"],
+    "practicalUses": []
+  },
+  "cap9": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["bullying", "acoso-escolar", "ciberacoso", "sintoma-sistemico", "convivencia", "educacion"],
+    "practicalUses": []
+  },
+  "cap10": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 11,
+    "tags": ["individualismo", "soledad", "adiccion-digital", "redes-sociales", "desconexion", "educacion"],
+    "practicalUses": ["autodiagnostico de soledad y uso de pantallas", "cultivar vinculos reales"]
+  },
+  "cap11": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 9,
+    "tags": ["cinco-premisas", "conciencia", "cambio-de-paradigma", "fundamentos", "educacion-regenerativa", "educacion"],
+    "practicalUses": []
+  },
+  "cap12": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 14,
+    "tags": ["cuatro-dimensiones", "desarrollo-integral", "cognitivo-emocional-fisico-existencial", "desequilibrio-educativo", "educacion-integral", "educacion"],
+    "practicalUses": ["evaluar el equilibrio entre dimensiones del desarrollo", "disenar actividades multidimensionales"]
+  },
+  "cap13": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 12,
+    "tags": ["pedagogia-regenerativa", "principios-pedagogicos", "reforma-educativa", "practica-viva", "educacion-regenerativa", "educacion"],
+    "practicalUses": ["aplicar principios pedagogicos regenerativos", "evitar la burocratizacion de reformas"]
+  },
+  "cap14": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 9,
+    "tags": ["transformacion", "puntos-de-apalancamiento", "roles-educativos", "accion-individual", "padres-y-educadores", "educacion"],
+    "practicalUses": ["identificar puntos de apalancamiento segun la posicion", "acciones concretas desde la familia"]
+  },
+  "cap15": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 13,
+    "tags": ["etapas-del-desarrollo", "practicas-por-edad", "primera-infancia", "adolescencia", "crianza", "educacion"],
+    "practicalUses": ["practicas adaptadas a cada momento del desarrollo", "usar etapas como mapas y no como mandatos"]
+  },
+  "cap16": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 10,
+    "tags": ["navegar-el-sistema", "escuela-tradicional", "proteger-lo-esencial", "examenes-estandarizados", "supervivencia-escolar", "educacion"],
+    "practicalUses": ["proteger lo esencial dentro del sistema", "estrategias para convivir con la escuela tradicional"]
+  },
+  "cap17": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 11,
+    "tags": ["imaginacion", "utopias-reales", "futuros-educativos", "vision", "alternativas-educativas", "educacion"],
+    "practicalUses": ["ejercicio de imaginar otra educacion", "disenar visiones educativas alternativas"]
+  },
+  "cap18": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 4,
+    "tags": ["inteligencia-artificial", "ia-en-educacion", "ia-extractiva", "ia-regenerativa", "tecnologia-educativa", "educacion"],
+    "practicalUses": []
+  },
+  "cap19": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 7,
+    "tags": ["invitacion-final", "llamado-a-la-accion", "cambio-sistemico", "compromiso", "transicion-educativa", "educacion"],
+    "practicalUses": ["comprometerse con una accion educativa concreta", "iniciar la transformacion desde la propia posicion"]
+  }
+}

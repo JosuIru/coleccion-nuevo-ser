@@ -1,51 +1,128 @@
 {
-  "prologo": {
+  "cap1": {
     "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 10,
-    "tags": ["manifiesto", "conciencia-compartida", "introducción"],
-    "practicalUses": []
-  },
-  "cap1": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["despertar-colectivo", "interdependencia", "nueva-conciencia"],
-    "practicalUses": ["reflexión", "diálogo"]
+    "readingTime": 11,
+    "tags": ["manifiesto", "premisas-ocultas", "critica-sistemica", "arquitectura-social", "paradigma"],
+    "practicalUses": ["diario de premisas", "autodiagnostico de supuestos"]
   },
   "cap2": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["separación", "ilusión-ego", "unidad"],
-    "practicalUses": ["reflexión", "deconstrucción"]
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 10,
+    "tags": ["manifiesto", "escasez-artificial", "economia-critica", "abundancia", "bienes-comunes"],
+    "practicalUses": ["auditoria de consumo", "mapeo de economia colaborativa"]
   },
   "cap3": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 20,
-    "tags": ["conciencia-planetaria", "emergencia", "transformación"],
-    "practicalUses": ["visión", "imaginación"]
+    "readingTime": 7,
+    "tags": ["manifiesto", "poder", "path-dependence", "estructuras-de-dominacion", "critica-sistemica"],
+    "practicalUses": []
   },
   "cap4": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["nueva-narrativa", "storytelling", "cambio-cultural"],
-    "practicalUses": ["escritura", "creación"]
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 6,
+    "tags": ["manifiesto", "crisis-sistemica", "pensamiento-sistemico", "diagnostico", "colapso"],
+    "practicalUses": []
   },
   "cap5": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["compromiso", "acción", "materialización"],
-    "practicalUses": ["compromiso-personal", "manifesto"]
-  },
-  "epilogo": {
     "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 10,
-    "tags": ["conclusión", "llamado", "futuro"],
+    "difficulty": "avanzado",
+    "readingTime": 7,
+    "tags": ["manifiesto", "conciencia", "ontologia", "materialismo", "paradigma"],
     "practicalUses": []
+  },
+  "cap6": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 5,
+    "tags": ["manifiesto", "unidad-en-diversidad", "individuo-colectivo", "sistemas-vivos", "politica"],
+    "practicalUses": []
+  },
+  "cap7": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 5,
+    "tags": ["manifiesto", "gaia", "planeta-vivo", "ecologia", "sistemas-terrestres"],
+    "practicalUses": []
+  },
+  "cap8": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "inteligencia-artificial", "inteligencia-distribuida", "conciencia", "mente"],
+    "practicalUses": []
+  },
+  "cap9": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 8,
+    "tags": ["manifiesto", "economia-regenerativa", "bienes-comunes", "biomimesis", "alternativas"],
+    "practicalUses": ["diseno de economia local", "mapeo de bienes comunes"]
+  },
+  "cap10": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 6,
+    "tags": ["manifiesto", "gobernanza-emergente", "subsidiariedad", "democracia", "inteligencia-colectiva"],
+    "practicalUses": ["aplicar subsidiariedad", "diseno de toma de decisiones participativa"]
+  },
+  "cap11": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "educacion", "desarrollo-integral", "curriculum-oculto", "aprendizaje"],
+    "practicalUses": ["rediseno de practicas educativas", "desarrollo de dimensiones humanas"]
+  },
+  "cap12": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "territorio", "biorregionalismo", "fronteras", "arraigo"],
+    "practicalUses": ["mapeo biorregional", "arraigo al lugar"]
+  },
+  "cap13": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "justicia-restaurativa", "reparacion", "justicia-punitiva", "sanacion"],
+    "practicalUses": ["circulos de reparacion", "practica de justicia restaurativa"]
+  },
+  "cap14": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "tecnologia-consciente", "tecnologia-al-servicio-de-la-vida", "principio-de-precaucion", "gobernanza-tecnologica"],
+    "practicalUses": ["evaluacion etica de herramientas", "criterios de tecnologia consciente"]
+  },
+  "cap15": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 5,
+    "tags": ["manifiesto", "lo-sagrado", "espiritualidad", "sentido", "espacio-publico"],
+    "practicalUses": []
+  },
+  "cap16": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "incertidumbre", "humildad-epistemica", "puntos-ciegos", "honestidad-intelectual"],
+    "practicalUses": []
+  },
+  "cap17": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 4,
+    "tags": ["manifiesto", "sombra", "riesgos", "autoritarismo", "autocritica"],
+    "practicalUses": []
+  },
+  "cap18": {
+    "type": "reflexión",
+    "difficulty": "intermedio",
+    "readingTime": 7,
+    "tags": ["manifiesto", "invitacion", "co-creacion", "esperanza", "accion-transformadora"],
+    "practicalUses": ["sembrar las ideas en tu contexto", "convertirse en co-creador"]
   }
 }

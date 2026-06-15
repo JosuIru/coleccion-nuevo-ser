@@ -1,100 +1,357 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["introducción", "filosofía", "nuevo-paradigma"],
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 5,
+    "tags": [
+      "prologo",
+      "preguntas-filosoficas",
+      "co-autoria-ia",
+      "cambio-de-paradigma",
+      "manifiesto"
+    ],
     "practicalUses": []
   },
   "cap1": {
     "type": "teoría",
-    "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["ontología", "ser", "realidad"],
-    "practicalUses": ["filosofía", "contemplación"]
+    "difficulty": "introductorio",
+    "readingTime": 4,
+    "tags": [
+      "paradigma-invisible",
+      "sentido-comun",
+      "supuestos-culturales",
+      "desnaturalizacion",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "identificar supuestos invisibles propios"
+    ]
   },
   "cap2": {
     "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 28,
-    "tags": ["epistemología", "conocimiento", "verdad"],
-    "practicalUses": ["reflexión", "cuestionamiento"]
+    "readingTime": 4,
+    "tags": [
+      "genealogia",
+      "historia-de-las-ideas",
+      "separacion",
+      "desencantamiento",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "rastrear el origen histórico de una creencia propia"
+    ]
   },
   "cap3": {
     "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["fenomenología", "experiencia", "percepción"],
-    "practicalUses": ["observación", "fenomenología"]
+    "readingTime": 5,
+    "tags": [
+      "premisas-dominantes",
+      "materialismo",
+      "escasez",
+      "separacion",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "mapear las cinco premisas en tu vida cotidiana"
+    ]
   },
   "cap4": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 26,
-    "tags": ["no-dualidad", "advaita", "unidad"],
-    "practicalUses": ["meditación", "indagación"]
+    "readingTime": 4,
+    "tags": [
+      "instituciones",
+      "critica-de-las-reformas",
+      "arquitectura-social",
+      "sistemas",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "analizar por qué una reforma fue absorbida"
+    ]
   },
   "cap5": {
     "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["ética", "moral", "valores"],
-    "practicalUses": ["ética", "decisiones"]
+    "difficulty": "avanzado",
+    "readingTime": 3,
+    "tags": [
+      "conciencia",
+      "problema-duro",
+      "materialismo",
+      "filosofia-de-la-mente",
+      "manifiesto"
+    ],
+    "practicalUses": []
   },
   "cap6": {
     "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 24,
-    "tags": ["estética", "belleza", "arte"],
-    "practicalUses": ["apreciar", "crear"]
+    "readingTime": 3,
+    "tags": [
+      "panpsiquismo",
+      "conciencia-fundamental",
+      "inversion-ontologica",
+      "ontologia",
+      "manifiesto"
+    ],
+    "practicalUses": []
   },
   "cap7": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["política", "poder", "organización-social"],
-    "practicalUses": ["acción-política", "análisis"]
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 3,
+    "tags": [
+      "abundancia",
+      "critica-de-la-escasez",
+      "economia",
+      "distribucion",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "distinguir escasez real de escasez fabricada"
+    ]
   },
   "cap8": {
     "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 28,
-    "tags": ["cosmología", "universo", "totalidad"],
-    "practicalUses": ["visión", "perspectiva"]
+    "readingTime": 2,
+    "tags": [
+      "interdependencia",
+      "relacionalidad",
+      "ecologia",
+      "biologia",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "cartografiar tus redes de interdependencia"
+    ]
   },
   "cap9": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["antropología-filosófica", "ser-humano", "identidad"],
-    "practicalUses": ["autoconocimiento", "indagación"]
+    "readingTime": 2,
+    "tags": [
+      "madurez-ciclica",
+      "limites",
+      "critica-del-progreso",
+      "sostenibilidad",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "reconocer cuándo un sistema debe madurar en vez de crecer"
+    ]
   },
   "cap10": {
     "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["tiempo", "devenir", "permanencia"],
-    "practicalUses": ["reflexión", "temporalidad"]
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "valor-intrinseco",
+      "dignidad",
+      "circulo-moral",
+      "etica",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "ampliar tu círculo de consideración moral"
+    ]
   },
   "cap11": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 26,
-    "tags": ["libertad", "determinismo", "voluntad"],
-    "practicalUses": ["responsabilidad", "acción"]
+    "readingTime": 3,
+    "tags": [
+      "premisas-nuevo-ser",
+      "sintesis",
+      "paradigma-emergente",
+      "ontologia",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "comparar las cinco premisas viejas y nuevas"
+    ]
   },
   "cap12": {
     "type": "teoría",
     "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["lenguaje", "significado", "comunicación"],
-    "practicalUses": ["diálogo", "expresión"]
+    "readingTime": 1,
+    "tags": [
+      "ontologia",
+      "que-existe",
+      "metafisica",
+      "fundamentos",
+      "manifiesto"
+    ],
+    "practicalUses": []
   },
-  "conclusion": {
-    "type": "teoría-práctica",
-    "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["síntesis", "filosofía-como-vida", "praxis"],
-    "practicalUses": ["integración", "vivir-filosóficamente"]
+  "cap13": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "epistemologia",
+      "conocimiento",
+      "observador-participante",
+      "metodo",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap14": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "antropologia-filosofica",
+      "naturaleza-humana",
+      "homo-economicus",
+      "subjetividad",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap15": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "etica",
+      "sensibilidad-moral",
+      "relaciones",
+      "valores",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap16": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "politica",
+      "organizacion-social",
+      "poder",
+      "instituciones",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap17": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "cosmologia",
+      "lugar-en-el-cosmos",
+      "sentido",
+      "pertenencia",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap18": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "cambio-de-paradigma",
+      "kuhn",
+      "revolucion-cientifica",
+      "anomalias",
+      "manifiesto"
+    ],
+    "practicalUses": []
+  },
+  "cap19": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "obstaculos",
+      "resistencia-al-cambio",
+      "identidad",
+      "transito",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "detectar resistencias identitarias al cambio"
+    ]
+  },
+  "cap20": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 3,
+    "tags": [
+      "catalizadores",
+      "experiencias-directas",
+      "comunidad",
+      "practicas",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "buscar experiencias y comunidades que faciliten el tránsito"
+    ]
+  },
+  "cap21": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "vivir-en-el-entre",
+      "transicion",
+      "incomodidad",
+      "liminalidad",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "habitar la incertidumbre del periodo de transición"
+    ]
+  },
+  "cap22": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "limites",
+      "autocritica",
+      "honestidad-intelectual",
+      "nueva-ontologia",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "examinar los límites de tus propias convicciones"
+    ]
+  },
+  "cap23": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": [
+      "sombra",
+      "peligros",
+      "corrupcion-del-ideal",
+      "autocritica",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "anticipar cómo un proyecto transformador puede degenerar"
+    ]
+  },
+  "cap24": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 6,
+    "tags": [
+      "filosofia-como-practica",
+      "vivir-bien",
+      "integracion",
+      "cierre",
+      "manifiesto"
+    ],
+    "practicalUses": [
+      "traducir las ideas del libro en práctica vivida"
+    ]
   }
 }

@@ -1,72 +1,156 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 12,
-    "tags": ["transición", "movimiento", "introducción"],
-    "practicalUses": []
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": ["transicion", "prefiguracion", "cambio-sistemico", "estrategia", "manifiesto"],
+    "practicalUses": ["identificar la paradoja de la transicion en tu contexto", "diario de premisas sobre el cambio"]
   },
   "cap1": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["pico-petróleo", "crisis", "resiliencia"],
-    "practicalUses": ["análisis-contexto"]
+    "readingTime": 3,
+    "tags": ["transiciones-historicas", "feudalismo", "capitalismo", "revoluciones", "transicion"],
+    "practicalUses": ["analisis de patrones historicos de cambio", "comparar transiciones pasadas con la actual"]
   },
   "cap2": {
-    "type": "práctica",
+    "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["iniciar-transición", "grupo-inicial", "primeros-pasos"],
-    "practicalUses": ["crear-comunidad", "organizar"]
+    "readingTime": 4,
+    "tags": ["pensamiento-sistemico", "puntos-de-apalancamiento", "complejidad", "donella-meadows", "transicion"],
+    "practicalUses": ["mapear puntos de apalancamiento de un sistema", "priorizar intervenciones de mayor efecto"]
   },
   "cap3": {
-    "type": "práctica",
+    "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["sensibilización", "comunicación", "difusión"],
-    "practicalUses": ["comunicar", "educar"]
+    "readingTime": 3,
+    "tags": ["ecosistema-de-cambio", "cuatro-cuadrantes", "ken-wilber", "mapeo", "transicion"],
+    "practicalUses": ["mapear el ecosistema de cambio local", "ubicar iniciativas en los cuatro cuadrantes"]
   },
   "cap4": {
-    "type": "práctica",
-    "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["visión-compartida", "plan-descenso-energético", "imaginación-colectiva"],
-    "practicalUses": ["planificación", "visión"]
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["empresa", "modelo-empresarial", "responsabilidad-limitada", "capitalismo", "transicion"],
+    "practicalUses": ["evaluar limites del modelo empresarial accionarial", "imaginar formas organizativas alternativas"]
   },
   "cap5": {
     "type": "práctica",
-    "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["proyectos-prácticos", "huertos", "energía", "economía-local"],
-    "practicalUses": ["implementar", "crear-proyectos"]
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["cooperativismo", "economia-democratica", "principios-cooperativos", "autogestion", "transicion"],
+    "practicalUses": ["aplicar los principios cooperativos a un proyecto", "diagnostico de gobernanza democratica"]
   },
   "cap6": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["conectar-redes", "escalar", "replicar"],
-    "practicalUses": ["networking", "colaboración"]
+    "readingTime": 2,
+    "tags": ["gobernanza-distribuida", "sociocracia", "holocracia", "organizacion-sin-jefes", "transicion"],
+    "practicalUses": ["implementar decisiones por consentimiento", "organizar el trabajo en circulos autonomos"]
   },
   "cap7": {
-    "type": "teoría-práctica",
+    "type": "teoría",
     "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["errores-comunes", "aprendizajes", "lecciones"],
-    "practicalUses": ["reflexión", "mejora-continua"]
+    "readingTime": 2,
+    "tags": ["procomun", "commons", "elinor-ostrom", "recursos-compartidos", "transicion"],
+    "practicalUses": ["disenar reglas de un commons con los principios de Ostrom", "gestionar un recurso compartido"]
   },
   "cap8": {
+    "type": "teoría",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["daos", "coordinacion-digital", "smart-contracts", "gobernanza-token", "transicion"],
+    "practicalUses": ["evaluar si una DAO encaja en un proyecto", "detectar dinamicas plutocraticas en gobernanza digital"]
+  },
+  "cap9": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["gobernanza", "toma-decisiones", "organización-interna"],
-    "practicalUses": ["gestión-grupal"]
+    "readingTime": 3,
+    "tags": ["herramientas-economicas", "monedas-locales", "credito-mutuo", "economia-alternativa", "transicion"],
+    "practicalUses": ["poner en marcha una moneda local o complementaria", "mantener la riqueza circulando en el territorio"]
   },
-  "conclusion": {
+  "cap10": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["herramientas-de-gobernanza", "sociocracia", "consentimiento", "decisiones-colectivas", "transicion"],
+    "practicalUses": ["facilitar una decision por consentimiento", "estructurar reuniones participativas"]
+  },
+  "cap11": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["herramientas-digitales", "soberania-tecnologica", "alternativas-big-tech", "privacidad", "transicion"],
+    "practicalUses": ["migrar a alternativas eticas a las Big Tech", "proteger la privacidad digital del grupo"]
+  },
+  "cap12": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 3,
+    "tags": ["herramientas-relacionales", "comunicacion-no-violenta", "rosenberg", "resolucion-de-conflictos", "transicion"],
+    "practicalUses": ["practicar los cuatro componentes de la CNV", "resolver conflictos en el grupo"]
+  },
+  "cap13": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["herramientas-interiores", "practicas-contemplativas", "mindfulness", "cuidado-del-activista", "transicion"],
+    "practicalUses": ["meditacion mindfulness diaria", "practica de compasion metta para prevenir el burnout"]
+  },
+  "cap14": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["transicion-personal", "simplicidad", "anticonsumismo", "estilo-de-vida", "transicion"],
+    "practicalUses": ["regla de los 30 dias antes de comprar", "rutina de simplificacion del consumo"]
+  },
+  "cap15": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion-comunitaria", "transition-towns", "economia-local", "resiliencia-comunitaria", "transicion"],
+    "practicalUses": ["impulsar una iniciativa de Transition Town", "crear huertos comunitarios o bancos de tiempo"]
+  },
+  "cap16": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion-organizacional", "cambio-desde-dentro", "aliados", "transformacion-interna", "transicion"],
+    "practicalUses": ["modelar alternativas en tu equipo", "tejer alianzas para alcanzar masa critica"]
+  },
+  "cap17": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["transicion-politica", "municipalismo", "poder-local", "fearless-cities", "transicion"],
+    "practicalUses": ["incidir en politicas municipales", "impulsar compra publica responsable"]
+  },
+  "cap18": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["supervivencia-digna", "sostenibilidad-personal", "reducir-necesidades", "tension-sistemica", "transicion"],
+    "practicalUses": ["reducir necesidades para ganar autonomia", "disenar una estrategia de subsistencia coherente con tus valores"]
+  },
+  "cap19": {
     "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 10,
-    "tags": ["futuro", "esperanza", "acción"],
-    "practicalUses": []
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["poder", "prefiguracion", "zapatismo", "autonomia", "transicion"],
+    "practicalUses": ["aplicar la prefiguracion en proyectos cotidianos", "construir autonomia sin depender del Estado"]
+  },
+  "cap20": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["resiliencia", "represion", "cooptacion", "proteccion-de-alternativas", "transicion"],
+    "practicalUses": ["disenar estrategias contra la represion", "blindar un proyecto frente a la cooptacion"]
+  },
+  "epilogo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 1,
+    "tags": ["invitacion", "co-autoria", "praxis", "cierre", "transicion"],
+    "practicalUses": ["adaptar las herramientas a tu propio contexto", "compartir los aprendizajes de tu practica"]
   }
 }

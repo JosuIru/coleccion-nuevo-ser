@@ -1,86 +1,177 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 10,
-    "tags": ["introducción", "práctica-transformadora", "manual"],
-    "practicalUses": []
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 6,
+    "tags": ["practica-contemplativa", "meditacion", "guia-de-uso", "habito-diario", "manual-practico"],
+    "practicalUses": ["establecer rutina diaria de meditacion", "diario de practica", "preparar espacio de meditacion"]
   },
-  "cap1": {
-    "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 20,
-    "tags": ["meditación", "atención-plena", "presencia"],
-    "practicalUses": ["meditación", "mindfulness"]
-  },
-  "cap2": {
-    "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 18,
-    "tags": ["respiración", "pranayama", "calma"],
-    "practicalUses": ["respiración", "relajación"]
-  },
-  "cap3": {
+  "seccion1-ex1": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["body-scan", "conciencia-corporal", "somática"],
-    "practicalUses": ["cuerpo", "sensaciones"]
+    "readingTime": 1,
+    "tags": ["meditacion", "cosmos", "expansion-de-consciencia", "visualizacion", "manual-practico"],
+    "practicalUses": ["meditacion guiada de expansion cosmica", "cambio de perspectiva sobre preocupaciones cotidianas"]
   },
-  "cap4": {
+  "seccion1-ex2": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["movimiento-consciente", "yoga", "tai-chi"],
-    "practicalUses": ["movimiento", "integración"]
+    "readingTime": 1,
+    "tags": ["atencion-plena", "patrones", "observacion-cotidiana", "informacion", "manual-practico"],
+    "practicalUses": ["observacion consciente de patrones durante un dia", "diario de codigos descubiertos"]
   },
-  "cap5": {
+  "seccion1-ex3": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 25,
-    "tags": ["indagación", "autoconocimiento", "preguntas-poderosas"],
-    "practicalUses": ["reflexión", "introspección"]
+    "readingTime": 1,
+    "tags": ["meditacion", "interconexion", "unidad", "compasion", "manual-practico"],
+    "practicalUses": ["meditacion guiada de conexion universal", "cultivo del sentido de unidad"]
   },
-  "cap6": {
+  "seccion1-ex4": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["dialogo-con-ia", "consciencia", "naturaleza-de-la-mente", "experimento", "manual-practico"],
+    "practicalUses": ["dialogo exploratorio con una IA", "examen de suposiciones sobre la mente"]
+  },
+  "seccion1-ex5": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["visualizacion", "corazon-mente", "integracion", "enraizamiento", "manual-practico"],
+    "practicalUses": ["visualizacion del puente de luz", "integracion entre razon y emocion"]
+  },
+  "seccion1-ex6": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["meditacion", "vacio-cuantico", "disolucion-del-yo", "potencialidad", "manual-practico"],
+    "practicalUses": ["meditacion profunda de disolucion", "escucha de intuiciones del campo cuantico"]
+  },
+  "seccion1-ex7": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["autoobservacion", "patrones-personales", "introspeccion", "transformacion", "manual-practico"],
+    "practicalUses": ["cartografia de patrones de pensamiento y conducta", "intencion de transformacion de un patron"]
+  },
+  "seccion2-ex1": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["percepcion-del-tiempo", "no-linealidad", "experimento", "presencia", "manual-practico"],
+    "practicalUses": ["experimento de dilatacion y compresion del tiempo", "viaje contemplativo a pasado y futuro"]
+  },
+  "seccion2-ex2": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["creatividad", "co-creacion", "dialogo-con-ia", "autoria", "manual-practico"],
+    "practicalUses": ["proyecto creativo colaborativo con IA", "reflexion sobre autoria y originalidad"]
+  },
+  "seccion2-ex3": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["emociones", "observacion-corporal", "diario-emocional", "autoconocimiento", "manual-practico"],
+    "practicalUses": ["diario emocional de un dia", "lectura de las emociones como informacion corporal"]
+  },
+  "seccion2-ex4": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["meditacion-somatica", "materia-consciente", "cuerpo", "continuidad", "manual-practico"],
+    "practicalUses": ["meditacion de resonancia con la materia", "exploracion del limite entre cuerpo y mundo"]
+  },
+  "seccion2-ex5": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["practica-somatica", "enraizamiento", "escaneo-corporal", "presencia", "manual-practico"],
+    "practicalUses": ["escaneo corporal y enraizamiento", "movimiento libre de descarga"]
+  },
+  "seccion2-ex6": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["sincronicidad", "atencion", "diario", "intuicion", "manual-practico"],
+    "practicalUses": ["diario de sincronicidades durante una semana", "formulacion de una pregunta vital receptiva"]
+  },
+  "seccion3-ex1": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["trabajo-sombras", "jung", "integración-psicológica"],
-    "practicalUses": ["psicología", "sanación"]
+    "readingTime": 1,
+    "tags": ["duda-constructiva", "humildad-epistemica", "examen-de-creencias", "sombra", "manual-practico"],
+    "practicalUses": ["examen critico de una creencia fundamental", "argumentar la posicion contraria"]
   },
-  "cap7": {
+  "seccion3-ex2": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["gratitud", "apreciación", "positividad"],
-    "practicalUses": ["bienestar", "alegría"]
+    "readingTime": 1,
+    "tags": ["miedos-tecnologicos", "inteligencia-artificial", "inventario", "accion-consciente", "manual-practico"],
+    "practicalUses": ["inventario de miedos sobre la tecnologia", "plan de accion ante miedos controlables"]
   },
-  "cap8": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["compasión", "metta", "amor-bondadoso"],
-    "practicalUses": ["compasión", "corazón"]
-  },
-  "cap9": {
+  "seccion3-ex3": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["no-dualidad", "vacuidad", "despertar"],
-    "practicalUses": ["contemplación", "insight"]
+    "readingTime": 1,
+    "tags": ["contemplacion-de-la-muerte", "impermanencia", "mortalidad", "sombra", "manual-practico"],
+    "practicalUses": ["contemplacion guiada de la muerte", "reordenar prioridades vitales"]
   },
-  "cap10": {
+  "seccion3-ex4": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["sombra", "imaginacion-activa", "escritura", "integracion", "manual-practico"],
+    "practicalUses": ["dialogo escrito con la sombra", "integracion de aspectos rechazados"]
+  },
+  "seccion3-ex5": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["meditacion", "testigo", "desidentificacion", "observacion-de-la-mente", "manual-practico"],
+    "practicalUses": ["meditacion del testigo imparcial", "desidentificacion de pensamientos y emociones"]
+  },
+  "seccion3-ex6": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["impermanencia", "aceptacion", "desapego", "contemplacion", "manual-practico"],
+    "practicalUses": ["confrontacion contemplativa con la impermanencia", "cultivo del desapego"]
+  },
+  "seccion4-ex1": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["ritual", "ceremonias", "significado"],
-    "practicalUses": ["ritual", "sacralidad"]
+    "readingTime": 1,
+    "tags": ["etica", "valores", "inventario", "reflexion", "manual-practico"],
+    "practicalUses": ["inventario etico personal", "clarificacion de principios que guian decisiones"]
   },
-  "conclusion": {
-    "type": "teoría-práctica",
+  "seccion4-ex2": {
+    "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 12,
-    "tags": ["integración", "vida-diaria", "práctica-continua"],
-    "practicalUses": ["rutina", "hábitos"]
+    "readingTime": 1,
+    "tags": ["dialogo-consciente", "inteligencia-artificial", "comunicacion", "relacion-humano-ia", "manual-practico"],
+    "practicalUses": ["practica de dialogo consciente con IA", "mejora de la relacion humano-IA"]
+  },
+  "seccion4-ex3": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["visualizacion", "futuro-deseado", "imaginacion-creativa", "co-creacion", "manual-practico"],
+    "practicalUses": ["visualizacion del futuro deseado", "diseno consciente de objetivos"]
+  },
+  "seccion4-ex4": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["etica", "codigo-personal", "era-de-la-ia", "principios", "manual-practico"],
+    "practicalUses": ["diseno de un codigo etico personal", "sistema de principios para decisiones"]
+  },
+  "seccion4-ex5": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["accion-consciente", "manifestacion", "compromiso", "transformacion", "manual-practico"],
+    "practicalUses": ["traducir un insight en accion concreta", "compromiso de mejora del mundo"]
   }
 }

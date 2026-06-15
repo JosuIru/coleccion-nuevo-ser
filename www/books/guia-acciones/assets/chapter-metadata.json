@@ -1,58 +1,867 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 10,
-    "tags": ["introducción", "activismo", "acción-transformadora"],
-    "practicalUses": []
-  },
-  "cap1": {
+  "action-1": {
     "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 15,
-    "tags": ["puntos-apalancamiento", "estrategia", "impacto"],
-    "practicalUses": ["análisis", "planificación"]
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "premisas-invisibles",
+      "escasez",
+      "autoobservacion",
+      "diario",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "diario de premisas",
+      "autoobservacion sin juzgar"
+    ]
   },
-  "cap2": {
+  "action-4": {
     "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 15,
-    "tags": ["acción-individual", "cotidianidad", "cambio-personal"],
-    "practicalUses": ["hábitos", "vida-diaria"]
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "compartir-recursos",
+      "abundancia",
+      "consumo-consciente",
+      "prestamo",
+      "escasez",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "prestar recursos en desuso",
+      "mapear riqueza dormida"
+    ]
   },
-  "cap3": {
+  "action-7": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "medios-comunicacion",
+      "pensamiento-critico",
+      "hegemonia",
+      "desinformacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "lectura critica de medios",
+      "analisis de voces silenciadas"
+    ]
+  },
+  "action-10": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "salud-mental",
+      "perspectiva-sistemica",
+      "malestar",
+      "autodiagnostico",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "autodiagnostico sistemico del malestar",
+      "escritura reflexiva"
+    ]
+  },
+  "action-13": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "conciencia",
+      "toma-de-decisiones",
+      "experiencia-consciente",
+      "valores",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "evaluar decisiones por experiencia consciente",
+      "registro de prioridades"
+    ]
+  },
+  "action-16": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "pertenencias-multiples",
+      "identidad",
+      "relaciones",
+      "autoconocimiento",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "mapeo de pertenencias",
+      "reflexion sobre identidad relacional"
+    ]
+  },
+  "action-19": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "biorregion",
+      "ecologia",
+      "conexion-ecologica",
+      "territorio",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "investigar la biorregion",
+      "crear mapa mental ecologico"
+    ]
+  },
+  "action-22": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "inteligencia-artificial",
+      "colaboracion",
+      "tecnologia",
+      "experimentacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "colaborar con IA",
+      "documentar la colaboracion"
+    ]
+  },
+  "action-25": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "suficiencia",
+      "simplicidad",
+      "consumo-consciente",
+      "dinero",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "calcular la suficiencia personal",
+      "simplificar un area de vida"
+    ]
+  },
+  "action-28": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "democracia-participativa",
+      "participacion-local",
+      "asamblea",
+      "ciudadania",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "participar en una decision local",
+      "comparar participacion y representacion"
+    ]
+  },
+  "action-31": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "aprendizaje-autonomo",
+      "educacion-alternativa",
+      "mentoria",
+      "habilidades",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "aprender una habilidad fuera del sistema",
+      "documentar el proceso de aprendizaje"
+    ]
+  },
+  "action-34": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "naturaleza",
+      "inmersion",
+      "conexion-ecologica",
+      "presencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "inmersion de un dia en la naturaleza",
+      "practica de observacion sensorial"
+    ]
+  },
+  "action-37": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "reparacion",
+      "justicia-restaurativa",
+      "relaciones",
+      "sanacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "reparar un dano pendiente",
+      "distinguir disculpa de reparacion"
+    ]
+  },
+  "action-40": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "tecnologia",
+      "uso-consciente",
+      "atencion",
+      "habitos-digitales",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "auditoria del uso de tecnologia",
+      "experimentar un cambio digital"
+    ]
+  },
+  "action-43": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "silencio",
+      "presencia",
+      "meditacion",
+      "practica-diaria",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "practica diaria de silencio",
+      "registro de lo que emerge"
+    ]
+  },
+  "action-46": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "humildad-epistemica",
+      "puntos-ciegos",
+      "pensamiento-critico",
+      "cambio-social",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "inventario de certezas",
+      "busqueda de perspectivas desafiantes"
+    ]
+  },
+  "action-49": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 3,
+    "tags": [
+      "pensamiento-critico",
+      "prudencia",
+      "autocritica",
+      "prevencion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "cuestionar ideas favoritas",
+      "anticipar como se corrompen las ideas"
+    ]
+  },
+  "action-52": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": [
+      "compromiso",
+      "vision-de-futuro",
+      "intencion",
+      "accion-personal",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "escribir una carta al futuro",
+      "definir un primer paso"
+    ]
+  },
+  "action-2": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["acción-colectiva", "organización", "comunidad"],
-    "practicalUses": ["crear-comunidad", "organizar"]
+    "readingTime": 1,
+    "tags": [
+      "circulo-de-dialogo",
+      "premisas-invisibles",
+      "comunidad",
+      "facilitacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "organizar un circulo de dialogo",
+      "explorar premisas colectivas"
+    ]
   },
-  "cap4": {
+  "action-5": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["desobediencia-civil", "resistencia", "confrontación"],
-    "practicalUses": ["activismo", "protesta"]
+    "readingTime": 1,
+    "tags": [
+      "biblioteca-de-cosas",
+      "compartir-recursos",
+      "barrio",
+      "consumo-colaborativo",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "iniciar una biblioteca de cosas",
+      "organizar prestamo vecinal"
+    ]
   },
-  "cap5": {
+  "action-8": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "presupuestos-participativos",
+      "democracia-participativa",
+      "municipio",
+      "decision-publica",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "participar en presupuestos participativos",
+      "impulsar su creacion"
+    ]
+  },
+  "action-11": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "apoyo-mutuo",
+      "salud-mental",
+      "comunidad",
+      "desestigmatizacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear un circulo de apoyo mutuo",
+      "contextualizar el malestar"
+    ]
+  },
+  "action-14": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "metricas-de-exito",
+      "experiencia-consciente",
+      "comunidad",
+      "trabajo",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "proponer nuevas metricas de exito",
+      "medir calidad sobre cantidad"
+    ]
+  },
+  "action-17": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "dialogo-intercultural",
+      "intergeneracional",
+      "encuentro",
+      "diversidad",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "organizar dialogo intercultural",
+      "crear espacios de encuentro"
+    ]
+  },
+  "action-20": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "regeneracion-ecologica",
+      "accion-local",
+      "biodiversidad",
+      "voluntariado",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "unirse a un proyecto de regeneracion",
+      "reforestar o limpiar rios"
+    ]
+  },
+  "action-23": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "inteligencia-artificial",
+      "etica",
+      "foro-comunitario",
+      "tecnologia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "organizar un foro sobre etica de IA",
+      "debate ciudadano"
+    ]
+  },
+  "action-26": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "economia-solidaria",
+      "cooperativa",
+      "banco-de-tiempo",
+      "consumo-colaborativo",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "unirse a la economia solidaria",
+      "iniciar grupo de consumo"
+    ]
+  },
+  "action-29": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "asamblea-ciudadana",
+      "deliberacion",
+      "sorteo",
+      "facilitacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "promover una asamblea ciudadana",
+      "deliberacion facilitada"
+    ]
+  },
+  "action-32": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "aprendizaje-comunitario",
+      "educacion-alternativa",
+      "intergeneracional",
+      "saberes",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear espacio de aprendizaje comunitario",
+      "universidad popular"
+    ]
+  },
+  "action-35": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "barrio-regenerativo",
+      "urbanismo-tactico",
+      "espacio-publico",
+      "comunidad",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "iniciar proyecto de barrio regenerativo",
+      "reverdecer el entorno"
+    ]
+  },
+  "action-38": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "justicia-restaurativa",
+      "conflictos",
+      "reparacion",
+      "comunidad",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "organizar circulos de justicia restaurativa",
+      "mediar conflictos comunitarios"
+    ]
+  },
+  "action-41": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "tecnologia-apropiada",
+      "software-libre",
+      "reparacion",
+      "laboratorio-ciudadano",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear espacio de tecnologia apropiada",
+      "organizar un repair cafe"
+    ]
+  },
+  "action-44": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "rituales-seculares",
+      "comunidad",
+      "celebracion",
+      "sentido",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear rituales seculares",
+      "celebrar ciclos y transiciones"
+    ]
+  },
+  "action-47": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "voces-excluidas",
+      "diversidad",
+      "justicia-social",
+      "escucha",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "organizar espacio de voces diversas",
+      "centrar voces excluidas"
+    ]
+  },
+  "action-50": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "voz-critica",
+      "disidencia",
+      "pensamiento-grupal",
+      "organizacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear mecanismos de voz critica",
+      "rol de abogado del diablo"
+    ]
+  },
+  "action-53": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": [
+      "co-creacion",
+      "vision-de-futuro",
+      "comunidad",
+      "cambio-social",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "convocar un circulo de co-creacion",
+      "imaginar y construir futuros"
+    ]
+  },
+  "action-3": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["construcción-alternativas", "prefiguración", "utopía"],
-    "practicalUses": ["crear-instituciones", "experimentación-social"]
+    "readingTime": 1,
+    "tags": [
+      "instituciones",
+      "premisas-fundacionales",
+      "experimento",
+      "cambio-organizacional",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "mapear premisas institucionales",
+      "disenar un experimento institucional"
+    ]
   },
-  "cap6": {
+  "action-6": {
     "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["sostenibilidad-activista", "autocuidado", "burnout"],
-    "practicalUses": ["bienestar", "resiliencia"]
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "renta-basica",
+      "moneda-local",
+      "economia",
+      "politica-publica",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "impulsar renta basica piloto",
+      "promover moneda complementaria"
+    ]
   },
-  "conclusion": {
-    "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 10,
-    "tags": ["síntesis", "llamado-acción", "futuro"],
-    "practicalUses": []
+  "action-9": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "transparencia",
+      "rendicion-de-cuentas",
+      "poder",
+      "anticorrupcion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "exigir transparencia institucional",
+      "solicitar acceso a informacion publica"
+    ]
+  },
+  "action-12": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "salud-mental",
+      "determinantes-sociales",
+      "politica-publica",
+      "incidencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "abogar por politicas de bienestar",
+      "incidir en determinantes sociales"
+    ]
+  },
+  "action-15": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "indicadores-de-bienestar",
+      "mas-alla-del-pib",
+      "politica-publica",
+      "metricas",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "promover indicadores de bienestar",
+      "cambiar metricas oficiales"
+    ]
+  },
+  "action-18": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "cooperativas",
+      "economia-social",
+      "democracia-economica",
+      "incidencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "promover estructuras cooperativas",
+      "convertir empresas en cooperativas"
+    ]
+  },
+  "action-21": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "derechos-de-la-naturaleza",
+      "ecologia",
+      "derecho",
+      "jurisprudencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "impulsar derechos de la naturaleza",
+      "dar personalidad juridica a ecosistemas"
+    ]
+  },
+  "action-24": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "inteligencia-artificial",
+      "regulacion",
+      "politica-tecnologica",
+      "participacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "incidir en la regulacion de IA",
+      "participar en consultas publicas"
+    ]
+  },
+  "action-27": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "reforma-fiscal-ecologica",
+      "impuestos",
+      "ecologia",
+      "politica-publica",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "abogar por reforma fiscal ecologica",
+      "promover impuesto al carbono"
+    ]
+  },
+  "action-30": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "sorteo-ciudadano",
+      "democracia",
+      "gobernanza",
+      "deliberacion",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "impulsar el sorteo ciudadano",
+      "institucionalizar asambleas deliberativas"
+    ]
+  },
+  "action-33": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "educacion-formal",
+      "pedagogias-alternativas",
+      "transformacion-escolar",
+      "curriculo",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "transformar la educacion desde dentro",
+      "introducir pedagogias activas"
+    ]
+  },
+  "action-36": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "planificacion-urbana",
+      "participacion",
+      "espacio-publico",
+      "ciudad",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "incidir en planificacion urbana",
+      "llevar la voz vecinal"
+    ]
+  },
+  "action-39": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "justicia-restaurativa",
+      "sistema-penal",
+      "politica-publica",
+      "incidencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "impulsar justicia restaurativa institucional",
+      "promover mediacion penal"
+    ]
+  },
+  "action-42": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "politica-tecnologica",
+      "derecho-a-reparar",
+      "soberania-tecnologica",
+      "incidencia",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "incidir en politica tecnologica",
+      "abogar por el derecho a reparar"
+    ]
+  },
+  "action-45": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "laicidad-inclusiva",
+      "espiritualidad",
+      "espacio-publico",
+      "politica-publica",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "promover laicidad inclusiva",
+      "hacer espacio a lo existencial"
+    ]
+  },
+  "action-48": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "dialogo-deliberativo",
+      "cultura-politica",
+      "escucha",
+      "sintesis",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "promover cultura de dialogo",
+      "institucionalizar la deliberacion"
+    ]
+  },
+  "action-51": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "anticorrupcion",
+      "rotacion-de-poder",
+      "transparencia",
+      "diseno-institucional",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "crear infraestructura anticorrupcion",
+      "distribuir y rotar el poder"
+    ]
+  },
+  "action-54": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": [
+      "redes-de-transformacion",
+      "cambio-sistemico",
+      "coordinacion",
+      "movimiento",
+      "accion-transformadora"
+    ],
+    "practicalUses": [
+      "construir redes de transformacion",
+      "conectar iniciativas dispersas"
+    ]
   }
 }

@@ -1,65 +1,163 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 8,
-    "tags": ["herramientas", "toolkit", "introducción"],
-    "practicalUses": []
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 4,
+    "tags": ["transicion", "cuaderno-de-trabajo", "praxis", "facilitacion", "cambio-sistemico"],
+    "practicalUses": ["guia de uso del toolkit", "planificacion del recorrido de ejercicios"]
   },
-  "herramienta1": {
+  "toolkit-1": {
     "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 15,
-    "tags": ["huerto-comunitario", "agricultura-urbana", "alimentos"],
-    "practicalUses": ["huerto", "cultivo"]
+    "difficulty": "introductorio",
+    "readingTime": 1,
+    "tags": ["transicion", "linea-de-tiempo-personal", "autoconocimiento", "cambio-vital", "praxis"],
+    "practicalUses": ["cartografia biografica de transiciones", "extraccion de aprendizajes personales"]
   },
-  "herramienta2": {
+  "toolkit-2": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["moneda-local", "economía-alternativa", "intercambio"],
-    "practicalUses": ["economía-local", "moneda"]
+    "readingTime": 2,
+    "tags": ["transicion", "transiciones-historicas", "analisis-de-fases", "patrones-de-cambio", "investigacion"],
+    "practicalUses": ["analisis de una transicion historica", "mapeo de fases del cambio"]
   },
-  "herramienta3": {
-    "type": "práctica",
-    "difficulty": "básico",
-    "readingTime": 12,
-    "tags": ["repair-café", "reparación", "reducir-residuos"],
-    "practicalUses": ["reparar", "comunidad"]
-  },
-  "herramienta4": {
+  "toolkit-3": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["cooperativa-energética", "renovables", "energía-comunitaria"],
-    "practicalUses": ["energía", "cooperativa"]
+    "readingTime": 2,
+    "tags": ["transicion", "puntos-de-apalancamiento", "pensamiento-sistemico", "donella-meadows", "intervencion"],
+    "practicalUses": ["mapeo de puntos de apalancamiento", "diseno de estrategia de intervencion"]
   },
-  "herramienta5": {
+  "toolkit-4": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["banco-tiempo", "intercambio-habilidades", "reciprocidad"],
-    "practicalUses": ["intercambio", "comunidad"]
+    "readingTime": 2,
+    "tags": ["transicion", "ecosistema-de-cambio", "mapeo-de-actores", "territorio-local", "colaboracion"],
+    "practicalUses": ["mapeo del ecosistema de cambio local", "analisis de brechas y conexiones"]
   },
-  "herramienta6": {
+  "toolkit-5": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["biblioteca-herramientas", "sharing-economy", "recursos-compartidos"],
-    "practicalUses": ["compartir", "recursos"]
+    "readingTime": 2,
+    "tags": ["transicion", "auditoria-de-impacto", "trabajo-etico", "cadena-de-valor", "economia"],
+    "practicalUses": ["auditoria de impacto laboral", "evaluacion de cadena de valor"]
   },
-  "herramienta7": {
+  "toolkit-6": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "cooperativismo", "gobernanza", "modelo-de-negocio", "economia-social"],
+    "practicalUses": ["diseno de una cooperativa", "canvas cooperativo y modelo financiero"]
+  },
+  "toolkit-7": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "auto-organizacion", "horizontalidad", "sociocracia", "trabajo-en-grupo"],
+    "practicalUses": ["experimento de auto-organizacion grupal", "retrospectiva de liderazgo horizontal"]
+  },
+  "toolkit-8": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["transicion", "commons", "procomun", "elinor-ostrom", "comunidad"],
+    "practicalUses": ["inventario de commons en la vida cotidiana", "diseno de un nuevo bien comun"]
+  },
+  "toolkit-9": {
     "type": "práctica",
     "difficulty": "intermedio",
-    "readingTime": 15,
-    "tags": ["círculos-estudio", "aprendizaje-colectivo", "educación"],
-    "practicalUses": ["aprender", "grupo"]
+    "readingTime": 2,
+    "tags": ["transicion", "dao", "blockchain", "gobernanza-digital", "descentralizacion"],
+    "practicalUses": ["exploracion critica de una dao", "evaluacion de gobernanza descentralizada"]
   },
-  "conclusion": {
-    "type": "teoría",
-    "difficulty": "básico",
-    "readingTime": 8,
-    "tags": ["síntesis", "siguientes-pasos"],
-    "practicalUses": []
+  "toolkit-10": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 1,
+    "tags": ["transicion", "finanzas-eticas", "banca-etica", "consumo-consciente", "economia"],
+    "practicalUses": ["auditoria financiera etica", "plan de transicion del gasto y ahorro"]
+  },
+  "toolkit-11": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "participacion-ciudadana", "deliberacion", "gobernanza", "inclusion"],
+    "practicalUses": ["diseno de proceso participativo", "plan de inclusion y evaluacion"]
+  },
+  "toolkit-12": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion", "soberania-digital", "software-libre", "privacidad", "alternativas-tecnologicas"],
+    "practicalUses": ["auditoria de soberania digital", "plan de migracion a herramientas eticas"]
+  },
+  "toolkit-13": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["transicion", "escucha-profunda", "herramientas-relacionales", "comunicacion", "presencia"],
+    "practicalUses": ["practica de escucha profunda en parejas", "rutina de escucha consciente diaria"]
+  },
+  "toolkit-14": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion", "practica-contemplativa", "mindfulness", "prevencion-burnout", "vida-interior"],
+    "practicalUses": ["programa contemplativo de una semana", "rutina de meditacion y journaling"]
+  },
+  "toolkit-15": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion", "transicion-personal", "mapa-de-vida", "vision-de-futuro", "propósito"],
+    "practicalUses": ["mapa visual de transicion personal", "definicion del primer paso concreto"]
+  },
+  "toolkit-16": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion", "transicion-comunitaria", "mapeo-de-comunidad", "barrio", "accion-local"],
+    "practicalUses": ["mapeo fisico y social de la comunidad", "identificacion de oportunidades de accion local"]
+  },
+  "toolkit-17": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "cultura-organizacional", "diagnostico", "transformacion-interna", "valores"],
+    "practicalUses": ["diagnostico de cultura organizacional", "identificacion de palancas de cambio interno"]
+  },
+  "toolkit-18": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["transicion", "poder-politico", "mapeo-de-poder", "incidencia", "estrategia"],
+    "practicalUses": ["mapeo de actores y relaciones de poder", "diseno de estrategia de incidencia politica"]
+  },
+  "toolkit-19": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": ["transicion", "resiliencia-personal", "apoyo-mutuo", "prevencion-burnout", "plan-de-crisis"],
+    "practicalUses": ["evaluacion de vulnerabilidades personales", "construccion de colchones y plan de crisis"]
+  },
+  "toolkit-20": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "poder-prefigurativo", "alternativas-funcionales", "ecosistema-local", "estrategia"],
+    "practicalUses": ["inventario de estructuras prefigurativas", "estrategia de fortalecimiento de alternativas"]
+  },
+  "toolkit-21": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["transicion", "analisis-de-amenazas", "gestion-de-riesgos", "proteccion-de-proyectos", "seguridad"],
+    "practicalUses": ["analisis de amenazas y riesgos", "diseno de estrategias de proteccion"]
+  },
+  "toolkit-22": {
+    "type": "práctica",
+    "difficulty": "introductorio",
+    "readingTime": 2,
+    "tags": ["transicion", "carta-al-yo-futuro", "compromiso-personal", "reflexion", "motivacion"],
+    "practicalUses": ["escritura de carta al yo futuro", "ancla de compromisos para momentos dificiles"]
   }
 }

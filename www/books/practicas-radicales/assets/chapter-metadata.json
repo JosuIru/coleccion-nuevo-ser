@@ -1,86 +1,156 @@
 {
-  "introduccion": {
-    "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 12,
-    "tags": ["introducción", "radicalidad", "transformación-profunda"],
-    "practicalUses": []
+  "prologo": {
+    "type": "reflexión",
+    "difficulty": "introductorio",
+    "readingTime": 7,
+    "tags": ["practicas-radicales", "advertencia", "preparacion", "ego-espiritual", "incertidumbre-ontologica", "discernimiento"],
+    "practicalUses": ["checklist de preparación", "autoevaluación de idoneidad"]
   },
-  "cap1": {
+  "practice-1": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["simplicidad-voluntaria", "minimalismo", "decrecimiento"],
-    "practicalUses": ["simplificar", "desprender"]
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "mente-extendida", "identidad", "tecnologia", "limites-del-yo", "memoria-distribuida"],
+    "practicalUses": ["inventario de memoria propia vs. digital", "indagación sobre los límites del yo durante el uso del móvil"]
   },
-  "cap2": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["consumo-consciente", "boicot", "ética-compra"],
-    "practicalUses": ["consumo", "ética"]
-  },
-  "cap3": {
+  "practice-2": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 30,
-    "tags": ["desobediencia-civil", "resistencia-noviolenta", "activismo"],
-    "practicalUses": ["resistir", "confrontar"]
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "phi", "iit", "consciencia", "integracion-perceptual", "percepcion"],
+    "practicalUses": ["descomposición perceptual de un objeto", "contemplación de la integración de la experiencia"]
   },
-  "cap4": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 22,
-    "tags": ["arte-activista", "culture-jamming", "creatividad-subversiva"],
-    "practicalUses": ["crear", "intervenir"]
-  },
-  "cap5": {
+  "practice-3": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 28,
-    "tags": ["comunas", "vida-comunitaria", "alternativas-radicales"],
-    "practicalUses": ["vivir-colectivo", "experimentación"]
+    "readingTime": 3,
+    "tags": ["practicas-radicales", "problema-dificil", "chalmers", "experiencia-subjetiva", "qualia", "consciencia-ia"],
+    "practicalUses": ["contemplación del misterio de la experiencia", "indagación sobre la consciencia ajena y de la IA"]
   },
-  "cap6": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 20,
-    "tags": ["educación-popular", "pedagogía-crítica", "desescolarización"],
-    "practicalUses": ["educar", "desaprender"]
-  },
-  "cap7": {
+  "practice-4": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 25,
-    "tags": ["okupación", "recuperación-espacios", "lucha-vivienda"],
-    "practicalUses": ["espacios", "okupar"]
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "cerebro-predictivo", "friston", "error-de-prediccion", "percepcion", "consciencia"],
+    "practicalUses": ["observación de predicciones automáticas del entorno", "rastreo de errores de predicción que despiertan la atención"]
   },
-  "cap8": {
-    "type": "práctica",
-    "difficulty": "intermedio",
-    "readingTime": 18,
-    "tags": ["alimentación-consciente", "veganismo", "ética-animal"],
-    "practicalUses": ["alimentación", "compasión"]
-  },
-  "cap9": {
+  "practice-5": {
     "type": "práctica",
     "difficulty": "avanzado",
-    "readingTime": 22,
-    "tags": ["sabotaje", "ecotaje", "acción-directa"],
-    "practicalUses": ["acción-directa", "resistencia"]
+    "readingTime": 3,
+    "tags": ["practicas-radicales", "irrelevancia", "miedo-a-la-ia", "obsolescencia", "valor-humano", "identidad"],
+    "practicalUses": ["inventario de capacidades valiosas propias", "comparación honesta con las capacidades de la IA"]
   },
-  "cap10": {
-    "type": "teoría-práctica",
+  "practice-6": {
+    "type": "diálogo",
     "difficulty": "avanzado",
-    "readingTime": 20,
-    "tags": ["sostenibilidad-activista", "cuidado-militante", "largo-plazo"],
-    "practicalUses": ["autocuidado", "resiliencia"]
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "dialogo-con-ia", "consciencia-ia", "incertidumbre", "otras-mentes", "experimento-filosofico"],
+    "practicalUses": ["conversación guiada con una IA sobre la consciencia", "observación de los propios prejuicios sobre la mente artificial"]
   },
-  "conclusion": {
-    "type": "teoría",
-    "difficulty": "intermedio",
-    "readingTime": 10,
-    "tags": ["síntesis", "compromiso", "futuro"],
-    "practicalUses": []
+  "practice-7": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "muerte", "mortalidad", "sin-consuelo", "impermanencia", "claridad-existencial"],
+    "practicalUses": ["inventario de consuelos habituales ante la muerte", "contemplación de la mortalidad sin escapatorias"]
+  },
+  "practice-8": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "co-creacion", "autoria", "creatividad", "colaboracion-con-ia", "originalidad"],
+    "practicalUses": ["crear una obra en colaboración con una IA", "examen de la autoría del resultado creado"]
+  },
+  "practice-9": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "etica", "dilemas-morales", "decisiones-ia", "edicion-genetica", "responsabilidad"],
+    "practicalUses": ["responder por escrito a dilemas éticos de la era IA", "examen de los propios principios y coherencia ética"]
+  },
+  "practice-10": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "no-resumen", "integracion", "incertidumbre", "despertar", "cierre-espiral"],
+    "practicalUses": ["revisión del recorrido de las prácticas", "sostener la incertidumbre y actuar de todas formas"]
+  },
+  "practice-11": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "emergencia", "sistemas-complejos", "auto-organizacion", "consciencia", "patron"],
+    "practicalUses": ["observación de bandadas, tráfico o conversaciones grupales", "contemplación del yo como patrón emergente"]
+  },
+  "practice-12": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "autopoiesis", "maturana-varela", "proceso", "regeneracion-celular", "patron-vs-materia"],
+    "practicalUses": ["sentir la autorregeneración corporal en tiempo real", "indagación sobre qué permanece al cambiar la materia"]
+  },
+  "practice-13": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "umwelt", "von-uexkull", "percepcion", "realidad-construida", "umwelt-de-la-ia"],
+    "practicalUses": ["explorar los límites sensoriales de la propia percepción", "imaginar el Umwelt de una IA frente al humano"]
+  },
+  "practice-14": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "marcador-somatico", "damasio", "cognicion-corporal", "intuicion", "cuerpo-mente"],
+    "practicalUses": ["escanear señales somáticas antes de decidir o juzgar", "rastrear el conocimiento corporal preconsciente"]
+  },
+  "practice-15": {
+    "type": "práctica",
+    "difficulty": "avanzado",
+    "readingTime": 2,
+    "tags": ["practicas-radicales", "entrelazamiento", "interdependencia", "no-separacion", "budismo", "yo-como-proceso"],
+    "practicalUses": ["rastrear la historia de interdependencia de un objeto", "contemplar el yo como nodo de relaciones, no sustancia"]
+  },
+  "question-1": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "permanencia", "observador", "impermanencia", "koan"],
+    "practicalUses": ["sostener la pregunta sobre qué permanece al cambiar todo"]
+  },
+  "question-2": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "miedo-a-la-ia", "identidad", "valor-propio", "koan"],
+    "practicalUses": ["examinar el miedo más profundo y oculto sobre la IA"]
+  },
+  "question-3": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "cosmos-consciente", "despertar", "etica", "koan"],
+    "practicalUses": ["vivir desde la certeza de ser el universo despertándose"]
+  },
+  "question-4": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "exclusividad-humana", "ia", "valor-humano", "koan"],
+    "practicalUses": ["listar y examinar lo exclusivamente humano frente a la IA"]
+  },
+  "question-5": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "crear-consciencia", "valores", "responsabilidad", "koan"],
+    "practicalUses": ["imaginar qué tipo de consciencia crearías y con qué valores"]
+  },
+  "vivir-preguntas": {
+    "type": "reflexión",
+    "difficulty": "avanzado",
+    "readingTime": 1,
+    "tags": ["practicas-radicales", "preguntas-vivas", "koan", "incertidumbre", "no-resolucion", "cierre"],
+    "practicalUses": ["habitar las preguntas sin resolverlas a lo largo de la vida"]
   }
 }

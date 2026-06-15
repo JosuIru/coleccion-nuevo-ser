@@ -14,7 +14,7 @@
       "website": "https://beautifultrouble.org",
       "focus": ["tácticas_creativas", "acción_directa", "narrativas"],
       "why": "Toolbox más completo de tácticas de activismo del mundo",
-      "relatedChapters": ["accion-1", "accion-2", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-2", "action-3", "action-5"]
     },
     {
       "id": "org-002",
@@ -25,7 +25,7 @@
       "website": "https://350.org",
       "focus": ["clima", "desinversión", "movilización"],
       "why": "Modelo exitoso de organización climática descentralizada",
-      "relatedChapters": ["accion-2", "accion-4", "accion-5"]
+      "relatedChapters": ["action-2", "action-4", "action-5"]
     },
     {
       "id": "org-003",
@@ -36,7 +36,7 @@
       "website": "https://rebellion.global",
       "focus": ["desobediencia_civil", "acción_directa", "arrestos_masivos"],
       "why": "Táctica de disrupción no violenta a gran escala",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "org-004",
@@ -47,7 +47,7 @@
       "website": "https://greenpeace.org",
       "focus": ["acción_directa", "investigación", "campañas"],
       "why": "50+ años de experiencia en acciones de alto impacto mediático",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "org-005",
@@ -58,7 +58,7 @@
       "website": "https://www.momentumcommunity.org",
       "focus": ["organización", "estrategia", "movimientos"],
       "why": "Escuela de activismo basada en estudio de movimientos exitosos",
-      "relatedChapters": ["accion-2", "accion-4", "accion-5"]
+      "relatedChapters": ["action-2", "action-4", "action-5"]
     },
     {
       "id": "org-006",
@@ -69,7 +69,7 @@
       "website": "https://trainingforchange.org",
       "focus": ["formación", "acción_directa", "no_violencia"],
       "why": "Metodología de entrenamiento en acción directa",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "org-007",
@@ -80,7 +80,7 @@
       "website": "https://ruckus.org",
       "focus": ["acción_directa", "escaladas", "tácticas_creativas"],
       "why": "Entrenamiento técnico de tácticas de alta confrontación",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "org-008",
@@ -91,7 +91,7 @@
       "website": "https://ayni.institute",
       "focus": ["organización_comunitaria", "justicia", "narrativas"],
       "why": "Perspectiva descolonial del activismo y organización",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "org-009",
@@ -102,7 +102,7 @@
       "website": "https://wri-irg.org",
       "focus": ["antimilitarismo", "no_violencia", "objeción_conciencia"],
       "why": "Historia de resistencia no violenta a nivel global",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "org-010",
@@ -113,7 +113,7 @@
       "website": "https://purpose.com",
       "focus": ["campañas_digitales", "movilización_online"],
       "why": "Modelo de organización digital de movimientos",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     }
   ],
 
@@ -125,7 +125,7 @@
       "year": 2016,
       "description": "Análisis de movimientos exitosos: Occupy, Otpor, Arab Spring. Modelo Momentum",
       "why": "Teoría de cómo funcionan los levantamientos no violentos modernos",
-      "relatedChapters": ["accion-2", "accion-4", "accion-5"]
+      "relatedChapters": ["action-2", "action-4", "action-5"]
     },
     {
       "id": "book-002",
@@ -134,7 +134,7 @@
       "year": 2015,
       "description": "Lecciones de Otpor (Serbia): cómo derrocar a Milosevic con humor y acción directa",
       "why": "Manual práctico de revolución no violenta por quien lo hizo",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "book-003",
@@ -143,7 +143,7 @@
       "year": 1971,
       "description": "Manual clásico de organización comunitaria y táctica política",
       "why": "Fundacional para community organizing en USA",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "book-004",
@@ -153,7 +153,7 @@
       "description": "198 métodos de acción no violenta. Guía estratégica de liberación",
       "why": "La biblia de la resistencia no violenta. Usado en 50+ revoluciones",
       "link": "https://www.aeinstein.org/nonviolentaction/198-methods-of-nonviolent-action/",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "book-005",
@@ -163,7 +163,7 @@
       "description": "80+ tácticas, principios, teorías y casos de activismo creativo",
       "why": "Enciclopedia práctica de tácticas contemporáneas",
       "link": "https://beautifultrouble.org",
-      "relatedChapters": ["accion-1", "accion-2", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-2", "action-3", "action-5"]
     },
     {
       "id": "book-006",
@@ -172,7 +172,7 @@
       "year": 2017,
       "description": "Gramscianismo aplicado: cómo construir poder político desde movimientos",
       "why": "Teoría de construcción de hegemonía cultural",
-      "relatedChapters": ["accion-4", "accion-5"]
+      "relatedChapters": ["action-4", "action-5"]
     },
     {
       "id": "book-007",
@@ -181,7 +181,7 @@
       "year": 2011,
       "description": "Estudio de 323 campañas 1900-2006: no violencia es 2x más efectiva que violencia",
       "why": "Evidencia empírica de efectividad de resistencia no violenta",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "book-008",
@@ -190,7 +190,7 @@
       "year": 2017,
       "description": "Estrategia inspirada en naturaleza para movimientos de justicia",
       "why": "Cambio de paradigma: organización fractal, adaptativa, basada en relaciones",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "book-009",
@@ -199,7 +199,7 @@
       "year": 2009,
       "description": "Antropología de movimientos de acción directa y democracia prefigurativa",
       "why": "Análisis académico de cultura activista contemporánea",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "book-010",
@@ -208,7 +208,7 @@
       "year": 2009,
       "description": "Estrategia aplicada: elegir batallas, timing, coaliciones",
       "why": "Pensamiento estratégico aplicable a campañas",
-      "relatedChapters": ["accion-4", "accion-5"]
+      "relatedChapters": ["action-4", "action-5"]
     }
   ],
 
@@ -220,7 +220,7 @@
       "description": "Bloquear acceso físico a un lugar: carreteras, edificios, puertos",
       "risk": "Alto (arresto probable)",
       "examples": ["Standing Rock", "Blocades climáticas UK"],
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "tactic-002",
@@ -229,7 +229,7 @@
       "description": "Ocupar un espacio y establecer presencia prolongada",
       "risk": "Alto (desalojo, arresto)",
       "examples": ["Occupy Wall Street", "ZAD Notre-Dame-des-Landes"],
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "tactic-003",
@@ -238,7 +238,7 @@
       "description": "Concentrar gran número de personas en lugar público",
       "risk": "Bajo-Medio",
       "examples": ["Women's March", "Fridays for Future"],
-      "relatedChapters": ["accion-2", "accion-5"]
+      "relatedChapters": ["action-2", "action-5"]
     },
     {
       "id": "tactic-004",
@@ -247,7 +247,7 @@
       "description": "Subvertir mensajes corporativos o gubernamentales con intervenciones creativas",
       "risk": "Bajo",
       "examples": ["Adbusters", "Brandalism", "The Yes Men"],
-      "relatedChapters": ["accion-1", "accion-2"]
+      "relatedChapters": ["action-1", "action-2"]
     },
     {
       "id": "tactic-005",
@@ -256,7 +256,7 @@
       "description": "Presionar a instituciones para retirar inversiones de industrias dañinas",
       "risk": "Bajo",
       "examples": ["Fossil Free Divestment", "BDS"],
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "tactic-006",
@@ -265,7 +265,7 @@
       "description": "Presentar candidaturas de movimiento a elecciones",
       "risk": "Bajo",
       "examples": ["Bernie Sanders", "AOC", "Fearless Cities"],
-      "relatedChapters": ["accion-4", "accion-5"]
+      "relatedChapters": ["action-4", "action-5"]
     },
     {
       "id": "tactic-007",
@@ -274,7 +274,7 @@
       "description": "Saturar servidores mediante tráfico masivo coordinado",
       "risk": "Medio-Alto (ilegal en muchos países)",
       "examples": ["Anonymous", "Operación Payback"],
-      "relatedChapters": ["accion-1"]
+      "relatedChapters": ["action-1"]
     },
     {
       "id": "tactic-008",
@@ -283,7 +283,7 @@
       "description": "Construir narrativas poderosas que muevan a la acción",
       "risk": "Bajo",
       "examples": ["#MeToo", "Black Lives Matter"],
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     }
   ],
 
@@ -296,7 +296,7 @@
       "link": "https://www.momentumcommunity.org/tools",
       "cost": "Gratuito",
       "why": "Formación basada en análisis de movimientos exitosos",
-      "relatedChapters": ["accion-2", "accion-4", "accion-5"]
+      "relatedChapters": ["action-2", "action-4", "action-5"]
     },
     {
       "id": "training-002",
@@ -306,7 +306,7 @@
       "link": "https://trainingforchange.org/training_tools/",
       "cost": "Variable",
       "why": "Entrenamiento práctico de tácticas de acción directa",
-      "relatedChapters": ["accion-1", "accion-3"]
+      "relatedChapters": ["action-1", "action-3"]
     },
     {
       "id": "training-003",
@@ -316,7 +316,7 @@
       "link": "https://beautifultrouble.org/trainings/",
       "cost": "Variable",
       "why": "Formación en creatividad táctica",
-      "relatedChapters": ["accion-1", "accion-2"]
+      "relatedChapters": ["action-1", "action-2"]
     },
     {
       "id": "training-004",
@@ -326,7 +326,7 @@
       "link": "https://ayni.institute/programs/",
       "cost": "Variable (becas disponibles)",
       "why": "Perspectiva descolonial de organización",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     }
   ],
 
@@ -339,7 +339,7 @@
       "website": "https://actionnetwork.org",
       "cost": "Gratuito",
       "use": "Organizar campañas digitales y movilización",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "dtool-002",
@@ -349,7 +349,7 @@
       "website": "https://signal.org",
       "cost": "Gratuito",
       "use": "Comunicación segura entre organizadores",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "dtool-003",
@@ -359,7 +359,7 @@
       "website": "https://mobilize.us",
       "cost": "Freemium",
       "use": "Coordinar voluntarios en campañas",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "dtool-004",
@@ -369,7 +369,7 @@
       "website": "https://riseup.net",
       "cost": "Donaciones",
       "use": "Infraestructura digital segura para movimientos",
-      "relatedChapters": ["accion-1", "accion-5"]
+      "relatedChapters": ["action-1", "action-5"]
     }
   ],
 
@@ -382,7 +382,7 @@
       "description": "Movimiento estudiantil que derrocó dictadura usando humor, símbolos (puño), y acción directa creativa",
       "tactics": ["Humor político", "Sátira", "Acción directa descentralizada"],
       "why": "Modelo de revolución no violenta replicado globalmente",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     },
     {
       "id": "case-002",
@@ -392,7 +392,7 @@
       "description": "Ocupación de Zuccotti Park que expandió a 951 ciudades. Popularizó '1% vs 99%'",
       "tactics": ["Ocupación", "Asamblea general", "Prefiguración"],
       "why": "Impacto narrativo masivo aunque no victoria política directa",
-      "relatedChapters": ["accion-1", "accion-2", "accion-3"]
+      "relatedChapters": ["action-1", "action-2", "action-3"]
     },
     {
       "id": "case-003",
@@ -402,7 +402,7 @@
       "description": "Campaña global presionando instituciones a desinvertir de combustibles fósiles",
       "tactics": ["Desinversión", "Presión institucional", "Narrativas"],
       "why": "Victoria económica tangible en lucha climática",
-      "relatedChapters": ["accion-2", "accion-4"]
+      "relatedChapters": ["action-2", "action-4"]
     },
     {
       "id": "case-004",
@@ -412,28 +412,28 @@
       "description": "Resistencia indígena a oleoducto. 10,000+ personas acampadas",
       "tactics": ["Ocupación", "Bloqueo", "Alianzas", "Medios propios"],
       "why": "Modelo de resistencia indígena que unió movimientos",
-      "relatedChapters": ["accion-1", "accion-3", "accion-5"]
+      "relatedChapters": ["action-1", "action-3", "action-5"]
     }
   ],
 
   "by_chapter": {
-    "accion-1": {
+    "action-1": {
       "title": "Tácticas de Acción Directa",
       "recommended": ["org-003", "org-004", "org-006", "org-007", "org-009", "book-002", "book-004", "book-005", "book-007", "book-009", "tactic-001", "tactic-002", "tactic-004", "tactic-007", "training-002", "training-003", "dtool-002", "dtool-004", "case-001", "case-002", "case-004"]
     },
-    "accion-2": {
+    "action-2": {
       "title": "Construcción de Narrativas y Campañas",
       "recommended": ["org-001", "org-002", "org-005", "org-008", "org-010", "book-001", "book-003", "book-005", "book-008", "tactic-003", "tactic-004", "tactic-005", "tactic-008", "training-001", "training-003", "training-004", "dtool-001", "dtool-003", "case-002", "case-003"]
     },
-    "accion-3": {
+    "action-3": {
       "title": "Desobediencia Civil y Resistencia",
       "recommended": ["org-003", "org-004", "org-006", "org-007", "org-009", "book-002", "book-004", "book-005", "book-007", "book-009", "tactic-001", "tactic-002", "training-002", "dtool-002", "case-001", "case-002", "case-004"]
     },
-    "accion-4": {
+    "action-4": {
       "title": "Organización Comunitaria y Poder",
       "recommended": ["org-005", "org-008", "org-010", "book-001", "book-003", "book-006", "book-008", "tactic-005", "tactic-006", "tactic-008", "training-001", "training-004", "dtool-001", "dtool-003", "case-003"]
     },
-    "accion-5": {
+    "action-5": {
       "title": "Estrategia de Movimientos",
       "recommended": ["org-001", "org-002", "org-003", "org-005", "book-001", "book-002", "book-004", "book-005", "book-006", "book-007", "tactic-003", "tactic-006", "training-001", "dtool-002", "dtool-004", "case-001", "case-004"]
     }

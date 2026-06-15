@@ -4,7 +4,7 @@
   "subtitle": " (versión niños)",
   "quizzes": [
     {
-      "chapterId": "accion-1",
+      "chapterId": "action-1",
       "chapterTitle": null,
       "questions": [
         {
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "chapterId": "accion-5",
+      "chapterId": "action-5",
       "chapterTitle": null,
       "questions": [
         {
@@ -212,7 +212,7 @@
       ]
     },
     {
-      "chapterId": "accion-10",
+      "chapterId": "action-10",
       "chapterTitle": null,
       "questions": [
         {
@@ -316,7 +316,7 @@
       ]
     },
     {
-      "chapterId": "accion-15",
+      "chapterId": "action-15",
       "chapterTitle": null,
       "questions": [
         {

@@ -1,7 +1,7 @@
 {
   "quizzes": [
     {
-      "chapterId": "accion-1",
+      "chapterId": "action-1",
       "title": "Quiz: Meditación Diaria",
       "description": "Evalúa tu comprensión sobre la práctica de meditación como herramienta transformadora",
       "questions": [
@@ -95,7 +95,7 @@
       ]
     },
     {
-      "chapterId": "accion-5",
+      "chapterId": "action-5",
       "title": "Quiz: Reducir Consumo de Carne",
       "description": "Comprueba tu entendimiento sobre el impacto ambiental de la alimentación",
       "questions": [
@@ -189,7 +189,7 @@
       ]
     },
     {
-      "chapterId": "accion-10",
+      "chapterId": "action-10",
       "title": "Quiz: Participar en Gobierno Local",
       "description": "Verifica tu comprensión sobre participación democrática a nivel municipal",
       "questions": [
@@ -283,7 +283,7 @@
       ]
     },
     {
-      "chapterId": "accion-15",
+      "chapterId": "action-15",
       "title": "Quiz: Crear un Grupo de Estudio",
       "description": "Evalúa tu comprensión sobre el poder del aprendizaje colectivo",
       "questions": [

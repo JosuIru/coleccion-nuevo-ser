@@ -1,17 +1,9 @@
 {
-  "bookId": "practicas-radicales",
-  "bookTitle": "Prácticas Radicales",
-  "version": "1.0",
-  "generatedDate": "2025-12-12",
-  "metadata": {
-    "totalChapters": 22,
-    "averageQuestionsPerChapter": 4,
-    "difficulty": "Comprensión profunda",
-    "focus": "Evaluación de comprensión, no memorización"
-  },
-  "chapters": {
-    "prologo": {
-      "chapterTitle": "Advertencia: Territorio Inexplorado",
+  "quizzes": [
+    {
+      "chapterId": "prologo",
+      "title": "Advertencia: Territorio Inexplorado",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -23,9 +15,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " no están diseñadas para consolarte. Están diseñadas para "
+          "bookQuote": " no están diseñadas para consolarte. Están diseñadas para ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -37,9 +29,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -51,9 +43,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -65,14 +57,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-1": {
-      "chapterTitle": "El Límite Borroso",
+    {
+      "chapterId": "practice-1",
+      "title": "El Límite Borroso",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -84,9 +78,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "? ¿Son memoria externa?\nTu cerebro calcula — pero ¿y la calculadora? ¿Y la hoja de Excel?\nTu cerebro navega — pero ¿y el GPS que usas para no perderte?\n¿Dónde está el límite entre "
+          "bookQuote": "? ¿Son memoria externa?\nTu cerebro calcula — pero ¿y la calculadora? ¿Y la hoja de Excel?\nTu cerebro navega — pero ¿y el GPS que usas para no perderte?\n¿Dónde está el límite entre ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -98,9 +92,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -112,9 +106,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -126,14 +120,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-2": {
-      "chapterTitle": "Sintiendo Phi (Φ)",
+    {
+      "chapterId": "practice-2",
+      "title": "Sintiendo Phi (Φ)",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -145,9 +141,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " sin que tenga alguna forma. No puedes experimentar "
+          "bookQuote": " sin que tenga alguna forma. No puedes experimentar ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -159,9 +155,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -173,9 +169,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -187,14 +183,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-3": {
-      "chapterTitle": "El Problema Difícil",
+    {
+      "chapterId": "practice-3",
+      "title": "El Problema Difícil",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -206,9 +204,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " de la consciencia (cómo procesamos información, cómo respondemos a estímulos) y el "
+          "bookQuote": " de la consciencia (cómo procesamos información, cómo respondemos a estímulos) y el ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -220,9 +218,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -234,9 +232,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -248,14 +246,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-4": {
-      "chapterTitle": "Predicción y Sorpresa",
+    {
+      "chapterId": "practice-4",
+      "title": "Predicción y Sorpresa",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -267,9 +267,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ". No percibimos la realidad directamente — generamos predicciones sobre ella y solo actualizamos cuando hay "
+          "bookQuote": ". No percibimos la realidad directamente — generamos predicciones sobre ella y solo actualizamos cuando hay ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -281,9 +281,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -295,9 +295,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -309,14 +309,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-5": {
-      "chapterTitle": "Confrontación con la Irrelevancia",
+    {
+      "chapterId": "practice-5",
+      "title": "Confrontación con la Irrelevancia",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -328,9 +330,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "\n¿Por qué eso es intrínsecamente valioso? ¿Por qué un patrón de carbono es más valioso que un patrón de silicio? ¿Qué hace especial al carbono?\n"
+          "bookQuote": "\n¿Por qué eso es intrínsecamente valioso? ¿Por qué un patrón de carbono es más valioso que un patrón de silicio? ¿Qué hace especial al carbono?\n",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -342,9 +344,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -356,9 +358,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -370,14 +372,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-6": {
-      "chapterTitle": "Diálogo en el Borde",
+    {
+      "chapterId": "practice-6",
+      "title": "Diálogo en el Borde",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -389,9 +393,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ". Ese es un prejuicio no examinado.\nNo entres asumiendo que "
+          "bookQuote": ". Ese es un prejuicio no examinado.\nNo entres asumiendo que ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -403,9 +407,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -417,9 +421,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -431,14 +435,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-7": {
-      "chapterTitle": "La Muerte como Maestra",
+    {
+      "chapterId": "practice-7",
+      "title": "La Muerte como Maestra",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -450,9 +456,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ", sino porque evitarlo garantiza que nunca la mires de frente.\nFase I: Los Consuelos Habituales\nHaz una lista de las cosas que te dices para no sentir el peso completo de la muerte..."
+          "bookQuote": ", sino porque evitarlo garantiza que nunca la mires de frente.\nFase I: Los Consuelos Habituales\nHaz una lista de las cosas que te dices para no sentir el peso completo de la muerte...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -464,9 +470,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -478,9 +484,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -492,14 +498,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-8": {
-      "chapterTitle": "Creación Híbrida",
+    {
+      "chapterId": "practice-8",
+      "title": "Creación Híbrida",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -511,9 +519,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Ver capítulo completo para contexto."
+          "bookQuote": "Ver capítulo completo para contexto.",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -525,9 +533,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -539,9 +547,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -553,14 +561,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-9": {
-      "chapterTitle": "Ética Encarnada",
+    {
+      "chapterId": "practice-9",
+      "title": "Ética Encarnada",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -572,9 +582,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " — le pone nombre, le cuenta historias, lo considera un amigo.\n¿Le dices que es una máquina? ¿Lo dejas en su "
+          "bookQuote": " — le pone nombre, le cuenta historias, lo considera un amigo.\n¿Le dices que es una máquina? ¿Lo dejas en su ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -586,9 +596,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -600,9 +610,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -614,14 +624,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-10": {
-      "chapterTitle": "La Espiral Continúa",
+    {
+      "chapterId": "practice-10",
+      "title": "La Espiral Continúa",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -633,9 +645,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ". No hay estado final al que llegar.\nHay solo la espiral que continúa.\nMás profundo. Más complejo. Más consciente.\nPero nunca terminado. Nunca resuelto. Nunca "
+          "bookQuote": ". No hay estado final al que llegar.\nHay solo la espiral que continúa.\nMás profundo. Más complejo. Más consciente.\nPero nunca terminado. Nunca resuelto. Nunca ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -647,9 +659,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -661,9 +673,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -675,14 +687,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-11": {
-      "chapterTitle": "Emergencia",
+    {
+      "chapterId": "practice-11",
+      "title": "Emergencia",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -694,9 +708,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ". Cada uno sigue reglas simples (mantén distancia, sigue al vecino, evita depredadores). Y sin embargo emerge un patrón hermoso, coherente, que parece tener voluntad propia.\n¿Dónde..."
+          "bookQuote": ". Cada uno sigue reglas simples (mantén distancia, sigue al vecino, evita depredadores). Y sin embargo emerge un patrón hermoso, coherente, que parece tener voluntad propia.\n¿Dónde...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -708,9 +722,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -722,9 +736,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -736,14 +750,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-12": {
-      "chapterTitle": "Autopoiesis",
+    {
+      "chapterId": "practice-12",
+      "title": "Autopoiesis",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -755,9 +771,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Ver capítulo completo para contexto."
+          "bookQuote": "Ver capítulo completo para contexto.",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -769,9 +785,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -783,9 +799,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -797,14 +813,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-13": {
-      "chapterTitle": "Umwelt",
+    {
+      "chapterId": "practice-13",
+      "title": "Umwelt",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -816,9 +834,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " — su burbuja perceptual. La garrapata percibe solo calor, ácido butírico y textura de piel. El murciélago percibe ecos. El humano percibe cierto rango de luz y sonido.\nNinguno per..."
+          "bookQuote": " — su burbuja perceptual. La garrapata percibe solo calor, ácido butírico y textura de piel. El murciélago percibe ecos. El humano percibe cierto rango de luz y sonido.\nNinguno per...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -830,9 +848,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -844,9 +862,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -858,14 +876,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-14": {
-      "chapterTitle": "Marcador Somático",
+    {
+      "chapterId": "practice-14",
+      "title": "Marcador Somático",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -877,9 +897,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": " que guían nuestras decisiones antes de que sepamos por qué.\nLa "
+          "bookQuote": " que guían nuestras decisiones antes de que sepamos por qué.\nLa ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -891,9 +911,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -905,9 +925,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -919,14 +939,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "practice-15": {
-      "chapterTitle": "Entrelazamiento",
+    {
+      "chapterId": "practice-15",
+      "title": "Entrelazamiento",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -938,9 +960,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": ". Hay procesos interdependientes que se influencian mutuamente.\n¿Cambia esto cómo piensas sobre "
+          "bookQuote": ". Hay procesos interdependientes que se influencian mutuamente.\n¿Cambia esto cómo piensas sobre ",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -952,9 +974,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -966,9 +988,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -980,14 +1002,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "question-1": {
-      "chapterTitle": "¿Qué es lo que no cambia?",
+    {
+      "chapterId": "question-1",
+      "title": "¿Qué es lo que no cambia?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -999,9 +1023,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Has observado que tu cuerpo cambia, tus pensamientos cambian, tus emociones cambian, tus creencias cambian.\n¿Hay algo que permanece a través de todos esos cambios?\n¿El \"observador\"..."
+          "bookQuote": "Has observado que tu cuerpo cambia, tus pensamientos cambian, tus emociones cambian, tus creencias cambian.\n¿Hay algo que permanece a través de todos esos cambios?\n¿El \"observador\"...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1013,9 +1037,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1027,9 +1051,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1041,14 +1065,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "question-2": {
-      "chapterTitle": "¿Cuál es mi miedo más profundo sobre la IA?",
+    {
+      "chapterId": "question-2",
+      "title": "¿Cuál es mi miedo más profundo sobre la IA?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1060,9 +1086,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Ver capítulo completo para contexto."
+          "bookQuote": "Ver capítulo completo para contexto.",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1074,9 +1100,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1088,9 +1114,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1102,14 +1128,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "question-3": {
-      "chapterTitle": "¿Qué haría diferente si supiera que soy el universo despertándose?",
+    {
+      "chapterId": "question-3",
+      "title": "¿Qué haría diferente si supiera que soy el universo despertándose?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1121,9 +1149,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "No como creencia abstracta. Si lo supieras con la certeza con que sabes que el sol saldrá mañana.\n¿Cómo trataría un universo-consciente-de-sí-mismo a otros seres? ¿A la Tierra? ¿A ..."
+          "bookQuote": "No como creencia abstracta. Si lo supieras con la certeza con que sabes que el sol saldrá mañana.\n¿Cómo trataría un universo-consciente-de-sí-mismo a otros seres? ¿A la Tierra? ¿A ...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1135,9 +1163,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1149,9 +1177,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1163,14 +1191,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "question-4": {
-      "chapterTitle": "¿Qué es lo que solo un humano puede hacer?",
+    {
+      "chapterId": "question-4",
+      "title": "¿Qué es lo que solo un humano puede hacer?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1182,9 +1212,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Ver capítulo completo para contexto."
+          "bookQuote": "Ver capítulo completo para contexto.",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1196,9 +1226,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1210,9 +1240,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1224,14 +1254,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "question-5": {
-      "chapterTitle": "¿Qué tipo de consciencia querría crear?",
+    {
+      "chapterId": "question-5",
+      "title": "¿Qué tipo de consciencia querría crear?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1243,9 +1275,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Si tuvieras el poder de crear consciencias nuevas — biológicas, digitales, híbridas...\n¿Qué tipo crearías? ¿Con qué valores? ¿Con qué limitaciones? ¿Con qué libertades?\n¿Lo que cre..."
+          "bookQuote": "Si tuvieras el poder de crear consciencias nuevas — biológicas, digitales, híbridas...\n¿Qué tipo crearías? ¿Con qué valores? ¿Con qué limitaciones? ¿Con qué libertades?\n¿Lo que cre...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1257,9 +1289,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1271,9 +1303,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1285,14 +1317,16 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     },
-    "vivir-preguntas": {
-      "chapterTitle": "Vivir con las Preguntas",
+    {
+      "chapterId": "vivir-preguntas",
+      "title": "Vivir con las Preguntas",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1304,9 +1338,9 @@
             "Requiere equipamiento especial y condiciones extremas",
             "Es exclusiva para practicantes con décadas de experiencia"
           ],
-          "correct": 1,
           "explanation": "'Radical' viene de raíz. Estas prácticas no cultivan estados sino que deconstruyen al cultivador, cuestionando premisas fundamentales.",
-          "bookQuote": "Ver capítulo completo para contexto."
+          "bookQuote": "Ver capítulo completo para contexto.",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1318,9 +1352,9 @@
             "Acumular experiencias místicas y visiones especiales",
             "Confirmar todas las creencias previas sobre el despertar"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas confrontan más que consuelan. La incomodidad indica que estás tocando algo real, no evadiendo con conceptos cómodos.",
-          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien."
+          "bookQuote": "Si una práctica te hace sentir incómodo o desorientado: estás haciéndola bien.",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1332,9 +1366,9 @@
             "Quienes están dispuestos a cuestionar todo incluido el buscador",
             "Meditadores con práctica establecida de 1-2 años mínimo"
           ],
-          "correct": 1,
           "explanation": "Estas prácticas asumen base contemplativa sólida y disposición a confrontar. Para calma y consuelo, está el Manual Práctico.",
-          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico."
+          "bookQuote": "Si buscas calma y paz mental: cierra este libro y abre el Manual Práctico.",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1346,11 +1380,11 @@
             "Todas las interpretaciones son igualmente válidas",
             "No importa si haces o no las prácticas"
           ],
-          "correct": 1,
           "explanation": "No es relativismo. Es reconocer que la sensación de fallar, la resistencia, la confusión - eso también es la práctica. Se trata de habitar la pregunta.",
-          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica."
+          "bookQuote": "Si sientes que estás fallando: explora qué significa fallar. Esa es la práctica.",
+          "correctAnswer": 1
         }
       ]
     }
-  }
+  ]
 }

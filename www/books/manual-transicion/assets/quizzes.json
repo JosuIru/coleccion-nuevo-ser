@@ -1,31 +1,9 @@
 {
-  "bookId": "manual-transicion",
-  "bookTitle": "Manual de Transición",
-  "version": "1.0",
-  "metadata": {
-    "totalChapters": 22,
-    "totalQuestions": 110,
-    "difficulty": "Progresiva",
-    "temasPrincipales": [
-      "cambio sistémico",
-      "prefiguración",
-      "cooperativas",
-      "economía solidaria",
-      "gobernanza horizontal",
-      "transiciones históricas"
-    ],
-    "generatedDate": "2025-12-12",
-    "generatedBy": "Quiz Generator v1.0"
-  },
-  "chapters": {
-    "prologo": {
-      "chapterTitle": "La paradoja de la transición",
-      "epigraph": {
-        "text": "No podemos resolver nuestros problemas con el mismo pensamiento que usamos para crearlos.",
-        "author": "Albert Einstein"
-      },
-      "closingQuestion": "¿Qué paso pequeño puedes dar hoy en la dirección del mundo que imaginas?",
-      "contentLength": 4142,
+  "quizzes": [
+    {
+      "chapterId": "prologo",
+      "title": "La paradoja de la transición",
+      "description": "",
       "questions": [
         {
           "id": "q_ninos_1",
@@ -37,10 +15,10 @@
             "Solo cosas tristes",
             "Cambiar de ropa"
           ],
-          "correct": 1,
           "explanation": "Una transición es cuando algo importante cambia en tu vida: pasar de primaria a secundaria, aprender algo nuevo, hacer nuevos amigos. Son momentos donde dejamos algo viejo y empezamos algo nuevo.",
           "hint": "Piensa en los cambios importantes que has vivido",
-          "difficulty": "ninos"
+          "difficulty": "ninos",
+          "correctAnswer": 1
         },
         {
           "id": "q_ninos_2",
@@ -52,10 +30,10 @@
             "Quejarse mucho pero no hacer nada",
             "Romper todo y empezar de cero"
           ],
-          "correct": 1,
           "explanation": "Los grandes cambios empiezan con pequeños pasos. Como dice Einstein: 'No podemos resolver problemas pensando igual que antes'. ¡Cada pequeño paso cuenta!",
           "hint": "Piensa en cómo aprendiste a escribir: ¿empezaste escribiendo un libro o letra por letra?",
-          "difficulty": "ninos"
+          "difficulty": "ninos",
+          "correctAnswer": 1
         },
         {
           "id": "q1",
@@ -67,14 +45,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -86,14 +64,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -105,14 +83,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -124,31 +102,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap1": {
-      "chapterTitle": "Anatomía de las transiciones históricas",
-      "epigraph": {
-        "text": "La historia no se repite, pero rima.",
-        "author": "Mark Twain"
-      },
-      "closingQuestion": "¿Qué grietas del sistema actual puedes aprovechar para construir alternativas?",
-      "contentLength": 4451,
+    {
+      "chapterId": "cap1",
+      "title": "Anatomía de las transiciones históricas",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -160,14 +128,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -179,14 +147,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -198,14 +166,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -217,31 +185,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap2": {
-      "chapterTitle": "Teoría del cambio sistémico",
-      "epigraph": {
-        "text": "No puedes entender un sistema observando solo sus partes. Las propiedades del sistema emergen de las relaciones.",
-        "author": "Donella Meadows"
-      },
-      "closingQuestion": "¿En qué nivel del sistema estás trabajando? ¿Qué rol de los dos bucles resuena contigo?",
-      "contentLength": 5183,
+    {
+      "chapterId": "cap2",
+      "title": "Teoría del cambio sistémico",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -253,14 +211,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -272,14 +230,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -291,14 +249,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -310,31 +268,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap3": {
-      "chapterTitle": "El mapa del ecosistema de cambio",
-      "epigraph": {
-        "text": "Solos vamos más rápido; juntos llegamos más lejos.",
-        "author": "Proverbio africano"
-      },
-      "closingQuestion": "¿Qué tribu del ecosistema de cambio es la tuya? ¿Con qué otra tribu podrías conectar?",
-      "contentLength": 4258,
+    {
+      "chapterId": "cap3",
+      "title": "El mapa del ecosistema de cambio",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -346,14 +294,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -365,14 +313,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -384,14 +332,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -403,31 +351,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap4": {
-      "chapterTitle": "El fin del modelo empresarial como lo conocemos",
-      "epigraph": {
-        "text": "La empresa moderna es una de las instituciones más poderosas jamás creadas por los humanos. También es de las más disfuncionales.",
-        "author": ""
-      },
-      "closingQuestion": "Si pudieras rediseñar tu organización desde cero, ¿qué cambiarías?",
-      "contentLength": 3536,
+    {
+      "chapterId": "cap4",
+      "title": "El fin del modelo empresarial como lo conocemos",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -439,14 +377,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -458,14 +396,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -477,14 +415,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -496,31 +434,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap5": {
-      "chapterTitle": "Cooperativismo 2.0",
-      "epigraph": {
-        "text": "La cooperación es tan natural como la competencia. Y mucho más generativa.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué podrías cooperativizar en tu vida? ¿Herramientas, recursos, conocimiento?",
-      "contentLength": 3705,
+    {
+      "chapterId": "cap5",
+      "title": "Cooperativismo 2.0",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -532,14 +460,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -551,14 +479,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -570,14 +498,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -589,31 +517,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap6": {
-      "chapterTitle": "Organizaciones sin jefes",
-      "epigraph": {
-        "text": "La jerarquía no es el problema. El problema es jerarquía fija, no ganada, no revocable.",
-        "author": ""
-      },
-      "closingQuestion": "Si tu organización no tuviera jefes, ¿cómo se tomarían las decisiones?",
-      "contentLength": 2702,
+    {
+      "chapterId": "cap6",
+      "title": "Organizaciones sin jefes",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -625,14 +543,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -644,14 +562,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -663,14 +581,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -682,31 +600,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap7": {
-      "chapterTitle": "Commons y procomún",
-      "epigraph": {
-        "text": "Los commons no son una tragedia. La tragedia es no saber gestionarlos.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué recursos de tu comunidad podrían gestionarse como commons?",
-      "contentLength": 2924,
+    {
+      "chapterId": "cap7",
+      "title": "Commons y procomún",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -718,14 +626,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -737,14 +645,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -756,14 +664,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -775,31 +683,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap8": {
-      "chapterTitle": "DAOs y nuevas formas de coordinación digital",
-      "epigraph": {
-        "text": "La tecnología no es neutral. Puede diseñarse para la dominación o para la cooperación.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué mecanismo de gobernanza digital te parece más prometedor?",
-      "contentLength": 3091,
+    {
+      "chapterId": "cap8",
+      "title": "DAOs y nuevas formas de coordinación digital",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -811,14 +709,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -830,14 +728,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -849,14 +747,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -868,31 +766,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap9": {
-      "chapterTitle": "Herramientas económicas",
-      "epigraph": {
-        "text": "El dinero es una tecnología social. Podemos rediseñarla.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué recurso económico podrías compartir o intercambiar en vez de comprar?",
-      "contentLength": 4425,
+    {
+      "chapterId": "cap9",
+      "title": "Herramientas económicas",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -904,14 +792,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -923,14 +811,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -942,14 +830,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -961,31 +849,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap10": {
-      "chapterTitle": "Herramientas de gobernanza",
-      "epigraph": {
-        "text": "La democracia no es votar cada cuatro años. Es participar cada día.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué decisiones de tu comunidad u organización podrían tomarse de forma más participativa?",
-      "contentLength": 4375,
+    {
+      "chapterId": "cap10",
+      "title": "Herramientas de gobernanza",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -997,14 +875,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1016,14 +894,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1035,14 +913,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1054,31 +932,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap11": {
-      "chapterTitle": "Herramientas digitales",
-      "epigraph": {
-        "text": "La tecnología amplifica lo que ya somos. Elijamos bien qué amplificar.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué herramienta digital propietaria podrías reemplazar con alternativa ética?",
-      "contentLength": 3339,
+    {
+      "chapterId": "cap11",
+      "title": "Herramientas digitales",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1090,14 +958,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1109,14 +977,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1128,14 +996,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1147,31 +1015,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap12": {
-      "chapterTitle": "Herramientas relacionales",
-      "epigraph": {
-        "text": "La calidad de nuestra vida depende de la calidad de nuestras relaciones.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué conflicto en tu vida podría abordarse con escucha profunda y CNV?",
-      "contentLength": 3601,
+    {
+      "chapterId": "cap12",
+      "title": "Herramientas relacionales",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1183,14 +1041,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1202,14 +1060,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1221,14 +1079,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1240,31 +1098,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap13": {
-      "chapterTitle": "Herramientas interiores",
-      "epigraph": {
-        "text": "No podemos cambiar el mundo si no nos cambiamos a nosotros mismos.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué práctica interior necesitas para sostener tu activismo a largo plazo?",
-      "contentLength": 2612,
+    {
+      "chapterId": "cap13",
+      "title": "Herramientas interiores",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1276,14 +1124,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1295,14 +1143,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1314,14 +1162,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1333,31 +1181,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap14": {
-      "chapterTitle": "Transición personal",
-      "epigraph": {
-        "text": "Sé el cambio que quieres ver en el mundo.",
-        "author": "Gandhi"
-      },
-      "closingQuestion": "¿Qué aspecto de tu vida personal contradice los valores que defiendes públicamente?",
-      "contentLength": 2636,
+    {
+      "chapterId": "cap14",
+      "title": "Transición personal",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1369,14 +1207,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1388,14 +1226,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1407,14 +1245,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1426,31 +1264,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap15": {
-      "chapterTitle": "Transición comunitaria",
-      "epigraph": {
-        "text": "Se necesita un pueblo entero para criar a un niño.",
-        "author": "Proverbio africano"
-      },
-      "closingQuestion": "¿Quiénes en tu entorno cercano podrían formar contigo un grupo de transición?",
-      "contentLength": 2460,
+    {
+      "chapterId": "cap15",
+      "title": "Transición comunitaria",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1462,14 +1290,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1481,14 +1309,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1500,14 +1328,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1519,31 +1347,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap16": {
-      "chapterTitle": "Transición organizacional",
-      "epigraph": {
-        "text": "La cultura se come a la estrategia para desayunar.",
-        "author": "Peter Drucker"
-      },
-      "closingQuestion": "Si tu organización adoptara un principio del Código Genético, ¿cuál sería?",
-      "contentLength": 2465,
+    {
+      "chapterId": "cap16",
+      "title": "Transición organizacional",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1555,14 +1373,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1574,14 +1392,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1593,14 +1411,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1612,31 +1430,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap17": {
-      "chapterTitle": "Transición política",
-      "epigraph": {
-        "text": "La política es demasiado importante para dejársela a los políticos.",
-        "author": "Charles de Gaulle"
-      },
-      "closingQuestion": "¿Qué forma de acción política resuena más contigo en este momento?",
-      "contentLength": 1937,
+    {
+      "chapterId": "cap17",
+      "title": "Transición política",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1648,14 +1456,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1667,14 +1475,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1686,14 +1494,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1705,31 +1513,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap18": {
-      "chapterTitle": "Estrategias de supervivencia digna",
-      "epigraph": {
-        "text": "No se puede vivir permanentemente en revolución. Hay que pagar las facturas.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué red de apoyo mutuo podrías construir o fortalecer?",
-      "contentLength": 2530,
+    {
+      "chapterId": "cap18",
+      "title": "Estrategias de supervivencia digna",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1741,14 +1539,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1760,14 +1558,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1779,14 +1577,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1798,31 +1596,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap19": {
-      "chapterTitle": "Construir poder sin tomarlo",
-      "epigraph": {
-        "text": "No queremos tomar el poder; queremos disolverlo.",
-        "author": ""
-      },
-      "closingQuestion": "¿Cuál es tu estrategia: prefiguración, doble poder, éxodo, confrontación? ¿O una combinación?",
-      "contentLength": 2967,
+    {
+      "chapterId": "cap19",
+      "title": "Construir poder sin tomarlo",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1834,14 +1622,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1853,14 +1641,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1872,14 +1660,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1891,31 +1679,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "cap20": {
-      "chapterTitle": "Proteger lo que se construye",
-      "epigraph": {
-        "text": "Lo que no se defiende se pierde.",
-        "author": ""
-      },
-      "closingQuestion": "¿Qué estás construyendo que vale la pena proteger? ¿Cómo lo protegerás?",
-      "contentLength": 2308,
+    {
+      "chapterId": "cap20",
+      "title": "Proteger lo que se construye",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1927,14 +1705,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1946,14 +1724,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1965,14 +1743,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1984,31 +1762,21 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     },
-    "epilogo": {
-      "chapterTitle": "La invitación continúa",
-      "epigraph": {
-        "text": "Cooperamos localmente para regenerar globalmente, usando tecnología transparente que recompensa ayudar, no acumular.",
-        "author": "Código Genético, Conciencia en Red"
-      },
-      "closingQuestion": "¿Cuál es tu primer paso?",
-      "contentLength": 1800,
+    {
+      "chapterId": "epilogo",
+      "title": "La invitación continúa",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -2020,14 +1788,14 @@
             "[PENDIENTE] Opción C - incorrecta pero plausible",
             "[PENDIENTE] Opción D - incorrecta pero plausible"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación educativa",
           "bookQuote": "[PENDIENTE] Cita textual del capítulo",
           "tags": [
             "concepto-clave",
             "comprensión"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -2039,14 +1807,14 @@
             "[PENDIENTE] Aplicación C",
             "[PENDIENTE] Aplicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de aplicación",
           "bookQuote": "[PENDIENTE] Cita sobre práctica",
           "tags": [
             "aplicación",
             "práctica"
           ],
-          "difficulty": "principiante"
+          "difficulty": "principiante",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -2058,14 +1826,14 @@
             "[PENDIENTE] Implicación C",
             "[PENDIENTE] Implicación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación profunda",
           "bookQuote": "[PENDIENTE] Cita filosófica",
           "tags": [
             "filosofía",
             "teoría"
           ],
-          "difficulty": "experto"
+          "difficulty": "experto",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -2077,22 +1845,16 @@
             "[PENDIENTE] Relación C",
             "[PENDIENTE] Relación D"
           ],
-          "correct": 1,
           "explanation": "[PENDIENTE] Explicación de conexiones",
           "bookQuote": "[PENDIENTE] Cita sobre relaciones",
           "tags": [
             "síntesis",
             "conexiones"
           ],
-          "difficulty": "iniciado"
+          "difficulty": "iniciado",
+          "correctAnswer": 1
         }
-      ],
-      "_notas_generacion": [
-        "Este capítulo requiere análisis detallado del contenido",
-        "Las preguntas deben evaluar COMPRENSIÓN, no memorización",
-        "Incluir citas textuales precisas del libro",
-        "Opciones incorrectas deben ser plausibles, no obvias"
       ]
     }
-  }
+  ]
 }

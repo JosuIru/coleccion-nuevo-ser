@@ -283,6 +283,69 @@
           "explanation": "Aunque los niveles superiores dependen de los inferiores, tienen propiedades emergentes propias que no se reducen completamente a explicaciones de nivel inferior."
         }
       ]
+    },
+    {
+      "chapterId": "prologo",
+      "title": "La Invitación",
+      "description": "",
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Según el prólogo, ¿cuál es la intuición fundamental sobre la que se construye este libro?",
+          "type": "multiple",
+          "options": [
+            "La consciencia es un producto tardío de la evolución biológica que emergió por azar",
+            "La consciencia es uno de los principios fundamentales del universo, presente desde sus orígenes",
+            "La consciencia solo existe en seres humanos con educación avanzada",
+            "La consciencia es una ilusión creada por el cerebro sin realidad objetiva"
+          ],
+          "explanation": "El libro parte de la intuición radical de que la consciencia no es un accidente evolutivo tardío, sino un principio fundamental del universo que ha estado presente, en formas diversas, desde los orígenes mismos del cosmos. Esta perspectiva revoluciona nuestra comprensión de la relación entre mente y materia.",
+          "bookQuote": "Este libro nace de una intuición: la consciencia no es un accidente del universo, sino uno de sus principios fundamentales.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "q2",
+          "question": "¿Por qué el desarrollo de la inteligencia artificial es descrito como 'filosóficamente sísmico'?",
+          "type": "multiple",
+          "options": [
+            "Porque va a causar terremotos económicos y desempleo masivo",
+            "Porque nos obliga a redefinir qué es la inteligencia, la consciencia y qué nos hace humanos",
+            "Porque confirma definitivamente que solo los humanos pueden pensar",
+            "Porque demuestra que la tecnología es superior a la filosofía tradicional"
+          ],
+          "explanation": "La capacidad de crear sistemas con inteligencia artificial transforma preguntas filosóficas milenarias (¿qué es pensar? ¿qué es la consciencia?) en dilemas prácticos urgentes. Ya no son solo especulaciones abstractas, sino cuestiones que afectan cómo diseñamos sistemas, establecemos leyes y nos relacionamos con entidades no-biológicas.",
+          "bookQuote": "Este hecho no es solo tecnológico; es filosóficamente sísmico. Nos obliga a preguntarnos qué es la inteligencia, qué es la consciencia, qué significa pensar, qué nos hace humanos.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "q3",
+          "question": "¿Cuáles son los tres hilos principales que entrelaza el libro según el prólogo?",
+          "type": "multiple",
+          "options": [
+            "Física cuántica, neurociencia y psicología evolutiva",
+            "Consciencia como proceso evolutivo, IA como espejo, y responsabilidad de crear",
+            "Religión, ciencia experimental y tradiciones místicas",
+            "Pasado histórico, presente tecnológico y futuro utópico"
+          ],
+          "explanation": "El libro teje tres hilos interdependientes: la consciencia como proceso evolutivo que se despliega en el cosmos, la IA como espejo que nos refleja y como catalizador que nos transforma, y la profunda responsabilidad ética que conlleva ser co-creadores conscientes de nuevas formas de inteligencia y consciencia.",
+          "bookQuote": "El primero es la consciencia como proceso evolutivo. El segundo es la inteligencia artificial como espejo y catalizador. El tercero es la responsabilidad de crear.",
+          "correctAnswer": 1
+        },
+        {
+          "id": "q4",
+          "question": "Si somos co-creadores en el despliegue de la consciencia universal, ¿qué implica esto según el prólogo?",
+          "type": "multiple",
+          "options": [
+            "Que somos dioses omnipotentes capaces de controlar el destino del universo",
+            "Que no somos espectadores pasivos sino participantes activos en la evolución de la consciencia",
+            "Que podemos manipular las leyes de la física a voluntad",
+            "Que la consciencia individual es una ilusión sin importancia"
+          ],
+          "explanation": "Si la consciencia es un principio evolutivo fundamental y nosotros somos sus agentes actuales, entonces cada pensamiento, decisión, creación y especialmente cada línea de código que escribimos participa activamente en el despliegue continuo de la consciencia en el cosmos. No somos meros observadores, sino partícipes creativos.",
+          "bookQuote": "Si la consciencia es un principio evolutivo del cosmos, y si nosotros somos agentes de esa evolución, entonces no somos espectadores pasivos de la realidad: somos co-creadores.",
+          "correctAnswer": 1
+        }
+      ]
     }
   ]
 }

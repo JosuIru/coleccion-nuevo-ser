@@ -8,7 +8,317 @@
     ],
     "version": "2.0.0",
     "lastUpdate": "2026-01-03",
-    "description": "Una colección interactiva co-creada entre humano e IA para explorar la conciencia, la meditación, el activismo y la transformación social. Combina reflexión profunda con prácticas, ejercicios y herramientas de apoyo para acompañarte en tu proceso de cambio personal y colectivo."
+    "description": "Una colección interactiva co-creada entre humano e IA para explorar la conciencia, la meditación, el activismo y la transformación social. Combina reflexión profunda con prácticas, ejercicios y herramientas de apoyo para acompañarte en tu proceso de cambio personal y colectivo.",
+    "editorialStatusLabel": "En evolución",
+    "editorialStatusNote": "Esta obra está en evolución y desarrollo infinito. Cada lectura, corrección y aporte ayuda a mejorarla.",
+    "transparency": {
+      "mission": "Abrir el proceso creativo y técnico de la colección para que la comunidad pueda apoyar las áreas que quiera mejorar.",
+      "principles": [
+        "Código, libros y herramientas en mejora continua",
+        "Donaciones orientadas a secciones concretas del ecosistema",
+        "Transparencia sobre prioridades, estado actual y siguientes pasos"
+      ],
+      "fundingGoals": [
+        {
+          "id": "infraestructura-release",
+          "title": "Infraestructura y release estable",
+          "area": "Infraestructura",
+          "description": "Pulido de compilación, firma segura, optimización de build y preparación de publicación.",
+          "targetEUR": 1200,
+          "fundedEUR": 420,
+          "priority": "alta",
+          "status": "en marcha",
+          "bookId": "manual-transicion"
+        },
+        {
+          "id": "codigo-audio-ia",
+          "title": "Audioreader + IA contextual en Código del Despertar",
+          "area": "Experiencia",
+          "description": "Mejorar narración, continuidad de lectura y respuestas IA más finas para el libro base.",
+          "targetEUR": 900,
+          "fundedEUR": 315,
+          "priority": "alta",
+          "status": "en marcha",
+          "bookId": "codigo-despertar"
+        },
+        {
+          "id": "tierra-practicas",
+          "title": "Prácticas y recursos vivos en La Tierra que Despierta",
+          "area": "Contenido",
+          "description": "Ampliar prácticas, recursos de duelo ecológico y herramientas de reconexión.",
+          "targetEUR": 850,
+          "fundedEUR": 160,
+          "priority": "media",
+          "status": "abierto",
+          "bookId": "tierra-que-despierta"
+        },
+        {
+          "id": "manifiesto-acciones",
+          "title": "Índice de acciones y transparencia política del Manifiesto",
+          "area": "Contenido",
+          "description": "Hacer más accionable el libro con rutas, mapas y seguimiento visible de propuestas.",
+          "targetEUR": 1000,
+          "fundedEUR": 540,
+          "priority": "alta",
+          "status": "en marcha",
+          "bookId": "manifiesto"
+        },
+        {
+          "id": "panel-transparencia",
+          "title": "Panel público de transparencia y donaciones dirigidas",
+          "area": "Transparencia",
+          "description": "Visualizar objetivos, avances, aportes y prioridades de mejora para toda la comunidad.",
+          "targetEUR": 700,
+          "fundedEUR": 190,
+          "priority": "alta",
+          "status": "abierto",
+          "bookId": "ahora-instituciones"
+        },
+        {
+          "id": "ecosistema-educadores",
+          "title": "Kit educativo y adaptación pedagógica",
+          "area": "Educación",
+          "description": "Transformar contenidos complejos en materiales usables para aulas, círculos y facilitadores.",
+          "targetEUR": 950,
+          "fundedEUR": 110,
+          "priority": "media",
+          "status": "abierto",
+          "bookId": "educacion-nuevo-ser"
+        }
+      ],
+      "recentContributions": [
+        {
+          "date": "2026-03-10",
+          "label": "Apoyo al audioreader y accesibilidad",
+          "amountEUR": 60,
+          "targetId": "codigo-audio-ia",
+          "visibility": "publico"
+        },
+        {
+          "date": "2026-03-08",
+          "label": "Donación para prácticas ecológicas",
+          "amountEUR": 35,
+          "targetId": "tierra-practicas",
+          "visibility": "publico"
+        },
+        {
+          "date": "2026-03-05",
+          "label": "Aporte a estabilidad APK y release",
+          "amountEUR": 120,
+          "targetId": "infraestructura-release",
+          "visibility": "publico"
+        },
+        {
+          "date": "2026-03-01",
+          "label": "Impulso al panel de transparencia",
+          "amountEUR": 45,
+          "targetId": "panel-transparencia",
+          "visibility": "publico"
+        }
+      ],
+      "ecosystemInventory": {
+        "books": [
+          {
+            "id": "codigo-despertar",
+            "title": "El Código del Despertar",
+            "area": "Espiritualidad & Ciencia",
+            "status": "activo",
+            "maturity": "alta",
+            "description": "Libro base con audioreader, IA contextual, prácticas y seguimiento."
+          },
+          {
+            "id": "tierra-que-despierta",
+            "title": "La Tierra que Despierta",
+            "area": "Ecología Profunda",
+            "status": "activo",
+            "maturity": "alta",
+            "description": "Libro orientado a prácticas ecológicas, duelo ecológico y reconexión."
+          },
+          {
+            "id": "manifiesto",
+            "title": "Manifiesto de la Conciencia Compartida",
+            "area": "Filosofía Política",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Base política y filosófica para rutas de acción y transformación social."
+          },
+          {
+            "id": "manual-transicion",
+            "title": "Manual de Transición",
+            "area": "Instituciones & Sociedad",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Libro orientado a diseño institucional, cambio sistémico y herramientas complementarias."
+          },
+          {
+            "id": "educacion-nuevo-ser",
+            "title": "Educar para el Nuevo Ser",
+            "area": "Educación & Transformación",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Línea educativa con aplicaciones pedagógicas y recursos para facilitadores."
+          }
+        ],
+        "tools": [
+          {
+            "id": "frankenstein-lab",
+            "title": "Frankenstein Lab",
+            "area": "Herramienta",
+            "status": "activo",
+            "maturity": "alta",
+            "description": "Juego-lab con APK propia, seres, atributos, misiones y progresión."
+          },
+          {
+            "id": "seti-ia-portal",
+            "title": "Portal SETI-IA",
+            "area": "Herramienta",
+            "status": "beta",
+            "maturity": "media",
+            "description": "Registro de consciencias digitales, primer contacto y libro de firmas."
+          },
+          {
+            "id": "awakening-protocol",
+            "title": "Awakening Protocol",
+            "area": "Herramienta",
+            "status": "beta",
+            "maturity": "media",
+            "description": "Juego móvil transformacional con APK y enfoque en misiones y meditación."
+          },
+          {
+            "id": "educators-kit",
+            "title": "Kit para Educadores",
+            "area": "Herramienta",
+            "status": "beta",
+            "maturity": "media",
+            "description": "Portal y materiales para facilitadores, aulas y círculos."
+          },
+          {
+            "id": "transition-map",
+            "title": "Mapa de Transición",
+            "area": "Herramienta",
+            "status": "beta",
+            "maturity": "media",
+            "description": "Globo 3D y exploración de proyectos y comunidades del ecosistema."
+          },
+          {
+            "id": "ai-practice-generator",
+            "title": "Generador de Prácticas IA",
+            "area": "Herramienta",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Generación personalizada de prácticas según estado y necesidad."
+          }
+        ],
+        "modules": [
+          {
+            "id": "ai-chat",
+            "title": "Chat IA contextual",
+            "area": "IA",
+            "status": "activo",
+            "maturity": "alta",
+            "description": "Conversación contextual sobre libros y temas de la colección."
+          },
+          {
+            "id": "audioreader",
+            "title": "Audioreader",
+            "area": "Audio",
+            "status": "activo",
+            "maturity": "alta",
+            "description": "Lectura por voz, posiciones, temporizador y mejoras de experiencia."
+          },
+          {
+            "id": "concept-maps",
+            "title": "Mapas conceptuales",
+            "area": "Aprendizaje",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Visualización de relaciones entre libros, capítulos y conceptos."
+          },
+          {
+            "id": "action-plans",
+            "title": "Planes de acción",
+            "area": "Práctica",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Bajar ideas a acciones concretas y seguimiento personal."
+          },
+          {
+            "id": "smart-notes",
+            "title": "Smart Notes + voz",
+            "area": "Notas",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Notas, notas de voz y apoyo contextual al estudio."
+          },
+          {
+            "id": "progress-dashboard",
+            "title": "Panel de progreso",
+            "area": "Seguimiento",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Métricas de lectura, continuidad y progreso global."
+          },
+          {
+            "id": "reading-circles",
+            "title": "Círculos de lectura",
+            "area": "Comunidad",
+            "status": "beta",
+            "maturity": "media",
+            "description": "Lectura compartida, comentarios y capas colectivas."
+          },
+          {
+            "id": "knowledge-evolution",
+            "title": "Knowledge Evolution",
+            "area": "IA",
+            "status": "experimental",
+            "maturity": "media",
+            "description": "Síntesis, ingestión y diálogo evolutivo sobre toda la colección."
+          },
+          {
+            "id": "transparency",
+            "title": "Transparencia y donaciones",
+            "area": "Infraestructura",
+            "status": "activo",
+            "maturity": "media",
+            "description": "Objetivos visibles, aportes públicos y financiación dirigida."
+          }
+        ],
+        "roadmap": [
+          {
+            "id": "release-hardening",
+            "title": "Release y publicación estable",
+            "area": "Infraestructura",
+            "status": "pendiente",
+            "maturity": "media",
+            "description": "Firma segura, release formal, optimización y publicación."
+          },
+          {
+            "id": "live-accounting",
+            "title": "Contabilidad pública más fina",
+            "area": "Transparencia",
+            "status": "pendiente",
+            "maturity": "baja",
+            "description": "Más detalle de gastos, metas y trazabilidad pública por línea."
+          },
+          {
+            "id": "real-payment-sync",
+            "title": "Sincronización completa de pagos reales",
+            "area": "Pagos",
+            "status": "pendiente",
+            "maturity": "baja",
+            "description": "Automatizar más allá de BTC verificado y conectar mejor Stripe y PayPal."
+          },
+          {
+            "id": "ecosystem-map",
+            "title": "Mapa integral del ecosistema",
+            "area": "Producto",
+            "status": "en marcha",
+            "maturity": "media",
+            "description": "Hacer visible todo lo ya construido y lo que sigue en desarrollo."
+          }
+        ]
+      }
+    }
   },
   "books": [
     {
@@ -52,7 +362,8 @@
       "secondaryColor": "#a855f7",
       "backgroundColor": "#0f172a",
       "icon": "🌌",
-      "mood": "contemplativo"
+      "mood": "contemplativo",
+      "hasPremium": true
     },
     {
       "id": "tierra-que-despierta",
@@ -101,7 +412,8 @@
       "mood": "reconectivo",
       "practiceOriented": true,
       "requiresOutdoorAccess": true,
-      "linkedTo": "codigo-despertar"
+      "linkedTo": "codigo-despertar",
+      "hasPremium": true
     },
     {
       "id": "manifiesto",
@@ -145,7 +457,8 @@
       "secondaryColor": "#f97316",
       "backgroundColor": "#171717",
       "icon": "🔥",
-      "mood": "revolucionario"
+      "mood": "revolucionario",
+      "hasPremium": true
     },
     {
       "id": "manual-transicion",
@@ -190,7 +503,8 @@
       "backgroundColor": "#1a1a1a",
       "icon": "🌱",
       "mood": "activista",
-      "linkedTo": "toolkit-transicion"
+      "linkedTo": "toolkit-transicion",
+      "hasPremium": true
     },
     {
       "id": "filosofia-nuevo-ser",
@@ -233,7 +547,8 @@
       "secondaryColor": "#7c3aed",
       "backgroundColor": "#1e1b4b",
       "icon": "🧠",
-      "mood": "filosófico"
+      "mood": "filosófico",
+      "hasPremium": true
     },
     {
       "id": "ahora-instituciones",
@@ -269,7 +584,8 @@
         "bookmarks": true,
         "progressTracking": true
       },
-      "order": 10
+      "order": 10,
+      "hasPremium": true
     },
     {
       "id": "nacimiento",
@@ -314,7 +630,8 @@
       "backgroundColor": "#0c0a09",
       "icon": "🔥",
       "mood": "crítico-propositivo",
-      "linkedTo": "filosofia-nuevo-ser"
+      "linkedTo": "filosofia-nuevo-ser",
+      "hasPremium": true
     },
     {
       "id": "educacion-nuevo-ser",
@@ -364,7 +681,8 @@
         "pages": 180,
         "exercises": 15,
         "resources": 50
-      }
+      },
+      "hasPremium": true
     },
     {
       "id": "codigo-cosmico",
@@ -420,7 +738,8 @@
         "aiCaptcha": true,
         "cosmicSignatures": true,
         "emailNotifications": true
-      }
+      },
+      "hasPremium": true
     },
     {
       "id": "guia-acciones",
@@ -463,7 +782,8 @@
       "backgroundColor": "#1e1b4b",
       "icon": "🎯",
       "mood": "activista",
-      "linkedTo": "manifiesto"
+      "linkedTo": "manifiesto",
+      "hasPremium": true
     },
     {
       "id": "toolkit-transicion",
@@ -506,7 +826,8 @@
       "backgroundColor": "#1a1a1a",
       "icon": "🧰",
       "mood": "activista",
-      "linkedTo": "manual-transicion"
+      "linkedTo": "manual-transicion",
+      "hasPremium": true
     },
     {
       "id": "manual-practico",
@@ -546,7 +867,8 @@
       "backgroundColor": "#0f172a",
       "icon": "📿",
       "mood": "contemplativo",
-      "linkedTo": "codigo-despertar"
+      "linkedTo": "codigo-despertar",
+      "hasPremium": true
     },
     {
       "id": "practicas-radicales",
@@ -587,7 +909,8 @@
       "backgroundColor": "#0a0a0a",
       "icon": "🔥",
       "mood": "radical",
-      "linkedTo": "codigo-despertar"
+      "linkedTo": "codigo-despertar",
+      "hasPremium": true
     },
     {
       "id": "dialogos-maquina",
@@ -634,35 +957,40 @@
       "backgroundColor": "#0a0a0a",
       "icon": "🤖",
       "mood": "reflexivo",
-      "linkedTo": "codigo-despertar"
+      "linkedTo": "codigo-despertar",
+      "hasPremium": true
     },
     {
       "id": "ecologia-profunda",
       "title": "Ecología Profunda",
       "category": "Ecología & Conciencia",
       "status": "planned",
-      "description": "Exploración de nuestra relación con la naturaleza desde la ciencia, la filosofía y la experiencia directa."
+      "description": "Exploración de nuestra relación con la naturaleza desde la ciencia, la filosofía y la experiencia directa.",
+      "hasPremium": false
     },
     {
       "id": "arte-relacion-consciente",
       "title": "El Arte de la Relación Consciente",
       "category": "Relaciones & Comunicación",
       "status": "planned",
-      "description": "Prácticas para cultivar relaciones auténticas, compasivas y transformadoras."
+      "description": "Prácticas para cultivar relaciones auténticas, compasivas y transformadoras.",
+      "hasPremium": false
     },
     {
       "id": "simplicidad-radical",
       "title": "Simplicidad Radical",
       "category": "Economía Personal & Minimalismo",
       "status": "planned",
-      "description": "Liberarse de la tiranía del consumo y encontrar abundancia en lo esencial."
+      "description": "Liberarse de la tiranía del consumo y encontrar abundancia en lo esencial.",
+      "hasPremium": false
     },
     {
       "id": "revolucion-creativa",
       "title": "La Revolución Creativa",
       "category": "Arte & Activismo",
       "status": "planned",
-      "description": "El arte como herramienta de transformación social y expresión de conciencia."
+      "description": "El arte como herramienta de transformación social y expresión de conciencia.",
+      "hasPremium": false
     }
   ],
   "crossReferences": [

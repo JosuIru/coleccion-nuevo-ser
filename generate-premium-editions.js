@@ -6,28 +6,37 @@
 const fs = require('fs');
 const path = require('path');
 
-// Libros a procesar (los que no tienen premium.html)
-const booksToGenerate = ['toolkit-transicion', 'guia-acciones'];
+const catalogPath = path.join(__dirname, 'www', 'books', 'catalog.json');
+const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 
-// Colores por libro
-const bookThemes = {
-  'toolkit-transicion': {
-    primary: '#059669',
-    secondary: '#10b981',
-    accent: '#34d399',
-    gradient: 'from-emerald-950 to-teal-950',
-    title: 'Toolkit de Transición',
-    subtitle: '22 ejercicios prácticos para navegar el cambio sistémico'
-  },
-  'guia-acciones': {
-    primary: '#8b5cf6',
-    secondary: '#ec4899',
-    accent: '#a855f7',
-    gradient: 'from-violet-950 to-purple-950',
-    title: 'Guía de Acciones Transformadoras',
-    subtitle: '54 prácticas para cambiar tu vida y tu mundo'
-  }
-};
+function lightenHex(hex, amount) {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.slice(0, 2), 16);
+  const g = parseInt(clean.slice(2, 4), 16);
+  const b = parseInt(clean.slice(4, 6), 16);
+  const mix = (channel) => Math.min(255, Math.round(channel + (255 - channel) * amount));
+  const toHex = (channel) => mix(channel).toString(16).padStart(2, '0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function buildTheme(book) {
+  const primary = book.color || '#0ea5e9';
+  return {
+    primary,
+    secondary: lightenHex(primary, 0.2),
+    accent: lightenHex(primary, 0.4),
+    title: book.title,
+    subtitle: book.subtitle || ''
+  };
+}
+
+const eligibleBooks = catalog.books.filter((book) => {
+  if (book.status === 'planned') return false;
+  return fs.existsSync(path.join(__dirname, 'www', 'books', book.id, 'book.json'));
+});
+
+const booksToGenerate = eligibleBooks.map((book) => book.id);
+const bookThemes = Object.fromEntries(eligibleBooks.map((book) => [book.id, buildTheme(book)]));
 
 function escapeHtml(text) {
   if (!text) return '';
@@ -83,6 +92,85 @@ function generatePremiumHTML(bookId) {
   let sectionsHTML = '';
   let tocHTML = '';
 
+  const renderChapter = (chapter) => `
+    <article class="chapter" id="${chapter.id}">
+      <h3 class="chapter-title">${escapeHtml(chapter.title)}</h3>
+      ${chapter.epigraph ? `
+        <blockquote class="epigraph">
+          <p>${escapeHtml(chapter.epigraph.text)}</p>
+          ${chapter.epigraph.author ? `<cite>— ${escapeHtml(chapter.epigraph.author)}</cite>` : ''}
+        </blockquote>
+      ` : ''}
+
+      <div class="chapter-content">
+        ${formatContent(chapter.content)}
+      </div>
+
+      ${chapter.exercises && chapter.exercises.length > 0 ? `
+        <div class="exercises-container">
+          <h4 class="exercises-header">Ejercicios Prácticos</h4>
+          ${chapter.exercises.map(ex => `
+            <div class="exercise">
+              <h5 class="exercise-title">${escapeHtml(ex.title)}</h5>
+              ${ex.duration ? `<span class="exercise-duration">⏱ ${escapeHtml(ex.duration)}</span>` : ''}
+              ${ex.description ? `<p class="exercise-description">${escapeHtml(ex.description)}</p>` : ''}
+
+              ${ex.steps && ex.steps.length > 0 ? `
+                <div class="exercise-steps">
+                  <strong>Pasos:</strong>
+                  <ol>
+                    ${ex.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('\n')}
+                  </ol>
+                </div>
+              ` : ''}
+
+              ${ex.reflection ? `
+                <div class="exercise-reflection">
+                  <strong>Reflexión:</strong>
+                  <p>${escapeHtml(ex.reflection)}</p>
+                </div>
+              ` : ''}
+
+              ${ex.variations && ex.variations.length > 0 ? `
+                <div class="exercise-variations">
+                  <strong>Variaciones:</strong>
+                  <ul>
+                    ${ex.variations.map(v => `<li>${escapeHtml(v)}</li>`).join('\n')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+          `).join('\n')}
+        </div>
+      ` : ''}
+
+      ${chapter.closingQuestion ? `
+        <div class="closing-question">
+          <strong>Pregunta de cierre:</strong>
+          <p>${escapeHtml(chapter.closingQuestion)}</p>
+        </div>
+      ` : ''}
+    </article>
+  `;
+
+  if (bookData.prologo) {
+    const prologo = bookData.prologo;
+    tocHTML += `
+      <div class="toc-section">
+        <div class="toc-section-title">Prólogo</div>
+        <ul class="toc-chapters">
+          <li><a href="#${prologo.id}">${escapeHtml(prologo.title || 'Prólogo')}</a></li>
+        </ul>
+      </div>
+    `;
+    sectionsHTML += `
+      <div class="section" id="section-prologo">
+        <h2 class="section-title">Prólogo</h2>
+        ${renderChapter(prologo)}
+      </div>
+    `;
+  }
+
   // Generar tabla de contenidos y secciones
   bookData.sections.forEach((section, sectionIndex) => {
     tocHTML += `
@@ -100,72 +188,28 @@ function generatePremiumHTML(bookId) {
         <h2 class="section-title">${escapeHtml(section.title)}</h2>
         ${section.subtitle ? `<p class="section-subtitle">${escapeHtml(section.subtitle)}</p>` : ''}
 
-        ${section.chapters.map(chapter => {
-          let chapterHTML = `
-            <article class="chapter" id="${chapter.id}">
-              <h3 class="chapter-title">${escapeHtml(chapter.title)}</h3>
-              ${chapter.epigraph ? `
-                <blockquote class="epigraph">
-                  <p>${escapeHtml(chapter.epigraph.text)}</p>
-                  ${chapter.epigraph.author ? `<cite>— ${escapeHtml(chapter.epigraph.author)}</cite>` : ''}
-                </blockquote>
-              ` : ''}
-
-              <div class="chapter-content">
-                ${formatContent(chapter.content)}
-              </div>
-
-              ${chapter.exercises && chapter.exercises.length > 0 ? `
-                <div class="exercises-container">
-                  <h4 class="exercises-header">Ejercicios Prácticos</h4>
-                  ${chapter.exercises.map(ex => `
-                    <div class="exercise">
-                      <h5 class="exercise-title">${escapeHtml(ex.title)}</h5>
-                      ${ex.duration ? `<span class="exercise-duration">⏱ ${escapeHtml(ex.duration)}</span>` : ''}
-                      ${ex.description ? `<p class="exercise-description">${escapeHtml(ex.description)}</p>` : ''}
-
-                      ${ex.steps && ex.steps.length > 0 ? `
-                        <div class="exercise-steps">
-                          <strong>Pasos:</strong>
-                          <ol>
-                            ${ex.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('\n')}
-                          </ol>
-                        </div>
-                      ` : ''}
-
-                      ${ex.reflection ? `
-                        <div class="exercise-reflection">
-                          <strong>Reflexión:</strong>
-                          <p>${escapeHtml(ex.reflection)}</p>
-                        </div>
-                      ` : ''}
-
-                      ${ex.variations && ex.variations.length > 0 ? `
-                        <div class="exercise-variations">
-                          <strong>Variaciones:</strong>
-                          <ul>
-                            ${ex.variations.map(v => `<li>${escapeHtml(v)}</li>`).join('\n')}
-                          </ul>
-                        </div>
-                      ` : ''}
-                    </div>
-                  `).join('\n')}
-                </div>
-              ` : ''}
-
-              ${chapter.closingQuestion ? `
-                <div class="closing-question">
-                  <strong>Pregunta de cierre:</strong>
-                  <p>${escapeHtml(chapter.closingQuestion)}</p>
-                </div>
-              ` : ''}
-            </article>
-          `;
-          return chapterHTML;
-        }).join('\n')}
+        ${section.chapters.map(renderChapter).join('\n')}
       </div>
     `;
   });
+
+  if (bookData.epilogo) {
+    const epilogo = bookData.epilogo;
+    tocHTML += `
+      <div class="toc-section">
+        <div class="toc-section-title">Epílogo</div>
+        <ul class="toc-chapters">
+          <li><a href="#${epilogo.id}">${escapeHtml(epilogo.title || 'Epílogo')}</a></li>
+        </ul>
+      </div>
+    `;
+    sectionsHTML += `
+      <div class="section" id="section-epilogo">
+        <h2 class="section-title">Epílogo</h2>
+        ${renderChapter(epilogo)}
+      </div>
+    `;
+  }
 
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -999,22 +1043,34 @@ function hexToRgb(hex) {
 }
 
 // Main execution
-console.log('📚 Generando ediciones Premium para imprimir...\n');
+console.log(`📚 Generando ${booksToGenerate.length} ediciones Premium...\n`);
+
+const downloadsDir = path.join(__dirname, 'www', 'downloads');
+if (!fs.existsSync(downloadsDir)) {
+  fs.mkdirSync(downloadsDir, { recursive: true });
+}
+
+let generated = 0;
+let failed = 0;
 
 booksToGenerate.forEach(bookId => {
   console.log(`📖 Procesando: ${bookId}`);
 
-  const html = generatePremiumHTML(bookId);
+  try {
+    const html = generatePremiumHTML(bookId);
+    if (!html) { failed++; return; }
 
-  if (html) {
-    const outputPath = path.join(__dirname, 'www', 'downloads', `${bookId}-premium.html`);
+    const outputPath = path.join(downloadsDir, `${bookId}-premium.html`);
     fs.writeFileSync(outputPath, html, 'utf8');
-    console.log(`   ✅ Generado: ${outputPath}`);
-
-    // Get file size
     const stats = fs.statSync(outputPath);
-    console.log(`   📄 Tamaño: ${(stats.size / 1024).toFixed(1)} KB`);
+    console.log(`   ✅ ${(stats.size / 1024).toFixed(1)} KB → ${outputPath}`);
+    generated++;
+  } catch (error) {
+    console.error(`   ❌ Error generando ${bookId}:`, error.message);
+    failed++;
   }
 });
+
+console.log(`\n✨ Completado: ${generated} generados, ${failed} fallidos`);
 
 console.log('\n✨ ¡Proceso completado!');

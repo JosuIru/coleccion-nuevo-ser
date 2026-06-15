@@ -4,13 +4,16 @@
  * @version 1.0.0
  */
 
-// Logger fallback para paginas standalone
+// Logger fallback para paginas standalone.
+// Delegamos a console.* (no a logger.*): el fallback ES window.logger, auto-referenciarlo
+// provoca recursión infinita al primer log.
 if (typeof logger === 'undefined') {
   window.logger = {
     log: (...args) => console.log('[EducatorsKit]', ...args),
     warn: (...args) => console.warn('[EducatorsKit]', ...args),
     error: (...args) => console.error('[EducatorsKit]', ...args),
-    debug: (...args) => console.debug('[EducatorsKit]', ...args)
+    debug: (...args) => console.debug('[EducatorsKit]', ...args),
+    info: (...args) => console.info('[EducatorsKit]', ...args)
   };
 }
 

@@ -610,8 +610,12 @@ class PracticeLibrary {
         this.close();
 
         // Navegar al capítulo
+        // 🔧 FIX v3.0.1: Added error handling for loadBook promise
         if (window.bookEngine) {
-          window.bookEngine.loadBook(bookId, sectionId, chapterId);
+          window.bookEngine.loadBook(bookId, sectionId, chapterId).catch(error => {
+            if (typeof logger !== 'undefined') logger.error('[PracticeLibrary] Error loading book:', error);
+            window.toast?.error('Error al cargar el libro');
+          });
         }
       });
     });
@@ -671,8 +675,12 @@ class PracticeLibrary {
         this.close();
 
         // Navegar al capítulo
+        // 🔧 FIX v3.0.1: Added error handling for loadBook promise
         if (window.bookEngine) {
-          window.bookEngine.loadBook(bookId, sectionId, chapterId);
+          window.bookEngine.loadBook(bookId, sectionId, chapterId).catch(error => {
+            if (typeof logger !== 'undefined') logger.error('[PracticeLibrary] Error loading book:', error);
+            window.toast?.error('Error al cargar el libro');
+          });
         }
       });
     });

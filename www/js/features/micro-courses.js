@@ -1767,6 +1767,9 @@ class MicroCourses {
     if (window.bookReader?.navigation) {
       window.bookEngine?.loadBook(bookId).then(() => {
         window.bookReader.navigation.navigateToChapter(chapterId);
+      }).catch(error => {
+        if (typeof logger !== 'undefined') logger.error('[MicroCourses] Error abriendo capítulo:', error);
+        window.toast?.error('Error al abrir el capítulo');
       });
     }
   }

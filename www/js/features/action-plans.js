@@ -17,6 +17,9 @@ class ActionPlans {
     // v2.9.371: Sistema de recordatorios
     this.reminders = this.loadReminders();
     this.initReminderChecker();
+
+    // 🔧 FIX v3.0.1: Track escHandler para cleanup
+    this._escHandler = null;
   }
 
   // ==========================================================================
@@ -982,17 +985,24 @@ END:VCALENDAR`.replace(/\n/g, '\r\n');
       });
     });
 
-    // ESC
-    const escHandler = (e) => {
+    // 🔧 FIX v3.0.1: ESC handler con cleanup centralizado
+    if (this._escHandler) {
+      document.removeEventListener('keydown', this._escHandler);
+    }
+    this._escHandler = (e) => {
       if (e.key === 'Escape') {
         this.close();
-        document.removeEventListener('keydown', escHandler);
       }
     };
-    document.addEventListener('keydown', escHandler);
+    document.addEventListener('keydown', this._escHandler);
   }
 
   close() {
+    // 🔧 FIX v3.0.1: Cleanup del escHandler
+    if (this._escHandler) {
+      document.removeEventListener('keydown', this._escHandler);
+      this._escHandler = null;
+    }
     const modal = document.getElementById('action-plans-modal');
     if (modal) {
       modal.style.animation = 'fadeOut 0.2s ease-out';

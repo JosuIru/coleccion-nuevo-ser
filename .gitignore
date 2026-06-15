@@ -86,3 +86,9 @@ mobile-game/mobile-app/android/gradle.properties.local
 # tests/ - root tests folder ignored, www/tests/ included
 /tests/
 !www/tests/
+
+# Test coverage report (regenerable)
+coverage/
+
+# Supabase CLI local state (regenerable)
+supabase/.temp/

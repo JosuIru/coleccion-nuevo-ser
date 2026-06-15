@@ -17,13 +17,17 @@
  * @created 2025-01-15
  */
 
-// Fallback para logger si no existe
+// Fallback para logger si no existe.
+// Importante: delegar a console.* directamente. Si delegamos a logger.* dentro
+// del fallback, obtenemos recursión infinita (stack overflow) porque window.logger
+// ES el objeto que estamos creando.
 if (typeof window.logger === 'undefined') {
   window.logger = {
-    debug: (...args) => console.log('[EntityDonation]', ...args),
+    debug: (...args) => console.debug('[EntityDonation]', ...args),
     info: (...args) => console.info('[EntityDonation]', ...args),
     warn: (...args) => console.warn('[EntityDonation]', ...args),
-    error: (...args) => console.error('[EntityDonation]', ...args)
+    error: (...args) => console.error('[EntityDonation]', ...args),
+    log: (...args) => console.log('[EntityDonation]', ...args)
   };
 }
 
@@ -64,10 +68,10 @@ class EntityDonationModal {
   // ═══════════════════════════════════════════════════════════════════════════
 
   async show(entity) {
-    console.log('[EntityDonationModal] show() called with entity:', entity);
+    logger.log('[EntityDonationModal] show() called with entity:', entity);
 
     if (!entity) {
-      console.error('[EntityDonationModal] No entity provided');
+      logger.error('[EntityDonationModal] No entity provided');
       window.toast?.error('Entidad no especificada');
       return;
     }
@@ -82,7 +86,7 @@ class EntityDonationModal {
 
     // Usar el sistema de verificación si está disponible
     if (window.entityVerificationSystem) {
-      console.log('[EntityDonationModal] Checking verification status...');
+      logger.log('[EntityDonationModal] Checking verification status...');
       const verificationStatus = await window.entityVerificationSystem.getEntityVerificationStatus(entity.id);
       this.verificationStatus = verificationStatus;
 
@@ -94,7 +98,7 @@ class EntityDonationModal {
 
       // Si no está verificada (nivel 0), mostrar modal de intención
       if (verificationStatus.level === 0) {
-        console.log('[EntityDonationModal] Entity not verified, showing intent modal');
+        logger.log('[EntityDonationModal] Entity not verified, showing intent modal');
         if (window.donationIntentModal) {
           window.donationIntentModal.show(entity);
         } else {
@@ -142,22 +146,22 @@ class EntityDonationModal {
     // Obtener precio BTC actualizado
     try {
       await this.fetchBtcPrice();
-      console.log('[EntityDonationModal] BTC price fetched:', this.btcPrice);
+      logger.log('[EntityDonationModal] BTC price fetched:', this.btcPrice);
     } catch (e) {
-      console.error('[EntityDonationModal] Error fetching BTC price:', e);
+      logger.error('[EntityDonationModal] Error fetching BTC price:', e);
     }
 
-    console.log('[EntityDonationModal] Calling render()...');
+    logger.log('[EntityDonationModal] Calling render()...');
     try {
       this.render();
-      console.log('[EntityDonationModal] Modal rendered');
+      logger.log('[EntityDonationModal] Modal rendered');
     } catch (e) {
-      console.error('[EntityDonationModal] Error rendering modal:', e);
+      logger.error('[EntityDonationModal] Error rendering modal:', e);
     }
 
-    console.log('[EntityDonationModal] Attaching events...');
+    logger.log('[EntityDonationModal] Attaching events...');
     this.attachEvents();
-    console.log('[EntityDonationModal] show() complete');
+    logger.log('[EntityDonationModal] show() complete');
   }
 
   /**
@@ -613,11 +617,11 @@ class EntityDonationModal {
       }
 
     } catch (error) {
-      console.error('[EntityDonation] Error:', error);
+      logger.error('[EntityDonation] Error:', error);
 
       // FALLBACK: Si el servidor no responde, usar modo offline para BTC
       if (this.selectedMethod === 'btc') {
-        console.log('[EntityDonation] Usando modo fallback para BTC');
+        logger.log('[EntityDonation] Usando modo fallback para BTC');
         const btcAmount = this.selectedAmount / this.btcPrice;
         const btcAddress = this.currentEntity.btc_address || this.escrowBtcAddress;
 
@@ -954,9 +958,9 @@ window.EntityDonationModal = EntityDonationModal;
 
 try {
   window.entityDonationModal = new EntityDonationModal();
-  console.log('[EntityDonationModal] ✓ Instancia creada correctamente');
+  logger.log('[EntityDonationModal] ✓ Instancia creada correctamente');
 } catch (error) {
-  console.error('[EntityDonationModal] ✗ Error creando instancia:', error);
+  logger.error('[EntityDonationModal] ✗ Error creando instancia:', error);
 }
 
-console.log('[EntityDonationModal] Script cargado, window.entityDonationModal =', !!window.entityDonationModal);
+logger.log('[EntityDonationModal] Script cargado, window.entityDonationModal =', !!window.entityDonationModal);

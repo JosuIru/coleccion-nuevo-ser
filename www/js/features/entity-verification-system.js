@@ -34,7 +34,7 @@ class EntityVerificationSystem {
     this.MIN_STAKE_AMOUNT = 20;
     this.MIN_ENDORSEMENTS = 3;
 
-    console.log('[EntityVerification] Sistema inicializado');
+    logger.log('[EntityVerification] Sistema inicializado');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -46,7 +46,7 @@ class EntityVerificationSystem {
    * La entidad debe añadir: TXT "nuevo-ser-verify=CODIGO"
    */
   async verifyByDNS(entityId, domain) {
-    console.log(`[Verification] Verificando DNS para ${domain}`);
+    logger.log(`[Verification] Verificando DNS para ${domain}`);
 
     try {
       const response = await fetch(`${this.API_BASE}/entity-verification.php`, {
@@ -62,7 +62,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Verification] Error DNS:', error);
+      logger.error('[Verification] Error DNS:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -72,7 +72,7 @@ class EntityVerificationSystem {
    * La entidad debe añadir: <meta name="nuevo-ser-verify" content="CODIGO">
    */
   async verifyByMetaTag(entityId, url) {
-    console.log(`[Verification] Verificando meta tag en ${url}`);
+    logger.log(`[Verification] Verificando meta tag en ${url}`);
 
     try {
       const response = await fetch(`${this.API_BASE}/entity-verification.php`, {
@@ -88,7 +88,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Verification] Error meta tag:', error);
+      logger.error('[Verification] Error meta tag:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -98,7 +98,7 @@ class EntityVerificationSystem {
    * La entidad firma un mensaje con su wallet conocida
    */
   async verifyByCryptoSignature(entityId, message, signature, walletAddress) {
-    console.log(`[Verification] Verificando firma de ${walletAddress}`);
+    logger.log(`[Verification] Verificando firma de ${walletAddress}`);
 
     try {
       const response = await fetch(`${this.API_BASE}/entity-verification.php`, {
@@ -116,7 +116,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Verification] Error firma:', error);
+      logger.error('[Verification] Error firma:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -164,7 +164,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Endorsement] Error:', error);
+      logger.error('[Endorsement] Error:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -178,7 +178,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data.endorsements || [];
     } catch (error) {
-      console.error('[Endorsement] Error obteniendo avales:', error);
+      logger.error('[Endorsement] Error obteniendo avales:', error);
       return [];
     }
   }
@@ -225,7 +225,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Intent] Error:', error);
+      logger.error('[Intent] Error:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -239,7 +239,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Intent] Error:', error);
+      logger.error('[Intent] Error:', error);
       return { intents: [], totalAmount: 0, count: 0 };
     }
   }
@@ -276,7 +276,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Dispute] Error:', error);
+      logger.error('[Dispute] Error:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -308,7 +308,7 @@ class EntityVerificationSystem {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('[Dispute] Error votando:', error);
+      logger.error('[Dispute] Error votando:', error);
       return { success: false, error: 'Error de conexión' };
     }
   }
@@ -351,7 +351,7 @@ class EntityVerificationSystem {
         isBanned: data.is_banned || false
       };
     } catch (error) {
-      console.error('[Verification] Error obteniendo estado:', error);
+      logger.error('[Verification] Error obteniendo estado:', error);
       return {
         level: 0,
         levelConfig: this.LEVEL_CONFIG[0],
@@ -1173,4 +1173,4 @@ window.entityVerificationModal = new EntityVerificationModal(window.entityVerifi
 window.entityEndorsementModal = new EntityEndorsementModal(window.entityVerificationSystem);
 window.donationIntentModal = new DonationIntentModal(window.entityVerificationSystem);
 
-console.log('[EntityVerificationSystem] ✓ Sistema cargado completamente');
+logger.log('[EntityVerificationSystem] ✓ Sistema cargado completamente');

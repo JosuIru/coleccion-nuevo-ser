@@ -6,16 +6,20 @@ class DonationsModal {
   constructor() {
     this.i18n = window.i18n || new I18n();
     this.isOpen = false;
+    this.targetContext = null;
+    this.API_BASE = window.ENV?.PUBLIC_API_BASE || 'https://gailu.net/api';
   }
 
-  open() {
+  open(targetContext = null) {
     this.isOpen = true;
+    this.targetContext = targetContext;
     this.render();
     this.attachEventListeners();
   }
 
   close() {
     this.isOpen = false;
+    this.targetContext = null;
     // 🔧 FIX #32: Cleanup escape key handler to prevent memory leaks
     if (this.handleEscape) {
       document.removeEventListener('keydown', this.handleEscape);
@@ -102,6 +106,66 @@ class DonationsModal {
     const existing = document.getElementById('donations-modal');
     if (existing) existing.remove();
 
+    const targetHTML = this.targetContext ? `
+      <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl">🎯</div>
+          <div>
+            <h3 class="font-bold text-amber-300">
+              ${this.i18n.currentLang === 'es' ? 'Apoyo dirigido' : 'Directed support'}
+            </h3>
+            <p class="text-sm text-gray-200">
+              ${this.i18n.currentLang === 'es' ? 'Tu aporte está orientado a:' : 'Your contribution is oriented to:'}
+              <strong>${this.escapeHtml(this.targetContext.title || this.targetContext.label || 'Colección Nuevo Ser')}</strong>
+            </p>
+            ${this.targetContext.description ? `
+              <p class="text-xs text-gray-400 mt-1">${this.escapeHtml(this.targetContext.description)}</p>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    ` : '';
+
+    const transparencyBTCRegistrationHTML = this.targetContext?.goalSlug ? `
+      <div class="p-4 bg-emerald-950/40 border border-emerald-500/30 rounded-lg space-y-3">
+        <div>
+          <h3 class="font-bold text-emerald-300">
+            ${this.i18n.currentLang === 'es' ? 'Registrar aporte BTC verificado' : 'Register verified BTC contribution'}
+          </h3>
+          <p class="text-sm text-gray-200 mt-1">
+            ${this.i18n.currentLang === 'es'
+              ? 'Si ya enviaste BTC para esta sección, pega el TX ID y el panel publicará el aporte automáticamente cuando la transacción esté confirmada.'
+              : 'If you already sent BTC for this section, paste the TX ID and the panel will publish the contribution automatically once the transaction is confirmed.'}
+          </p>
+        </div>
+        <input id="transparency-btc-txid" type="text"
+               placeholder="${this.i18n.currentLang === 'es' ? 'TX ID de Bitcoin (64 caracteres hex)' : 'Bitcoin TX ID (64 hex chars)'}"
+               pattern="[a-fA-F0-9]{64}"
+               maxlength="64"
+               spellcheck="false"
+               autocapitalize="off"
+               autocomplete="off"
+               title="${this.i18n.currentLang === 'es' ? 'Debe ser un hash hex de 64 caracteres' : 'Must be a 64-character hex hash'}"
+               class="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-emerald-400 invalid:border-red-500/60 font-mono">
+        <input id="transparency-btc-label" type="text"
+               placeholder="${this.i18n.currentLang === 'es' ? 'Nombre público del aporte (opcional)' : 'Public contribution label (optional)'}"
+               class="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-emerald-400">
+        <label class="flex items-center gap-2 text-sm text-gray-200">
+          <input id="transparency-btc-anonymous" type="checkbox" class="rounded border-white/20 bg-black/20 text-emerald-500 focus:ring-emerald-500">
+          <span>${this.i18n.currentLang === 'es' ? 'Mostrar como aporte anónimo' : 'Show as anonymous contribution'}</span>
+        </label>
+        <button id="register-transparency-btc-btn"
+                class="w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg transition">
+          ${this.i18n.currentLang === 'es' ? 'Verificar y registrar aporte' : 'Verify and register contribution'}
+        </button>
+        <p class="text-xs text-gray-400">
+          ${this.i18n.currentLang === 'es'
+            ? 'Solo se registran aportes reales detectados en una de las direcciones BTC públicas de la colección.'
+            : 'Only real contributions detected on one of the collection public BTC addresses are registered.'}
+        </p>
+      </div>
+    ` : '';
+
     const html = `
       <div id="donations-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[10000] p-4">
         <div class="bg-gray-900 rounded-xl max-w-sm sm:max-w-md md:max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-amber-500/30">
@@ -129,6 +193,9 @@ class DonationsModal {
                 ${this.i18n.t('donate.helpText')}
               </p>
             </div>
+
+            ${targetHTML}
+            ${transparencyBTCRegistrationHTML}
 
             <!-- Donation Options -->
             <div class="space-y-3">
@@ -294,6 +361,16 @@ class DonationsModal {
     document.body.insertAdjacentHTML('beforeend', html);
   }
 
+  escapeHtml(value) {
+    if (typeof value !== 'string') return '';
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   attachEventListeners() {
     // Close buttons
     document.getElementById('close-donations')?.addEventListener('click', () => this.close());
@@ -321,6 +398,67 @@ class DonationsModal {
         window.adminNotifications.notifyDonation('paypal');
       }
     });
+
+    document.getElementById('register-transparency-btc-btn')?.addEventListener('click', () => {
+      this.registerTransparencyBTCContribution();
+    });
+  }
+
+  async registerTransparencyBTCContribution() {
+    if (!this.targetContext?.goalSlug) return;
+
+    const txId = document.getElementById('transparency-btc-txid')?.value.trim();
+    const label = document.getElementById('transparency-btc-label')?.value.trim();
+    const anonymous = document.getElementById('transparency-btc-anonymous')?.checked;
+    const button = document.getElementById('register-transparency-btc-btn');
+
+    if (!txId || !/^[a-fA-F0-9]{64}$/.test(txId)) {
+      window.toast?.error?.(this.i18n.currentLang === 'es' ? 'Introduce un TX ID BTC válido' : 'Enter a valid BTC TX ID');
+      return;
+    }
+
+    if (button) {
+      button.disabled = true;
+      button.textContent = this.i18n.currentLang === 'es' ? 'Verificando...' : 'Verifying...';
+    }
+
+    try {
+      const response = await fetch(`${this.API_BASE}/confirm-transparency-btc.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          txId,
+          goalSlug: this.targetContext.goalSlug,
+          label: label || this.targetContext.title,
+          visibility: anonymous ? 'anonimo' : 'publico'
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || data.message || 'No se pudo registrar el aporte');
+      }
+
+      window.toast?.success?.(
+        this.i18n.currentLang === 'es'
+          ? `Aporte registrado: ${Number(data.amountEUR || 0).toLocaleString('es-ES')}€ aprox.`
+          : `Contribution registered: ~€${Number(data.amountEUR || 0).toLocaleString('en-US')}`
+      );
+
+      document.getElementById('transparency-btc-txid').value = '';
+      document.getElementById('transparency-btc-label').value = '';
+      document.getElementById('transparency-btc-anonymous').checked = false;
+      window.transparencyPanel?.open();
+    } catch (error) {
+      window.toast?.error?.(error.message || 'No se pudo registrar el aporte');
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = this.i18n.currentLang === 'es'
+          ? 'Verificar y registrar aporte'
+          : 'Verify and register contribution';
+      }
+    }
   }
 }
 

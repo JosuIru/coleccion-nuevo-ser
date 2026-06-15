@@ -168,14 +168,17 @@ class AudioReaderHighlighter {
    * Limpia todos los resaltados de párrafos y palabras
    */
   clearHighlights() {
+    // Quitar clase de resaltado de párrafos activos
     const highlighted = document.querySelectorAll('.audioreader-highlight');
-    highlighted.forEach(el => {
-      el.classList.remove('audioreader-highlight');
+    highlighted.forEach(el => el.classList.remove('audioreader-highlight'));
 
-      if (el.hasAttribute('data-original-html')) {
-        el.innerHTML = el.getAttribute('data-original-html');
-        el.removeAttribute('data-original-html');
-      }
+    // Restaurar HTML original en TODOS los elementos que hayan sido envueltos con spans,
+    // aunque hayan perdido la clase audioreader-highlight por otro camino. Sin esto,
+    // quedan spans huérfanos tras cambios de capítulo o toggles del modo word-by-word.
+    const wrapped = document.querySelectorAll('[data-original-html]');
+    wrapped.forEach(el => {
+      el.innerHTML = el.getAttribute('data-original-html');
+      el.removeAttribute('data-original-html');
     });
 
     this.clearWordHighlights();

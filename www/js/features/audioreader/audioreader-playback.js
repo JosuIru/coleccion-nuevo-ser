@@ -230,6 +230,9 @@ class AudioReaderPlayback {
 
     if (resetPosition) {
       ar.currentParagraphIndex = 0;
+      // Cancelar sleep timer en stop completo: si no, el timer seguiría activo
+      // y apagaría una reproducción futura de forma inesperada.
+      ar.sleepTimerModule?.clear?.();
     }
 
     // Ocultar indicador de pausa y limpiar highlights
@@ -425,17 +428,24 @@ class AudioReaderPlayback {
 
     // Pasar el ID del capítulo actual a getNextChapter
     const nextChapter = ar.bookEngine?.getNextChapter?.(currentChapterId);
-    if (nextChapter && window.bookReader) {
+    if (nextChapter && window.bookReader && typeof window.bookReader.navigateToChapter === 'function') {
       if (typeof logger !== 'undefined') {
         logger.log('⏭️ Avanzando al siguiente capítulo:', nextChapter.title);
       }
 
-      window.bookReader.loadChapter(nextChapter.id).then(() => {
-        const newContent = document.querySelector('.chapter-content')?.innerHTML;
-        if (newContent) {
-          this.play(newContent);
-        }
-      });
+      // skipAudioStop=true para que navigateToChapter no detenga el audio durante el cambio.
+      // Esperamos la navegación (ahora async) antes de leer el DOM del nuevo contenido.
+      Promise.resolve(window.bookReader.navigateToChapter(nextChapter.id, true))
+        .then(() => {
+          requestAnimationFrame(() => {
+            const newContent = document.querySelector('.chapter-content')?.innerHTML;
+            if (newContent) {
+              this.play(newContent);
+            } else if (typeof logger !== 'undefined') {
+              logger.warn('⚠️ No se encontró .chapter-content tras navegar al siguiente capítulo');
+            }
+          });
+        });
     } else {
       window.toast?.info('Has llegado al final del libro');
     }

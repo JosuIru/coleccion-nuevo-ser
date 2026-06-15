@@ -942,7 +942,7 @@ class AudioReaderUI {
 
     // Actualizar indicadores de onda
     const ar = this.audioReader;
-    if (ar.uxEnhancements) {
+    if (ar && ar.uxEnhancements) {
       ar.uxEnhancements.updateWaveState(ar.isPlaying && !ar.isPaused);
       ar.uxEnhancements.updateFloatingPlayer();
     }

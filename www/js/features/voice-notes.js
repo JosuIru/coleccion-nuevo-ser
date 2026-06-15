@@ -482,16 +482,19 @@ class VoiceNotes {
     });
 
     // Cerrar con ESC
+    // 🔧 FIX v3.0.1: Cleanup centralizado para evitar memory leak
+    const closeModal = () => {
+      modal.remove();
+      document.removeEventListener('keydown', escHandler);
+    };
+
     const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        modal.remove();
-        document.removeEventListener('keydown', escHandler);
-      }
+      if (e.key === 'Escape') closeModal();
     };
     document.addEventListener('keydown', escHandler);
 
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
+      if (e.target === modal) closeModal();
     });
   }
 

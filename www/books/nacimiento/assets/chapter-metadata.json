@@ -181,7 +181,7 @@
     ],
     "practicalUses": []
   },
-  "cap18": {
+  "cap15": {
     "type": "teoría",
     "difficulty": "intermedio",
     "readingTime": 4,
@@ -194,7 +194,7 @@
     ],
     "practicalUses": []
   },
-  "cap19": {
+  "cap16": {
     "type": "teoría",
     "difficulty": "intermedio",
     "readingTime": 3,
@@ -207,7 +207,7 @@
     ],
     "practicalUses": []
   },
-  "cap20": {
+  "cap17": {
     "type": "práctica",
     "difficulty": "intermedio",
     "readingTime": 3,
@@ -223,7 +223,7 @@
       "distinguir IA extractiva de regenerativa"
     ]
   },
-  "cap21": {
+  "cap18": {
     "type": "práctica",
     "difficulty": "intermedio",
     "readingTime": 3,
@@ -240,7 +240,7 @@
       "educar y cambiar narrativas"
     ]
   },
-  "cap22": {
+  "cap19": {
     "type": "práctica",
     "difficulty": "intermedio",
     "readingTime": 3,

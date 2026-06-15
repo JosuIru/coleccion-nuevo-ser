@@ -219,7 +219,7 @@
       "subtitle": "",
       "chapters": [
         {
-          "id": "cap18",
+          "id": "cap15",
           "title": "2025-2035, LA DÉCADA DECISIVA",
           "title_en": "2025-2035, LA DÉCADA DECISIVA",
           "epigraph": {
@@ -231,7 +231,7 @@
           "exercises": []
         },
         {
-          "id": "cap19",
+          "id": "cap16",
           "title": "LA BATALLA POR LA NARRATIVA",
           "title_en": "LA BATALLA POR LA NARRATIVA",
           "epigraph": {
@@ -243,7 +243,7 @@
           "exercises": []
         },
         {
-          "id": "cap20",
+          "id": "cap17",
           "title": "EL ROL DECISIVO DE LA IA EN LA TRANSICIÓN",
           "title_en": "EL ROL DECISIVO DE LA IA EN LA TRANSICIÓN",
           "epigraph": {
@@ -254,7 +254,7 @@
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
           "exercises": [
             {
-              "id": "ex-cap20-1",
+              "id": "ex-cap17-1",
               "title": "Evaluar una tecnología de IA antes de adoptarla",
               "duration": "15 minutos",
               "description": "Aplica las cinco preguntas críticas del capítulo a cualquier herramienta o desarrollo de IA para distinguir si es extractiva (al servicio de La Fortaleza) o regenerativa (al servicio de El Nacimiento).",
@@ -270,7 +270,7 @@
           ]
         },
         {
-          "id": "cap21",
+          "id": "cap18",
           "title": "ACCIÓN DESDE RECONOCIMIENTO",
           "title_en": "ACCIÓN DESDE RECONOCIMIENTO",
           "epigraph": {
@@ -281,7 +281,7 @@
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
           "exercises": [
             {
-              "id": "ex-cap21-1",
+              "id": "ex-cap18-1",
               "title": "Boicot pasivo: retirar energía de lo viejo",
               "duration": "práctica continua",
               "description": "Dejar de alimentar el viejo sistema retirando energía en cinco frentes, sin confrontación activa sino mediante abandono.",
@@ -295,7 +295,7 @@
               "reflection": "El viejo ser depende de participación masiva: ¿en qué frente concreto puedes empezar a retirar tu energía esta semana?"
             },
             {
-              "id": "ex-cap21-2",
+              "id": "ex-cap18-2",
               "title": "Construcción activa: crear estructuras del nuevo ser",
               "duration": "práctica continua",
               "description": "Crear o sumarte a estructuras que operan desde las premisas del nuevo ser, proporcionando base material a quien quiera salir del viejo sistema.",
@@ -310,7 +310,7 @@
               "reflection": "Cada estructura funcional demuestra que otro mundo es posible: ¿cuál de estas alternativas existe ya cerca de ti, o cuál podrías ayudar a iniciar?"
             },
             {
-              "id": "ex-cap21-3",
+              "id": "ex-cap18-3",
               "title": "Bloqueo de lo más peligroso",
               "duration": "según contexto",
               "description": "Resistencia activa a los desarrollos que aceleran La Fortaleza o el Colapso Caótico, bloqueando lo que debe detenerse antes de consolidarse.",
@@ -324,7 +324,7 @@
               "reflection": "La resistencia sin alternativa genera fatiga y represión: ¿cómo equilibras el bloqueo de lo peligroso con la construcción de lo nuevo?"
             },
             {
-              "id": "ex-cap21-4",
+              "id": "ex-cap18-4",
               "title": "Educación y narrativa: cambiar las historias",
               "duration": "práctica continua",
               "description": "Cambiar las historias que la gente cuenta sobre qué está pasando y qué es posible, para hacer visibles las alternativas que ya existen.",
@@ -340,7 +340,7 @@
           ]
         },
         {
-          "id": "cap22",
+          "id": "cap19",
           "title": "SOBERANÍA EN ERA DE TRANSICIÓN",
           "title_en": "SOBERANÍA EN ERA DE TRANSICIÓN",
           "epigraph": {
@@ -351,7 +351,7 @@
           "closingQuestion": "¿Cómo se manifiesta en tu vida este aspecto de la batalla actual y lo que viene?",
           "exercises": [
             {
-              "id": "ex-cap22-1",
+              "id": "ex-cap19-1",
               "title": "Autodiagnóstico de las cinco soberanías",
               "duration": "30 minutos",
               "description": "La soberanía no se alcanza y se posee: es práctica continua. Responde con honestidad a los cinco indicadores del capítulo para situar en qué dirección te mueves en cada dimensión.",
@@ -365,7 +365,7 @@
               "reflection": "La pregunta práctica no es \"¿soy soberano?\" sino \"¿en qué dirección me muevo?\""
             },
             {
-              "id": "ex-cap22-2",
+              "id": "ex-cap19-2",
               "title": "Cultivar la soberanía cognitiva",
               "duration": "práctica continua",
               "description": "Recuperar la capacidad de decidir qué información entra en tu mente y cómo la procesas, frente a algoritmos, desinformación y adicción atencional.",
@@ -379,7 +379,7 @@
               "reflection": "¿Puedes explicar por qué crees lo que crees, o solo repites lo que absorbiste?"
             },
             {
-              "id": "ex-cap22-3",
+              "id": "ex-cap19-3",
               "title": "Cultivar la soberanía económica",
               "duration": "práctica continua",
               "description": "Recuperar la capacidad de satisfacer necesidades básicas sin dependencia total de sistemas que no controlas.",
@@ -393,7 +393,7 @@
               "reflection": "¿Podrías sobrevivir seis meses si tu fuente principal de ingreso desapareciera?"
             },
             {
-              "id": "ex-cap22-4",
+              "id": "ex-cap19-4",
               "title": "Cultivar la soberanía tecnológica",
               "duration": "práctica continua",
               "description": "Recuperar el control sobre tus datos y herramientas para usar la tecnología sin ser usado por ella.",
@@ -407,7 +407,7 @@
               "reflection": "¿Podrías funcionar si las tres plataformas que más usas desaparecieran mañana?"
             },
             {
-              "id": "ex-cap22-5",
+              "id": "ex-cap19-5",
               "title": "Cultivar la soberanía espiritual",
               "duration": "práctica continua",
               "description": "Recuperar la capacidad de definir tu propio sentido, valores y relación con lo sagrado, sin imposición externa.",
@@ -421,7 +421,7 @@
               "reflection": "¿Puedes articular qué te da sentido y por qué, sin recurrir a autoridad externa?"
             },
             {
-              "id": "ex-cap22-6",
+              "id": "ex-cap19-6",
               "title": "Cultivar la soberanía territorial",
               "duration": "práctica continua",
               "description": "Establecer una relación de reciprocidad con el lugar específico que habitas y participar en las decisiones sobre él.",

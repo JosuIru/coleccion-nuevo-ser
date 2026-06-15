@@ -338,6 +338,19 @@ class BookEngine {
   // SANITIZACIÓN DE HTML
   // ==========================================================================
 
+  // Escape mínimo para interpolar texto plano en HTML sin riesgo de inyección.
+  // Usar cuando el valor viene de campos de texto (epigraph, closingQuestion, etc.)
+  // que no deberían contener marcado, a diferencia de renderContent que sí parsea markdown.
+  escapeHTML(text) {
+    if (text === null || text === undefined) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   sanitizeHTML(html) {
     if (!html) return '';
 
@@ -490,8 +503,10 @@ class BookEngine {
     if (!epigraph) return '';
 
     // Handle both object {text, author} and simple string formats
-    const text = typeof epigraph === 'string' ? epigraph : epigraph.text;
-    const author = typeof epigraph === 'object' ? epigraph.author : null;
+    const rawText = typeof epigraph === 'string' ? epigraph : epigraph.text;
+    const rawAuthor = typeof epigraph === 'object' ? epigraph.author : null;
+    const text = this.escapeHTML(rawText);
+    const author = rawAuthor ? this.escapeHTML(rawAuthor) : null;
 
     return `
       <div class="epigraph my-8 px-6 py-4 border-l-4 italic">
@@ -504,10 +519,20 @@ class BookEngine {
   renderClosingQuestion(question) {
     if (!question) return '';
 
+    // Escapamos primero para neutralizar HTML, y luego restauramos un subset
+    // minimalista de markdown que los libros usan en closingQuestion:
+    //   *texto* -> <em>, **texto** -> <strong>, --- -> <hr>, \n\n -> párrafo
+    let safe = this.escapeHTML(question);
+    safe = safe
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/(^|\n)---(\n|$)/g, '$1<hr class="my-4 border-amber-400/30">$2')
+      .replace(/\n\n+/g, '</p><p class="text-lg italic mt-3">');
+
     return `
       <div class="closing-question my-8 p-6 rounded-lg border-2">
         <h4 class="text-xl font-bold mb-3">💭 Pregunta para reflexionar</h4>
-        <p class="text-lg italic">${question}</p>
+        <p class="text-lg italic">${safe}</p>
       </div>
     `;
   }
@@ -537,7 +562,7 @@ class BookEngine {
           ${exercise.duration ? `<p class="text-sm opacity-70 mb-3 flex items-center gap-1">${Icons.clock(14)} Duración: ${exercise.duration}</p>` : ''}
           <p class="mb-4">${exercise.description}</p>
 
-          ${exercise.steps && exercise.steps.length > 0 ? `
+          ${Array.isArray(exercise.steps) && exercise.steps.length > 0 ? `
             <div class="steps mt-4">
               <p class="font-semibold mb-2">Pasos:</p>
               <ol class="list-decimal ml-6">

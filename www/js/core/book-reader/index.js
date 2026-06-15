@@ -241,7 +241,7 @@ class BookReader {
   // ==========================================================================
 
   toggleSidebar() {
-    console.log('[BookReader.toggleSidebar] CALLED');
+    logger.log('[BookReader.toggleSidebar] CALLED');
     this.sidebar.toggleSidebar();
   }
 
@@ -337,7 +337,9 @@ class BookReader {
   // ==========================================================================
 
   navigateToChapter(chapterId, skipAudioStop = false) {
-    this.navigation.navigateToChapter(chapterId, skipAudioStop);
+    // Propagamos la promesa por si algún caller quiere await, aunque la mayoría
+    // la llama fire-and-forget (handlers de click).
+    return this.navigation.navigateToChapter(chapterId, skipAudioStop);
   }
 
   backToLibrary() {
@@ -446,6 +448,8 @@ class BookReader {
 
   showPremiumDownloadModal() {
     const bookId = this.bookEngine.getCurrentBook();
+    const bookInfo = this.bookEngine.getBookInfo(bookId);
+    if (!bookInfo?.hasPremium) return;
     const premiumFile = `downloads/${bookId}-premium.html`;
     const existingModal = document.getElementById('premium-download-modal');
     if (existingModal) existingModal.remove();

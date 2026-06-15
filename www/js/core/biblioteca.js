@@ -28,6 +28,7 @@ window.BIBLIOTECA_CONFIG = {
     { id: 'practice-library-btn-bib', icon: 'book-open', label: 'Prácticas', gradient: 'from-violet-600 to-purple-600', hoverGradient: 'from-violet-700 to-purple-700', handler: 'handlePracticeLibraryButton', featured: true },
     { id: 'exploration-hub-btn-bib', icon: 'compass', label: 'Explorar', gradient: 'from-purple-600 via-pink-600 to-blue-600', hoverGradient: 'from-purple-700 via-pink-700 to-blue-700', handler: 'handleExplorationHub' },
     { id: 'progress-dashboard-btn-bib', icon: 'bar-chart-2', label: 'Progreso', gradient: 'from-cyan-600 to-teal-600', hoverGradient: 'from-cyan-700 to-teal-700', handler: 'handleProgressButton' },
+    { id: 'transparency-btn-bib', icon: 'sparkles', label: 'Transparencia', gradient: 'from-slate-700 to-cyan-700', hoverGradient: 'from-slate-800 to-cyan-800', handler: 'handleTransparencyButton' },
     { id: 'help-center-btn-bib', icon: 'help-circle', label: 'Ayuda', gradient: 'from-green-600 to-emerald-600', hoverGradient: 'from-green-700 to-emerald-700', handler: 'handleHelpCenterButton' },
     { id: 'donations-btn-bib', icon: 'heart', labelKey: 'btn.support', cssClass: 'support-heartbeat', iconClass: 'support-heart', gradient: 'from-amber-600 to-orange-600', hoverGradient: 'from-amber-700 to-orange-700', handler: 'handleDonationsButton' }
   ],

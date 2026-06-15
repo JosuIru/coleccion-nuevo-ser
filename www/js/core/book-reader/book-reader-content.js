@@ -419,6 +419,8 @@ class BookReaderContent {
    */
   renderPremiumEditionButton() {
     const bookId = this.bookEngine.getCurrentBook();
+    const bookInfo = this.bookEngine.getBookInfo(bookId);
+    if (!bookInfo?.hasPremium) return '';
     const premiumFile = `downloads/${bookId}-premium.html`;
 
     return `

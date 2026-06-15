@@ -132,7 +132,10 @@ class BibliotecaRenderer {
       grupos[grupo].push(boton);
     });
 
-    let html = '';
+    // Añadir botón de Modo Zen al inicio
+    let html = this.renderZenModeToggle();
+    html += '<div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>';
+
     let primerGrupo = true;
 
     ordenGrupos.forEach(nombreGrupo => {
@@ -152,11 +155,43 @@ class BibliotecaRenderer {
     return html;
   }
 
+  /**
+   * Renderiza el botón de toggle para Modo Zen en el menú dropdown
+   */
+  renderZenModeToggle() {
+    const isZenMode = window.zenMode?.isEnabled() || false;
+
+    return `
+      <button id="zen-mode-toggle-bib"
+              data-zen-toggle
+              class="zen-mode-toggle w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors flex items-center gap-3 ${isZenMode ? 'bg-teal-500/10' : ''}"
+              aria-pressed="${isZenMode}"
+              onclick="window.zenMode?.toggle(); this.closest('#more-options-menu-bib').classList.add('hidden');">
+        <span class="zen-toggle-icon text-xl">${isZenMode ? '🧘' : '☯️'}</span>
+        <div class="flex-1">
+          <span class="zen-toggle-label font-medium ${isZenMode ? 'text-teal-400' : 'text-gray-700 dark:text-gray-200'}">
+            ${isZenMode ? 'Modo Zen Activo' : 'Activar Modo Zen'}
+          </span>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            ${isZenMode ? 'Interfaz simplificada' : 'Oculta opciones avanzadas'}
+          </p>
+        </div>
+        <span class="text-xs px-2 py-1 rounded-full ${isZenMode ? 'bg-teal-500/30 text-teal-300' : 'bg-gray-500/20 text-gray-400'}">
+          ${isZenMode ? 'ON' : 'OFF'}
+        </span>
+      </button>
+    `;
+  }
+
   renderBotonDropdown(boton) {
     const bib = this.biblioteca;
-    const textoLabel = boton.labelKey
+    const isAuthenticated = !!window.authHelper?.isAuthenticated?.();
+    const textoBase = boton.labelKey
       ? bib.i18n.t(boton.labelKey)
       : boton.label;
+    const textoLabel = boton.id === 'my-account-btn-bib' && !isAuthenticated
+      ? 'Iniciar sesión / Registrarse'
+      : textoBase;
 
     // 🔧 v2.9.401: Usar EXACTAMENTE el mismo formato que settings-modal (data-lucide + text-color)
     const iconColorMap = {
@@ -588,8 +623,8 @@ class BibliotecaRenderer {
 
     return `
       <div class="search-filters mb-6 space-y-4">
-        <div class="relative">
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+        <div class="flex items-center gap-3 px-3 py-1 rounded-xl bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700">
+          <div class="text-gray-500 dark:text-gray-400 shrink-0">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
@@ -599,7 +634,7 @@ class BibliotecaRenderer {
             type="text"
             id="search-input"
             placeholder="Buscar por título o autor..."
-            class="w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all"
+            class="w-full pr-1 py-2 bg-transparent border-0 text-gray-900 dark:text-white focus:ring-0 focus:outline-none transition-all"
           />
         </div>
 
@@ -661,6 +696,8 @@ class BibliotecaRenderer {
     const safeTitle = Sanitizer.escapeHtml(libro.title);
     const safeSubtitle = Sanitizer.escapeHtml(libro.subtitle);
     const safeDescription = libro.description ? Sanitizer.escapeHtml(libro.description) : '';
+    const editorialBadge = this.getEditorialBadge(libro);
+    const editorialNote = this.getEditorialNote(libro);
 
     card.innerHTML = `
       <div class="absolute inset-0 bg-gradient-to-br opacity-5 dark:opacity-10 group-hover:opacity-15 dark:group-hover:opacity-20 transition-opacity duration-300"
@@ -679,6 +716,7 @@ class BibliotecaRenderer {
               `<span class="px-2 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-500/30">${bib.i18n.t('library.published')}</span>` :
               `<span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-500/30">${bib.i18n.t('library.comingSoon')}</span>`
             }
+            ${editorialBadge}
             ${libroIniciado ?
               `<span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-500/30">${bib.i18n.t('library.inProgress')}</span>` :
               `<span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-500/30">${bib.i18n.t('library.notStarted')}</span>`
@@ -711,6 +749,8 @@ class BibliotecaRenderer {
         ` : ''}
 
         ${this.renderComplementaryInfo(libro)}
+
+        ${editorialNote}
 
         <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
           <span class="flex items-center gap-1">${Icons.book(14)} ${libro.chapters} ${bib.i18n.t('library.chapters')}</span>
@@ -788,6 +828,33 @@ class BibliotecaRenderer {
     }
 
     return '';
+  }
+
+  getEditorialBadge(book) {
+    const library = this.biblioteca.bookEngine.catalog.library || {};
+    const label = book.editorialStatusLabel || library.editorialStatusLabel;
+    if (!label) return '';
+
+    return `
+      <span class="px-2 py-1 text-xs font-semibold rounded bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-300 dark:border-fuchsia-500/30">
+        ${Sanitizer.escapeHtml(label)}
+      </span>
+    `;
+  }
+
+  getEditorialNote(book) {
+    const library = this.biblioteca.bookEngine.catalog.library || {};
+    const note = book.editorialStatusNote || library.editorialStatusNote;
+    if (!note) return '';
+
+    return `
+      <div class="mb-3 px-3 py-2 rounded-lg bg-fuchsia-100/80 dark:bg-fuchsia-900/20 border border-fuchsia-300 dark:border-fuchsia-500/20">
+        <p class="text-xs text-fuchsia-800 dark:text-fuchsia-200 flex items-start gap-2">
+          ${Icons.infinity(12)}
+          <span>${Sanitizer.escapeHtml(note)}</span>
+        </p>
+      </div>
+    `;
   }
 
   // ==========================================================================

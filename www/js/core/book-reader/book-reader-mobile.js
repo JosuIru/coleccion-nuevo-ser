@@ -33,6 +33,10 @@ class BookReaderMobile {
     return typeof window.Capacitor !== 'undefined';
   }
 
+  isUserAuthenticated() {
+    return !!window.authHelper?.isAuthenticated?.();
+  }
+
   // ==========================================================================
   // DEPENDENCY ACCESS
   // ==========================================================================
@@ -167,6 +171,8 @@ class BookReaderMobile {
 
     // Verificar si hay features del libro
     const hasBookFeatures = hasTimeline || hasResources || hasManualPractico || hasPracticasRadicales || hasKoan;
+    const isAuthenticated = this.isUserAuthenticated();
+    const accountLabel = isAuthenticated ? 'Mi Cuenta' : 'Iniciar sesión / Registrarse';
 
     // Estilos comunes
     const menuBtn = 'w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center gap-3 text-sm';
@@ -357,7 +363,7 @@ class BookReaderMobile {
                     <span id="theme-label-mobile">${window.themeHelper?.getThemeLabel() || 'Tema'}</span>
                   </button>
                   <button id="my-account-btn-mobile" class="${menuBtn} text-purple-600 dark:text-purple-400">
-                    ${Icons.create('user', 18)} <span>Mi Cuenta</span>
+                    ${Icons.create('user', 18)} <span>${accountLabel}</span>
                   </button>
                   <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
                   <button id="premium-edition-btn-mobile" class="${menuBtn} text-amber-600 dark:text-amber-400">
@@ -425,6 +431,8 @@ class BookReaderMobile {
         // Inicializar AudioReader después de cargar
         if (window.AudioReader && window.bookEngine && !window.audioReader) {
           window.audioReader = new AudioReader(window.bookEngine);
+          // 🔧 v3.0.0: Disparar evento para módulos que dependen de audioReader
+          window.dispatchEvent(new CustomEvent('audioReaderReady', { detail: { audioReader: window.audioReader } }));
           if (typeof logger !== 'undefined') {
             logger.log('✅ AudioReader inicializado tras lazy loading');
           }

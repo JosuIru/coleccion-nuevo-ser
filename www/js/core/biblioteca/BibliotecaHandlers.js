@@ -88,31 +88,17 @@ class BibliotecaHandlers {
     }
   }
 
-  handleMyAccountButton(evento) {
+  async handleMyAccountButton(evento) {
     evento.preventDefault();
-    // Cerrar el dropdown antes de abrir el modal
+    // Cerrar el dropdown antes de abrir el modal.
     this.closeMenuDropdown();
-
-    if (window.myAccountModal) {
-      // Pequeño delay para que el dropdown se cierre primero
-      setTimeout(() => window.myAccountModal.show(), 50);
-    } else if (window.lazyLoader) {
-      window.lazyLoader.load('my-account').then(() => {
-        if (window.myAccountModal) {
-          setTimeout(() => window.myAccountModal.show(), 50);
-        } else {
-          this.biblioteca.modals.showLoginRequiredModal('Mi Cuenta');
-        }
-      }).catch(() => {
-        this.biblioteca.modals.showLoginRequiredModal('Mi Cuenta');
-      });
-    } else {
-      this.biblioteca.modals.showLoginRequiredModal('Mi Cuenta');
-    }
+    // Reusar la ruta robusta ya usada por el botón "Perfil" del bottom nav.
+    await this.openProfileMenu();
   }
 
   handleAdminPanelButton(evento) {
     evento.preventDefault();
+    this.closeMenuDropdown();
     const bib = this.biblioteca;
 
     const checkAndShowAdmin = async () => {
@@ -128,16 +114,22 @@ class BibliotecaHandlers {
         return;
       }
 
-      if (window.adminPanelModal) {
-        window.adminPanelModal.show();
-      } else if (window.lazyLoader) {
-        window.lazyLoader.load('admin-panel').then(() => {
-          if (window.adminPanelModal) {
-            window.adminPanelModal.show();
+      // Vista unificada: abrir pestaña Admin dentro de Mi Cuenta
+      if (window.myAccountModal) {
+        window.myAccountModal.show('admin');
+        return;
+      }
+
+      if (window.lazyLoader) {
+        window.lazyLoader.load('my-account').then(() => {
+          if (window.myAccountModal) {
+            window.myAccountModal.show('admin');
+          } else {
+            window.toast?.error('No se pudo abrir el panel admin unificado');
           }
         }).catch(error => {
-          logger.error('Error loading admin panel:', error);
-          window.toast?.error('Error al cargar el panel de administración.');
+          logger.error('Error loading my-account:', error);
+          window.toast?.error('Error al cargar Mi Cuenta');
         });
       }
     };
@@ -169,6 +161,11 @@ class BibliotecaHandlers {
   handleProgressButton(evento) {
     evento.preventDefault();
     if (window.progressDashboard) window.progressDashboard.show();
+  }
+
+  handleTransparencyButton(evento) {
+    evento.preventDefault();
+    if (window.transparencyPanel) window.transparencyPanel.open();
   }
 
   handleHelpCenterButton(evento) {
@@ -520,6 +517,25 @@ class BibliotecaHandlers {
 
   async openProfileMenu() {
     this.setActiveBottomTab('perfil');
+
+    const isAuthenticated = !!window.authHelper?.isAuthenticated?.();
+    if (!isAuthenticated) {
+      if (window.lazyLoader && !window.lazyLoader.isLoaded('auth-modal')) {
+        try {
+          await window.lazyLoader.loadAuthModal();
+        } catch (err) {
+          logger.error('[BibliotecaHandlers] Error cargando auth-modal:', err);
+        }
+      }
+
+      if (window.authModal) {
+        window.authModal.show('login');
+      } else {
+        window.toast?.info('Inicia sesión o regístrate para acceder a tu cuenta');
+      }
+      return;
+    }
+
     if (window.myAccountModal) {
       window.myAccountModal.show();
     } else if (window.lazyLoader) {

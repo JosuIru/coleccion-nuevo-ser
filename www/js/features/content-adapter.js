@@ -477,7 +477,11 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
     if (window.aiPremium) {
       const hasCredits = await window.aiPremium.checkCredits(2000, 'ai_content_adapter');
       if (!hasCredits) {
-        throw new Error('No tienes suficientes créditos de IA. Considera usar el modo gratuito o adquirir más créditos.');
+        // Fallback automático a modo gratis si no hay créditos
+        if (window.aiConfig?.setProvider) {
+          window.aiConfig.setProvider('puter');
+          window.toast?.info('Sin créditos premium. Cambiando automáticamente a Mistral Gratis.', 5000);
+        }
       }
     }
 
@@ -509,18 +513,18 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
     // Llamar a IA con timeout de 60s para evitar bloqueos
     try {
       const timeoutMs = 60000;
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout: La IA tardó demasiado en responder. Intenta con un capítulo más corto.')), timeoutMs);
-      });
+      const systemPrompt = 'Eres un adaptador de contenidos. Tu tarea es TRANSFORMAR textos párrafo por párrafo, cambiando el estilo/lenguaje pero MANTENIENDO TODA la información y extensión. NUNCA resumas ni acortes. Si el texto original tiene 10 párrafos, tu respuesta debe tener 10 párrafos adaptados.';
+      const fallbackPhrases = ['credit balance is too low', 'premium proxy no disponible', 'insufficient', 'billing', 'plans & billing'];
 
-      const aiPromise = this.aiAdapter.ask(
-        adaptationPrompt,
-        'Eres un adaptador de contenidos. Tu tarea es TRANSFORMAR textos párrafo por párrafo, cambiando el estilo/lenguaje pero MANTENIENDO TODA la información y extensión. NUNCA resumas ni acortes. Si el texto original tiene 10 párrafos, tu respuesta debe tener 10 párrafos adaptados.',
-        [],
-        'content_adaptation'
-      );
+      const runAttempt = async () => {
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Timeout: La IA tardó demasiado en responder. Intenta con un capítulo más corto.')), timeoutMs);
+        });
+        const aiPromise = this.aiAdapter.ask(adaptationPrompt, systemPrompt, [], 'content_adaptation');
+        return Promise.race([aiPromise, timeoutPromise]);
+      };
 
-      const response = await Promise.race([aiPromise, timeoutPromise]);
+      let response = await runAttempt();
 
       // Validar tipo de respuesta
       if (typeof response !== 'string') {
@@ -539,11 +543,28 @@ Devuelve el texto COMPLETO adaptado (sin resumir, sin acortar):`;
 
         if (responseLength < minAbsoluteLength || (actualRatio < 0.1 && responseLength < 500)) {
           logger.error(`[ContentAdapter] Respuesta demasiado corta: ${responseLength} chars`);
-          const fallbackPhrases = ['pregunta profunda', 'te invito a sentarte', 'libro explora', 'interesante perspectiva'];
-          const isFallback = fallbackPhrases.some(phrase => response.toLowerCase().includes(phrase));
+          const responseLower = response.toLowerCase();
+          const isInfraFallback = fallbackPhrases.some(phrase => responseLower.includes(phrase));
+          const currentProvider = window.aiConfig?.getCurrentProvider?.() || 'unknown';
+          const isLocalLikeProvider = ['local', 'puter'].includes(currentProvider);
 
-          if (isFallback) {
-            throw new Error('La IA no está disponible. Verifica tu conexión o que tengas créditos. Puedes configurar otra IA en ⚙️ Ajustes.');
+          // Reintento automático con proveedor gratis
+          if (window.aiConfig?.setProvider && window.aiConfig.getCurrentProvider?.() !== 'puter') {
+            window.aiConfig.setProvider('puter');
+            window.toast?.warning('Respuesta incompleta del proveedor actual. Reintentando con Mistral Gratis...', 5000);
+            response = await runAttempt();
+            const retriedLength = response?.length || 0;
+            if (retriedLength >= minAbsoluteLength) {
+              logger.debug(`[ContentAdapter] Reintento con Puter OK: ${retriedLength} chars`);
+            } else if (isInfraFallback) {
+              throw new Error('La IA no está disponible temporalmente. Inténtalo de nuevo en unos minutos.');
+            } else {
+              throw new Error(`La respuesta de IA es muy corta (${retriedLength} caracteres). Intenta regenerar.`);
+            }
+          } else if (isInfraFallback || isLocalLikeProvider) {
+            // No bloquear UX: mantener contenido original si solo hay fallback local disponible.
+            window.toast?.warning('IA no disponible ahora. Se mantiene el contenido original.', 6000);
+            return { content: this.originalContent, fromCache: false };
           } else {
             throw new Error(`La respuesta de IA es muy corta (${responseLength} caracteres). Verifica créditos o intenta regenerar.`);
           }

@@ -98,6 +98,16 @@ class BibliotecaUtils {
    */
   async checkIsAdmin(userId) {
     const bib = this.biblioteca;
+    const authHelper = window.authHelper || window.supabaseAuthHelper;
+    const adminEmail = (window.env?.ADMIN_EMAIL || '').toLowerCase();
+
+    const fallbackIsAdmin = () => {
+      if (authHelper?.isAdmin?.()) return true;
+      if (!adminEmail) return false;
+      const email = (authHelper?.currentUser?.email || authHelper?.user?.email || '').toLowerCase();
+      return !!email && email === adminEmail;
+    };
+
     try {
       const now = Date.now();
       if (bib._adminCache !== null && now - bib._adminCacheTime < bib.ADMIN_CACHE_TTL) {
@@ -106,15 +116,22 @@ class BibliotecaUtils {
       }
 
       const supabase = window.supabaseClient;
-      if (!supabase) return false;
+      if (!supabase) {
+        const isAdmin = fallbackIsAdmin();
+        bib._adminCache = isAdmin;
+        bib._adminCacheTime = now;
+        return isAdmin;
+      }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
-        .select('role')
+        .select('*')
         .eq('id', userId)
         .single();
 
-      const isAdmin = data?.role === 'admin';
+      if (error) throw error;
+
+      const isAdmin = data?.role === 'admin' || fallbackIsAdmin();
       bib._adminCache = isAdmin;
       bib._adminCacheTime = now;
       logger.debug('[BibliotecaUtils] Caché de admin actualizado:', isAdmin);
@@ -122,7 +139,10 @@ class BibliotecaUtils {
       return isAdmin;
     } catch (error) {
       logger.error('Error verificando admin:', error);
-      return false;
+      const isAdmin = fallbackIsAdmin();
+      bib._adminCache = isAdmin;
+      bib._adminCacheTime = Date.now();
+      return isAdmin;
     }
   }
 

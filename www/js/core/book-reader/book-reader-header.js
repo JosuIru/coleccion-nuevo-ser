@@ -37,12 +37,37 @@ class BookReaderHeader {
     return typeof window.Capacitor !== 'undefined';
   }
 
+  isUserAuthenticated() {
+    return !!window.authHelper?.isAuthenticated?.();
+  }
+
   /**
    * 🔧 v2.9.334: Truncar texto para breadcrumb
    */
   truncateText(text, maxLength) {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  }
+
+  // ==========================================================================
+  // ZEN MODE TOGGLE
+  // ==========================================================================
+
+  renderZenModeToggle() {
+    const isZenMode = window.zenMode?.isEnabled() || false;
+    return `
+      <button
+        id="zen-mode-toggle-btn"
+        data-zen-toggle
+        class="zen-mode-toggle p-2 sm:p-3 rounded-lg transition flex items-center gap-1.5 ${isZenMode ? 'bg-teal-500/20 text-teal-400 border border-teal-500/50' : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400'}"
+        aria-pressed="${isZenMode}"
+        aria-label="${isZenMode ? 'Desactivar Modo Zen' : 'Activar Modo Zen (interfaz simplificada)'}"
+        title="${isZenMode ? 'Desactivar Modo Zen' : 'Modo Zen: oculta opciones avanzadas'}"
+        onclick="window.zenMode?.toggle(); window.bookReader?.render(); window.bookReader?.attachEventListeners();">
+        <span class="zen-toggle-icon text-base">${isZenMode ? '🧘' : '☯️'}</span>
+        <span class="zen-toggle-label text-xs hidden sm:inline">${isZenMode ? 'Zen' : 'Zen'}</span>
+      </button>
+    `;
   }
 
   // ==========================================================================
@@ -68,7 +93,7 @@ class BookReaderHeader {
       <div class="header border-b border-gray-200 dark:border-gray-700 p-3 lg:p-4">
         <!-- Primera fila: Navegacion + Acciones -->
         <div class="flex items-center justify-between gap-2">
-          <!-- Left: Toggle Sidebar -->
+          <!-- Left: Toggle Sidebar + Zen Mode -->
           <div class="flex items-start sm:items-center gap-1 flex-shrink-0">
             <button id="toggle-sidebar"
                     class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition flex items-center justify-center sm:justify-start gap-1.5"
@@ -77,6 +102,7 @@ class BookReaderHeader {
               ${this.sidebarOpen ? Icons.chevronLeft(18) : Icons.chevronRight(18)}
               <span id="toggle-sidebar-text" class="text-xs sm:text-sm">${this.sidebarOpen ? 'Ocultar' : 'Índice'}</span>
             </button>
+            ${this.renderZenModeToggle()}
           </div>
 
           <!-- Right: Actions -->
@@ -240,6 +266,8 @@ class BookReaderHeader {
   renderTabletDropdown(hasTimeline, hasResources, hasManualPractico, hasPracticasRadicales, hasKoan) {
     const menuBtn = 'w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition flex items-center gap-2 text-sm';
     const sectionHeader = 'flex items-center justify-between w-full px-3 py-2 text-left text-xs font-bold rounded cursor-pointer transition-colors uppercase tracking-wide';
+    const isAuthenticated = this.isUserAuthenticated();
+    const accountLabel = isAuthenticated ? 'Mi Cuenta' : 'Iniciar sesión / Registrarse';
 
     // Verificar si hay features del libro
     const hasBookFeatures = hasTimeline || hasResources || hasManualPractico || hasPracticasRadicales || hasKoan;
@@ -378,7 +406,7 @@ class BookReaderHeader {
                 ${Icons.create('plug', 16)} <span>Integraciones</span>
               </button>
               <button id="my-account-btn-tablet" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
-                ${Icons.user(16)} <span>Mi Cuenta</span>
+                ${Icons.user(16)} <span>${accountLabel}</span>
               </button>
               ${this.isCapacitor() ? '' : `<button id="android-download-btn-dropdown" class="${menuBtn}">${Icons.download(16)} <span>${this.i18n.t('btn.download')}</span></button>`}
               <button id="open-help-center-btn-tablet" class="${menuBtn} text-cyan-600 dark:text-cyan-400">
@@ -479,7 +507,7 @@ class BookReaderHeader {
             ${Icons.create('link', 18)} <span>Recursos del Capítulo</span>
           </button>
           <button id="summary-btn" class="${toolBtnBase} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" aria-label="Resumen del capítulo"
-                  onclick="console.log('ONCLICK summary-btn FIRED'); window.toast && window.toast.info('Click en Resumen');">
+                  onclick="logger.log('ONCLICK summary-btn FIRED'); window.toast && window.toast.info('Click en Resumen');">
             ${Icons.create('file-text', 18)} <span>Resumen del Capítulo</span>
           </button>
           <button id="voice-notes-btn" class="${toolBtnBase} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30" aria-label="Notas de voz">
@@ -524,7 +552,7 @@ class BookReaderHeader {
           </button>
           <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
           <button id="content-adapter-btn" class="${toolBtnBase} text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30" aria-label="Adaptar Contenido"
-                  onclick="console.log('ONCLICK content-adapter-btn FIRED'); window.toast && window.toast.info('Click detectado en Adaptar Contenido');">
+                  onclick="logger.log('ONCLICK content-adapter-btn FIRED'); window.toast && window.toast.info('Click detectado en Adaptar Contenido');">
             ${Icons.create('sliders', 18)} <span>Adaptar Contenido</span>
           </button>
         </div>
@@ -563,6 +591,9 @@ class BookReaderHeader {
   }
 
   renderSettingsDropdown() {
+    const isAuthenticated = this.isUserAuthenticated();
+    const accountLabel = isAuthenticated ? 'Mi Cuenta' : 'Iniciar sesión / Registrarse';
+
     return `
       <div class="relative">
         <button id="settings-dropdown-btn"
@@ -603,7 +634,7 @@ class BookReaderHeader {
           <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
           <div class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-200 dark:border-gray-700">Cuenta</div>
           <button id="my-account-btn" class="w-full text-left px-4 py-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 flex items-center gap-3 text-purple-600 dark:text-purple-400 font-semibold" aria-label="Mi Cuenta">
-            ${Icons.create('user', 18)} <span>Mi Cuenta</span>
+            ${Icons.create('user', 18)} <span>${accountLabel}</span>
           </button>
         </div>
       </div>

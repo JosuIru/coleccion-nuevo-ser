@@ -7,6 +7,10 @@
 class BookReaderNavigation {
   constructor(bookReader) {
     this.bookReader = bookReader;
+    // Mutex para serializar navegaciones concurrentes (clicks rápidos en capítulos).
+    // Sin esto, un click mientras audioReader.stop() está resolviendo puede dejar
+    // el highlighter del capítulo anterior corriendo sobre el DOM del nuevo.
+    this._isNavigating = false;
   }
 
   // ==========================================================================
@@ -81,13 +85,44 @@ class BookReaderNavigation {
    * @param {string} chapterId - ID del capitulo destino
    * @param {boolean} skipAudioStop - Si true, no detiene el AudioReader (para auto-advance)
    */
-  navigateToChapter(chapterId, skipAudioStop = false) {
+  async navigateToChapter(chapterId, skipAudioStop = false) {
+    // Idempotencia: si ya estamos en ese capítulo, no hacer nada.
+    if (this.currentChapter && this.currentChapter.id === chapterId) {
+      if (typeof logger !== 'undefined') {
+        logger.debug(`[BookReaderNavigation] Ya estamos en "${chapterId}", navegación ignorada`);
+      }
+      return;
+    }
+
+    // Mutex: si una navegación anterior aún está procesando (stop() async pendiente),
+    // descartamos esta nueva llamada para evitar renders entrelazados.
+    if (this._isNavigating) {
+      if (typeof logger !== 'undefined') {
+        logger.debug(`[BookReaderNavigation] Navegación en curso, ignorando "${chapterId}"`);
+      }
+      return;
+    }
+
+    this._isNavigating = true;
     try {
       if (typeof logger !== 'undefined') {
         logger.debug('[DEBUG] navigateToChapter() llamado con chapterId:', chapterId);
       }
 
-      const chapter = this.bookEngine.navigateToChapter(chapterId);
+      let chapter = this.bookEngine.navigateToChapter(chapterId);
+
+      // Fallback: si el chapterId no existe (hash URL manipulado, enlace caducado,
+      // capítulo renombrado) navegamos al primer capítulo disponible en vez de
+      // dejar al usuario en un estado inconsistente.
+      if (!chapter) {
+        const firstChapter = this.bookEngine.getFirstChapter?.();
+        if (firstChapter && firstChapter.id !== chapterId) {
+          if (typeof logger !== 'undefined') {
+            logger.warn(`[BookReaderNavigation] Capítulo "${chapterId}" no existe, cayendo al primero: "${firstChapter.id}"`);
+          }
+          chapter = this.bookEngine.navigateToChapter(firstChapter.id);
+        }
+      }
 
       if (typeof logger !== 'undefined') {
         logger.debug('[DEBUG] chapter obtenido:', chapter?.id, chapter?.title);
@@ -103,14 +138,21 @@ class BookReaderNavigation {
           contentAdapter.resetState();
         }
 
-        // Detener reproductor al cambiar de capitulo (SALVO si es auto-advance)
+        // Detener reproductor al cambiar de capitulo (SALVO si es auto-advance).
+        // Esperamos a que stop() resuelva antes de renderizar el nuevo contenido:
+        // así evitamos que el highlighter del capítulo anterior siga corriendo
+        // sobre el DOM del nuevo capítulo.
         if (!skipAudioStop) {
           const audioReader = this.getDependency('audioReader');
           if (audioReader && (audioReader.isPlaying || audioReader.paragraphs.length > 0)) {
             if (typeof logger !== 'undefined') {
               logger.debug('Deteniendo reproductor al cambiar de capitulo');
             }
-            audioReader.stop();
+            try {
+              await audioReader.stop();
+            } catch (stopError) {
+              logger.warn('[BookReaderNavigation] Error al detener audio:', stopError);
+            }
           }
         }
 
@@ -169,6 +211,8 @@ class BookReaderNavigation {
         filename: 'book-reader-navigation.js'
       });
       this.showToast('error', 'Error al cargar el capitulo');
+    } finally {
+      this._isNavigating = false;
     }
   }
 

@@ -20,7 +20,6 @@ const STATIC_ASSETS = [
   // Core CSS
   '/css/core.css',
   '/css/design-tokens.css',
-  '/css/tailwind-fallback.css',
 
   // Core JS - solo lo esencial
   '/js/utils/event-manager.js',

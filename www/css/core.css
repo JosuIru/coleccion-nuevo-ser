@@ -1365,6 +1365,8 @@ body, .sidebar, .book-card, input, textarea, select, button {
 /* Contenedor con perspectiva 3D */
 .biblioteca-container .header {
   perspective: 1000px;
+  position: relative;
+  z-index: 2;
 }
 
 /* Hover - Efecto de elevación 3D y glow intenso */
@@ -1807,9 +1809,258 @@ body, .sidebar, .book-card, input, textarea, select, button {
     width: 28px;
     height: 28px;
   }
-  
+
   .md-toolbar-btn svg {
     width: 14px;
     height: 14px;
+  }
+}
+
+/* ============================================================================
+   ZEN MODE - Modo de Lectura Simplificada
+   ============================================================================
+   Oculta elementos no esenciales para una experiencia de lectura sin
+   distracciones. Ideal para nuevos usuarios o lectores que prefieren
+   una interfaz minimalista.
+   ============================================================================ */
+
+/* Indicador visual de modo zen activo */
+html.zen-mode::after {
+  content: '';
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #14b8a6, #06b6d4);
+  border-radius: 50%;
+  z-index: 10000;
+  opacity: 0.7;
+  animation: zen-indicator 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes zen-indicator {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* ==========================================================================
+   BIBLIOTECA - Elementos ocultos en Modo Zen
+   ========================================================================== */
+
+/* Ocultar botones secundarios (dropdown "Más") */
+.zen-mode #more-options-btn-bib,
+.zen-mode #more-options-menu-bib {
+  display: none !important;
+}
+
+/* Ocultar herramientas del ecosistema */
+.zen-mode .ecosystem-tools-section,
+.zen-mode [id*="ecosystem"],
+.zen-mode [id*="tools-grid"] {
+  display: none !important;
+}
+
+/* Ocultar sección de herramientas en biblioteca */
+.zen-mode .biblioteca-container .tools-section {
+  display: none !important;
+}
+
+/* Simplificar header de biblioteca - menos botones */
+.zen-mode .biblioteca-container .header {
+  padding: 0.75rem 1rem !important;
+}
+
+/* Ocultar botones no esenciales en biblioteca */
+.zen-mode #transparency-btn-bib,
+.zen-mode #progress-dashboard-btn-bib {
+  display: none !important;
+}
+
+/* ==========================================================================
+   LECTOR DE LIBROS - Elementos ocultos en Modo Zen
+   ========================================================================== */
+
+/* Ocultar dropdowns de herramientas avanzadas */
+.zen-mode #tools-dropdown-btn,
+.zen-mode #tools-dropdown,
+.zen-mode #book-features-dropdown-btn,
+.zen-mode #book-features-dropdown,
+.zen-mode #settings-dropdown-btn,
+.zen-mode #settings-dropdown {
+  display: none !important;
+}
+
+/* Ocultar menús móviles extensos */
+.zen-mode #mobile-menu-btn,
+.zen-mode #more-actions-btn,
+.zen-mode #more-actions-dropdown {
+  display: none !important;
+}
+
+/* Ocultar FAB menu y radial menu */
+.zen-mode #fab-menu,
+.zen-mode #fab-container,
+.zen-mode .fab-menu,
+.zen-mode .radial-menu {
+  display: none !important;
+}
+
+/* Ocultar breadcrumb complejo, dejar solo esencial */
+.zen-mode .header nav {
+  display: none !important;
+}
+
+/* Mantener visible: Audio, Bookmark, Chat básico, Sidebar toggle, Apoyo */
+/* Estos selectores NO se ocultan */
+
+/* ==========================================================================
+   MODALES - Simplificación en Modo Zen
+   ========================================================================== */
+
+/* En settings modal, ocultar tabs avanzados */
+.zen-mode #settings-modal [data-tab="ai"],
+.zen-mode #settings-modal [data-tab="notifications"],
+.zen-mode #settings-modal [data-tab="security"],
+.zen-mode #settings-modal [data-tab="sync"] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   ELEMENTOS SIEMPRE VISIBLES EN MODO ZEN
+   ========================================================================== */
+
+/* Forzar visibilidad de elementos esenciales */
+.zen-mode #toggle-sidebar,
+.zen-mode #bookmark-btn,
+.zen-mode #bookmark-btn-mobile,
+.zen-mode #bookmark-btn-tablet,
+.zen-mode #audioreader-btn,
+.zen-mode #audioreader-btn-mobile,
+.zen-mode #audioreader-btn-tablet,
+.zen-mode #ai-chat-btn,
+.zen-mode #ai-chat-btn-mobile,
+.zen-mode #ai-chat-btn-tablet,
+.zen-mode #support-btn,
+.zen-mode #support-btn-mobile,
+.zen-mode #support-btn-tablet,
+.zen-mode #breadcrumb-library-btn,
+.zen-mode .chapter-content,
+.zen-mode .footer-nav,
+.zen-mode .sidebar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ajuste para sidebar y chapter content */
+.zen-mode .sidebar {
+  display: block !important;
+}
+
+.zen-mode .chapter-content {
+  display: block !important;
+}
+
+/* ==========================================================================
+   TRANSICIÓN SUAVE AL ACTIVAR/DESACTIVAR
+   ========================================================================== */
+
+/* Transición suave para elementos que se ocultan */
+#tools-dropdown-btn,
+#book-features-dropdown-btn,
+#settings-dropdown-btn,
+#more-options-btn-bib,
+#mobile-menu-btn,
+#more-actions-btn,
+#fab-menu,
+.ecosystem-tools-section {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Animación de fade out en modo zen */
+.zen-mode #tools-dropdown-btn,
+.zen-mode #book-features-dropdown-btn,
+.zen-mode #settings-dropdown-btn,
+.zen-mode #more-options-btn-bib,
+.zen-mode #mobile-menu-btn,
+.zen-mode #more-actions-btn {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   BOTÓN TOGGLE ZEN MODE - Estilos
+   ========================================================================== */
+
+.zen-mode-toggle {
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zen-mode-toggle[aria-pressed="true"] {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(6, 182, 212, 0.2)) !important;
+  border-color: rgba(20, 184, 166, 0.5) !important;
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+}
+
+.zen-mode-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.zen-mode-toggle:active {
+  transform: translateY(0);
+}
+
+/* Icono animado */
+.zen-mode-toggle .zen-toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.zen-mode-toggle:hover .zen-toggle-icon {
+  transform: scale(1.1);
+}
+
+.zen-mode-toggle[aria-pressed="true"] .zen-toggle-icon {
+  animation: zen-breathe 4s ease-in-out infinite;
+}
+
+@keyframes zen-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* ==========================================================================
+   RESPONSIVE - Modo Zen en móviles
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* En móvil, simplificar aún más */
+  .zen-mode .header {
+    padding: 0.5rem !important;
+  }
+
+  /* Ocultar más elementos en móvil */
+  .zen-mode #exploration-hub-btn-bib,
+  .zen-mode #practice-library-btn-bib {
+    display: none !important;
+  }
+
+  /* Solo mostrar: Ayuda, Apoyo en biblioteca móvil */
+  .zen-mode .biblioteca-container .header button:not(#help-center-btn-bib):not(#donations-btn-bib):not([id*="search"]) {
+    display: none !important;
+  }
+}
+
+/* Indicador pequeño en móvil */
+@media (max-width: 480px) {
+  html.zen-mode::after {
+    width: 6px;
+    height: 6px;
+    top: 4px;
+    right: 4px;
   }
 }

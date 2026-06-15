@@ -9,12 +9,9 @@ class LanguageSelector {
 
   // Render language selector button
   renderButton() {
-    const currentLang = this.i18n.getLanguage();
-    const flag = currentLang === 'es' ? '🇪🇸' : '🇬🇧';
-
     return `
       <button id="language-selector-btn" class="p-2 hover:bg-gray-800 rounded-lg transition flex items-center gap-1" title="Cambiar idioma / Change language">
-        🌐 ${flag}
+        🌐
       </button>
     `;
   }
@@ -72,7 +69,6 @@ class LanguageSelector {
               >
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2 sm:gap-3">
-                    <span class="text-2xl sm:text-3xl">${lang.flag}</span>
                     <span class="text-base sm:text-lg font-bold">${lang.name}</span>
                   </div>
                   ${currentLang === lang.code ? `<span class="text-cyan-400">${Icons.check(18)}</span>` : ''}

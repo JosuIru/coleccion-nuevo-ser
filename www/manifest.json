@@ -84,15 +84,6 @@
   "related_applications": [],
   "prefer_related_applications": false,
   "protocol_handlers": [],
-  "share_target": {
-    "action": "/share",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
   "display_override": [
     "window-controls-overlay",
     "standalone",

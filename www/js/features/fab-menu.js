@@ -209,13 +209,15 @@ class FABMenu {
   }
 
   renderActions() {
+    // aria-hidden en el tooltip: los lectores de pantalla ya anuncian el label
+    // vía aria-label del botón; si no lo ocultásemos, lo leerían dos veces.
     return this.actions.map(action => `
       <button class="fab-action opacity-0"
               data-action-id="${action.id}"
               data-color="${action.color}"
               aria-label="${action.label}"
               title="${action.label}">
-        <span class="fab-tooltip">${action.label}</span>
+        <span class="fab-tooltip" aria-hidden="true">${action.label}</span>
         ${this.getIcon(action.icon)}
       </button>
     `).join('');
@@ -403,6 +405,8 @@ class FABMenu {
         if (window.AudioReader && window.bookEngine) {
           window.audioReader = new window.AudioReader(window.bookEngine);
           audioReader = window.audioReader;
+          // 🔧 v3.0.0: Disparar evento para módulos que dependen de audioReader
+          window.dispatchEvent(new CustomEvent('audioReaderReady', { detail: { audioReader: window.audioReader } }));
         }
       } catch (error) {
         logger.error('[FABMenu] Error cargando AudioReader:', error);

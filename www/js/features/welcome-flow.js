@@ -332,8 +332,12 @@ class WelcomeFlow {
       // Abrir el libro recomendado
       if (window.biblioteca && bookId) {
         // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+        // 🔧 FIX v3.0.1: Added error handling for openBook promise
         this._setTimeout(() => {
-          window.biblioteca?.openBook(bookId);
+          window.biblioteca?.openBook(bookId)?.catch?.(error => {
+            if (typeof logger !== 'undefined') logger.error('[WelcomeFlow] Error opening book:', error);
+            window.toast?.error('Error al abrir el libro');
+          });
         }, 300);
       }
     });
@@ -492,8 +496,12 @@ class WelcomeFlow {
     const bookId = this.recommendedBook?.id || this.intents[this.userIntent]?.recommendedBooks[0];
     if (window.biblioteca && bookId) {
       // ⭐ FIX v2.9.183: Usar _setTimeout para tracking
+      // 🔧 FIX v3.0.1: Added error handling for openBook promise
       this._setTimeout(() => {
-        window.biblioteca.openBook(bookId);
+        window.biblioteca.openBook(bookId)?.catch?.(error => {
+          if (typeof logger !== 'undefined') logger.error('[WelcomeFlow] Error opening book:', error);
+          window.toast?.error('Error al abrir el libro');
+        });
       }, 300);
     }
   }

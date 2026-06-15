@@ -677,6 +677,10 @@ class SettingsModalEvents {
                 if (keySection) {
                     keySection.innerHTML = settingsModal.ai.renderAIKeyInput(newProvider);
                 }
+                const statusSection = document.getElementById('settings-ai-status-section');
+                if (statusSection) {
+                    statusSection.innerHTML = settingsModal.ai.renderAIStatus(newProvider);
+                }
 
                 if (window.Icons) {
                     window.Icons.init();
@@ -699,6 +703,11 @@ class SettingsModalEvents {
         if (keyInput) {
             settingsModal._addEventListener(keyInput, 'input', () => {
                 settingsModal.autoSaveAIConfig();
+                const provider = providerSelect?.value;
+                const statusSection = document.getElementById('settings-ai-status-section');
+                if (statusSection && provider) {
+                    statusSection.innerHTML = settingsModal.ai.renderAIStatus(provider);
+                }
             });
         }
 
@@ -719,6 +728,10 @@ class SettingsModalEvents {
 
                 if (modelSelect && modelSelect.value) {
                     aiConfig.setSelectedModel(modelSelect.value);
+                }
+
+                if (provider) {
+                    aiConfig.setProvider(provider);
                 }
 
                 if (keyInput && keyInput.value) {

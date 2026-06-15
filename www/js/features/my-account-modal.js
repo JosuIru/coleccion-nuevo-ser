@@ -405,6 +405,11 @@ class MyAccountModal {
     logger.log('[MyAccountModal] Rendering with profile:', profile);
     logger.log('[MyAccountModal] User:', user);
 
+    const tabs = this.getVisibleTabs();
+    if (!tabs.some(tab => tab.id === this.currentTab)) {
+      this.currentTab = 'profile';
+    }
+
     const modal = document.createElement('div');
     modal.id = 'my-account-modal';
     modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4 fade-in';
@@ -430,7 +435,7 @@ class MyAccountModal {
 
         <!-- Tabs -->
         <div class="flex border-b border-white/10 overflow-x-auto">
-          ${this.tabs.map(tab => `
+          ${tabs.map(tab => `
             <button class="tab-btn flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap
                           ${this.currentTab === tab.id ? 'text-cyan-400 border-b-2 border-cyan-400 bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/5'}"
                     data-tab="${tab.id}">
@@ -468,8 +473,39 @@ class MyAccountModal {
       case 'tokens': return this.renderTokensTab();
       case 'history': return this.renderHistoryTab();
       case 'settings': return this.renderSettingsTab();
+      case 'admin': return this.renderAdminTab();
       default: return this.renderProfileTab();
     }
+  }
+
+  getVisibleTabs() {
+    const tabs = [...this.tabs];
+    if (this.isAdminUser()) {
+      tabs.push({ id: 'admin', label: 'Admin', emoji: '🛡️' });
+    }
+    return tabs;
+  }
+
+  getAdminEmails() {
+    const envEmails = (window.env?.ADMIN_EMAILS || '')
+      .split(',')
+      .map(email => email.trim().toLowerCase())
+      .filter(Boolean);
+    const singleEmail = (window.env?.ADMIN_EMAIL || '').toLowerCase();
+    const localEmails = (localStorage.getItem('admin-emails') || '')
+      .split(',')
+      .map(email => email.trim().toLowerCase())
+      .filter(Boolean);
+
+    return Array.from(new Set([singleEmail, ...envEmails, ...localEmails].filter(Boolean)));
+  }
+
+  isAdminUser() {
+    if (this.authHelper?.isAdmin?.()) return true;
+    const role = (this.authHelper?.getProfile?.()?.role || '').toLowerCase();
+    if (role === 'admin') return true;
+    const email = (this.authHelper?.getUser?.()?.email || '').toLowerCase();
+    return !!email && this.getAdminEmails().includes(email);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1270,6 +1306,56 @@ class MyAccountModal {
     `;
   }
 
+  renderAdminTab() {
+    if (!this.isAdminUser()) {
+      return `
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-white">Panel Admin</h3>
+          <p class="text-slate-400">No tienes permisos de administrador.</p>
+        </div>
+      `;
+    }
+
+    const user = this.authHelper?.getUser?.() || {};
+    const profile = this.authHelper?.getProfile?.() || {};
+    const adminEmails = this.getAdminEmails();
+
+    return `
+      <div class="space-y-6">
+        <h3 class="text-lg font-semibold text-white">Panel Admin Unificado</h3>
+
+        <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+          <p class="text-sm text-slate-300">Usuario: <span class="text-cyan-400">${this.escapeHtml(user.email || '')}</span></p>
+          <p class="text-sm text-slate-400 mt-1">Rol: <span class="text-amber-400">${this.escapeHtml(profile.role || 'sin rol')}</span></p>
+        </div>
+
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+          <h4 class="text-amber-300 font-semibold mb-2">Super Chat IA (Libro Supremo)</h4>
+          <p class="text-sm text-slate-300 mb-3">Acceso al modo reflexivo especializado sobre los 18 libros.</p>
+          <button id="open-knowledge-evolution-btn" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm transition-colors">
+            Abrir Super Chat IA
+          </button>
+        </div>
+
+        <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4">
+          <h4 class="text-cyan-300 font-semibold mb-2">Estadísticas Admin</h4>
+          <p class="text-sm text-slate-300 mb-3">Abrir panel avanzado de estadísticas y gestión.</p>
+          <button id="open-admin-stats-btn" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm transition-colors">
+            Abrir Estadísticas Admin
+          </button>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+          <h4 class="text-white font-semibold mb-2">Emails con acceso admin</h4>
+          <p class="text-xs text-slate-500 mb-2">Configurable en window.env.ADMIN_EMAILS o localStorage admin-emails.</p>
+          <ul class="text-sm text-slate-300 space-y-1">
+            ${adminEmails.map(email => `<li>• ${this.escapeHtml(email)}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // EVENT HANDLERS
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1486,6 +1572,51 @@ class MyAccountModal {
         this.navigateToBookmark(bookId, chapterId);
       });
     });
+
+    // Admin - Super Chat IA (Knowledge Evolution)
+    const openKnowledgeBtn = document.getElementById('open-knowledge-evolution-btn');
+    if (openKnowledgeBtn) {
+      this.eventManager.addEventListener(openKnowledgeBtn, 'click', async () => {
+        try {
+          if (!window.KnowledgeEvolution && window.lazyLoader?.loadKnowledgeEvolution) {
+            await window.lazyLoader.loadKnowledgeEvolution();
+          }
+          if (!window.knowledgeEvolution && window.KnowledgeEvolution) {
+            window.knowledgeEvolution = new window.KnowledgeEvolution();
+            await window.knowledgeEvolution.init();
+          }
+          if (window.knowledgeEvolution?.openModal) {
+            this.close();
+            window.knowledgeEvolution.openModal();
+          } else {
+            window.toast?.error('No se pudo abrir Super Chat IA');
+          }
+        } catch (error) {
+          logger.error('[MyAccountModal] Error abriendo Super Chat IA:', error);
+          window.toast?.error('Error al abrir Super Chat IA');
+        }
+      });
+    }
+
+    // Admin - estadísticas avanzadas
+    const openAdminStatsBtn = document.getElementById('open-admin-stats-btn');
+    if (openAdminStatsBtn) {
+      this.eventManager.addEventListener(openAdminStatsBtn, 'click', async () => {
+        try {
+          if (!window.adminPanelModal && window.lazyLoader) {
+            await window.lazyLoader._loadModuleByName('admin-panel');
+          }
+          if (window.adminPanelModal?.show) {
+            window.adminPanelModal.show();
+          } else {
+            window.toast?.error('No se pudo abrir el panel de estadísticas admin');
+          }
+        } catch (error) {
+          logger.error('[MyAccountModal] Error abriendo panel admin:', error);
+          window.toast?.error('Error al abrir panel admin');
+        }
+      });
+    }
   }
 
   /**

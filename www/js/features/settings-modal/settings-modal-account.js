@@ -37,12 +37,20 @@ class SettingsModalAccount {
     isAuthor() {
         const authHelper = window.authHelper || window.supabaseAuthHelper;
         const user = authHelper?.currentUser || authHelper?.user;
+        const profile = authHelper?.currentProfile;
 
-        if (!user?.email) return false;
+        // Vía principal: role='admin' en el perfil Supabase (respaldado por RLS server-side).
+        if (profile?.role === 'admin' || authHelper?.isAdmin?.()) {
+            return true;
+        }
 
-        // El autor se identifica por su email configurado en env.js o por patron conocido
-        const authorEmail = window.env?.ADMIN_EMAIL || 'irurag@gmail.com';
-        return user.email === authorEmail;
+        // Vía secundaria: email declarado en env.js. Sin fallback hardcoded —
+        // si env.ADMIN_EMAIL no está definido, no se muestran herramientas de autor.
+        // Esto es sólo gating de UI; la autorización real vive en el backend.
+        const configuredAdminEmail = window.env?.ADMIN_EMAIL;
+        if (!configuredAdminEmail || !user?.email) return false;
+
+        return user.email.toLowerCase() === configuredAdminEmail.toLowerCase();
     }
 
     /**
@@ -58,18 +66,18 @@ class SettingsModalAccount {
                 </h3>
 
                 <div class="space-y-4">
-                    <!-- Knowledge Evolution -->
+                    <!-- Acceso al panel unificado -->
                     <div class="bg-gradient-to-r from-amber-900/30 to-slate-800/50 rounded-xl p-4 border border-amber-700/30">
                         <div class="flex items-start gap-4">
                             <span class="text-3xl">🧠</span>
                             <div class="flex-1">
-                                <h4 class="text-white font-semibold">Knowledge Evolution</h4>
+                                <h4 class="text-white font-semibold">Panel Admin Unificado</h4>
                                 <p class="text-sm text-slate-400 mt-1">
-                                    Sistema que analiza los 18 libros, conecta conceptos y genera sintesis evolutiva.
+                                    Mi Cuenta integra Super Chat IA y estadísticas admin en una sola vista.
                                 </p>
-                                <button onclick="window.settingsModal?.account?.openKnowledgeEvolution()"
+                                <button onclick="window.myAccountModal?.show('admin')"
                                         class="mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded-lg transition-colors">
-                                    Abrir Knowledge Evolution
+                                    Abrir Panel Unificado
                                 </button>
                             </div>
                         </div>
@@ -91,7 +99,11 @@ class SettingsModalAccount {
                 if (window.toast) {
                     window.toast.info('Cargando Knowledge Evolution...', 2000);
                 }
-                await window.lazyLoader.loadKnowledgeEvolution();
+                if (window.lazyLoader?.loadKnowledgeEvolution) {
+                    await window.lazyLoader.loadKnowledgeEvolution();
+                } else {
+                    await this.loadKnowledgeEvolutionFallback();
+                }
             }
 
             // Inicializar si es necesario
@@ -109,6 +121,35 @@ class SettingsModalAccount {
             if (window.toast) {
                 window.toast.error('Error cargando Knowledge Evolution');
             }
+        }
+    }
+
+    async loadKnowledgeEvolutionFallback() {
+        const scripts = [
+            'js/features/knowledge-evolution/knowledge-ingestion.js?v=1.0.0',
+            'js/features/knowledge-evolution/knowledge-analysis.js?v=1.0.0',
+            'js/features/knowledge-evolution/knowledge-meditation.js?v=1.0.0',
+            'js/features/knowledge-evolution/knowledge-synthesis.js?v=1.0.0',
+            'js/features/knowledge-evolution/knowledge-dialogue.js?v=1.0.0',
+            'js/features/knowledge-evolution/knowledge-ui.js?v=1.0.0',
+            'js/features/knowledge-evolution/index.js?v=1.0.0'
+        ];
+
+        for (const src of scripts) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise((resolve, reject) => {
+                const existing = document.querySelector(`script[src="${src}"]`);
+                if (existing) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.head.appendChild(script);
+            });
         }
     }
 

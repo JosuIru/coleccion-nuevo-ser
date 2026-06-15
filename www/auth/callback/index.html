@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirigiendo...</title>
+</head>
+<body>
+  <script>
+    // Fallback para entornos estáticos: reenvía a raíz manteniendo hash/query OAuth.
+    (function () {
+      var target = '/';
+      var search = window.location.search || '';
+      var hash = window.location.hash || '';
+      window.location.replace(target + search + hash);
+    })();
+  </script>
+</body>
+</html>

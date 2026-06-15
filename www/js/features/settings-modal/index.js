@@ -127,6 +127,8 @@ class SettingsModal {
 
         // Guardar referencia global
         window.settingsModalInstance = this;
+        // Compatibilidad con módulos legacy que aún usan window.settingsModal
+        window.settingsModal = this;
 
         // Adjuntar listeners
         await this.events.attachListeners();
@@ -253,6 +255,9 @@ class SettingsModal {
         // Limpiar referencia global
         if (window.settingsModalInstance === this) {
             window.settingsModalInstance = null;
+        }
+        if (window.settingsModal === this) {
+            window.settingsModal = null;
         }
     }
 
@@ -590,6 +595,10 @@ class SettingsModal {
 
             if (modelSelect && modelSelect.value) {
                 aiConfig.setSelectedModel(modelSelect.value);
+            }
+
+            if (provider) {
+                aiConfig.setProvider(provider);
             }
 
             if (keyInput && keyInput.value && provider) {

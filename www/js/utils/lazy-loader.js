@@ -160,7 +160,7 @@ class LazyLoader {
     }
 
     const scripts = [
-      'js/ai/ai-adapter.js?v=2.9.283',
+      'js/ai/ai-adapter.js?v=2.9.414',
       'js/features/ai-chat-modal.js?v=2.9.283'
     ];
 
@@ -441,7 +441,7 @@ class LazyLoader {
     }
 
     try {
-      await this.loadScript('js/features/learning-paths.js?v=2.8.7');
+      await this.loadScript('js/features/learning-paths/index.js?v=2.8.7');
       this.loadedModules.set('learning-paths', true);
 
       if (typeof logger !== 'undefined') {
@@ -467,14 +467,52 @@ class LazyLoader {
     }
 
     try {
-      await this.loadScript('js/features/settings-modal.js?v=2.9.406');
+      await this.loadScript('js/features/settings-modal/settings-modal-general.js?v=2.9.412');
+      await this.loadScript('js/features/settings-modal/settings-modal-ai.js?v=2.9.412');
+      await this.loadScript('js/features/settings-modal/settings-modal-account.js?v=2.9.412');
+      await this.loadScript('js/features/settings-modal/settings-modal-appearance.js?v=2.9.412');
+      await this.loadScript('js/features/settings-modal/settings-modal-events.js?v=2.9.412');
+      await this.loadScript('js/features/settings-modal/index.js?v=2.9.412');
       this.loadedModules.set('settings-modal', true);
 
       if (typeof logger !== 'undefined') {
         logger.log('✅ Settings Modal cargado (124KB)');
       }
     } catch (error) {
-      logger.error('[LazyLoader] Error cargando Settings Modal:', error);
+      logger.error('[LazyLoader] Error cargando Settings Modal modular:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cargar Knowledge Evolution (herramienta de autor)
+   * @returns {Promise<void>}
+   */
+  async loadKnowledgeEvolution() {
+    if (this.loadedModules.has('knowledge-evolution')) {
+      return Promise.resolve();
+    }
+
+    if (typeof logger !== 'undefined') {
+      logger.log('[LazyLoader] Cargando Knowledge Evolution...');
+    }
+
+    try {
+      await this.loadScript('js/features/knowledge-evolution/knowledge-ingestion.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/knowledge-analysis.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/knowledge-meditation.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/knowledge-synthesis.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/knowledge-dialogue.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/knowledge-ui.js?v=1.0.0');
+      await this.loadScript('js/features/knowledge-evolution/index.js?v=1.0.0');
+
+      this.loadedModules.set('knowledge-evolution', true);
+
+      if (typeof logger !== 'undefined') {
+        logger.log('✅ Knowledge Evolution cargado');
+      }
+    } catch (error) {
+      logger.error('[LazyLoader] Error cargando Knowledge Evolution:', error);
       throw error;
     }
   }
@@ -969,11 +1007,13 @@ class LazyLoader {
         return await this.loadAuthModal();
       case 'audioreader-suite':
         return await this.loadAudioreaderSuite();
+      case 'knowledge-evolution':
+        return await this.loadKnowledgeEvolution();
       // 🔧 FIX v2.9.306: Agregar módulos faltantes
       case 'my-account':
-        return await this.loadScript('js/features/my-account-modal.js');
+        return await this.loadScript('js/features/my-account-modal.js?v=2.9.408');
       case 'admin-panel':
-        return await this.loadScript('js/features/admin-panel-modal.js?v=2.9.284');
+        return await this.loadScript('js/features/admin-panel-modal.js?v=2.9.411');
       case 'premium-system':
       case 'ai-features':
         return await this.loadAIPremium();

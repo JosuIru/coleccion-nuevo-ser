@@ -132,27 +132,48 @@ class AuthHelper {
 
       if (error) throw error;
 
-      this.currentProfile = data;
+      const adminEmails = this.getAdminEmails();
+      const currentEmail = (this.currentUser?.email || data?.email || '').toLowerCase();
+      const inferredAdmin = !!currentEmail && adminEmails.includes(currentEmail);
+
+      this.currentProfile = {
+        ...data,
+        role: data?.role || (inferredAdmin ? 'admin' : undefined)
+      };
       // 🔧 v2.9.391: Log detallado de tokens para debugging
       logger.debug('👤 Perfil cargado:', {
         email: data?.email?.split('@')[0] || 'usuario',
         tier: data?.subscription_tier,
         tokenBalance: data?.token_balance,
         aiCreditsRemaining: data?.ai_credits_remaining,
-        role: data?.role
+        role: this.currentProfile?.role
       });
 
       // Verificar si necesita reset de créditos
       this.checkCreditsReset();
 
       // 🔧 FIX v2.9.381: Actualizar proveedor IA si es premium
-      this.updateAIProviderForPremium(data);
+      this.updateAIProviderForPremium(this.currentProfile);
 
-      return data;
+      return this.currentProfile;
     } catch (error) {
       logger.error('Error loading profile:', error);
       return null;
     }
+  }
+
+  getAdminEmails() {
+    const envEmails = (window.env?.ADMIN_EMAILS || '')
+      .split(',')
+      .map(email => email.trim().toLowerCase())
+      .filter(Boolean);
+    const singleAdmin = (window.env?.ADMIN_EMAIL || '').toLowerCase();
+    const localOverride = (localStorage.getItem('admin-emails') || '')
+      .split(',')
+      .map(email => email.trim().toLowerCase())
+      .filter(Boolean);
+    const all = [singleAdmin, ...envEmails, ...localOverride].filter(Boolean);
+    return Array.from(new Set(all));
   }
 
   /**
@@ -216,22 +237,21 @@ class AuthHelper {
         const currentProvider = window.aiConfig.getCurrentProvider();
         logger.debug('🔍 [AI Provider] Current:', currentProvider);
 
-        // SIEMPRE establecer Claude para premium (forzar)
-        window.aiConfig.config.provider = 'claude';
-        window.aiConfig.config.preferences = window.aiConfig.config.preferences || {};
-        window.aiConfig.config.preferences.selectedModel = 'claude-3-5-haiku-20241022';
-        window.aiConfig.saveConfig();
-
-        logger.debug('⭐ Usuario premium: Provider establecido a Claude');
-
-        // Mostrar toast siempre para premium
-        if (window.toast) {
-          window.toast.success('⭐ Premium: Claude IA activo', 3000);
+        // Respetar proveedor elegido por el usuario.
+        // Solo establecer Claude por defecto si no hay proveedor válido.
+        const allowedProviders = ['claude', 'openai', 'gemini', 'qwen', 'mistral', 'puter', 'huggingface', 'ollama', 'local'];
+        if (!allowedProviders.includes(currentProvider)) {
+          window.aiConfig.config.provider = 'claude';
+          window.aiConfig.config.preferences = window.aiConfig.config.preferences || {};
+          window.aiConfig.config.preferences.selectedModel = 'claude-3-5-haiku-20241022';
+          window.aiConfig.saveConfig();
+          logger.debug('⭐ Usuario premium: Provider por defecto -> Claude');
+        } else {
+          logger.debug('⭐ Usuario premium: se mantiene provider elegido:', currentProvider);
         }
 
-        // Emitir evento para que las UIs se actualicen
         window.dispatchEvent(new CustomEvent('ai-provider-updated', {
-          detail: { provider: 'claude', isPremium: true }
+          detail: { provider: window.aiConfig.getCurrentProvider(), isPremium: true }
         }));
       };
 
@@ -302,10 +322,11 @@ class AuthHelper {
       const isCapacitor = window.Capacitor?.isNativePlatform?.() ||
                           (window.location.origin.includes('localhost') && window.Capacitor);
 
-      // En Capacitor, usar el custom scheme; en web, usar origin
+      // En Capacitor, usar el custom scheme; en web, volver a la raíz.
+      // Con servidor estático (python http.server), /auth/callback da 404.
       const redirectUrl = isCapacitor
         ? 'com.nuevosser.coleccion://auth/callback'
-        : `${window.location.origin}/auth/callback`;
+        : `${window.location.origin}/`;
 
       logger.debug('🔐 OAuth redirect URL:', redirectUrl);
 
@@ -527,7 +548,9 @@ class AuthHelper {
    * Admins tienen tokens ilimitados y acceso a todas las features
    */
   isAdmin() {
-    return this.currentProfile?.role === 'admin';
+    if (this.currentProfile?.role === 'admin') return true;
+    const currentEmail = (this.currentUser?.email || this.currentProfile?.email || '').toLowerCase();
+    return !!currentEmail && this.getAdminEmails().includes(currentEmail);
   }
 
   /**
@@ -1711,29 +1734,29 @@ window.supabaseAuthHelper = window.authHelper;
 // 🔧 v2.9.391: Función de debug mejorada (disponible siempre, no solo en localhost)
 window.debugAuth = () => {
   const profile = window.authHelper.currentProfile;
-  console.log('═══════════════════════════════════════════');
-  console.log('🔐 AUTH DEBUG');
-  console.log('═══════════════════════════════════════════');
-  console.log('Current User:', window.authHelper.currentUser?.email);
-  console.log('Is Authenticated:', window.authHelper.isAuthenticated());
-  console.log('═══════════════════════════════════════════');
-  console.log('📋 PROFILE');
-  console.log('═══════════════════════════════════════════');
-  console.log('Subscription Tier:', profile?.subscription_tier);
-  console.log('Role:', profile?.role);
-  console.log('Token Balance (purchased):', profile?.token_balance);
-  console.log('AI Credits Remaining (monthly):', profile?.ai_credits_remaining);
-  console.log('Total Tokens:', window.authHelper.getTokenBalance());
-  console.log('═══════════════════════════════════════════');
-  console.log('🎯 FEATURES CHECK');
-  console.log('═══════════════════════════════════════════');
-  console.log('ai_chat:', window.authHelper.hasFeature('ai_chat'));
-  console.log('ai_tutor:', window.authHelper.hasFeature('ai_tutor'));
-  console.log('ai_content_adapter:', window.authHelper.hasFeature('ai_content_adapter'));
-  console.log('elevenlabs_tts:', window.authHelper.hasFeature('elevenlabs_tts'));
-  console.log('═══════════════════════════════════════════');
-  console.log('📊 FULL PROFILE:', profile);
-  console.log('═══════════════════════════════════════════');
+  logger.log('═══════════════════════════════════════════');
+  logger.log('🔐 AUTH DEBUG');
+  logger.log('═══════════════════════════════════════════');
+  logger.log('Current User:', window.authHelper.currentUser?.email);
+  logger.log('Is Authenticated:', window.authHelper.isAuthenticated());
+  logger.log('═══════════════════════════════════════════');
+  logger.log('📋 PROFILE');
+  logger.log('═══════════════════════════════════════════');
+  logger.log('Subscription Tier:', profile?.subscription_tier);
+  logger.log('Role:', profile?.role);
+  logger.log('Token Balance (purchased):', profile?.token_balance);
+  logger.log('AI Credits Remaining (monthly):', profile?.ai_credits_remaining);
+  logger.log('Total Tokens:', window.authHelper.getTokenBalance());
+  logger.log('═══════════════════════════════════════════');
+  logger.log('🎯 FEATURES CHECK');
+  logger.log('═══════════════════════════════════════════');
+  logger.log('ai_chat:', window.authHelper.hasFeature('ai_chat'));
+  logger.log('ai_tutor:', window.authHelper.hasFeature('ai_tutor'));
+  logger.log('ai_content_adapter:', window.authHelper.hasFeature('ai_content_adapter'));
+  logger.log('elevenlabs_tts:', window.authHelper.hasFeature('elevenlabs_tts'));
+  logger.log('═══════════════════════════════════════════');
+  logger.log('📊 FULL PROFILE:', profile);
+  logger.log('═══════════════════════════════════════════');
   return profile;
 };
 

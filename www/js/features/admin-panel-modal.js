@@ -12,10 +12,30 @@ class AdminPanelModal {
     this.currentTab = 'dashboard';
     this.users = [];
     this.metrics = {};
+    this.transparencyGoals = [];
+    this.transparencyContributions = [];
+    this.transparencyInventory = [];
     this.searchQuery = '';
     this.filterPlan = 'all';
     this.currentPage = 1;
     this.usersPerPage = 20;
+    this._subscriptionsTableAvailable = true;
+  }
+
+  isMissingSubscriptionsTable(error) {
+    const msg = (error?.message || '').toLowerCase();
+    return msg.includes("could not find the table 'public.subscriptions'") ||
+      msg.includes('relation "public.subscriptions" does not exist') ||
+      msg.includes('schema cache');
+  }
+
+  handleSubscriptionsError(error, context = 'subscriptions') {
+    if (this.isMissingSubscriptionsTable(error)) {
+      this._subscriptionsTableAvailable = false;
+      logger.warn(`[AdminPanel] Tabla subscriptions no disponible en ${context}. Usando fallback.`);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -26,6 +46,14 @@ class AdminPanelModal {
     const user = window.authHelper?.getCurrentUser();
     if (!user) {
       logger.error('Usuario no autenticado');
+      return;
+    }
+
+    // Fast-path: si authHelper ya reconoce admin, no depender de consulta remota.
+    if (window.authHelper?.isAdmin?.()) {
+      this.render();
+      this.attachEventListeners();
+      this.loadDashboardData();
       return;
     }
 
@@ -45,16 +73,34 @@ class AdminPanelModal {
    * Verificar permisos de administrador
    */
   async checkAdminPermissions(userId) {
+    const authHelper = window.authHelper || window.supabaseAuthHelper;
+    const adminEmails = [
+      (window.env?.ADMIN_EMAIL || '').toLowerCase(),
+      ...(window.env?.ADMIN_EMAILS || '')
+        .split(',')
+        .map(email => email.trim().toLowerCase())
+        .filter(Boolean),
+      ...(localStorage.getItem('admin-emails') || '')
+        .split(',')
+        .map(email => email.trim().toLowerCase())
+        .filter(Boolean)
+    ].filter(Boolean);
+
+    const currentEmail = (authHelper?.getCurrentUser?.()?.email || authHelper?.user?.email || '').toLowerCase();
+    const fallbackAdmin = authHelper?.isAdmin?.() || (currentEmail && adminEmails.includes(currentEmail));
+    if (fallbackAdmin) return true;
+
     try {
       const supabase = window.supabaseClient;
       if (!supabase) return false;
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
-        .select('role')
+        .select('*')
         .eq('id', userId)
         .single();
 
+      if (error) throw error;
       return data?.role === 'admin';
     } catch (error) {
       logger.error('Error verificando permisos:', error);
@@ -121,6 +167,7 @@ class AdminPanelModal {
       { id: 'users', icon: '👥', label: 'Usuarios' },
       { id: 'subscriptions', icon: '💳', label: 'Suscripciones' },
       { id: 'ai-usage', icon: '🤖', label: 'Uso IA' },
+      { id: 'transparency', icon: '🔍', label: 'Transparencia' },
       { id: 'manual-activation', icon: '🔑', label: 'Activación Manual' },
       { id: 'settings', icon: '⚙️', label: 'Configuración' }
     ];
@@ -155,16 +202,23 @@ class AdminPanelModal {
         supabase.from('ai_usage').select('credits_used', { count: 'exact' })
       ]);
 
+      const safeSubscriptionsResult = this.handleSubscriptionsError(subscriptionsResult.error, 'dashboard')
+        ? { data: [], count: 0 }
+        : subscriptionsResult;
+      if (subscriptionsResult.error && !this.isMissingSubscriptionsTable(subscriptionsResult.error)) {
+        throw subscriptionsResult.error;
+      }
+
       // Calcular métricas
       const totalUsers = usersResult.count || 0;
-      const totalSubscriptions = subscriptionsResult.count || 0;
-      const activeSubscriptions = subscriptionsResult.data?.filter(s => s.status === 'active').length || 0;
+      const totalSubscriptions = safeSubscriptionsResult.count || 0;
+      const activeSubscriptions = safeSubscriptionsResult.data?.filter(s => s.status === 'active').length || 0;
       const totalAICredits = aiUsageResult.data?.reduce((sum, u) => sum + (u.credits_used || 0), 0) || 0;
 
       // Suscripciones por plan
       const subscriptionsByPlan = {
-        premium: subscriptionsResult.data?.filter(s => s.plan === 'premium' && s.status === 'active').length || 0,
-        pro: subscriptionsResult.data?.filter(s => s.plan === 'pro' && s.status === 'active').length || 0
+        premium: safeSubscriptionsResult.data?.filter(s => s.plan === 'premium' && s.status === 'active').length || 0,
+        pro: safeSubscriptionsResult.data?.filter(s => s.plan === 'pro' && s.status === 'active').length || 0
       };
 
       // Calcular ingresos estimados
@@ -326,11 +380,7 @@ class AdminPanelModal {
       // Construir query
       let query = supabase
         .from('profiles')
-        .select(`
-          *,
-          subscriptions (plan, status, current_period_end),
-          ai_usage (credits_used, monthly_limit)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Aplicar búsqueda
@@ -342,7 +392,46 @@ class AdminPanelModal {
 
       if (error) throw error;
 
-      this.users = users || [];
+      const baseUsers = users || [];
+      const userIds = baseUsers.map((u) => u.id).filter(Boolean);
+      let subscriptionsByUser = {};
+      let aiUsageByUser = {};
+
+      if (userIds.length > 0) {
+        const [subsResult, aiUsageResult] = await Promise.all([
+          supabase
+            .from('subscriptions')
+            .select('user_id, plan, status, current_period_end')
+            .in('user_id', userIds),
+          supabase
+            .from('ai_usage')
+            .select('user_id, credits_used, monthly_limit')
+            .in('user_id', userIds)
+        ]);
+
+        if (subsResult.error && !this.handleSubscriptionsError(subsResult.error, 'renderUsers')) throw subsResult.error;
+        if (aiUsageResult.error) throw aiUsageResult.error;
+
+        subscriptionsByUser = ((subsResult.data || [])).reduce((acc, row) => {
+          const key = row.user_id;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(row);
+          return acc;
+        }, {});
+
+        aiUsageByUser = (aiUsageResult.data || []).reduce((acc, row) => {
+          const key = row.user_id;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(row);
+          return acc;
+        }, {});
+      }
+
+      this.users = baseUsers.map((u) => ({
+        ...u,
+        subscriptions: subscriptionsByUser[u.id] || [],
+        ai_usage: aiUsageByUser[u.id] || []
+      }));
 
       // Filtrar por plan si es necesario
       let filteredUsers = this.users;
@@ -595,16 +684,53 @@ class AdminPanelModal {
 
       const { data: usage, error } = await supabase
         .from('ai_usage')
-        .select(`
-          *,
-          profiles (email, display_name)
-        `)
+        .select('*')
         .order('credits_used', { ascending: false })
         .limit(50);
 
       if (error) throw error;
 
+      const userIds = (usage || []).map((u) => u.user_id).filter(Boolean);
+      let profilesById = {};
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, email, display_name')
+          .in('id', userIds);
+        if (profilesError) throw profilesError;
+        profilesById = (profiles || []).reduce((acc, p) => {
+          acc[p.id] = p;
+          return acc;
+        }, {});
+      }
+
       const totalUsed = usage?.reduce((sum, u) => sum + (u.credits_used || 0), 0) || 0;
+      const usageRows = (usage || []).map((u, i) => {
+        const profile = profilesById[u.user_id] || {};
+        return `
+          <tr class="hover:bg-white/5">
+            <td class="p-3 text-slate-400">${i + 1}</td>
+            <td class="p-3">
+              <div class="font-medium text-white">${profile.display_name || 'Sin nombre'}</div>
+              <div class="text-xs text-slate-400">${profile.email || ''}</div>
+            </td>
+            <td class="p-3 text-cyan-400 font-medium">${u.credits_used || 0}</td>
+            <td class="p-3 text-slate-400">${u.monthly_limit || 50}</td>
+            <td class="p-3">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                  <div class="h-full bg-cyan-500 rounded-full"
+                       style="width: ${Math.min(100, (u.credits_used || 0) / (u.monthly_limit || 50) * 100)}%"></div>
+                </div>
+                <span class="text-xs text-slate-400">${Math.round((u.credits_used || 0) / (u.monthly_limit || 50) * 100)}%</span>
+              </div>
+            </td>
+            <td class="p-3 text-sm text-slate-400">
+              ${u.last_used_at ? new Date(u.last_used_at).toLocaleDateString('es-ES') : '-'}
+            </td>
+          </tr>
+        `;
+      }).join('');
 
       return `
         <div class="space-y-6">
@@ -642,29 +768,7 @@ class AdminPanelModal {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
-                  ${usage?.map((u, i) => `
-                    <tr class="hover:bg-white/5">
-                      <td class="p-3 text-slate-400">${i + 1}</td>
-                      <td class="p-3">
-                        <div class="font-medium text-white">${u.profiles?.display_name || 'Sin nombre'}</div>
-                        <div class="text-xs text-slate-400">${u.profiles?.email || ''}</div>
-                      </td>
-                      <td class="p-3 text-cyan-400 font-medium">${u.credits_used || 0}</td>
-                      <td class="p-3 text-slate-400">${u.monthly_limit || 50}</td>
-                      <td class="p-3">
-                        <div class="flex items-center gap-2">
-                          <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-                            <div class="h-full bg-cyan-500 rounded-full"
-                                 style="width: ${Math.min(100, (u.credits_used || 0) / (u.monthly_limit || 50) * 100)}%"></div>
-                          </div>
-                          <span class="text-xs text-slate-400">${Math.round((u.credits_used || 0) / (u.monthly_limit || 50) * 100)}%</span>
-                        </div>
-                      </td>
-                      <td class="p-3 text-sm text-slate-400">
-                        ${u.last_used_at ? new Date(u.last_used_at).toLocaleDateString('es-ES') : '-'}
-                      </td>
-                    </tr>
-                  `).join('') || `
+                  ${usageRows || `
                     <tr>
                       <td colspan="6" class="p-8 text-center text-slate-400">
                         No hay datos de uso de IA
@@ -681,6 +785,319 @@ class AdminPanelModal {
       logger.error('Error cargando uso de IA:', error);
       return this.renderDashboardError(error.message);
     }
+  }
+
+  async renderTransparency() {
+    try {
+      const supabase = window.supabaseClient;
+      if (!supabase) return this.renderDashboardError('Supabase no disponible');
+
+      const [goalsResult, contributionsResult, inventoryResult] = await Promise.all([
+        supabase
+          .from('transparency_goals')
+          .select('*')
+          .order('display_order', { ascending: true }),
+        supabase
+          .from('transparency_contributions')
+          .select('*')
+          .order('contribution_date', { ascending: false })
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('transparency_inventory')
+          .select('*')
+          .order('section', { ascending: true })
+          .order('display_order', { ascending: true })
+      ]);
+
+      if (goalsResult.error) throw goalsResult.error;
+      if (contributionsResult.error) throw contributionsResult.error;
+      if (inventoryResult.error) throw inventoryResult.error;
+
+      this.transparencyGoals = goalsResult.data || [];
+      this.transparencyContributions = contributionsResult.data || [];
+      this.transparencyInventory = inventoryResult.data || [];
+
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-white">🔍 Objetivos de Transparencia</h3>
+              <p class="text-slate-400 text-sm mt-1">Gestiona los objetivos públicos que aparecen en el panel de transparencia y sus importes visibles.</p>
+            </div>
+            <button id="transparency-create-btn"
+                    class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold rounded-lg transition-colors">
+              + Nuevo objetivo
+            </button>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            ${this.renderTransparencyMetricCard('Objetivos', this.transparencyGoals.length, 'text-cyan-400', 'border-cyan-500/30')}
+            ${this.renderTransparencyMetricCard('Financiado', `${this.getTransparencyTotals().funded.toLocaleString('es-ES')}€`, 'text-emerald-400', 'border-emerald-500/30')}
+            ${this.renderTransparencyMetricCard('Meta total', `${this.getTransparencyTotals().target.toLocaleString('es-ES')}€`, 'text-amber-400', 'border-amber-500/30')}
+          </div>
+
+          <div class="space-y-4">
+            ${this.transparencyGoals.map(goal => this.renderTransparencyGoalCard(goal)).join('') || `
+              <div class="bg-white/5 rounded-xl border border-white/10 p-8 text-center text-slate-400">
+                No hay objetivos cargados todavía.
+              </div>
+            `}
+          </div>
+
+          <div class="pt-4 border-t border-white/10 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-white">💚 Aportes públicos</h3>
+                <p class="text-slate-400 text-sm mt-1">Gestiona las entradas visibles en el historial público del panel.</p>
+              </div>
+              <button id="transparency-contribution-create-btn"
+                      class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold rounded-lg transition-colors">
+                + Nuevo aporte
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              ${this.transparencyContributions.map(entry => this.renderTransparencyContributionCard(entry)).join('') || `
+                <div class="bg-white/5 rounded-xl border border-white/10 p-8 text-center text-slate-400">
+                  No hay aportes públicos cargados todavía.
+                </div>
+              `}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-white">🧭 Inventario del ecosistema</h3>
+                <p class="text-slate-400 text-sm mt-1">Edita libros, herramientas, módulos y roadmap visibles en el portal público.</p>
+              </div>
+              <button id="transparency-inventory-create-btn"
+                      class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold rounded-lg transition-colors">
+                + Nueva entrada
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              ${this.transparencyInventory.map(entry => this.renderTransparencyInventoryCard(entry)).join('') || `
+                <div class="bg-white/5 rounded-xl border border-white/10 p-8 text-center text-slate-400">
+                  No hay inventario cargado todavía.
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    } catch (error) {
+      logger.error('Error cargando objetivos de transparencia:', error);
+      return this.renderDashboardError(`${error.message}. Si falta la tabla, aplica la migración 016_transparency_panel.sql`);
+    }
+  }
+
+  renderTransparencyMetricCard(label, value, valueClass, borderClass) {
+    return `
+      <div class="bg-white/5 rounded-xl p-4 border ${borderClass}">
+        <div class="text-sm text-slate-400">${label}</div>
+        <div class="text-3xl font-bold ${valueClass} mt-2">${value}</div>
+      </div>
+    `;
+  }
+
+  renderTransparencyGoalCard(goal) {
+    const goalId = goal.id;
+    return `
+      <div class="bg-white/5 rounded-xl border border-white/10 p-5 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div class="text-xs uppercase tracking-[0.15em] text-slate-500">${goal.slug}</div>
+            <h4 class="text-lg font-semibold text-white">${goal.title}</h4>
+          </div>
+          <div class="flex gap-2">
+            <button class="transparency-save-btn px-3 py-2 bg-cyan-500 hover:bg-cyan-600 text-slate-950 text-sm font-semibold rounded-lg transition-colors"
+                    data-goal-id="${goalId}">
+              Guardar
+            </button>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Título</label>
+            <input type="text" id="goal-title-${goalId}" value="${this.escapeAttr(goal.title)}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Área</label>
+            <input type="text" id="goal-area-${goalId}" value="${this.escapeAttr(goal.area || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Prioridad</label>
+            <select id="goal-priority-${goalId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(goal.priority, ['alta', 'media', 'baja'])}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Estado</label>
+            <select id="goal-status-${goalId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(goal.status, ['abierto', 'en marcha', 'pausado', 'completado'])}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Meta EUR</label>
+            <input type="number" id="goal-target-${goalId}" value="${goal.target_eur ?? 0}" min="0" step="0.01"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Recaudado EUR</label>
+            <input type="number" id="goal-funded-${goalId}" value="${goal.funded_eur ?? 0}" min="0" step="0.01" readonly
+                   class="w-full px-3 py-2 bg-slate-800 border border-white/10 rounded-lg text-slate-300 cursor-not-allowed">
+            <p class="mt-1 text-[11px] text-slate-500">Se actualiza automáticamente desde los aportes asociados.</p>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Book ID</label>
+            <input type="text" id="goal-book-${goalId}" value="${this.escapeAttr(goal.book_id || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Orden</label>
+            <input type="number" id="goal-order-${goalId}" value="${goal.display_order ?? 0}" step="1"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Descripción</label>
+          <textarea id="goal-description-${goalId}" rows="3"
+                    class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">${this.escapeHtml(goal.description || '')}</textarea>
+        </div>
+      </div>
+    `;
+  }
+
+  renderTransparencyContributionCard(entry) {
+    const entryId = entry.id;
+    return `
+      <div class="bg-white/5 rounded-xl border border-white/10 p-5 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div class="text-xs uppercase tracking-[0.15em] text-slate-500">${entry.goal_slug || 'sin-objetivo'}</div>
+            <h4 class="text-lg font-semibold text-white">${entry.label}</h4>
+          </div>
+          <button class="transparency-contribution-save-btn px-3 py-2 bg-cyan-500 hover:bg-cyan-600 text-slate-950 text-sm font-semibold rounded-lg transition-colors"
+                  data-contribution-id="${entryId}">
+            Guardar
+          </button>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Etiqueta pública</label>
+            <input type="text" id="contribution-label-${entryId}" value="${this.escapeAttr(entry.label)}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Objetivo (goal_slug)</label>
+            <input type="text" id="contribution-goal-${entryId}" value="${this.escapeAttr(entry.goal_slug || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Importe EUR</label>
+            <input type="number" id="contribution-amount-${entryId}" value="${entry.amount_eur ?? 0}" min="0" step="0.01"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Fecha</label>
+            <input type="date" id="contribution-date-${entryId}" value="${this.escapeAttr(entry.contribution_date || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Visibilidad</label>
+            <select id="contribution-visibility-${entryId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(entry.visibility, ['publico', 'anonimo', 'privado'])}
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  renderTransparencyInventoryCard(entry) {
+    const entryId = entry.id;
+    return `
+      <div class="bg-white/5 rounded-xl border border-white/10 p-5 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div class="text-xs uppercase tracking-[0.15em] text-slate-500">${entry.slug}</div>
+            <h4 class="text-lg font-semibold text-white">${entry.title}</h4>
+          </div>
+          <button class="transparency-inventory-save-btn px-3 py-2 bg-cyan-500 hover:bg-cyan-600 text-slate-950 text-sm font-semibold rounded-lg transition-colors"
+                  data-inventory-id="${entryId}">
+            Guardar
+          </button>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Título</label>
+            <input type="text" id="inventory-title-${entryId}" value="${this.escapeAttr(entry.title)}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Área</label>
+            <input type="text" id="inventory-area-${entryId}" value="${this.escapeAttr(entry.area || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Sección</label>
+            <select id="inventory-section-${entryId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(entry.section, ['books', 'tools', 'modules', 'roadmap'])}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Estado</label>
+            <select id="inventory-status-${entryId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(entry.status, ['activo', 'beta', 'experimental', 'pendiente', 'en marcha', 'pausado'])}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Madurez</label>
+            <select id="inventory-maturity-${entryId}" class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+              ${this.renderSelectOption(entry.maturity, ['alta', 'media', 'baja'])}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Book ID</label>
+            <input type="text" id="inventory-book-${entryId}" value="${this.escapeAttr(entry.book_id || '')}"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Orden</label>
+            <input type="number" id="inventory-order-${entryId}" value="${entry.display_order ?? 0}" step="1"
+                   class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Descripción</label>
+          <textarea id="inventory-description-${entryId}" rows="3"
+                    class="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg text-white">${this.escapeHtml(entry.description || '')}</textarea>
+        </div>
+      </div>
+    `;
+  }
+
+  getTransparencyTotals() {
+    return this.transparencyGoals.reduce((acc, goal) => {
+      acc.target += Number(goal.target_eur || 0);
+      acc.funded += Number(goal.funded_eur || 0);
+      return acc;
+    }, { target: 0, funded: 0 });
+  }
+
+  renderSelectOption(selectedValue, options) {
+    return options.map(option => `
+      <option value="${option}" ${selectedValue === option ? 'selected' : ''}>${option}</option>
+    `).join('');
   }
 
   /**
@@ -851,6 +1268,9 @@ class AdminPanelModal {
       case 'ai-usage':
         content = await this.renderAIUsage();
         break;
+      case 'transparency':
+        content = await this.renderTransparency();
+        break;
       case 'manual-activation':
         content = this.renderManualActivation();
         break;
@@ -913,6 +1333,33 @@ class AdminPanelModal {
     if (activationBtn) {
       activationBtn.addEventListener('click', () => this.processManualActivation());
     }
+
+    const transparencyCreateBtn = document.getElementById('transparency-create-btn');
+    if (transparencyCreateBtn) {
+      transparencyCreateBtn.addEventListener('click', () => this.createTransparencyGoal());
+    }
+
+    const transparencyContributionCreateBtn = document.getElementById('transparency-contribution-create-btn');
+    if (transparencyContributionCreateBtn) {
+      transparencyContributionCreateBtn.addEventListener('click', () => this.createTransparencyContribution());
+    }
+
+    const transparencyInventoryCreateBtn = document.getElementById('transparency-inventory-create-btn');
+    if (transparencyInventoryCreateBtn) {
+      transparencyInventoryCreateBtn.addEventListener('click', () => this.createTransparencyInventory());
+    }
+
+    document.querySelectorAll('.transparency-save-btn').forEach(button => {
+      button.addEventListener('click', () => this.saveTransparencyGoal(button.dataset.goalId));
+    });
+
+    document.querySelectorAll('.transparency-contribution-save-btn').forEach(button => {
+      button.addEventListener('click', () => this.saveTransparencyContribution(button.dataset.contributionId));
+    });
+
+    document.querySelectorAll('.transparency-inventory-save-btn').forEach(button => {
+      button.addEventListener('click', () => this.saveTransparencyInventory(button.dataset.inventoryId));
+    });
   }
 
   /**
@@ -964,7 +1411,13 @@ class AdminPanelModal {
           onConflict: 'user_id'
         });
 
-      if (subError) throw subError;
+      if (subError) {
+        if (this.handleSubscriptionsError(subError, 'manual-activation')) {
+          alert('La tabla "subscriptions" no existe en Supabase. Crea esa tabla para activar suscripciones manuales.');
+          return;
+        }
+        throw subError;
+      }
 
       // Actualizar créditos de IA
       const monthlyLimit = plan === 'pro' ? 2000 : 500;
@@ -1014,16 +1467,23 @@ class AdminPanelModal {
 
       if (plan.toLowerCase() === 'free') {
         // Cancelar suscripción
-        await supabase
+        const { error: cancelError } = await supabase
           .from('subscriptions')
           .update({ status: 'cancelled' })
           .eq('user_id', userId);
+        if (cancelError) {
+          if (this.handleSubscriptionsError(cancelError, 'editUserPlan-cancel')) {
+            alert('La tabla "subscriptions" no existe en Supabase. No se puede cambiar el plan todavía.');
+            return;
+          }
+          throw cancelError;
+        }
       } else {
         // Activar suscripción
         const endDate = new Date();
         endDate.setMonth(endDate.getMonth() + 1);
 
-        await supabase
+        const { error: upsertError } = await supabase
           .from('subscriptions')
           .upsert({
             user_id: userId,
@@ -1035,6 +1495,13 @@ class AdminPanelModal {
           }, {
             onConflict: 'user_id'
           });
+        if (upsertError) {
+          if (this.handleSubscriptionsError(upsertError, 'editUserPlan-upsert')) {
+            alert('La tabla "subscriptions" no existe en Supabase. No se puede cambiar el plan todavía.');
+            return;
+          }
+          throw upsertError;
+        }
 
         // Actualizar créditos
         const monthlyLimit = plan === 'pro' ? 2000 : 500;
@@ -1106,12 +1573,26 @@ class AdminPanelModal {
       const supabase = window.supabaseClient;
       const { data: users, error } = await supabase
         .from('profiles')
-        .select(`
-          id, email, display_name, created_at, role,
-          subscriptions (plan, status)
-        `);
+        .select('id, email, display_name, created_at, role');
 
       if (error) throw error;
+
+      const userIds = (users || []).map((u) => u.id).filter(Boolean);
+      let subscriptionsByUser = {};
+      if (userIds.length > 0) {
+        const { data: subs, error: subsError } = await supabase
+          .from('subscriptions')
+          .select('user_id, plan, status')
+          .in('user_id', userIds);
+        if (subsError && !this.handleSubscriptionsError(subsError, 'exportUsers')) throw subsError;
+
+        subscriptionsByUser = ((subs || [])).reduce((acc, row) => {
+          const key = row.user_id;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(row);
+          return acc;
+        }, {});
+      }
 
       // Crear CSV
       const headers = ['ID', 'Email', 'Nombre', 'Plan', 'Estado', 'Rol', 'Fecha Registro'];
@@ -1119,8 +1600,8 @@ class AdminPanelModal {
         u.id,
         u.email || '',
         u.display_name || '',
-        u.subscriptions?.[0]?.plan || 'free',
-        u.subscriptions?.[0]?.status || 'none',
+        subscriptionsByUser[u.id]?.[0]?.plan || 'free',
+        subscriptionsByUser[u.id]?.[0]?.status || 'none',
         u.role || 'user',
         new Date(u.created_at).toLocaleDateString('es-ES')
       ]);
@@ -1142,6 +1623,216 @@ class AdminPanelModal {
       logger.error('Error exportando usuarios:', error);
       alert(`Error: ${error.message}`);
     }
+  }
+
+  async createTransparencyGoal() {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const timestamp = Date.now();
+      const { error } = await supabase
+        .from('transparency_goals')
+        .insert({
+          slug: `nuevo-objetivo-${timestamp}`,
+          title: 'Nuevo objetivo',
+          area: 'General',
+          description: 'Describe aquí el objetivo de transparencia.',
+          priority: 'media',
+          status: 'abierto',
+          target_eur: 0,
+          funded_eur: 0,
+          display_order: this.transparencyGoals.length * 10,
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      alert('Objetivo creado');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error creando objetivo de transparencia:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  async saveTransparencyGoal(goalId) {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const payload = {
+        title: document.getElementById(`goal-title-${goalId}`)?.value?.trim() || 'Sin título',
+        area: document.getElementById(`goal-area-${goalId}`)?.value?.trim() || 'General',
+        priority: document.getElementById(`goal-priority-${goalId}`)?.value || 'media',
+        status: document.getElementById(`goal-status-${goalId}`)?.value || 'abierto',
+        target_eur: Number(document.getElementById(`goal-target-${goalId}`)?.value || 0),
+        book_id: document.getElementById(`goal-book-${goalId}`)?.value?.trim() || null,
+        display_order: Number(document.getElementById(`goal-order-${goalId}`)?.value || 0),
+        description: document.getElementById(`goal-description-${goalId}`)?.value?.trim() || '',
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('transparency_goals')
+        .update(payload)
+        .eq('id', goalId);
+
+      if (error) throw error;
+
+      alert('Objetivo actualizado');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error guardando objetivo de transparencia:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  async createTransparencyContribution() {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const defaultGoalSlug = this.transparencyGoals[0]?.slug || null;
+      const { error } = await supabase
+        .from('transparency_contributions')
+        .insert({
+          goal_slug: defaultGoalSlug,
+          label: 'Nuevo aporte público',
+          amount_eur: 0,
+          contribution_date: new Date().toISOString().slice(0, 10),
+          visibility: 'publico'
+        });
+
+      if (error) throw error;
+
+      alert('Aporte creado');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error creando aporte de transparencia:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  async saveTransparencyContribution(contributionId) {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const payload = {
+        label: document.getElementById(`contribution-label-${contributionId}`)?.value?.trim() || 'Sin etiqueta',
+        goal_slug: document.getElementById(`contribution-goal-${contributionId}`)?.value?.trim() || null,
+        amount_eur: Number(document.getElementById(`contribution-amount-${contributionId}`)?.value || 0),
+        contribution_date: document.getElementById(`contribution-date-${contributionId}`)?.value || new Date().toISOString().slice(0, 10),
+        visibility: document.getElementById(`contribution-visibility-${contributionId}`)?.value || 'publico'
+      };
+
+      const { error } = await supabase
+        .from('transparency_contributions')
+        .update(payload)
+        .eq('id', contributionId);
+
+      if (error) throw error;
+
+      alert('Aporte actualizado');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error guardando aporte de transparencia:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  async createTransparencyInventory() {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const timestamp = Date.now();
+      const { error } = await supabase
+        .from('transparency_inventory')
+        .insert({
+          slug: `inventario-${timestamp}`,
+          title: 'Nueva entrada',
+          area: 'General',
+          section: 'modules',
+          description: 'Describe aquí esta pieza del ecosistema.',
+          status: 'activo',
+          maturity: 'media',
+          display_order: this.transparencyInventory.length * 10,
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      alert('Entrada creada');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error creando entrada de inventario:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  async saveTransparencyInventory(inventoryId) {
+    const supabase = window.supabaseClient;
+    if (!supabase) {
+      alert('Supabase no disponible');
+      return;
+    }
+
+    try {
+      const payload = {
+        title: document.getElementById(`inventory-title-${inventoryId}`)?.value?.trim() || 'Sin título',
+        area: document.getElementById(`inventory-area-${inventoryId}`)?.value?.trim() || 'General',
+        section: document.getElementById(`inventory-section-${inventoryId}`)?.value || 'modules',
+        status: document.getElementById(`inventory-status-${inventoryId}`)?.value || 'activo',
+        maturity: document.getElementById(`inventory-maturity-${inventoryId}`)?.value || 'media',
+        book_id: document.getElementById(`inventory-book-${inventoryId}`)?.value?.trim() || null,
+        display_order: Number(document.getElementById(`inventory-order-${inventoryId}`)?.value || 0),
+        description: document.getElementById(`inventory-description-${inventoryId}`)?.value?.trim() || '',
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('transparency_inventory')
+        .update(payload)
+        .eq('id', inventoryId);
+
+      if (error) throw error;
+
+      alert('Entrada actualizada');
+      this.switchTab('transparency');
+    } catch (error) {
+      logger.error('Error guardando entrada de inventario:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  escapeAttr(value) {
+    return this.escapeHtml(value);
   }
 
   /**

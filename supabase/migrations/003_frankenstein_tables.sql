@@ -140,55 +140,71 @@ ALTER TABLE public.frankenstein_user_stats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.frankenstein_leaderboard ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para frankenstein_beings
+DROP POLICY IF EXISTS "Users can view own beings" ON public.frankenstein_beings;
 CREATE POLICY "Users can view own beings" ON public.frankenstein_beings
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own beings" ON public.frankenstein_beings;
 CREATE POLICY "Users can insert own beings" ON public.frankenstein_beings
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own beings" ON public.frankenstein_beings;
 CREATE POLICY "Users can update own beings" ON public.frankenstein_beings
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own beings" ON public.frankenstein_beings;
 CREATE POLICY "Users can delete own beings" ON public.frankenstein_beings
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Políticas para frankenstein_settings
+DROP POLICY IF EXISTS "Users can view own settings" ON public.frankenstein_settings;
 CREATE POLICY "Users can view own settings" ON public.frankenstein_settings
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own settings" ON public.frankenstein_settings;
 CREATE POLICY "Users can insert own settings" ON public.frankenstein_settings
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own settings" ON public.frankenstein_settings;
 CREATE POLICY "Users can update own settings" ON public.frankenstein_settings
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- Políticas para frankenstein_achievements
+DROP POLICY IF EXISTS "Users can view own achievements" ON public.frankenstein_achievements;
 CREATE POLICY "Users can view own achievements" ON public.frankenstein_achievements
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own achievements" ON public.frankenstein_achievements;
 CREATE POLICY "Users can insert own achievements" ON public.frankenstein_achievements
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Políticas para frankenstein_user_stats
+DROP POLICY IF EXISTS "Users can view own stats" ON public.frankenstein_user_stats;
 CREATE POLICY "Users can view own stats" ON public.frankenstein_user_stats
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own stats" ON public.frankenstein_user_stats;
 CREATE POLICY "Users can insert own stats" ON public.frankenstein_user_stats
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own stats" ON public.frankenstein_user_stats;
 CREATE POLICY "Users can update own stats" ON public.frankenstein_user_stats
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- Políticas para leaderboard (todos pueden ver, solo el propio puede editar)
+DROP POLICY IF EXISTS "Anyone can view leaderboard" ON public.frankenstein_leaderboard;
 CREATE POLICY "Anyone can view leaderboard" ON public.frankenstein_leaderboard
   FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert own leaderboard entry" ON public.frankenstein_leaderboard;
 CREATE POLICY "Users can insert own leaderboard entry" ON public.frankenstein_leaderboard
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own leaderboard entry" ON public.frankenstein_leaderboard;
 CREATE POLICY "Users can update own leaderboard entry" ON public.frankenstein_leaderboard
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own leaderboard entry" ON public.frankenstein_leaderboard;
 CREATE POLICY "Users can delete own leaderboard entry" ON public.frankenstein_leaderboard
   FOR DELETE USING (auth.uid() = user_id);
 

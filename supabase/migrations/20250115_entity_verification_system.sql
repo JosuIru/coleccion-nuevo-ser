@@ -16,20 +16,20 @@
 --
 -- ═══════════════════════════════════════════════════════════════════════════════
 
--- Añadir campos de verificación a transition_entities
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS verification_level INTEGER DEFAULT 0;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS verification_code VARCHAR(64);
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS total_received DECIMAL(12,2) DEFAULT 0;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS total_pending DECIMAL(12,2) DEFAULT 0;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS claimed_by UUID REFERENCES auth.users(id);
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS claimed_at TIMESTAMPTZ;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS withdrawal_available_at TIMESTAMPTZ;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT FALSE;
-ALTER TABLE transition_entities ADD COLUMN IF NOT EXISTS ban_reason TEXT;
+-- Añadir campos de verificación a map_entities
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS verification_level INTEGER DEFAULT 0;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS verification_code VARCHAR(64);
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS total_received DECIMAL(12,2) DEFAULT 0;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS total_pending DECIMAL(12,2) DEFAULT 0;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS claimed_by UUID REFERENCES auth.users(id);
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS claimed_at TIMESTAMPTZ;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS withdrawal_available_at TIMESTAMPTZ;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT FALSE;
+ALTER TABLE map_entities ADD COLUMN IF NOT EXISTS ban_reason TEXT;
 
 -- Índices para búsquedas eficientes
-CREATE INDEX IF NOT EXISTS idx_entities_verification_level ON transition_entities(verification_level);
-CREATE INDEX IF NOT EXISTS idx_entities_claimed_by ON transition_entities(claimed_by);
+CREATE INDEX IF NOT EXISTS idx_entities_verification_level ON map_entities(verification_level);
+CREATE INDEX IF NOT EXISTS idx_entities_claimed_by ON map_entities(claimed_by);
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- TABLA: entity_verifications
@@ -37,7 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_entities_claimed_by ON transition_entities(claime
 -- ═══════════════════════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS entity_verifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entity_id UUID NOT NULL REFERENCES transition_entities(id) ON DELETE CASCADE,
+    entity_id UUID NOT NULL REFERENCES map_entities(id) ON DELETE CASCADE,
     method VARCHAR(32) NOT NULL, -- 'dns', 'meta_tag', 'crypto_signature', 'social_endorsement'
     proof_data JSONB NOT NULL, -- Datos de la prueba (dominio verificado, firma, etc.)
     verified_at TIMESTAMPTZ DEFAULT NOW(),
@@ -56,7 +56,7 @@ CREATE INDEX IF NOT EXISTS idx_verifications_method ON entity_verifications(meth
 -- ═══════════════════════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS entity_endorsements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entity_id UUID NOT NULL REFERENCES transition_entities(id) ON DELETE CASCADE,
+    entity_id UUID NOT NULL REFERENCES map_entities(id) ON DELETE CASCADE,
     endorser_id UUID NOT NULL REFERENCES auth.users(id),
     stake_amount DECIMAL(10,2) NOT NULL DEFAULT 20.00, -- Mínimo €20
     stake_currency VARCHAR(3) DEFAULT 'EUR',
@@ -85,7 +85,7 @@ CREATE INDEX IF NOT EXISTS idx_endorsements_status ON entity_endorsements(stake_
 -- ═══════════════════════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS donation_intents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entity_id UUID NOT NULL REFERENCES transition_entities(id) ON DELETE CASCADE,
+    entity_id UUID NOT NULL REFERENCES map_entities(id) ON DELETE CASCADE,
     donor_id UUID REFERENCES auth.users(id),
     donor_email VARCHAR(255),
     donor_name VARCHAR(100),
@@ -115,7 +115,7 @@ CREATE INDEX IF NOT EXISTS idx_intents_status ON donation_intents(status);
 -- ═══════════════════════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS entity_disputes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entity_id UUID NOT NULL REFERENCES transition_entities(id) ON DELETE CASCADE,
+    entity_id UUID NOT NULL REFERENCES map_entities(id) ON DELETE CASCADE,
     complainant_id UUID NOT NULL REFERENCES auth.users(id),
     complainant_stake DECIMAL(10,2) DEFAULT 5.00, -- Fianza del denunciante
 
@@ -162,7 +162,7 @@ CREATE INDEX IF NOT EXISTS idx_votes_dispute ON dispute_votes(dispute_id);
 -- ═══════════════════════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS entity_donations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entity_id UUID NOT NULL REFERENCES transition_entities(id) ON DELETE CASCADE,
+    entity_id UUID NOT NULL REFERENCES map_entities(id) ON DELETE CASCADE,
     donor_id UUID REFERENCES auth.users(id),
     donor_name VARCHAR(100),
     donor_email VARCHAR(255),
@@ -194,6 +194,16 @@ CREATE TABLE IF NOT EXISTS entity_donations (
     -- Referencia a intención original si existía
     intent_id UUID REFERENCES donation_intents(id)
 );
+
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS payment_status VARCHAR(20) DEFAULT 'pending';
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS payment_id VARCHAR(100);
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS btc_tx_id VARCHAR(100);
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS is_p2p BOOLEAN DEFAULT FALSE;
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS withdrawal_status VARCHAR(20) DEFAULT 'held';
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS withdrawal_available_at TIMESTAMPTZ;
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS withdrawn_at TIMESTAMPTZ;
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;
+ALTER TABLE entity_donations ADD COLUMN IF NOT EXISTS intent_id UUID REFERENCES donation_intents(id);
 
 CREATE INDEX IF NOT EXISTS idx_donations_entity ON entity_donations(entity_id);
 CREATE INDEX IF NOT EXISTS idx_donations_donor ON entity_donations(donor_id);
@@ -286,7 +296,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION update_entity_verification_level()
 RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE transition_entities
+    UPDATE map_entities
     SET verification_level = calculate_verification_level(
         COALESCE(NEW.entity_id, OLD.entity_id)
     )
@@ -326,13 +336,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_set_verification_code ON transition_entities;
+DROP TRIGGER IF EXISTS trg_set_verification_code ON map_entities;
 CREATE TRIGGER trg_set_verification_code
-    BEFORE INSERT ON transition_entities
+    BEFORE INSERT ON map_entities
     FOR EACH ROW EXECUTE FUNCTION set_verification_code();
 
 -- Actualizar códigos de entidades existentes que no tengan
-UPDATE transition_entities
+UPDATE map_entities
 SET verification_code = generate_verification_code()
 WHERE verification_code IS NULL;
 
@@ -370,22 +380,32 @@ ALTER TABLE dispute_votes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE entity_donations ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de lectura pública (transparencia)
+DROP POLICY IF EXISTS "Verificaciones públicas" ON entity_verifications;
 CREATE POLICY "Verificaciones públicas" ON entity_verifications FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Avales públicos" ON entity_endorsements;
 CREATE POLICY "Avales públicos" ON entity_endorsements FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Intenciones públicas" ON donation_intents;
 CREATE POLICY "Intenciones públicas" ON donation_intents FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Disputas públicas" ON entity_disputes;
 CREATE POLICY "Disputas públicas" ON entity_disputes FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Votos públicos" ON dispute_votes;
 CREATE POLICY "Votos públicos" ON dispute_votes FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Donaciones públicas" ON entity_donations;
 CREATE POLICY "Donaciones públicas" ON entity_donations FOR SELECT USING (true);
 
 -- Políticas de escritura
+DROP POLICY IF EXISTS "Usuario puede crear intención" ON donation_intents;
 CREATE POLICY "Usuario puede crear intención" ON donation_intents
     FOR INSERT WITH CHECK (auth.uid() = donor_id OR donor_id IS NULL);
 
+DROP POLICY IF EXISTS "Usuario puede avalar" ON entity_endorsements;
 CREATE POLICY "Usuario puede avalar" ON entity_endorsements
     FOR INSERT WITH CHECK (auth.uid() = endorser_id);
 
+DROP POLICY IF EXISTS "Usuario puede disputar" ON entity_disputes;
 CREATE POLICY "Usuario puede disputar" ON entity_disputes
     FOR INSERT WITH CHECK (auth.uid() = complainant_id);
 
+DROP POLICY IF EXISTS "Árbitro puede votar" ON dispute_votes;
 CREATE POLICY "Árbitro puede votar" ON dispute_votes
     FOR INSERT WITH CHECK (auth.uid() = arbiter_id);

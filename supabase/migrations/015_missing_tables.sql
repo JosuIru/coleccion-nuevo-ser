@@ -227,6 +227,31 @@ CREATE TABLE IF NOT EXISTS public.achievements (
     CONSTRAINT achievements_xp_check CHECK (xp_reward >= 0)
 );
 
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'general';
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS tier TEXT DEFAULT 'bronze';
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS icon TEXT DEFAULT '🏆';
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS badge_image_url TEXT;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS color TEXT DEFAULT '#FFD700';
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS requirement_type TEXT;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS requirement_value INTEGER DEFAULT 1;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS requirement_context JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS points_reward INTEGER DEFAULT 10;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS xp_reward INTEGER DEFAULT 50;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT false;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS is_repeatable BOOLEAN DEFAULT false;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_achievements_slug_unique
+  ON public.achievements(slug)
+  WHERE slug IS NOT NULL;
+
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_achievements_slug ON public.achievements(slug);
 CREATE INDEX IF NOT EXISTS idx_achievements_category ON public.achievements(category);
@@ -284,6 +309,24 @@ CREATE TABLE IF NOT EXISTS public.user_achievements (
     CONSTRAINT user_achievements_times_check CHECK (times_earned >= 0)
 );
 
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS achievement_id UUID;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS unlocked_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS progress_current INTEGER DEFAULT 0;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS progress_target INTEGER DEFAULT 1;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS is_completed BOOLEAN DEFAULT true;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS times_earned INTEGER DEFAULT 1;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS unlock_context JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS is_notified BOOLEAN DEFAULT false;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS notified_at TIMESTAMPTZ;
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.user_achievements ADD COLUMN IF NOT EXISTS synced_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_achievements_unique_user_achievement
+  ON public.user_achievements(user_id, achievement_id)
+  WHERE user_id IS NOT NULL AND achievement_id IS NOT NULL;
+
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_user_achievements_user_id ON public.user_achievements(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_achievements_achievement_id ON public.user_achievements(achievement_id);
@@ -336,37 +379,44 @@ CREATE TRIGGER update_user_achievements_updated_at
 -- 6. DATOS INICIALES: LOGROS BASE
 -- ============================================================================
 
-INSERT INTO public.achievements (slug, name, description, category, tier, icon, requirement_type, requirement_value, points_reward, xp_reward, sort_order)
-VALUES
-    -- Logros de Lectura
-    ('first-chapter', 'Primer Paso', 'Completa tu primer capítulo', 'reading', 'bronze', '📖', 'chapters_read', 1, 10, 50, 1),
-    ('book-starter', 'Explorador', 'Empieza tu primer libro', 'reading', 'bronze', '🚀', 'books_started', 1, 10, 50, 2),
-    ('bookworm', 'Ratón de Biblioteca', 'Lee 10 capítulos', 'reading', 'silver', '📚', 'chapters_read', 10, 25, 100, 3),
-    ('first-book', 'Primera Conquista', 'Completa tu primer libro', 'reading', 'silver', '🎯', 'books_completed', 1, 50, 200, 4),
-    ('avid-reader', 'Lector Ávido', 'Lee 50 capítulos', 'reading', 'gold', '⭐', 'chapters_read', 50, 100, 500, 5),
-    ('library-master', 'Maestro Bibliotecario', 'Completa 5 libros', 'reading', 'platinum', '👑', 'books_completed', 5, 250, 1000, 6),
+DO $$
+DECLARE
+    achievements_requires_user_id BOOLEAN := FALSE;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'achievements'
+          AND column_name = 'user_id'
+          AND is_nullable = 'NO'
+    ) INTO achievements_requires_user_id;
 
-    -- Logros de Racha
-    ('streak-3', 'Constante', '3 días seguidos leyendo', 'streak', 'bronze', '🔥', 'streak_days', 3, 15, 75, 10),
-    ('streak-7', 'Disciplinado', '7 días seguidos leyendo', 'streak', 'silver', '💪', 'streak_days', 7, 30, 150, 11),
-    ('streak-30', 'Imparable', '30 días seguidos leyendo', 'streak', 'gold', '🌟', 'streak_days', 30, 100, 500, 12),
-    ('streak-100', 'Leyenda', '100 días seguidos leyendo', 'streak', 'diamond', '💎', 'streak_days', 100, 500, 2500, 13),
-
-    -- Logros de Quiz
-    ('first-quiz', 'Aprendiz', 'Completa tu primer quiz', 'quiz', 'bronze', '✏️', 'quizzes_completed', 1, 10, 50, 20),
-    ('quiz-master', 'Experto', 'Completa 10 quizzes', 'quiz', 'silver', '🎓', 'quizzes_completed', 10, 50, 200, 21),
-    ('perfect-score', 'Perfeccionista', 'Obtén puntuación perfecta en un quiz', 'quiz', 'gold', '💯', 'perfect_quizzes', 1, 25, 100, 22),
-
-    -- Logros de Meditación
-    ('first-meditation', 'Calma Interior', 'Completa tu primera meditación', 'meditation', 'bronze', '🧘', 'meditations_completed', 1, 10, 50, 30),
-    ('zen-master', 'Maestro Zen', 'Completa 20 meditaciones', 'meditation', 'gold', '☯️', 'meditations_completed', 20, 100, 400, 31),
-    ('hour-meditator', 'Meditador Profundo', '60 minutos de meditación total', 'meditation', 'silver', '🕐', 'meditation_minutes', 60, 50, 200, 32),
-
-    -- Logros Especiales
-    ('night-owl', 'Búho Nocturno', 'Lee después de medianoche', 'special', 'bronze', '🦉', 'special_condition', 1, 15, 75, 40),
-    ('early-bird', 'Madrugador', 'Lee antes de las 6am', 'special', 'bronze', '🐦', 'special_condition', 1, 15, 75, 41),
-    ('collection-complete', 'Coleccionista', 'Desbloquea todos los logros de bronce', 'milestone', 'gold', '🏆', 'bronze_achievements', 10, 200, 1000, 50)
-ON CONFLICT (slug) DO NOTHING;
+    IF NOT achievements_requires_user_id THEN
+        INSERT INTO public.achievements (slug, name, description, category, tier, icon, requirement_type, requirement_value, points_reward, xp_reward, sort_order)
+        VALUES
+            ('first-chapter', 'Primer Paso', 'Completa tu primer capítulo', 'reading', 'bronze', '📖', 'chapters_read', 1, 10, 50, 1),
+            ('book-starter', 'Explorador', 'Empieza tu primer libro', 'reading', 'bronze', '🚀', 'books_started', 1, 10, 50, 2),
+            ('bookworm', 'Ratón de Biblioteca', 'Lee 10 capítulos', 'reading', 'silver', '📚', 'chapters_read', 10, 25, 100, 3),
+            ('first-book', 'Primera Conquista', 'Completa tu primer libro', 'reading', 'silver', '🎯', 'books_completed', 1, 50, 200, 4),
+            ('avid-reader', 'Lector Ávido', 'Lee 50 capítulos', 'reading', 'gold', '⭐', 'chapters_read', 50, 100, 500, 5),
+            ('library-master', 'Maestro Bibliotecario', 'Completa 5 libros', 'reading', 'platinum', '👑', 'books_completed', 5, 250, 1000, 6),
+            ('streak-3', 'Constante', '3 días seguidos leyendo', 'streak', 'bronze', '🔥', 'streak_days', 3, 15, 75, 10),
+            ('streak-7', 'Disciplinado', '7 días seguidos leyendo', 'streak', 'silver', '💪', 'streak_days', 7, 30, 150, 11),
+            ('streak-30', 'Imparable', '30 días seguidos leyendo', 'streak', 'gold', '🌟', 'streak_days', 30, 100, 500, 12),
+            ('streak-100', 'Leyenda', '100 días seguidos leyendo', 'streak', 'diamond', '💎', 'streak_days', 100, 500, 2500, 13),
+            ('first-quiz', 'Aprendiz', 'Completa tu primer quiz', 'quiz', 'bronze', '✏️', 'quizzes_completed', 1, 10, 50, 20),
+            ('quiz-master', 'Experto', 'Completa 10 quizzes', 'quiz', 'silver', '🎓', 'quizzes_completed', 10, 50, 200, 21),
+            ('perfect-score', 'Perfeccionista', 'Obtén puntuación perfecta en un quiz', 'quiz', 'gold', '💯', 'perfect_quizzes', 1, 25, 100, 22),
+            ('first-meditation', 'Calma Interior', 'Completa tu primera meditación', 'meditation', 'bronze', '🧘', 'meditations_completed', 1, 10, 50, 30),
+            ('zen-master', 'Maestro Zen', 'Completa 20 meditaciones', 'meditation', 'gold', '☯️', 'meditations_completed', 20, 100, 400, 31),
+            ('hour-meditator', 'Meditador Profundo', '60 minutos de meditación total', 'meditation', 'silver', '🕐', 'meditation_minutes', 60, 50, 200, 32),
+            ('night-owl', 'Búho Nocturno', 'Lee después de medianoche', 'special', 'bronze', '🦉', 'special_condition', 1, 15, 75, 40),
+            ('early-bird', 'Madrugador', 'Lee antes de las 6am', 'special', 'bronze', '🐦', 'special_condition', 1, 15, 75, 41),
+            ('collection-complete', 'Coleccionista', 'Desbloquea todos los logros de bronce', 'milestone', 'gold', '🏆', 'bronze_achievements', 10, 200, 1000, 50)
+        ON CONFLICT DO NOTHING;
+    END IF;
+END $$;
 
 -- ============================================================================
 -- 7. FUNCIÓN: Inicializar progreso de usuario
@@ -441,4 +491,3 @@ COMMENT ON VIEW user_achievements_detailed IS 'Vista combinada de logros de usua
 -- 2. reading_sessions - Sesiones de lectura
 -- 3. achievements - Catálogo de logros
 -- 4. user_achievements - Logros desbloqueados por usuario
-

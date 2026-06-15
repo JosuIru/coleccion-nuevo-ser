@@ -15,9 +15,16 @@ class AIAdapter {
   async loadFallbackResponses() {
     try {
       const response = await fetch('js/ai/fallback-responses.json');
+      // Si devuelve 404 o 500, response.json() intentaría parsear un HTML de error.
+      // Mejor fallar explícito con el status para diagnóstico.
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} al cargar fallback-responses.json`);
+      }
       this.fallbackResponses = await response.json();
     } catch (error) {
-      logger.error('Error loading fallback responses:', error);
+      // warn en vez de error: no es fatal (askLocal tiene respuestas hardcoded en ES),
+      // pero sí degrada el soporte multilingüe — lo dejamos visible en consola.
+      logger.warn('[AIAdapter] fallback-responses.json no disponible, modo local degradado:', error.message);
       this.fallbackResponses = null;
     }
   }
@@ -32,9 +39,20 @@ class AIAdapter {
     // Detectar si estamos en app nativa (Capacitor/Cordova)
     const isNativeApp = !!(window.Capacitor || window.cordova || document.URL.indexOf('http://') === -1);
 
-    // 🔧 FIX v2.9.382: Verificar proxy premium PRIMERO (antes de fallback a local)
-    // Esto permite que usuarios premium usen IA aunque Puter no funcione en Android
-    const premiumResult = await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature);
+    // Respetar el proveedor seleccionado por el usuario.
+    // Solo usar proxy premium si el proveedor actual es premium.
+    const shouldUsePremiumProxy = [
+      this.config.providers.CLAUDE,
+      this.config.providers.OPENAI,
+      this.config.providers.MISTRAL,
+      this.config.providers.GEMINI,
+      this.config.providers.QWEN
+    ].includes(provider);
+
+    // 🔧 FIX v2.9.413: no forzar premium proxy cuando el usuario selecciona Puter/local/ollama/hf
+    const premiumResult = shouldUsePremiumProxy
+      ? await this.tryPremiumProxy(prompt, systemContext, conversationHistory, feature)
+      : { used: false, response: null, isPremiumUser: false, noCredits: false };
 
     if (premiumResult.used) {
       return premiumResult.response;
@@ -977,12 +995,9 @@ class AIAdapter {
   // ═══════════════════════════════════════════════════════════════════════════
 
   async askPuter(prompt, systemContext, conversationHistory) {
-    // Verificar que Puter.js está cargado
+    // Verificar que Puter.js está cargado; si no, intentar cargarlo en caliente.
     if (typeof window.puter === 'undefined') {
-      throw new Error(
-        'Puter.js no está cargado.\n\n' +
-        'Recarga la página para usar el servicio gratuito de IA.'
-      );
+      await this.ensurePuterLoaded();
     }
 
     // Obtener modelo seleccionado o usar el predeterminado
@@ -1037,6 +1052,34 @@ class AIAdapter {
 
       throw error;
     }
+  }
+
+  async ensurePuterLoaded() {
+    if (typeof window.puter !== 'undefined') return true;
+
+    const existing = document.querySelector('script[data-puter-sdk="1"]');
+    if (!existing) {
+      const s = document.createElement('script');
+      s.src = 'https://js.puter.com/v2/';
+      s.async = true;
+      s.setAttribute('data-puter-sdk', '1');
+      document.head.appendChild(s);
+    }
+
+    const timeoutMs = 5000;
+    const start = Date.now();
+    while (typeof window.puter === 'undefined' && Date.now() - start < timeoutMs) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+
+    if (typeof window.puter === 'undefined') {
+      throw new Error(
+        'Puter.js no está disponible ahora mismo. ' +
+        'Verifica conexión o vuelve a intentar en unos segundos.'
+      );
+    }
+
+    return true;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

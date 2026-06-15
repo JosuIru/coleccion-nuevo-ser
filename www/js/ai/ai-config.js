@@ -230,6 +230,15 @@ class AIConfig {
     return true;
   }
 
+  setProvider(provider) {
+    if (!provider || !Object.values(this.providers).includes(provider)) {
+      return false;
+    }
+    this.config.provider = provider;
+    this.saveConfig();
+    return true;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // GETTERS
   // ═══════════════════════════════════════════════════════════════════════════

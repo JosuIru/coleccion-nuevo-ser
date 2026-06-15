@@ -13,14 +13,16 @@
  * @created 2025-01-15
  */
 
-// Fallback logger
+// Fallback logger.
+// Delegamos a console.* (no a logger.*): el fallback ES window.logger, auto-referenciarlo
+// provoca recursión infinita al primer log.
 if (typeof logger === 'undefined') {
   window.logger = {
-    debug: (...args) => console.log('[DEBUG]', ...args),
-    log: (...args) => console.log('[LOG]', ...args),
-    error: (...args) => console.error('[ERROR]', ...args),
-    warn: (...args) => console.warn('[WARN]', ...args),
-    info: (...args) => console.info('[INFO]', ...args)
+    debug: (...args) => console.debug('[SupportChat]', ...args),
+    log: (...args) => console.log('[SupportChat]', ...args),
+    error: (...args) => console.error('[SupportChat]', ...args),
+    warn: (...args) => console.warn('[SupportChat]', ...args),
+    info: (...args) => console.info('[SupportChat]', ...args)
   };
 }
 
@@ -595,7 +597,9 @@ Si no puedes resolver el problema, ofrece escalar a soporte humano.
     this.messages.push(msg);
     const container = document.getElementById('support-chat-messages');
     if (container) {
-      container.innerHTML += this.renderMessage(msg);
+      // insertAdjacentHTML preserva el DOM existente (y sus listeners / selección),
+      // a diferencia de innerHTML += que re-parsea todo el contenido en cada mensaje.
+      container.insertAdjacentHTML('beforeend', this.renderMessage(msg));
       container.scrollTop = container.scrollHeight;
     }
 
@@ -630,24 +634,39 @@ Si no puedes resolver el problema, ofrece escalar a soporte humano.
   // PERSISTENCIA
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Incrementar cuando cambie el shape de lo que se guarda en localStorage.
+  // Datos con versión distinta se descartan en loadHistory sin intentar parsearlos.
+  static SCHEMA_VERSION = 1;
+
   async loadHistory() {
     const userId = window.authHelper?.getUser()?.id;
     if (!userId) return;
 
     try {
-      // Intentar cargar conversacion activa
       const stored = localStorage.getItem(`support_chat_${userId}`);
-      if (stored) {
-        const data = JSON.parse(stored);
-        // Solo cargar si es reciente (menos de 1 hora)
-        if (Date.now() - data.timestamp < 3600000) {
-          this.messages = data.messages || [];
-          this.conversationId = data.conversationId;
-          this.updateMessagesUI();
-        }
+      if (!stored) return;
+
+      const data = JSON.parse(stored);
+
+      // Descartar datos de versiones antiguas: el shape puede haber cambiado
+      // y deserializar produciría mensajes corruptos.
+      if (data.version !== SupportChat.SCHEMA_VERSION) {
+        localStorage.removeItem(`support_chat_${userId}`);
+        return;
+      }
+
+      // Solo cargar si es reciente (menos de 1 hora)
+      if (Date.now() - data.timestamp < 3600000) {
+        this.messages = Array.isArray(data.messages) ? data.messages : [];
+        this.conversationId = data.conversationId || null;
+        this.updateMessagesUI();
       }
     } catch (error) {
       logger.error('[SupportChat] Error loading history:', error);
+      // Si el parse falla, quitar la clave para evitar loops en cada carga.
+      try {
+        localStorage.removeItem(`support_chat_${userId}`);
+      } catch (_) {}
     }
   }
 
@@ -661,6 +680,7 @@ Si no puedes resolver el problema, ofrece escalar a soporte humano.
 
     try {
       localStorage.setItem(`support_chat_${userId}`, JSON.stringify({
+        version: SupportChat.SCHEMA_VERSION,
         conversationId: this.conversationId,
         messages: this.messages.slice(-20), // Ultimos 20 mensajes
         timestamp: Date.now()

@@ -23,8 +23,6 @@ class SettingsModalAI {
         }
 
         const currentProvider = aiConfig.getCurrentProvider();
-        const isConfigured = this.isProviderConfigured(currentProvider);
-
         return `
             <div class="settings-section">
                 <h3 class="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
@@ -42,9 +40,10 @@ class SettingsModalAI {
                         <optgroup label="De pago (alta calidad)">
                             <option value="claude" ${currentProvider === 'claude' ? 'selected' : ''}>Claude (Anthropic)</option>
                             <option value="openai" ${currentProvider === 'openai' ? 'selected' : ''}>ChatGPT (OpenAI)</option>
-                            <option value="mistral" ${currentProvider === 'mistral' ? 'selected' : ''}>Mistral AI</option>
+                            <option value="mistral" ${currentProvider === 'mistral' ? 'selected' : ''}>Mistral API (de pago)</option>
                         </optgroup>
                         <optgroup label="Gratis">
+                            <option value="puter" ${currentProvider === 'puter' ? 'selected' : ''}>Mistral Gratis (sin API key)</option>
                             <option value="gemini" ${currentProvider === 'gemini' ? 'selected' : ''}>Gemini (Google) - 60 consultas/min gratis</option>
                             <option value="qwen" ${currentProvider === 'qwen' ? 'selected' : ''}>Qwen (Alibaba) - 1M tokens gratis/mes</option>
                             <option value="huggingface" ${currentProvider === 'huggingface' ? 'selected' : ''}>HuggingFace - 100% gratis</option>
@@ -67,13 +66,8 @@ class SettingsModalAI {
                 </div>
 
                 <!-- Status -->
-                <div class="flex items-center gap-3 p-4 rounded-lg ${isConfigured ? 'bg-green-900/20 border border-green-500/30' : 'bg-red-900/20 border border-red-500/30'}">
-                    <span class="w-3 h-3 rounded-full flex-shrink-0 ${isConfigured ? 'bg-green-400' : 'bg-red-400'}"></span>
-                    <div class="text-sm">
-                        ${isConfigured
-                            ? '<span class="text-green-300 font-semibold">Configurado</span> - El servicio de IA está listo para usar'
-                            : '<span class="text-red-300 font-semibold">No configurado</span> - Ingresa tu API key para habilitar la IA'}
-                    </div>
+                <div id="settings-ai-status-section">
+                    ${this.renderAIStatus(currentProvider)}
                 </div>
 
                 <!-- Save Button -->
@@ -85,8 +79,43 @@ class SettingsModalAI {
 
                 <!-- Usage Stats (si existe) -->
                 ${this.renderAIUsageStats()}
+
+                <!-- Acceso rápido admin -->
+                ${this.renderAdminSuperChatAccess()}
             </div>
         `;
+    }
+
+    renderAdminSuperChatAccess() {
+        if (!this.isAuthor()) return '';
+
+        return `
+            <div class="mt-6 p-4 rounded-lg border border-amber-600/40 bg-amber-900/20">
+                <h4 class="text-amber-300 font-semibold mb-2">Super Chat IA (Libro Supremo)</h4>
+                <p class="text-sm text-amber-100/80 mb-3">
+                    Acceso al panel unificado de Mi Cuenta (pestaña Admin).
+                </p>
+                <button onclick="window.myAccountModal?.show('admin')"
+                        class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded-lg transition-colors">
+                    Abrir Panel Unificado
+                </button>
+            </div>
+        `;
+    }
+
+    isAuthor() {
+        const authHelper = window.authHelper || window.supabaseAuthHelper;
+        const user = authHelper?.currentUser || authHelper?.user;
+        const profile = authHelper?.currentProfile;
+
+        if (profile?.role === 'admin' || authHelper?.isAdmin?.()) {
+            return true;
+        }
+
+        const adminEmail = (window.env?.ADMIN_EMAIL || '').toLowerCase();
+        if (!adminEmail) return false;
+        const userEmail = (user?.email || '').toLowerCase();
+        return !!userEmail && userEmail === adminEmail;
     }
 
     // ==========================================================================
@@ -160,6 +189,13 @@ class SettingsModalAI {
                 link: 'https://console.mistral.ai/api-keys',
                 info: 'Muy económico - ~$0.001/conversación'
             },
+            puter: {
+                key: '',
+                placeholder: '',
+                label: '',
+                link: '',
+                info: 'Mistral Gratis vía Puter.js - no requiere API key'
+            },
             huggingface: {
                 key: aiConfig.getHuggingFaceToken() || '',
                 placeholder: 'hf_...',
@@ -185,6 +221,16 @@ class SettingsModalAI {
 
         const config = configs[provider];
         if (!config || provider === 'local') return '';
+        if (provider === 'puter') {
+            return `
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-200">3. Modo Gratis</label>
+                    <div class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-3 text-sm text-gray-300">
+                        ${Icons.info(12)} ${config.info}
+                    </div>
+                </div>
+            `;
+        }
 
         return `
             <div>
@@ -240,6 +286,28 @@ class SettingsModalAI {
         }
     }
 
+    renderAIStatus(provider) {
+        const isConfigured = this.isProviderConfigured(provider);
+        const noKeyNeeded = provider === 'puter' || provider === 'local' || provider === 'ollama';
+        const notConfiguredText = noKeyNeeded
+            ? 'No configurado'
+            : 'No configurado';
+        const helperText = noKeyNeeded
+            ? 'El modo seleccionado no requiere API key'
+            : 'Ingresa tu API key para habilitar la IA';
+
+        return `
+            <div class="flex items-center gap-3 p-4 rounded-lg ${isConfigured ? 'bg-green-900/20 border border-green-500/30' : 'bg-red-900/20 border border-red-500/30'}">
+                <span class="w-3 h-3 rounded-full flex-shrink-0 ${isConfigured ? 'bg-green-400' : 'bg-red-400'}"></span>
+                <div class="text-sm">
+                    ${isConfigured
+                        ? '<span class="text-green-300 font-semibold">Configurado</span> - El servicio de IA está listo para usar'
+                        : `<span class="text-red-300 font-semibold">${notConfiguredText}</span> - ${helperText}` }
+                </div>
+            </div>
+        `;
+    }
+
     // ==========================================================================
     // HELPERS
     // ==========================================================================
@@ -254,6 +322,7 @@ class SettingsModalAI {
             gemini: () => aiConfig.getGeminiApiKey(),
             qwen: () => aiConfig.getQwenApiKey(),
             mistral: () => aiConfig.getMistralApiKey(),
+            puter: () => true,
             huggingface: () => aiConfig.getHuggingFaceToken(),
             ollama: () => aiConfig.getOllamaUrl(),
             local: () => true

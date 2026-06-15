@@ -19,6 +19,32 @@
           "correctAnswer": 0,
           "explanation": "El viejo ser se basa en cinco premisas: la separación es real, la escasez es natural, la conciencia es epifenómeno, el progreso es lineal e infinito, y el valor es instrumental.",
           "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "facil",
+          "question": "Según el capítulo, el viejo ser necesita arquitectos malvados para funcionar.",
+          "correctAnswer": 1,
+          "explanation": "El sistema no necesita arquitectos malvados. Solo necesita premisas que nadie examina. Una vez aceptadas las premisas, todo lo demás se sigue lógicamente.",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Qué premisas del viejo ser has internalizado en tu propia vida sin cuestionarlas?",
+          "guidingPoints": [
+            "¿Crees que la competencia es inevitable?",
+            "¿Aceptas la separación como realidad fundamental?",
+            "¿Valoras las cosas solo por su utilidad?",
+            "¿Asumes que el crecimiento siempre es progreso?"
+          ],
+          "points": 20
         }
       ]
     },
@@ -56,6 +82,19 @@
           "correctAnswer": 1,
           "explanation": "La educación estandarizada tiene como función reproducir la lógica del viejo ser: entrenar trabajadores dóciles, consumidores confiables, ciudadanos que aceptan autoridad.",
           "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿En cuáles de estas siete estructuras participas activamente y cómo podrías comenzar a desvincularte?",
+          "guidingPoints": [
+            "Consumismo y mercado",
+            "Redes sociales algorítmicas",
+            "Validación mediante estética normalizada",
+            "Educación que reproduce obediencia"
+          ],
+          "points": 20
         }
       ]
     },
@@ -93,6 +132,19 @@
           "correctAnswer": 1,
           "explanation": "Los cuatro síntomas que se retroalimentan son: crisis ecológica (límites planetarios), crisis psicosomática (salud mental), crisis de sentido (vacío existencial), y crisis de legitimidad (pérdida de confianza en instituciones).",
           "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿Cuál de estos cuatro síntomas experimentas más directamente en tu vida?",
+          "guidingPoints": [
+            "Impactos ecológicos visibles en tu entorno",
+            "Síntomas de ansiedad, depresión o burnout",
+            "Sensación de falta de propósito o significado",
+            "Desconfianza en gobiernos, corporaciones, medios"
+          ],
+          "points": 20
         }
       ]
     },
@@ -101,6 +153,19 @@
       "title": "cap4",
       "description": "",
       "questions": [
+        {
+          "id": "q1",
+          "type": "multiple_choice",
+          "difficulty": "facil",
+          "question": "Los agentes que mantienen el viejo ser son necesariamente 'malos' o maliciosos.",
+          "correctAnswer": 1,
+          "explanation": "Estos actores no son 'malos'. Operan dentro de la lógica del viejo ser. Tienen interés material en ralentizar la transición, pero no por maldad sino por coherencia con el sistema.",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
         {
           "id": "q2",
           "type": "multiple_choice",
@@ -137,6 +202,32 @@
           "correctAnswer": 1,
           "explanation": "El capitalismo por definición externaliza costos. Los costos ecológicos no pueden internalizarse sin destruir ganancias. Además requiere crecimiento infinito, incompatible con planeta finito.",
           "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "media",
+          "question": "Según el capítulo, las reformas fallan porque hay 'gente mala' tomando decisiones equivocadas.",
+          "correctAnswer": 1,
+          "explanation": "Si el problema fuera 'gente mala', la reforma funcionaría. Pero el problema es que la estructura está basada en premisas incompatibles con realidad. Toda reforma que no cambie las premisas es reorganización de síntomas.",
+          "points": 15,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Qué 'reformas' has defendido que en realidad mantienen las premisas del viejo ser?",
+          "guidingPoints": [
+            "Consumismo 'consciente' o 'sostenible'",
+            "Capitalismo con 'rostro humano'",
+            "Más representación sin cambio de poder",
+            "Tecnología como solución sin cambio estructural"
+          ],
+          "points": 20
         }
       ]
     },
@@ -159,6 +250,19 @@
           "correctAnswer": 1,
           "explanation": "La extrema derecha expresa pánico de quien reconoce que el mundo está colapsando. Diagnóstico correcto de la realidad (colapso), diagnóstico erróneo del culpable (invasores externos vs. colapso sistémico).",
           "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "media",
+          "question": "La extrema derecha es la causa de la crisis civilizacional.",
+          "correctAnswer": 1,
+          "explanation": "La extrema derecha es síntoma, no causa. Su crecimiento es efecto de crisis, no causa de crisis. Desaparecerá cuando desaparezca la crisis existencial que la genera.",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
         }
       ]
     },
@@ -181,6 +285,19 @@
           "correctAnswer": 1,
           "explanation": "Característica común del tradicionalismo: la verdad está en el pasado. El futuro es amenaza. Se busca 'volver' a un pasado idealizado que nunca fue tan simple.",
           "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿En qué aspectos de tu vida buscas 'volver' a cómo eran las cosas antes?",
+          "guidingPoints": [
+            "Nostalgia por estructuras familiares o comunitarias pasadas",
+            "Deseo de 'simplicidad' que nunca existió realmente",
+            "Resistencia al cambio por miedo a lo desconocido",
+            "Idealización de épocas que fueron problemáticas para otros"
+          ],
+          "points": 15
         }
       ]
     },
@@ -189,6 +306,19 @@
       "title": "cap8",
       "description": "",
       "questions": [
+        {
+          "id": "q1",
+          "type": "multiple_choice",
+          "difficulty": "facil",
+          "question": "El consumismo acelerado es una respuesta consciente y articulada al colapso.",
+          "correctAnswer": 1,
+          "explanation": "No es deseo consciente articulado. Es respuesta somática a reconocimiento inconsciente de que el mundo está cambiando. 'Maximiza ahora antes de que se acabe.'",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
         {
           "id": "q2",
           "type": "multiple_choice",
@@ -224,6 +354,19 @@
           ],
           "correctAnswer": 1,
           "explanation": "El negacionismo es financiado por corporaciones extractivas como estrategia de defensa: si la gente no cree que hay crisis, no hay presión para cambio.",
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿Qué realidades incómodas tiendes a negar o minimizar en tu vida?",
+          "guidingPoints": [
+            "Tu propio impacto ecológico",
+            "Tu participación en estructuras opresivas",
+            "La gravedad real de la crisis civilizacional",
+            "Tu capacidad de acción y responsabilidad"
+          ],
           "points": 15
         }
       ]
@@ -284,6 +427,33 @@
           "correctAnswer": 1,
           "explanation": "El nuevo ser ya existe en: comunidades indígenas, economías cooperativas, gobernanza participativa, movimientos ecologistas, redes de conocimiento abierto, generaciones jóvenes.",
           "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "facil",
+          "question": "Las comunidades indígenas abandonaron el nuevo paradigma hace mucho tiempo.",
+          "correctAnswer": 1,
+          "explanation": "Las comunidades indígenas nunca abandonaron el nuevo paradigma. Relacionan con territorio como sagrado, practican economía cooperativa basada en reciprocidad, tienen autoridad distribuida.",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿Participas en alguna iniciativa donde ya opera el nuevo ser?",
+          "guidingPoints": [
+            "Cooperativas o economía solidaria",
+            "Huertos comunitarios o iniciativas ecológicas",
+            "Software libre o conocimiento compartido",
+            "Asambleas o democracia directa",
+            "Prácticas contemplativas comunitarias"
+          ],
+          "points": 20
         }
       ]
     },
@@ -321,6 +491,20 @@
           "correctAnswer": 2,
           "explanation": "Abundancia organizable: no es escasez de recursos, es escasez de distribución equitativa. Cuando la distribución es equitativa, todos tienen suficiente. Refuta la premisa 2 del viejo ser.",
           "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Cuál de estas cinco premisas te resulta más difícil de aceptar y por qué?",
+          "guidingPoints": [
+            "¿Crees realmente que la conciencia es fundamental?",
+            "¿Confías en que hay suficiente para todos?",
+            "¿Reconoces tu interdependencia radical?",
+            "¿Aceptas límites como condición de vida?",
+            "¿Ves valor más allá de la utilidad?"
+          ],
+          "points": 20
         }
       ]
     },
@@ -343,6 +527,40 @@
           "correctAnswer": 1,
           "explanation": "Donde operan las premisas del nuevo ser: menos violencia, mejor salud mental, mejor relación con territorio, educación que desarrolla, trabajo con sentido. No son perfectas, pero funcionan de forma que el viejo ser no puede.",
           "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "facil",
+          "question": "Las comunidades del nuevo ser son perfectas y no tienen conflictos.",
+          "correctAnswer": 1,
+          "explanation": "No son perfectas. Tienen tensiones, conflictos, dificultades. Pero funcionan de forma que el viejo ser no puede. La clave son las premisas desde las que operan.",
+          "points": 10,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        }
+      ]
+    },
+    {
+      "chapterId": "cap14",
+      "title": "cap14",
+      "description": "",
+      "questions": [
+        {
+          "id": "q1",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿En qué dominios de tu vida podrías empezar a operar desde las premisas del nuevo ser?",
+          "guidingPoints": [
+            "Economía: participar en economías cooperativas",
+            "Gobernanza: involucrarte en asambleas o decisiones participativas",
+            "Educación: aprender/enseñar de forma no competitiva",
+            "Tecnología: usar/crear software libre y herramientas abiertas",
+            "Relación con lo no-humano: reconectar con territorio"
+          ],
+          "points": 20
         }
       ]
     },
@@ -380,6 +598,19 @@
           "correctAnswer": 0,
           "explanation": "Probabilidades: La Fortaleza 40-50% (élites tienen poder y están construyéndola activamente), Colapso Caótico 25-35%, El Nacimiento 30-40% (posible si hay suficiente gente reconociendo y actuando).",
           "points": 20
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Qué escenario crees más probable y qué estás haciendo para influir en el resultado?",
+          "guidingPoints": [
+            "¿Ves signos de 'La Fortaleza' consolidándose?",
+            "¿Ves riesgo de colapso sin dirección?",
+            "¿Ves el nuevo ser emergiendo?",
+            "¿Tu acción contribuye a qué escenario?"
+          ],
+          "points": 25
         }
       ]
     },
@@ -417,6 +648,19 @@
           "correctAnswer": 1,
           "explanation": "Narrativa del nuevo ser: 'Esto es transformación. El viejo sistema se desmorona porque es incompatible con realidad. Tenemos opciones sobre qué construimos en su lugar. Necesitamos coordinación, confianza, cooperación.'",
           "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "media",
+          "question": "¿Qué narrativa compartes en tus conversaciones cotidianas?",
+          "guidingPoints": [
+            "¿Hablas de caos que requiere control?",
+            "¿Hablas de transformación que requiere construcción?",
+            "¿Perpetúas miedo o inspiras posibilidad?",
+            "¿Qué historia cuentas sobre lo que está pasando?"
+          ],
+          "points": 20
         }
       ]
     },
@@ -439,6 +683,32 @@
           "correctAnswer": 1,
           "explanation": "IA extractiva: recolecta datos masivos, predice comportamiento, amplifica separación, concentra poder, facilita La Fortaleza. IA regenerativa: facilita coordinación, amplifica cooperación, distribuye capacidad, acelera El Nacimiento.",
           "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "media",
+          "question": "Según el capítulo, la IA es neutral y depende solo de cómo la usamos.",
+          "correctAnswer": 1,
+          "explanation": "No hay 'neutralidad' en IA. Cada sistema encarna una elección. Cada aplicación refuerza un paradigma. Estamos en punto de decisión (2025-2030) sobre qué sistemas se construyen.",
+          "points": 15,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Qué herramientas de IA usas y qué paradigma refuerzan?",
+          "guidingPoints": [
+            "¿Usas plataformas que extraen tus datos?",
+            "¿Usas herramientas que concentran poder corporativo?",
+            "¿Usas/apoyas IA de código abierto y distribuida?",
+            "¿Eres consciente de qué refuerzas con tu uso?"
+          ],
+          "points": 20
         }
       ]
     },
@@ -476,6 +746,19 @@
           "correctAnswer": 1,
           "explanation": "Boicot pasivo: dejar de alimentar lo viejo. No comprar innecesariamente. No obedecer ciegamente. No validar narrativas falsas. Es retiro de energía del sistema moribundo.",
           "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿Cuál de estas cuatro formas de acción estás practicando y cuál podrías comenzar?",
+          "guidingPoints": [
+            "¿Qué boicots pasivos ya practicas?",
+            "¿Qué estás construyendo activamente?",
+            "¿Dónde necesitas bloquear lo peligroso?",
+            "¿Qué narrativa compartes?"
+          ],
+          "points": 25
         }
       ]
     },
@@ -498,6 +781,33 @@
           "correctAnswer": 1,
           "explanation": "Las cinco soberanías: cognitiva (qué información consumes), económica (dónde pones recursos), tecnológica (qué herramientas usas), espiritual (qué premisas aceptas), territorial (cómo te relacionas con tierra y comunidad).",
           "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "multiple_choice",
+          "difficulty": "media",
+          "question": "La soberanía en esta era reside principalmente en el voto y la representación política.",
+          "correctAnswer": 1,
+          "explanation": "La soberanía NO reside en voto o representación (estructuras del viejo paradigma). Reside en las cinco soberanías múltiples y operativas: donde pones atención, dinero, datos, fe, cuerpo.",
+          "points": 15,
+          "options": [
+            "Verdadero",
+            "Falso"
+          ]
+        },
+        {
+          "id": "q3",
+          "type": "reflection",
+          "difficulty": "avanzada",
+          "question": "¿En cuáles de estas cinco soberanías tienes más control y en cuáles menos?",
+          "guidingPoints": [
+            "¿Controlas qué información consumes?",
+            "¿Diriges tus recursos económicos conscientemente?",
+            "¿Proteges tu privacidad y datos?",
+            "¿Has examinado tus premisas espirituales?",
+            "¿Participas en decisiones sobre tu territorio?"
+          ],
+          "points": 25
         }
       ]
     }

@@ -49,6 +49,9 @@ class InteractiveQuiz {
       this.currentQuestionIndex = 0;
       this.answers = [];
       this.score = 0;
+      // Solo las preguntas evaluables (con opciones) cuentan para la puntuación;
+      // las de tipo 'reflection' se muestran pero no se puntúan.
+      this.gradedCount = quiz.questions.filter(q => Array.isArray(q.options) && q.options.length > 0).length;
       this.isOpen = true;
 
       this.render();
@@ -171,6 +174,11 @@ class InteractiveQuiz {
 
     const question = this.currentQuiz.questions[this.currentQuestionIndex];
 
+    // Preguntas de reflexión: sin respuesta correcta, no se puntúan.
+    if (this.isReflection(question)) {
+      return this.renderReflection(question);
+    }
+
     return `
       <div class="space-y-6">
         <!-- Pregunta -->
@@ -206,8 +214,46 @@ class InteractiveQuiz {
     `;
   }
 
+  isReflection(question) {
+    return question.type === 'reflection' || !(Array.isArray(question.options) && question.options.length > 0);
+  }
+
+  renderReflection(question) {
+    const points = Array.isArray(question.guidingPoints) ? question.guidingPoints : [];
+    return `
+      <div class="space-y-6">
+        <!-- Pregunta de reflexión -->
+        <div class="bg-gradient-to-r from-amber-900/30 to-orange-900/30 p-6 rounded-xl border border-amber-500/30">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">💭 Reflexión</span>
+          </div>
+          <h3 class="text-xl font-semibold text-white">${question.question}</h3>
+        </div>
+
+        ${points.length ? `
+          <div class="bg-slate-800/50 p-4 rounded-xl border border-gray-700">
+            <p class="text-sm font-semibold text-gray-300 mb-2">Para reflexionar:</p>
+            <ul class="space-y-2">
+              ${points.map(p => `<li class="text-sm text-gray-400 flex items-start gap-2"><span class="text-amber-400">·</span><span>${p}</span></li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+
+        <textarea id="reflection-answer" rows="4"
+                  placeholder="Escribe tu reflexión (opcional, solo para ti)..."
+                  class="w-full p-4 rounded-xl bg-slate-800/50 border border-gray-700 text-gray-200 placeholder-gray-500 focus:border-amber-500 focus:outline-none resize-none"></textarea>
+
+        <button id="continue-reflection"
+                class="w-full px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 rounded-lg transition font-semibold">
+          Continuar →
+        </button>
+      </div>
+    `;
+  }
+
   renderResults() {
-    const percentage = Math.round((this.score / this.currentQuiz.questions.length) * 100);
+    const graded = this.gradedCount || 0;
+    const percentage = graded > 0 ? Math.round((this.score / graded) * 100) : 100;
     const passed = percentage >= 70;
 
     let feedback, emoji;
@@ -231,7 +277,7 @@ class InteractiveQuiz {
 
         <div>
           <h3 class="text-3xl font-bold text-white mb-2">
-            ${this.score} / ${this.currentQuiz.questions.length}
+            ${this.score} / ${graded}
           </h3>
           <p class="text-5xl font-bold ${passed ? 'text-green-400' : 'text-yellow-400'}">
             ${percentage}%
@@ -247,6 +293,25 @@ class InteractiveQuiz {
           <h4 class="text-lg font-semibold text-white mb-4">📊 Resumen de respuestas:</h4>
           ${this.currentQuiz.questions.map((q, i) => {
             const userAnswer = this.answers[i];
+            // Preguntas de reflexión: se muestran como reflexión, no como acierto/fallo.
+            if (this.isReflection(q)) {
+              const reflectionText = (userAnswer && userAnswer.text) ? userAnswer.text : '';
+              return `
+              <div class="pb-3 border-b border-gray-700 last:border-0">
+                <div class="flex items-start gap-3">
+                  <span class="text-2xl">💭</span>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-300">${q.question}</p>
+                    ${reflectionText ? `
+                      <p class="text-xs text-amber-300/80 mt-1 italic">Tu reflexión: ${reflectionText}</p>
+                    ` : `
+                      <p class="text-xs text-gray-500 mt-1">Reflexión personal (sin puntuación)</p>
+                    `}
+                  </div>
+                </div>
+              </div>
+              `;
+            }
             const correct = userAnswer === q.correctAnswer;
             return `
               <div class="pb-3 border-b border-gray-700 last:border-0">
@@ -307,6 +372,12 @@ class InteractiveQuiz {
       });
     });
 
+    // Continuar en preguntas de reflexión
+    document.getElementById('continue-reflection')?.addEventListener('click', () => {
+      const text = document.getElementById('reflection-answer')?.value || '';
+      this.handleReflection(text);
+    });
+
     // ESC para cerrar
     document.addEventListener('keydown', this.handleEscape = (e) => {
       if (e.key === 'Escape' && this.isOpen) this.close();
@@ -339,6 +410,14 @@ class InteractiveQuiz {
     }, 1500);
   }
 
+  handleReflection(text) {
+    // Las reflexiones no se puntúan; se registra la respuesta (si la hay) y se avanza.
+    this.answers.push({ reflection: true, text: (text || '').trim() });
+    this.currentQuestionIndex++;
+    this.render();
+    this.attachEventListeners();
+  }
+
   // ==========================================================================
   // GUARDAR PROGRESO
   // ==========================================================================
@@ -347,12 +426,13 @@ class InteractiveQuiz {
     const key = `quiz-results-${bookId}`;
     const results = JSON.parse(localStorage.getItem(key) || '{}');
 
+    const graded = this.gradedCount || 0;
     results[chapterId] = {
       score: this.score,
-      total: this.currentQuiz.questions.length,
-      percentage: Math.round((this.score / this.currentQuiz.questions.length) * 100),
+      total: graded,
+      percentage: graded > 0 ? Math.round((this.score / graded) * 100) : 100,
       date: new Date().toISOString(),
-      passed: (this.score / this.currentQuiz.questions.length) >= 0.7
+      passed: graded > 0 ? (this.score / graded) >= 0.7 : true
     };
 
     localStorage.setItem(key, JSON.stringify(results));

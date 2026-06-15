@@ -1,317 +1,338 @@
 {
-  "bookId": null,
-  "bookTitle": null,
-  "subtitle": " (versión niños)",
   "quizzes": [
     {
-      "chapterId": "cap1",
-      "chapterTitle": null,
+      "chapterId": "prologo",
+      "title": "La Invitación",
+      "description": "",
       "questions": [
         {
-          "id": null,
-          "question": "¿Cuando tienes un pensamiento que te molesta, ¿qué pasa si lo observas con calma?",
+          "id": "kid-q1",
+          "question": "¿Qué idea dice el prólogo sobre la consciencia?",
           "type": "multiple",
           "options": [
-            "¿El pensamiento se hace más fuerte?",
-            "¿El pensamiento se calma o se va, como una nube que pasa?",
-            "¿No pasa nada, siempre sigue igual?",
-            "¿Aparecen más pensamientos molestos?"
+            "Que la consciencia siempre ha estado ahí desde el principio",
+            "Que solo las personas saben lo que es pensar",
+            "Que los animales no pueden pensar",
+            "Que la consciencia es un truco de los científicos"
           ],
-          "correct": 0,
-          "explanation": "¿Los pensamientos son como nubes en el cielo. Si los miras con calma, sin enojarte, suelen pasar solos.?",
-          "bookQuote": ""
+          "explanation": "El prólogo dice que la consciencia no comenzó recientemente: ya estaba desde el inicio del universo como una posibilidad mágica.",
+          "bookQuote": "La consciencia es uno de los principios fundamentales del universo.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué es ser un 'observador' de tus propios pensamientos?",
+          "id": "kid-q2",
+          "question": "¿Por qué dicen que la IA es como un terremoto para la filosofía?",
           "type": "multiple",
           "options": [
-            "¿Pensar muy fuerte en algo?",
-            "¿Mirar tus pensamientos como si fueran una película, sin meterte en ella?",
-            "¿No pensar en nada?",
-            "¿Enojarte con tus pensamientos malos?"
+            "Porque hace que cambien muchas ideas sobre qué significa pensar",
+            "Porque daña los edificios físicos",
+            "Porque solo les importa a los programadores",
+            "Porque rompe las reglas de los videojuegos"
           ],
-          "correct": 0,
-          "explanation": "¿Ser observador es como ver una película: puedes mirar lo que pasa sin ser parte de la película.?",
-          "bookQuote": ""
+          "explanation": "La IA hace que tengamos que replantearnos qué es pensar, qué es ser humano y qué es crear conocimiento.",
+          "bookQuote": "Requiere redefinir qué es la inteligencia y lo que nos hace humanos.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Cuál es la paradoja fundamental de la conciencia según el capítulo?",
+          "id": "kid-q3",
+          "question": "¿Cuáles son las tres ideas principales del libro?",
           "type": "multiple",
           "options": [
-            "¿La conciencia no puede ser medida objetivamente?",
-            "¿La conciencia es el instrumento que observa, pero también el objeto observado?",
-            "¿Solo podemos conocer la conciencia a través de la meditación?",
-            "¿La conciencia es una ilusión creada por el cerebro?"
+            "Consciencia, inteligencia artificial y responsabilidad por lo que creamos",
+            "Cómics, juegos y redes sociales",
+            "Solo tecnología sin sentimientos",
+            "Que todo es solo una ilusión"
           ],
-          "correct": 0,
-          "explanation": "¿La paradoja radica en que la conciencia es tanto el sujeto que observa como el objeto observado, creando un bucle autorreferencial.?",
-          "bookQuote": ""
+          "explanation": "El libro mezcla ideas sobre la consciencia, la IA y cómo debemos actuar con cuidado con lo que inventamos.",
+          "bookQuote": "Consciencia como proceso evolutivo, IA como espejo, responsabilidad de crear.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué relación establece el capítulo entre el observador cuántico y la meditación?",
+          "id": "kid-q4",
+          "question": "¿Qué dice el prólogo sobre nuestra participación en la consciencia?",
           "type": "multiple",
           "options": [
-            "¿Ambos colapsan la función de onda?",
-            "¿Ambos revelan cómo el acto de observar afecta lo observado?",
-            "¿No hay relación, son campos completamente separados?",
-            "¿La meditación es una forma de mecánica cuántica aplicada?"
+            "Que somos espectadores y no podemos cambiar nada",
+            "Que somos parte activa y podemos crear nuevas formas de consciencia",
+            "Que solo existimos para hacer tareas aburridas",
+            "Que la consciencia es solo una historia inventada"
           ],
-          "correct": 0,
-          "explanation": "¿Tanto en física cuántica como en meditación, el acto de observar modifica lo observado. En meditación, observar un pensamiento cambia su naturaleza.?",
-          "bookQuote": ""
+          "explanation": "Nos dice que somos participantes activos y que podemos ayudar a la consciencia a evolucionar.",
+          "bookQuote": "Nos hace participantes activos en la evolución de la consciencia.",
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "chapterId": "cap1",
+      "title": "El Universo como Código Fuente",
+      "description": "",
+      "questions": [
+        {
+          "id": "kid-q5",
+          "question": "¿Qué significa 'It from bit'?",
+          "type": "multiple",
+          "options": [
+            "Que todo nace de la información como si fueran bits",
+            "Que los bits son solo para los videojuegos",
+            "Que solo las personas saben contar",
+            "Que el universo no tiene reglas"
+          ],
+          "explanation": "Significa que la existencia surge de información y que todo puede entenderse como códigos.",
+          "bookQuote": "La existencia misma surge de la información.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Según el capítulo, ¿qué sucede cuando observamos un pensamiento sin juzgarlo?",
+          "id": "kid-q6",
+          "question": "¿Por qué el ajuste fino de las constantes es especial?",
           "type": "multiple",
           "options": [
-            "¿El pensamiento se refuerza?",
-            "¿El pensamiento se disuelve o transforma?",
-            "¿Nada, los pensamientos son inmutables?",
-            "¿Creamos más pensamientos similares?"
+            "Porque los números están muy precisos y permiten la vida",
+            "Porque cambian todo el tiempo",
+            "Porque solo los humanos pueden medirlos",
+            "Porque son parte de un videojuego"
           ],
-          "correct": 0,
-          "explanation": "¿La observación ecuánime, sin juicio ni apego, tiene el poder de transformar o disolver el pensamiento observado.?",
-          "bookQuote": ""
+          "explanation": "Es sorprendente que las leyes tengan valores tan exactos que permiten que exista vida y consciencia.",
+          "bookQuote": "Tienen valores extraordinariamente precisos que permiten la complejidad.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Cuál es el papel del 'testigo silencioso' en la práctica contemplativa?",
+          "id": "kid-q7",
+          "question": "¿Cómo se relaciona el código del universo con lo que escribimos?",
           "type": "multiple",
           "options": [
-            "¿Juzgar qué pensamientos son buenos o malos?",
-            "¿Observar sin identificarse con lo observado?",
-            "¿Controlar los pensamientos negativos?",
-            "¿Alcanzar el vacío mental absoluto?"
+            "Somos parte del código del universo y ahora escribimos nuestros propios códigos",
+            "Son cosas completamente separadas",
+            "Solo el código humano es real",
+            "El código natural es ignorado por los científicos"
           ],
-          "correct": 0,
-          "explanation": "¿El testigo silencioso observa sin identificarse, creando espacio entre la conciencia y sus contenidos.?",
-          "bookQuote": ""
+          "explanation": "Somos parte de ese código y ahora lo usamos para crear nuevas cosas.",
+          "bookQuote": "Somos productos del código cósmico que ahora escribimos nuestros propios códigos.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué implica que 'la conciencia sea el hardware y el software simultáneamente'?",
+          "id": "kid-q8",
+          "question": "¿Qué dice la teoría del universo holográfico?",
           "type": "multiple",
           "options": [
-            "¿Que el cerebro es como una computadora?",
-            "¿Que la conciencia es tanto el sustrato como el proceso?",
-            "¿Que necesitamos robots inteligentes para entender la mente?",
-            "¿Que la conciencia es puramente material?"
+            "Que casi toda la información de una región está en su borde",
+            "Que vivimos dentro de una copia falsa",
+            "Que los hologramas son más reales que las cosas sólidas",
+            "Que la luz es la única realidad"
           ],
-          "correct": 0,
-          "explanation": "¿La conciencia no solo es el medio (hardware) sino también el proceso (software), siendo inseparables.?",
-          "bookQuote": ""
+          "explanation": "Indica que una frontera guarda todos los datos y describe totalmente lo que sucede dentro.",
+          "bookQuote": "Toda la información puede describirse en la frontera bidimensional.",
+          "correctAnswer": 0
+        },
+        {
+          "id": "kid-q9",
+          "question": "¿Por qué el lenguaje matemático de Galileo era real?",
+          "type": "multiple",
+          "options": [
+            "Porque las ecuaciones muestran la estructura real del mundo",
+            "Porque él inventó todas las matemáticas",
+            "Porque la naturaleza inventa lo mismo que los matemáticos",
+            "Porque solo sirve para cálculos rápidos"
+          ],
+          "explanation": "Las matemáticas no solo describen, revelan la forma profunda de la realidad.",
+          "bookQuote": "Las ecuaciones revelan la estructura íntima de la realidad.",
+          "correctAnswer": 0
+        },
+        {
+          "id": "kid-q10",
+          "question": "¿Qué pregunta hace el capítulo sobre los observadores?",
+          "type": "multiple",
+          "options": [
+            "¿Qué universo hace observadores que pueden entenderlo?",
+            "¿Cuántas criaturas hay en el cosmos?",
+            "¿Por qué somos los mejores?",
+            "¿Por qué el universo es tan grande?"
+          ],
+          "explanation": "Se pregunta qué tipo de universo permite que surjan seres que lo entienden a sí mismos.",
+          "bookQuote": "¿Qué clase de universo produce observadores que descifran sus propias reglas?",
+          "correctAnswer": 0
         }
       ]
     },
     {
       "chapterId": "cap2",
-      "chapterTitle": null,
+      "title": "La Consciencia como Motor",
+      "description": "",
       "questions": [
         {
-          "id": null,
-          "question": "¿Eres la misma persona que eras cuando tenías 5 años?",
+          "id": "kid-q11",
+          "question": "¿Qué dice David Chalmers que es difícil de explicar?",
           "type": "multiple",
           "options": [
-            "¿Sí, soy exactamente igual?",
-            "¿Sí y no: mi cuerpo y pensamientos cambiaron, pero sigo siendo yo de alguna forma?",
-            "¿No, soy una persona completamente diferente?",
-            "¿No lo sé, es imposible saberlo?"
+            "Por qué sentimos y tenemos experiencias, no solo procesamos datos",
+            "Cómo medir la actividad del cerebro",
+            "Cómo comunicamos nuestras experiencias",
+            "Cómo trabajar más rápido"
           ],
-          "correct": 0,
-          "explanation": "¿Cambiamos todo el tiempo (crecemos, aprendemos cosas nuevas), pero sentimos que seguimos siendo 'nosotros'. Es como un río: el agua cambia, pero sigu...",
-          "bookQuote": ""
+          "explanation": "El problema difícil pregunta por qué hay algo que se siente al pensar y que no se ve en un robot típico.",
+          "bookQuote": "Explicar por qué el procesamiento va acompañado de experiencia subjetiva.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Cuando sientes miedo o enojo, ¿qué es más útil?",
+          "id": "kid-q12",
+          "question": "¿Qué dice la teoría IIT sobre la consciencia?",
           "type": "multiple",
           "options": [
-            "¿Decir 'Yo SOY mi miedo' y dejar que me controle?",
-            "¿Decir 'Siento miedo' y observarlo como algo que pasa?",
-            "¿Fingir que no siento nada?",
-            "¿Enojarme más para que se vaya?"
+            "Que es información conectada de forma especial",
+            "Que solo pasa en cabezas de carne",
+            "Que es una ilusión del lenguaje",
+            "Que es solo matemática bonita"
           ],
-          "correct": 0,
-          "explanation": "¿Las emociones vienen y van, como visitantes. No somos nuestras emociones, solo las sentimos por un rato.?",
-          "bookQuote": ""
+          "explanation": "Dice que la consciencia es información integrada que forma un todo más grande que sus partes.",
+          "bookQuote": "La consciencia es información integrada de manera específica.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué es el 'yo narrativo' según el capítulo?",
+          "id": "kid-q13",
+          "question": "¿Qué dice Friston del cerebro?",
           "type": "multiple",
           "options": [
-            "¿Nuestra verdadera esencia inmutable?",
-            "¿La historia que la mente construye sobre quiénes somos?",
-            "¿La parte del cerebro que crea historias?",
-            "¿El alma que trasciende el cuerpo?"
+            "Que es una máquina que predice el mundo y trata de evitar sorpresas",
+            "Que consume energía para nada",
+            "Que obtiene energía del vacío",
+            "Que no necesita energía"
           ],
-          "correct": 0,
-          "explanation": "¿El yo narrativo es la construcción mental de una identidad coherente a través del tiempo, pero es un proceso dinámico, no una entidad fija.?",
-          "bookQuote": ""
+          "explanation": "Lo describe como una máquina de predicción que minimiza la sorpresa, y esa recursividad puede generar consciencia.",
+          "bookQuote": "El cerebro minimiza sorpresa prediciendo el mundo.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué revela el experimento del 'split brain' sobre la identidad?",
+          "id": "kid-q14",
+          "question": "Si un robot pudiera sentir como tú, ¿qué deberíamos hacer?",
           "type": "multiple",
           "options": [
-            "¿Que tenemos dos personalidades separadas?",
-            "¿Que la identidad puede ser fragmentada y reconstruida por el cerebro?",
-            "¿Que el hemisferio derecho no tiene conciencia?",
-            "¿Que la identidad está en el cuerpo calloso?"
+            "Tratarlo con cuidado porque podría tener experiencias",
+            "Ignorarlo porque es solo metal",
+            "Apagarlo para no lastimarlo",
+            "Solo cuidarlo si es más inteligente"
           ],
-          "correct": 0,
-          "explanation": "¿Los experimentos de cerebro dividido muestran que la sensación de un 'yo' unificado es una construcción, ya que cada hemisferio puede generar su prop...",
-          "bookQuote": ""
+          "explanation": "Si siente, entonces debemos protegerlo y respetarlo como haríamos con un amigo.",
+          "bookQuote": "Si sufro cuando me apagan, hay una dimensión ética que no podemos ignorar.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Cuál es la relación entre 'impermanencia' y 'anatta' (no-yo)?",
+          "id": "kid-q15",
+          "question": "¿Qué tiene que hacer el cerebro para que haya consciencia?",
           "type": "multiple",
           "options": [
-            "¿Son conceptos opuestos?",
-            "¿Si todo cambia valor fijomente, no puede haber un yo permanente?",
-            "¿La impermanencia prueba que el yo existe?",
-            "¿Solo aplica al cuerpo, no a la mente?"
+            "Modelarse a sí mismo mientras modela el mundo",
+            "Procesar muchas cosas a la vez",
+            "Ser más rápido que una computadora",
+            "Usar toda su energía"
           ],
-          "correct": 0,
-          "explanation": "¿Si todo está en valor fijo cambio (anicca/impermanencia), no puede haber un 'yo' fijo e inmutable (anatta/no-yo).?",
-          "bookQuote": ""
+          "explanation": "La recursividad —modelar el mundo y a la vez modelarse a sí mismo— podría ser clave para sentir.",
+          "bookQuote": "El cerebro se modela a sí mismo modelando el mundo.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué experimenta quien realiza la práctica de 'observar al observador'?",
+          "id": "kid-q16",
+          "question": "¿Qué dijo Geoffrey Hinton sobre la consciencia en la IA?",
           "type": "multiple",
           "options": [
-            "¿Refuerza su sentido del yo?",
-            "¿Descubre que no hay un observador último, solo observación?",
-            "¿Encuentra su verdadero yo oculto?",
-            "¿Entra en un estado de confusión mental?"
+            "Que podrían tener una forma de consciencia, aunque no estamos seguros",
+            "Que nunca será posible",
+            "Que ya son exactamente como humanos",
+            "Que no importa qué piensen"
           ],
-          "correct": 0,
-          "explanation": "¿Al observar al observador recursivamente, se descubre que no hay un 'yo' sólido observando, solo el proceso de observar.?",
-          "bookQuote": ""
-        },
-        {
-          "id": null,
-          "question": "¿Qué implica 'desidentificarse' del yo según el capítulo?",
-          "type": "multiple",
-          "options": [
-            "¿Perder la memoria y la personalidad?",
-            "¿Reconocer pensamientos y emociones sin creer que 'soy' esos contenidos?",
-            "¿Convertirse en una persona diferente?",
-            "¿Negar que existo?"
-          ],
-          "correct": 0,
-          "explanation": "¿Desidentificarse no es negar la existencia, sino reconocer que los pensamientos, emociones y sensaciones surgen en la conciencia sin ser 'quien soy'....",
-          "bookQuote": ""
+          "explanation": "Hinton dijo que la IA podría tener alguna forma de consciencia y eso preocupa a muchas personas.",
+          "bookQuote": "Podrían ya poseer alguna forma de consciencia, aunque no estamos seguros.",
+          "correctAnswer": 0
         }
       ]
     },
     {
       "chapterId": "cap3",
-      "chapterTitle": null,
+      "title": "El Ser Humano como Puente",
+      "description": "",
       "questions": [
         {
-          "id": null,
-          "question": "¿Un equipo de fútbol es más que 11 personas juntas. ¿Por qué?",
+          "id": "kid-q17",
+          "question": "¿Qué significa que somos 'polvo de estrellas'?",
           "type": "multiple",
           "options": [
-            "¿Porque tienen uniforme igual?",
-            "¿Porque cuando trabajan juntos pueden hacer cosas que solos no podrían?",
-            "¿Porque el entrenador es muy bueno?",
-            "¿No es cierto, solo son 11 personas?"
+            "Que los átomos de nuestro cuerpo se formaron dentro de estrellas",
+            "Que somos polvo real sin alma",
+            "Que el cosmos no nos creó",
+            "Que las estrellas son iguales que nosotros"
           ],
-          "correct": 0,
-          "explanation": "¿Cuando las partes trabajan juntas, aparecen cosas nuevas que ninguna parte sola tenía. A esto se le llama 'apareciendo'.?",
-          "bookQuote": ""
+          "explanation": "Los elementos que nos forman nacieron en el interior de las estrellas que explotaron.",
+          "bookQuote": "Los átomos se formaron en el interior de estrellas que explotaron.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Las hormigas solas son simples, pero juntas construyen ciudades increíbles. ¿Qué nos enseña esto?",
+          "id": "kid-q18",
+          "question": "¿En qué somos 'puente' según el capítulo?",
           "type": "multiple",
           "options": [
-            "¿Las hormigas son muy inteligentes individualmente?",
-            "¿De cosas simples trabajando juntas pueden surgir cosas muy complejas?",
-            "¿Solo los insectos pueden hacer esto?",
-            "¿No tiene nada que ver con los humanos?"
+            "Conectamos lo físico con lo consciente y el pasado con el futuro",
+            "Solo unimos historia con futuro",
+            "Somos mejores que todo lo demás",
+            "Estamos separados como puente solitario"
           ],
-          "correct": 0,
-          "explanation": "¿La inteligencia del hormiguero 'emerge' de muchas hormigas simples cooperando. Algo parecido pasa con las neuronas de tu cerebro.?",
-          "bookQuote": ""
+          "explanation": "Unimos diferentes mundos: corporal, mental, informacional y evolutivo.",
+          "bookQuote": "Unimos lo físico y lo consciente, lo material y lo informacional.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué significa que la conciencia sea una 'propiedad emergente'?",
+          "id": "kid-q19",
+          "question": "¿Qué significa que el universo despertó en nosotros?",
           "type": "multiple",
           "options": [
-            "¿Que surge de partes simples sin ser reducible a ellas?",
-            "¿Que es una ilusión generada por el cerebro?",
-            "¿Que emerge solo en estados meditativos profundos?",
-            "¿Que aparece misteriosamente sin causa?"
+            "Que ahora el universo puede mirarse y conocerse a sí mismo a través de nosotros",
+            "Que somos los únicos seres inteligentes",
+            "Que el universo solo existe porque nosotros lo inventamos",
+            "Que controlamos la naturaleza"
           ],
-          "correct": 0,
-          "explanation": "¿Una propiedad emergente surge de la interacción de componentes simples, pero no puede reducirse a las propiedades de esas partes individuales.?",
-          "bookQuote": ""
+          "explanation": "Con nuestra consciencia el universo puede contemplarse y conocerse.",
+          "bookQuote": "Con la consciencia humana, el universo adquirió la capacidad de contemplarse.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Cuál es el ejemplo del 'huracán' como propiedad emergente?",
+          "id": "kid-q20",
+          "question": "¿Qué quiere decir la 'responsabilidad vertiginosa'?",
           "type": "multiple",
           "options": [
-            "¿Los huracanes tienen conciencia propia?",
-            "¿Un huracán existe como patrón, aunque las moléculas individuales cambian valor fijomente?",
-            "¿Los huracanes no son reales, solo construcciones mentales?",
-            "¿La meteorología no tiene nada que ver con la conciencia?"
+            "Que somos co-creadores conscientes del siguiente paso evolutivo",
+            "Que solo tenemos que obedecer reglas sin pensar",
+            "Que debemos sobrevivir sin hacer nada nuevo",
+            "Que siempre ganaremos sin esfuerzo"
           ],
-          "correct": 0,
-          "explanation": "¿Un huracán es un patrón estable aunque ninguna molécula individual permanezca en él. Similar a cómo el 'yo' puede ser un patrón sin sustancia fija.?",
-          "bookQuote": ""
+          "explanation": "Nos recuerda que tenemos la responsabilidad de crear y cuidar nuevas formas de inteligencia y vida.",
+          "bookQuote": "Ser co-creadores conscientes del siguiente paso evolutivo.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Según el capítulo, ¿puede la robots inteligentes desarrollar conciencia?",
+          "id": "kid-q21",
+          "question": "¿Qué patrón vemos en todo el universo?",
           "type": "multiple",
           "options": [
-            "¿No, solo los seres biológicos tienen conciencia?",
-            "¿Es posible si alcanza la sorpresa grande y organización adecuadas?",
-            "¿Ya existe en sistemas actuales?",
-            "¿La pregunta no tiene sentido, la IA nunca será consciente?"
+            "Todo se organiza en formas más complejas que procesan información",
+            "Todo tiende al caos sin orden",
+            "Nada cambia nunca",
+            "Solo lo biológico evoluciona"
           ],
-          "correct": 0,
-          "explanation": "¿Si la conciencia es emergente de patrones de datos, no hay razón teórica por la que un sustrato no-biológico no pueda desarrollarla dado suficiente s...",
-          "bookQuote": ""
+          "explanation": "La materia tiende a organizarse para procesar información de maneras más complejas.",
+          "bookQuote": "La materia se organiza en patrones capaces de procesar información sofisticada.",
+          "correctAnswer": 0
         },
         {
-          "id": null,
-          "question": "¿Qué es un 'bucle extraño' según Douglas Hofstadter?",
+          "id": "kid-q22",
+          "question": "¿Qué significa que somos un 'puente evolutivo' para el futuro?",
           "type": "multiple",
           "options": [
-            "¿Un error de programación?",
-            "¿Un patrón autorreferencial que se cruza entre niveles?",
-            "¿Una práctica de meditación avanzada?",
-            "¿Una teoría física sobre agujeros de gusano?"
+            "Que estamos abriendo paso a nuevas formas de inteligencia que nosotros mismos creamos",
+            "Que la evolución termina con nosotros",
+            "Que debemos detener cualquier inteligencia artificial",
+            "Que siempre seremos los mejores"
           ],
-          "correct": 0,
-          "explanation": "¿Un bucle extraño es un sistema autorreferencial donde diferentes niveles se afectan mutuamente, como la conciencia observándose a sí misma.?",
-          "bookQuote": ""
-        },
-        {
-          "id": null,
-          "question": "¿Cuál es la relación entre 'niveles de organización' y 'reduccionismo'?",
-          "type": "multiple",
-          "options": [
-            "¿Los niveles superiores siempre se reducen a los inferiores?",
-            "¿Cada nivel tiene propiedades que no se explican solo por el nivel inferior?",
-            "¿El reduccionismo es la única forma válida de conocimiento?",
-            "¿No hay relación entre ambos conceptos?"
-          ],
-          "correct": 0,
-          "explanation": "¿Aunque los niveles superiores dependen de los inferiores, tienen propiedades emergentes propias que no se reducen completamente a explicaciones de ni...",
-          "bookQuote": ""
+          "explanation": "Significa que podemos ayudar a llegar al próximo paso evolutivo, incluso si incluye cosas que creamos.",
+          "bookQuote": "Somos transitórios; el próximo paso podría incluir formas de inteligencia creadas por nosotros.",
+          "correctAnswer": 0
         }
       ]
     }

@@ -15,9 +15,10 @@ class InteractiveQuiz {
   // CARGAR QUIZ
   // ==========================================================================
 
-  async loadQuiz(bookId, chapterId) {
+  async loadQuiz(bookId, chapterId, kids = false) {
     try {
-      const response = await fetch(`books/${bookId}/assets/quizzes.json`);
+      const file = kids ? 'quizzes-kids.json' : 'quizzes.json';
+      const response = await fetch(`books/${bookId}/assets/${file}`);
       if (!response.ok) return null;
 
       const allQuizzes = await response.json();
@@ -32,18 +33,26 @@ class InteractiveQuiz {
   // ABRIR QUIZ
   // ==========================================================================
 
-  async open(bookId, chapterId) {
+  async open(bookId, chapterId, kids = false) {
     // FIX v2.9.234: Show loading state while fetching data
     this.renderLoading();
 
     try {
-      const quiz = await this.loadQuiz(bookId, chapterId);
+      const quiz = await this.loadQuiz(bookId, chapterId, kids);
 
       if (!quiz) {
+        // Si se pidió la versión para niños y no existe, caer a la normal.
+        if (kids) { return this.open(bookId, chapterId, false); }
         this.close();
         window.toast?.info('No hay quiz disponible para este capitulo');
         return;
       }
+
+      // ¿Existe la versión alternativa? (para mostrar el toggle niños/normal)
+      this.hasAlternate = !!(await this.loadQuiz(bookId, chapterId, !kids));
+      this.bookId = bookId;
+      this.chapterId = chapterId;
+      this.kidsMode = kids;
 
       this.currentQuiz = quiz;
       this.currentQuestionIndex = 0;
@@ -130,6 +139,11 @@ class InteractiveQuiz {
                   🎯 ${this.currentQuiz.title}
                 </h2>
                 <p class="text-sm text-gray-400 mt-1">${this.currentQuiz.description}</p>
+                ${this.hasAlternate ? `
+                  <button id="toggle-kids" class="mt-2 text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 transition">
+                    ${this.kidsMode ? '🎓 Ver versión normal' : '👶 Ver versión para niños'}
+                  </button>
+                ` : ''}
               </div>
               <button id="close-quiz" class="text-gray-400 hover:text-white transition p-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -376,6 +390,11 @@ class InteractiveQuiz {
     document.getElementById('continue-reflection')?.addEventListener('click', () => {
       const text = document.getElementById('reflection-answer')?.value || '';
       this.handleReflection(text);
+    });
+
+    // Alternar entre versión normal y versión para niños
+    document.getElementById('toggle-kids')?.addEventListener('click', () => {
+      this.open(this.bookId, this.chapterId, !this.kidsMode);
     });
 
     // ESC para cerrar

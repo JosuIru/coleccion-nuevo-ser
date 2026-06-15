@@ -1,10 +1,9 @@
 {
-  "bookId": "filosofia-nuevo-ser",
-  "bookTitle": "Filosofía del Nuevo Ser",
-  "subtitle": " (versión niños)",
-  "chapters": {
-    "cap1": {
-      "chapterTitle": "El Agua en que Nadamos",
+  "quizzes": [
+    {
+      "chapterId": "cap1",
+      "title": "El Agua en que Nadamos",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -16,9 +15,9 @@
             "¿Son las que están escritas en textos antiguos?",
             "¿Son las que contradicen el sentido común?"
           ],
-          "correct": 1,
           "explanation": "¿Las premisas más poderosas operan sin hacerse explícitas. Como el agua para los peces, estructuran nuestra experiencia sin que las veamos conscientem...",
-          "bookQuote": "¿Las premisas más poderosas son las que ni siquiera sabemos que tenemos.?"
+          "bookQuote": "¿Las premisas más poderosas son las que ni siquiera sabemos que tenemos.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -30,9 +29,9 @@
             "¿Conocimiento transmitido genéticamente?",
             "¿Verdades universales e inmutables?"
           ],
-          "correct": 1,
           "explanation": "¿El sentido común es filosofía cristalizada: ideas que fueron controvertidas pero se sedimentaron hasta parecer 'cómo son las cosas'.?",
-          "bookQuote": "¿Lo que llamamos 'sentido común' es, en gran medida, filosofía que ha ganado hegemonía cultural.?"
+          "bookQuote": "¿Lo que llamamos 'sentido común' es, en gran medida, filosofía que ha ganado hegemonía cultural.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -44,9 +43,9 @@
             "¿Porque están basadas en evidencia empírica sólida?",
             "¿Porque son transmitidas por instituciones educativas?"
           ],
-          "correct": 1,
           "explanation": "¿Las premisas estructuran lo que puede y no puede pensarse. Se imponen por invisibilidad, determinando incluso qué preguntas formulamos.?",
-          "bookQuote": "¿Las premisas no solo determinan respuestas; determinan qué preguntas se hacen.?"
+          "bookQuote": "¿Las premisas no solo determinan respuestas; determinan qué preguntas se hacen.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -58,14 +57,16 @@
             "¿Debatir nuestras premisas con otras personas para validarlas?",
             "¿Escribir un ensayo académico sobre nuestras creencias?"
           ],
-          "correct": 1,
           "explanation": "¿El primer paso no es cambiar las premisas, sino verlas. Solo observar cómo afectan nuestras decisiones cotidianas ya es transformador.?",
-          "bookQuote": "¿No intentes cambiarla todavía —solo verla ya es el primer paso.?"
+          "bookQuote": "¿No intentes cambiarla todavía —solo verla ya es el primer paso.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap2": {
-      "chapterTitle": "Genealogía de la Separación",
+    {
+      "chapterId": "cap2",
+      "title": "Genealogía de la Separación",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -77,9 +78,9 @@
             "¿Como cosmos vivo donde la separación sujeto-objeto era porosa?",
             "¿Como ilusión que debía trascenderse completamente?"
           ],
-          "correct": 2,
           "explanation": "¿Para la mayoría de la historia humana, el mundo estaba vivo. Era ontología diferente donde el ser humano no estaba 'en' la naturaleza como cosa separ...",
-          "bookQuote": "¿Para la mayoría de la historia humana, el mundo estaba vivo... La línea entre sujeto y objeto era porosa o inexistente.?"
+          "bookQuote": "¿Para la mayoría de la historia humana, el mundo estaba vivo... La línea entre sujeto y objeto era porosa o inexistente.?",
+          "correctAnswer": 2
         },
         {
           "id": "q2",
@@ -91,9 +92,9 @@
             "¿Entre lo verdadero y lo falso?",
             "¿Entre lo natural y lo artificial?"
           ],
-          "correct": 1,
           "explanation": "¿Descartes formuló la separación mente-materia: res cogitans (cosa pensante) y res extensa (cosa extensa) como sustancias completamente diferentes.?",
-          "bookQuote": "¿René Descartes formuló la separación con claridad quirúrgica: res cogitans y res extensa.?"
+          "bookQuote": "¿René Descartes formuló la separación con claridad quirúrgica: res cogitans y res extensa.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -105,9 +106,9 @@
             "¿Se aplicó a culturas cuando solo aplica a especies?",
             "¿Se creyó que refutaba toda espiritualidad posible?"
           ],
-          "correct": 1,
           "explanation": "¿El darwinismo social legitimó explotación enfatizando solo competencia, ignorando que cooperación y simbiosis son motores evolutivos fundamentales.?",
-          "bookQuote": "¿Esta lectura ignoraba la mitad de la historia. La cooperación es tan evolutivamente antigua como la competencia.?"
+          "bookQuote": "¿Esta lectura ignoraba la mitad de la historia. La cooperación es tan evolutivamente antigua como la competencia.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -119,14 +120,16 @@
             "¿Un ideal moral hacia el que deberíamos aspirar?",
             "¿Una crítica satírica a la sociedad capitalista?"
           ],
-          "correct": 1,
           "explanation": "¿No era descripción empírica sino supuesto metodológico. Con el tiempo se volvió premisa invisible sobre la naturaleza humana.?",
-          "bookQuote": "¿El homo economicus no era descripción empírica del ser humano sino supuesto metodológico.?"
+          "bookQuote": "¿El homo economicus no era descripción empírica del ser humano sino supuesto metodológico.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap3": {
-      "chapterTitle": "Las Cinco Premisas del Paradigma Dominante",
+    {
+      "chapterId": "cap3",
+      "title": "Las Cinco Premisas del Paradigma Dominante",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -138,9 +141,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Las Cinco Premisas del forma de ver las cosas Dominante' desarrolla este concepto de manera integral, conectándolo con la estructura gen...",
-          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?"
+          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -152,9 +155,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?"
+          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -166,9 +169,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?"
+          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -180,14 +183,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?"
+          "bookQuote": "¿«El mayor truco del diablo fue convencer al mundo de que no existe.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap4": {
-      "chapterTitle": "La Arquitectura que Emerge",
+    {
+      "chapterId": "cap4",
+      "title": "La Arquitectura que Emerge",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -199,9 +204,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'La Arquitectura que Emerge' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?"
+          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -213,9 +218,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?"
+          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -227,9 +232,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?"
+          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -241,14 +246,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?"
+          "bookQuote": "¿«No culpes a los jugadores; examina las reglas del juego.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap5": {
-      "chapterTitle": "El Problema Duro de la Conciencia",
+    {
+      "chapterId": "cap5",
+      "title": "El Problema Duro de la Conciencia",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -260,9 +267,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'El Problema Duro de la Conciencia' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?"
+          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -274,9 +281,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?"
+          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -288,9 +295,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?"
+          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -302,14 +309,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?"
+          "bookQuote": "¿«La conciencia es a la vez lo más obvio y lo más misterioso de la existencia.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap6": {
-      "chapterTitle": "Conciencia como Fundamento",
+    {
+      "chapterId": "cap6",
+      "title": "Conciencia como Fundamento",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -321,9 +330,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Conciencia como Fundamento' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?"
+          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -335,9 +344,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?"
+          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -349,9 +358,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?"
+          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -363,14 +372,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?"
+          "bookQuote": "¿«No es que el universo tenga conciencia. Es que la conciencia tiene universo.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap7": {
-      "chapterTitle": "Abundancia Organizable",
+    {
+      "chapterId": "cap7",
+      "title": "Abundancia Organizable",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -382,9 +393,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Abundancia Organizable' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?"
+          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -396,9 +407,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?"
+          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -410,9 +421,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?"
+          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -424,14 +435,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?"
+          "bookQuote": "¿«La escasez no es condición natural; es tecnología social.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap8": {
-      "chapterTitle": "Interdependencia Radical",
+    {
+      "chapterId": "cap8",
+      "title": "Interdependencia Radical",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -443,9 +456,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Interdependencia Radical' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?"
+          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -457,9 +470,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?"
+          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -471,9 +484,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?"
+          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -485,14 +498,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?"
+          "bookQuote": "¿Una hoja de papel inter-es con la nube, la lluvia, el sol, el leñador, el árbol?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap9": {
-      "chapterTitle": "Madurez Cíclica",
+    {
+      "chapterId": "cap9",
+      "title": "Madurez Cíclica",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -504,9 +519,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Madurez Cíclica' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?"
+          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -518,9 +533,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?"
+          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -532,9 +547,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?"
+          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -546,14 +561,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?"
+          "bookQuote": "¿«La madurez es aceptar que los límites son condición de la forma.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap10": {
-      "chapterTitle": "Valor Intrínseco",
+    {
+      "chapterId": "cap10",
+      "title": "Valor Intrínseco",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -565,9 +582,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Valor Intrínseco' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?"
+          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -579,9 +596,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?"
+          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -593,9 +610,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?"
+          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -607,14 +624,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?"
+          "bookQuote": "¿«Todo ser tiene valor en sí mismo, no solo por lo que sirve.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap11": {
-      "chapterTitle": "Las Cinco Premisas del Nuevo Ser",
+    {
+      "chapterId": "cap11",
+      "title": "Las Cinco Premisas del Nuevo Ser",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -626,9 +645,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Las Cinco Premisas del Nuevo Ser' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?"
+          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -640,9 +659,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?"
+          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -654,9 +673,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?"
+          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -668,14 +687,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?"
+          "bookQuote": "¿«Otro mundo no solo es posible; ya está emergiendo.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap12": {
-      "chapterTitle": "Ontología --- ¿Qué Existe?",
+    {
+      "chapterId": "cap12",
+      "title": "Ontología --- ¿Qué Existe?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -687,9 +708,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Ontología --- ¿Qué Existe?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?"
+          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -701,9 +722,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?"
+          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -715,9 +736,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?"
+          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -729,14 +750,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?"
+          "bookQuote": "¿«La primera pregunta de la filosofía es: ¿qué hay?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap13": {
-      "chapterTitle": "Epistemología --- ¿Cómo Conocemos?",
+    {
+      "chapterId": "cap13",
+      "title": "Epistemología --- ¿Cómo Conocemos?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -748,9 +771,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Epistemología --- ¿Cómo Conocemos?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«No hay observador neutral; conocer es participar.?"
+          "bookQuote": "¿«No hay observador neutral; conocer es participar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -762,9 +785,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«No hay observador neutral; conocer es participar.?"
+          "bookQuote": "¿«No hay observador neutral; conocer es participar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -776,9 +799,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«No hay observador neutral; conocer es participar.?"
+          "bookQuote": "¿«No hay observador neutral; conocer es participar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -790,14 +813,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«No hay observador neutral; conocer es participar.?"
+          "bookQuote": "¿«No hay observador neutral; conocer es participar.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap14": {
-      "chapterTitle": "Antropología --- ¿Qué es el Ser Humano?",
+    {
+      "chapterId": "cap14",
+      "title": "Antropología --- ¿Qué es el Ser Humano?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -809,9 +834,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Antropología --- ¿Qué es el Ser Humano?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?"
+          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -823,9 +848,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?"
+          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -837,9 +862,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?"
+          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -851,14 +876,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?"
+          "bookQuote": "¿«Dime qué crees que es el ser humano y te diré qué mundo construyes.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap15": {
-      "chapterTitle": "Ética --- ¿Qué Debemos Hacer?",
+    {
+      "chapterId": "cap15",
+      "title": "Ética --- ¿Qué Debemos Hacer?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -870,9 +897,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Ética --- ¿Qué Debemos Hacer?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?"
+          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -884,9 +911,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?"
+          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -898,9 +925,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?"
+          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -912,14 +939,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?"
+          "bookQuote": "¿«La ética no es código que seguir sino sensibilidad que cultivar.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap16": {
-      "chapterTitle": "Política --- ¿Cómo Organizamos la Sociedad?",
+    {
+      "chapterId": "cap16",
+      "title": "Política --- ¿Cómo Organizamos la Sociedad?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -931,9 +960,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Política --- ¿Cómo Organizamos la Sociedad?' desarrolla este concepto de manera integral, conectándolo con la estructura general del lib...",
-          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?"
+          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -945,9 +974,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?"
+          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -959,9 +988,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?"
+          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -973,14 +1002,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?"
+          "bookQuote": "¿«La política es filosofía hecha práctica colectiva.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap17": {
-      "chapterTitle": "Cosmología --- ¿Cuál es Nuestro Lugar?",
+    {
+      "chapterId": "cap17",
+      "title": "Cosmología --- ¿Cuál es Nuestro Lugar?",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -992,9 +1023,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Cosmología --- ¿Cuál es Nuestro Lugar?' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto..."
+          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto...",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1006,9 +1037,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto..."
+          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto...",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1020,9 +1051,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto..."
+          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto...",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1034,14 +1065,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto..."
+          "bookQuote": "¿El universo es vasto, frío, indiferente. Los humanos somos accidente improbable en rincón olvidado. La Tierra es recurso que explotar; no hay sujeto...",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap18": {
-      "chapterTitle": "Anatomía de un Cambio de Paradigma",
+    {
+      "chapterId": "cap18",
+      "title": "Anatomía de un Cambio de Paradigma",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1053,9 +1086,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Anatomía de un Cambio de forma de ver las cosas' desarrolla este concepto de manera integral, conectándolo con la estructura general del...",
-          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?"
+          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1067,9 +1100,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?"
+          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1081,9 +1114,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?"
+          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1095,14 +1128,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?"
+          "bookQuote": "¿«La ciencia no avanza convenciendo a los oponentes sino porque los oponentes mueren.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap19": {
-      "chapterTitle": "Obstáculos al Tránsito",
+    {
+      "chapterId": "cap19",
+      "title": "Obstáculos al Tránsito",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1114,9 +1149,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Obstáculos al Tránsito' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?"
+          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1128,9 +1163,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?"
+          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1142,9 +1177,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?"
+          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1156,14 +1191,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?"
+          "bookQuote": "¿«Lo más difícil no es adoptar ideas nuevas sino soltar las viejas.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap20": {
-      "chapterTitle": "Catalizadores del Tránsito",
+    {
+      "chapterId": "cap20",
+      "title": "Catalizadores del Tránsito",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1175,9 +1212,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Catalizadores del Tránsito' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?"
+          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1189,9 +1226,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?"
+          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1203,9 +1240,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?"
+          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1217,14 +1254,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?"
+          "bookQuote": "¿«No podemos resolver problemas con el mismo nivel de conciencia que los creó.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap21": {
-      "chapterTitle": "Vivir en el Entre",
+    {
+      "chapterId": "cap21",
+      "title": "Vivir en el Entre",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1236,9 +1275,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Vivir en el Entre' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?"
+          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1250,9 +1289,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?"
+          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1264,9 +1303,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?"
+          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1278,14 +1317,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?"
+          "bookQuote": "¿«Entre el mundo que muere y el que nace, hay un tiempo de monstruos.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap22": {
-      "chapterTitle": "Los Límites de la Nueva Ontología",
+    {
+      "chapterId": "cap22",
+      "title": "Los Límites de la Nueva Ontología",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1297,9 +1338,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Los Límites de la Nueva Ontología' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?"
+          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1311,9 +1352,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?"
+          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1325,9 +1366,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?"
+          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1339,14 +1380,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?"
+          "bookQuote": "¿«La primera virtud intelectual es reconocer lo que no sabes.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap23": {
-      "chapterTitle": "Las Sombras del Nuevo Paradigma",
+    {
+      "chapterId": "cap23",
+      "title": "Las Sombras del Nuevo Paradigma",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1358,9 +1401,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'Las Sombras del Nuevo forma de ver las cosas' desarrolla este concepto de manera integral, conectándolo con la estructura general del li...",
-          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?"
+          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1372,9 +1415,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?"
+          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1386,9 +1429,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?"
+          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1400,14 +1443,16 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?"
+          "bookQuote": "¿«El camino al infierno está empedrado de buenas intenciones.?",
+          "correctAnswer": 1
         }
       ]
     },
-    "cap24": {
-      "chapterTitle": "La Filosofía como Práctica Viva",
+    {
+      "chapterId": "cap24",
+      "title": "La Filosofía como Práctica Viva",
+      "description": "",
       "questions": [
         {
           "id": "q1",
@@ -1419,9 +1464,9 @@
             "¿Una crítica a teorías previas solamente?",
             "¿Un concepto secundario para introducir el siguiente capítulo?"
           ],
-          "correct": 1,
           "explanation": "¿El capítulo 'La Filosofía como Práctica Viva' desarrolla este concepto de manera integral, conectándolo con la estructura general del libro.?",
-          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?"
+          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?",
+          "correctAnswer": 1
         },
         {
           "id": "q2",
@@ -1433,9 +1478,9 @@
             "¿Acumulación de conocimiento intelectual abstracto?",
             "¿Adopción de nuevas creencias espirituales?"
           ],
-          "correct": 1,
           "explanation": "¿El libro busca hacer visibles premisas invisibles y ofrecer alternativas que transformen cómo entendemos y actuamos en la realidad.?",
-          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?"
+          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?",
+          "correctAnswer": 1
         },
         {
           "id": "q3",
@@ -1447,9 +1492,9 @@
             "¿Lo ignora para enfocarse en temas puramente espirituales?",
             "¿Lo acepta como inevitable pero busca adaptarse mejor?"
           ],
-          "correct": 1,
           "explanation": "¿El libro examina y cuestiona premisas invisibles del forma de ver las cosas dominante, ofreciendo ontologías alternativas basadas en reconexión.?",
-          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?"
+          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?",
+          "correctAnswer": 1
         },
         {
           "id": "q4",
@@ -1461,11 +1506,11 @@
             "¿Memorizar conceptos clave para exámenes?",
             "¿Convencer a otros de estas ideas?"
           ],
-          "correct": 1,
           "explanation": "¿El libro invita valor fijomente a examinar premisas invisibles en la propia experiencia, no solo a acumular datos.?",
-          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?"
+          "bookQuote": "¿«La duda no es lo contrario de la fe; es su forma más honesta.?",
+          "correctAnswer": 1
         }
       ]
     }
-  }
+  ]
 }

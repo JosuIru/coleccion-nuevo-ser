@@ -7,6 +7,35 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [2.9.414] - 2026-06-15
+
+> Nota: las versiones intermedias entre 2.0.0 y 2.9.414 se gestionaron por build
+> (sufijo `2.9.x`) sin entrada de changelog. Esta entrada agrupa el trabajo
+> acumulado más reciente.
+
+### Añadido
+- 🪙 **Panel de transparencia y donaciones BTC**: objetivos, contribuciones e
+  inventario, con endpoint de confirmación y migraciones de esquema.
+- 🛠️ **Panel de administración** ampliado (gestión de transparencia, roles admin
+  por email, carga diferida).
+- 🎧 **Mejoras de AudioReader**: modo zen, visualizador, procesado de audio,
+  soundscapes con caché y sincronización palabra a palabra.
+- 🤖 **Adaptador de IA** con carga en caliente de Puter.js y ajustes desde settings.
+- 👤 Flujo de **autenticación**, gestión de cuenta y ajustes de cuenta.
+
+### Cambiado
+- 📖 Refactor de `book-reader`, biblioteca y adaptador de contenido.
+- 📚 Catálogo, ediciones premium generadas y mejoras en prácticas y micro-cursos.
+
+### Seguridad
+- 🔒 Migraciones con vistas `security invoker` y verificación de entidades.
+
+### Mantenimiento
+- 🧹 Artefactos regenerables (`supabase/.temp/`, `coverage/`) excluidos del control de versiones.
+- 🗑️ Retirados tests muertos de `tests/frankenstein/` (módulos inexistentes en producción).
+
+---
+
 ## [2.0.0] - 2025-11-28
 
 ### 🎉 Lanzamiento Mayor: Colección Completa

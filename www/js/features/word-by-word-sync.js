@@ -232,7 +232,7 @@ class WordByWordSync {
 
     // Ocultar todas las palabras excepto las cercanas
     const wordSpans = this.currentParagraph.querySelectorAll('.word-sync');
-    wordSpans.forEach((span, idx) => {
+    wordSpans.forEach((span, _idx) => {
       span.style.opacity = '0.2';
     });
   }

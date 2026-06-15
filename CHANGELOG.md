@@ -7,6 +7,24 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [2.9.415] - 2026-06-15
+
+### Añadido
+- 📖 **Diálogos con la Máquina** completo (16 capítulos + 3 apéndices redactados).
+- 🏛️ **Parte I de Ahora-Instituciones** ("El Terreno Invisible", cap1-4).
+- 🧩 **exercises estructurados** en Nacimiento (12) y Ahora-Instituciones (9).
+- ❓ **Sistema de quizzes**: preguntas de reflexión (con puntos guía, no puntúan) y **modo infantil** con toggle "👶 Ver versión para niños".
+
+### Corregido
+- ❓ Los quizzes no se cargaban en media colección: reubicados a `assets/`, normalizado el formato (`chapters`→`quizzes`, `correct`→`correctAnswer`) y los `quizzes-kids` conectados.
+- 🔢 Cerrado el salto de numeración cap15-17 de Nacimiento (renumeración en cascada).
+- 🏷️ `chapter-metadata.json` regenerado en los 12 libros; IDs de quizzes alineados; portada y enlaces saneados; erratas "del el/del la".
+
+### Mantenimiento
+- 🧹 Eliminado backup huérfano, corregidos warnings de lint (0) y una invocación muerta del quiz.
+
+---
+
 ## [2.9.414] - 2026-06-15
 
 > Nota: las versiones intermedias entre 2.0.0 y 2.9.414 se gestionaron por build

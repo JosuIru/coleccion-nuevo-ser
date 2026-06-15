@@ -182,11 +182,11 @@ class AudioEnhancements {
     localStorage.setItem('audio-listening-stats', JSON.stringify(this.statistics));
   }
 
-  trackParagraphStart(index) {
+  trackParagraphStart(_index) {
     this.currentParagraphStartTime = Date.now();
   }
 
-  trackParagraphEnd(index) {
+  trackParagraphEnd(_index) {
     if (this.currentParagraphStartTime) {
       const duration = (Date.now() - this.currentParagraphStartTime) / 1000; // segundos
       this.statistics.totalTimeListened += duration;
@@ -505,7 +505,7 @@ class VoiceCommands {
       this.processCommand(command);
     };
 
-    this.recognition.onerror = (event) => {
+    this.recognition.onerror = (_event) => {
       // logger.warn('Speech recognition error:', event.error);
     };
 

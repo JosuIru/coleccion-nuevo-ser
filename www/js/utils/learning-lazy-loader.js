@@ -27,12 +27,9 @@ class LearningLazyLoader {
         await window.lazyLoader.loadInteractiveQuiz();
       }
 
-      // Iniciar quiz
-      if (window.InteractiveQuiz) {
-        const quiz = new window.InteractiveQuiz(bookId, chapterId);
-        quiz.start();
-      } else if (typeof window.startInteractiveQuiz === 'function') {
-        window.startInteractiveQuiz(bookId, chapterId);
+      // Iniciar quiz (usa el singleton interactiveQuiz, cuya API es open(bookId, chapterId))
+      if (window.interactiveQuiz) {
+        await window.interactiveQuiz.open(bookId, chapterId);
       } else {
         logger.error('[LearningLazyLoader] Interactive Quiz no encontrado después de carga');
       }

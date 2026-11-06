@@ -360,6 +360,58 @@
     ],
     "practicalUses": []
   },
+  "cap26": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": [
+      "accion",
+      "incertidumbre",
+      "principios",
+      "prototipado",
+      "cuidado-mutuo"
+    ],
+    "practicalUses": []
+  },
+  "cap27": {
+    "type": "práctica",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": [
+      "primeros-pasos",
+      "organizaciones",
+      "aliados",
+      "pilotos",
+      "practica"
+    ],
+    "practicalUses": []
+  },
+  "cap28": {
+    "type": "teoría",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": [
+      "redes",
+      "coalicion",
+      "apoyo-mutuo",
+      "movimientos",
+      "colaboracion"
+    ],
+    "practicalUses": []
+  },
+  "cap29": {
+    "type": "reflexión",
+    "difficulty": "intermedio",
+    "readingTime": 2,
+    "tags": [
+      "esperanza-activa",
+      "duelo",
+      "joanna-macy",
+      "sentido",
+      "accion"
+    ],
+    "practicalUses": []
+  },
   "epilogo": {
     "type": "reflexión",
     "difficulty": "introductorio",
